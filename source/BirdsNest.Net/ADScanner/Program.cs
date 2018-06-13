@@ -5,11 +5,11 @@ namespace ADScanner
 {
     class Program
     {
-        private Configuration _config;
-
         static void Main(string[] args)
         {
-            string configfile = string.Empty;
+            string _appdir = System.Reflection.Assembly.GetExecutingAssembly().Location;
+            string configfile = _appdir + @"\config.json";
+            
 
             foreach (string arg in args)
             {
@@ -24,19 +24,23 @@ namespace ADScanner
                         break;
                 }
             }
+
+            Configuration _config = LoadConfig(configfile);
         }
 
-        private void LoadConfig(string configfile)
+        private static Configuration LoadConfig(string configfile)
         {
             try
             {
-                this._config = FileHandler.ReadConfigurationFromFile(configfile);
+                return FileHandler.ReadConfigurationFromFile(configfile);
             }
             catch(Exception e)
             {
                 Console.WriteLine("Error loading configuration file: " + e.Message);
                 Environment.Exit(1001);
             }
+
+            return null;
         }
     }
 }
