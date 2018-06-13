@@ -1,0 +1,9 @@
+{
+  AD_Domain: "domain.local",
+  AD_Username: "user",
+  AD_Password: "Password123",
+  DB_Server: "db1",
+  DB_Port: "7687",
+  DB_Username: "user",
+  DB_Password: "Password123"
+}
