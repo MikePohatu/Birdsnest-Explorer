@@ -25,7 +25,10 @@ namespace ADScanner
                 }
             }
 
-            Configuration _config = LoadConfig(configfile);
+            using (Configuration _config = LoadConfig(configfile))
+            {
+
+            }
         }
 
         private static Configuration LoadConfig(string configfile)

@@ -1,9 +1,10 @@
 ﻿using System;
+using System.Security;
 using Newtonsoft.Json;
 
 namespace ADScanner
 {
-    public class Configuration
+    public class Configuration:IDisposable
     {
         [JsonProperty("AD_Domain")]
         public string AD_Domain { get; set; }
@@ -25,5 +26,11 @@ namespace ADScanner
 
         [JsonProperty("DB_Password")]
         public string DB_Password { get; set; }
+
+        public void Dispose()
+        {
+            this.DB_Password = string.Empty;
+            this.AD_Password = string.Empty;
+        }
     }
 }
