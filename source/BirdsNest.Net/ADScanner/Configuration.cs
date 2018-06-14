@@ -6,8 +6,8 @@ namespace ADScanner
 {
     public class Configuration:IDisposable
     {
-        [JsonProperty("AD_Domain")]
-        public string AD_Domain { get; set; }
+        [JsonProperty("AD_DomainPath")]
+        public string AD_DomainPath { get; set; }
 
         [JsonProperty("AD_Username")]
         public string AD_Username { get; set; }
@@ -15,11 +15,8 @@ namespace ADScanner
         [JsonProperty("AD_Password")]
         public string AD_Password { get; set; }
 
-        [JsonProperty("DB_Server")]
-        public string DB_Server { get; set; }
-
-        [JsonProperty("DB_Port")]
-        public string DB_Port { get; set; }
+        [JsonProperty("DB_URI")]
+        public string DB_URI { get; set; }
 
         [JsonProperty("DB_Username")]
         public string DB_Username { get; set; }

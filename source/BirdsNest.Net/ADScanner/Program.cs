@@ -1,5 +1,9 @@
 ﻿using System;
 using System.Diagnostics;
+using System.DirectoryServices;
+using Neo4j.Driver;
+using Neo4j.Driver.V1;
+using ADScanner.ActiveDirectory;
 
 namespace ADScanner
 {
@@ -7,9 +11,10 @@ namespace ADScanner
     {
         static void Main(string[] args)
         {
-            string _appdir = System.Reflection.Assembly.GetExecutingAssembly().Location;
+            string _appdir = AppDomain.CurrentDomain.BaseDirectory;
             string configfile = _appdir + @"\config.json";
-            
+            IDriver _driver;
+            DirectoryEntry _rootDE;
 
             foreach (string arg in args)
             {
@@ -25,10 +30,26 @@ namespace ADScanner
                 }
             }
 
-            using (Configuration _config = LoadConfig(configfile))
+            using (Configuration config = LoadConfig(configfile))
             {
-
+                _driver = ConnectToNeo(config);
+                _rootDE = ConnectToAD(config);
             }
+
+            SearchResultCollection results = GroupHandler.GetAllGroups(_rootDE);
+            if (results != null)
+            {
+                foreach (SearchResult result in results)
+                {
+                    ADGroup g = new ADGroup(result);
+                    Console.WriteLine(g.Name + " : " + g.SID);
+                }
+            }
+
+            Console.ReadLine();
+
+            _driver.Dispose();
+            _rootDE.Dispose();
         }
 
         private static Configuration LoadConfig(string configfile)
@@ -43,6 +64,35 @@ namespace ADScanner
                 Environment.Exit(1001);
             }
 
+            return null;
+        }
+
+        private static IDriver ConnectToNeo(Configuration config)
+        {
+            try
+            {
+                return GraphDatabase.Driver(config.DB_URI, AuthTokens.Basic(config.DB_Username, config.DB_Password));
+            }
+            catch(Exception e)
+            {
+                Console.WriteLine("Error connecting to Neo4j: " + e.Message);
+                Environment.Exit(1002);
+            }
+            return null;
+        }
+
+        private static DirectoryEntry ConnectToAD(Configuration config)
+        {
+            try
+            {
+                Console.WriteLine("Connecting to domain: " + config.AD_DomainPath);
+                return new DirectoryEntry(config.AD_DomainPath,config.AD_Username,config.AD_Password);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("Error connecting to Active Directory: " + e.Message);
+                Environment.Exit(1003);
+            }
             return null;
         }
     }

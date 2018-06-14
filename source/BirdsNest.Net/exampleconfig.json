@@ -1,9 +1,8 @@
 {
-  AD_Domain: "domain.local",
-  AD_Username: "user",
-  AD_Password: "Password123",
-  DB_Server: "db1",
-  DB_Port: "7687",
-  DB_Username: "user",
-  DB_Password: "Password123"
+  "AD_DomainPath": "LDAP://domain.local/DC=domain,DC=local",
+  "AD_Username": "domain\\user",
+  "AD_Password": "Password1",
+  "DB_URI": "bolt://dbserver.home.local:7687",
+  "DB_Username": "user",
+  "DB_Password": "Password1"
 }
