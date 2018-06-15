@@ -52,15 +52,22 @@
   <ItemGroup>
     <Compile Include="ActiveDirectory\ADGroup.cs" />
     <Compile Include="ActiveDirectory\ADSearchResultConverter.cs" />
+    <Compile Include="ActiveDirectory\ADUser.cs" />
     <Compile Include="Configuration.cs" />
     <Compile Include="FileHandler.cs" />
-    <Compile Include="ActiveDirectory\GroupHandler.cs" />
+    <Compile Include="ActiveDirectory\QueryHandler.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Neo4jBroker\Neo4jBroker.csproj">
+      <Project>{6379f7ef-ecd6-48f5-8b33-a32a59a25693}</Project>
+      <Name>Neo4jBroker</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

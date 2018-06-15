@@ -1,6 +1,6 @@
 ﻿using System.DirectoryServices;
 using System.Text;
-using System;
+using System.Collections.Generic;
 using System.Security.Principal;
 
 namespace ADScanner.ActiveDirectory
@@ -37,6 +37,28 @@ namespace ADScanner.ActiveDirectory
             {
                 return null;
             }
+        }
+
+        public static List<string> GetStringList(SearchResult result, string property)
+        {
+            List<string> results = new List<string>();
+
+            if (result.Properties[property] != null && result.Properties[property].Count > 0)
+            {
+                foreach (var prop in result.Properties[property])
+                {
+                    if (prop.GetType().IsArray)
+                    {
+                        byte[] resulttext = (byte[])prop;
+                        results.Add(Encoding.UTF8.GetString(resulttext));
+                    }
+                    else
+                    {
+                        results.Add(prop.ToString());
+                    }
+                }
+            }
+            return results;
         }
     }
 }

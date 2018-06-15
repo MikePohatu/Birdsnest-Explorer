@@ -4,6 +4,7 @@ using System.DirectoryServices;
 using Neo4j.Driver;
 using Neo4j.Driver.V1;
 using ADScanner.ActiveDirectory;
+using neo4jlink;
 
 namespace ADScanner
 {
@@ -36,20 +37,36 @@ namespace ADScanner
                 _rootDE = ConnectToAD(config);
             }
 
-            SearchResultCollection results = GroupHandler.GetAllGroups(_rootDE);
+            SearchResultCollection results = QueryHandler.GetAllGroupResults(_rootDE);
             if (results != null)
             {
                 foreach (SearchResult result in results)
                 {
                     ADGroup g = new ADGroup(result);
-                    Console.WriteLine(g.Name + " : " + g.SID);
+                    //Console.WriteLine(g.Name + " : " + g.ID);
+                    Writer.MergeNodeOnPath(g, _driver);
+                    Writer.AddIsMemberOfADGroups(g, g.MemberOfDNs,_driver);
+                    Writer.AddMembersOfADGroup(g, g.MemberDNs, _driver);
                 }
             }
 
-            Console.ReadLine();
+            results = QueryHandler.GetAllUserResults(_rootDE);
+            if (results != null)
+            {
+                foreach (SearchResult result in results)
+                {
+                    ADUser u = new ADUser(result);
+                    //Console.WriteLine(g.Name + " : " + g.ID);
+                    Writer.MergeNodeOnPath(u, _driver);
+                    Writer.AddIsMemberOfADGroups(u, u.MemberOfDNs, _driver);
+                }
+            }
 
             _driver.Dispose();
             _rootDE.Dispose();
+
+            Console.WriteLine("Finished");
+            Console.ReadLine();
         }
 
         private static Configuration LoadConfig(string configfile)
