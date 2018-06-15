@@ -122,7 +122,7 @@ namespace ADScanner
         {
             try
             {
-                if (string.IsNullOrWhiteSpace(config.AD_Password) || string.IsNullOrWhiteSpace(config.AD_Username))
+                if (string.IsNullOrWhiteSpace(config.DB_Password) || string.IsNullOrWhiteSpace(config.DB_Username))
                 { return GraphDatabase.Driver(config.DB_URI); }
                 else
                 { return GraphDatabase.Driver(config.DB_URI, AuthTokens.Basic(config.DB_Username, config.DB_Password)); }
