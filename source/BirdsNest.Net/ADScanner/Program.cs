@@ -36,6 +36,7 @@ namespace ADScanner
                 rootDE = ConnectToAD(config);
             }
 
+            //open the session to neo and write the data
             using (ISession session = driver.Session())
             {
                 //load the groups
@@ -81,14 +82,13 @@ namespace ADScanner
                     }
                 }
             }
-            
 
             //cleanup
             driver.Dispose();
             rootDE.Dispose();
 
             Console.Write("Finished");
-            for (int i =0; i<5; i++)
+            for (int i =0; i<3; i++)
             {
                 System.Threading.Thread.Sleep(1000);
                 Console.Write(".");
@@ -117,7 +117,11 @@ namespace ADScanner
         {
             try
             {
-                return GraphDatabase.Driver(config.DB_URI, AuthTokens.Basic(config.DB_Username, config.DB_Password));
+                if (string.IsNullOrWhiteSpace(config.AD_Password) || string.IsNullOrWhiteSpace(config.AD_Username))
+                { return GraphDatabase.Driver(config.DB_URI); }
+                else
+                { return GraphDatabase.Driver(config.DB_URI, AuthTokens.Basic(config.DB_Username, config.DB_Password)); }
+                
             }
             catch(Exception e)
             {
