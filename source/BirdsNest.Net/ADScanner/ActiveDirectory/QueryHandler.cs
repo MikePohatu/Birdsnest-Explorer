@@ -53,6 +53,7 @@ namespace ADScanner.ActiveDirectory
                     searcher.PropertiesToLoad.Add("samaccountname");
                     searcher.PropertiesToLoad.Add("objectcategory");
                     searcher.PropertiesToLoad.Add("objectSid");
+                    searcher.PropertiesToLoad.Add("displayName");
                     searcher.PropertiesToLoad.Add("distinguishedName");
                     searcher.PropertiesToLoad.Add("primaryGroupID");
 

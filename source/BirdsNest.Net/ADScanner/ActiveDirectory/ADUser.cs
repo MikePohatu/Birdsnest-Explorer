@@ -1,4 +1,5 @@
 ﻿using System.DirectoryServices;
+using System.Collections.Generic;
 
 namespace ADScanner.ActiveDirectory
 {
@@ -6,6 +7,9 @@ namespace ADScanner.ActiveDirectory
     {
         public override string SubLabel { get { return "User"; } }
 
-        public ADUser(SearchResult result) : base(result) { }
+        public ADUser(SearchResult result) : base(result)
+        {
+            this.Properties.Add(new KeyValuePair<string, object>("displayName", ADSearchResultConverter.GetSinglestringValue(result, "displayName")));
+        }
     }
 }

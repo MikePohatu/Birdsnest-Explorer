@@ -29,8 +29,6 @@ namespace ADScanner.ActiveDirectory
 
             this.Properties = new List<KeyValuePair<string, object>>();
             this.Properties.Add(new KeyValuePair<string, object>("distinguishedName", this.Path));
-            this.Properties.Add(new KeyValuePair<string, object>("operatingSystem", ADSearchResultConverter.GetSinglestringValue(result, "operatingSystem")));
-            this.Properties.Add(new KeyValuePair<string, object>("operatingSystemVersion", ADSearchResultConverter.GetSinglestringValue(result, "operatingSystemVersion")));
             this.Properties.Add(new KeyValuePair<string, object>("sAMAccountName", ADSearchResultConverter.GetSinglestringValue(result, "sAMAccountName")));
             this.Properties.Add(new KeyValuePair<string, object>("cn", ADSearchResultConverter.GetSinglestringValue(result, "cn")));
             this.Properties.Add(new KeyValuePair<string, object>("primaryGroupID", this.PrimaryGroupID));
