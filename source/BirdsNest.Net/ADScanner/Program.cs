@@ -64,6 +64,7 @@ namespace ADScanner
                             ADUser u = new ADUser(result);
                             Writer.MergeNodeOnPath(u, session);
                             Writer.AddIsMemberOfADGroups(u, u.MemberOfDNs, session);
+                            Writer.AddIsMemberOfPrimaryADGroup(u, session);
                         }
                     }
                 }
@@ -78,6 +79,7 @@ namespace ADScanner
                             ADComputer c = new ADComputer(result);
                             Writer.MergeNodeOnPath(c, session);
                             Writer.AddIsMemberOfADGroups(c, c.MemberOfDNs, session);
+                            Writer.AddIsMemberOfPrimaryADGroup(c, session);
                         }
                     }
                 }

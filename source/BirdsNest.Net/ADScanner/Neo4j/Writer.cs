@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 using Neo4j.Driver.V1;
+using ADScanner.ActiveDirectory;
 
 namespace ADScanner.Neo4j
 {
@@ -26,7 +26,7 @@ namespace ADScanner.Neo4j
 
             builder.AppendLine("RETURN newnode");
 
-            session.Run(builder.ToString());
+            session.WriteTransaction(tx => tx.Run(builder.ToString()));
         }
 
         public static void MergeNodeOnPath(INode node, ISession session)
@@ -47,7 +47,7 @@ namespace ADScanner.Neo4j
 
             builder.AppendLine("RETURN newnode");
 
-            session.Run(builder.ToString());
+            session.WriteTransaction(tx => tx.Run(builder.ToString()));
         }
 
         public static void AddIsMemberOfADGroups(INode node, List<string> groupDNs, ISession session)
@@ -55,11 +55,6 @@ namespace ADScanner.Neo4j
             StringBuilder builder = new StringBuilder();
             int i = 0;
 
-            //Example query
-            //MATCH(a: AD_GROUP),(b: AD_GROUP)
-            //WHERE a.name = 'Test2' AND b.name = 'Test3'
-            //CREATE(a) -[r: AD_MemberOf]->(b)
-            //RETURN type(r)
             builder.AppendLine("MERGE (node:" +node.Label + " {path:'" + node.Path + "'})");
             foreach (string dn in groupDNs)
             {
@@ -69,7 +64,7 @@ namespace ADScanner.Neo4j
             }
             builder.AppendLine("RETURN node");
 
-            session.Run(builder.ToString());
+            session.WriteTransaction(tx => tx.Run(builder.ToString()));
         }
 
         public static void AddMembersOfADGroup(INode node, List<string> memberDNs, ISession session)
@@ -77,11 +72,6 @@ namespace ADScanner.Neo4j
             StringBuilder builder = new StringBuilder();
             int i = 0;
 
-            //Example query
-            //MATCH(a: AD_GROUP),(b: AD_GROUP)
-            //WHERE a.name = 'Test2' AND b.name = 'Test3'
-            //CREATE(a) -[r: AD_MemberOf]->(b)
-            //RETURN type(r)
             builder.AppendLine("MERGE (node:" + node.Label + " {path:'" + node.Path + "'})");
             foreach (string dn in memberDNs)
             {
@@ -91,7 +81,22 @@ namespace ADScanner.Neo4j
             }
             builder.AppendLine("RETURN node");
 
-            session.Run(builder.ToString());
+            session.WriteTransaction(tx => tx.Run(builder.ToString()));
+        }
+
+        public static void AddIsMemberOfPrimaryADGroup(ADGroupMember node, ISession session)
+        {
+            StringBuilder builder = new StringBuilder();
+            int i = 0;
+
+            builder.AppendLine("MATCH (g:AD_Object)");
+            builder.AppendLine("WHERE g.rid='" + node.PrimaryGroupID + "'");
+            builder.AppendLine("MERGE (node:" + node.Label + " {path:'" + node.Path + "'})");
+            builder.AppendLine("MERGE (node)-[r:AD_MemberOf]->(g)");
+            builder.AppendLine("SET r.primarygroup = 'true'");
+            builder.AppendLine("RETURN node");
+
+            session.WriteTransaction(tx => tx.Run(builder.ToString()));
         }
     }
 }
