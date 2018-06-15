@@ -1,0 +1,2 @@
+var res = JSON.parse(localStorage.getItem('neo4j.documents'))  
+for (x in res) { console.log(res[x]['content']) }
