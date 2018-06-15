@@ -1,10 +1,9 @@
 ﻿using System;
 using System.Diagnostics;
 using System.DirectoryServices;
-using Neo4j.Driver;
 using Neo4j.Driver.V1;
 using ADScanner.ActiveDirectory;
-using neo4jlink;
+using ADScanner.Neo4j;
 
 namespace ADScanner
 {
@@ -14,8 +13,8 @@ namespace ADScanner
         {
             string _appdir = AppDomain.CurrentDomain.BaseDirectory;
             string configfile = _appdir + @"\config.json";
-            IDriver _driver;
-            DirectoryEntry _rootDE;
+            IDriver driver;
+            DirectoryEntry rootDE;
 
             foreach (string arg in args)
             {
@@ -33,37 +32,46 @@ namespace ADScanner
 
             using (Configuration config = LoadConfig(configfile))
             {
-                _driver = ConnectToNeo(config);
-                _rootDE = ConnectToAD(config);
+                driver = ConnectToNeo(config);
+                rootDE = ConnectToAD(config);
             }
 
-            SearchResultCollection results = QueryHandler.GetAllGroupResults(_rootDE);
+            SearchResultCollection results = QueryHandler.GetAllGroupResults(rootDE);
             if (results != null)
             {
                 foreach (SearchResult result in results)
                 {
                     ADGroup g = new ADGroup(result);
-                    //Console.WriteLine(g.Name + " : " + g.ID);
-                    Writer.MergeNodeOnPath(g, _driver);
-                    Writer.AddIsMemberOfADGroups(g, g.MemberOfDNs,_driver);
-                    Writer.AddMembersOfADGroup(g, g.MemberDNs, _driver);
+                    Writer.MergeNodeOnPath(g, driver);
+                    Writer.AddIsMemberOfADGroups(g, g.MemberOfDNs,driver);
+                    Writer.AddMembersOfADGroup(g, g.MemberDNs, driver);
                 }
             }
 
-            results = QueryHandler.GetAllUserResults(_rootDE);
+            results = QueryHandler.GetAllUserResults(rootDE);
             if (results != null)
             {
                 foreach (SearchResult result in results)
                 {
                     ADUser u = new ADUser(result);
-                    //Console.WriteLine(g.Name + " : " + g.ID);
-                    Writer.MergeNodeOnPath(u, _driver);
-                    Writer.AddIsMemberOfADGroups(u, u.MemberOfDNs, _driver);
+                    Writer.MergeNodeOnPath(u, driver);
+                    Writer.AddIsMemberOfADGroups(u, u.MemberOfDNs, driver);
                 }
             }
 
-            _driver.Dispose();
-            _rootDE.Dispose();
+            results = QueryHandler.GetAllComputerResults(rootDE);
+            if (results != null)
+            {
+                foreach (SearchResult result in results)
+                {
+                    ADComputer c = new ADComputer(result);
+                    Writer.MergeNodeOnPath(c, driver);
+                    Writer.AddIsMemberOfADGroups(c, c.MemberOfDNs, driver);
+                }
+            }
+
+            driver.Dispose();
+            rootDE.Dispose();
 
             Console.WriteLine("Finished");
             Console.ReadLine();
@@ -103,7 +111,10 @@ namespace ADScanner
             try
             {
                 Console.WriteLine("Connecting to domain: " + config.AD_DomainPath);
-                return new DirectoryEntry(config.AD_DomainPath,config.AD_Username,config.AD_Password);
+                if (string.IsNullOrWhiteSpace(config.AD_Password) || string.IsNullOrWhiteSpace(config.AD_Username))
+                { return new DirectoryEntry(config.AD_DomainPath); }
+                else
+                { return new DirectoryEntry(config.AD_DomainPath, config.AD_Username, config.AD_Password); } 
             }
             catch (Exception e)
             {

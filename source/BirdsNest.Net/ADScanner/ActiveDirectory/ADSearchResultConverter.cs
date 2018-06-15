@@ -39,6 +39,17 @@ namespace ADScanner.ActiveDirectory
             }
         }
 
+        public static string GetRidFromSid(string sid)
+        {
+            if (string.IsNullOrWhiteSpace(sid) == false)
+            {
+                string[] sidbits = sid.Split('-');
+                return sidbits[sidbits.GetUpperBound(0)];
+            }
+            else
+            { return null; }
+        }
+
         public static List<string> GetStringList(SearchResult result, string property)
         {
             List<string> results = new List<string>();

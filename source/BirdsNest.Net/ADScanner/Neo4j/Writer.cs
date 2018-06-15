@@ -3,7 +3,7 @@ using System.Linq;
 using System.Text;
 using Neo4j.Driver.V1;
 
-namespace neo4jlink
+namespace ADScanner.Neo4j
 {
     public static class Writer
     {
@@ -11,7 +11,8 @@ namespace neo4jlink
         {
             StringBuilder builder = new StringBuilder();
             builder.AppendLine("MERGE (newnode:" + node.Label + " {id:'" + node.ID + "'})");
-            //builder.AppendLine("SET newnode:" + node.SubLabel);
+            if (!string.IsNullOrEmpty(node.SubLabel)) { builder.AppendLine("SET newnode:" + node.SubLabel);}
+
             builder.AppendLine("SET newnode.name = '" + node.Name + "'");
             builder.AppendLine("SET newnode.path = '" + node.Path + "'");
 
@@ -27,11 +28,7 @@ namespace neo4jlink
 
             using (var session = driver.Session())
             {
-                var greeting = session.WriteTransaction(tx =>
-                {
-                    var result = tx.Run(builder.ToString());
-                    return result.Single()[0].As<string>();
-                });
+                session.Run(builder.ToString());
             }
         }
 
@@ -39,7 +36,7 @@ namespace neo4jlink
         {
             StringBuilder builder = new StringBuilder();
             builder.AppendLine("MERGE (newnode:" + node.Label + " {path:'" + node.Path + "'})");
-            //builder.AppendLine("SET newnode:" + node.SubLabel);
+            if (!string.IsNullOrEmpty(node.SubLabel)) { builder.AppendLine("SET newnode:" + node.SubLabel); }
             builder.AppendLine("SET newnode.name = '" + node.Name + "'");
             builder.AppendLine("SET newnode.id = '" + node.ID + "'");
 
@@ -55,11 +52,7 @@ namespace neo4jlink
 
             using (var session = driver.Session())
             {
-                var greeting = session.WriteTransaction(tx =>
-                {
-                    var result = tx.Run(builder.ToString());
-                    return result.Single()[0].As<string>();
-                });
+                session.Run(builder.ToString());
             }
         }
 
@@ -84,11 +77,7 @@ namespace neo4jlink
 
             using (var session = driver.Session())
             {
-                session.WriteTransaction(tx =>
-                {
-                    var result = tx.Run(builder.ToString());
-                    return result.Single()[0].As<string>();
-                });
+                session.Run(builder.ToString());
             }
         }
 
@@ -113,11 +102,7 @@ namespace neo4jlink
 
             using (var session = driver.Session())
             {
-                var greeting = session.WriteTransaction(tx =>
-                {
-                    var result = tx.Run(builder.ToString());
-                    return result.Single()[0].As<string>();
-                });
+                session.Run(builder.ToString());
             }
         }
     }

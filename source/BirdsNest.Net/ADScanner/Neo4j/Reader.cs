@@ -1,7 +1,7 @@
 ﻿using System;
 using Neo4j.Driver;
 
-namespace neo4jlink
+namespace ADScanner.Neo4j
 {
     public class Reader
     {
