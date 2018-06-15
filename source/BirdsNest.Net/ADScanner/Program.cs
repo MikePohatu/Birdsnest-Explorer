@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Diagnostics;
 using System.DirectoryServices;
 using Neo4j.Driver.V1;
 using ADScanner.ActiveDirectory;
@@ -13,6 +12,8 @@ namespace ADScanner
         {
             string _appdir = AppDomain.CurrentDomain.BaseDirectory;
             string configfile = _appdir + @"\config.json";
+            int relcount = 0;
+
             IDriver driver;
             DirectoryEntry rootDE;
 
@@ -36,7 +37,7 @@ namespace ADScanner
                 rootDE = ConnectToAD(config);
             }
 
-            //open the session to neo and write the data
+            //open the session to neo4j
             using (ISession session = driver.Session())
             {
                 //load the groups
@@ -48,8 +49,8 @@ namespace ADScanner
                         {
                             ADGroup g = new ADGroup(result);
                             Writer.MergeNodeOnPath(g, session);
-                            Writer.AddIsMemberOfADGroups(g, g.MemberOfDNs, session);
-                            Writer.AddMembersOfADGroup(g, g.MemberDNs, session);
+                            relcount = relcount + Writer.AddIsMemberOfADGroups(g, g.MemberOfDNs, session);
+                            relcount = relcount + Writer.AddMembersOfADGroup(g, g.MemberDNs, session);
                         }
                     }
                 }
@@ -63,8 +64,8 @@ namespace ADScanner
                         {
                             ADUser u = new ADUser(result);
                             Writer.MergeNodeOnPath(u, session);
-                            Writer.AddIsMemberOfADGroups(u, u.MemberOfDNs, session);
-                            Writer.AddIsMemberOfPrimaryADGroup(u, session);
+                            relcount = relcount + Writer.AddIsMemberOfADGroups(u, u.MemberOfDNs, session);
+                            relcount = relcount + Writer.AddIsMemberOfPrimaryADGroup(u, session);
                         }
                     }
                 }
@@ -78,11 +79,13 @@ namespace ADScanner
                         {
                             ADComputer c = new ADComputer(result);
                             Writer.MergeNodeOnPath(c, session);
-                            Writer.AddIsMemberOfADGroups(c, c.MemberOfDNs, session);
-                            Writer.AddIsMemberOfPrimaryADGroup(c, session);
+                            relcount = relcount + Writer.AddIsMemberOfADGroups(c, c.MemberOfDNs, session);
+                            relcount = relcount + Writer.AddIsMemberOfPrimaryADGroup(c, session);
                         }
                     }
                 }
+
+                Console.WriteLine("Processed " + relcount + " relationships");
             }
 
             //cleanup

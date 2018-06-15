@@ -4,7 +4,7 @@ using ADScanner.Neo4j;
 
 namespace ADScanner.ActiveDirectory
 {
-    internal class ADGroup: INode
+    public class ADGroup: INode
     {
         const string SCOPE_GLOBAL = "Global";
         const string SCOPE_UNIVERSAL = "Universal";

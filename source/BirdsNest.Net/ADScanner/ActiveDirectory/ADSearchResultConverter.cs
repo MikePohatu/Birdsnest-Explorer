@@ -9,7 +9,7 @@ namespace ADScanner.ActiveDirectory
     {
         public static string GetSinglestringValue(SearchResult result, string property)
         {
-            if (result.Properties[property] != null && result.Properties[property].Count > 0)
+            if (result?.Properties[property] != null && result.Properties[property].Count > 0)
             {
                 if (result.Properties[property][0].GetType().IsArray)
                 {
@@ -28,7 +28,7 @@ namespace ADScanner.ActiveDirectory
         public static string GetSidAsString(SearchResult result)
         { 
             string property = "objectSid";
-            if (result.Properties[property] != null && result.Properties[property].Count > 0)
+            if (result?.Properties[property] != null && result.Properties[property].Count > 0)
             {
                 SecurityIdentifier sid = new SecurityIdentifier((byte[])result.Properties[property][0], 0);
                 return sid.ToString();
@@ -54,7 +54,7 @@ namespace ADScanner.ActiveDirectory
         {
             List<string> results = new List<string>();
 
-            if (result.Properties[property] != null && result.Properties[property].Count > 0)
+            if (result?.Properties[property] != null && result.Properties[property].Count > 0)
             {
                 foreach (var prop in result.Properties[property])
                 {

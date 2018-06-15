@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.DirectoryServices;
-using System.DirectoryServices.AccountManagement;
 
 namespace ADScanner.ActiveDirectory
 {
@@ -25,8 +23,7 @@ namespace ADScanner.ActiveDirectory
                     searcher.PropertiesToLoad.Add("objectcategory");
                     searcher.PropertiesToLoad.Add("objectSid");
                     searcher.PropertiesToLoad.Add("distinguishedName");
-                    
-                    //searcher.SizeLimit = 10000;
+
                     searcher.PageSize = 1000;
                     Console.WriteLine("Searching for groups");
                     results = searcher.FindAll();
@@ -59,7 +56,6 @@ namespace ADScanner.ActiveDirectory
                     searcher.PropertiesToLoad.Add("distinguishedName");
                     searcher.PropertiesToLoad.Add("primaryGroupID");
 
-                    //searcher.SizeLimit = 10000;
                     searcher.PageSize = 1000;
                     Console.WriteLine("Searching for users");
                     results = searcher.FindAll();
@@ -93,7 +89,6 @@ namespace ADScanner.ActiveDirectory
                     searcher.PropertiesToLoad.Add("operatingSystemVersion");
                     searcher.PropertiesToLoad.Add("primaryGroupID");
 
-                    //searcher.SizeLimit = 10000;
                     searcher.PageSize = 1000;
                     Console.WriteLine("Searching for computers");
                     results = searcher.FindAll();

@@ -4,7 +4,10 @@ using ADScanner.Neo4j;
 
 namespace ADScanner.ActiveDirectory
 {
-    public class ADGroupMember:INode
+    /// <summary>
+    /// ADGroupMemberObject is the base class for User and Computer classes
+    /// </summary>
+    public abstract class ADGroupMemberObject:INode
     {
         public string Name { get; private set; }
         public string Label { get { return "AD_Object"; } }
@@ -16,7 +19,7 @@ namespace ADScanner.ActiveDirectory
         public List<KeyValuePair<string, object>> Properties { get; private set; }
         public List<string> MemberOfDNs { get; private set; }
 
-        public ADGroupMember(SearchResult result)
+        public ADGroupMemberObject(SearchResult result)
         {
             this.Name = ADSearchResultConverter.GetSinglestringValue(result, "name");
             this.ID = ADSearchResultConverter.GetSidAsString(result);

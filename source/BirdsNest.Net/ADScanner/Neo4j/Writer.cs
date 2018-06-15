@@ -50,7 +50,15 @@ namespace ADScanner.Neo4j
             session.WriteTransaction(tx => tx.Run(builder.ToString()));
         }
 
-        public static void AddIsMemberOfADGroups(INode node, List<string> groupDNs, ISession session)
+        /// <summary>
+        /// Take a node, and create relationships to groups it is a member of. 
+        /// Returns count of relationships created
+        /// </summary>
+        /// <param name="node"></param>
+        /// <param name="groupDNs"></param>
+        /// <param name="session"></param>
+        /// <returns></returns>
+        public static int AddIsMemberOfADGroups(INode node, List<string> groupDNs, ISession session)
         {
             StringBuilder builder = new StringBuilder();
             int i = 0;
@@ -65,9 +73,18 @@ namespace ADScanner.Neo4j
             builder.AppendLine("RETURN node");
 
             session.WriteTransaction(tx => tx.Run(builder.ToString()));
+            return i;
         }
 
-        public static void AddMembersOfADGroup(INode node, List<string> memberDNs, ISession session)
+        /// <summary>
+        /// Take a group, and create relationships from members to it 
+        /// Returns count of relationships created
+        /// </summary>
+        /// <param name="node"></param>
+        /// <param name="memberDNs"></param>
+        /// <param name="session"></param>
+        /// <returns></returns>
+        public static int AddMembersOfADGroup(ADGroup node, List<string> memberDNs, ISession session)
         {
             StringBuilder builder = new StringBuilder();
             int i = 0;
@@ -82,12 +99,12 @@ namespace ADScanner.Neo4j
             builder.AppendLine("RETURN node");
 
             session.WriteTransaction(tx => tx.Run(builder.ToString()));
+            return i;
         }
 
-        public static void AddIsMemberOfPrimaryADGroup(ADGroupMember node, ISession session)
+        public static int AddIsMemberOfPrimaryADGroup(ADGroupMemberObject node, ISession session)
         {
             StringBuilder builder = new StringBuilder();
-            int i = 0;
 
             builder.AppendLine("MATCH (g:AD_Object)");
             builder.AppendLine("WHERE g.rid='" + node.PrimaryGroupID + "'");
@@ -96,7 +113,9 @@ namespace ADScanner.Neo4j
             builder.AppendLine("SET r.primarygroup = 'true'");
             builder.AppendLine("RETURN node");
 
-            session.WriteTransaction(tx => tx.Run(builder.ToString()));
+            var result = session.WriteTransaction(tx => tx.Run(builder.ToString()));
+            if (result != null) { return 1; }
+            else { return 0; }
         }
     }
 }

@@ -1,10 +1,8 @@
-﻿using System.Collections.Generic;
-using System.DirectoryServices;
-using ADScanner.Neo4j;
+﻿using System.DirectoryServices;
 
 namespace ADScanner.ActiveDirectory
 {
-    public class ADUser : ADGroupMember
+    public class ADUser : ADGroupMemberObject
     {
         public override string SubLabel { get { return "User"; } }
 
