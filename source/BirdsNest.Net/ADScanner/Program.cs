@@ -19,7 +19,6 @@ namespace ADScanner
             foreach (string arg in args)
             {
                 string[] param = arg.Split(new[] { ":" }, 2, StringSplitOptions.None);
-                Debug.WriteLine(param[0] + " " + param[1]);
                 switch (param[0].ToUpper())
                 {
                     case "/CONFIG":
@@ -30,51 +29,73 @@ namespace ADScanner
                 }
             }
 
+            //load the config
             using (Configuration config = LoadConfig(configfile))
             {
                 driver = ConnectToNeo(config);
                 rootDE = ConnectToAD(config);
             }
 
-            SearchResultCollection results = QueryHandler.GetAllGroupResults(rootDE);
-            if (results != null)
+            using (ISession session = driver.Session())
             {
-                foreach (SearchResult result in results)
+                //load the groups
+                using (SearchResultCollection results = QueryHandler.GetAllGroupResults(rootDE))
                 {
-                    ADGroup g = new ADGroup(result);
-                    Writer.MergeNodeOnPath(g, driver);
-                    Writer.AddIsMemberOfADGroups(g, g.MemberOfDNs,driver);
-                    Writer.AddMembersOfADGroup(g, g.MemberDNs, driver);
+                    if (results != null)
+                    {
+                        foreach (SearchResult result in results)
+                        {
+                            ADGroup g = new ADGroup(result);
+                            Writer.MergeNodeOnPath(g, session);
+                            Writer.AddIsMemberOfADGroups(g, g.MemberOfDNs, session);
+                            Writer.AddMembersOfADGroup(g, g.MemberDNs, session);
+                        }
+                    }
+                }
+
+                //load the users
+                using (SearchResultCollection results = QueryHandler.GetAllUserResults(rootDE))
+                {
+                    if (results != null)
+                    {
+                        foreach (SearchResult result in results)
+                        {
+                            ADUser u = new ADUser(result);
+                            Writer.MergeNodeOnPath(u, session);
+                            Writer.AddIsMemberOfADGroups(u, u.MemberOfDNs, session);
+                        }
+                    }
+                }
+
+                //load the computers
+                using (SearchResultCollection results = QueryHandler.GetAllComputerResults(rootDE))
+                {
+                    if (results != null)
+                    {
+                        foreach (SearchResult result in results)
+                        {
+                            ADComputer c = new ADComputer(result);
+                            Writer.MergeNodeOnPath(c, session);
+                            Writer.AddIsMemberOfADGroups(c, c.MemberOfDNs, session);
+                        }
+                    }
                 }
             }
+            
 
-            results = QueryHandler.GetAllUserResults(rootDE);
-            if (results != null)
-            {
-                foreach (SearchResult result in results)
-                {
-                    ADUser u = new ADUser(result);
-                    Writer.MergeNodeOnPath(u, driver);
-                    Writer.AddIsMemberOfADGroups(u, u.MemberOfDNs, driver);
-                }
-            }
-
-            results = QueryHandler.GetAllComputerResults(rootDE);
-            if (results != null)
-            {
-                foreach (SearchResult result in results)
-                {
-                    ADComputer c = new ADComputer(result);
-                    Writer.MergeNodeOnPath(c, driver);
-                    Writer.AddIsMemberOfADGroups(c, c.MemberOfDNs, driver);
-                }
-            }
-
+            //cleanup
             driver.Dispose();
             rootDE.Dispose();
 
-            Console.WriteLine("Finished");
-            Console.ReadLine();
+            Console.Write("Finished");
+            for (int i =0; i<5; i++)
+            {
+                System.Threading.Thread.Sleep(1000);
+                Console.Write(".");
+            }
+            Console.WriteLine(".");
+            Console.WriteLine("Exiting");
+            System.Threading.Thread.Sleep(1000);
         }
 
         private static Configuration LoadConfig(string configfile)

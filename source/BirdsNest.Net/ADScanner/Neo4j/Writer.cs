@@ -7,7 +7,7 @@ namespace ADScanner.Neo4j
 {
     public static class Writer
     {
-        public static void MergeNodeOnID(INode node, IDriver driver)
+        public static void MergeNodeOnID(INode node, ISession session)
         {
             StringBuilder builder = new StringBuilder();
             builder.AppendLine("MERGE (newnode:" + node.Label + " {id:'" + node.ID + "'})");
@@ -26,13 +26,10 @@ namespace ADScanner.Neo4j
 
             builder.AppendLine("RETURN newnode");
 
-            using (var session = driver.Session())
-            {
-                session.Run(builder.ToString());
-            }
+            session.Run(builder.ToString());
         }
 
-        public static void MergeNodeOnPath(INode node, IDriver driver)
+        public static void MergeNodeOnPath(INode node, ISession session)
         {
             StringBuilder builder = new StringBuilder();
             builder.AppendLine("MERGE (newnode:" + node.Label + " {path:'" + node.Path + "'})");
@@ -50,13 +47,10 @@ namespace ADScanner.Neo4j
 
             builder.AppendLine("RETURN newnode");
 
-            using (var session = driver.Session())
-            {
-                session.Run(builder.ToString());
-            }
+            session.Run(builder.ToString());
         }
 
-        public static void AddIsMemberOfADGroups(INode node, List<string> groupDNs, IDriver driver)
+        public static void AddIsMemberOfADGroups(INode node, List<string> groupDNs, ISession session)
         {
             StringBuilder builder = new StringBuilder();
             int i = 0;
@@ -75,13 +69,10 @@ namespace ADScanner.Neo4j
             }
             builder.AppendLine("RETURN node");
 
-            using (var session = driver.Session())
-            {
-                session.Run(builder.ToString());
-            }
+            session.Run(builder.ToString());
         }
 
-        public static void AddMembersOfADGroup(INode node, List<string> memberDNs, IDriver driver)
+        public static void AddMembersOfADGroup(INode node, List<string> memberDNs, ISession session)
         {
             StringBuilder builder = new StringBuilder();
             int i = 0;
@@ -100,10 +91,7 @@ namespace ADScanner.Neo4j
             }
             builder.AppendLine("RETURN node");
 
-            using (var session = driver.Session())
-            {
-                session.Run(builder.ToString());
-            }
+            session.Run(builder.ToString());
         }
     }
 }
