@@ -7,11 +7,42 @@ namespace ADScanner.Neo4j
 {
     public static class Writer
     {
+        //ADGroupMemberObject
+        public static int MergeADGroupMemberObjectOnPath(ADGroupMemberObject node, ISession session)
+        {
+            StringBuilder builder = new StringBuilder();
+            int i = 0;
+
+            builder.AppendLine("MERGE (node:" + node.Label + " {path:'" + node.Path + "'})");
+            builder.AppendLine("SET node.name = '" + node.Name + "'");
+            builder.AppendLine("SET node.id = '" + node.ID + "'");
+
+            if (node.Properties != null)
+            {
+                foreach (var prop in node.Properties)
+                {
+                    builder.AppendLine("SET node." + prop.Key + " = '" + prop.Value + "'");
+                }
+            }
+
+            foreach (string dn in node.MemberOfDNs)
+            {
+                builder.AppendLine("MERGE (g" + i + ":AD_GROUP {path:'" + dn + "'})");
+                builder.AppendLine("MERGE (node) -[r" + i + ": AD_MemberOf]->(g" + i + ")");
+                i++;
+            }
+
+            builder.AppendLine("RETURN node");
+
+            session.WriteTransaction(tx => tx.Run(builder.ToString()));
+
+            return i;
+        }
+
         public static void MergeNodeOnID(INode node, ISession session)
         {
             StringBuilder builder = new StringBuilder();
             builder.AppendLine("MERGE (newnode:" + node.Label + " {id:'" + node.ID + "'})");
-            if (!string.IsNullOrEmpty(node.SubLabel)) { builder.AppendLine("SET newnode:" + node.SubLabel);}
 
             builder.AppendLine("SET newnode.name = '" + node.Name + "'");
             builder.AppendLine("SET newnode.path = '" + node.Path + "'");
@@ -33,7 +64,6 @@ namespace ADScanner.Neo4j
         {
             StringBuilder builder = new StringBuilder();
             builder.AppendLine("MERGE (newnode:" + node.Label + " {path:'" + node.Path + "'})");
-            if (!string.IsNullOrEmpty(node.SubLabel)) { builder.AppendLine("SET newnode:" + node.SubLabel); }
             builder.AppendLine("SET newnode.name = '" + node.Name + "'");
             builder.AppendLine("SET newnode.id = '" + node.ID + "'");
 
@@ -66,7 +96,7 @@ namespace ADScanner.Neo4j
             builder.AppendLine("MERGE (node:" +node.Label + " {path:'" + node.Path + "'})");
             foreach (string dn in groupDNs)
             {
-                builder.AppendLine("MERGE (g" + i + ":AD_Object {path:'" + dn + "'})");
+                builder.AppendLine("MERGE (g" + i + ":AD_GROUP {path:'" + dn + "'})");
                 builder.AppendLine("MERGE (node)-[r" + i + ":AD_MemberOf]->(g" + i + ")");
                 i++;
             }
@@ -92,7 +122,7 @@ namespace ADScanner.Neo4j
             builder.AppendLine("MERGE (node:" + node.Label + " {path:'" + node.Path + "'})");
             foreach (string dn in memberDNs)
             {
-                builder.AppendLine("MERGE (g" + i + ":AD_Object {path:'" + dn + "'})");
+                builder.AppendLine("MERGE (g" + i + ":AD_GROUP {path:'" + dn + "'})");
                 builder.AppendLine("MERGE (g" + i + ") -[r" + i + ": AD_MemberOf]->(node)");
                 i++;
             }
@@ -102,20 +132,26 @@ namespace ADScanner.Neo4j
             return i;
         }
 
-        public static int AddIsMemberOfPrimaryADGroup(ADGroupMemberObject node, ISession session)
+        public static int CreatePrimaryGroupRelationships(ISession session)
         {
-            StringBuilder builder = new StringBuilder();
+            int count = 0;
+            string query = "MATCH(n: AD_COMPUTER) " +
+                "WITH n " +
+                "MATCH(g: AD_GROUP) WHERE n.primaryGroupID = g.rid " +
+                "MERGE(n) -[r: AD_MemberOf]->(g) " +
+                "SET r.primarygroup = 'true'";
+            IStatementResult result = session.WriteTransaction(tx => tx.Run(query));
+            count = result.Keys.Count;
 
-            builder.AppendLine("MATCH (g:AD_Object)");
-            builder.AppendLine("WHERE g.rid='" + node.PrimaryGroupID + "'");
-            builder.AppendLine("MERGE (node:" + node.Label + " {path:'" + node.Path + "'})");
-            builder.AppendLine("MERGE (node)-[r:AD_MemberOf]->(g)");
-            builder.AppendLine("SET r.primarygroup = 'true'");
-            builder.AppendLine("RETURN node");
+            query = "MATCH(n: AD_USER) " +
+                "WITH n " +
+                "MATCH(g: AD_GROUP) WHERE n.primaryGroupID = g.rid " +
+                "MERGE(n) -[r: AD_MemberOf]->(g) " +
+                "SET r.primarygroup = 'true'";
+            result = session.WriteTransaction(tx => tx.Run(query));
+            count = count + result.Keys.Count;
 
-            var result = session.WriteTransaction(tx => tx.Run(builder.ToString()));
-            if (result != null) { return 1; }
-            else { return 0; }
+            return count;
         }
     }
 }

@@ -10,8 +10,7 @@ namespace ADScanner.ActiveDirectory
     public abstract class ADGroupMemberObject:INode
     {
         public string Name { get; private set; }
-        public string Label { get { return "AD_Object"; } }
-        public virtual string SubLabel { get { return "Base_Object"; } }
+        public virtual string Label { get { return "AD_Object"; } }
         public string ID { get; private set; }
         public string Path { get; private set; }
         public string PrimaryGroupID { get; private set; }

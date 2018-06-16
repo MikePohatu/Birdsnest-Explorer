@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 
 namespace ADScanner.Neo4j
 {
@@ -12,7 +8,6 @@ namespace ADScanner.Neo4j
         string ID { get; }
         string Path { get; }
         string Name { get; }
-        string SubLabel { get; }
         List<KeyValuePair<string,object>> Properties { get; }
     }
 }

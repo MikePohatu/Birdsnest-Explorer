@@ -50,7 +50,6 @@ namespace ADScanner
                             ADGroup g = new ADGroup(result);
                             Writer.MergeNodeOnPath(g, session);
                             relcount = relcount + Writer.AddIsMemberOfADGroups(g, g.MemberOfDNs, session);
-                            relcount = relcount + Writer.AddMembersOfADGroup(g, g.MemberDNs, session);
                         }
                     }
                 }
@@ -63,9 +62,7 @@ namespace ADScanner
                         foreach (SearchResult result in results)
                         {
                             ADUser u = new ADUser(result);
-                            Writer.MergeNodeOnPath(u, session);
-                            relcount = relcount + Writer.AddIsMemberOfADGroups(u, u.MemberOfDNs, session);
-                            relcount = relcount + Writer.AddIsMemberOfPrimaryADGroup(u, session);
+                            relcount = relcount + Writer.MergeADGroupMemberObjectOnPath(u, session);
                         }
                     }
                 }
@@ -78,12 +75,13 @@ namespace ADScanner
                         foreach (SearchResult result in results)
                         {
                             ADComputer c = new ADComputer(result);
-                            Writer.MergeNodeOnPath(c, session);
-                            relcount = relcount + Writer.AddIsMemberOfADGroups(c, c.MemberOfDNs, session);
-                            relcount = relcount + Writer.AddIsMemberOfPrimaryADGroup(c, session);
+                            relcount = relcount + Writer.MergeADGroupMemberObjectOnPath(c, session);
                         }
                     }
                 }
+
+                //create primary group mappings
+                relcount = relcount + Writer.CreatePrimaryGroupRelationships(session);
 
                 Console.WriteLine("Processed " + relcount + " relationships");
             }

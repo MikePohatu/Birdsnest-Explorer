@@ -3,7 +3,7 @@ using System.DirectoryServices;
 
 namespace ADScanner.ActiveDirectory
 {
-    internal static class QueryHandler
+    public static class QueryHandler
     {
         public static SearchResultCollection GetAllGroupResults(DirectoryEntry de)
         {
