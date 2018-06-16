@@ -4,7 +4,7 @@ using ADScanner.Neo4j;
 
 namespace ADScanner.ActiveDirectory
 {
-    public class ADGroup: INode
+    public class ADGroup: ADGroupMemberObject
     {
         const string SCOPE_GLOBAL = "Global";
         const string SCOPE_UNIVERSAL = "Universal";
@@ -12,21 +12,12 @@ namespace ADScanner.ActiveDirectory
         const string TYPE_SECURITY = "Security";
         const string TYPE_DISTRIBUTION = "Distribution";
 
-        public string Name { get; private set; }
-        public string Label { get { return "AD_GROUP"; } }
+        public override string Label { get { return "AD_GROUP"; } }
         public string GroupType { get; private set; }
-        public string ID { get; private set; }
-        public string Path { get; private set; }
-        public List<KeyValuePair<string, object>> Properties { get; private set; }
         public List<string> MemberDNs { get; private set; }
-        public List<string> MemberOfDNs { get; private set; }
 
-        public ADGroup(SearchResult result)
+        public ADGroup(SearchResult result): base (result)
         {
-            this.Name = ADSearchResultConverter.GetSinglestringValue(result, "samaccountname");
-            this.ID = ADSearchResultConverter.GetSidAsString(result);
-            this.Properties = new List<KeyValuePair<string, object>>();
-            this.Path = ADSearchResultConverter.GetSinglestringValue(result, "distinguishedName");
             this.MemberDNs = ADSearchResultConverter.GetStringList(result,"member");
             this.MemberOfDNs = ADSearchResultConverter.GetStringList(result, "memberOf");
 

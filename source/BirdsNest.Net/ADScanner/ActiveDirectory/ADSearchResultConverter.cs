@@ -25,6 +25,15 @@ namespace ADScanner.ActiveDirectory
             return string.Empty;
         }
 
+        public static int GetIntSingleValue(SearchResult result, string property)
+        {
+            if (result?.Properties[property] != null && result.Properties[property].Count > 0)
+            {
+                return (int)result.Properties[property][0];
+            }
+            return 0;
+        }
+
         public static string GetSidAsString(SearchResult result)
         { 
             string property = "objectSid";

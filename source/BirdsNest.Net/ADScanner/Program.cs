@@ -48,7 +48,7 @@ namespace ADScanner
                         foreach (SearchResult result in results)
                         {
                             ADGroup g = new ADGroup(result);
-                            Writer.MergeNodeOnPath(g, session);
+                            Writer.MergeADGroupMemberObjectOnPath(g, session);
                             relcount = relcount + Writer.AddIsMemberOfADGroups(g, g.MemberOfDNs, session);
                         }
                     }
