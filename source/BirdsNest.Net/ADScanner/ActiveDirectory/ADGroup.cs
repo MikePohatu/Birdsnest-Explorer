@@ -19,10 +19,8 @@ namespace ADScanner.ActiveDirectory
         public ADGroup(SearchResult result): base (result)
         {
             this.MemberDNs = ADSearchResultConverter.GetStringList(result,"member");
-            this.MemberOfDNs = ADSearchResultConverter.GetStringList(result, "memberOf");
 
             this.SetTypeAndScope(ADSearchResultConverter.GetSinglestringValue(result, "groupType"));
-            this.Properties.Add(new KeyValuePair<string, object>("distinguishedName", ADSearchResultConverter.GetSinglestringValue(result, "distinguishedName")));
             this.Properties.Add(new KeyValuePair<string, object>("rid", ADSearchResultConverter.GetRidFromSid(this.ID)));
         }
 

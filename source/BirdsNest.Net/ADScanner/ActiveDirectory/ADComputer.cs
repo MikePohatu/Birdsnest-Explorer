@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace ADScanner.ActiveDirectory
 {
-    public class ADComputer: ADGroupMemberObject
+    public class ADComputer: ADEntity
     {
         public override string Label { get { return "AD_COMPUTER"; } }
 

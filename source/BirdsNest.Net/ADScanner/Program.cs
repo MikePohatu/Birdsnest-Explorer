@@ -48,8 +48,7 @@ namespace ADScanner
                         foreach (SearchResult result in results)
                         {
                             ADGroup g = new ADGroup(result);
-                            Writer.MergeADGroupMemberObjectOnPath(g, session);
-                            relcount = relcount + Writer.AddIsMemberOfADGroups(g, g.MemberOfDNs, session);
+                            relcount = relcount + Writer.MergeADGroupMemberObjectOnPath(g, session);
                         }
                     }
                 }
@@ -90,14 +89,12 @@ namespace ADScanner
             driver.Dispose();
             rootDE.Dispose();
 
-            Console.Write("Finished");
+            Console.Write("Finished. Exiting.");
             for (int i =0; i<3; i++)
             {
-                System.Threading.Thread.Sleep(1000);
+                System.Threading.Thread.Sleep(500);
                 Console.Write(".");
             }
-            Console.WriteLine(".");
-            Console.WriteLine("Exiting");
             System.Threading.Thread.Sleep(1000);
         }
 
