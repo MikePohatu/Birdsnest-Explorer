@@ -3,6 +3,7 @@ using System.DirectoryServices;
 using Neo4j.Driver.V1;
 using ADScanner.ActiveDirectory;
 using ADScanner.Neo4j;
+using ADScanner.common;
 
 namespace ADScanner
 {
@@ -13,6 +14,7 @@ namespace ADScanner
             string _appdir = AppDomain.CurrentDomain.BaseDirectory;
             string configfile = _appdir + @"\config.json";
             int relcount = 0;
+            string scanid = ShortGuid.NewGuid().ToString();
 
             IDriver driver;
             DirectoryEntry rootDE;
@@ -48,7 +50,7 @@ namespace ADScanner
                         foreach (SearchResult result in results)
                         {
                             ADGroup g = new ADGroup(result);
-                            relcount = relcount + Writer.MergeADGroupMemberObjectOnPath(g, session);
+                            relcount = relcount + Writer.MergeADGroupMemberObjectOnPath(g, session, scanid);
                         }
                     }
                 }
@@ -61,7 +63,7 @@ namespace ADScanner
                         foreach (SearchResult result in results)
                         {
                             ADUser u = new ADUser(result);
-                            relcount = relcount + Writer.MergeADGroupMemberObjectOnPath(u, session);
+                            relcount = relcount + Writer.MergeADGroupMemberObjectOnPath(u, session, scanid);
                         }
                     }
                 }
@@ -74,15 +76,18 @@ namespace ADScanner
                         foreach (SearchResult result in results)
                         {
                             ADComputer c = new ADComputer(result);
-                            relcount = relcount + Writer.MergeADGroupMemberObjectOnPath(c, session);
+                            relcount = relcount + Writer.MergeADGroupMemberObjectOnPath(c, session, scanid);
                         }
                     }
                 }
 
                 //create primary group mappings
-                relcount = relcount + Writer.CreatePrimaryGroupRelationships(session);
-
+                relcount = relcount + Writer.CreatePrimaryGroupRelationships(session, scanid);
                 Console.WriteLine("Processed " + relcount + " relationships");
+
+                //remove group memberships that have been deleted
+                int delcount = Writer.RemoveDeletedGroupMemberShips(session, scanid);
+                Console.WriteLine("Deleted " + delcount + " relationships");
             }
 
             //cleanup

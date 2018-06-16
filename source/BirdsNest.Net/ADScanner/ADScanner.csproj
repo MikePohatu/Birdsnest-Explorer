@@ -56,6 +56,7 @@
     <Compile Include="ActiveDirectory\ADSearchResultConverter.cs" />
     <Compile Include="ActiveDirectory\ADUser.cs" />
     <Compile Include="ActiveDirectory\ADGroupMemberObject.cs" />
+    <Compile Include="common\ShortGuid.cs" />
     <Compile Include="Configuration.cs" />
     <Compile Include="FileHandler.cs" />
     <Compile Include="ActiveDirectory\QueryHandler.cs" />
