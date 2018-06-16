@@ -53,6 +53,7 @@
     <Compile Include="ActiveDirectory\ADComputer.cs" />
     <Compile Include="ActiveDirectory\ADEntity.cs" />
     <Compile Include="ActiveDirectory\ADGroup.cs" />
+    <Compile Include="ActiveDirectory\ADObject.cs" />
     <Compile Include="ActiveDirectory\ADSearchResultConverter.cs" />
     <Compile Include="ActiveDirectory\ADUser.cs" />
     <Compile Include="ActiveDirectory\ADGroupMemberObject.cs" />

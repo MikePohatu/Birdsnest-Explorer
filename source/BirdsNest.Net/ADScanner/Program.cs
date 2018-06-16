@@ -83,7 +83,7 @@ namespace ADScanner
 
                 //create primary group mappings
                 relcount = relcount + Writer.CreatePrimaryGroupRelationships(session, scanid);
-                Console.WriteLine("Processed " + relcount + " relationships");
+                Console.WriteLine("Created " + relcount + " relationships");
 
                 //remove group memberships that have been deleted
                 int delcount = Writer.RemoveDeletedGroupMemberShips(session, scanid);

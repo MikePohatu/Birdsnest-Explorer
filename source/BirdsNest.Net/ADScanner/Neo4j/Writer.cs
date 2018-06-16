@@ -36,9 +36,8 @@ namespace ADScanner.Neo4j
 
             builder.AppendLine("RETURN node");
 
-            session.WriteTransaction(tx => tx.Run(builder.ToString()));
-
-            return i;
+            var result = session.WriteTransaction(tx => tx.Run(builder.ToString()));
+            return result.Summary.Counters.RelationshipsCreated;
         }
 
         public static void MergeNodeOnID(INode node, ISession session, string scanid)
@@ -88,8 +87,8 @@ namespace ADScanner.Neo4j
             }
             builder.AppendLine("RETURN node");
 
-            session.WriteTransaction(tx => tx.Run(builder.ToString()));
-            return i;
+            var result = session.WriteTransaction(tx => tx.Run(builder.ToString()));
+            return result.Summary.Counters.RelationshipsCreated;
         }
 
         /// <summary>
@@ -129,7 +128,7 @@ namespace ADScanner.Neo4j
                 "SET r.primarygroup = 'true' " +
                 "SET r.lastscan = '" + scanid + "'";
             IStatementResult result = session.WriteTransaction(tx => tx.Run(query));
-            count = result.Keys.Count;
+            count = result.Summary.Counters.RelationshipsCreated;
 
             query = "MATCH(node: AD_USER) " +
                 "WITH node " +
@@ -138,7 +137,7 @@ namespace ADScanner.Neo4j
                 "SET r.primarygroup = 'true'" +
                 "SET r.lastscan = '" + scanid + "'";
             result = session.WriteTransaction(tx => tx.Run(query));
-            count = count + result.Keys.Count;
+            count = count + result.Summary.Counters.RelationshipsCreated;
 
             return count;
         }
@@ -150,9 +149,10 @@ namespace ADScanner.Neo4j
                 "WITH n " +
                 "MATCH(n) -[r: AD_MemberOf]->(g: AD_GROUP) " +
                 "WHERE NOT EXISTS(r.lastscan) OR r.lastscan <> '" + scanid + "' " +
+                "DELETE r " +
                 "RETURN r";
             IStatementResult result = session.WriteTransaction(tx => tx.Run(query));
-            return result.Keys.Count;
+            return result.Summary.Counters.RelationshipsDeleted;
         }
     }
 }

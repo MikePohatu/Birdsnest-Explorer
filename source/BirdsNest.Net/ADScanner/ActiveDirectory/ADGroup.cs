@@ -6,11 +6,11 @@ namespace ADScanner.ActiveDirectory
 {
     public class ADGroup: ADGroupMemberObject
     {
-        const string SCOPE_GLOBAL = "Global";
-        const string SCOPE_UNIVERSAL = "Universal";
-        const string SCOPE_DOMAIN_LOCAL = "DomainLocal";
-        const string TYPE_SECURITY = "Security";
-        const string TYPE_DISTRIBUTION = "Distribution";
+        const string SCOPE_GLOBAL = "global";
+        const string SCOPE_UNIVERSAL = "universal";
+        const string SCOPE_DOMAIN_LOCAL = "domainlocal";
+        const string TYPE_SECURITY = "security";
+        const string TYPE_DISTRIBUTION = "distribution";
 
         public override string Label { get { return "AD_GROUP"; } }
         public string GroupType { get; private set; }
@@ -20,7 +20,7 @@ namespace ADScanner.ActiveDirectory
         {
             this.MemberDNs = ADSearchResultConverter.GetStringList(result,"member");
 
-            this.SetTypeAndScope(ADSearchResultConverter.GetSinglestringValue(result, "groupType"));
+            this.SetTypeAndScope(ADSearchResultConverter.GetSinglestringValue(result, "grouptype"));
             this.Properties.Add(new KeyValuePair<string, object>("rid", ADSearchResultConverter.GetRidFromSid(this.ID)));
         }
 

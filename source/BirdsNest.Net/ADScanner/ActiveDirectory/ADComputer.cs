@@ -9,11 +9,11 @@ namespace ADScanner.ActiveDirectory
 
         public ADComputer(SearchResult result):base(result)
         {
-            this.Properties.Add(new KeyValuePair<string, object>("operatingSystem", ADSearchResultConverter.GetSinglestringValue(result, "operatingSystem")));
-            this.Properties.Add(new KeyValuePair<string, object>("operatingSystemVersion", ADSearchResultConverter.GetSinglestringValue(result, "operatingSystemVersion")));
+            this.Properties.Add(new KeyValuePair<string, object>("operatingsystem", ADSearchResultConverter.GetSinglestringValue(result, "operatingsystem")));
+            this.Properties.Add(new KeyValuePair<string, object>("operatingsystemversion", ADSearchResultConverter.GetSinglestringValue(result, "operatingsystemversion")));
 
             //find if the computer is enabled
-            int istate = ADSearchResultConverter.GetIntSingleValue(result, "userAccountControl");
+            int istate = ADSearchResultConverter.GetIntSingleValue(result, "useraccountcontrol");
             string state = (istate == 4098) ? "disabled" : "enabled";
             this.Properties.Add(new KeyValuePair<string, object>("state", state));
         }
