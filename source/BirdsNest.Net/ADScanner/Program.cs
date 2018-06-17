@@ -83,15 +83,15 @@ namespace ADScanner
 
                 //create primary group mappings
                 counter = counter + Writer.CreatePrimaryGroupRelationships(session, scanid);
-                Console.WriteLine("Created " + counter + " relationships");
+                Console.WriteLine("Created " + counter + " primary group relationships");
 
                 //*cleanup deleted items
                 //remove group memberships that have been deleted
                 Console.WriteLine("Deleted " + Writer.RemoveDeletedGroupMemberShips(session, scanid) + " relationships");
 
                 //mark deleted objects
-                Console.WriteLine("Deleted " + Writer.FindAndMarkDeletedUsers(session, scanid) + " deleted user relationships");
-                Console.WriteLine("Deleted " + Writer.FindAndMarkDeletedComputers(session, scanid) + " deleted computer relationships");
+                Console.WriteLine("Deleted " + Writer.FindAndMarkDeletedItems(Labels.User, session, scanid) + " deleted user relationships");
+                Console.WriteLine("Deleted " + Writer.FindAndMarkDeletedItems(Labels.Computer, session, scanid) + " deleted computer relationships");
             }
 
             //cleanup

@@ -6,7 +6,7 @@ namespace ADScanner.ActiveDirectory
 {
     public class DeletedObject: ADObject
     {
-        public override string Label { get { return "AD_DELETED"; } }
+        public override string Label { get { return Labels.Deleted; } }
 
         public DeletedObject(SearchResult result) : base(result)
         {

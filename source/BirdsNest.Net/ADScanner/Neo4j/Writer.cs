@@ -120,38 +120,30 @@ namespace ADScanner.Neo4j
 
         public static int CreatePrimaryGroupRelationships(ISession session, string scanid)
         {
-            int count = 0;
-            string query = "MATCH(n: AD_COMPUTER) " +
-                "WITH n " +
-                "MATCH (g: AD_GROUP) WHERE g.rid = n.primaryGroupID " +
-                "MERGE(n) -[r: AD_MemberOf]->(g) " +
-                "SET r.primarygroup = 'true' " +
-                "SET r.lastscan = '" + scanid + "'";
-            IStatementResult result = session.WriteTransaction(tx => tx.Run(query));
-            count = result.Summary.Counters.RelationshipsCreated;
-
-            query = "MATCH(n: AD_USER) " +
-                "WITH n " +
-                "MATCH (g: AD_GROUP) WHERE g.rid = n.primaryGroupID " +
-                "MERGE(n) -[r: AD_MemberOf]->(g) " +
-                "SET r.primarygroup = 'true'" +
-                "SET r.lastscan = '" + scanid + "'";
-            result = session.WriteTransaction(tx => tx.Run(query));
-            count = count + result.Summary.Counters.RelationshipsCreated;
-
-            return count;
+            StringBuilder builder = new StringBuilder();
+            builder.AppendLine("MATCH(n)");
+            builder.AppendLine("WHERE n:" + Labels.Computer + " OR n:" + Labels.User);
+            builder.AppendLine("WITH n");
+            builder.AppendLine("MATCH (g: AD_GROUP) WHERE g.rid = n.primaryGroupID");
+            builder.AppendLine("MERGE(n)-[r: AD_MemberOf]->(g)");
+            builder.AppendLine("SET r.primarygroup = 'true'");
+            builder.AppendLine("SET r.lastscan = '" + scanid + "'");
+            builder.AppendLine("RETURN n.name,g.name");
+            IStatementResult result = session.WriteTransaction(tx => tx.Run(builder.ToString()));
+            return result.Summary.Counters.RelationshipsCreated;
         }
 
         public static int RemoveDeletedGroupMemberShips(ISession session, string scanid)
         {
-            string query = "MATCH(n: AD_USER) " +
-                "WHERE n.lastscan = '" + scanid + "'" +
-                "WITH n " +
-                "MATCH(n) -[r: AD_MemberOf]->(g: AD_GROUP) " +
-                "WHERE NOT EXISTS(r.lastscan) OR r.lastscan <> '" + scanid + "' " +
-                "DELETE r " +
-                "RETURN r";
-            IStatementResult result = session.WriteTransaction(tx => tx.Run(query));
+            StringBuilder builder = new StringBuilder();
+            builder.AppendLine("MATCH(n: AD_USER)");
+            builder.AppendLine("WHERE n.lastscan = '" + scanid + "'");
+            builder.AppendLine("WITH n");
+            builder.AppendLine("MATCH(n) -[r: AD_MemberOf]->(g: AD_GROUP)");
+            builder.AppendLine("WHERE NOT EXISTS(r.lastscan) OR r.lastscan <> '" + scanid + "'");
+            builder.AppendLine("DELETE r");
+            builder.AppendLine("RETURN r");
+            IStatementResult result = session.WriteTransaction(tx => tx.Run(builder.ToString()));
             return result.Summary.Counters.RelationshipsDeleted;
         }
 
@@ -179,28 +171,11 @@ namespace ADScanner.Neo4j
         //    IStatementResult result = session.WriteTransaction(tx => tx.Run(builder.ToString()));
         //    return result.Summary.Counters.RelationshipsDeleted;
         //}
-        public static int FindAndMarkDeletedUsers(ISession session, string scanid)
+        public static int FindAndMarkDeletedItems(string label, ISession session, string scanid)
         {
             StringBuilder builder = new StringBuilder();
-            builder.AppendLine("MATCH(n:AD_USER)");
+            builder.AppendLine("MATCH(n:" + label + ")");
             builder.AppendLine("WHERE n.lastscan <> '" + scanid + "'");
-            //builder.AppendLine("AND NOT n:AD_DELETED");
-            builder.AppendLine("SET n:AD_DELETED");
-            builder.AppendLine("WITH n");
-            builder.AppendLine("MATCH (n)-[r]->()");
-            builder.AppendLine("DELETE r");
-            builder.AppendLine("RETURN r");
-
-            IStatementResult result = session.WriteTransaction(tx => tx.Run(builder.ToString()));
-            return result.Summary.Counters.RelationshipsDeleted;
-        }
-
-        public static int FindAndMarkDeletedComputers(ISession session, string scanid)
-        {
-            StringBuilder builder = new StringBuilder();
-            builder.AppendLine("MATCH(n:AD_COMPUTER)");
-            builder.AppendLine("WHERE n.lastscan <> '" + scanid + "'");
-            //builder.AppendLine("AND NOT n:AD_DELETED");            
             builder.AppendLine("SET n:AD_DELETED");
             builder.AppendLine("WITH n");
             builder.AppendLine("MATCH (n)-[r]->()");

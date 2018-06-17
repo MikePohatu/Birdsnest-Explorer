@@ -5,7 +5,7 @@ namespace ADScanner.ActiveDirectory
 {
     public class ADUser : ADEntity
     {
-        public override string Label { get { return "AD_USER"; } }
+        public override string Label { get { return Labels.User; } }
 
         public ADUser(SearchResult result) : base(result)
         {

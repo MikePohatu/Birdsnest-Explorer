@@ -12,7 +12,7 @@ namespace ADScanner.ActiveDirectory
         const string TYPE_SECURITY = "security";
         const string TYPE_DISTRIBUTION = "distribution";
 
-        public override string Label { get { return "AD_GROUP"; } }
+        public override string Label { get { return Labels.Group; } }
         public string GroupType { get; private set; }
         public List<string> MemberDNs { get; private set; }
 
