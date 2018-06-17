@@ -13,28 +13,28 @@ namespace ADScanner.Neo4j
             StringBuilder builder = new StringBuilder();
             int i = 0;
 
-            builder.AppendLine("MERGE (node:" + node.Label + " {path:'" + node.Path + "'})");
-            builder.AppendLine("SET node.name = '" + node.Name + "'");
-            builder.AppendLine("SET node.id = '" + node.ID + "'");
-            builder.AppendLine("SET node.lastscan = '" + scanid + "'");
+            builder.AppendLine("MERGE (n:" + node.Label + " {path:'" + node.Path + "'})");
+            builder.AppendLine("SET n.name = '" + node.Name + "'");
+            builder.AppendLine("SET n.id = '" + node.ID + "'");
+            builder.AppendLine("SET n.lastscan = '" + scanid + "'");
 
             if (node.Properties != null)
             {
                 foreach (var prop in node.Properties)
                 {
-                    builder.AppendLine("SET node." + prop.Key + " = '" + prop.Value + "'");
+                    builder.AppendLine("SET n." + prop.Key + " = '" + prop.Value + "'");
                 }
             }
 
             foreach (string dn in node.MemberOfDNs)
             {
                 builder.AppendLine("MERGE (g" + i + ":AD_GROUP {path:'" + dn + "'})");
-                builder.AppendLine("MERGE (node) -[r" + i + ": AD_MemberOf]->(g" + i + ")");
+                builder.AppendLine("MERGE (n) -[r" + i + ": AD_MemberOf]->(g" + i + ")");
                 builder.AppendLine("SET r" + i + ".lastscan = '" + scanid + "'");
                 i++;
             }
 
-            builder.AppendLine("RETURN node");
+            builder.AppendLine("RETURN n");
 
             var result = session.WriteTransaction(tx => tx.Run(builder.ToString()));
             return result.Summary.Counters.RelationshipsCreated;
@@ -43,21 +43,21 @@ namespace ADScanner.Neo4j
         public static void MergeNodeOnID(INode node, ISession session, string scanid)
         {
             StringBuilder builder = new StringBuilder();
-            builder.AppendLine("MERGE (node:" + node.Label + " {id:'" + node.ID + "'})");
+            builder.AppendLine("MERGE (n:" + node.Label + " {id:'" + node.ID + "'})");
 
-            builder.AppendLine("SET node.name = '" + node.Name + "'");
-            builder.AppendLine("SET node.path = '" + node.Path + "'");
-            builder.AppendLine("SET node.lastscan = '" + scanid + "'");
+            builder.AppendLine("SET n.name = '" + node.Name + "'");
+            builder.AppendLine("SET n.path = '" + node.Path + "'");
+            builder.AppendLine("SET n.lastscan = '" + scanid + "'");
 
             if (node.Properties != null)
             {
                 foreach (var prop in node.Properties)
                 {
-                    builder.AppendLine("SET node." + prop.Key + " = '" + prop.Value.ToString() + "'");
+                    builder.AppendLine("SET n." + prop.Key + " = '" + prop.Value.ToString() + "'");
                 }
             }
 
-            builder.AppendLine("RETURN node");
+            builder.AppendLine("RETURN n");
 
             session.WriteTransaction(tx => tx.Run(builder.ToString()));
         }
@@ -75,17 +75,17 @@ namespace ADScanner.Neo4j
             StringBuilder builder = new StringBuilder();
             int i = 0;
 
-            builder.AppendLine("MERGE (node:" + node.Label + " {path:'" + node.Path + "'})");
-            builder.AppendLine("SET node.lastscan = '" + scanid + "'");
+            builder.AppendLine("MERGE (n:" + node.Label + " {path:'" + node.Path + "'})");
+            builder.AppendLine("SET n.lastscan = '" + scanid + "'");
 
             foreach (string dn in groupDNs)
             {
                 builder.AppendLine("MERGE (g" + i + ":AD_GROUP {path:'" + dn + "'})");
-                builder.AppendLine("MERGE (node)-[r" + i + ":AD_MemberOf]->(g" + i + ")");
+                builder.AppendLine("MERGE (n)-[r" + i + ":AD_MemberOf]->(g" + i + ")");
                 builder.AppendLine("SET r" + i + ".lastscan = '" + scanid + "'");
                 i++;
             }
-            builder.AppendLine("RETURN node");
+            builder.AppendLine("RETURN n");
 
             var result = session.WriteTransaction(tx => tx.Run(builder.ToString()));
             return result.Summary.Counters.RelationshipsCreated;
@@ -104,15 +104,15 @@ namespace ADScanner.Neo4j
         //    StringBuilder builder = new StringBuilder();
         //    int i = 0;
 
-        //    builder.AppendLine("MERGE (node:" + node.Label + " {path:'" + node.Path + "'})");
+        //    builder.AppendLine("MERGE (n:" + node.Label + " {path:'" + node.Path + "'})");
         //    foreach (string dn in memberDNs)
         //    {
         //        builder.AppendLine("MERGE (g" + i + ":AD_GROUP {path:'" + dn + "'})");
-        //        builder.AppendLine("MERGE (g" + i + ") -[r" + i + ": AD_MemberOf]->(node)");
+        //        builder.AppendLine("MERGE (g" + i + ") -[r" + i + ": AD_MemberOf]->(n)");
         //        builder.AppendLine("SET r.lastscan = '" + scanid + "'");
         //        i++;
         //    }
-        //    builder.AppendLine("RETURN node");
+        //    builder.AppendLine("RETURN n");
 
         //    session.WriteTransaction(tx => tx.Run(builder.ToString()));
         //    return i;
@@ -121,19 +121,19 @@ namespace ADScanner.Neo4j
         public static int CreatePrimaryGroupRelationships(ISession session, string scanid)
         {
             int count = 0;
-            string query = "MATCH(node: AD_COMPUTER) " +
-                "WITH node " +
-                "MATCH(g: AD_GROUP) WHERE node.primaryGroupID = g.rid " +
+            string query = "MATCH(n: AD_COMPUTER) " +
+                "WITH n " +
+                "MATCH (g: AD_GROUP) WHERE g.rid = n.primaryGroupID " +
                 "MERGE(n) -[r: AD_MemberOf]->(g) " +
                 "SET r.primarygroup = 'true' " +
                 "SET r.lastscan = '" + scanid + "'";
             IStatementResult result = session.WriteTransaction(tx => tx.Run(query));
             count = result.Summary.Counters.RelationshipsCreated;
 
-            query = "MATCH(node: AD_USER) " +
-                "WITH node " +
-                "MATCH(g: AD_GROUP) WHERE node.primaryGroupID = g.rid " +
-                "MERGE(node) -[r: AD_MemberOf]->(g) " +
+            query = "MATCH(n: AD_USER) " +
+                "WITH n " +
+                "MATCH (g: AD_GROUP) WHERE g.rid = n.primaryGroupID " +
+                "MERGE(n) -[r: AD_MemberOf]->(g) " +
                 "SET r.primarygroup = 'true'" +
                 "SET r.lastscan = '" + scanid + "'";
             result = session.WriteTransaction(tx => tx.Run(query));
@@ -152,6 +152,62 @@ namespace ADScanner.Neo4j
                 "DELETE r " +
                 "RETURN r";
             IStatementResult result = session.WriteTransaction(tx => tx.Run(query));
+            return result.Summary.Counters.RelationshipsDeleted;
+        }
+
+        //public static int MarkDeletedEntity(DeletedObject node, ISession session, string scanid)
+        //{
+        //    StringBuilder builder = new StringBuilder();
+        //    builder.AppendLine("MERGE (n {id:'" + node.ID + "'})");
+
+        //    //builder.AppendLine("SET node.name = '" + node.Name + "'");
+        //    builder.AppendLine("SET n:" + node.Label);
+        //    builder.AppendLine("SET n.path = '" + node.Path + "'");
+        //    builder.AppendLine("SET n.lastscan = '" + scanid + "'");
+        //    builder.AppendLine("MATCH (n)-[r*]->()");
+        //    builder.AppendLine("DELETE r");
+
+        //    if (node.Properties != null)
+        //    {
+        //        foreach (var prop in node.Properties)
+        //        {
+        //            builder.AppendLine("SET n." + prop.Key + " = '" + prop.Value.ToString() + "'");
+        //        }
+        //    }
+        //    builder.AppendLine("RETURN n");
+
+        //    IStatementResult result = session.WriteTransaction(tx => tx.Run(builder.ToString()));
+        //    return result.Summary.Counters.RelationshipsDeleted;
+        //}
+        public static int FindAndMarkDeletedUsers(ISession session, string scanid)
+        {
+            StringBuilder builder = new StringBuilder();
+            builder.AppendLine("MATCH(n:AD_USER)");
+            builder.AppendLine("WHERE n.lastscan <> '" + scanid + "'");
+            builder.AppendLine("AND NOT n:AD_DELETED");
+            builder.AppendLine("SET n:AD_DELETED");
+            builder.AppendLine("WITH n");
+            builder.AppendLine("MATCH (n)-[r]->()");
+            builder.AppendLine("DELETE r");
+            builder.AppendLine("RETURN r");
+
+            IStatementResult result = session.WriteTransaction(tx => tx.Run(builder.ToString()));
+            return result.Summary.Counters.RelationshipsDeleted;
+        }
+
+        public static int FindAndMarkDeletedComputers(ISession session, string scanid)
+        {
+            StringBuilder builder = new StringBuilder();
+            builder.AppendLine("MATCH(n:AD_COMPUTER)");
+            builder.AppendLine("WHERE n.lastscan <> '" + scanid + "'");
+            builder.AppendLine("AND NOT n:AD_DELETED");            
+            builder.AppendLine("SET n:AD_DELETED");
+            builder.AppendLine("WITH n");
+            builder.AppendLine("MATCH (n)-[r]->()");
+            builder.AppendLine("DELETE r");
+            builder.AppendLine("RETURN r");
+
+            IStatementResult result = session.WriteTransaction(tx => tx.Run(builder.ToString()));
             return result.Summary.Counters.RelationshipsDeleted;
         }
     }

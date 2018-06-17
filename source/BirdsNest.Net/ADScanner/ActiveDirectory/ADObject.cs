@@ -22,8 +22,8 @@ namespace ADScanner.ActiveDirectory
             this.Properties = new List<KeyValuePair<string, object>>();
             this.Properties.Add(new KeyValuePair<string, object>("distinguishedname", this.Path));
             this.Properties.Add(new KeyValuePair<string, object>("cn", ADSearchResultConverter.GetSinglestringValue(result, "cn")));
-            this.Properties.Add(new KeyValuePair<string, object>("isdeleted", ADSearchResultConverter.GetSinglestringValue(result, "isdeleted")));
-            this.Properties.Add(new KeyValuePair<string, object>("isrecycled", ADSearchResultConverter.GetSinglestringValue(result, "isrecycled")));
+            //this.Properties.Add(new KeyValuePair<string, object>("isdeleted", ADSearchResultConverter.GetSinglestringValue(result, "isdeleted")));
+            //this.Properties.Add(new KeyValuePair<string, object>("isrecycled", ADSearchResultConverter.GetSinglestringValue(result, "isrecycled")));
         }
     }
 }
