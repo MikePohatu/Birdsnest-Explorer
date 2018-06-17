@@ -184,7 +184,7 @@ namespace ADScanner.Neo4j
             StringBuilder builder = new StringBuilder();
             builder.AppendLine("MATCH(n:AD_USER)");
             builder.AppendLine("WHERE n.lastscan <> '" + scanid + "'");
-            builder.AppendLine("AND NOT n:AD_DELETED");
+            //builder.AppendLine("AND NOT n:AD_DELETED");
             builder.AppendLine("SET n:AD_DELETED");
             builder.AppendLine("WITH n");
             builder.AppendLine("MATCH (n)-[r]->()");
@@ -200,7 +200,7 @@ namespace ADScanner.Neo4j
             StringBuilder builder = new StringBuilder();
             builder.AppendLine("MATCH(n:AD_COMPUTER)");
             builder.AppendLine("WHERE n.lastscan <> '" + scanid + "'");
-            builder.AppendLine("AND NOT n:AD_DELETED");            
+            //builder.AppendLine("AND NOT n:AD_DELETED");            
             builder.AppendLine("SET n:AD_DELETED");
             builder.AppendLine("WITH n");
             builder.AppendLine("MATCH (n)-[r]->()");
