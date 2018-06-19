@@ -6,13 +6,21 @@ namespace ADScanner.ActiveDirectory
 {
     public class DeletedObject: ADObject
     {
-        public override string Label { get { return Labels.Deleted; } }
+        public override string Type { get { return Types.Deleted; } }
+        public bool IsDeleted { get; private set; }
+        public bool IsRecycled { get; private set; }
+        public string LastKnownParent { get; private set; }
 
         public DeletedObject(SearchResult result) : base(result)
         {
-            this.Properties.Add(new KeyValuePair<string, object>("isdeleted", ADSearchResultConverter.GetSinglestringValue(result, "isdeleted")));
-            this.Properties.Add(new KeyValuePair<string, object>("isrecycled", ADSearchResultConverter.GetSinglestringValue(result, "isrecycled")));
-            this.Properties.Add(new KeyValuePair<string, object>("lastKnownParent", ADSearchResultConverter.GetSinglestringValue(result, "lastKnownParent")));
+            this.IsDeleted = ADSearchResultConverter.GetBoolSingleValue(result, "isdeleted");
+            this.IsRecycled = ADSearchResultConverter.GetBoolSingleValue(result, "isrecycled");
+            this.LastKnownParent = ADSearchResultConverter.GetSinglestringValue(result, "lastKnownParent");
+
+            this.Properties.Add("isdeleted", this.IsDeleted);
+            this.Properties.Add("isrecycled", this.IsRecycled);
+            this.Properties.Add("lastknownparent", this.LastKnownParent);
+            this.Properties.Add("type", this.Type);
         }
     }
 }

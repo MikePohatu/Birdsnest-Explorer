@@ -13,6 +13,7 @@ namespace ADScanner
         {
             string _appdir = AppDomain.CurrentDomain.BaseDirectory;
             string configfile = _appdir + @"\config.json";
+            int relcounter = 0;
             int counter = 0;
             bool batchmode = false;
             string scanid = ShortGuid.NewGuid().ToString();
@@ -49,15 +50,22 @@ namespace ADScanner
                 //load the groups
                 using (SearchResultCollection results = QueryHandler.GetAllGroupResults(rootDE))
                 {
-                    Console.WriteLine("Adding groups to graph");
+                    Console.Write("Adding groups to graph");
                     if (results != null)
                     {
                         foreach (SearchResult result in results)
                         {
                             ADGroup g = new ADGroup(result);
-                            counter = counter + Writer.MergeADGroupMemberObjectOnPath(g, session, scanid);
+                            relcounter = relcounter + Writer.MergeADGroup(g, session, scanid);
+                            counter++;
+                            if (counter == 100)
+                            {
+                                Console.Write(".");
+                                counter = 0;
+                            }
                         }
                     }
+                    Console.WriteLine();
                 }
             }
 
@@ -72,7 +80,7 @@ namespace ADScanner
                         foreach (SearchResult result in results)
                         {
                             ADUser u = new ADUser(result);
-                            counter = counter + Writer.MergeADGroupMemberObjectOnPath(u, session, scanid);
+                            relcounter = relcounter + Writer.MergeAdUser(u, session, scanid);
                         }
                     }
                 }
@@ -89,7 +97,7 @@ namespace ADScanner
                         foreach (SearchResult result in results)
                         {
                             ADComputer c = new ADComputer(result);
-                            counter = counter + Writer.MergeADGroupMemberObjectOnPath(c, session, scanid);
+                            relcounter = relcounter + Writer.MergeAdComputer(c, session, scanid);
                         }
                     }
                 }
@@ -98,8 +106,8 @@ namespace ADScanner
             using (ISession session = driver.Session())
             {
                 //create primary group mappings
-                counter = counter + Writer.CreatePrimaryGroupRelationships(session, scanid);
-                Console.WriteLine("Created " + counter + " primary group relationships");
+                relcounter = relcounter + Writer.CreatePrimaryGroupRelationships(session, scanid);
+                Console.WriteLine("Created " + relcounter + " primary group relationships");
             }
 
             using (ISession session = driver.Session())
@@ -112,8 +120,8 @@ namespace ADScanner
             using (ISession session = driver.Session())
             {
                 //mark deleted objects
-                Console.WriteLine("Deleted " + Writer.FindAndMarkDeletedItems(Labels.User, session, scanid) + " deleted user relationships");
-                Console.WriteLine("Deleted " + Writer.FindAndMarkDeletedItems(Labels.Computer, session, scanid) + " deleted computer relationships");
+                Console.WriteLine("Deleted " + Writer.FindAndMarkDeletedItems(Types.User, session, scanid) + " deleted user relationships");
+                Console.WriteLine("Deleted " + Writer.FindAndMarkDeletedItems(Types.Computer, session, scanid) + " deleted computer relationships");
             }
 
             //cleanup
@@ -135,9 +143,6 @@ namespace ADScanner
                 Console.WriteLine("Press any key to exit");
                 Console.ReadLine();
             }
-            
-            System.Threading.Thread.Sleep(1000);
-
         }
 
         private static Configuration LoadConfig(string configfile)

@@ -12,8 +12,9 @@ namespace ADScanner.ActiveDirectory
         const string TYPE_SECURITY = "security";
         const string TYPE_DISTRIBUTION = "distribution";
 
-        public override string Label { get { return Labels.Group; } }
+        public override string Type { get { return Types.Group; } }
         public string GroupType { get; private set; }
+        public string Rid { get; private set; }
         public List<string> MemberDNs { get; private set; }
 
         public ADGroup(SearchResult result): base (result)
@@ -21,7 +22,11 @@ namespace ADScanner.ActiveDirectory
             this.MemberDNs = ADSearchResultConverter.GetStringList(result,"member");
 
             this.SetTypeAndScope(ADSearchResultConverter.GetSinglestringValue(result, "grouptype"));
-            this.Properties.Add(new KeyValuePair<string, object>("rid", ADSearchResultConverter.GetRidFromSid(this.ID)));
+            this.Rid = ADSearchResultConverter.GetRidFromSid(this.ID);
+
+            this.Properties.Add("rid", this.Rid);
+            this.Properties.Add("grouptype", this.GroupType);
+            this.Properties.Add("type", this.Type);
         }
 
         private void SetTypeAndScope(string grouptype)

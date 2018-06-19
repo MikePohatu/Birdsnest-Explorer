@@ -5,16 +5,21 @@ namespace ADScanner.ActiveDirectory
 {
     public class ADUser : ADEntity
     {
-        public override string Label { get { return Labels.User; } }
+        public override string Type { get { return Types.User; } }
+        public string State { get; private set; }
+        public string DisplayName { get; private set; }
 
         public ADUser(SearchResult result) : base(result)
         {
-            this.Properties.Add(new KeyValuePair<string, object>("displayName", ADSearchResultConverter.GetSinglestringValue(result, "displayname")));
+            this.DisplayName = ADSearchResultConverter.GetSinglestringValue(result, "displayname");
 
             //find if the user is enabled
             int istate = ADSearchResultConverter.GetIntSingleValue(result, "useraccountcontrol");
-            string state = ((istate == 512) || (istate == 66050)) ? "disabled" : "enabled";
-            this.Properties.Add(new KeyValuePair<string, object>("state", state));
+            this.State = ((istate == 512) || (istate == 66050)) ? "disabled" : "enabled";
+
+            this.Properties.Add("state", this.State);
+            this.Properties.Add("displayname", this.DisplayName);
+            this.Properties.Add("type", this.Type);
         }
     }
 }

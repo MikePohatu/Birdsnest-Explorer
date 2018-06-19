@@ -14,7 +14,7 @@ namespace ADScanner.ActiveDirectory
         public ADEntity(SearchResult result) : base(result)
         {
             this.PrimaryGroupID = ADSearchResultConverter.GetSinglestringValue(result, "primaryGroupID");
-            this.Properties.Add(new KeyValuePair<string, object>("primaryGroupID", this.PrimaryGroupID));
+            this.Properties.Add("primaryGroupID", this.PrimaryGroupID);
         }
     }
 }

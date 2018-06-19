@@ -7,70 +7,89 @@ namespace ADScanner.Neo4j
 {
     public static class Writer
     {
-        //ADGroupMemberObject
-        public static int MergeADGroupMemberObjectOnPath(ADGroupMemberObject node, ISession session, string scanid)
+        public static int MergeADGroup(ADGroup node, ISession session, string scanid)
         {
-            StringBuilder builder = new StringBuilder();            
-            int i = 0;
+            SetScanId(node, scanid);
 
-            Dictionary<string, object> properties = GetBaseProperties(node, scanid);
+            string query = "MERGE (n:" + node.Type + "{id:$id}) " +
+            "SET n.name = $name " +
+            "SET n.id = $id " +
+            "SET n.lastscan = $scanid " +
+            "SET n.rid = $rid " +
+            "SET n.grouptype = $grouptype " +
+            "RETURN n.name";
 
-            builder.AppendLine("MERGE (n:" + node.Label + "{path:$nodepath})");
-            builder.AppendLine("SET n.name = $nodename");
-            builder.AppendLine("SET n.id = $nodeid");
-            builder.AppendLine("SET n.lastscan = $scanid");
+            var result = session.WriteTransaction(tx => tx.Run(query, node.Properties));
+            return result.Summary.Counters.NodesCreated;
+        }
 
-            if (node.Properties != null)
-            {
-                foreach (var prop in node.Properties)
-                {
-                    builder.AppendLine("SET n." + prop.Key + " = $propval" + i);
-                    properties.Add("propval" + i,prop.Value);
-                    i++;
-                }
-            }
+        public static int MergeAdUser(ADUser node, ISession session, string scanid)
+        {
+            SetScanId(node, scanid);
 
-            foreach (string dn in node.MemberOfDNs)
-            {
-                properties.Add("dn" + i, dn);
-                builder.AppendLine("MERGE (g" + i + ":AD_GROUP {path:$dn" + i + "})");
-                builder.AppendLine("MERGE (n) -[r" + i + ": AD_MemberOf]->(g" + i + ")");
-                builder.AppendLine("SET r" + i + ".lastscan = $scanid");
-                i++;
-            }
+            string query = "MERGE (n:" + node.Type + "{id:$id}) " +
+            "SET n.name = $name " +
+            "SET n.id = $id " +
+            "SET n.lastscan = $scanid " +
+            "SET n.displayname = $displayname " +
+            "SET n.state = $state " +
+            "RETURN n.name";
 
-            builder.AppendLine("RETURN n");
+            var result = session.WriteTransaction(tx => tx.Run(query, node.Properties));
+            return result.Summary.Counters.NodesCreated;
+        }
 
-            var result = session.WriteTransaction(tx => tx.Run(builder.ToString(),properties));
+        public static int MergeAdComputer(ADComputer node, ISession session, string scanid)
+        {
+            SetScanId(node, scanid);
+
+            string query = "MERGE (n:" + node.Type + "{id:$id}) " +
+            "SET n.name = $name " +
+            "SET n.id = $id " +
+            "SET n.lastscan = $scanid " +
+            "SET n.operatingsystem = $operatingsystem " +
+            "SET n.operatingsystemversion = $operatingsystemversion " +
+            "SET n.state = $state " +
+            "RETURN n.name";
+
+            var result = session.WriteTransaction(tx => tx.Run(query, node.Properties));
+            return result.Summary.Counters.NodesCreated;
+        }
+
+        public static int MergeGroupRelationships(ISession session, string scanid)
+        { 
+
+            string query = "MERGE (g:" + Types.Group + " {path:$dn}) " +
+                "WITH g " +
+                "MATCH (n) WHERE n.id=$id " +
+                "MERGE (n)-[r:" + Types.MemberOf + "]->(g) " +
+                "SET r.lastscan = $scanid " +
+                "RETURN n.name";
+
+
+            //foreach (string dn in node.MemberOfDNs)
+            //{
+            //    result = session.WriteTransaction(tx => tx.Run(relquery,new { dn = dn, scanid = scanid, nodeid = node.ID }));
+            //    relcount = relcount + result.Summary.Counters.RelationshipsCreated;
+            //}
+            var result = session.WriteTransaction(tx => tx.Run(query, null));
             return result.Summary.Counters.RelationshipsCreated;
         }
 
         public static void MergeNodeOnID(INode node, ISession session, string scanid)
         {
-            int i = 0;
-
-            Dictionary<string, object> properties = GetBaseProperties(node, scanid);
+            SetScanId(node, scanid);
 
             StringBuilder builder = new StringBuilder();
-            builder.AppendLine("MERGE (n:" + node.Label + " {id:$nodeid})");
+            builder.AppendLine("MERGE (n:" + node.Type + " {id:$id})");
 
-            builder.AppendLine("SET n.name = $nodename");
-            builder.AppendLine("SET n.path = $nodepath");
+            builder.AppendLine("SET n.name = $name");
+            builder.AppendLine("SET n.path = $path");
             builder.AppendLine("SET n.lastscan = $scanid");
-
-            if (node.Properties != null)
-            {
-                foreach (var prop in node.Properties)
-                {
-                    builder.AppendLine("SET n." + prop.Key + " = $propval" + i);
-                    properties.Add("propval" + i, prop.Value);
-                    i++;
-                }
-            }
 
             builder.AppendLine("RETURN n");
 
-            session.WriteTransaction(tx => tx.Run(builder.ToString(),properties));
+            session.WriteTransaction(tx => tx.Run(builder.ToString(),node.Properties));
         }
 
         /// <summary>
@@ -83,26 +102,25 @@ namespace ADScanner.Neo4j
         /// <returns></returns>
         public static int AddIsMemberOfADGroups(INode node, List<string> groupDNs, ISession session, string scanid)
         {
-            int i = 0;
-
-            Dictionary<string, object> properties = GetBaseProperties(node, scanid);
+            //int i = 0;
+            SetScanId(node, scanid);
 
             StringBuilder builder = new StringBuilder();
 
-            builder.AppendLine("MERGE (n:" + node.Label + " {path:$nodepath})");
+            builder.AppendLine("MERGE (n:" + node.Type + " {path:$path})");
             builder.AppendLine("SET n.lastscan = $scanid");
 
-            foreach (string dn in groupDNs)
-            {
-                properties.Add("dn" + i, dn);
-                builder.AppendLine("MERGE (g" + i + ":AD_GROUP {path:$dn" + i + "})");
-                builder.AppendLine("MERGE (n)-[r" + i + ":AD_MemberOf]->(g" + i + ")");
-                builder.AppendLine("SET r" + i + ".lastscan = $scanid");
-                i++;
-            }
+            //foreach (string dn in groupDNs)
+            //{
+            //    properties.Add("dn" + i, dn);
+            //    builder.AppendLine("MERGE (g:AD_GROUP {path:$dn" + i + "})");
+            //    builder.AppendLine("MERGE (n)-[r:AD_MemberOf]->(g)");
+            //    builder.AppendLine("SET r.lastscan = $scanid");
+            //    i++;
+            //}
             builder.AppendLine("RETURN n");
 
-            var result = session.WriteTransaction(tx => tx.Run(builder.ToString(), properties));
+            var result = session.WriteTransaction(tx => tx.Run(builder.ToString(), node.Properties));
             return result.Summary.Counters.RelationshipsCreated;
         }
 
@@ -113,7 +131,7 @@ namespace ADScanner.Neo4j
 
             StringBuilder builder = new StringBuilder();
             builder.AppendLine("MATCH(n)");
-            builder.AppendLine("WHERE n:" + Labels.Computer + " OR n:" + Labels.User);
+            builder.AppendLine("WHERE n:" + Types.Computer + " OR n:" + Types.User);
             builder.AppendLine("WITH n");
             builder.AppendLine("MATCH (g: AD_GROUP) WHERE g.rid = n.primaryGroupID");
             builder.AppendLine("MERGE(n)-[r: AD_MemberOf]->(g)");
@@ -159,14 +177,12 @@ namespace ADScanner.Neo4j
             return result.Summary.Counters.RelationshipsDeleted;
         }
 
-        private static Dictionary<string,object> GetBaseProperties(INode node, string scanid)
+        private static void SetScanId(INode node, string scanid)
         {
-            Dictionary<string,object> properties = new Dictionary<string, object>();
-            properties.Add("nodepath", node.Path);
-            properties.Add("nodename", node.Name);
-            properties.Add("nodeid", node.ID);
-            properties.Add("scanid", scanid);
-            return properties;
+            object lastscancurrent;
+            if (node.Properties.TryGetValue("scanid", out lastscancurrent))
+            { node.Properties["scanid"] = scanid; }
+            else { node.Properties.Add("scanid", scanid); }
         }
     }
 }

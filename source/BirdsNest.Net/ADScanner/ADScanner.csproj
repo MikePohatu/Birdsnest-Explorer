@@ -58,7 +58,7 @@
     <Compile Include="ActiveDirectory\ADUser.cs" />
     <Compile Include="ActiveDirectory\ADGroupMemberObject.cs" />
     <Compile Include="ActiveDirectory\DeletedObject.cs" />
-    <Compile Include="ActiveDirectory\Labels.cs" />
+    <Compile Include="ActiveDirectory\Types.cs" />
     <Compile Include="common\ShortGuid.cs" />
     <Compile Include="Configuration.cs" />
     <Compile Include="FileHandler.cs" />

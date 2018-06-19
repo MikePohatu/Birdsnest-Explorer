@@ -15,7 +15,7 @@ namespace ADScanner.ActiveDirectory
                     DateTime start = DateTime.Now;
                     searcher.Filter = ("(&(objectCategory=group))");
                     searcher.SearchScope = SearchScope.Subtree;
-                    searcher.PropertiesToLoad.Add("canonicalName");
+                    searcher.PropertiesToLoad.Add("cn");
                     searcher.PropertiesToLoad.Add("memberof");
                     searcher.PropertiesToLoad.Add("name");
                     searcher.PropertiesToLoad.Add("samaccountname");
