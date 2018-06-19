@@ -59,7 +59,10 @@ namespace ADScanner
                         }
                     }
                 }
+            }
 
+            using (ISession session = driver.Session())
+            {
                 //load the users
                 using (SearchResultCollection results = QueryHandler.GetAllUserResults(rootDE))
                 {
@@ -73,7 +76,10 @@ namespace ADScanner
                         }
                     }
                 }
+            }
 
+            using (ISession session = driver.Session())
+            {
                 //load the computers
                 using (SearchResultCollection results = QueryHandler.GetAllComputerResults(rootDE))
                 {
@@ -87,15 +93,24 @@ namespace ADScanner
                         }
                     }
                 }
+            }
 
+            using (ISession session = driver.Session())
+            {
                 //create primary group mappings
                 counter = counter + Writer.CreatePrimaryGroupRelationships(session, scanid);
                 Console.WriteLine("Created " + counter + " primary group relationships");
+            }
 
+            using (ISession session = driver.Session())
+            {
                 //*cleanup deleted items
                 //remove group memberships that have been deleted
                 Console.WriteLine("Deleted " + Writer.RemoveDeletedGroupMemberShips(session, scanid) + " relationships");
+            }
 
+            using (ISession session = driver.Session())
+            {
                 //mark deleted objects
                 Console.WriteLine("Deleted " + Writer.FindAndMarkDeletedItems(Labels.User, session, scanid) + " deleted user relationships");
                 Console.WriteLine("Deleted " + Writer.FindAndMarkDeletedItems(Labels.Computer, session, scanid) + " deleted computer relationships");
