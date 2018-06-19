@@ -14,6 +14,7 @@ namespace ADScanner
             string _appdir = AppDomain.CurrentDomain.BaseDirectory;
             string configfile = _appdir + @"\config.json";
             int counter = 0;
+            bool batchmode = false;
             string scanid = ShortGuid.NewGuid().ToString();
 
             IDriver driver;
@@ -26,6 +27,9 @@ namespace ADScanner
                 {
                     case "/CONFIG":
                         configfile = param[1];
+                        break;
+                    case "/BATCH":
+                        batchmode = true;
                         break;
                     default:
                         break;
@@ -45,6 +49,7 @@ namespace ADScanner
                 //load the groups
                 using (SearchResultCollection results = QueryHandler.GetAllGroupResults(rootDE))
                 {
+                    Console.WriteLine("Adding groups to graph");
                     if (results != null)
                     {
                         foreach (SearchResult result in results)
@@ -58,6 +63,7 @@ namespace ADScanner
                 //load the users
                 using (SearchResultCollection results = QueryHandler.GetAllUserResults(rootDE))
                 {
+                    Console.WriteLine("Adding users to graph");
                     if (results != null)
                     {
                         foreach (SearchResult result in results)
@@ -71,6 +77,7 @@ namespace ADScanner
                 //load the computers
                 using (SearchResultCollection results = QueryHandler.GetAllComputerResults(rootDE))
                 {
+                    Console.WriteLine("Adding computers to graph");
                     if (results != null)
                     {
                         foreach (SearchResult result in results)
@@ -99,12 +106,23 @@ namespace ADScanner
             rootDE.Dispose();
 
             Console.Write("Finished. Exiting.");
-            for (int i =0; i<3; i++)
+            if (batchmode == true)
             {
-                System.Threading.Thread.Sleep(500);
-                Console.Write(".");
+                Console.Write("Exiting.");
+                for (int i = 0; i < 3; i++)
+                {
+                    System.Threading.Thread.Sleep(500);
+                    Console.Write(".");
+                }
             }
+            else
+            {
+                Console.WriteLine("Press any key to exit");
+                Console.ReadLine();
+            }
+            
             System.Threading.Thread.Sleep(1000);
+
         }
 
         private static Configuration LoadConfig(string configfile)
