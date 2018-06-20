@@ -10,7 +10,7 @@ namespace ADScanner.ActiveDirectory
         public string OperatingSystemVersion { get; private set; }
         public string State { get; private set; }
 
-        public ADComputer(SearchResult result):base(result)
+        public ADComputer(SearchResult result, string scanid) : base(result, scanid)
         {
             this.OperatingSystem = ADSearchResultConverter.GetSinglestringValue(result, "operatingsystem");
             this.OperatingSystemVersion = ADSearchResultConverter.GetSinglestringValue(result, "operatingsystemversion");

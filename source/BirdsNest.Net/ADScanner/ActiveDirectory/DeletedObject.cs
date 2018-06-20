@@ -11,7 +11,7 @@ namespace ADScanner.ActiveDirectory
         public bool IsRecycled { get; private set; }
         public string LastKnownParent { get; private set; }
 
-        public DeletedObject(SearchResult result) : base(result)
+        public DeletedObject(SearchResult result, string scanid) : base(result, scanid)
         {
             this.IsDeleted = ADSearchResultConverter.GetBoolSingleValue(result, "isdeleted");
             this.IsRecycled = ADSearchResultConverter.GetBoolSingleValue(result, "isrecycled");

@@ -8,7 +8,7 @@ namespace ADScanner.ActiveDirectory
         public List<string> MemberOfDNs { get; protected set; }
         public string SamAccountName { get; protected set; }
 
-        public ADGroupMemberObject(SearchResult result):base(result)
+        public ADGroupMemberObject(SearchResult result, string scanid) : base(result, scanid)
         {
             this.Name = ADSearchResultConverter.GetSinglestringValue(result, "name");
             this.ID = ADSearchResultConverter.GetSidAsString(result);
@@ -16,6 +16,7 @@ namespace ADScanner.ActiveDirectory
             this.SamAccountName = ADSearchResultConverter.GetSinglestringValue(result, "samaccountname");
 
             this.Properties.Add("samaccountname", this.SamAccountName);
+            this.Properties["id"] = this.ID;
         }
     }
 }

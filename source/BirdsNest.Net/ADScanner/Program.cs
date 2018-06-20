@@ -1,9 +1,11 @@
 ﻿using System;
 using System.DirectoryServices;
+using System.Collections.Generic;
 using Neo4j.Driver.V1;
 using ADScanner.ActiveDirectory;
 using ADScanner.Neo4j;
 using ADScanner.common;
+using System.Linq;
 
 namespace ADScanner
 {
@@ -14,7 +16,6 @@ namespace ADScanner
             string _appdir = AppDomain.CurrentDomain.BaseDirectory;
             string configfile = _appdir + @"\config.json";
             int relcounter = 0;
-            int counter = 0;
             bool batchmode = false;
             string scanid = ShortGuid.NewGuid().ToString();
 
@@ -47,25 +48,49 @@ namespace ADScanner
             //open the session to neo4j
             using (ISession session = driver.Session())
             {
+                
+
                 //load the groups
                 using (SearchResultCollection results = QueryHandler.GetAllGroupResults(rootDE))
                 {
+                    
+
                     Console.Write("Adding groups to graph");
                     if (results != null)
                     {
+                        int groupcount = 0;
+                        int relationshipcount = 0;
+                        List<object> groupmappings = new List<object>();
+                        List<Dictionary<string, object>> groupprops = new List<Dictionary<string, object>>(); 
+
                         foreach (SearchResult result in results)
                         {
-                            ADGroup g = new ADGroup(result);
-                            relcounter = relcounter + Writer.MergeADGroup(g, session, scanid);
-                            counter++;
-                            if (counter == 100)
+                            ADGroup g = new ADGroup(result,scanid);
+                            groupprops.Add(g.Properties);
+                            if (groupprops.Count >= 1000)
                             {
-                                Console.Write(".");
-                                counter = 0;
+                                Console.Write("*");
+                                groupcount = groupcount + Writer.MergeADGroups(ListPop(groupprops,1000), session);
+                            }
+                            foreach (string dn in g.MemberOfDNs)
+                            {
+                                groupmappings.Add(Writer.GetGroupRelationshipObject(g.ID, dn, scanid));
+                                if (groupmappings.Count >= 1000)
+                                {
+                                    relationshipcount = relationshipcount + Writer.MergeGroupRelationships(ListPop(groupmappings, 1000), session);
+                                    Console.Write("#");
+                                }
                             }
                         }
-                    }
-                    Console.WriteLine();
+                        
+                        //purge any remaining groups and mappings to the database
+                        if (groupprops.Count > 0) { groupcount = groupcount + Writer.MergeADGroups(groupprops, session); } 
+                        if (groupmappings.Count > 0 ) { relationshipcount = relationshipcount + Writer.MergeGroupRelationships(groupmappings, session); }
+                        Console.WriteLine();
+                        Console.WriteLine("Created " + groupcount + " groups");
+                        Console.WriteLine("Created " + relationshipcount + " group->group mappings");
+                        Console.WriteLine();
+                    }   
                 }
             }
 
@@ -74,14 +99,41 @@ namespace ADScanner
                 //load the users
                 using (SearchResultCollection results = QueryHandler.GetAllUserResults(rootDE))
                 {
-                    Console.WriteLine("Adding users to graph");
+                    Console.Write("Adding users to graph");
                     if (results != null)
                     {
+                        int usercount = 0;
+                        int relationshipcount = 0;
+                        List<object> groupmappings = new List<object>();
+                        List<Dictionary<string, object>> userprops = new List<Dictionary<string, object>>();
+
                         foreach (SearchResult result in results)
                         {
-                            ADUser u = new ADUser(result);
-                            relcounter = relcounter + Writer.MergeAdUser(u, session, scanid);
+                            ADUser u = new ADUser(result, scanid);
+                            userprops.Add(u.Properties);
+                            if (userprops.Count >= 1000)
+                            {
+                                Console.Write("*");
+                                usercount = usercount + Writer.MergeAdUsers(ListPop(userprops, 1000), session);
+                            }
+                            foreach (string dn in u.MemberOfDNs)
+                            {
+                                groupmappings.Add(Writer.GetGroupRelationshipObject(u.ID, dn, scanid));
+                                if (groupmappings.Count >= 1000)
+                                {
+                                    relationshipcount = relationshipcount + Writer.MergeGroupRelationships(ListPop(groupmappings, 1000), session);
+                                    Console.Write("#");
+                                }
+                            }
                         }
+
+                        //purge any remaining groups and mappings to the database
+                        if (userprops.Count > 0) { usercount = usercount + Writer.MergeAdUsers(userprops, session); }
+                        if (groupmappings.Count > 0) { relationshipcount = relationshipcount + Writer.MergeGroupRelationships(groupmappings, session); }
+                        Console.WriteLine();
+                        Console.WriteLine("Created " + usercount + " users");
+                        Console.WriteLine("Created " + relationshipcount + " user->group mappings");
+                        Console.WriteLine();
                     }
                 }
             }
@@ -91,14 +143,41 @@ namespace ADScanner
                 //load the computers
                 using (SearchResultCollection results = QueryHandler.GetAllComputerResults(rootDE))
                 {
-                    Console.WriteLine("Adding computers to graph");
+                    Console.Write("Adding computers to graph");
                     if (results != null)
                     {
+                        int computercount = 0;
+                        int relationshipcount = 0;
+
+                        List<object> groupmappings = new List<object>();
+                        List<Dictionary<string, object>> compprops = new List<Dictionary<string, object>>();
                         foreach (SearchResult result in results)
                         {
-                            ADComputer c = new ADComputer(result);
-                            relcounter = relcounter + Writer.MergeAdComputer(c, session, scanid);
+                            ADComputer c = new ADComputer(result, scanid);
+                            compprops.Add(c.Properties);
+                            if (compprops.Count >= 1000)
+                            {
+                                Console.Write("*");
+                                computercount = computercount + Writer.MergeAdComputers(ListPop(compprops, 1000), session);
+                            }
+                            foreach (string dn in c.MemberOfDNs)
+                            {
+                                groupmappings.Add(Writer.GetGroupRelationshipObject(c.ID, dn, scanid));
+                                if (groupmappings.Count >= 1000)
+                                {
+                                    relationshipcount = relationshipcount + Writer.MergeGroupRelationships(ListPop(groupmappings, 1000), session);
+                                    Console.Write("#");
+                                }
+                            }
                         }
+
+                        //purge any remaining groups and mappings to the database
+                        if (compprops.Count > 0) { computercount = computercount + Writer.MergeAdComputers(compprops, session); }
+                        if (groupmappings.Count > 0) { relationshipcount = relationshipcount + Writer.MergeGroupRelationships(groupmappings, session); }
+                        Console.WriteLine();
+                        Console.WriteLine("Created " + computercount + " computers");
+                        Console.WriteLine("Created " + relationshipcount + " computer->group mappings");
+                        Console.WriteLine();
                     }
                 }
             }
@@ -110,6 +189,8 @@ namespace ADScanner
                 Console.WriteLine("Created " + relcounter + " primary group relationships");
             }
 
+            Console.WriteLine();
+            Console.WriteLine("Cleaning up deleted items");
             using (ISession session = driver.Session())
             {
                 //*cleanup deleted items
@@ -128,7 +209,8 @@ namespace ADScanner
             driver.Dispose();
             rootDE.Dispose();
 
-            Console.Write("Finished. Exiting.");
+            Console.WriteLine();
+            Console.WriteLine("Finished.");
             if (batchmode == true)
             {
                 Console.Write("Exiting.");
@@ -194,6 +276,14 @@ namespace ADScanner
                 Environment.Exit(1003);
             }
             return null;
+        }
+
+        private static List<T> ListPop<T>(List<T> list, int count)
+        {
+            List<T> newlist = new List<T>();
+            newlist.AddRange(list.Take(count));
+            list.RemoveRange(0, count);
+            return newlist;
         }
     }
 }

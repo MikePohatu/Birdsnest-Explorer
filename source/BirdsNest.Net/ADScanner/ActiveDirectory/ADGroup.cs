@@ -17,7 +17,7 @@ namespace ADScanner.ActiveDirectory
         public string Rid { get; private set; }
         public List<string> MemberDNs { get; private set; }
 
-        public ADGroup(SearchResult result): base (result)
+        public ADGroup(SearchResult result, string scanid) : base (result, scanid)
         {
             this.MemberDNs = ADSearchResultConverter.GetStringList(result,"member");
 

@@ -9,7 +9,7 @@ namespace ADScanner.ActiveDirectory
         public string State { get; private set; }
         public string DisplayName { get; private set; }
 
-        public ADUser(SearchResult result) : base(result)
+        public ADUser(SearchResult result, string scanid) : base(result, scanid)
         {
             this.DisplayName = ADSearchResultConverter.GetSinglestringValue(result, "displayname");
 

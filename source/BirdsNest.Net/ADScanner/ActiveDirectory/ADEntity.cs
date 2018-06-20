@@ -11,10 +11,10 @@ namespace ADScanner.ActiveDirectory
     {
         public string PrimaryGroupID { get; private set; }
 
-        public ADEntity(SearchResult result) : base(result)
+        public ADEntity(SearchResult result, string scanid) : base(result, scanid)
         {
             this.PrimaryGroupID = ADSearchResultConverter.GetSinglestringValue(result, "primaryGroupID");
-            this.Properties.Add("primaryGroupID", this.PrimaryGroupID);
+            this.Properties.Add("primarygroupid", this.PrimaryGroupID);
         }
     }
 }

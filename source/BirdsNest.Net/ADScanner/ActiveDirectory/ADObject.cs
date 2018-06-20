@@ -13,11 +13,13 @@ namespace ADScanner.ActiveDirectory
         public string CN { get; private set; }
         public string DN { get; private set; }
         public Dictionary<string, object> Properties { get; private set; }
+        public string ScanId;
 
-        public ADObject(SearchResult result)
+        public ADObject(SearchResult result, string scanid)
         {
-            this.ID = ADSearchResultConverter.GetSidAsString(result);
+            this.ScanId = scanid;
             this.Path = ADSearchResultConverter.GetSinglestringValue(result, "distinguishedname");
+            this.ID = this.Path;
             this.DN = this.Path;
             this.CN = ADSearchResultConverter.GetSinglestringValue(result, "cn");
             this.Name = ADSearchResultConverter.GetSinglestringValue(result, "Name");
@@ -28,7 +30,8 @@ namespace ADScanner.ActiveDirectory
                 {"id", this.ID},
                 {"path", this.Path},
                 {"dn", this.DN},
-                {"cn", this.CN }
+                {"cn", this.CN },
+                {"scanid",this.ScanId }
             };
         }
     }
