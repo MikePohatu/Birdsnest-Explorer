@@ -1,0 +1,27 @@
+{
+	"credential":{
+		"id":"cred1",
+		"username": "domain\\username",
+		"password": "P@ssword1"
+	},
+	"datastores":[
+		{
+			"name":"datastore1",
+			"host":"server",
+			"comment":"san1",
+			"filesystems":[
+				{
+					"credentialid":"cred1",
+					"root":"\\\\server\\share1",
+					"comment":"san1-share1"
+				},
+				{
+					"credentialid":"cred1",
+					"root":"\\\\server\\share2",
+					"comment":"san1-share2"
+				}
+			]
+			
+		}
+	]
+}

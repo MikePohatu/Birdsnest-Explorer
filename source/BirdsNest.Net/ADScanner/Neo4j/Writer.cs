@@ -2,6 +2,7 @@
 using System.Text;
 using Neo4j.Driver.V1;
 using ADScanner.ActiveDirectory;
+using common;
 
 namespace ADScanner.Neo4j
 {
@@ -12,6 +13,8 @@ namespace ADScanner.Neo4j
             string query = "UNWIND $propertylist AS g " +
                 "MERGE (n:" + Types.Group + "{id:g.id}) " +
                 "SET n.name = g.name " +
+                "SET n.type = g.type " +
+                "SET n.samaccountname = g.samaccountname " +
                 "SET n.lastscan = g.scanid " +
                 "SET n.path = g.path " +
                 "SET n.rid = g.rid " +
@@ -28,6 +31,8 @@ namespace ADScanner.Neo4j
             "MERGE (n:" + Types.User + "{id:u.id}) " +
             "SET n.name = u.name " +
             "SET n.path = u.path " +
+            "SET n.type = u.type " +
+            "SET n.samaccountname = u.samaccountname " +
             "SET n.lastscan = u.scanid " +
             "SET n.primarygroupid = u.primarygroupid " +
             "SET n.displayname = u.displayname " +
@@ -44,6 +49,8 @@ namespace ADScanner.Neo4j
             "MERGE (n:" + Types.Computer + "{id:c.id}) " +
             "SET n.name = c.name " +
             "SET n.path = c.path " +
+            "SET n.type = c.type " +
+            "SET n.samaccountname = c.samaccountname " +
             "SET n.lastscan = c.scanid " +
             "SET n.primarygroupid = c.primarygroupid " +
             "SET n.operatingsystem = c.operatingsystem " +
@@ -55,17 +62,16 @@ namespace ADScanner.Neo4j
             return result.Summary.Counters.NodesCreated;
         }
 
-        public static object GetGroupRelationshipObject(string memberid, string groupdn, string scanid)
+        public static object GetGroupRelationshipObject(string membertype, string memberid, string groupdn, string scanid)
         {
-            return new { id = memberid, dn = groupdn, scanid = scanid };
+            return new { membertype = membertype, id = memberid, dn = groupdn, scanid = scanid };
         }
 
-        public static int MergeGroupRelationships(List<object> groupmappings, ISession session)
+        public static int MergeGroupRelationships(string type, List<object> groupmappings, ISession session)
         { 
             string query = "UNWIND $groupmappings as m " +
-                "MERGE (g:" + Types.Group + " {path:m.dn}) " +
-                "WITH g,m " +
-                "MATCH (n{id:m.id}) " +
+                "MERGE (g:" + Types.Group + "{path:m.dn}) " +
+                "MERGE (n:" + type + "{id:m.id}) " +
                 "MERGE (n)-[r:" + Types.MemberOf + "]->(g) " +
                 "SET r.lastscan = m.scanid " +
                 "RETURN n.name,g.dn";
@@ -74,7 +80,7 @@ namespace ADScanner.Neo4j
             return result.Summary.Counters.RelationshipsCreated;
         }
 
-        public static void MergeNodeOnID(INode node, ISession session, string scanid)
+        public static void MergeNodeOnID(IBirdsNestNode node, ISession session, string scanid)
         {
             SetScanId(node, scanid);
 
@@ -124,6 +130,8 @@ namespace ADScanner.Neo4j
             string query = "MATCH(n:" + label + ") " +
             "WHERE n.lastscan <> $scanid " +
             "SET n:AD_DELETED " +
+            "REMOVE n:" + label + " " +
+            "SET n.type='" + label + "' " +
             "WITH n " +
             "MATCH (n)-[r]->() " +
             "DELETE r " +
@@ -133,7 +141,7 @@ namespace ADScanner.Neo4j
             return result.Summary.Counters.RelationshipsDeleted;
         }
 
-        private static void SetScanId(INode node, string scanid)
+        private static void SetScanId(IBirdsNestNode node, string scanid)
         {
             object lastscancurrent;
             if (node.Properties.TryGetValue("scanid", out lastscancurrent))

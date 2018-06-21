@@ -5,6 +5,10 @@ VisualStudioVersion = 15.0.27703.2018
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ADScanner", "ADScanner\ADScanner.csproj", "{A0192080-8F1A-460E-AA31-2D4B6674B485}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "common", "common\common.csproj", "{0DC87A09-17F3-4E57-AE54-F706920D7AFA}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FSScanner", "FSScanner\FSScanner.csproj", "{232699C0-A1D1-4DAA-B064-55555C5859EA}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +19,14 @@ Global
 		{A0192080-8F1A-460E-AA31-2D4B6674B485}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A0192080-8F1A-460E-AA31-2D4B6674B485}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A0192080-8F1A-460E-AA31-2D4B6674B485}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0DC87A09-17F3-4E57-AE54-F706920D7AFA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0DC87A09-17F3-4E57-AE54-F706920D7AFA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0DC87A09-17F3-4E57-AE54-F706920D7AFA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0DC87A09-17F3-4E57-AE54-F706920D7AFA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{232699C0-A1D1-4DAA-B064-55555C5859EA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{232699C0-A1D1-4DAA-B064-55555C5859EA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{232699C0-A1D1-4DAA-B064-55555C5859EA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{232699C0-A1D1-4DAA-B064-55555C5859EA}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -1,10 +1,10 @@
 ﻿using System.Collections.Generic;
 using System.DirectoryServices;
-using ADScanner.Neo4j;
+using common;
 
 namespace ADScanner.ActiveDirectory
 {
-    public abstract class ADObject:INode
+    public abstract class ADObject: IBirdsNestNode
     {
         public string Name { get; protected set; }
         public virtual string Type { get { return "AD_Object"; } }

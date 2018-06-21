@@ -1,5 +1,6 @@
 ﻿using System;
 using System.DirectoryServices;
+using System.Diagnostics;
 
 namespace ADScanner.ActiveDirectory
 {
@@ -7,12 +8,13 @@ namespace ADScanner.ActiveDirectory
     {
         public static SearchResultCollection GetAllGroupResults(DirectoryEntry de)
         {
+            Stopwatch timer = new Stopwatch();
             SearchResultCollection results = null;
             using (DirectorySearcher searcher = new DirectorySearcher(de))
             {
                 try
                 {
-                    DateTime start = DateTime.Now;
+                    timer.Start();
                     searcher.Filter = ("(&(objectCategory=group))");
                     searcher.SearchScope = SearchScope.Subtree;
                     searcher.PropertiesToLoad.Add("cn");
@@ -28,11 +30,12 @@ namespace ADScanner.ActiveDirectory
                     searcher.PageSize = 1000;
                     Console.WriteLine("Searching for groups");
                     results = searcher.FindAll();
-                    TimeSpan elapsed = DateTime.Now - start;
-                    Console.WriteLine("Found " + results.Count + " groups in " + elapsed.Milliseconds + " milliseconds.");
+                    timer.Stop();
+                    Console.WriteLine("Found " + results.Count + " groups in " + timer.ElapsedMilliseconds + "ms.");
                 }
                 catch (Exception e)
                 {
+                    timer.Stop();
                     Console.WriteLine("Error retrieving groups from AD: " + e.Message);
                 }
             }
@@ -41,13 +44,14 @@ namespace ADScanner.ActiveDirectory
 
         public static SearchResultCollection GetAllUserResults(DirectoryEntry de)
         {
+            Stopwatch timer = new Stopwatch();
             SearchResultCollection results = null;
             using (DirectorySearcher searcher = new DirectorySearcher(de))
             {
                 try
                 {
-                    DateTime start = DateTime.Now;
-                    searcher.Filter = ("(&(objectCategory=user))");
+                    timer.Start();
+                    searcher.Filter = ("(&(objectCategory=person)(objectClass=user))");
                     searcher.SearchScope = SearchScope.Subtree;
                     searcher.PropertiesToLoad.Add("canonicalName");
                     searcher.PropertiesToLoad.Add("cn");
@@ -64,11 +68,12 @@ namespace ADScanner.ActiveDirectory
                     searcher.PageSize = 1000;
                     Console.WriteLine("Searching for users");
                     results = searcher.FindAll();
-                    TimeSpan elapsed = DateTime.Now - start;
-                    Console.WriteLine("Found " + results.Count + " users in " + elapsed.Milliseconds + " milliseconds.");
+                    timer.Stop();
+                    Console.WriteLine("Found " + results.Count + " users in " + timer.ElapsedMilliseconds + "ms.");
                 }
                 catch (Exception e)
                 {
+                    timer.Stop();
                     Console.WriteLine("Error retrieving users from AD: " + e.Message);
                 }
             }
@@ -77,13 +82,13 @@ namespace ADScanner.ActiveDirectory
 
         //public static SearchResultCollection GetDeletedUserResults(DirectoryEntry de)
         //{
-            
+        //    Stopwatch timer = new Stopwatch();
         //    SearchResultCollection results = null;
         //    using (DirectorySearcher searcher = new DirectorySearcher(de))
         //    {
         //        try
         //        {
-        //            DateTime start = DateTime.Now;
+        //            timer.Start();
         //            searcher.Filter = ("(&(isDeleted=TRUE)(userAccountControl:1.2.840.113556.1.4.417:=512))");
         //            searcher.SearchScope = SearchScope.Subtree;
         //            searcher.PropertiesToLoad.Add("cn");
@@ -97,11 +102,12 @@ namespace ADScanner.ActiveDirectory
         //            searcher.PageSize = 1000;
         //            Console.WriteLine("Searching for deleted users");
         //            results = searcher.FindAll();
-        //            TimeSpan elapsed = DateTime.Now - start;
-        //            Console.WriteLine("Found " + results.Count + " deleted users in " + elapsed.Milliseconds + " milliseconds.");
+        //            timer.Stop();
+        //            Console.WriteLine("Found " + results.Count + " deleted users in " + timer.ElapsedMilliseconds + "ms.");
         //        }
         //        catch (Exception e)
         //        {
+        //            timer.Stop();
         //            Console.WriteLine("Error retrieving deleted users from AD: " + e.Message);
         //        }
         //    }
@@ -110,12 +116,13 @@ namespace ADScanner.ActiveDirectory
 
         public static SearchResultCollection GetAllComputerResults(DirectoryEntry de)
         {
+            Stopwatch timer = new Stopwatch();
             SearchResultCollection results = null;
             using (DirectorySearcher searcher = new DirectorySearcher(de))
             {
                 try
                 {
-                    DateTime start = DateTime.Now;
+                    timer.Start();
                     searcher.Filter = ("(&(objectCategory=computer))");
                     searcher.SearchScope = SearchScope.Subtree;
                     searcher.PropertiesToLoad.Add("memberof");
@@ -132,11 +139,12 @@ namespace ADScanner.ActiveDirectory
                     searcher.PageSize = 1000;
                     Console.WriteLine("Searching for computers");
                     results = searcher.FindAll();
-                    TimeSpan elapsed = DateTime.Now - start;
-                    Console.WriteLine("Found " + results.Count + " computers in " + elapsed.Milliseconds + " milliseconds.");
+                    timer.Stop();
+                    Console.WriteLine("Found " + results.Count + " computers in " + timer.ElapsedMilliseconds + "ms.");
                 }
                 catch (Exception e)
                 {
+                    timer.Stop();
                     Console.WriteLine("Error retrieving computers from AD: " + e.Message);
                 }
             }

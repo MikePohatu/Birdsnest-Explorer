@@ -51,10 +51,7 @@ namespace ADScanner.ActiveDirectory
                 SecurityIdentifier sid = new SecurityIdentifier((byte[])result.Properties[property][0], 0);
                 return sid.ToString();
             }
-            else
-            {
-                return null;
-            }
+            return null;
         }
 
         public static string GetRidFromSid(string sid)
@@ -64,8 +61,7 @@ namespace ADScanner.ActiveDirectory
                 string[] sidbits = sid.Split('-');
                 return sidbits[sidbits.GetUpperBound(0)];
             }
-            else
-            { return null; }
+            return null;
         }
 
         public static List<string> GetStringList(SearchResult result, string property)

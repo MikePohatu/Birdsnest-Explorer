@@ -4,16 +4,15 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{A0192080-8F1A-460E-AA31-2D4B6674B485}</ProjectGuid>
-    <OutputType>Exe</OutputType>
-    <RootNamespace>ADScanner</RootNamespace>
-    <AssemblyName>ADScanner</AssemblyName>
+    <ProjectGuid>{0DC87A09-17F3-4E57-AE54-F706920D7AFA}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>common</RootNamespace>
+    <AssemblyName>common</AssemblyName>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
-    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
@@ -23,7 +22,6 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release\</OutputPath>
@@ -32,16 +30,11 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Neo4j.Driver, Version=1.6.70.1, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Neo4j.Driver.1.6.1\lib\net452\Neo4j.Driver.dll</HintPath>
-    </Reference>
     <Reference Include="Newtonsoft.Json, Version=11.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\packages\Newtonsoft.Json.11.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
-    <Reference Include="System.DirectoryServices" />
-    <Reference Include="System.DirectoryServices.AccountManagement" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -50,32 +43,14 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ActiveDirectory\ADComputer.cs" />
-    <Compile Include="ActiveDirectory\ADEntity.cs" />
-    <Compile Include="ActiveDirectory\ADGroup.cs" />
-    <Compile Include="ActiveDirectory\ADObject.cs" />
-    <Compile Include="ActiveDirectory\ADSearchResultConverter.cs" />
-    <Compile Include="ActiveDirectory\ADUser.cs" />
-    <Compile Include="ActiveDirectory\ADGroupMemberObject.cs" />
-    <Compile Include="ActiveDirectory\DeletedObject.cs" />
-    <Compile Include="ActiveDirectory\Types.cs" />
-    <Compile Include="Configuration.cs" />
-    <Compile Include="FileHandler.cs" />
-    <Compile Include="ActiveDirectory\QueryHandler.cs" />
-    <Compile Include="Neo4j\Reader.cs" />
-    <Compile Include="Neo4j\Writer.cs" />
-    <Compile Include="Program.cs" />
+    <Compile Include="Class1.cs" />
+    <Compile Include="Credential.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="IBirdsNestNode.cs" />
+    <Compile Include="ShortGuid.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="App.config" />
     <None Include="packages.config" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\common\common.csproj">
-      <Project>{0dc87a09-17f3-4e57-ae54-f706920d7afa}</Project>
-      <Name>common</Name>
-    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

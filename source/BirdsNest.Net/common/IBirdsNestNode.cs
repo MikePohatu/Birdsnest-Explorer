@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
 
-namespace ADScanner.Neo4j
+namespace common
 {
-    public interface INode
+    public interface IBirdsNestNode
     {
         string Type { get; }
         string ID { get; }
