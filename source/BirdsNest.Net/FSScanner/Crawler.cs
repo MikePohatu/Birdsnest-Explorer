@@ -10,11 +10,17 @@ namespace FSScanner
     {
         public void Crawl(string rootpath, NetworkCredential cred)
         {
-            using (new NetworkConnection(rootpath, cred))
+            try
             {
-                DirectoryInfo dirinfo = new DirectoryInfo(rootpath);
-                Console.WriteLine(dirinfo.Attributes.ToString());
-            }  
+                NetworkConnection netcred = new NetworkConnection(rootpath, cred);
+            }
+            catch
+            {
+                Console.WriteLine("Unable to connect to " + rootpath + " with " + cred.UserName);
+                return;
+            }
+            DirectoryInfo dirinfo = new DirectoryInfo(rootpath);
+            Console.WriteLine(dirinfo.FullName);
         }
     }
 }

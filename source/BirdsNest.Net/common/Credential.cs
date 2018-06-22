@@ -15,6 +15,9 @@ namespace common
         [JsonProperty("username")]
         public string Username { get; set; }
 
+        [JsonProperty("domain")]
+        public string Domain { get; set; }
+
         [JsonProperty("password")]
         public string Password { get; set; }
 

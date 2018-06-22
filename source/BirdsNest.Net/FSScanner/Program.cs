@@ -48,7 +48,7 @@ namespace FSScanner
             {
                 foreach (Credential cred in config.Credentials)
                 {
-                    NetworkCredential netcred = new NetworkCredential(cred.Username,cred.Password);
+                    NetworkCredential netcred = new NetworkCredential(cred.Username,cred.Password,cred.Domain);
                     credentials.Add(cred.ID, netcred);
                 }
                 datastores = config.Datastores;
@@ -65,6 +65,9 @@ namespace FSScanner
                     }
                 }
             }
+
+            Console.WriteLine("Finished");
+            Console.ReadLine();
         }
     }
 }
