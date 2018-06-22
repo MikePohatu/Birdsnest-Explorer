@@ -1,0 +1,5 @@
+MATCH (startfolder:FS_FOLDER{path:$path})
+MATCH inheritancepath=((startfolder)-[:FS_InheritsFrom*]->(parentfolder:FS_FOLDER))
+WITH nodes(inheritancepath) AS x UNWIND x AS folderlinks
+MATCH permpath=(()-[:GivesAccessTo]->(folderlinks))
+RETURN *
