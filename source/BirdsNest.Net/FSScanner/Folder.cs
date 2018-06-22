@@ -14,7 +14,7 @@ namespace FSScanner
         public string PermParent
         {
             get { return this._permparent; }
-            set { this._permparent = value.ToLower(); }
+            set { this._permparent = value?.ToLower(); }
         } 
 
         private string _path;

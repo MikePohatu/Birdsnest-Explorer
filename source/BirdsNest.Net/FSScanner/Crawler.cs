@@ -19,7 +19,7 @@ namespace FSScanner
             this.writer = new Writer(session);
         }
 
-        public void Crawl(string rootpath, NetworkCredential cred, ISession session)
+        public void Crawl(DataStore ds, string rootpath, NetworkCredential cred, ISession session)
         {
             Console.WriteLine(rootpath);
 
@@ -40,7 +40,7 @@ namespace FSScanner
             //recurse down
             try
             {
-                CrawlChildren(rootpath, rootpath);
+                CrawlChildren(rootpath, null);
                 writer.FlushFolderQueue();
                 timer.Stop();
                 Console.WriteLine("Crawled file system " + rootpath + " in " + timer.Elapsed);

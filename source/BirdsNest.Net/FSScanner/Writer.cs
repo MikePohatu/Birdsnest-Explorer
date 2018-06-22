@@ -59,6 +59,15 @@ namespace FSScanner
             }
         }
 
+        private int SendRoot(Folder folder)
+        {
+            string query = "MERGE(folder:" + folder.Type + "{path:$path}) " +
+            "RETURN folder.path ";
+
+            IStatementResult result = this._session.WriteTransaction(tx => tx.Run(query, new { path = folder.Path, lastfolder = folder.PermParent }));
+            return result.Summary.Counters.NodesCreated;
+        }
+
         private int SendFolder(Folder folder)
         {
             string query = "MERGE(folder:" + folder.Type + "{path:$path}) " +
@@ -78,13 +87,25 @@ namespace FSScanner
             "WITH folder,p " +
             "MERGE(n {id:p.ID})  " +
             "ON CREATE SET n:" + CommonTypes.Orphaned + " " +
-            "MERGE (folder) -[:" + CommonTypes.Uses + "]->(n) " +
+            //"MERGE (folder) -[:" + CommonTypes.Uses + "]->(n) " +
             "MERGE (n) -[r:" + CommonTypes.GivesAccessTo + "]->(folder) " +
-            "SET r.Right=p.Right " + 
+            "SET r.right=p.Right " + 
             "RETURN folder.path ";
 
             IStatementResult result = this._session.WriteTransaction(tx => tx.Run(query, new { perms = this._permissions }));
             return result.Summary.Counters.RelationshipsCreated;
         }
+
+        public int SendDatastore(DataStore ds)
+        {
+            string query = "MERGE(n:" + Types.Datastore + "{name:$Name}) " +
+            "SET n.comment=$Comment " +
+            "SET n.host=$Host " +
+            "RETURN n ";
+
+            IStatementResult result = this._session.WriteTransaction(tx => tx.Run(query, ds));
+            return result.Summary.Counters.RelationshipsCreated;
+        }
+
     }
 }

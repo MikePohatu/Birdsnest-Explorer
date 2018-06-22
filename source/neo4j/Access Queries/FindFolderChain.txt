@@ -1,0 +1,2 @@
+MATCH path=((n:FS_FOLDER)-[:FS_InheritsFrom]->())
+RETURN path
