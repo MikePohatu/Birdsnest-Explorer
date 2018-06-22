@@ -1,0 +1,2 @@
+MATCH path=(u:AD_USER{samaccountname:$username})-[*]->(g:AD_GROUP{name:$groupname})
+return path
