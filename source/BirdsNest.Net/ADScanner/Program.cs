@@ -5,7 +5,6 @@ using System.Diagnostics;
 using Neo4j.Driver.V1;
 using ADScanner.ActiveDirectory;
 using ADScanner.Neo4j;
-using System.Linq;
 using common;
 
 namespace ADScanner
@@ -46,7 +45,7 @@ namespace ADScanner
             //load the config
             using (Configuration config = LoadConfig(configfile))
             {
-                driver = ConnectToNeo(config);
+                driver = Neo4jConnector.ConnectToNeo(config);
                 rootDE = ConnectToAD(config);
             }
 
@@ -72,7 +71,7 @@ namespace ADScanner
                             if (groupprops.Count >= 1000)
                             {
                                 Console.Write(".");
-                                groupcount = groupcount + Writer.MergeADGroups(ListPop(groupprops,1000), session);
+                                groupcount = groupcount + Writer.MergeADGroups(ListExtensions.ListPop(groupprops,1000), session);
                             }
                             foreach (string dn in g.MemberOfDNs)
                             {
@@ -89,7 +88,7 @@ namespace ADScanner
                         steptimer.Restart();
                         while (groupmappings.Count > 0)
                         {
-                            relationshipcount = relationshipcount + Writer.MergeGroupRelationships(Types.Group, ListPop(groupmappings, 1000), session);
+                            relationshipcount = relationshipcount + Writer.MergeGroupRelationships(Types.Group, ListExtensions.ListPop(groupmappings, 1000), session);
                             Console.Write(".");
                         }
                         steptimer.Stop();
@@ -122,7 +121,7 @@ namespace ADScanner
                             if (userprops.Count >= 1000)
                             {
                                 Console.Write(".");
-                                usercount = usercount + Writer.MergeAdUsers(ListPop(userprops, 1000), session);
+                                usercount = usercount + Writer.MergeAdUsers(ListExtensions.ListPop(userprops, 1000), session);
                             }
                             foreach (string dn in u.MemberOfDNs)
                             {
@@ -139,7 +138,7 @@ namespace ADScanner
                         steptimer.Restart();
                         while (groupmappings.Count > 0)
                         {
-                            relationshipcount = relationshipcount + Writer.MergeGroupRelationships(Types.User, ListPop(groupmappings, 1000), session);
+                            relationshipcount = relationshipcount + Writer.MergeGroupRelationships(Types.User, ListExtensions.ListPop(groupmappings, 1000), session);
                             Console.Write(".");
                         }
                         steptimer.Stop();
@@ -171,7 +170,7 @@ namespace ADScanner
                             if (compprops.Count >= 1000)
                             {
                                 Console.Write(".");
-                                computercount = computercount + Writer.MergeAdComputers(ListPop(compprops, 1000), session);
+                                computercount = computercount + Writer.MergeAdComputers(ListExtensions.ListPop(compprops, 1000), session);
                             }
                             foreach (string dn in c.MemberOfDNs)
                             {
@@ -188,7 +187,7 @@ namespace ADScanner
                         steptimer.Restart();
                         while (groupmappings.Count > 0)
                         {
-                            relationshipcount = relationshipcount + Writer.MergeGroupRelationships(Types.Computer, ListPop(groupmappings, 1000), session);
+                            relationshipcount = relationshipcount + Writer.MergeGroupRelationships(Types.Computer, ListExtensions.ListPop(groupmappings, 1000), session);
                             Console.Write(".");
                         }
                         steptimer.Stop();
@@ -265,24 +264,6 @@ namespace ADScanner
             return null;
         }
 
-        private static IDriver ConnectToNeo(Configuration config)
-        {
-            try
-            {
-                if (string.IsNullOrWhiteSpace(config.DB_Password) || string.IsNullOrWhiteSpace(config.DB_Username))
-                { return GraphDatabase.Driver(config.DB_URI); }
-                else
-                { return GraphDatabase.Driver(config.DB_URI, AuthTokens.Basic(config.DB_Username, config.DB_Password)); }
-                
-            }
-            catch(Exception e)
-            {
-                Console.WriteLine("Error connecting to Neo4j: " + e.Message);
-                Environment.Exit(1002);
-            }
-            return null;
-        }
-
         private static DirectoryEntry ConnectToAD(Configuration config)
         {
             try
@@ -299,15 +280,6 @@ namespace ADScanner
                 Environment.Exit(1003);
             }
             return null;
-        }
-
-        private static List<T> ListPop<T>(List<T> list, int count)
-        {
-            if (count > list.Count) { count = list.Count; }
-            List<T> newlist = new List<T>();
-            newlist.AddRange(list.Take(count));
-            list.RemoveRange(0, count);
-            return newlist;
         }
     }
 }

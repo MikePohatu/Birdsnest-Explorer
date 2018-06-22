@@ -1,10 +1,11 @@
 ﻿using System;
 using System.Security;
 using Newtonsoft.Json;
+using common;
 
 namespace ADScanner
 {
-    public class Configuration:IDisposable
+    public class Configuration: INeoConfiguration
     {
         [JsonProperty("AD_DomainPath")]
         public string AD_DomainPath { get; set; }

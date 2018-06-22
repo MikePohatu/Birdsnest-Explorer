@@ -14,14 +14,13 @@ namespace FSScanner
         {
             Stopwatch steptimer = new Stopwatch();
             Stopwatch totaltimer = new Stopwatch();
-            Crawler crawler = new Crawler();
 
             Dictionary<string, NetworkCredential> credentials = new Dictionary<string, NetworkCredential>();
             List<DataStore> datastores = new List<DataStore>();
 
             string _appdir = AppDomain.CurrentDomain.BaseDirectory;
             string configfile = _appdir + @"\fsconfig.json";
-            int relcounter = 0;
+            //int relcounter = 0;
             bool batchmode = false;
             string scanid = ShortGuid.NewGuid().ToString();
 
@@ -52,22 +51,28 @@ namespace FSScanner
                     credentials.Add(cred.ID, netcred);
                 }
                 datastores = config.Datastores;
+                driver = Neo4jConnector.ConnectToNeo(config);
             }
 
             foreach (DataStore ds in datastores)
             {
-                foreach (FileSystem fs in ds.FileSystems)
+                using (ISession session = driver.Session())
                 {
-                    NetworkCredential fscred;
-                    if (credentials.TryGetValue(fs.CredentialID,out fscred))
+                    Crawler crawler = new Crawler(session);
+                    foreach (FileSystem fs in ds.FileSystems)
                     {
-                        crawler.Crawl(fs.Path, fscred);
+                        NetworkCredential fscred;
+                        if (credentials.TryGetValue(fs.CredentialID, out fscred))
+                        {
+                            crawler.Crawl(fs.Path, fscred,session);
+                        }
                     }
-                }
+                }     
             }
 
             Console.WriteLine("Finished");
-            Console.ReadLine();
+            if (batchmode == false) { Console.ReadLine(); }
+            
         }
     }
 }

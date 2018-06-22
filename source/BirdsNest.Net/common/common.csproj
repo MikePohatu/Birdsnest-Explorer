@@ -30,6 +30,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Neo4j.Driver, Version=1.6.70.1, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Neo4j.Driver.1.6.1\lib\net452\Neo4j.Driver.dll</HintPath>
+    </Reference>
     <Reference Include="Newtonsoft.Json, Version=11.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\packages\Newtonsoft.Json.11.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
@@ -44,7 +47,11 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Class1.cs" />
+    <Compile Include="CommonTypes.cs" />
     <Compile Include="Credential.cs" />
+    <Compile Include="INeoConfiguration.cs" />
+    <Compile Include="ListExtensions.cs" />
+    <Compile Include="Neo4jConnector.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="IBirdsNestNode.cs" />
     <Compile Include="ShortGuid.cs" />
