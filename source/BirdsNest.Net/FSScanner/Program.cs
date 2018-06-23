@@ -64,7 +64,7 @@ namespace FSScanner
                         NetworkCredential fscred;
                         if (credentials.TryGetValue(fs.CredentialID, out fscred))
                         {
-                            crawler.Crawl(fs.Path, fscred,session);
+                            crawler.Crawl(ds,fs.Path, fscred,session);
                         }
                     }
                 }     
