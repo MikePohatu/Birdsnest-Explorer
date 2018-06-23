@@ -1,0 +1,4 @@
+WITH 'SCCM Admins' AS group
+MATCH pathout=((n:AD_GROUP{name:group})-[*]->())
+MATCH pathin=((n:AD_GROUP{name:group})<-[*]-())
+RETURN pathin,pathout
