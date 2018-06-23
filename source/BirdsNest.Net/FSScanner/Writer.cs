@@ -98,9 +98,11 @@ namespace FSScanner
 
         public int SendDatastore(DataStore ds)
         {
-            string query = "MERGE(n:" + Types.Datastore + " {name:$Name}) " +
+            string query = "MERGE(n:" + Types.Datastore + " {name:$Name}) " +           
             "SET n.comment=$Comment " +
             "SET n.host=$Host " +
+            "MERGE(host:" + CommonTypes.Device + " {name:$Host}) " +
+            "MERGE (n)-[r:" + CommonTypes.ConnectedTo + "]->(host) " +
             "RETURN n ";
 
             IStatementResult result = this._session.WriteTransaction(tx => tx.Run(query, ds));
@@ -114,7 +116,7 @@ namespace FSScanner
             "MERGE (root)-[r:" + Types.HostedOn + "]->(datastore) " +
             "RETURN * ";
 
-            IStatementResult result = this._session.WriteTransaction(tx => tx.Run(query, new { dsname=ds.Name, rootpath=rootpath?.ToLower() }));
+            IStatementResult result = this._session.WriteTransaction(tx => tx.Run(query, new { dsname=ds.Name, rootpath=rootpath?.ToLower()}));
             return result.Summary.Counters.RelationshipsCreated;
         }
     }

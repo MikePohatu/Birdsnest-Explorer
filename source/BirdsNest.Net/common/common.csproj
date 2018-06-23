@@ -46,7 +46,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Class1.cs" />
     <Compile Include="CommonTypes.cs" />
     <Compile Include="Credential.cs" />
     <Compile Include="INeoConfiguration.cs" />

@@ -47,6 +47,7 @@ namespace ADScanner.Neo4j
         {
             string query = "UNWIND $propertylist AS c " +
             "MERGE (n:" + Types.Computer + "{id:c.id}) " +
+            "SET n: " + CommonTypes.Device + " " + 
             "SET n.name = c.name " +
             "SET n.path = c.path " +
             "SET n.type = c.type " +
