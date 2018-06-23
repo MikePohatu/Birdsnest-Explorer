@@ -91,5 +91,15 @@
     "border-color": "#336600",
     "text-color-internal": "#FFFFFF",
     "caption": "{name}"
+  },
+  "relationship.FS_InheritsFrom": {
+    "color": "#6DCE9E",
+    "border-color": "#60B58B",
+    "text-color-internal": "#FFFFFF"
+  },
+  "relationship.GivesAccessTo": {
+    "color": "#DE9BF9",
+    "border-color": "#BF85D6",
+    "text-color-internal": "#FFFFFF"
   }
 }
