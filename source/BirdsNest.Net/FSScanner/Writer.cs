@@ -68,7 +68,7 @@ namespace FSScanner
             return result.Summary.Counters.NodesCreated;
         }
 
-        private int SendFolder(Folder folder)
+        public int SendFolder(Folder folder)
         {
             string query = "MERGE(folder:" + folder.Type + "{path:$path}) " +
             "WITH folder " +
@@ -98,7 +98,7 @@ namespace FSScanner
 
         public int SendDatastore(DataStore ds)
         {
-            string query = "MERGE(n:" + Types.Datastore + "{name:$Name}) " +
+            string query = "MERGE(n:" + Types.Datastore + " {name:$Name}) " +
             "SET n.comment=$Comment " +
             "SET n.host=$Host " +
             "RETURN n ";
@@ -107,5 +107,15 @@ namespace FSScanner
             return result.Summary.Counters.RelationshipsCreated;
         }
 
+        public int AttachRootToDataStore(DataStore ds, string rootpath)
+        {
+            string query = "MERGE(datastore:" + Types.Datastore + " {name:$dsname}) " +
+            "MERGE(root:" + Types.Folder + " {path:$rootpath}) " +
+            "MERGE (root)-[r:" + Types.HostedOn + "]->(datastore) " +
+            "RETURN * ";
+
+            IStatementResult result = this._session.WriteTransaction(tx => tx.Run(query, new { dsname=ds.Name, rootpath=rootpath?.ToLower() }));
+            return result.Summary.Counters.RelationshipsCreated;
+        }
     }
 }

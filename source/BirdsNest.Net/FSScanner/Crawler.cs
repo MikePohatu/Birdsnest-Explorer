@@ -23,10 +23,22 @@ namespace FSScanner
         {
             Console.WriteLine(rootpath);
 
-            //start at root
+            //created the datastore node
             try
             {
                 timer.Start();
+                writer.SendDatastore(ds);
+                writer.AttachRootToDataStore(ds, rootpath);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("Error adding datastore " + ds.Name + ": " + e.Message);
+                return;
+            }
+
+            //now start at root
+            try
+            {
                 NetworkConnection netcred = new NetworkConnection(rootpath, cred);
                 QueryFolder(rootpath, string.Empty, true);
                 

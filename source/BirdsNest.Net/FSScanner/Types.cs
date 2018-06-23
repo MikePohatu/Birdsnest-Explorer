@@ -8,5 +8,6 @@
         internal static string Datastore { get { return "FS_DATASTORE"; } }
         internal static string FolderRoot { get { return "FS_ROOT"; } }
         internal static string InheritsFrom { get { return "FS_InheritsFrom"; } }
+        internal static string HostedOn { get { return "FS_HostedOn"; } }
     }
 }

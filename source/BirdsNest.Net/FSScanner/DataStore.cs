@@ -9,6 +9,8 @@ namespace FSScanner
 {
     public class DataStore
     {
+        public string Type { get { return Types.Datastore; } }
+
         [JsonProperty("name")]
         public string Name { get; set; }
 
