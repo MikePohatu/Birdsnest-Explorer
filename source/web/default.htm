@@ -28,7 +28,7 @@
 					container_id: "viz",
 					server_url: "bolt://localhost:7687",
 					server_user: "user",
-					server_password: "pass",
+					server_password: "password",
 					arrows:true,
 					labels: {
 						"AD_GROUP": {
@@ -38,6 +38,16 @@
 						"AD_USER": {
 							"caption": "name",
 							"size": "member_count"
+						},
+						"AD_COMPUTER": {
+							"caption": "name",
+							"size": "member_count"
+						},
+						"FS_DATASTORE": {
+							"caption": "name"
+						},
+						"FS_FOLDER": {
+							"caption": "path"
 						}
 					},
 					relationships: {
