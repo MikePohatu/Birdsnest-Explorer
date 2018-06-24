@@ -13,6 +13,7 @@ namespace ADScanner.ActiveDirectory
         const string TYPE_DISTRIBUTION = "distribution";
 
         public override string Type { get { return Types.Group; } }
+        public int MemberCount { get; private set; }
         public string GroupType { get; private set; }
         public string Rid { get; private set; }
         public List<string> MemberDNs { get; private set; }
@@ -20,6 +21,7 @@ namespace ADScanner.ActiveDirectory
         public ADGroup(SearchResult result, string scanid) : base (result, scanid)
         {
             this.MemberDNs = ADSearchResultConverter.GetStringList(result,"member");
+            this.MemberCount = this.MemberDNs.Count;
 
             this.SetTypeAndScope(ADSearchResultConverter.GetSinglestringValue(result, "grouptype"));
             this.Rid = ADSearchResultConverter.GetRidFromSid(this.ID);

@@ -207,6 +207,16 @@ namespace ADScanner
                 Console.WriteLine("Created " + relcounter + " primary group relationships in " + steptimer.ElapsedMilliseconds + "ms");
             }
 
+
+            using (ISession session = driver.Session())
+            {
+                steptimer.Restart();
+                //create primary group mappings
+                int propcounter = Writer.UpdateMemberCounts(session);
+                steptimer.Stop();
+                Console.WriteLine("Created " + propcounter + " group membership counts updated in " + steptimer.ElapsedMilliseconds + "ms");
+            }
+
             Console.WriteLine();
             Console.WriteLine("Cleaning up deleted items");
             steptimer.Restart();

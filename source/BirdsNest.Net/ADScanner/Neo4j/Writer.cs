@@ -25,6 +25,16 @@ namespace ADScanner.Neo4j
             return result.Summary.Counters.NodesCreated;
         }
 
+        public static int UpdateMemberCounts(ISession session)
+        {
+            string query = "MATCH ()-[r:AD_MemberOf]-(n:AD_GROUP) " +
+                "WITH n,count(r) AS i " +
+                "SET n.member_count = i " +
+                "RETURN n";
+            var result = session.WriteTransaction(tx => tx.Run(query));
+            return result.Summary.Counters.PropertiesSet;
+        }
+
         public static int MergeAdUsers(List<Dictionary<string, object>> propertylist, ISession session)
         {
             string query = "UNWIND $propertylist AS u " +
