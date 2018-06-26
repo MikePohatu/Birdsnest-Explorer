@@ -19,7 +19,27 @@ namespace FSScanner
             this.writer = new Writer(session);
         }
 
+
         public void Crawl(DataStore ds, string rootpath, NetworkCredential cred, ISession session)
+        {
+
+            //create a connection to the root path using other credentials
+            try
+            {
+                NetworkConnection netcred = new NetworkConnection(rootpath, cred);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("Error connecting to " + rootpath + " with " + cred.UserName + ": " + e.Message);
+                return;
+            }
+
+            //now initiate the crawl
+            this.Crawl(ds, rootpath, session);
+        }
+
+
+        public void Crawl(DataStore ds, string rootpath, ISession session)
         {
             Console.WriteLine(rootpath);
 
@@ -36,22 +56,10 @@ namespace FSScanner
                 return;
             }
 
-            //now start at root
+            //start at root and recurse down
             try
             {
-                NetworkConnection netcred = new NetworkConnection(rootpath, cred);
                 QueryFolder(rootpath, string.Empty, true);
-                
-            }
-            catch(Exception e)
-            {
-                Console.WriteLine("Error connecting to " + rootpath + " with " + cred.UserName + ": " + e.Message);
-                return;
-            }
-
-            //recurse down
-            try
-            {
                 CrawlChildren(rootpath, null);
                 writer.FlushFolderQueue();
                 timer.Stop();
@@ -66,21 +74,6 @@ namespace FSScanner
                 return;
             }
 
-            //now send the perm mappings
-            try
-            {
-                timer.Restart();
-                writer.SendPermissions();
-                timer.Stop();
-                Console.WriteLine("Sent permission mappings for " + rootpath + " in " + timer.ElapsedMilliseconds + "ms");
-            }
-            catch (Exception e)
-            {
-                writer.FlushFolderQueue();
-                timer.Stop();
-                Console.WriteLine("Error crawling file system " + rootpath + ": " + e.Message);
-                return;
-            }
             Console.WriteLine("Found " + writer.FolderCount + " folders with permissions applied");
         }
 
@@ -114,10 +107,10 @@ namespace FSScanner
         {
             //Console.WriteLine("Query path: " + path);
             DirectorySecurity dirsec = Directory.GetAccessControl(path);
-            AuthorizationRuleCollection rules = dirsec.GetAccessRules(true, isroot, typeof(SecurityIdentifier));
-            if (rules.Count > 0)
+            AuthorizationRuleCollection directrules = dirsec.GetAccessRules(true, isroot, typeof(SecurityIdentifier));
+            if (directrules.Count > 0)
             {
-                Folder f = new Folder(path, permroot, rules);
+                Folder f = new Folder(path, permroot, directrules, dirsec.AreAccessRulesProtected);
                 writer.QueueFolder(f);
                 return true;
             }

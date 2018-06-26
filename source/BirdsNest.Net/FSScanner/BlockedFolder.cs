@@ -4,7 +4,7 @@
     {
         public override string Type { get { return Types.BlockedFolder; } }
 
-        public BlockedFolder(string path, string permparent): base(path, permparent, null)
+        public BlockedFolder(string path, string permparent): base(path, permparent, null, true)
         { }
     }
 }

@@ -53,19 +53,8 @@
 				.sidenav a {font-size: 18px;}
 			}
         </style>
-		<script>
-			/* Set the width of the side navigation to 250px and the left margin of the page content to 250px */
-			function openNav() {
-				document.getElementById("mySidenav").style.width = "250px";
-				document.getElementById("main").style.marginLeft = "250px";
-			}
-
-			/* Set the width of the side navigation to 0 and the left margin of the page content to 0 */
-			function closeNav() {
-				document.getElementById("mySidenav").style.width = "0";
-				document.getElementById("main").style.marginLeft = "0";
-			}
-		</script>
+		<script src="menu.js"></script> 
+		<script src="https://d3js.org/d3.v5.min.js"></script> 
 	</head>
     <body onload="draw()">
     
@@ -81,9 +70,9 @@
 		<span onclick="openNav()">open</span>
 
 		<!-- Add all page content inside this div if you want the side nav to push page content to the right (not used if you only want the sidenav to sit on top of the page -->
-		<div id="main">
+		<!--<div id="main">
 			<iframe src="http://dev01.home.local:7474/browser/" width="100%" height="100%"></iframe>
-		</div>	
+		</div>-->	
 		
     </body>    
 </html>

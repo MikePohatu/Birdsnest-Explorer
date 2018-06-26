@@ -1,14 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Security.AccessControl;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace FSScanner
 {
     public class Folder
     {
+        public bool InheritanceDisabled { get; private set; }
+
         public virtual string Type { get { return Types.Folder; } }
         private string _permparent = string.Empty;
         public string PermParent
@@ -25,8 +24,9 @@ namespace FSScanner
         }
         public List<Permission> Permissions { get; } = new List<Permission>();
 
-        public Folder(string path, string permparent, AuthorizationRuleCollection rules)
+        public Folder(string path, string permparent, AuthorizationRuleCollection rules, bool isinheritancedisabled)
         {
+            this.InheritanceDisabled = isinheritancedisabled;
             this.Path = path;
             this.PermParent = permparent;
             if (rules?.Count > 0)
