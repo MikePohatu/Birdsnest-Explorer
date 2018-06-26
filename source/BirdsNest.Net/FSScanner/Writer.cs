@@ -58,7 +58,7 @@ namespace FSScanner
 
         private int SendRoot(Folder folder)
         {
-            string query = "MERGE(folder:" + folder.Type + "{path:$path}) " +
+            string query = "MERGE(folder {path:$path}) " +
             "RETURN folder.path ";
 
             IStatementResult result = this._session.WriteTransaction(tx => tx.Run(query, new { path = folder.Path, lastfolder = folder.PermParent }));
@@ -67,8 +67,9 @@ namespace FSScanner
 
         public int SendFolder(Folder folder)
         {
-            StringBuilder builder = new StringBuilder();
-            builder.AppendLine("MERGE(folder:" + folder.Type + "{path:$path}) ");
+            string query = "MERGE(folder {path:$path}) " +
+                "ON MATCH SET folder:" + folder.Type + " " +
+                "RETURN folder";
 
             if (string.IsNullOrEmpty(folder.PermParent) == false)
             {
@@ -80,16 +81,16 @@ namespace FSScanner
                 this.SendPermissions(folder.Permissions);
             }
 
-            IStatementResult result = this._session.WriteTransaction(tx => tx.Run(builder.ToString(), new { path = folder.Path, lastfolder = folder.PermParent }));
+            IStatementResult result = this._session.WriteTransaction(tx => tx.Run(query, new { path = folder.Path, lastfolder = folder.PermParent }));
             return result.Summary.Counters.NodesCreated;
         }
 
         public int ConnectFolderToParent(Folder folder)
         {
             StringBuilder builder = new StringBuilder();
-            builder.AppendLine("MERGE(folder:" + folder.Type + "{path:$path}) ");
+            builder.AppendLine("MERGE(folder {path:$path}) ");
             builder.AppendLine("WITH folder ");
-            builder.AppendLine("MERGE(lastfolder:" + Types.Folder + "{path:$lastfolder}) ");
+            builder.AppendLine("MERGE(lastfolder {path:$lastfolder}) ");
 
             if (folder.InheritanceDisabled) { builder.AppendLine("MERGE (folder) -[:" + Types.BlocksInheritanceFrom + "]->(lastfolder) RETURN folder.path"); }
             else { builder.AppendLine("MERGE (folder) -[:" + Types.InheritsFrom + "]->(lastfolder) RETURN folder.path"); }
@@ -100,9 +101,9 @@ namespace FSScanner
 
         public int SendBlockedInheritanceFolder(Folder folder)
         {
-            string query = "MERGE(folder:" + folder.Type + "{path:$path}) " +
+            string query = "MERGE(folder {path:$path}) " +
             "WITH folder " +
-            "MATCH(lastfolder:" + Types.Folder + " {path:$lastfolder}) " +
+            "MATCH(lastfolder {path:$lastfolder}) " +
             "MERGE (folder) -[:" + Types.BlocksInheritanceFrom + "]->(lastfolder) " +
             "RETURN folder.path ";
 
@@ -113,7 +114,7 @@ namespace FSScanner
         public int SendPermissions(List<Permission> permissions)
         {
             string query = "UNWIND $perms as p " +
-            "MERGE(folder:" + Types.Folder + "{path:p.Path}) " +
+            "MERGE(folder {path:p.Path}) " +
             "WITH folder,p " +
             "MERGE(n {id:p.ID})  " +
             "ON CREATE SET n:" + CommonTypes.Orphaned + " " +
@@ -142,7 +143,7 @@ namespace FSScanner
         public int AttachRootToDataStore(DataStore ds, string rootpath)
         {
             string query = "MERGE(datastore:" + Types.Datastore + " {name:$dsname}) " +
-            "MERGE(root:" + Types.Folder + " {path:$rootpath}) " +
+            "MERGE(root {path:$rootpath}) " +
             "MERGE (root)-[r:" + Types.HostedOn + "]->(datastore) " +
             "RETURN * ";
 
