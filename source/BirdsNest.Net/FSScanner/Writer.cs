@@ -47,29 +47,25 @@ namespace FSScanner
                 catch (Exception e)
                 { Console.WriteLine("Failed to send folder: " + f.Path + ": " + e.Message); }
             }
-
-            //try
-            //{
-            //    this.SendPermissions(this._permissions);
-            //}
-            //catch (Exception e)
-            //{ Console.WriteLine("Failed to send permissions: " + e.Message); }
-        }
-
-        private int SendRoot(Folder folder)
-        {
-            string query = "MERGE(folder {path:$path}) " +
-            "RETURN folder.path ";
-
-            IStatementResult result = this._session.WriteTransaction(tx => tx.Run(query, new { path = folder.Path, lastfolder = folder.PermParent }));
-            return result.Summary.Counters.NodesCreated;
         }
 
         public int SendFolder(Folder folder)
         {
             string query = "MERGE(folder {path:$path}) " +
-                "ON MATCH SET folder:" + folder.Type + " " +
+                "ON MATCH SET folder:" + folder.Type + ", " +
+                "folder.name=$name, " +
+                "folder.lastpermission=$lastfolder, " +
+                "folder.inheritancedisabled=$inheritancedisabled, " +
+                "folder.blocked=$blocked " +
                 "RETURN folder";
+            IStatementResult result = this._session.WriteTransaction(tx => tx.Run(query, new
+            {
+                path = folder.Path,
+                lastfolder = folder.PermParent,
+                inheritancedisabled = folder.InheritanceDisabled,
+                blocked = folder.Blocked,
+                name = folder.Name
+            }));
 
             if (string.IsNullOrEmpty(folder.PermParent) == false)
             {
@@ -81,7 +77,6 @@ namespace FSScanner
                 this.SendPermissions(folder.Permissions);
             }
 
-            IStatementResult result = this._session.WriteTransaction(tx => tx.Run(query, new { path = folder.Path, lastfolder = folder.PermParent }));
             return result.Summary.Counters.NodesCreated;
         }
 

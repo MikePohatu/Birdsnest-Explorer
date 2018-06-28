@@ -54,6 +54,9 @@ namespace FSScanner
                 driver = Neo4jConnector.ConnectToNeo(config);
             }
 
+
+            
+
             foreach (DataStore ds in datastores)
             {
                 using (ISession session = driver.Session())
@@ -64,7 +67,7 @@ namespace FSScanner
                         NetworkCredential fscred;
                         if (credentials.TryGetValue(fs.CredentialID, out fscred))
                         {
-                            crawler.Crawl(ds,fs.Path, fscred,session);
+                            crawler.CrawlRoot(ds,fs.Path, fscred,driver);
                         }
                     }
                 }     

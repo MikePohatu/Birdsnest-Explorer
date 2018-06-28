@@ -1,12 +1,20 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Security.AccessControl;
+using Newtonsoft.Json;
 
 namespace FSScanner
 {
     public class Folder
     {
-        public bool InheritanceDisabled { get; private set; }
+        [JsonProperty("inheritancedisabled")]
+        public bool InheritanceDisabled { get; set; } = false;
+
+        [JsonProperty("blocked")]
+        public bool Blocked { get; set; } = false;
+
+        [JsonProperty("name")]
+        public string Name { get; set; } = string.Empty;
 
         public virtual string Type { get { return Types.Folder; } }
         private string _permparent = string.Empty;
@@ -17,6 +25,7 @@ namespace FSScanner
         } 
 
         private string _path;
+        [JsonProperty("path")]
         public string Path
         {
             get { return this._path; }
@@ -24,20 +33,26 @@ namespace FSScanner
         }
         public List<Permission> Permissions { get; } = new List<Permission>();
 
-        public Folder(string path, string permparent, AuthorizationRuleCollection rules, bool isinheritancedisabled)
+        public Folder() { }
+
+        public Folder(string name, string path, string permparent, AuthorizationRuleCollection rules, bool isinheritancedisabled)
         {
+            if (string.IsNullOrEmpty(name)) { this.Name = path; }
+            else  { this.Name = name; }
+
             this.InheritanceDisabled = isinheritancedisabled;
             this.Path = path;
             this.PermParent = permparent;
             if (rules?.Count > 0)
             {
+                Console.WriteLine("Permissions set: {0}", path);
                 foreach (FileSystemAccessRule rule in rules)
                 {
                     this.Permissions.Add( new Permission(){
                         ID = rule.IdentityReference.Value,
                         Path =this._path,
                         Right =rule.FileSystemRights.ToString() });
-                    Console.WriteLine("{0} | Account: {1} | Permission: {2}", path, rule.IdentityReference.Value, rule.FileSystemRights.ToString());
+                    //Console.WriteLine("{0} | Account: {1} | Permission: {2}", path, rule.IdentityReference.Value, rule.FileSystemRights.ToString());
                 }
             }
         }

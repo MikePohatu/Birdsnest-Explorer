@@ -6,13 +6,16 @@ using System.Security.AccessControl;
 using System.Security.Principal;
 using System.Diagnostics;
 using Neo4j.Driver.V1;
+using common;
 
 namespace FSScanner
 {
     public class Crawler
     {
+        private Dictionary<string, Folder> existingfolders;
         private Stopwatch timer = new Stopwatch();
         private Writer writer;
+        private int counter = 0;
 
         public Crawler(ISession session)
         {
@@ -20,7 +23,7 @@ namespace FSScanner
         }
 
 
-        public void Crawl(DataStore ds, string rootpath, NetworkCredential cred, ISession session)
+        public void CrawlRoot(DataStore ds, string rootpath, NetworkCredential cred, IDriver driver)
         {
 
             //create a connection to the root path using other credentials
@@ -35,13 +38,29 @@ namespace FSScanner
             }
 
             //now initiate the crawl
-            this.Crawl(ds, rootpath, session);
+            this.CrawlRoot(ds, rootpath, driver);
         }
 
 
-        public void Crawl(DataStore ds, string rootpath, ISession session)
+        public void CrawlRoot(DataStore ds, string rootpath, IDriver driver)
         {
             Console.WriteLine(rootpath);
+
+            //get the existing folders for comparison
+            try
+            {
+                using (ISession session = driver.Session())
+                {
+                    TransactionResult<Dictionary<string, Folder>> existfolderstx = Reader.GetAllFoldersAsDict(rootpath, session);
+                    this.existingfolders = existfolderstx.Result;
+                    Console.WriteLine("Found " + this.existingfolders.Count + " folders in database in " + existfolderstx.ElapsedMilliseconds.TotalMilliseconds + "ms");
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("Error reading existing folders from database " + rootpath + ": " + e.Message);
+                return;
+            }
 
             //created the datastore node
             try
@@ -59,11 +78,11 @@ namespace FSScanner
             //start at root and recurse down
             try
             {
-                QueryFolder(rootpath, string.Empty, true);
-                CrawlChildren(rootpath, null);
+                Crawl(rootpath, null, true);
                 writer.FlushFolderQueue();
                 timer.Stop();
                 Console.WriteLine("Crawled file system " + rootpath + " in " + timer.Elapsed);
+                Console.WriteLine();
                 //Console.WriteLine("Crawled file system " + rootpath + " in " + timer.Elapsed);
             }
             catch (Exception e)
@@ -71,6 +90,7 @@ namespace FSScanner
                 writer.FlushFolderQueue();
                 timer.Stop();
                 Console.WriteLine("Error crawling file system " + rootpath + ": " + e.Message);
+                Console.WriteLine();
                 return;
             }
 
@@ -82,16 +102,20 @@ namespace FSScanner
         /// </summary>
         /// <param name="path"></param>
         /// <param name="permparent"></param>
-        private void CrawlChildren(string path, string permparent)
+        private void Crawl(string path, string permparent, bool isroot)
         {
             string newpermparent = permparent;
             try
             {
-                if (QueryFolder(path, permparent, false)==true) { newpermparent = path; }
+                Folder f = QueryFolder(new DirectoryInfo(path), permparent, isroot);
+                if ((f.Permissions.Count > 0) || isroot) {
+                    newpermparent = path;
+                    writer.QueueFolder(f);
+                }
             }
             catch (Exception e)
             {
-                BlockedFolder f = new BlockedFolder(path, newpermparent);
+                Folder f = new Folder() { Blocked = true, Path = path, Name = path, PermParent = permparent, InheritanceDisabled=true };
                 writer.QueueFolder(f);
                 Console.WriteLine("Unable to connect to " + path, e.Message);
                 return;
@@ -99,23 +123,24 @@ namespace FSScanner
 
             foreach (string subdirpath in Directory.EnumerateDirectories(path))
             {
-                this.CrawlChildren(subdirpath, newpermparent);
+                this.Crawl(subdirpath, newpermparent, false);
             }
         }
 
-        private bool QueryFolder(string path, string permroot, bool isroot)
+        private Folder QueryFolder(DirectoryInfo directory, string permroot, bool isroot)
         {
-            //Console.WriteLine("Query path: " + path);
-            DirectorySecurity dirsec = Directory.GetAccessControl(path);
-            AuthorizationRuleCollection directrules = dirsec.GetAccessRules(true, isroot, typeof(SecurityIdentifier));
-            if (directrules.Count > 0)
+            this.counter++;
+            if (counter == 100 )
             {
-                Folder f = new Folder(path, permroot, directrules, dirsec.AreAccessRulesProtected);
-                writer.QueueFolder(f);
-                return true;
+                Console.WriteLine("Progress: " + directory.FullName);
+                counter = 0;
             }
-            else
-            { return false; }           
+            
+            DirectorySecurity dirsec = directory.GetAccessControl();
+            AuthorizationRuleCollection directrules = dirsec.GetAccessRules(true, isroot, typeof(SecurityIdentifier));
+
+            Folder f = new Folder(directory.Name, directory.FullName, permroot, directrules, dirsec.AreAccessRulesProtected);
+            return f;          
         }
     }
 }

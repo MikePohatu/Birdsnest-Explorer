@@ -48,7 +48,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="BlockedFolder.cs" />
     <Compile Include="Configuration.cs" />
     <Compile Include="Crawler.cs" />
     <Compile Include="DataStore.cs" />
@@ -58,6 +57,7 @@
     <Compile Include="Permission.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Reader.cs" />
     <Compile Include="ShortGuid.cs" />
     <Compile Include="Types.cs" />
     <Compile Include="Writer.cs" />
