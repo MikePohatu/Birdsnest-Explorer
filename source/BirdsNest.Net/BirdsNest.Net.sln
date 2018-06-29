@@ -9,6 +9,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "common", "common\common.csp
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FSScanner", "FSScanner\FSScanner.csproj", "{232699C0-A1D1-4DAA-B064-55555C5859EA}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CustomAppScanner", "CustomAppScanner\CustomAppScanner.csproj", "{5062CB83-0AEB-4AE4-9F86-8279DFF2F48A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +29,10 @@ Global
 		{232699C0-A1D1-4DAA-B064-55555C5859EA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{232699C0-A1D1-4DAA-B064-55555C5859EA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{232699C0-A1D1-4DAA-B064-55555C5859EA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5062CB83-0AEB-4AE4-9F86-8279DFF2F48A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5062CB83-0AEB-4AE4-9F86-8279DFF2F48A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5062CB83-0AEB-4AE4-9F86-8279DFF2F48A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5062CB83-0AEB-4AE4-9F86-8279DFF2F48A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
