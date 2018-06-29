@@ -17,5 +17,5 @@ function closeNav() {
 	document.getElementById("openclosebtn").innerHTML = "&gt;";
 	document.getElementById("sidemenu").style.width = "0";
 	document.getElementById("openclosebar").style.left = "0";
-	document.getElementById("main").style.left = "0";
+	document.getElementById("main").style.left = "20px";
 }
