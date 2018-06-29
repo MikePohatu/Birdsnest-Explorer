@@ -59,18 +59,15 @@ namespace FSScanner
 
             foreach (DataStore ds in datastores)
             {
-                using (ISession session = driver.Session())
+                Crawler crawler = new Crawler(driver);
+                foreach (FileSystem fs in ds.FileSystems)
                 {
-                    Crawler crawler = new Crawler(session);
-                    foreach (FileSystem fs in ds.FileSystems)
+                    NetworkCredential fscred;
+                    if (credentials.TryGetValue(fs.CredentialID, out fscred))
                     {
-                        NetworkCredential fscred;
-                        if (credentials.TryGetValue(fs.CredentialID, out fscred))
-                        {
-                            crawler.CrawlRoot(ds,fs.Path, fscred,driver);
-                        }
+                        crawler.CrawlRoot(ds,fs.Path, fscred);
                     }
-                }     
+                } 
             }
 
             Console.WriteLine("Finished");

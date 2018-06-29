@@ -5,5 +5,6 @@
         public string ID { get; set; }
         public string Right { get; set; }
         public string Path { get; set; }
+        public string ScanId { get; set; }
     }
 }
