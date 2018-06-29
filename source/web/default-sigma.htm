@@ -1,0 +1,32 @@
+<!doctype html>
+<html>
+    <head>
+        <title>Sigma Visual Starter</title>
+		<link rel="stylesheet" type="text/css" href="sidenav.css">
+		<script src="menu.js"></script>
+		<script src="https://d3js.org/d3.v5.min.js"></script>
+		<script>
+			function loadPage() {
+				closeNav();
+			}
+		</script>
+	</head>
+    <body onload="loadPage()">
+		<div class="pagewrapper">
+			<div id="menuwrapper">
+				<div id="sidemenu"  class="menutext">				
+					<a href="#">About</a>
+					<a href="#">Services</a>
+					<a href="#">Clients</a>
+					<a href="#">Contact</a>
+				</div>	
+			</div>
+			<div id="openclosebar" class="menutext">
+				<a href="javascript:void(0)" id="openclosebtn"></a>
+			</div>
+			<div id="main">
+				<p>Some test text</p>
+			</div>
+		</div>
+    </body>    
+</html>
