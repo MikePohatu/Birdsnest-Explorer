@@ -24,6 +24,7 @@
 	position:absolute;
 	float: left;
 	background-color: #111; /* Black*/
+	font-size: 25px;
 }
 
 #sidemenu {
@@ -38,23 +39,22 @@
 .menutext a {
 	padding: 8px 8px 8px 8px;
 	text-decoration: none;
-	font-size: 25px;
 	color: #818181;
 	display: table;
 	transition: 0.3s;
 }
 
 /* When you mouse over the navigation links, change their color */
-#sidemenu a:hover {
+.menutext a:hover {
 	color: #f1f1f1;
 }
 
 /* Position and style the close button (top left corner) */
-#openclosebar {
+#openclosebox {
 	z-index: 10; /* Stay on top */
-	width:30px;
+	width:25px;
 	top: 0;
-	font-size: 24px;
+	font-size: 16px;
 	background-color: #444;
 	position:absolute;
 	float: left;
@@ -64,16 +64,6 @@
 	/* Mozilla */
 	opacity: 0.6;
 	/* CSS3 */
-}
-
-/* Style page content - use this if you want to push the page content to the right when you open the side navigation */
-#main {
-	transition: margin-left .5s;
-	padding: 20px;
-	float: left;
-	top: 0;
-	bottom: 0;
-	position:absolute;
 }
 
 /* On smaller screens, where height is less than 450px, change the style of the sidenav (less padding and a smaller font size) */

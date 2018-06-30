@@ -1,0 +1,36 @@
+#main {
+	position:absolute;
+	right: 0;
+	bottom: 0;
+	transition: margin-left .5s;
+	padding: 0;
+	float: left;
+	top: 0;
+	bottom: 0;
+}
+
+
+#querybar {
+	z-index: 5; /* Stay on top */
+	top: 0; /* Stay at the top */
+	left: 0;
+	right: 0;
+	overflow-x: hidden; /* Disable horizontal scroll */
+	background-color: #fff2e6; /* Black*/
+	padding-top: 3px;
+    padding-right: 20px;
+    padding-bottom: 5px;
+    padding-left: 35px;
+}
+
+.inputbox {
+	padding-top: 2px;
+    padding-right: 10px;
+    padding-bottom: 2px;
+    padding-left: 10px;
+	margin: 5px;
+	height: 24px;
+	border-radius: 3px;
+    border: 1px solid #111;
+	width: 200px;
+}
