@@ -6,22 +6,13 @@ using common;
 
 namespace FSScanner
 {
-    public class Configuration: INeoConfiguration
+    public class Configuration: NeoConfiguration
     {
         [JsonProperty("credentials")]
         public List<Credential> Credentials { get; set; }
 
         [JsonProperty("datastores")]
         public List<DataStore> Datastores { get; set; }
-
-        [JsonProperty("DB_URI")]
-        public string DB_URI { get; set; }
-
-        [JsonProperty("DB_Username")]
-        public string DB_Username { get; set; }
-
-        [JsonProperty("DB_Password")]
-        public string DB_Password { get; set; }
 
         public static Configuration LoadConfiguration (string filepath)
         {
@@ -34,12 +25,13 @@ namespace FSScanner
             return conf;
         }
 
-        public void Dispose()
+        public override void Dispose()
         {
             foreach (Credential cred in Credentials)
             {
                 cred.Dispose();
             }
+            base.Dispose();
         }
     }
 }

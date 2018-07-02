@@ -9,7 +9,7 @@ namespace common
 {
     public static class Neo4jConnector
     {
-        public static IDriver ConnectToNeo(INeoConfiguration config)
+        public static IDriver ConnectToNeo(NeoConfiguration config)
         {
             try
             {

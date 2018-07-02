@@ -48,7 +48,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Credential.cs" />
-    <Compile Include="INeoConfiguration.cs" />
+    <Compile Include="NeoConfiguration.cs" />
     <Compile Include="ListExtensions.cs" />
     <Compile Include="Neo4jConnector.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

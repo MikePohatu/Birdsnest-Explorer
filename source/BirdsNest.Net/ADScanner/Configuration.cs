@@ -1,11 +1,9 @@
-﻿using System;
-using System.Security;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 using common;
 
 namespace ADScanner
 {
-    public class Configuration: INeoConfiguration
+    public class Configuration: NeoConfiguration
     {
         [JsonProperty("AD_DomainPath")]
         public string AD_DomainPath { get; set; }
@@ -16,19 +14,10 @@ namespace ADScanner
         [JsonProperty("AD_Password")]
         public string AD_Password { get; set; }
 
-        [JsonProperty("DB_URI")]
-        public string DB_URI { get; set; }
-
-        [JsonProperty("DB_Username")]
-        public string DB_Username { get; set; }
-
-        [JsonProperty("DB_Password")]
-        public string DB_Password { get; set; }
-
-        public void Dispose()
+        public override void Dispose()
         {
-            this.DB_Password = string.Empty;
             this.AD_Password = string.Empty;
+            base.Dispose();
         }
     }
 }
