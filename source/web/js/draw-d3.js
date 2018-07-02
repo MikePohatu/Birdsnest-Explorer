@@ -1,6 +1,6 @@
-function DrawGraph() {
-	var neo4jd3 = new Neo4jd3('#drawingpane', {
-        neo4jDataUrl: 'json/sampledata_neo4jd3.json',
+function DrawGraph(selectid) {
+	var neo4jd3 = new Neo4jd3('#'+selectid, {
+        neo4jDataUrl: 'json/neo4jd4sample-neo4j.json',
 		highlight: [
 			{
 				class: 'Project',
@@ -32,26 +32,6 @@ function DrawGraph() {
 			'zoomIn': 'search-plus',
 			'zoomOut': 'search-minus'
 		},
-		images: {
-			'Address': 'img/twemoji/1f3e0.svg',
-			'BirthDate': 'img/twemoji/1f5d3.svg',
-			'Cookie': 'img/twemoji/1f36a.svg',
-			'CreditCard': 'img/twemoji/1f4b3.svg',
-			'Device': 'img/twemoji/1f4bb.svg',
-			'Email': 'img/twemoji/2709.svg',
-			'Git': 'img/twemoji/1f5c3.svg',
-			'Github': 'img/twemoji/1f5c4.svg',
-			'icons': 'img/twemoji/1f38f.svg',
-			'Ip': 'img/twemoji/1f4cd.svg',
-			'Issues': 'img/twemoji/1f4a9.svg',
-			'Language': 'img/twemoji/1f1f1-1f1f7.svg',
-			'Options': 'img/twemoji/2699.svg',
-			'Password': 'img/twemoji/1f511.svg',
-			'Project|name|d3': 'img/twemoji/32-20e3.svg',
-			'Project|name|neo4j': 'img/twemoji/33-20e3.svg',
-			'Project|name|neo4jd3': 'img/twemoji/31-20e3.svg',
-			'User': 'img/twemoji/1f600.svg'
-		},
 		minCollision: 60,
 		nodeRadius: 25,
 		onNodeDoubleClick: function(node) {
@@ -69,4 +49,6 @@ function DrawGraph() {
 		},
 		zoomFit: true
 	});
+    
+    console.log(neo4jd3.size());
 }

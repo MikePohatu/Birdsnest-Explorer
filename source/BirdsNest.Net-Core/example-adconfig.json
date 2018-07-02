@@ -1,0 +1,8 @@
+{
+  "AD_DomainPath": "LDAP://domain.local/DC=domain,DC=local",
+  "AD_Username": "domain\\user",
+  "AD_Password": "Password1",
+  "DB_URI": "bolt://dbserver.home.local:7687",
+  "DB_Username": "user",
+  "DB_Password": "Password1"
+}
