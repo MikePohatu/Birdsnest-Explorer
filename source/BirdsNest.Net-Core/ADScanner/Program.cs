@@ -62,16 +62,16 @@ namespace ADScanner
                         int groupcount = 0;
                         int relationshipcount = 0;
                         List<object> groupmappings = new List<object>();
-                        List<Dictionary<string, object>> groupprops = new List<Dictionary<string, object>>();
+                        List<Dictionary<string, object>> groupprops = new List<Dictionary<string, object>>(); 
 
                         foreach (SearchResult result in results)
                         {
-                            ADGroup g = new ADGroup(result, scanid);
+                            ADGroup g = new ADGroup(result,scanid);
                             groupprops.Add(g.Properties);
                             if (groupprops.Count >= 1000)
                             {
                                 Console.Write(".");
-                                groupcount = groupcount + Writer.MergeADGroups(ListExtensions.ListPop(groupprops, 1000), session);
+                                groupcount = groupcount + Writer.MergeADGroups(ListExtensions.ListPop(groupprops,1000), session);
                             }
                             foreach (string dn in g.MemberOfDNs)
                             {
@@ -95,7 +95,7 @@ namespace ADScanner
                         Console.WriteLine();
                         Console.WriteLine("Created " + relationshipcount + " group->group mappings in " + steptimer.ElapsedMilliseconds + "ms");
                         Console.WriteLine();
-                    }
+                    }   
                 }
             }
 
@@ -265,7 +265,7 @@ namespace ADScanner
             {
                 return FileHandler.ReadConfigurationFromFile(configfile);
             }
-            catch (Exception e)
+            catch(Exception e)
             {
                 Console.WriteLine("Error loading configuration file: " + e.Message);
                 Environment.Exit(1001);
@@ -282,7 +282,7 @@ namespace ADScanner
                 if (string.IsNullOrWhiteSpace(config.AD_Password) || string.IsNullOrWhiteSpace(config.AD_Username))
                 { return new DirectoryEntry(config.AD_DomainPath); }
                 else
-                { return new DirectoryEntry(config.AD_DomainPath, config.AD_Username, config.AD_Password); }
+                { return new DirectoryEntry(config.AD_DomainPath, config.AD_Username, config.AD_Password); } 
             }
             catch (Exception e)
             {

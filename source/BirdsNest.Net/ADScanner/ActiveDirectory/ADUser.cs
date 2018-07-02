@@ -1,5 +1,6 @@
 ﻿using System.DirectoryServices;
 using System.Collections.Generic;
+using common;
 
 namespace ADScanner.ActiveDirectory
 {

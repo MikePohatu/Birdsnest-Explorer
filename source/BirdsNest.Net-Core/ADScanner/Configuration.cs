@@ -1,10 +1,11 @@
-﻿using Newtonsoft.Json;
+﻿using System;
+using System.Security;
+using Newtonsoft.Json;
 using common;
-using System.IO;
 
 namespace ADScanner
 {
-    public class Configuration: NeoConfiguration
+    public class Configuration: INeoConfiguration
     {
         [JsonProperty("AD_DomainPath")]
         public string AD_DomainPath { get; set; }
@@ -15,21 +16,19 @@ namespace ADScanner
         [JsonProperty("AD_Password")]
         public string AD_Password { get; set; }
 
-        public new static Configuration ReadConfigurationFromFile(string filepath)
-        {
-            Configuration conf;
-            using (StreamReader file = File.OpenText(filepath))
-            {
-                JsonSerializer serializer = new JsonSerializer();
-                conf = (Configuration)serializer.Deserialize(file, typeof(Configuration));
-            }
-            return conf;
-        }
+        [JsonProperty("DB_URI")]
+        public string DB_URI { get; set; }
 
-        public override void Dispose()
+        [JsonProperty("DB_Username")]
+        public string DB_Username { get; set; }
+
+        [JsonProperty("DB_Password")]
+        public string DB_Password { get; set; }
+
+        public void Dispose()
         {
+            this.DB_Password = string.Empty;
             this.AD_Password = string.Empty;
-            base.Dispose();
         }
     }
 }

@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.DirectoryServices;
-using common;
+using ADScanner.Neo4j;
 
 namespace ADScanner.ActiveDirectory
 {

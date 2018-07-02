@@ -9,7 +9,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>common</RootNamespace>
     <AssemblyName>common</AssemblyName>
-    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
   </PropertyGroup>
@@ -47,7 +47,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="CommonTypes.cs" />
     <Compile Include="Credential.cs" />
     <Compile Include="INeoConfiguration.cs" />
     <Compile Include="ListExtensions.cs" />
@@ -56,6 +55,7 @@
     <Compile Include="IBirdsNestNode.cs" />
     <Compile Include="ShortGuid.cs" />
     <Compile Include="TransactionResult.cs" />
+    <Compile Include="Types.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

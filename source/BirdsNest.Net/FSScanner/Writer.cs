@@ -103,8 +103,8 @@ namespace FSScanner
             "MERGE(folder {path:p.Path}) " +
             "WITH folder,p " +
             "MERGE(n {id:p.ID})  " +
-            "ON CREATE SET n:" + CommonTypes.Orphaned + ",n.lastscan = p.ScanId " +
-            "MERGE (n) -[r:" + CommonTypes.GivesAccessTo + "]->(folder) " +
+            "ON CREATE SET n:" + Types.Orphaned + ",n.lastscan = p.ScanId " +
+            "MERGE (n) -[r:" + Types.GivesAccessTo + "]->(folder) " +
             "SET r.right=p.Right " +
             "SET r.lastscan=p.ScanId " +
             "RETURN folder.path ";
@@ -118,8 +118,8 @@ namespace FSScanner
             string query = "MERGE(n:" + Types.Datastore + " {name:$Name}) " +           
             "SET n.comment=$Comment " +
             "SET n.host=$Host " +
-            "MERGE(host:" + CommonTypes.Device + " {name:$Host}) " +
-            "MERGE (n)-[r:" + CommonTypes.ConnectedTo + "]->(host) " +
+            "MERGE(host:" + Types.Device + " {name:$Host}) " +
+            "MERGE (n)-[r:" + Types.ConnectedTo + "]->(host) " +
             "RETURN n ";
 
             IStatementResult result = session.WriteTransaction(tx => tx.Run(query, ds));
