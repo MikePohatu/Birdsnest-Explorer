@@ -16,6 +16,12 @@
 	width: 100%;
 }
 
+#drawingpane svg {
+	padding: 0;
+	height: 100%;
+	width: 100%;
+}
+
 #querybar {
 	z-index: 5; /* Stay on top */
 	top: 0; /* Stay at the top */
@@ -39,4 +45,9 @@
 	border-radius: 3px;
     border: 1px solid #111;
 	width: 200px;
+}
+
+.center {
+    display: block;
+    margin: auto;
 }
