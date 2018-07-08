@@ -5,15 +5,16 @@ function DrawGraph(selectid) {
 	var vis = d3.select("#"+selectid)
             .append("svg");
 
-    var nodes = [{x: 30, y: 50, scaling:1},
-              {x: 300, y: 110, scaling:1.5},
-              {x: 150, y: 200, scaling:0.6}];
+    var nodes = [{x: 30, y: 50, scaling:1, class:"fas fa-user", color:"orange", fill: "yellow"},
+              {x: 300, y: 110, scaling:1.5, class:"fas fa-user", color:"red", fill: "pink"},
+              {x: 150, y: 200, scaling:0.6, class:"fas fa-user", color:"green", fill: "lightgreen"}];
 
 	var links = [
 		{source: nodes[0], target: nodes[1]},
 		{source: nodes[2], target: nodes[1]}
 		];
 
+	//node drag drop functionality
 	var drag_node = d3.drag().subject(this)
 		.on('start',function (d) {
 			d.xdiff = d3.event.x - d.x;  //calculate the difference between where the click is
@@ -27,6 +28,7 @@ function DrawGraph(selectid) {
 			.attr("transform", "translate(" + d.x  + "," + d.y + ")");
 		});	
 
+	//build the edges
 	vis.selectAll(".line")
 		.data(links)
 		.enter()
@@ -37,6 +39,7 @@ function DrawGraph(selectid) {
 			.attr("y2", function(d) { return (d.target.y + ((defaultsize*d.target.scaling))/2) })
 			.style("stroke", "rgb(6,120,155)");
 
+	//build the nodes
 	g = vis.selectAll(".nodes")
 		.data(nodes)
 		.enter()
@@ -47,13 +50,14 @@ function DrawGraph(selectid) {
 				.attr("class","nodes")
 				.call(drag_node);
 
+	//node layout
 	g.append("svg:circle")
 		.attr("r", function(d) { return ((defaultsize * d.scaling)/2) + "px" })
 		.attr("cx", function(d) { return ((defaultsize * d.scaling)/2) })
 		.attr("cy", function(d) { return ((defaultsize * d.scaling)/2) })
 		.style("stroke-width", function(d) { return (defaultstroke * d.scaling) + "px" })
-		.attr("fill", "yellow")
-		.style("stroke", "orange");
+		.attr("fill", function(d) { return d.fill })
+		.style("stroke", function(d) { return d.color });
 		
 
 	g.append("i")
@@ -61,8 +65,6 @@ function DrawGraph(selectid) {
 		.attr("width", function(d) { return ((defaultsize * d.scaling) * 0.6) + "px" })
 		.attr("x", function(d) { return ((defaultsize * d.scaling) * 0.2) })
 		.attr("y",function(d) { return ((defaultsize * d.scaling) * 0.2)})
-		.attr("class","fas fa-user")
-		.attr("color","orange"); 
-
-	
+		.attr("class", function(d) { return d.class })
+		.attr("color", function(d) { return d.color }); 
 }
