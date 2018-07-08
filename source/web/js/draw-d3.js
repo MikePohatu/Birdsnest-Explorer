@@ -14,6 +14,19 @@ function DrawGraph(selectid) {
 		{source: nodes[2], target: nodes[1]}
 		];
 
+	var drag_node = d3.drag().subject(this)
+		.on('start',function (d) {
+			d.xdiff = d3.event.x - d.x;  //calculate the difference between where the click is
+			d.ydiff = d3.event.y - d.y;  //vs where the 0 point of the object 
+		})
+		.on('drag',function(d){
+			d.x = d3.event.x - d.xdiff;
+			d.y = d3.event.y - d.ydiff;
+
+			d3.select(this)
+			.attr("transform", "translate(" + d.x  + "," + d.y + ")");
+		});	
+
 	vis.selectAll(".line")
 		.data(links)
 		.enter()
@@ -31,7 +44,8 @@ function DrawGraph(selectid) {
 				.attr("transform",function(d) { 
 						return "translate(" + d.x + "," +d.y+")"
 					})
-				.attr("class","nodes");
+				.attr("class","nodes")
+				.call(drag_node);
 
 	g.append("svg:circle")
 		.attr("r", function(d) { return ((defaultsize * d.scaling)/2) + "px" })
@@ -40,6 +54,7 @@ function DrawGraph(selectid) {
 		.style("stroke-width", function(d) { return (defaultstroke * d.scaling) + "px" })
 		.attr("fill", "yellow")
 		.style("stroke", "orange");
+		
 
 	g.append("i")
 		.attr("height", function(d) { return ((defaultsize * d.scaling) * 0.6) + "px" })
@@ -48,4 +63,6 @@ function DrawGraph(selectid) {
 		.attr("y",function(d) { return ((defaultsize * d.scaling) * 0.2)})
 		.attr("class","fas fa-user")
 		.attr("color","orange"); 
+
+	
 }
