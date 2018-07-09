@@ -5,45 +5,59 @@ function DrawGraph(selectid) {
 	var vis = d3.select("#"+selectid)
             .append("svg");
 
-    var nodes = [{x: 30, y: 50, scaling:1, class:"fas fa-user", color:"orange", fill: "yellow"},
+    var nodedata = [{x: 30, y: 50, scaling:1, class:"fas fa-user", color:"orange", fill: "yellow"},
               {x: 300, y: 110, scaling:1.5, class:"fas fa-user", color:"red", fill: "pink"},
               {x: 150, y: 200, scaling:0.6, class:"fas fa-user", color:"green", fill: "lightgreen"}];
 
-	var links = [
-		{source: nodes[0], target: nodes[1]},
-		{source: nodes[2], target: nodes[1]}
+	var linkdata = [
+		{source: nodedata[0], target: nodedata[1]},
+		{source: nodedata[2], target: nodedata[1]}
 		];
+
+	
+
+	var nodes = vis.selectAll(".nodes")
+		.data(nodedata);
+
+	//build the edges
+	function updateEdges()
+	{
+		var edges = vis.selectAll("line")
+			.data(linkdata);
+
+		edges.exit().remove();
+		edges.enter()
+			.append("line")
+			.style("stroke", "rgb(6,120,155)")
+			.merge(edges)
+			.attr("x1", function(d) { return (d.source.x + ((defaultsize*d.source.scaling))/2)})
+			.attr("y1", function(d) { return (d.source.y + ((defaultsize*d.source.scaling))/2) })
+			.attr("x2", function(d) { return (d.target.x + ((defaultsize*d.target.scaling))/2)})
+			.attr("y2", function(d) { return (d.target.y + ((defaultsize*d.target.scaling))/2) });
+		
+	}
 
 	//node drag drop functionality
 	var drag_node = d3.drag().subject(this)
 		.on('start',function (d) {
-			d.xdiff = d3.event.x - d.x;  //calculate the difference between where the click is
-			d.ydiff = d3.event.y - d.y;  //vs where the 0 point of the object 
+			d.click_x = d3.event.x - d.x;  //calculate the difference between where the click is
+			d.click_y = d3.event.y - d.y;  //vs where the 0 point of the object 
 		})
 		.on('drag',function(d){
-			d.x = d3.event.x - d.xdiff;
-			d.y = d3.event.y - d.ydiff;
+			d.x = d3.event.x - d.click_x;
+			d.y = d3.event.y - d.click_y;
 
-			d3.select(this)
-			.attr("transform", "translate(" + d.x  + "," + d.y + ")");
+			//move the node
+			d3.select(this).attr("transform", "translate(" + d.x  + "," + d.y + ")");	
+			updateEdges();	
 		});	
 
-	//build the edges
-	vis.selectAll(".line")
-		.data(links)
-		.enter()
-		.append("line")
-			.attr("x1", function(d) { return (d.source.x + ((defaultsize*d.source.scaling))/2)})
-			.attr("y1", function(d) { return (d.source.y + ((defaultsize*d.source.scaling))/2) })
-			.attr("x2", function(d) { return (d.target.x + ((defaultsize*d.target.scaling))/2)})
-			.attr("y2", function(d) { return (d.target.y + ((defaultsize*d.target.scaling))/2) })
-			.style("stroke", "rgb(6,120,155)");
+
+	updateEdges();
 
 	//build the nodes
-	g = vis.selectAll(".nodes")
-		.data(nodes)
-		.enter()
-			.append("g")
+	g = nodes.enter().
+		append("g")
 				.attr("transform",function(d) { 
 						return "translate(" + d.x + "," +d.y+")"
 					})
