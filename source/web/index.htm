@@ -24,7 +24,7 @@
 		<script>
 			function loadPage() {
 				closeNav();
-                DrawGraph("drawingpane");
+                drawGraph("drawingpane");
 			}
 		</script>
 	</head>
@@ -43,7 +43,7 @@
 			</div>
 			<div id="main">
 				<div id="querybar">
-					<form type="POST" action="javascript:DrawGraph('drawingpane')">
+					<form type="POST" action="javascript:restartLayout()">
 						<input type="text" id="node1" class="inputbox">
 						<input type="text" id="relationship" class="inputbox">
 						<input type="text" id="node2" class="inputbox">
