@@ -6,24 +6,25 @@ function DrawGraph(selectid) {
 	var vis = drawPane.append("svg");
 
     var nodedata = [
-		{scaling:1, class:"fas fa-user", color:"orange", fill: "yellow"},
-		{scaling:1, class:"fas fa-user", color:"red", fill: "pink"},
-		{scaling:1, class:"fas fa-user", color:"green", fill: "lightgreen"},
-		{scaling:1, class:"fas fa-user", color:"orange", fill: "yellow"},
-		{scaling:1, class:"fas fa-user", color:"red", fill: "pink"},
-		{scaling:1, class:"fas fa-user", color:"green", fill: "lightgreen"},
-		{scaling:1, class:"fas fa-user", color:"orange", fill: "yellow"},
-		{scaling:1, class:"fas fa-user", color:"red", fill: "pink"},
-		{scaling:1, class:"fas fa-user", color:"green", fill: "lightgreen"},
-		{scaling:1, class:"fas fa-user", color:"orange", fill: "yellow"},
-		{scaling:1, class:"fas fa-user", color:"red", fill: "pink"},
-		{scaling:1, class:"fas fa-user", color:"green", fill: "lightgreen"},
-		{scaling:1, class:"fas fa-user", color:"orange", fill: "yellow"},
-		{scaling:1, class:"fas fa-user", color:"red", fill: "pink"},
-		{scaling:1, class:"fas fa-user", color:"green", fill: "lightgreen"},
-		{scaling:1, class:"fas fa-user", color:"orange", fill: "yellow"},
-		{scaling:1.5, class:"fas fa-user", color:"red", fill: "pink"},
-		{scaling:1, class:"fas fa-user", color:"green", fill: "lightgreen"}
+    	{name:"Node0", scaling:1, class:"fas fa-user", color:"orange", fill: "yellow"},
+		{name:"Node1", scaling:1, class:"fas fa-user", color:"orange", fill: "yellow"},
+		{name:"Node2", scaling:1, class:"fas fa-user", color:"red", fill: "pink"},
+		{name:"Node3", scaling:1, class:"fas fa-user", color:"green", fill: "lightgreen"},
+		{name:"Node4", scaling:1, class:"fas fa-user", color:"orange", fill: "yellow"},
+		{name:"Node5", scaling:1, class:"fas fa-user", color:"red", fill: "pink"},
+		{name:"Node6", scaling:1, class:"fas fa-user", color:"green", fill: "lightgreen"},
+		{name:"Node7", scaling:1, class:"fas fa-user", color:"orange", fill: "yellow"},
+		{name:"Node8", scaling:1, class:"fas fa-user", color:"red", fill: "pink"},
+		{name:"Node9", scaling:1, class:"fas fa-user", color:"green", fill: "lightgreen"},
+		{name:"Node10", scaling:1, class:"fas fa-user", color:"orange", fill: "yellow"},
+		{name:"Node11", scaling:1, class:"fas fa-user", color:"red", fill: "pink"},
+		{name:"Node12", scaling:1, class:"fas fa-user", color:"green", fill: "lightgreen"},
+		{name:"Node13", scaling:1, class:"fas fa-user", color:"orange", fill: "yellow"},
+		{name:"Node14", scaling:1, class:"fas fa-user", color:"red", fill: "pink"},
+		{name:"Node15", scaling:1, class:"fas fa-user", color:"green", fill: "lightgreen"},
+		{name:"Node16", scaling:1, class:"fas fa-user", color:"orange", fill: "yellow"},
+		{name:"Node17", scaling:1.5, class:"fas fa-user", color:"red", fill: "pink"},
+		{name:"Node18", scaling:1, class:"fas fa-user", color:"green", fill: "lightgreen"}
 	];
 
 	var linkdata = [
@@ -32,15 +33,12 @@ function DrawGraph(selectid) {
 		{source: nodedata[5], target: nodedata[8]},
 		{source: nodedata[8], target: nodedata[11]},
 		{source: nodedata[11], target: nodedata[14]},
-		{source: nodedata[14], target: nodedata[17]}
+		{source: nodedata[6], target: nodedata[11]},
+		{source: nodedata[0], target: nodedata[5]},
+		{source: nodedata[5], target: nodedata[14]},
+		{source: nodedata[14], target: nodedata[17]},
+		{source: nodedata[17], target: nodedata[18]}
 		];
-
-	spreadNodes(nodedata);
-
-	
-
-	var nodes = vis.selectAll(".nodes")
-		.data(nodedata);
 
 	//node drag drop functionality
 	var drag_node = d3.drag().subject(this)
@@ -51,26 +49,31 @@ function DrawGraph(selectid) {
 		.on('drag',function(d){
 			d.x = d3.event.x - d.click_x;
 			d.y = d3.event.y - d.click_y;
-
-			//move the node
-			d3.select(this).attr("transform", "translate(" + d.x  + "," + d.y + ")");	
-			updateEdges();	
+			d.fx = d.x;
+			d.fy = d.y;	
+			update();
 		});	
 
 
-	updateEdges();
+	var edges = vis.selectAll("line")
+			.data(linkdata)
+			.enter()
+			.append("line")
+			.attr("class","edges")
+			.style("stroke", "rgb(6,120,155)");
 
 	//build the nodes
-	var g = nodes.enter()
+	var nodes = vis.selectAll(".nodes")
+		.data(nodedata)
+		.enter()
 		.append("g")
-			.attr("transform",function(d) { 
-					return "translate(" + d.x + "," +d.y+")"
-				})
 			.attr("class","nodes")
 			.call(drag_node);
 
+	
+
 	//node layout
-	g.append("svg:circle")
+	nodes.append("svg:circle")
 		.attr("r", function(d) { return ((defaultsize * d.scaling)/2) + "px" })
 		.attr("cx", function(d) { return ((defaultsize * d.scaling)/2) })
 		.attr("cy", function(d) { return ((defaultsize * d.scaling)/2) })
@@ -79,7 +82,7 @@ function DrawGraph(selectid) {
 		.style("stroke", function(d) { return d.color });
 		
 
-	g.append("i")
+	nodes.append("i")
 		.attr("height", function(d) { return ((defaultsize * d.scaling) * 0.6) + "px" })
 		.attr("width", function(d) { return ((defaultsize * d.scaling) * 0.6) + "px" })
 		.attr("x", function(d) { return ((defaultsize * d.scaling) * 0.2) })
@@ -87,54 +90,30 @@ function DrawGraph(selectid) {
 		.attr("class", function(d) { return d.class })
 		.attr("color", function(d) { return d.color }); 
 
+	nodes.append("text")
+		.text(function(d) { return d.name; }); 
+	
 	//simulation/force layout
-	const simulation = d3.forceSimulation()
-		.force('charge', d3.forceManyBody().strength(-20)) 
-		.force('center', d3.forceCenter(640 / 2, 480 / 2));
-		
-	simulation.nodes(nodes).on('tick', function () {
-		console.log("sim stuff and things");
-		g.attr("transform",function(d) { 
-			return "translate(" + d.x + "," +d.y+")"
+	var simulation = d3.forceSimulation(nodedata)
+		.force("link", d3.forceLink().id(function(d) { return d.id; }))
+		.force('charge', d3.forceManyBody().strength(-5)) 
+		.force('center', d3.forceCenter(640 / 2, 480 / 2))
+		.force('collision', d3.forceCollide().radius(function(d) { return ((defaultsize * d.scaling))}))
+		.on('tick', function () {		
+			update();
 		});
-		updateEdges();
-	});
+	
+	simulation.force("link")
+      .links(linkdata);
 
-	//simulation.restart();
-	//build edges
-	function updateEdges()
-	{
-		var edges = vis.selectAll("line")
-			.data(linkdata);
+	function update() {
+		edges.attr("x1", function(d) { return (d.source.x + ((defaultsize*d.source.scaling))/2)})
+			.attr("y1", function(d) { return (d.source.y + ((defaultsize*d.source.scaling))/2) })
+			.attr("x2", function(d) { return (d.target.x + ((defaultsize*d.target.scaling))/2)})
+			.attr("y2", function(d) { return (d.target.y + ((defaultsize*d.target.scaling))/2) });
 
-		edges.exit().remove();
-		edges.enter()
-			.append("line")
-			.attr("class","edges")
-			.style("stroke", "rgb(6,120,155)")
-			.merge(edges)
-				.attr("x1", function(d) { return (d.source.x + ((defaultsize*d.source.scaling))/2)})
-				.attr("y1", function(d) { return (d.source.y + ((defaultsize*d.source.scaling))/2) })
-				.attr("x2", function(d) { return (d.target.x + ((defaultsize*d.target.scaling))/2)})
-				.attr("y2", function(d) { return (d.target.y + ((defaultsize*d.target.scaling))/2) });		
+		nodes.attr("x",function(d) { return d.x; })
+			.attr("y",function(d) { return d.y; })
+			.attr("transform", function (d) { return "translate(" + d.x  + "," + d.y + ")" });	
 	}
-}
-
-function spreadNodes(nodeArray) {
-	if (nodeArray.length>0) {
-		var gap = 100;
-		var countX = 1;
-		var countY = 1;
-		var maxCount = Math.floor(Math.sqrt(nodeArray.length));;
-
-		nodeArray.forEach(function(node) {
-			node.x = countX * gap;
-			node.y = countY * gap;
-			if (countY == maxCount) { 
-				countX++; 
-				countY = 1;
-			}
-			else { countY++; }
-		});
-	}	
 }
