@@ -1,23 +1,23 @@
 var nodedata = [
-	{name:"Node0", scaling:1, class:"fas fa-user", color:"orange", fill: "yellow"},
-	{name:"Node1", scaling:1, class:"fas fa-user", color:"orange", fill: "yellow"},
-	{name:"Node2", scaling:1, class:"fas fa-user", color:"red", fill: "pink"},
-	{name:"Node3", scaling:1, class:"fas fa-user", color:"green", fill: "lightgreen"},
-	{name:"Node4", scaling:1, class:"fas fa-user", color:"orange", fill: "yellow"},
-	{name:"Node5", scaling:1, class:"fas fa-user", color:"red", fill: "pink"},
-	{name:"Node6", scaling:1, class:"fas fa-user", color:"green", fill: "lightgreen"},
-	{name:"Node7", scaling:1, class:"fas fa-user", color:"orange", fill: "yellow"},
-	{name:"Node8", scaling:1, class:"fas fa-user", color:"red", fill: "pink"},
-	{name:"Node9", scaling:1, class:"fas fa-user", color:"green", fill: "lightgreen"},
-	{name:"Node10", scaling:1, class:"fas fa-user", color:"orange", fill: "yellow"},
-	{name:"Node11", scaling:1, class:"fas fa-user", color:"red", fill: "pink"},
-	{name:"Node12", scaling:1, class:"fas fa-user", color:"green", fill: "lightgreen"},
-	{name:"Node13", scaling:1, class:"fas fa-user", color:"orange", fill: "yellow"},
-	{name:"Node14", scaling:1, class:"fas fa-user", color:"red", fill: "pink"},
-	{name:"Node15", scaling:1, class:"fas fa-user", color:"green", fill: "lightgreen"},
-	{name:"Node16", scaling:1, class:"fas fa-user", color:"orange", fill: "yellow"},
-	{name:"Node17", scaling:1.5, class:"fas fa-user", color:"red", fill: "pink"},
-	{name:"Node18", scaling:1, class:"fas fa-user", color:"green", fill: "lightgreen"}
+	{name:"Node0", scaling:1, class:"fas fa-user", color:"orange", selcolor:"lightgreen", fill: "yellow"},
+	{name:"Node1", scaling:1, class:"fas fa-user", color:"orange", selcolor:"lightgreen", fill: "yellow"},
+	{name:"Node2", scaling:1, class:"fas fa-user", color:"red", selcolor:"lightgreen", fill: "pink"},
+	{name:"Node3", scaling:1, class:"fas fa-user", color:"green", selcolor:"lightgreen", fill: "lightgreen"},
+	{name:"Node4", scaling:1, class:"fas fa-user", color:"orange", selcolor:"lightgreen", fill: "yellow"},
+	{name:"Node5", scaling:1, class:"fas fa-user", color:"red", selcolor:"lightgreen", fill: "pink"},
+	{name:"Node6", scaling:1, class:"fas fa-user", color:"green", selcolor:"lightgreen", fill: "lightgreen"},
+	{name:"Node7", scaling:1, class:"fas fa-user", color:"orange", selcolor:"lightgreen", fill: "yellow"},
+	{name:"Node8", scaling:1, class:"fas fa-user", color:"red", selcolor:"lightgreen", fill: "pink"},
+	{name:"Node9", scaling:1, class:"fas fa-user", color:"green", selcolor:"lightgreen", fill: "lightgreen"},
+	{name:"Node10", scaling:1, class:"fas fa-user", color:"orange", selcolor:"lightgreen", fill: "yellow"},
+	{name:"Node11", scaling:1, class:"fas fa-user", color:"red", selcolor:"lightgreen", fill: "pink"},
+	{name:"Node12", scaling:1, class:"fas fa-user", color:"green", selcolor:"lightgreen", fill: "lightgreen"},
+	{name:"Node13", scaling:1, class:"fas fa-user", color:"orange", selcolor:"lightgreen", fill: "yellow"},
+	{name:"Node14", scaling:1, class:"fas fa-user", color:"red", selcolor:"lightgreen", fill: "pink"},
+	{name:"Node15", scaling:1, class:"fas fa-user", color:"green", selcolor:"lightgreen", fill: "lightgreen"},
+	{name:"Node16", scaling:1, class:"fas fa-user", color:"orange", selcolor:"lightgreen", fill: "yellow"},
+	{name:"Node17", scaling:1.5, class:"fas fa-user", color:"red", selcolor:"lightgreen", fill: "pink"},
+	{name:"Node18", scaling:1, class:"fas fa-user", color:"green", selcolor:"lightgreen", fill: "lightgreen"}
 ];
 
 var linkdata = [
@@ -41,10 +41,17 @@ function restartLayout(){
 }
 
 function drawGraph(selectid) {
+	var shiftKey = false;
+	var ctrlKey = false;
+
 	var defaultsize = 40;
 	var defaultstroke = 3;
 
 	var drawPane = d3.select("#"+selectid)
+		.on("keydown", keydown)
+		.on("keyup", keyup)
+		.on("click", clicked);
+
 	var vis = drawPane.append("svg");
 
     
@@ -62,13 +69,14 @@ function drawGraph(selectid) {
 		.enter()
 		.append("g")
 			.attr("class","nodes")
+			.on("click", nodeClicked)
 			.call(
 				d3.drag().subject(this)
-					.on('start',nodeDragStart)
-					.on('drag',nodeDrag));
+					.on('start',dragStart)
+					.on('drag',dragged));
 
 	//node layout
-	nodes.append("svg:circle")
+	nodes.append("circle")
 		.attr("r", function(d) { return ((defaultsize * d.scaling)/2) + "px" })
 		.attr("cx", function(d) { return ((defaultsize * d.scaling)/2) })
 		.attr("cy", function(d) { return ((defaultsize * d.scaling)/2) })
@@ -83,7 +91,8 @@ function drawGraph(selectid) {
 		.attr("x", function(d) { return ((defaultsize * d.scaling) * 0.2) })
 		.attr("y",function(d) { return ((defaultsize * d.scaling) * 0.2)})
 		.attr("class", function(d) { return d.class })
-		.attr("color", function(d) { return d.color }); 
+		.attr("color", function(d) { return d.color })
+		.classed("nodeicon",true); 
 
 	nodes.append("text")
 		.text(function(d) { return d.name; }); 
@@ -103,27 +112,47 @@ function drawGraph(selectid) {
 	simulation.force("link")
       .links(linkdata);
 
-	function nodeDragStart(d){
-		d.click_x = d3.event.x - d.x;  //calculate the difference between where the click is
-		d.click_y = d3.event.y - d.y;  //vs where the 0 point of the object 
+	/*var zoomer = d3.behavior.zoom().
+        scaleExtent([0.1,10]).
+        x(xScale).
+        y(yScale).
+        on("zoomstart", zoomstart).
+        on("zoom", redraw);
+
+    function zoomstart() {
+        nodes.each(function(d) {
+            d.selected = false;
+            d.previouslySelected = false;
+        });
+        node.classed("selected", false);
+    }*/
+
+	function redraw() {
+		vis.attr("transform",
+			"translate(" + d3.event.translate + ")" + " scale(" + d3.event.scale + ")");
 	}
 
-	function nodeDrag(d){
-		d.x = d3.event.x - d.click_x;
-		d.y = d3.event.y - d.click_y;
-		d.fx = d.x;
-		d.fy = d.y;	
-		update();
+	function dragStart(d){
+		d3.event.sourceEvent.stopPropagation();
+		if (!d.selected && !ctrlKey) {
+			// if this node isn't selected, then we have to unselect every other node
+			nodes.classed("selected", function(d) { return d.selected =  d.previouslySelected = false; });
+		}
+
+		d3.select(this).classed("selected", function(d) { 
+			d.previouslySelected = d.selected; 
+			return d.selected = true; });
 	}
 
-	function pageDragStart(d){
-		d.click_x = d3.event.x;  //calculate the difference between where the click is
-		d.click_y = d3.event.y;  //vs where the 0 point of the object 
-	}
+	function dragged(d){
+		nodes.filter(function(d) { return d.selected; })
+			.each(function(d) { 
+				d.x += d3.event.dx;
+				d.y += d3.event.dy;
+				d.fx = d.x;
+				d.fy = d.y;	
+			});
 
-	function pageDrag(d){
-		d.x = d3.event.x - d.click_x;
-		d.y = d3.event.y - d.click_y;
 		update();
 	}
 
@@ -137,4 +166,67 @@ function drawGraph(selectid) {
 			.attr("y",function(d) { return d.y; })
 			.attr("transform", function (d) { return "translate(" + d.x  + "," + d.y + ")" });	
 	}
+
+	function keydown() {
+		shiftKey = d3.event.shiftKey || d3.event.metaKey;
+		ctrlKey = d3.event.ctrlKey;
+
+		/*if (d3.event.keyCode == 67) {   //the 'c' key
+			center_view();
+		}
+
+		if (shiftKey) {
+			svg_graph.call(zoomer)
+				.on("mousedown.zoom", null)
+				.on("touchstart.zoom", null)
+				.on("touchmove.zoom", null) 
+				.on("touchend.zoom", null);
+
+			vis.selectAll('g.gnode')
+				.on('mousedown.drag', null);
+
+			brush.select('.background').style('cursor', 'crosshair')
+			brush.call(brusher);
+		}*/
+	}
+
+	function keyup() {
+		shiftKey = d3.event.shiftKey || d3.event.metaKey;
+		ctrlKey = d3.event.ctrlKey;
+
+		/*brush.call(brusher)
+			.on("mousedown.brush", null)
+			.on("touchstart.brush", null)
+			.on("touchmove.brush", null)
+			.on("touchend.brush", null);
+
+		brush.select('.background').style('cursor', 'auto')
+		svg_graph.call(zoomer);*/
+	}
+
+	function clicked(d){
+		simulation.stop();
+		if (!ctrlKey) {
+			//if the ctrl key isn't down, unselect everything
+			console.log("unselect from clicked");
+			nodes
+				.classed("selected", function(d) { return d.selected = d.previouslySelected = false; })
+				.select(".nodeicon")
+					.attr("color", function(d) { return d.color; }); 
+		}
+	}
+
+	function nodeClicked(d) {
+		var newcolor;
+		if (d.selected) { newcolor = d.selcolor;}
+		else {d.color = newcolor = d.color;}
+
+		//update the node
+		d3.select(this)
+			.classed("selected", d.selected = !d.previouslySelected)
+			.select(".nodeicon")
+				.attr("color", newcolor); 
+	}
 }
+
+
