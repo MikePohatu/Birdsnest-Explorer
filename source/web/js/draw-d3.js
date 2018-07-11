@@ -69,6 +69,10 @@ function drawGraph(selectid) {
 		.enter()
 		.append("g")
 			.attr("class","nodes")
+			.classed("selected", function(d) { 
+				d.selected = false; 
+				d.previouslySelected = false; 
+				return d.selected;})
 			.on("click", nodeClicked)
 			.call(
 				d3.drag().subject(this)
@@ -133,18 +137,20 @@ function drawGraph(selectid) {
 	}
 
 	function dragStart(d){
-		d3.event.sourceEvent.stopPropagation();
-		if (!d.selected && !ctrlKey) {
-			// if this node isn't selected, then we have to unselect every other node
-			nodes.classed("selected", function(d) { return d.selected =  d.previouslySelected = false; });
-		}
-
-		d3.select(this).classed("selected", function(d) { 
-			d.previouslySelected = d.selected; 
-			return d.selected = true; });
+		console.log("dragStart");	
+		
 	}
 
 	function dragged(d){
+		//d3.event.sourceEvent.stopPropagation();
+		console.log("dragged");
+		if (!d.selected && !ctrlKey) {
+			// if this node isn't selected, then we have to unselect every other node
+			unselectAllNodes();
+		}
+		//if node not already selected, then select it
+		if (!d.selected) { updateNode(this,true); }
+
 		nodes.filter(function(d) { return d.selected; })
 			.each(function(d) { 
 				d.x += d3.event.dx;
@@ -205,27 +211,49 @@ function drawGraph(selectid) {
 	}
 
 	function clicked(d){
+		if (d3.event.defaultPrevented) return; // dragged
 		simulation.stop();
-		if (!ctrlKey) {
-			//if the ctrl key isn't down, unselect everything
-			console.log("unselect from clicked");
-			nodes
-				.classed("selected", function(d) { return d.selected = d.previouslySelected = false; })
-				.select(".nodeicon")
-					.attr("color", function(d) { return d.color; }); 
-		}
+		
 	}
 
 	function nodeClicked(d) {
-		var newcolor;
-		if (d.selected) { newcolor = d.selcolor;}
-		else {d.color = newcolor = d.color;}
+		if (d3.event.defaultPrevented) return; // dragged
+		if (ctrlKey) {	
+			//if ctrl key is down, just toggle the node		
+			console.log("ctrl update node " + d.name + ", current state: " + d.selected);
+			updateNode(this, !(d.selected));
+		}
+		else {
+			//if the ctrl key isn't down, unselect everything and select the node
+			console.log("update node " + d.name + ", current state: " + d.selected);
+			unselectAllNodes();
+			updateNode(this, true);
+		} 
+	}
 
-		//update the node
-		d3.select(this)
-			.classed("selected", d.selected = !d.previouslySelected)
+	function updateNode(element, isselected) {
+		//update the node selection
+		var node = d3.select(element)
+			.classed("selected", function(d) { 
+				console.log("setting " + d.name + " to " + isselected);
+				d.selected = isselected;
+				d.previouslySelected = isselected;
+				return d.selected;
+			})
 			.select(".nodeicon")
-				.attr("color", newcolor); 
+				.attr("color", function(d) { return isselected ? "dimgray" : d.color; });
+		return node;
+	}
+
+	function unselectAllNodes() {
+		console.log("unselect from unselectAllNodes");
+		nodes
+			.classed("selected", function(d) { 
+				d.selected = false;
+				d.previouslySelected = false;
+				return d.selected; })
+			.select(".nodeicon")
+				.attr("color", function(d) { return d.color; }); 
 	}
 }
 
