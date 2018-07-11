@@ -59,12 +59,11 @@ function drawGraph(selectid) {
 
 	//setup the zooming layer
 	var zoomLayer = svg.append("g");
-	var zoomed = function() {
-		zoomLayer.attr("transform", d3.event.transform);
-	}
 	svg.call(d3.zoom()
 		.scaleExtent([0.1, 5])
-		.on("zoom", zoomed));	
+		.on("zoom", function() {
+				zoomLayer.attr("transform", d3.event.transform);
+			}));	
 
 	//setup the edges
 	var edges = zoomLayer.selectAll("line")
@@ -149,7 +148,7 @@ function drawGraph(selectid) {
 
 		updateLocations();
 	}
-	
+
 	function lockNode(d) {
 		d.fx = d.x;
 		d.fy = d.y;
