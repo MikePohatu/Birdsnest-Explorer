@@ -33,6 +33,7 @@ var linkdata = [
 	{source: nodedata[17], target: nodedata[18]}
 	];
 
+//var jsonData = ""
 var simulation=d3.forceSimulation();
 
 function restartLayout(){ 
@@ -182,12 +183,12 @@ function drawGraph(selectid) {
 		if (d3.event.defaultPrevented) return; // dragged
 		if (ctrlKey) {	
 			//if ctrl key is down, just toggle the node		
-			updateNode(this, !(d.selected));
+			updateNodeSelection(this, !(d.selected));
 		}
 		else {
 			//if the ctrl key isn't down, unselect everything and select the node
 			unselectAllNodes();
-			updateNode(this, true);
+			updateNodeSelection(this, true);
 		} 
 	}
 
@@ -202,8 +203,7 @@ function drawGraph(selectid) {
 			.attr("transform", function (d) { return "translate(" + d.x  + "," + d.y + ")" });	
 	}
 
-	function updateNode(element, isselected) {
-		//update the node selection
+	function updateNodeSelection(element, isselected) {
 		var node = d3.select(element)
 			.classed("selected", function(d) { 
 				d.selected = isselected;

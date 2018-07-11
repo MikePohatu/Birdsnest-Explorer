@@ -1,0 +1,36 @@
+{
+	"nodes":[
+		{"id":0,"name":"Node0", "scaling":1, "class":"fas fa-user", "color":"orange", "selcolor":"lightgreen", "fill": "yellow"},
+		{"id":1,"name":"Node1", "scaling":1, "class":"fas fa-user", "color":"orange", "selcolor":"lightgreen", "fill": "yellow"},
+		{"id":2,"name":"Node2", "scaling":1, "class":"fas fa-user", "color":"red", "selcolor":"lightgreen", "fill": "pink"},
+		{"id":3,"name":"Node3", "scaling":1, "class":"fas fa-user", "color":"green", "selcolor":"lightgreen", "fill": "lightgreen"},
+		{"id":4,"name":"Node4", "scaling":1, "class":"fas fa-user", "color":"orange", "selcolor":"lightgreen", "fill": "yellow"},
+		{"id":5,"name":"Node5", "scaling":1, "class":"fas fa-user", "color":"red", "selcolor":"lightgreen", "fill": "pink"},
+		{"id":6,"name":"Node6", "scaling":1, "class":"fas fa-user", "color":"green", "selcolor":"lightgreen", "fill": "lightgreen"},
+		{"id":7,"name":"Node7", "scaling":1, "class":"fas fa-user", "color":"orange", "selcolor":"lightgreen", "fill": "yellow"},
+		{"id":8,"name":"Node8", "scaling":1, "class":"fas fa-user", "color":"red", "selcolor":"lightgreen", "fill": "pink"},
+		{"id":9,"name":"Node9", "scaling":1, "class":"fas fa-user", "color":"green", "selcolor":"lightgreen", "fill": "lightgreen"},
+		{"id":10,"name":"Node10", "scaling":1, "class":"fas fa-user", "color":"orange", "selcolor":"lightgreen", "fill": "yellow"},
+		{"id":11,"name":"Node11", "scaling":1, "class":"fas fa-user", "color":"red", "selcolor":"lightgreen", "fill": "pink"},
+		{"id":12,"name":"Node12", "scaling":1, "class":"fas fa-user", "color":"green", "selcolor":"lightgreen", "fill": "lightgreen"},
+		{"id":13,"name":"Node13", "scaling":1, "class":"fas fa-user", "color":"orange", "selcolor":"lightgreen", "fill": "yellow"},
+		{"id":14,"name":"Node14", "scaling":1, "class":"fas fa-user", "color":"red", "selcolor":"lightgreen", "fill": "pink"},
+		{"id":15,"name":"Node15", "scaling":1, "class":"fas fa-user", "color":"green", "selcolor":"lightgreen", "fill": "lightgreen"},
+		{"id":16,"name":"Node16", "scaling":1, "class":"fas fa-user", "color":"orange", "selcolor":"lightgreen", "fill": "yellow"},
+		{"id":17,"name":"Node17", "scaling":1.5, "class":"fas fa-user", "color":"red", "selcolor":"lightgreen", "fill": "pink"},
+		{"id":18,"name":"Node18", "scaling":1, "class":"fas fa-user", "color":"green", "selcolor":"lightgreen", "fill": "lightgreen"}
+	],
+	"edges":[
+		{"source": 0, "target": 1},
+		{"source": 2, "target": 5},
+		{"source": 5, "target": 8},
+		{"source": 8, "target": 11},
+		{"source": 11, "target": 14},
+		{"source": 6, "target": 11},
+		{"source": 0, "target": 5},
+		{"source": 5, "target": 14},
+		{"source": 14, "target": 17},
+		{"source": 17, "target": 18}
+	]
+}
+	
