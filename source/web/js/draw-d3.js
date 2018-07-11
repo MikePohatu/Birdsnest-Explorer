@@ -48,27 +48,39 @@ function drawGraph(selectid) {
 	var defaultstroke = 3;
 
 	var drawPane = d3.select("#"+selectid)
+		.style("fill","gray")
 		.on("keydown", keydown)
 		.on("keyup", keyup)
 		.on("click", clicked);
 
-	var vis = drawPane.append("svg");
+	
 
-    
+	var svg = drawPane.append("svg");
 
-	var edges = vis.selectAll("line")
-			.data(linkdata)
-			.enter()
-			.append("line")
-			.attr("class","edges")
-			.style("stroke", "rgb(6,120,155)");
+	//setup the zooming layer
+	var zoomLayer = svg.append("g");
+	var zoomed = function() {
+		zoomLayer.attr("transform", d3.event.transform);
+	}
+	svg.call(d3.zoom()
+		.scaleExtent([0.1, 5])
+		.on("zoom", zoomed));	
+
+	//setup the edges
+	var edges = zoomLayer.selectAll("line")
+		.data(linkdata)
+		.enter()
+		.append("line")
+		.attr("class","edges")
+		.style("stroke", "rgb(6,120,155)")
+		.style("stroke-width", 2);
 
 	//build the nodes
-	var nodes = vis.selectAll(".nodes")
+	var nodes = zoomLayer.selectAll(".nodes")
 		.data(nodedata)
 		.enter()
 		.append("g")
-			.attr("class","nodes")
+			.classed("nodes",true)
 			.classed("selected", function(d) { 
 				d.selected = false; 
 				d.previouslySelected = false; 
@@ -76,8 +88,7 @@ function drawGraph(selectid) {
 			.on("click", nodeClicked)
 			.call(
 				d3.drag().subject(this)
-					.on('start',dragStart)
-					.on('drag',dragged));
+					.on('drag',nodeDragged));
 
 	//node layout
 	nodes.append("circle")
@@ -108,13 +119,13 @@ function drawGraph(selectid) {
 		.force('center', d3.forceCenter(640 / 2, 480 / 2))
 		.force('collision', d3.forceCollide().radius(function(d) { return ((defaultsize * d.scaling))}))
 		.on('tick', function () {		
-			update();
+			updateLocations();
 		});
 	
 	simulation.velocityDecay(0.5);
 	simulation.alphaDecay(0.02)
 	simulation.force("link")
-      .links(linkdata);
+		.links(linkdata);
 
 	/*var zoomer = d3.behavior.zoom().
         scaleExtent([0.1,10]).
@@ -132,37 +143,96 @@ function drawGraph(selectid) {
     }*/
 
 	function redraw() {
-		vis.attr("transform",
+		zoomLayer.attr("transform",
 			"translate(" + d3.event.translate + ")" + " scale(" + d3.event.scale + ")");
 	}
 
-	function dragStart(d){
-		console.log("dragStart");	
-		
-	}
-
-	function dragged(d){
-		//d3.event.sourceEvent.stopPropagation();
-		console.log("dragged");
-		if (!d.selected && !ctrlKey) {
-			// if this node isn't selected, then we have to unselect every other node
-			unselectAllNodes();
-		}
-		//if node not already selected, then select it
-		if (!d.selected) { updateNode(this,true); }
-
-		nodes.filter(function(d) { return d.selected; })
+	function nodeDragged(d){
+		d3.event.sourceEvent.stopPropagation();
+		//if the node is selected the move it and all other selected
+		//nodes
+		if (d.selected) { 
+			nodes.filter(function(d) { return d.selected; })
 			.each(function(d) { 
 				d.x += d3.event.dx;
 				d.y += d3.event.dy;
 				d.fx = d.x;
 				d.fy = d.y;	
+				lockNode(d);
 			});
+		}
+		else {
+			d.x += d3.event.dx;
+			d.y += d3.event.dy; 
+			lockNode(d);
+		}
 
-		update();
+		updateLocations();
 	}
 
-	function update() {
+	/*function pageDragged(d){
+		//d3.event.sourceEvent.stopPropagation();
+		//if the node is selected the move it and all other selected
+		//nodes
+		console.log("pageDragged");
+		svg.selectAll(".nodes")
+			.each(function (d) { 
+				console.log(d.name);
+				d.x += d3.event.dx;
+				d.y += d3.event.dy;
+			});
+		updateLocations();
+	}
+*/
+	function zoomFunction(){
+		// update circle
+		nodes.attr("transform", d3.event.transform);
+		//updateLocations();
+	}
+
+	function lockNode(d) {
+		d.fx = d.x;
+		d.fy = d.y;
+		d.locked = true;
+	}
+
+	function unlockNode(d) {
+		delete d.fx;
+		delete d.fy;
+		d.locked = false;
+	}
+
+	function keydown() {
+		shiftKey = d3.event.shiftKey || d3.event.metaKey;
+		ctrlKey = d3.event.ctrlKey;
+	}
+
+	function keyup() {
+		shiftKey = d3.event.shiftKey || d3.event.metaKey;
+		ctrlKey = d3.event.ctrlKey;
+	}
+
+	function clicked(d){
+		if (d3.event.defaultPrevented) return; // dragged
+		simulation.stop();
+		unselectAllNodes();		
+	}
+
+	function nodeClicked(d) {
+		d3.event.stopPropagation();
+		if (d3.event.defaultPrevented) return; // dragged
+		if (ctrlKey) {	
+			//if ctrl key is down, just toggle the node		
+			updateNode(this, !(d.selected));
+		}
+		else {
+			//if the ctrl key isn't down, unselect everything and select the node
+			unselectAllNodes();
+			updateNode(this, true);
+		} 
+	}
+
+	function updateLocations() {
 		edges.attr("x1", function(d) { return (d.source.x + ((defaultsize*d.source.scaling))/2)})
 			.attr("y1", function(d) { return (d.source.y + ((defaultsize*d.source.scaling))/2) })
 			.attr("x2", function(d) { return (d.target.x + ((defaultsize*d.target.scaling))/2)})
@@ -173,80 +243,20 @@ function drawGraph(selectid) {
 			.attr("transform", function (d) { return "translate(" + d.x  + "," + d.y + ")" });	
 	}
 
-	function keydown() {
-		shiftKey = d3.event.shiftKey || d3.event.metaKey;
-		ctrlKey = d3.event.ctrlKey;
-
-		/*if (d3.event.keyCode == 67) {   //the 'c' key
-			center_view();
-		}
-
-		if (shiftKey) {
-			svg_graph.call(zoomer)
-				.on("mousedown.zoom", null)
-				.on("touchstart.zoom", null)
-				.on("touchmove.zoom", null) 
-				.on("touchend.zoom", null);
-
-			vis.selectAll('g.gnode')
-				.on('mousedown.drag', null);
-
-			brush.select('.background').style('cursor', 'crosshair')
-			brush.call(brusher);
-		}*/
-	}
-
-	function keyup() {
-		shiftKey = d3.event.shiftKey || d3.event.metaKey;
-		ctrlKey = d3.event.ctrlKey;
-
-		/*brush.call(brusher)
-			.on("mousedown.brush", null)
-			.on("touchstart.brush", null)
-			.on("touchmove.brush", null)
-			.on("touchend.brush", null);
-
-		brush.select('.background').style('cursor', 'auto')
-		svg_graph.call(zoomer);*/
-	}
-
-	function clicked(d){
-		if (d3.event.defaultPrevented) return; // dragged
-		simulation.stop();
-		
-	}
-
-	function nodeClicked(d) {
-		if (d3.event.defaultPrevented) return; // dragged
-		if (ctrlKey) {	
-			//if ctrl key is down, just toggle the node		
-			console.log("ctrl update node " + d.name + ", current state: " + d.selected);
-			updateNode(this, !(d.selected));
-		}
-		else {
-			//if the ctrl key isn't down, unselect everything and select the node
-			console.log("update node " + d.name + ", current state: " + d.selected);
-			unselectAllNodes();
-			updateNode(this, true);
-		} 
-	}
-
 	function updateNode(element, isselected) {
 		//update the node selection
 		var node = d3.select(element)
 			.classed("selected", function(d) { 
-				console.log("setting " + d.name + " to " + isselected);
 				d.selected = isselected;
 				d.previouslySelected = isselected;
 				return d.selected;
 			})
 			.select(".nodeicon")
-				.attr("color", function(d) { return isselected ? "dimgray" : d.color; });
+				.attr("color", function(d) { return isselected ? "#3C3C3C" : d.color; });
 		return node;
 	}
 
 	function unselectAllNodes() {
-		console.log("unselect from unselectAllNodes");
 		nodes
 			.classed("selected", function(d) { 
 				d.selected = false;
