@@ -127,26 +127,6 @@ function drawGraph(selectid) {
 	simulation.force("link")
 		.links(linkdata);
 
-	/*var zoomer = d3.behavior.zoom().
-        scaleExtent([0.1,10]).
-        x(xScale).
-        y(yScale).
-        on("zoomstart", zoomstart).
-        on("zoom", redraw);
-
-    function zoomstart() {
-        nodes.each(function(d) {
-            d.selected = false;
-            d.previouslySelected = false;
-        });
-        node.classed("selected", false);
-    }*/
-
-	function redraw() {
-		zoomLayer.attr("transform",
-			"translate(" + d3.event.translate + ")" + " scale(" + d3.event.scale + ")");
-	}
-
 	function nodeDragged(d){
 		d3.event.sourceEvent.stopPropagation();
 		//if the node is selected the move it and all other selected
@@ -169,27 +149,7 @@ function drawGraph(selectid) {
 
 		updateLocations();
 	}
-
-	/*function pageDragged(d){
-		//d3.event.sourceEvent.stopPropagation();
-		//if the node is selected the move it and all other selected
-		//nodes
-		console.log("pageDragged");
-		svg.selectAll(".nodes")
-			.each(function (d) { 
-				console.log(d.name);
-				d.x += d3.event.dx;
-				d.y += d3.event.dy;
-			});
-		updateLocations();
-	}
-*/
-	function zoomFunction(){
-		// update circle
-		nodes.attr("transform", d3.event.transform);
-		//updateLocations();
-	}
-
+	
 	function lockNode(d) {
 		d.fx = d.x;
 		d.fy = d.y;
