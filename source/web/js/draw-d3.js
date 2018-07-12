@@ -1,44 +1,45 @@
-var nodedata = [
-	{name:"Node0", relatedcount:1, class:"fas fa-user", color:"orange", selcolor:"lightgreen", fill: "yellow"},
-	{name:"Node1", relatedcount:1, class:"fas fa-user", color:"orange", selcolor:"lightgreen", fill: "yellow"},
-	{name:"Node2", relatedcount:1, class:"fas fa-user", color:"red", selcolor:"lightgreen", fill: "pink"},
-	{name:"Node3", relatedcount:1, class:"fas fa-user", color:"green", selcolor:"lightgreen", fill: "lightgreen"},
-	{name:"Node4", relatedcount:1, class:"fas fa-user", color:"orange", selcolor:"lightgreen", fill: "yellow"},
-	{name:"Node5", relatedcount:1, class:"fas fa-user", color:"red", selcolor:"lightgreen", fill: "pink"},
-	{name:"Node6", relatedcount:1, class:"fas fa-user", color:"green", selcolor:"lightgreen", fill: "lightgreen"},
-	{name:"Node7", relatedcount:1, class:"fas fa-user", color:"orange", selcolor:"lightgreen", fill: "yellow"},
-	{name:"Node8", relatedcount:1, class:"fas fa-user", color:"red", selcolor:"lightgreen", fill: "pink"},
-	{name:"Node9", relatedcount:1, class:"fas fa-user", color:"green", selcolor:"lightgreen", fill: "lightgreen"},
-	{name:"Node10", relatedcount:1, class:"fas fa-user", color:"orange", selcolor:"lightgreen", fill: "yellow"},
-	{name:"Node11", relatedcount:1, class:"fas fa-user", color:"red", selcolor:"lightgreen", fill: "pink"},
-	{name:"Node12", relatedcount:1, class:"fas fa-user", color:"green", selcolor:"lightgreen", fill: "lightgreen"},
-	{name:"Node13", relatedcount:1, class:"fas fa-user", color:"orange", selcolor:"lightgreen", fill: "yellow"},
-	{name:"Node14", relatedcount:1, class:"fas fa-user", color:"red", selcolor:"lightgreen", fill: "pink"},
-	{name:"Node15", relatedcount:1, class:"fas fa-user", color:"green", selcolor:"lightgreen", fill: "lightgreen"},
-	{name:"Node16", relatedcount:1, class:"fas fa-user", color:"orange", selcolor:"lightgreen", fill: "yellow"},
-	{name:"Node17", relatedcount:1.5, class:"fas fa-user", color:"red", selcolor:"lightgreen", fill: "pink"},
-	{name:"Node18", relatedcount:1, class:"fas fa-user", color:"green", selcolor:"lightgreen", fill: "lightgreen"}
-];
-
-var linkdata = [
-	{source: nodedata[0], target: nodedata[1]},
-	{source: nodedata[2], target: nodedata[5]},
-	{source: nodedata[5], target: nodedata[8]},
-	{source: nodedata[8], target: nodedata[11]},
-	{source: nodedata[11], target: nodedata[14]},
-	{source: nodedata[6], target: nodedata[11]},
-	{source: nodedata[0], target: nodedata[5]},
-	{source: nodedata[5], target: nodedata[14]},
-	{source: nodedata[14], target: nodedata[17]},
-	{source: nodedata[17], target: nodedata[18]}
-	];
+var json = '{\
+	"nodes":[\
+		{"db_id":450,"name":"Node0", "relatedcount":1, "class":"fas fa-user", "color":"orange", "selcolor":"lightgreen", "fill": "yellow"},\
+		{"db_id":21,"name":"Node1", "relatedcount":1, "class":"fas fa-user", "color":"orange", "selcolor":"lightgreen", "fill": "yellow"},\
+		{"db_id":42,"name":"Node2", "relatedcount":1, "class":"fas fa-user", "color":"red", "selcolor":"lightgreen", "fill": "pink"},\
+		{"db_id":3,"name":"Node3", "relatedcount":1, "class":"fas fa-user", "color":"green", "selcolor":"lightgreen", "fill": "lightgreen"},\
+		{"db_id":54,"name":"Node4", "relatedcount":1, "class":"fas fa-user", "color":"orange", "selcolor":"lightgreen", "fill": "yellow"},\
+		{"db_id":564,"name":"Node5", "relatedcount":1, "class":"fas fa-user", "color":"red", "selcolor":"lightgreen", "fill": "pink"},\
+		{"db_id":61,"name":"Node6", "relatedcount":1, "class":"fas fa-user", "color":"green", "selcolor":"lightgreen", "fill": "lightgreen"},\
+		{"db_id":75,"name":"Node7", "relatedcount":1, "class":"fas fa-user", "color":"orange", "selcolor":"lightgreen", "fill": "yellow"},\
+		{"db_id":833,"name":"Node8", "relatedcount":1, "class":"fas fa-user", "color":"red", "selcolor":"lightgreen", "fill": "pink"},\
+		{"db_id":9112,"name":"Node9", "relatedcount":1, "class":"fas fa-user", "color":"green", "selcolor":"lightgreen", "fill": "lightgreen"},\
+		{"db_id":100,"name":"Node10", "relatedcount":1, "class":"fas fa-user", "color":"orange", "selcolor":"lightgreen", "fill": "yellow"},\
+		{"db_id":1,"name":"Node11", "relatedcount":1, "class":"fas fa-user", "color":"red", "selcolor":"lightgreen", "fill": "pink"},\
+		{"db_id":2,"name":"Node12", "relatedcount":1, "class":"fas fa-user", "color":"green", "selcolor":"lightgreen", "fill": "lightgreen"},\
+		{"db_id":33,"name":"Node13", "relatedcount":1, "class":"fas fa-user", "color":"orange", "selcolor":"lightgreen", "fill": "yellow"},\
+		{"db_id":4,"name":"Node14", "relatedcount":1, "class":"fas fa-user", "color":"red", "selcolor":"lightgreen", "fill": "pink"},\
+		{"db_id":15,"name":"Node15", "relatedcount":1, "class":"fas fa-user", "color":"green", "selcolor":"lightgreen", "fill": "lightgreen"},\
+		{"db_id":16,"name":"Node16", "relatedcount":1, "class":"fas fa-user", "color":"orange", "selcolor":"lightgreen", "fill": "yellow"},\
+		{"db_id":17,"name":"Node17", "relatedcount":1.5, "class":"fas fa-user", "color":"red", "selcolor":"lightgreen", "fill": "pink"},\
+		{"db_id":18,"name":"Node18", "relatedcount":1, "class":"fas fa-user", "color":"green", "selcolor":"lightgreen", "fill": "lightgreen"}\
+	],\
+	"edges":[\
+		{"source": 450, "target": 1, "bidir":false},\
+		{"source": 3, "target": 2, "bidir":false},\
+		{"source": 9112, "target": 61, "bidir":false},\
+		{"source": 4, "target": 33, "bidir":false},\
+		{"source": 4, "target": 9112, "bidir":false},\
+		{"source": 9112, "target": 100, "bidir":false},\
+		{"source": 33, "target": 4, "bidir":false},\
+		{"source": 15, "target": 33, "bidir":false},\
+		{"source": 15, "target": 17, "bidir":false},\
+		{"source": 17, "target": 18, "bidir":false}\
+	]\
+}';
 
 //var jsonData = ""
 var simulation=d3.forceSimulation();
 
 function restartLayout(){ 
 	simulation.alpha(1);
-	simulation.restart(); 
+	simulation.restart();
 }
 
 function drawGraph(selectid) {
@@ -49,8 +50,11 @@ function drawGraph(selectid) {
 	var defaultstroke = 3;
 	var totalnodesize = (defaultstroke*2) + defaultsize;
 
+	var jsonData = JSON.parse(json);
+	var nodedata = jsonData.nodes;
+	var linkdata = jsonData.edges;
 	//load the data and pre-calculate/set the values for each node 
-	nodedata.forEach(function(d) {			
+	jsonData.nodes.forEach(function(d) {			
 			d.scaling = d.relatedcount;
 			d.radius = ((defaultsize*d.scaling)/2); 
 			d.x = 0;
@@ -156,7 +160,8 @@ function drawGraph(selectid) {
 
 	//setup simulation/force layout
 	simulation.nodes(nodedata)
-		.force("link", d3.forceLink().id(function(d) { return d.id; }))
+		.force("link", d3.forceLink()
+			.id(function(d) { return d.db_id; }))
 		.force('charge', d3.forceManyBody().strength(-5)) 
 		.force('center', d3.forceCenter(640 / 2, 480 / 2))
 		.force('collision', d3.forceCollide().radius(function(d) { return (totalnodesize)}))
