@@ -78,8 +78,9 @@ function drawGraph(selectid) {
 			}));	
 
 	//setup arrows for lines
-	svg.append('svg:defs')
-		.append('svg:marker')
+	var defs = svg.append('svg:defs');
+	
+	defs.append('svg:marker')
 			.attr('id', 'end-arrow')
 			.attr('viewBox', '0 -5 10 10')
 			.attr('refX', 6)
@@ -88,6 +89,17 @@ function drawGraph(selectid) {
 			.attr('orient', 'auto')
 			.append('svg:path')
 				.attr('d', 'M0,-5 L10,0 L0,5')
+				.attr('fill', "rgb(6,120,155)");
+
+	defs.append('svg:marker')
+			.attr('id', 'start-arrow')
+			.attr('viewBox', '0 -5 10 10')
+			.attr('refX', 6)
+			.attr('markerWidth', 3)
+			.attr('markerHeight', 3)
+			.attr('orient', 'auto')
+			.append('svg:path')
+				.attr('d', 'M0,0 L10,-5 L10,5')
 				.attr('fill', "rgb(6,120,155)");
 
 	//setup the edges
