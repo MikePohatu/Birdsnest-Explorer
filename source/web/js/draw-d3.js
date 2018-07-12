@@ -241,8 +241,8 @@ function drawGraph(selectid) {
 			var cosA = diffX / pathLength;
 
 			d3.select(this)
-				.attr("x1", function () { return sourceX} )
-				.attr("y1", function () { return sourceY} )
+				.attr("x1", function (d) { return sourceX + (cosA * (d.source.radius+6)); } )
+				.attr("y1", function (d) { return sourceY + (sinA * (d.source.radius+6)); } )
 				.attr("x2", function(d) { return targetX - (cosA * (d.target.radius+6)); }) //the number adds a little padding
 				.attr("y2", function(d) { return targetY - (sinA * (d.target.radius+6)); } );
 		});
