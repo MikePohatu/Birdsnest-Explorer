@@ -24,10 +24,9 @@ var json = '{\
 		{"source": 450, "target": 1, "bidir":false},\
 		{"source": 3, "target": 2, "bidir":false},\
 		{"source": 9112, "target": 61, "bidir":false},\
-		{"source": 4, "target": 33, "bidir":false},\
+		{"source": 4, "target": 33, "bidir":true},\
 		{"source": 4, "target": 9112, "bidir":false},\
 		{"source": 9112, "target": 100, "bidir":false},\
-		{"source": 33, "target": 4, "bidir":false},\
 		{"source": 15, "target": 33, "bidir":false},\
 		{"source": 15, "target": 17, "bidir":false},\
 		{"source": 17, "target": 18, "bidir":false}\
@@ -114,7 +113,11 @@ function drawGraph(selectid) {
 		.attr("class","edges")
 		.style("stroke", "rgb(6,120,155)")
 		.style("stroke-width", 2)
-		.style('marker-end', "url(#end-arrow)");
+		.style('marker-end', "url(#end-arrow)")
+		.style('marker-start', function(d) {
+			if (d.bidir === true) {return "url(#start-arrow)";}
+			else {return "";}
+		});
 
 	//build the nodes
 	var nodes = zoomLayer.selectAll(".nodes")
