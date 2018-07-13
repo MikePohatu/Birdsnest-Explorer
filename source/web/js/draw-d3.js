@@ -1,4 +1,4 @@
-var json = '{\
+let json = '{\
 	"nodes":[\
 		{"db_id":450,"name":"Node0", "relatedcount":1, "class":"fas fa-user", "color":"orange", "selcolor":"lightgreen", "fill": "yellow"},\
 		{"db_id":21,"name":"Node1", "relatedcount":1, "class":"fas fa-user", "color":"orange", "selcolor":"lightgreen", "fill": "yellow"},\
@@ -21,20 +21,20 @@ var json = '{\
 		{"db_id":18,"name":"Node18", "relatedcount":1, "class":"fas fa-user", "color":"green", "selcolor":"lightgreen", "fill": "lightgreen"}\
 	],\
 	"edges":[\
-		{"source": 450, "target": 1, "bidir":false},\
-		{"source": 3, "target": 2, "bidir":false},\
-		{"source": 9112, "target": 61, "bidir":false},\
-		{"source": 4, "target": 33, "bidir":true},\
-		{"source": 4, "target": 9112, "bidir":false},\
-		{"source": 9112, "target": 100, "bidir":false},\
-		{"source": 15, "target": 33, "bidir":false},\
-		{"source": 15, "target": 17, "bidir":false},\
-		{"source": 17, "target": 18, "bidir":false}\
+		{"source": 450, "target": 1, "bidir":false, "label":"AD_MemberOf", "color":"green"},\
+		{"source": 3, "target": 2, "bidir":false, "label":"AD_MemberOf", "color":"green"},\
+		{"source": 9112, "target": 61, "bidir":false, "label":"AD_MemberOf", "color":"green"},\
+		{"source": 4, "target": 33, "bidir":true, "label":"AD_MemberOf", "color":"green"},\
+		{"source": 4, "target": 9112, "bidir":false, "label":"AD_MemberOf", "color":"green"},\
+		{"source": 9112, "target": 100, "bidir":false, "label":"AD_MemberOf", "color":"green"},\
+		{"source": 15, "target": 33, "bidir":false, "label":"AD_MemberOf", "color":"green"},\
+		{"source": 15, "target": 17, "bidir":false, "label":"AD_MemberOf", "color":"green"},\
+		{"source": 17, "target": 18, "bidir":false, "label":"AD_MemberOf", "color":"green"}\
 	]\
 }';
 
-//var jsonData = ""
-var simulation=d3.forceSimulation();
+//let jsonData = ""
+let simulation=d3.forceSimulation();
 
 function restartLayout(){ 
 	simulation.alpha(1);
@@ -42,16 +42,20 @@ function restartLayout(){
 }
 
 function drawGraph(selectid) {
-	var shiftKey = false;
-	var ctrlKey = false;
+	let shiftKey = false;
+	let ctrlKey = false;
 
-	var defaultsize = 40;
-	var defaultstroke = 3;
-	var totalnodesize = (defaultstroke*2) + defaultsize;
+	let bgcolor = "#FBFBFB";
+	let paneWidth = 640;
+	let paneHeight = 480;
+	let defaultsize = 40;
+	let defaultstroke = 3;
+	let totalnodesize = (defaultstroke*2) + defaultsize;
+	let edgelabelwidth = 70;
 
-	var jsonData = JSON.parse(json);
-	var nodedata = jsonData.nodes;
-	var linkdata = jsonData.edges;
+	let jsonData = JSON.parse(json);
+	let nodedata = jsonData.nodes;
+	let linkdata = jsonData.edges;
 	//load the data and pre-calculate/set the values for each node 
 	jsonData.nodes.forEach(function(d) {			
 			d.scaling = d.relatedcount;
@@ -64,63 +68,73 @@ function drawGraph(selectid) {
 			d.totalsize = totalnodesize * d.scaling;
 		});	
 
-	var drawPane = d3.select("#"+selectid)
-		.style("fill","gray")
+	//setup simulation/force layout, bind links to the correct node property etc
+	simulation.nodes(nodedata)
+		.force("link", d3.forceLink()
+			.id(function(d) { return d.db_id; }))
+		.force('charge', d3.forceManyBody().strength(-5)) 
+		.force('center', d3.forceCenter(paneWidth / 2, paneHeight / 2))
+		.force('collision', d3.forceCollide().radius(function(d) { return (totalnodesize)}))
+		.on('tick', function () {		
+			updateLocations();
+		});
+	
+	simulation.velocityDecay(0.5);
+	simulation.alphaDecay(0.02)
+	simulation.force("link")
+		.links(linkdata);
+
+	let drawPane = d3.select("#"+selectid)
 		.on("keydown", keydown)
 		.on("keyup", keyup)
 		.on("click", clicked);
 
-	var svg = drawPane.append("svg");
+	let svg = drawPane.append("svg")
+		.style("background-color",bgcolor);
 
 	//setup the zooming layer
-	var zoomLayer = svg.append("g");
+	let zoomLayer = svg.append("g");
 	svg.call(d3.zoom()
 		.scaleExtent([0.1, 5])
 		.on("zoom", function() {
 				zoomLayer.attr("transform", d3.event.transform);
 			}));	
 
-	//setup arrows for lines
-	var defs = svg.append('svg:defs');
-	
-	defs.append('svg:marker')
-			.attr('id', 'end-arrow')
-			.attr('viewBox', '0 -5 10 10')
-			.attr('refX', 6)
-			.attr('markerWidth', 3)
-			.attr('markerHeight', 3)
-			.attr('orient', 'auto')
-			.append('svg:path')
-				.attr('d', 'M0,-5 L10,0 L0,5')
-				.attr('fill', "rgb(6,120,155)");
-
-	defs.append('svg:marker')
-			.attr('id', 'start-arrow')
-			.attr('viewBox', '0 -5 10 10')
-			.attr('refX', 6)
-			.attr('markerWidth', 3)
-			.attr('markerHeight', 3)
-			.attr('orient', 'auto')
-			.append('svg:path')
-				.attr('d', 'M0,0 L10,-5 L10,5')
-				.attr('fill', "rgb(6,120,155)");
-
 	//setup the edges
-	var edges = zoomLayer.selectAll("line")
+	let edges = zoomLayer.selectAll(".edges")
 		.data(linkdata)
 		.enter()
-		.append("line")
-		.attr("class","edges")
-		.style("stroke", "rgb(6,120,155)")
-		.style("stroke-width", 2)
-		.style('marker-end', "url(#end-arrow)")
-		.style('marker-start', function(d) {
-			if (d.bidir === true) {return "url(#start-arrow)";}
-			else {return "";}
-		});
+		.append("g")
+			.classed("edges",true);
+
+	edges.append("path")
+		.classed("wrapper",true)
+		.attr("fill","none");
+
+	edges.append("path")
+		.classed("arrows",true)
+		.attr("fill",function(d){ return d.color;});	
+	
+	let edgelabels = edges.append("g")
+		.classed("edgelabel",true)
+		.style("transform-origin","center");
+
+/*	edgelabels.append("rect")
+		.attr("height",14)
+		.attr("width",edgelabelwidth)
+		.style("stroke","black")
+		.style("fill",bgcolor);*/
+
+	edgelabels.append("text")
+		.attr("alignment-baseline","center")
+		.attr("y",2)
+		.attr("x",5)
+		.attr("font-size","8px")
+		.attr("font-family","arial")
+		.text(function(d) {return d.label});
 
 	//build the nodes
-	var nodes = zoomLayer.selectAll(".nodes")
+	let nodes = zoomLayer.selectAll(".nodes")
 		.data(nodedata)
 		.enter()
 		.append("g")
@@ -143,7 +157,6 @@ function drawGraph(selectid) {
 		.attr("fill", function(d) { return d.fill })
 		.style("stroke", function(d) { return d.color });
 		
-
 	nodes.append("i")
 		.attr("height", function(d) { return ( d.size * 0.6) + "px" })
 		.attr("width", function(d) { return (d.size * 0.6) + "px" })
@@ -161,22 +174,6 @@ function drawGraph(selectid) {
 		.attr("transform",function(d) { return "translate(" + (d.totalsize + 2) 
 			+ "," + ((d.totalsize /2) + 2) + ")" }); 
 
-	//setup simulation/force layout
-	simulation.nodes(nodedata)
-		.force("link", d3.forceLink()
-			.id(function(d) { return d.db_id; }))
-		.force('charge', d3.forceManyBody().strength(-5)) 
-		.force('center', d3.forceCenter(640 / 2, 480 / 2))
-		.force('collision', d3.forceCollide().radius(function(d) { return (totalnodesize)}))
-		.on('tick', function () {		
-			updateLocations();
-		});
-	
-	simulation.velocityDecay(0.5);
-	simulation.alphaDecay(0.02)
-	simulation.force("link")
-		.links(linkdata);
-
 	function nodeDragged(d){
 		d3.event.sourceEvent.stopPropagation();
 		//if the node is selected the move it and all other selected
@@ -186,6 +183,8 @@ function drawGraph(selectid) {
 			.each(function(d) { 
 				d.x += d3.event.dx;
 				d.y += d3.event.dy;
+				d.cx += d3.event.dx;
+				d.cy += d3.event.dy;
 				d.fx = d.x;
 				d.fy = d.y;	
 				lockNode(d);
@@ -244,36 +243,59 @@ function drawGraph(selectid) {
 
 	function updateLocations() {
 		edges.each(function(d) {
-			var sourceX= d.source.x + d.source.cx;
-			var sourceY = d.source.y + d.source.cy;
-			var targetX = d.target.x + d.target.cx;
-			var targetY = d.target.y + d.target.cy;
+			let diagLine = new EdgeLine(d.source.cx,d.source.cy,d.target.cx,d.target.cy);
 
-			// Total difference in x and y from source to target
-			var diffX = targetX - sourceX;
-			var diffY = targetY - sourceY;
+			let arrowLength = diagLine.hypLen;
+			//move and rotate the edge line to the right spot
+			let edge = d3.select(this)
+				.attr("transform", function() {
+					return "rotate(" + diagLine.deg + " " + diagLine.x1 + " " + diagLine.y1 + ") " +
+						"translate("+ diagLine.x1 + " " + diagLine.y1 + ")";
+				});
 
-			// Length of path from center of source node to center of target node
-			var pathLength = Math.sqrt((diffX * diffX) + (diffY * diffY));
+			//now the hard bit. Reevaluate the path coordinates so it looks right
+			edge.selectAll(".wrapper")
+				.attr("d",function(d) {
+					return "M 0 -3 " +
+						"L "+ (diagLine.hypLen) + " -3 "+
+						"L "+ (diagLine.hypLen) + " 3 "+ 
+						"L 0 3 Z"; 
+				});
 
-			///sin(angle) - some trig with angle taken opposite the 
-			var sinA = diffY / pathLength;
-			var cosA = diffX / pathLength;
+			edge.selectAll(".arrows")
+				.attr("d",function(d) {
+					return "M 0 -1 " + 
+						"L "+ (arrowLength - 5) + " -1 " + 
+						"L "+ (arrowLength - 5) + " -3 " + 
+						"L "+ (arrowLength) + " 0 "+
+						"L "+ (arrowLength - 5) + " 3 "+ 
+						"L "+ (arrowLength - 5) +" 1 "+
+						"L 0 1 Z"; 
+				});
 
-			d3.select(this)
-				.attr("x1", function (d) { return sourceX + (cosA * (d.source.radius+6)); } )
-				.attr("y1", function (d) { return sourceY + (sinA * (d.source.radius+6)); } )
-				.attr("x2", function(d) { return targetX - (cosA * (d.target.radius+6)); }) //the number adds a little padding
-				.attr("y2", function(d) { return targetY - (sinA * (d.target.radius+6)); } );
+			edge.selectAll(".edgelabel")
+				.attr("transform",function(d) { 
+					if (diagLine.x2 > diagLine.x1) {
+						return "translate(" + (d.source.radius + (arrowLength/2)-(edgelabelwidth/2)) + ",-7)";
+					}
+					else {
+						return "rotate(180) translate(" + (d.source.radius - 
+							(arrowLength/2)+(edgelabelwidth/2)) + ",-7)";
+					}
+				})
 		});
 			
-		nodes.attr("x",function(d) { return d.x; })
-			.attr("y",function(d) { return d.y; })
+		nodes.attr("x",function(d) { 
+				d.cx = d.x + d.radius;
+				return d.x; })
+			.attr("y",function(d) { 
+				d.cy = d.y + d.radius;
+				return d.y; })
 			.attr("transform", function (d) { return "translate(" + d.x  + "," + d.y + ")" });	
 	}
 
 	function updateNodeSelection(element, isselected) {
-		var node = d3.select(element)
+		let node = d3.select(element)
 			.classed("selected", function(d) { 
 				d.selected = isselected;
 				d.previouslySelected = isselected;
@@ -296,7 +318,27 @@ function drawGraph(selectid) {
 }
 
 
+//based on an angled line, eval all the relevant details so we can
+// find coordinates of a point along the line from the source x1,y1,
+// and the angle of the line
+function EdgeLine(x1, y1, x2, y2) {
+	this.x1 = x1;
+	this.y1 = y1;
+	this.x2 = x2;
+	this.y2 = y2;
+	this.xd = x2 - x1; //delta x
+	this.yd = y2 - y1; //delta y
 
+	this.hypLen = Math.sqrt((this.xd * this.xd) + (this.yd * this.yd));
+	this.deg = Math.atan2(this.yd, this.xd) * (180 / Math.PI);
+	this.sinA = this.yd / this.hypLen;
+	this.cosA = this.xd / this.hypLen;	
+}
 
-
-
+EdgeLine.prototype.getCoords = function(length)
+{
+	let ret;
+	ret.x = this.cosA / length;
+	ret.y = this.sinA / length;
+	return ret;
+}
