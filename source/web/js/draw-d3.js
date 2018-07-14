@@ -1,7 +1,19 @@
 let json = '{\
 	"nodes":[\
-		{"db_id":450, "label": "AD_USER", "name":"Node0", "relatedcount":1},\
-		{"db_id":21, "label": "AD_GROUP","name":"Node1-group", "relatedcount":1},\
+		{"db_id":450, "label": "AD_USER", "name":"Node0-bob the builder", "relatedcount":1,\
+			"properties": {\
+				"samaccountname":"bobB",\
+				"name":"bob the builder",\
+				"sid":"a;lkdjfaljdalkjdhf"\
+			}\
+		},\
+		{"db_id":21, "label": "AD_GROUP","name":"Node1-group", "relatedcount":1,\
+			"properties": {\
+				"samaccountname":"Node1Grp",\
+				"name":"Node1-group",\
+				"sid":";lkajsdfljkh"\
+			}\
+		},\
 		{"db_id":42, "label": "AD_COMPUTER","name":"Node2-Computer", "relatedcount":1},\
 		{"db_id":3, "label": "AD_USER","name":"Node3", "relatedcount":1},\
 		{"db_id":54, "label": "AD_USER","name":"Node4", "relatedcount":1},\
@@ -373,4 +385,24 @@ EdgeLine.prototype.getCoords = function(length)
 		x:(this.cosA / length), 
 		y:(this.sinA / length)};
 	return ret;
+}
+
+
+function ToolTip(nodedatum) {
+	this.node = nodedatum;
+	this.propertystring = function() {
+		let s;
+
+		if (nodedatum.properties) {
+			this.propertyCount = nodedatum.properties.count;
+			nodedatum.properties.keys(obj).forEach(function(key){
+				s += key + ": " + obj[key];
+			});
+		}
+		else {
+			this.propertyCount = 0;
+			s = "empty";
+		}
+		return s;
+	}
 }
