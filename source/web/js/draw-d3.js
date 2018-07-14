@@ -60,8 +60,6 @@ function drawGraph(selectid) {
 	let paneWidth = 640;
 	let paneHeight = 480;
 	let defaultsize = 40;
-	let defaultstroke = 3;
-	let totalnodesize = (defaultstroke*2) + defaultsize;
 	let edgelabelwidth = 70;
 
 	let jsonData = JSON.parse(json);
@@ -78,8 +76,8 @@ function drawGraph(selectid) {
 			d.cx = d.x + d.radius;
 			d.cy = d.y + d.radius;
 			d.size = defaultsize * d.scaling;
-			d.totalsize = totalnodesize * d.scaling;
 		});	
+
 
 	//setup simulation/force layout, bind links to the correct node property etc
 	simulation.nodes(nodedata)
@@ -89,7 +87,7 @@ function drawGraph(selectid) {
 			)	
 		.force('charge', d3.forceManyBody()) 
 		.force('center', d3.forceCenter(paneWidth / 2, paneHeight / 2))
-		.force('collision', d3.forceCollide().radius(function(d) { return (totalnodesize)}))
+		.force('collision', d3.forceCollide().radius(function(d) { return (d.size)}))
 		.on('tick', function () {		
 			updateLocations();
 		});
@@ -107,6 +105,7 @@ function drawGraph(selectid) {
 	let svg = drawPane.append("svg")
 		.classed("drawingpane",true);
 
+
 	//setup the zooming layer
 	let zoomLayer = svg.append("g");
 	svg.call(d3.zoom()
@@ -114,6 +113,7 @@ function drawGraph(selectid) {
 		.on("zoom", function() {
 				zoomLayer.attr("transform", d3.event.transform);
 			}));	
+
 
 	//setup the edges
 	let edges = zoomLayer.selectAll(".edges")
@@ -137,6 +137,7 @@ function drawGraph(selectid) {
 		.attr("text-anchor","middle")
 		.attr("dominant-baseline","central")
 		.text(function(d) {return d.label});
+
 
 	//build the nodes
 	let nodes = zoomLayer.selectAll(".nodes")
@@ -170,16 +171,17 @@ function drawGraph(selectid) {
 
 	nodes.append("text")
 		.text(function(d) { return d.name; })
-		.attr("text-anchor","left")
+		.attr("text-anchor","middle")
+		.attr("dominant-baseline","central")
 		.attr("font-size","10px")
 		.attr("font-family","arial")
-		.attr("transform",function(d) { return "translate(" + (d.totalsize + 2) 
-			+ "," + ((d.totalsize /2) + 2) + ")" }); 
+		.attr("transform",function(d) { return "translate(" + (d.size/2) + "," + (d.size + 7) + ")" }); 
+
+
 
 	function nodeDragged(d){
 		d3.event.sourceEvent.stopPropagation();
-		//if the node is selected the move it and all other selected
-		//nodes
+		//if the node is selected the move it and all other selected nodes
 		if (d.selected) { 
 			nodes.filter(function(d) { return d.selected; })
 			.each(function(d) { 
@@ -265,15 +267,17 @@ function drawGraph(selectid) {
 
 			edge.selectAll(".arrows")
 				.attr("d",function(d) {
+					let line1start;
+					
 					let line1end = Math.max(diagLine.mid-30, 0);
-					let line2start = diagLine.mid + 30;
-					let line2end = Math.max(diagLine.length - d.target.radius - 8, 0);
-					let line2point = Math.max(line2end + 5, 0);
+					let line2start = Math.min(diagLine.mid + 30,diagLine.length);
+					let line2end = Math.max(diagLine.length - d.target.radius - 8, line2start);
+					let line2point = Math.max(line2end + 5, line2end);
 					
 					let path;
-					if (d.bidir) {
-						let line1point = d.source.radius + 5;
-						let line1start = line1point + 5;
+					if (d.bidir) { //bidirectional edge with double ended arrows
+						let line1point = Math.min(d.source.radius + 5,line1end-5);
+						line1start = Math.min(line1point + 5,line1end);
 
 						path = "M " + line1point + " 0 " +
 						"L " + line1start + " -3 " +
@@ -283,8 +287,10 @@ function drawGraph(selectid) {
 						"L " + line1start + " 1 " +
 						"L " + line1start + " 3 Z ";
 					} 
-					else {
-						let line1start = d.source.radius + 5;
+					else { //single direction edge with single ended arrow
+						line1start = Math.min(d.source.radius + 5,line1end);
+						line1end = Math.max(diagLine.mid-30, line1start);
+
 						path = "M " + line1start + " -1 " + 
 						"L " + line1end + " -1 " + 
 						"L " + line1end + " 1 " +
@@ -344,9 +350,7 @@ function drawGraph(selectid) {
 }
 
 
-//based on an angled line, eval all the relevant details so we can
-// find coordinates of a point along the line from the source x1,y1,
-// and the angle of the line
+//based on an angled line, eval all the relevant details
 function EdgeLine(x1, y1, x2, y2) {
 	this.x1 = x1;
 	this.y1 = y1;
@@ -362,6 +366,7 @@ function EdgeLine(x1, y1, x2, y2) {
 	this.cosA = this.xd / this.length;	
 }
 
+// find coordinates of a point along the line from the source (x1,y1)
 EdgeLine.prototype.getCoords = function(length)
 {
 	let ret = {
