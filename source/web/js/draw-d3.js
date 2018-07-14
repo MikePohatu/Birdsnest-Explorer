@@ -15,22 +15,22 @@ let json = '{\
 			}\
 		},\
 		{"db_id":42, "label": "AD_COMPUTER","name":"Node2-Computer", "relatedcount":1},\
-		{"db_id":3, "label": "AD_USER","name":"Node3", "relatedcount":1},\
-		{"db_id":54, "label": "AD_USER","name":"Node4", "relatedcount":1},\
+		{"db_id":3, "label": "AD_USER","name":"Node3", "relatedcount":12},\
+		{"db_id":54, "label": "AD_USER","name":"Node4", "relatedcount":456},\
 		{"db_id":564, "label": "FS_DATASTORE","name":"Node5-datastore", "relatedcount":1},\
-		{"db_id":61, "label": "AD_USER","name":"Node6", "relatedcount":1},\
-		{"db_id":75, "label": "AD_USER","name":"Node7", "relatedcount":1},\
-		{"db_id":833, "label": "AD_USER","name":"Node8", "relatedcount":1},\
-		{"db_id":9112, "label": "AD_USER","name":"Node9", "relatedcount":1},\
-		{"db_id":100, "label": "AD_USER","name":"Node10", "relatedcount":1},\
-		{"db_id":1, "label": "AD_USER","name":"Node11", "relatedcount":1},\
-		{"db_id":2, "label": "AD_USER","name":"Node12", "relatedcount":1},\
-		{"db_id":33, "label": "AD_USER","name":"Node13", "relatedcount":1},\
-		{"db_id":4, "label": "FS_FOLDER","name":"Node14-folder", "relatedcount":1},\
-		{"db_id":15, "label": "AD_USER","name":"Node15", "relatedcount":1},\
-		{"db_id":16, "label": "AD_USER","name":"Node16", "relatedcount":1},\
-		{"db_id":17, "label": "AD_USER","name":"Node17", "relatedcount":1.5},\
-		{"db_id":18, "label": "AD_USER","name":"Node18", "relatedcount":1}\
+		{"db_id":61, "label": "AD_USER","name":"Node6", "relatedcount":9},\
+		{"db_id":75, "label": "AD_USER","name":"Node7", "relatedcount":72},\
+		{"db_id":833, "label": "AD_USER","name":"Node8", "relatedcount":229},\
+		{"db_id":9112, "label": "AD_USER","name":"Node9", "relatedcount":201},\
+		{"db_id":100, "label": "AD_USER","name":"Node10", "relatedcount":14},\
+		{"db_id":1, "label": "AD_USER","name":"Node11", "relatedcount":16},\
+		{"db_id":2, "label": "AD_USER","name":"Node12", "relatedcount":987},\
+		{"db_id":33, "label": "AD_USER","name":"Node13", "relatedcount":56},\
+		{"db_id":4, "label": "FS_FOLDER","name":"Node14-folder", "relatedcount":19},\
+		{"db_id":15, "label": "AD_USER","name":"Node15", "relatedcount":13},\
+		{"db_id":16, "label": "AD_USER","name":"Node16", "relatedcount":12},\
+		{"db_id":17, "label": "AD_USER","name":"Node17", "relatedcount":176},\
+		{"db_id":18, "label": "AD_USER","name":"Node18", "relatedcount":111}\
 	],\
 	"edges":[\
 		{"source": 4, "target": 564, "bidir":false, "label":"ConnectedTo"},\
@@ -76,19 +76,29 @@ function drawGraph(selectid) {
 	let iconsdata = JSON.parse(iconsjson);
 	let nodedata = jsonData.nodes;
 	let linkdata = jsonData.edges;
+	let currMaxRelated = 0
+	let currMinRelated = 9007199254740991;
+	let minScaling = 1;
+	let maxScaling = 4;
 
-	//load the data and pre-calculate/set the values for each node 
+	//evaluate the nodes to figure out the max and min size so we can work out the scaling
 	jsonData.nodes.forEach(function(d) {			
-			d.scaling = d.relatedcount;
-			d.radius = ((defaultsize*d.scaling)/2); 
-			d.x = 0;
-			d.y = 0;
-			d.cx = d.x + d.radius;
-			d.cy = d.y + d.radius;
-			d.size = defaultsize * d.scaling;
-			d.pinned = false;
-		});	
+		if (d.relatedcount>currMaxRelated) {currMaxRelated = d.relatedcount;}
+		if (d.relatedcount<currMinRelated) {currMinRelated = d.relatedcount;}
+	});	
+	let scalingRange = new Slope(currMinRelated, minScaling, currMaxRelated, maxScaling);
 
+	//load the data and pre-calculate/set the values for each node 	
+	jsonData.nodes.forEach(function(d) {
+		d.scaling = scalingRange.getYFromX(d.relatedcount);
+		d.radius = ((defaultsize*d.scaling)/2); 
+		d.x = 0;
+		d.y = 0;
+		d.cx = d.x + d.radius;
+		d.cy = d.y + d.radius;
+		d.pinned = false;
+		d.size = defaultsize * d.scaling;
+	});
 
 	//setup simulation/force layout, bind links to the correct node property etc
 	simulation.nodes(nodedata)
@@ -273,7 +283,7 @@ function drawGraph(selectid) {
 
 	function updateLocations() {
 		edges.each(function(d) {
-			let diagLine = new EdgeLine(d.source.cx, d.source.cy, d.target.cx, d.target.cy);
+			let diagLine = new Slope(d.source.cx, d.source.cy, d.target.cx, d.target.cy);
 
 			//move and rotate the edge line to the right spot
 			let edge = d3.select(this)
@@ -341,7 +351,7 @@ function drawGraph(selectid) {
 						return "translate(" + diagLine.mid  + ",0)";
 					}
 					else {
-						let axis = diagLine.getCoords(diagLine.mid);
+						let axis = diagLine.getCoordsFromLength(diagLine.mid);
 						return "translate(" + diagLine.mid + ",0) rotate(180)";
 					}
 				})
@@ -377,7 +387,7 @@ function drawGraph(selectid) {
 
 
 //based on an angled line, eval all the relevant details
-function EdgeLine(x1, y1, x2, y2) {
+function Slope(x1, y1, x2, y2) {
 	this.x1 = x1;
 	this.y1 = y1;
 	this.x2 = x2;
@@ -390,17 +400,27 @@ function EdgeLine(x1, y1, x2, y2) {
 	this.deg = Math.atan2(this.yd, this.xd) * (180 / Math.PI);
 	this.sinA = this.yd / this.length;
 	this.cosA = this.xd / this.length;	
+	this.tanA = this.yd / this.xd;
 }
 
 // find coordinates of a point along the line from the source (x1,y1)
-EdgeLine.prototype.getCoords = function(length)
+Slope.prototype.getCoordsFromLength = function(length)
 {
 	let ret = {
-		x:(this.cosA / length), 
-		y:(this.sinA / length)};
+		x:((this.cosA / length)+this.x1), 
+		y:((this.sinA / length)+this.y1)};
 	return ret;
 }
 
+Slope.prototype.getYFromX = function(x)
+{
+	return (this.tanA * (x-this.x1)) + this.y1;
+}
+
+Slope.prototype.getXFromY = function(y)
+{
+	return (this.tanA / (y-this.y1))+ this.x1;
+}
 
 function ToolTip(nodedatum) {
 	this.node = nodedatum;
