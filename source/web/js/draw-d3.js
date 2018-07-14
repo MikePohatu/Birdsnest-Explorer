@@ -1,36 +1,46 @@
 let json = '{\
 	"nodes":[\
-		{"db_id":450,"name":"Node0", "relatedcount":1, "class":"fas fa-user", "color":"orange", "selcolor":"lightgreen", "fill": "yellow"},\
-		{"db_id":21,"name":"Node1", "relatedcount":1, "class":"fas fa-user", "color":"orange", "selcolor":"lightgreen", "fill": "yellow"},\
-		{"db_id":42,"name":"Node2", "relatedcount":1, "class":"fas fa-user", "color":"red", "selcolor":"lightgreen", "fill": "pink"},\
-		{"db_id":3,"name":"Node3", "relatedcount":1, "class":"fas fa-user", "color":"green", "selcolor":"lightgreen", "fill": "lightgreen"},\
-		{"db_id":54,"name":"Node4", "relatedcount":1, "class":"fas fa-user", "color":"orange", "selcolor":"lightgreen", "fill": "yellow"},\
-		{"db_id":564,"name":"Node5", "relatedcount":1, "class":"fas fa-user", "color":"red", "selcolor":"lightgreen", "fill": "pink"},\
-		{"db_id":61,"name":"Node6", "relatedcount":1, "class":"fas fa-user", "color":"green", "selcolor":"lightgreen", "fill": "lightgreen"},\
-		{"db_id":75,"name":"Node7", "relatedcount":1, "class":"fas fa-user", "color":"orange", "selcolor":"lightgreen", "fill": "yellow"},\
-		{"db_id":833,"name":"Node8", "relatedcount":1, "class":"fas fa-user", "color":"red", "selcolor":"lightgreen", "fill": "pink"},\
-		{"db_id":9112,"name":"Node9", "relatedcount":1, "class":"fas fa-user", "color":"green", "selcolor":"lightgreen", "fill": "lightgreen"},\
-		{"db_id":100,"name":"Node10", "relatedcount":1, "class":"fas fa-user", "color":"orange", "selcolor":"lightgreen", "fill": "yellow"},\
-		{"db_id":1,"name":"Node11", "relatedcount":1, "class":"fas fa-user", "color":"red", "selcolor":"lightgreen", "fill": "pink"},\
-		{"db_id":2,"name":"Node12", "relatedcount":1, "class":"fas fa-user", "color":"green", "selcolor":"lightgreen", "fill": "lightgreen"},\
-		{"db_id":33,"name":"Node13", "relatedcount":1, "class":"fas fa-user", "color":"orange", "selcolor":"lightgreen", "fill": "yellow"},\
-		{"db_id":4,"name":"Node14", "relatedcount":1, "class":"fas fa-user", "color":"red", "selcolor":"lightgreen", "fill": "pink"},\
-		{"db_id":15,"name":"Node15", "relatedcount":1, "class":"fas fa-user", "color":"green", "selcolor":"lightgreen", "fill": "lightgreen"},\
-		{"db_id":16,"name":"Node16", "relatedcount":1, "class":"fas fa-user", "color":"orange", "selcolor":"lightgreen", "fill": "yellow"},\
-		{"db_id":17,"name":"Node17", "relatedcount":1.5, "class":"fas fa-user", "color":"red", "selcolor":"lightgreen", "fill": "pink"},\
-		{"db_id":18,"name":"Node18", "relatedcount":1, "class":"fas fa-user", "color":"green", "selcolor":"lightgreen", "fill": "lightgreen"}\
+		{"db_id":450, "label": "AD_USER", "name":"Node0", "relatedcount":1, "class":"fas fa-user"},\
+		{"db_id":21, "label": "AD_GROUP","name":"Node1-group", "relatedcount":1, "class":"fas fa-user"},\
+		{"db_id":42, "label": "AD_COMPUTER","name":"Node2-Computer", "relatedcount":1, "class":"fas fa-user"},\
+		{"db_id":3, "label": "AD_USER","name":"Node3", "relatedcount":1, "class":"fas fa-user"},\
+		{"db_id":54, "label": "AD_USER","name":"Node4", "relatedcount":1, "class":"fas fa-user"},\
+		{"db_id":564, "label": "AD_USER","name":"Node5", "relatedcount":1, "class":"fas fa-user"},\
+		{"db_id":61, "label": "AD_USER","name":"Node6", "relatedcount":1, "class":"fas fa-user"},\
+		{"db_id":75, "label": "AD_USER","name":"Node7", "relatedcount":1, "class":"fas fa-user"},\
+		{"db_id":833, "label": "AD_USER","name":"Node8", "relatedcount":1, "class":"fas fa-user"},\
+		{"db_id":9112, "label": "AD_USER","name":"Node9", "relatedcount":1, "class":"fas fa-user"},\
+		{"db_id":100, "label": "AD_USER","name":"Node10", "relatedcount":1, "class":"fas fa-user"},\
+		{"db_id":1, "label": "AD_USER","name":"Node11", "relatedcount":1, "class":"fas fa-user"},\
+		{"db_id":2, "label": "AD_USER","name":"Node12", "relatedcount":1, "class":"fas fa-user"},\
+		{"db_id":33, "label": "AD_USER","name":"Node13", "relatedcount":1, "class":"fas fa-user"},\
+		{"db_id":4, "label": "AD_USER","name":"Node14", "relatedcount":1, "class":"fas fa-user"},\
+		{"db_id":15, "label": "AD_USER","name":"Node15", "relatedcount":1, "class":"fas fa-user"},\
+		{"db_id":16, "label": "AD_USER","name":"Node16", "relatedcount":1, "class":"fas fa-user"},\
+		{"db_id":17, "label": "AD_USER","name":"Node17", "relatedcount":1.5, "class":"fas fa-user"},\
+		{"db_id":18, "label": "AD_USER","name":"Node18", "relatedcount":1, "class":"fas fa-user"}\
 	],\
 	"edges":[\
-		{"source": 450, "target": 1, "bidir":false, "label":"AD_MemberOf", "color":"green"},\
-		{"source": 3, "target": 2, "bidir":false, "label":"AD_MemberOf", "color":"green"},\
-		{"source": 9112, "target": 61, "bidir":false, "label":"AD_MemberOf", "color":"green"},\
-		{"source": 4, "target": 33, "bidir":true, "label":"AD_MemberOf", "color":"green"},\
-		{"source": 4, "target": 9112, "bidir":false, "label":"AD_MemberOf", "color":"green"},\
-		{"source": 9112, "target": 100, "bidir":false, "label":"AD_MemberOf", "color":"green"},\
-		{"source": 15, "target": 33, "bidir":false, "label":"AD_MemberOf", "color":"green"},\
-		{"source": 15, "target": 17, "bidir":false, "label":"AD_MemberOf", "color":"green"},\
-		{"source": 17, "target": 18, "bidir":false, "label":"AD_MemberOf", "color":"green"}\
+		{"source": 450, "target": 1, "bidir":false, "label":"AD_MemberOf"},\
+		{"source": 3, "target": 2, "bidir":false, "label":"AD_MemberOf"},\
+		{"source": 9112, "target": 61, "bidir":false, "label":"AD_MemberOf"},\
+		{"source": 4, "target": 33, "bidir":true, "label":"AD_MemberOf"},\
+		{"source": 4, "target": 9112, "bidir":false, "label":"AD_MemberOf"},\
+		{"source": 9112, "target": 100, "bidir":false, "label":"AD_MemberOf"},\
+		{"source": 15, "target": 33, "bidir":false, "label":"AD_MemberOf"},\
+		{"source": 15, "target": 17, "bidir":false, "label":"AD_MemberOf"},\
+		{"source": 17, "target": 18, "bidir":false, "label":"AD_MemberOf"}\
 	]\
+}';
+
+let iconsjson = '{\
+	"AD_USER":"fas fa-user",\
+	"AD_COMPUTER":"fas fa-desktop",\
+	"AD_GROUP":"fas fa-users",\
+	"BUILTIN_GROUP":"fas fa-users",\
+	"DEVICE":"fas fa-tablet-alt",\
+	"FS_FOLDER":"fas fa-folder-open",\
+	"FS_DATASTORE":"fas fa-hdd"\
 }';
 
 //let jsonData = ""
@@ -45,7 +55,6 @@ function drawGraph(selectid) {
 	let shiftKey = false;
 	let ctrlKey = false;
 
-	let bgcolor = "#FBFBFB";
 	let paneWidth = 640;
 	let paneHeight = 480;
 	let defaultsize = 40;
@@ -54,8 +63,10 @@ function drawGraph(selectid) {
 	let edgelabelwidth = 70;
 
 	let jsonData = JSON.parse(json);
+	let iconsdata = JSON.parse(iconsjson);
 	let nodedata = jsonData.nodes;
 	let linkdata = jsonData.edges;
+
 	//load the data and pre-calculate/set the values for each node 
 	jsonData.nodes.forEach(function(d) {			
 			d.scaling = d.relatedcount;
@@ -71,8 +82,10 @@ function drawGraph(selectid) {
 	//setup simulation/force layout, bind links to the correct node property etc
 	simulation.nodes(nodedata)
 		.force("link", d3.forceLink()
-			.id(function(d) { return d.db_id; }))
-		.force('charge', d3.forceManyBody().strength(-5)) 
+			.id(function(d) { return d.db_id; })
+			.distance(function(d){ return 150; })
+			)	
+		.force('charge', d3.forceManyBody()) 
 		.force('center', d3.forceCenter(paneWidth / 2, paneHeight / 2))
 		.force('collision', d3.forceCollide().radius(function(d) { return (totalnodesize)}))
 		.on('tick', function () {		
@@ -90,7 +103,7 @@ function drawGraph(selectid) {
 		.on("click", clicked);
 
 	let svg = drawPane.append("svg")
-		.style("background-color",bgcolor);
+		.classed("drawingpane",true);
 
 	//setup the zooming layer
 	let zoomLayer = svg.append("g");
@@ -105,6 +118,7 @@ function drawGraph(selectid) {
 		.data(linkdata)
 		.enter()
 		.append("g")
+			.attr("class", function(d) { return d.label })
 			.classed("edges",true);
 
 	edges.append("path")
@@ -112,25 +126,14 @@ function drawGraph(selectid) {
 		.attr("fill","none");
 
 	edges.append("path")
-		.classed("arrows",true)
-		.attr("fill",function(d){ return d.color;});	
+		.classed("arrows",true);	
 	
 	let edgelabels = edges.append("g")
-		.classed("edgelabel",true)
-		.style("transform-origin","center");
-
-/*	edgelabels.append("rect")
-		.attr("height",14)
-		.attr("width",edgelabelwidth)
-		.style("stroke","black")
-		.style("fill",bgcolor);*/
+		.classed("edgelabel",true);
 
 	edgelabels.append("text")
-		.attr("alignment-baseline","center")
-		.attr("y",2)
-		.attr("x",5)
-		.attr("font-size","8px")
-		.attr("font-family","arial")
+		.attr("text-anchor","middle")
+		.attr("dominant-baseline","central")
 		.text(function(d) {return d.label});
 
 	//build the nodes
@@ -138,7 +141,9 @@ function drawGraph(selectid) {
 		.data(nodedata)
 		.enter()
 		.append("g")
+			.attr("class", function(d) { return d.label })
 			.classed("nodes",true)
+			
 			.classed("selected", function(d) { 
 				d.selected = false; 
 				d.previouslySelected = false; 
@@ -152,18 +157,14 @@ function drawGraph(selectid) {
 	nodes.append("circle")
 		.attr("r", function(d) { return d.radius + "px"; })
 		.attr("cx", function(d) { return d.radius; })
-		.attr("cy", function(d) { return d.radius; })
-		.style("stroke-width", function(d) { return defaultstroke + "px" })
-		.attr("fill", function(d) { return d.fill })
-		.style("stroke", function(d) { return d.color });
+		.attr("cy", function(d) { return d.radius; });
 		
 	nodes.append("i")
 		.attr("height", function(d) { return ( d.size * 0.6) + "px" })
 		.attr("width", function(d) { return (d.size * 0.6) + "px" })
 		.attr("x", function(d) { return (d.size * 0.2) })
 		.attr("y",function(d) { return (d.size * 0.2)})
-		.attr("class", function(d) { return d.class })
-		.attr("color", function(d) { return d.color })
+		.attr("class", function(d) { return iconsdata[d.label] })
 		.classed("nodeicon",true); 
 
 	nodes.append("text")
@@ -243,9 +244,8 @@ function drawGraph(selectid) {
 
 	function updateLocations() {
 		edges.each(function(d) {
-			let diagLine = new EdgeLine(d.source.cx,d.source.cy,d.target.cx,d.target.cy);
+			let diagLine = new EdgeLine(d.source.cx, d.source.cy, d.target.cx, d.target.cy);
 
-			let arrowLength = diagLine.hypLen;
 			//move and rotate the edge line to the right spot
 			let edge = d3.select(this)
 				.attr("transform", function() {
@@ -257,30 +257,43 @@ function drawGraph(selectid) {
 			edge.selectAll(".wrapper")
 				.attr("d",function(d) {
 					return "M 0 -3 " +
-						"L "+ (diagLine.hypLen) + " -3 "+
-						"L "+ (diagLine.hypLen) + " 3 "+ 
+						"L "+ (diagLine.length) + " -3 "+
+						"L "+ (diagLine.length) + " 3 "+ 
 						"L 0 3 Z"; 
 				});
 
 			edge.selectAll(".arrows")
 				.attr("d",function(d) {
-					return "M 0 -1 " + 
-						"L "+ (arrowLength - 5) + " -1 " + 
-						"L "+ (arrowLength - 5) + " -3 " + 
-						"L "+ (arrowLength) + " 0 "+
-						"L "+ (arrowLength - 5) + " 3 "+ 
-						"L "+ (arrowLength - 5) +" 1 "+
-						"L 0 1 Z"; 
+
+					let line1start = d.source.radius + 3;
+					let line1end = Math.max(diagLine.mid-30, 0);
+					let line2start = diagLine.mid + 30;
+					let line2end = Math.max(diagLine.length - d.target.radius - 8, 0);
+					let line2point = Math.max(diagLine.length - d.target.radius - 3, 0);
+					return "M " + line1start + " -1 " + 
+						"L " + line1end + " -1 " + 
+						"L " + line1end + " 1 " +
+						"L " + line1start + " 1 Z " +
+
+						"M " + line2start + " -1 " + 
+						"L " + line2end + " -1 " +
+						"L " + line2end + " -3 " +
+						"L " + line2point + " 0 " +
+						"L " + line2end + " 3 " +
+						"L " + line2end + " 1 " +
+						"L " + line2start + " 1 Z "; 
 				});
 
 			edge.selectAll(".edgelabel")
+				.attr("transform-origin","30,0")
 				.attr("transform",function(d) { 
+					let translation;
 					if (diagLine.x2 > diagLine.x1) {
-						return "translate(" + (d.source.radius + (arrowLength/2)-(edgelabelwidth/2)) + ",-7)";
+						return "translate(" + diagLine.mid  + ",0)";
 					}
 					else {
-						return "rotate(180) translate(" + (d.source.radius - 
-							(arrowLength/2)+(edgelabelwidth/2)) + ",-7)";
+						let axis = diagLine.getCoords(diagLine.mid);
+						return "translate(" + diagLine.mid + ",0) rotate(180)";
 					}
 				})
 		});
@@ -329,16 +342,17 @@ function EdgeLine(x1, y1, x2, y2) {
 	this.xd = x2 - x1; //delta x
 	this.yd = y2 - y1; //delta y
 
-	this.hypLen = Math.sqrt((this.xd * this.xd) + (this.yd * this.yd));
+	this.length = Math.sqrt((this.xd * this.xd) + (this.yd * this.yd));
+	this.mid = this.length / 2;
 	this.deg = Math.atan2(this.yd, this.xd) * (180 / Math.PI);
-	this.sinA = this.yd / this.hypLen;
-	this.cosA = this.xd / this.hypLen;	
+	this.sinA = this.yd / this.length;
+	this.cosA = this.xd / this.length;	
 }
 
 EdgeLine.prototype.getCoords = function(length)
 {
-	let ret;
-	ret.x = this.cosA / length;
-	ret.y = this.sinA / length;
+	let ret = {
+		x:(this.cosA / length), 
+		y:(this.sinA / length)};
 	return ret;
 }

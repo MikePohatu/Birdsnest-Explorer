@@ -1,0 +1,88 @@
+.drawingpane {
+	background-color:#FBFBFB;
+}
+
+
+/*nodes config*/
+.nodes circle {
+	stroke-width:3px;
+	stroke:inherit;
+	fill:inherit;
+} 
+
+.nodes .nodeicon {
+	color:inherit;
+}
+
+.nodes text {
+	font-size:10px;
+	font-family:arial;
+	fill:#353535;
+	stroke:none;
+}
+
+.AD_USER {
+	class:fas fa-user;
+	color:mediumorchid;
+	stroke:mediumorchid;
+	fill:lavender;	
+}
+
+.AD_COMPUTER {
+	color: steelblue;
+	stroke: steelblue;
+	fill: lightcyan;
+}
+
+.AD_GROUP {
+	color: green;
+	stroke: green;
+	fill: #BBF0C6;
+}
+
+.BUILTIN_GROUP {
+	color: lightgreen;
+	stroke: lightgreen;
+	fill: green;
+}
+
+.DEVICE {
+	color: mediumpurple;
+	stroke: mediumpurple;
+	fill: purple;
+}
+
+.FS_FOLDER {
+	color:tan;
+	stroke: tan;
+	fill: wheat;
+}
+.FS_DATASTORE {
+	color:midnightblue;
+	stroke: midnightblue;
+	fill: royalblue
+}
+
+
+
+/*edges config*/
+.edgelabel text {
+	font-size:8px;
+	font-family:arial;
+	fill:#353535;
+}
+
+.arrows {
+	fill:inherit;
+}
+.AD_MemberOf {
+	fill:green;
+}
+
+.ConnectedTo {
+	fill:blue;
+}
+
+.GivesAccessTo {
+	fill:red;
+}
