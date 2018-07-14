@@ -38,8 +38,6 @@ let json = '{\
 		{"source": 450, "target": 1, "bidir":false, "label":"AD_MemberOf"},\
 		{"source": 3, "target": 2, "bidir":false, "label":"AD_MemberOf"},\
 		{"source": 9112, "target": 61, "bidir":false, "label":"AD_MemberOf"},\
-		{"source": 4, "target": 33, "bidir":true, "label":"AD_MemberOf"},\
-		{"source": 4, "target": 9112, "bidir":false, "label":"AD_MemberOf"},\
 		{"source": 9112, "target": 100, "bidir":false, "label":"AD_MemberOf"},\
 		{"source": 15, "target": 33, "bidir":false, "label":"AD_MemberOf"},\
 		{"source": 15, "target": 17, "bidir":false, "label":"AD_MemberOf"},\
@@ -88,6 +86,7 @@ function drawGraph(selectid) {
 			d.cx = d.x + d.radius;
 			d.cy = d.y + d.radius;
 			d.size = defaultsize * d.scaling;
+			d.pinned = false;
 		});	
 
 
@@ -156,9 +155,9 @@ function drawGraph(selectid) {
 		.data(nodedata)
 		.enter()
 		.append("g")
+			.attr("id",function(d) { return "node"+d.db_id; })
 			.attr("class", function(d) { return d.label })
 			.classed("nodes",true)
-			
 			.classed("selected", function(d) { 
 				d.selected = false; 
 				return d.selected;})
@@ -169,6 +168,7 @@ function drawGraph(selectid) {
 
 	//node layout
 	nodes.append("circle")
+		.classed("nodecircle",true)
 		.attr("r", function(d) { return d.radius + "px"; })
 		.attr("cx", function(d) { return d.radius; })
 		.attr("cy", function(d) { return d.radius; });
@@ -199,32 +199,48 @@ function drawGraph(selectid) {
 			.each(function(d) { 
 				d.x += d3.event.dx;
 				d.y += d3.event.dy;
-				d.cx += d3.event.dx;
-				d.cy += d3.event.dy;
-				d.fx = d.x;
-				d.fy = d.y;	
-				lockNode(d);
+				pinNode(d);
 			});
 		}
 		else {
 			d.x += d3.event.dx;
 			d.y += d3.event.dy; 
-			lockNode(d);
+			pinNode(d);
 		}
 
 		updateLocations();
 	}
 
-	function lockNode(d) {
+	function pinNode(d) {
+		console.log("pinNode: " + d.name + " " + d.pinned);
 		d.fx = d.x;
 		d.fy = d.y;
-		d.locked = true;
+		if (!d.pinned) {
+			console.log("pinning: " + d.name);
+			let ping = d3.selectAll("#node" + d.db_id)
+				.append("g")
+					.classed("pin",true)
+					.on("click", unpinNode);
+			ping.append("circle")
+				.attr("r",7*d.scaling)
+				.attr("cx",4*d.scaling)
+				.attr("cy",4*d.scaling);
+			ping.append("i")
+				.classed("fas fa-thumbtack",true)
+				.attr("height",8*d.scaling)
+				.attr("width",8*d.scaling);
+			d.pinned = true;
+		}
 	}
 
-	function unlockNode(d) {
+	function unpinNode(d) {
+		if (d3.event.defaultPrevented) return; // dragged
 		delete d.fx;
 		delete d.fy;
-		d.locked = false;
+		if (d.pinned) {
+			d3.selectAll("#node" + d.db_id).select(".pin").remove();
+			d.pinned = false;
+		}
 	}
 
 	function keydown() {

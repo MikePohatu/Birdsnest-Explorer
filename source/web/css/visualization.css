@@ -10,7 +10,7 @@
 	stroke-width:3px;
 }
 
-.selected circle {
+.selected .nodecircle {
 	stroke-width:5px;
 	fill:#FEFE73;
 }
@@ -22,6 +22,12 @@
 	stroke:none;
 }
 
+.pin {
+	color:#3a3a3a;
+	fill:#7bc2fc;
+	stroke:white;
+	stroke-width:1;
+}
 .AD_USER {
 	color:crimson;
 	stroke:crimson;
