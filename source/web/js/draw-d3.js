@@ -212,11 +212,9 @@ function drawGraph(selectid) {
 	}
 
 	function pinNode(d) {
-		console.log("pinNode: " + d.name + " " + d.pinned);
 		d.fx = d.x;
 		d.fy = d.y;
 		if (!d.pinned) {
-			console.log("pinning: " + d.name);
 			let ping = d3.selectAll("#node" + d.db_id)
 				.append("g")
 					.classed("pin",true)
