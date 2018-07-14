@@ -3,15 +3,16 @@
 }
 
 
-/*nodes config*/
-.nodes circle {
-	stroke-width:3px;
-	stroke:inherit;
-	fill:inherit;
-} 
 
-.nodes .nodeicon {
-	color:inherit;
+/*nodes config*/
+
+.nodes {
+	stroke-width:3px;
+}
+
+.selected circle {
+	stroke-width:5px;
+	fill:#FEFE73;
 }
 
 .nodes text {
@@ -22,7 +23,6 @@
 }
 
 .AD_USER {
-	class:fas fa-user;
 	color:mediumorchid;
 	stroke:mediumorchid;
 	fill:lavender;	
@@ -55,12 +55,12 @@
 .FS_FOLDER {
 	color:tan;
 	stroke: tan;
-	fill: wheat;
+	fill: cornsilk;
 }
 .FS_DATASTORE {
 	color:midnightblue;
 	stroke: midnightblue;
-	fill: royalblue
+	fill: lightblue;
 }
 
 

@@ -1,26 +1,28 @@
 let json = '{\
 	"nodes":[\
-		{"db_id":450, "label": "AD_USER", "name":"Node0", "relatedcount":1, "class":"fas fa-user"},\
-		{"db_id":21, "label": "AD_GROUP","name":"Node1-group", "relatedcount":1, "class":"fas fa-user"},\
-		{"db_id":42, "label": "AD_COMPUTER","name":"Node2-Computer", "relatedcount":1, "class":"fas fa-user"},\
-		{"db_id":3, "label": "AD_USER","name":"Node3", "relatedcount":1, "class":"fas fa-user"},\
-		{"db_id":54, "label": "AD_USER","name":"Node4", "relatedcount":1, "class":"fas fa-user"},\
-		{"db_id":564, "label": "AD_USER","name":"Node5", "relatedcount":1, "class":"fas fa-user"},\
-		{"db_id":61, "label": "AD_USER","name":"Node6", "relatedcount":1, "class":"fas fa-user"},\
-		{"db_id":75, "label": "AD_USER","name":"Node7", "relatedcount":1, "class":"fas fa-user"},\
-		{"db_id":833, "label": "AD_USER","name":"Node8", "relatedcount":1, "class":"fas fa-user"},\
-		{"db_id":9112, "label": "AD_USER","name":"Node9", "relatedcount":1, "class":"fas fa-user"},\
-		{"db_id":100, "label": "AD_USER","name":"Node10", "relatedcount":1, "class":"fas fa-user"},\
-		{"db_id":1, "label": "AD_USER","name":"Node11", "relatedcount":1, "class":"fas fa-user"},\
-		{"db_id":2, "label": "AD_USER","name":"Node12", "relatedcount":1, "class":"fas fa-user"},\
-		{"db_id":33, "label": "AD_USER","name":"Node13", "relatedcount":1, "class":"fas fa-user"},\
-		{"db_id":4, "label": "AD_USER","name":"Node14", "relatedcount":1, "class":"fas fa-user"},\
-		{"db_id":15, "label": "AD_USER","name":"Node15", "relatedcount":1, "class":"fas fa-user"},\
-		{"db_id":16, "label": "AD_USER","name":"Node16", "relatedcount":1, "class":"fas fa-user"},\
-		{"db_id":17, "label": "AD_USER","name":"Node17", "relatedcount":1.5, "class":"fas fa-user"},\
-		{"db_id":18, "label": "AD_USER","name":"Node18", "relatedcount":1, "class":"fas fa-user"}\
+		{"db_id":450, "label": "AD_USER", "name":"Node0", "relatedcount":1},\
+		{"db_id":21, "label": "AD_GROUP","name":"Node1-group", "relatedcount":1},\
+		{"db_id":42, "label": "AD_COMPUTER","name":"Node2-Computer", "relatedcount":1},\
+		{"db_id":3, "label": "AD_USER","name":"Node3", "relatedcount":1},\
+		{"db_id":54, "label": "AD_USER","name":"Node4", "relatedcount":1},\
+		{"db_id":564, "label": "FS_DATASTORE","name":"Node5-datastore", "relatedcount":1},\
+		{"db_id":61, "label": "AD_USER","name":"Node6", "relatedcount":1},\
+		{"db_id":75, "label": "AD_USER","name":"Node7", "relatedcount":1},\
+		{"db_id":833, "label": "AD_USER","name":"Node8", "relatedcount":1},\
+		{"db_id":9112, "label": "AD_USER","name":"Node9", "relatedcount":1},\
+		{"db_id":100, "label": "AD_USER","name":"Node10", "relatedcount":1},\
+		{"db_id":1, "label": "AD_USER","name":"Node11", "relatedcount":1},\
+		{"db_id":2, "label": "AD_USER","name":"Node12", "relatedcount":1},\
+		{"db_id":33, "label": "AD_USER","name":"Node13", "relatedcount":1},\
+		{"db_id":4, "label": "FS_FOLDER","name":"Node14-folder", "relatedcount":1},\
+		{"db_id":15, "label": "AD_USER","name":"Node15", "relatedcount":1},\
+		{"db_id":16, "label": "AD_USER","name":"Node16", "relatedcount":1},\
+		{"db_id":17, "label": "AD_USER","name":"Node17", "relatedcount":1.5},\
+		{"db_id":18, "label": "AD_USER","name":"Node18", "relatedcount":1}\
 	],\
 	"edges":[\
+		{"source": 4, "target": 564, "bidir":false, "label":"ConnectedTo"},\
+		{"source": 21, "target": 4, "bidir":false, "label":"GivesAccessTo"},\
 		{"source": 450, "target": 1, "bidir":false, "label":"AD_MemberOf"},\
 		{"source": 3, "target": 2, "bidir":false, "label":"AD_MemberOf"},\
 		{"source": 9112, "target": 61, "bidir":false, "label":"AD_MemberOf"},\
@@ -146,7 +148,6 @@ function drawGraph(selectid) {
 			
 			.classed("selected", function(d) { 
 				d.selected = false; 
-				d.previouslySelected = false; 
 				return d.selected;})
 			.on("click", nodeClicked)
 			.call(
@@ -264,24 +265,40 @@ function drawGraph(selectid) {
 
 			edge.selectAll(".arrows")
 				.attr("d",function(d) {
-
-					let line1start = d.source.radius + 5;
 					let line1end = Math.max(diagLine.mid-30, 0);
 					let line2start = diagLine.mid + 30;
 					let line2end = Math.max(diagLine.length - d.target.radius - 8, 0);
-					let line2point = Math.max(diagLine.length - d.target.radius - 3, 0);
-					return "M " + line1start + " -1 " + 
+					let line2point = Math.max(line2end + 5, 0);
+					
+					let path;
+					if (d.bidir) {
+						let line1point = d.source.radius + 5;
+						let line1start = line1point + 5;
+
+						path = "M " + line1point + " 0 " +
+						"L " + line1start + " -3 " +
+						"L " + line1start + " -1 " +
 						"L " + line1end + " -1 " + 
 						"L " + line1end + " 1 " +
-						"L " + line1start + " 1 Z " +
+						"L " + line1start + " 1 " +
+						"L " + line1start + " 3 Z ";
+					} 
+					else {
+						let line1start = d.source.radius + 5;
+						path = "M " + line1start + " -1 " + 
+						"L " + line1end + " -1 " + 
+						"L " + line1end + " 1 " +
+						"L " + line1start + " 1 Z ";
+					}	
 
-						"M " + line2start + " -1 " + 
+					path +=	"M " + line2start + " -1 " + 
 						"L " + line2end + " -1 " +
 						"L " + line2end + " -3 " +
 						"L " + line2point + " 0 " +
 						"L " + line2end + " 3 " +
 						"L " + line2end + " 1 " +
 						"L " + line2start + " 1 Z "; 
+					return path;
 				});
 
 			edge.selectAll(".edgelabel")
@@ -311,11 +328,8 @@ function drawGraph(selectid) {
 		let node = d3.select(element)
 			.classed("selected", function(d) { 
 				d.selected = isselected;
-				d.previouslySelected = isselected;
 				return d.selected;
-			})
-			.select(".nodeicon")
-				.attr("color", function(d) { return isselected ? "#3C3C3C" : d.color; });
+			});
 		return node;
 	}
 
@@ -323,7 +337,6 @@ function drawGraph(selectid) {
 		nodes
 			.classed("selected", function(d) { 
 				d.selected = false;
-				d.previouslySelected = false;
 				return d.selected; })
 			.select(".nodeicon")
 				.attr("color", function(d) { return d.color; }); 
