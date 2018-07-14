@@ -265,7 +265,7 @@ function drawGraph(selectid) {
 			edge.selectAll(".arrows")
 				.attr("d",function(d) {
 
-					let line1start = d.source.radius + 3;
+					let line1start = d.source.radius + 5;
 					let line1end = Math.max(diagLine.mid-30, 0);
 					let line2start = diagLine.mid + 30;
 					let line2end = Math.max(diagLine.length - d.target.radius - 8, 0);
