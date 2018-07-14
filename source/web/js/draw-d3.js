@@ -38,8 +38,8 @@ let json = '{\
 let iconsjson = '{\
 	"AD_USER":"fas fa-user",\
 	"AD_COMPUTER":"fas fa-desktop",\
-	"AD_GROUP":"fas fa-users",\
-	"BUILTIN_GROUP":"fas fa-users",\
+	"AD_GROUP":"fas fa-user-friends",\
+	"BUILTIN_GROUP":"fas fa-user-friends",\
 	"DEVICE":"fas fa-tablet-alt",\
 	"FS_FOLDER":"fas fa-folder-open",\
 	"FS_DATASTORE":"fas fa-hdd"\
