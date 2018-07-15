@@ -1,13 +1,13 @@
 let json = '{\
 	"nodes":[\
-		{"db_id":450, "label": "AD_USER", "name":"Node0-bob the builder", "relatedcount":1,\
+		{"db_id":1, "label": "AD_USER", "name":"Node0-bob the builder", "relatedcount":140,\
 			"properties": {\
 				"samaccountname":"bobB",\
 				"name":"bob the builder",\
 				"sid":"a;lkdjfaljdalkjdhf"\
 			}\
 		},\
-		{"db_id":21, "label": "AD_GROUP","name":"Node1-group", "relatedcount":1,\
+		{"db_id":2, "label": "AD_GROUP","name":"Node1-group", "relatedcount":122,\
 			"properties": {\
 				"samaccountname":"Node1Grp",\
 				"name":"Node1-group",\
@@ -16,32 +16,32 @@ let json = '{\
 		},\
 		{"db_id":42, "label": "AD_COMPUTER","name":"Node2-Computer", "relatedcount":1},\
 		{"db_id":3, "label": "AD_USER","name":"Node3", "relatedcount":12},\
-		{"db_id":54, "label": "AD_USER","name":"Node4", "relatedcount":456},\
+		{"db_id":54, "label": "AD_USER","name":"Node4", "relatedcount":16},\
 		{"db_id":564, "label": "FS_DATASTORE","name":"Node5-datastore", "relatedcount":1},\
 		{"db_id":61, "label": "AD_USER","name":"Node6", "relatedcount":9},\
 		{"db_id":75, "label": "AD_USER","name":"Node7", "relatedcount":72},\
-		{"db_id":833, "label": "AD_USER","name":"Node8", "relatedcount":229},\
-		{"db_id":9112, "label": "AD_USER","name":"Node9", "relatedcount":201},\
+		{"db_id":833, "label": "AD_USER","name":"Node8", "relatedcount":19},\
+		{"db_id":9112, "label": "AD_USER","name":"Node9", "relatedcount":101},\
 		{"db_id":100, "label": "AD_USER","name":"Node10", "relatedcount":14},\
-		{"db_id":1, "label": "AD_USER","name":"Node11", "relatedcount":16},\
-		{"db_id":2, "label": "AD_USER","name":"Node12", "relatedcount":987},\
+		{"db_id":450, "label": "AD_USER","name":"Node11", "relatedcount":16},\
+		{"db_id":21, "label": "AD_USER","name":"Node12", "relatedcount":98},\
 		{"db_id":33, "label": "AD_USER","name":"Node13", "relatedcount":56},\
 		{"db_id":4, "label": "FS_FOLDER","name":"Node14-folder", "relatedcount":19},\
 		{"db_id":15, "label": "AD_USER","name":"Node15", "relatedcount":13},\
 		{"db_id":16, "label": "AD_USER","name":"Node16", "relatedcount":12},\
-		{"db_id":17, "label": "AD_USER","name":"Node17", "relatedcount":176},\
+		{"db_id":17, "label": "AD_USER","name":"Node17", "relatedcount":76},\
 		{"db_id":18, "label": "AD_USER","name":"Node18", "relatedcount":111}\
 	],\
 	"edges":[\
-		{"source": 4, "target": 564, "bidir":false, "label":"ConnectedTo"},\
-		{"source": 21, "target": 4, "bidir":false, "label":"GivesAccessTo"},\
-		{"source": 450, "target": 1, "bidir":false, "label":"AD_MemberOf"},\
-		{"source": 3, "target": 2, "bidir":false, "label":"AD_MemberOf"},\
-		{"source": 9112, "target": 61, "bidir":false, "label":"AD_MemberOf"},\
-		{"source": 9112, "target": 100, "bidir":false, "label":"AD_MemberOf"},\
-		{"source": 15, "target": 33, "bidir":false, "label":"AD_MemberOf"},\
-		{"source": 15, "target": 17, "bidir":false, "label":"AD_MemberOf"},\
-		{"source": 17, "target": 18, "bidir":false, "label":"AD_MemberOf"}\
+		{"db_id":43, "source": 4, "target": 564, "bidir":false, "label":"ConnectedTo"},\
+		{"db_id":44, "source": 21, "target": 4, "bidir":false, "label":"GivesAccessTo"},\
+		{"db_id":45, "source": 450, "target": 1, "bidir":false, "label":"AD_MemberOf"},\
+		{"db_id":46, "source": 3, "target": 2, "bidir":false, "label":"AD_MemberOf"},\
+		{"db_id":47, "source": 9112, "target": 61, "bidir":false, "label":"AD_MemberOf"},\
+		{"db_id":48, "source": 9112, "target": 100, "bidir":false, "label":"AD_MemberOf"},\
+		{"db_id":49, "source": 15, "target": 33, "bidir":false, "label":"AD_MemberOf"},\
+		{"db_id":50, "source": 15, "target": 17, "bidir":false, "label":"AD_MemberOf"},\
+		{"db_id":51, "source": 17, "target": 18, "bidir":false, "label":"AD_MemberOf"}\
 	]\
 }';
 
@@ -59,8 +59,13 @@ let iconsjson = '{\
 let simulation=d3.forceSimulation();
 
 function restartLayout(){ 
+	//console.log('restartLayout');
 	simulation.alpha(1);
 	simulation.restart();
+}
+
+function stopLayout(){
+	simulation.stop();
 }
 
 function drawGraph(selectid) {
@@ -81,24 +86,7 @@ function drawGraph(selectid) {
 	let minScaling = 1;
 	let maxScaling = 4;
 
-	//evaluate the nodes to figure out the max and min size so we can work out the scaling
-	jsonData.nodes.forEach(function(d) {			
-		if (d.relatedcount>currMaxRelated) {currMaxRelated = d.relatedcount;}
-		if (d.relatedcount<currMinRelated) {currMinRelated = d.relatedcount;}
-	});	
-	let scalingRange = new Slope(currMinRelated, minScaling, currMaxRelated, maxScaling);
-
-	//load the data and pre-calculate/set the values for each node 	
-	jsonData.nodes.forEach(function(d) {
-		d.scaling = scalingRange.getYFromX(d.relatedcount);
-		d.radius = ((defaultsize*d.scaling)/2); 
-		d.x = 0;
-		d.y = 0;
-		d.cx = d.x + d.radius;
-		d.cy = d.y + d.radius;
-		d.pinned = false;
-		d.size = defaultsize * d.scaling;
-	});
+	loadNodeData(jsonData.nodes);
 
 	//setup simulation/force layout, bind links to the correct node property etc
 	simulation.nodes(nodedata)
@@ -120,12 +108,11 @@ function drawGraph(selectid) {
 
 	let drawPane = d3.select("#"+selectid)
 		.on("keydown", keydown)
-		.on("keyup", keyup)
-		.on("click", clicked);
+		.on("keyup", keyup);
 
 	let svg = drawPane.append("svg")
-		.classed("drawingpane",true);
-
+		.attr("id","drawingsvg")		
+		.on("click", pageClicked);
 
 	//setup the zooming layer
 	let zoomLayer = svg.append("g");
@@ -165,13 +152,14 @@ function drawGraph(selectid) {
 		.data(nodedata)
 		.enter()
 		.append("g")
-			.attr("id",function(d) { return "node"+d.db_id; })
+			.attr("id",function(d) { return "node_"+d.db_id; })
 			.attr("class", function(d) { return d.label })
 			.classed("nodes",true)
 			.classed("selected", function(d) { 
-				d.selected = false; 
 				return d.selected;})
 			.on("click", nodeClicked)
+			.on("mouseover", nodeMouseOver)
+			.on("mouseout", nodeMouseOut)
 			.call(
 				d3.drag().subject(this)
 					.on('drag',nodeDragged));
@@ -201,52 +189,36 @@ function drawGraph(selectid) {
 
 
 
-	function nodeDragged(d){
-		d3.event.sourceEvent.stopPropagation();
-		//if the node is selected the move it and all other selected nodes
-		if (d.selected) { 
-			nodes.filter(function(d) { return d.selected; })
-			.each(function(d) { 
-				d.x += d3.event.dx;
-				d.y += d3.event.dy;
-				pinNode(d);
-			});
-		}
-		else {
-			d.x += d3.event.dx;
-			d.y += d3.event.dy; 
-			pinNode(d);
-		}
-
-		updateLocations();
-	}
-
 	function pinNode(d) {
+		//console.log("pinNode");
 		d.fx = d.x;
 		d.fy = d.y;
 		if (!d.pinned) {
-			let ping = d3.selectAll("#node" + d.db_id)
+			let ping = d3.selectAll("#node_" + d.db_id)
 				.append("g")
 					.classed("pin",true)
 					.on("click", unpinNode);
 			ping.append("circle")
-				.attr("r",7*d.scaling)
-				.attr("cx",4*d.scaling)
-				.attr("cy",4*d.scaling);
+				.attr("r",5*d.scaling)
+				.attr("cx",5*d.scaling)
+				.attr("cy",5*d.scaling);
 			ping.append("i")
 				.classed("fas fa-thumbtack",true)
-				.attr("height",8*d.scaling)
-				.attr("width",8*d.scaling);
+				.attr("x",2*d.scaling)
+				.attr("y",2*d.scaling)
+				.attr("height",6*d.scaling)
+				.attr("width",6*d.scaling);
 			d.pinned = true;
 		}
 	}
 
 	function unpinNode(d) {
+		//console.log("unpinNode");
 		if (d3.event.defaultPrevented) return; // dragged
 		delete d.fx;
 		delete d.fy;
 		if (d.pinned) {
-			d3.selectAll("#node" + d.db_id).select(".pin").remove();
+			d3.selectAll("#node_" + d.db_id).select(".pin").remove();
 			d.pinned = false;
 		}
 	}
@@ -261,27 +233,149 @@ function drawGraph(selectid) {
 		ctrlKey = d3.event.ctrlKey;
 	}
 
-	function clicked(d){
+	function pageClicked(d){
+		//console.log("pageClicked");
 		if (d3.event.defaultPrevented) return; // dragged
-		simulation.stop();
+		stopLayout();
 		unselectAllNodes();		
 	}
 
 	function nodeClicked(d) {
+		//console.log("nodeClicked");
 		d3.event.stopPropagation();
 		if (d3.event.defaultPrevented) return; // dragged
+
 		if (ctrlKey) {	
 			//if ctrl key is down, just toggle the node		
-			updateNodeSelection(this, !(d.selected));
+			updateNodeSelection(d, !d.selected);
 		}
 		else {
 			//if the ctrl key isn't down, unselect everything and select the node
-			unselectAllNodes();
-			updateNodeSelection(this, true);
+			unselectAllOtherNodes(d);
+			updateNodeSelection(d, true);
 		} 
 	}
 
+	function updateNodeSelection(d, isselected) {
+		//console.log("updateNodeSelection");
+		d3.select("#node_"+ (d.db_id))
+			.classed("selected", function() { 
+				d.selected = isselected;
+				return isselected;
+			});
+		if (isselected) {
+			nodeShowDetailsSelected(d);
+		}
+		else {
+			nodeHideDetailsSelected(d);
+		}
+	}
+
+	function unselectAllOtherNodes(keptdatum) {
+		//console.log("unselectAllOtherNodes");
+		d3.selectAll(".selected")
+			.classed("selected", function(d) { 
+				if (keptdatum.db_id !== d.db_id) {
+					nodeHideDetailsSelected(d);
+					d.selected = false;
+					return false; 
+				}
+			});			
+	}
+
+	function unselectAllNodes() {
+		//console.log("unselectAllNodes");
+		d3.selectAll(".selected")
+			.classed("selected", function(d) { 
+				d.selected = false;
+				return false; }); 
+
+		d3.selectAll(".detailscontrol").remove();
+	}
+
+	function nodeShowDetailsSelected(d) {
+		//console.log("nodeShowDetailsSelected");
+		d3.select("#selecteddetails")
+			.append("div")
+				.attr("class","detailscontrol controlpane details_"+d.db_id)
+				.html(d.detailsHTML);
+	}
+
+	function nodeHideDetailsSelected(d) {
+		//console.log("nodeHideDetailsSelected");
+		d3.selectAll(".details_" + d.db_id).remove();
+	}
+
+	function nodeMouseOver(d) {
+		//console.log("nodeMouseOver");
+		d3.selectAll("#activedetails")
+			.append("div")
+				.classed("detailscontrol controlpane details_"+d.db_id,true)
+				.attr('id',"currentActiveDetails")
+				.html(d.detailsHTML);
+	}
+	
+	function nodeMouseOut(d) {
+		//console.log("nodeMouseOut");
+		d3.selectAll("#currentActiveDetails").remove();
+	}
+
+	function nodeDragged(d){
+		//console.log("nodeDragged");
+		d3.event.sourceEvent.stopPropagation();
+		//if the node is selected the move it and all other selected nodes
+		if (d.selected) { 
+			d3.selectAll(".selected")
+				.each(function(d) { 
+					d.x += d3.event.dx;
+					d.y += d3.event.dy;
+					pinNode(d);
+				});
+		}
+		else {
+			d.x += d3.event.dx;
+			d.y += d3.event.dy; 
+			pinNode(d);
+		}
+
+		updateLocations();
+	}
+
+	function loadNodeData(newnodedata) {
+		//console.log("loadNodeData");
+		let rangeUpdated = false;
+		//evaluate the nodes to figure out the max and min size so we can work out the scaling
+		newnodedata.forEach(function(d) {			
+			if (d.relatedcount>currMaxRelated) {
+				rangeUpdated = true;
+				currMaxRelated = d.relatedcount;
+			}
+			if (d.relatedcount<currMinRelated) {
+				rangeUpdated = true;
+				currMinRelated = d.relatedcount;
+			}
+		});	
+		let scalingRange = new Slope(currMinRelated, minScaling, currMaxRelated, maxScaling);
+
+		//load the data and pre-calculate/set the values for each node 	
+		newnodedata.forEach(function(d) {
+			d.scaling = scalingRange.getYFromX(d.relatedcount);
+			d.radius = ((defaultsize*d.scaling)/2); 
+			d.x = 0;
+			d.y = 0;
+			d.cx = d.x + d.radius;
+			d.cy = d.y + d.radius;
+			d.pinned = false;
+			d.selected = false;
+			d.size = defaultsize * d.scaling;
+			populateDetails(d);
+		});	
+
+		return newnodedata;	
+	}
+
 	function updateLocations() {
+		//console.log("updateLocations");
 		edges.each(function(d) {
 			let diagLine = new Slope(d.source.cx, d.source.cy, d.target.cx, d.target.cy);
 
@@ -365,24 +459,6 @@ function drawGraph(selectid) {
 				return d.y; })
 			.attr("transform", function (d) { return "translate(" + d.x  + "," + d.y + ")" });	
 	}
-
-	function updateNodeSelection(element, isselected) {
-		let node = d3.select(element)
-			.classed("selected", function(d) { 
-				d.selected = isselected;
-				return d.selected;
-			});
-		return node;
-	}
-
-	function unselectAllNodes() {
-		nodes
-			.classed("selected", function(d) { 
-				d.selected = false;
-				return d.selected; })
-			.select(".nodeicon")
-				.attr("color", function(d) { return d.color; }); 
-	}
 }
 
 
@@ -422,20 +498,23 @@ Slope.prototype.getXFromY = function(y)
 	return (this.tanA / (y-this.y1))+ this.x1;
 }
 
-function ToolTip(nodedatum) {
-	this.node = nodedatum;
-	this.propertystring = function() {
-		let s;
+function populateDetails(d) {
+	d.detailsHTML = function () {
+		let s = "<u><b>Details</b></u><br>" +
+			"<b>Name:</b> " + d.name + "<br>" +
+			"<b>db_id:</b> " + d.db_id + "<br>" +
+			"<b>Label:</b> " + d.label + "<br>" +
+			"<b>Related:</b> " + d.relatedcount + "<br><br><b><u>Properties</u></b><br>";
 
-		if (nodedatum.properties) {
-			this.propertyCount = nodedatum.properties.count;
-			nodedatum.properties.keys(obj).forEach(function(key){
-				s += key + ": " + obj[key];
-			});
+		if (d.properties) {
+			d.propertyCount = d.properties.count;
+			for(let key in d.properties) {
+				s += "<b>" + key + ":</b> " + d.properties[key] + "<br>";
+			}
 		}
 		else {
-			this.propertyCount = 0;
-			s = "empty";
+			d.propertyCount = 0;
+			s += "empty<br>";
 		}
 		return s;
 	}

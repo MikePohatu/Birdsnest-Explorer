@@ -47,7 +47,19 @@
 					</form>
 				</div>
 				<div id="drawingpane" tabindex="0">
-
+					<div id="controlpanes">
+						<div id="activedetails"></div>
+						<div id="selecteddetails"></div>
+						<div id="viewcontrols" class="controlpane">
+							<div onclick="restartLayout()">
+								<i id="restartIcon" class="fas fa-sync-alt viewcontrol"></i>
+							</div>
+							<div onclick="stopLayout()">
+								<i id="stopIcon" class="fas fa-pause viewcontrol"></i>
+							</div>
+							<!--<i id="reloadIcon" class="fas fa-sync viewcontrol"></i>-->
+						</div>
+					</div>
 				</div>
 				
 			</div>
