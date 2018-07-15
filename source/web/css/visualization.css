@@ -20,6 +20,10 @@
 	padding: 5px;
 }
 
+#controlpanes #currentActiveDetails {
+	border: 2px solid black;
+}
+
 #controlpanes .detailscontrol {	
 	min-height: 30px;
 	font-size: 10px;
