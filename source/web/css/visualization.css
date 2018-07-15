@@ -50,6 +50,9 @@
 /*nodes config*/
 .nodes {
 	stroke-width:3px;
+	color:#474747;
+	stroke:#474747;
+	fill:#e5e5e5;	
 }
 
 .selected .nodecircle {

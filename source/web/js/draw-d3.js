@@ -30,13 +30,15 @@ let json = '{\
 		{"db_id":15, "label": "AD_USER","name":"Node15", "relatedcount":13},\
 		{"db_id":16, "label": "AD_USER","name":"Node16", "relatedcount":12},\
 		{"db_id":17, "label": "AD_USER","name":"Node17", "relatedcount":76},\
-		{"db_id":18, "label": "AD_USER","name":"Node18", "relatedcount":111}\
+		{"db_id":18, "label": "AD_USER","name":"Node18", "relatedcount":111},\
+		{"db_id":168, "label": "APPLICATION","name":"Application", "relatedcount":123},\
+		{"db_id":185, "label": "SYSTEM","name":"System", "relatedcount":546}\
 	],\
 	"edges":[\
 		{"db_id":43, "source": 4, "target": 564, "bidir":false, "label":"ConnectedTo"},\
 		{"db_id":44, "source": 21, "target": 4, "bidir":false, "label":"GivesAccessTo"},\
-		{"db_id":45, "source": 450, "target": 1, "bidir":false, "label":"AD_MemberOf"},\
-		{"db_id":46, "source": 3, "target": 2, "bidir":false, "label":"AD_MemberOf"},\
+		{"db_id":45, "source": 450, "target": 1, "bidir":true, "label":"AD_MemberOf"},\
+		{"db_id":46, "source": 3, "target": 2, "bidir":true, "label":"AD_MemberOf"},\
 		{"db_id":47, "source": 9112, "target": 61, "bidir":false, "label":"AD_MemberOf"},\
 		{"db_id":48, "source": 9112, "target": 100, "bidir":false, "label":"AD_MemberOf"},\
 		{"db_id":49, "source": 15, "target": 33, "bidir":false, "label":"AD_MemberOf"},\
@@ -78,7 +80,7 @@ function drawGraph(selectid) {
 	let edgelabelwidth = 70;
 
 	let jsonData = JSON.parse(json);
-	let iconsdata = JSON.parse(iconsjson);
+	let iconmappings = new IconMappings(JSON.parse(iconsjson));
 	let nodedata = jsonData.nodes;
 	let linkdata = jsonData.edges;
 	let currMaxRelated = 0
@@ -122,6 +124,12 @@ function drawGraph(selectid) {
 				zoomLayer.attr("transform", d3.event.transform);
 			}));	
 
+
+/*
+*****************************
+setup edges and nodes
+*****************************
+*/
 
 	//setup the edges
 	let edges = zoomLayer.selectAll(".edges")
@@ -176,7 +184,7 @@ function drawGraph(selectid) {
 		.attr("width", function(d) { return (d.size * 0.6) + "px" })
 		.attr("x", function(d) { return (d.size * 0.2) })
 		.attr("y",function(d) { return (d.size * 0.2)})
-		.attr("class", function(d) { return iconsdata[d.label] })
+		.attr("class", function(d) { return iconmappings.getClassInfo(d.label); })
 		.classed("nodeicon",true); 
 
 	nodes.append("text")
@@ -188,6 +196,13 @@ function drawGraph(selectid) {
 		.attr("transform",function(d) { return "translate(" + (d.size/2) + "," + (d.size + 7) + ")" }); 
 
 
+
+
+/*
+*****************************
+functions
+*****************************
+*/
 
 	function pinNode(d) {
 		//console.log("pinNode");
@@ -496,6 +511,15 @@ Slope.prototype.getYFromX = function(x)
 Slope.prototype.getXFromY = function(y)
 {
 	return (this.tanA / (y-this.y1))+ this.x1;
+}
+
+function IconMappings(jsondata){
+	this.mappings = jsondata;
+}
+
+IconMappings.prototype.getClassInfo = function(label) {
+	if (this.mappings.hasOwnProperty(label)) { return this.mappings[label]; }
+	else { return "fas fa-question"; }
 }
 
 function populateDetails(d) {
