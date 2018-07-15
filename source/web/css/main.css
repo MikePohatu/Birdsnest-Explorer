@@ -14,9 +14,12 @@
 	padding: 0;
 	height: 100%;
 	width: 100%;
+	background-color:#FBFBFB;
+	font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
 
-#drawingpane svg {
+#drawingsvg {
+	z-index: 0;
 	padding: 0;
 	height: 100%;
 	width: 100%;
@@ -50,4 +53,54 @@
 .center {
     display: block;
     margin: auto;
+}
+
+#controlpanes {
+	
+	position:absolute;
+	bottom: 0;
+}
+#controlpanes .controlpane {
+	min-width:120px;
+	background:white;
+	border: 1px solid #D6D6D6;
+	border-radius:5px;
+	margin: 5px;
+	padding: 5px;
+}
+
+#selecteditems{
+	overflow-y: auto;
+	max-height: 100vh;
+}
+
+#controlpanes #currentActiveDetails {
+	border: 2px solid black;
+}
+
+#controlpanes .detailscontrol {	
+	min-height: 30px;
+	font-size: 10px;
+	font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+	white-space: pre-wrap;
+}
+
+
+#controlpanes #viewcontrols {
+	height: 24px;
+	width:100px;
+}
+
+#viewcontrols .viewcontrol{
+	float: left;
+	height: 20px;
+	width: 20px;
+	margin-left:5px;
+	margin-right:5px;
+	margin-top:2px;
+	margin-bottom:2px;
+}
+
+#viewcontrols .viewcontrol:hover {
+	color:gray;
 }
