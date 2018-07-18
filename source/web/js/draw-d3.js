@@ -305,34 +305,33 @@ functions
 				d.selected = false;
 				return false; }); 
 
-		d3.selectAll(".detailscontrol").remove();
+		d3.selectAll(".detailcard").remove();
 	}
 
 	function nodeShowDetailsSelected(d) {
 		//console.log("nodeShowDetailsSelected");
-		d3.select("#selecteddetails")
+		d3.select("#detailcardwrapper")
 			.append("div")
-				.attr("class","detailscontrol controlpane details_"+d.db_id)
+				.attr("id","details_"+d.db_id)
+				.attr("class","detailcard pane")
 				.html(d.detailsHTML);
 	}
 
 	function nodeHideDetailsSelected(d) {
 		//console.log("nodeHideDetailsSelected");
-		d3.selectAll(".details_" + d.db_id).remove();
+		d3.selectAll("#details_" + d.db_id).remove();
 	}
 
 	function nodeMouseOver(d) {
 		//console.log("nodeMouseOver");
-		d3.selectAll("#activedetails")
-			.append("div")
-				.classed("detailscontrol controlpane details_"+d.db_id,true)
-				.attr('id',"currentActiveDetails")
-				.html(d.detailsHTML);
+		d3.selectAll("#details_" + d.db_id)
+			.classed("currentActiveDetailCard",true);
 	}
 	
 	function nodeMouseOut(d) {
 		//console.log("nodeMouseOut");
-		d3.selectAll("#currentActiveDetails").remove();
+		d3.selectAll("#details_" + d.db_id)
+			.classed("currentActiveDetailCard",false);
 	}
 
 	function nodeDragged(d){

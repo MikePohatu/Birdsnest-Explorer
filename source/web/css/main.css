@@ -1,97 +1,101 @@
-#main {
-	position:absolute;
-	right: 0;
-	bottom: 0;
-	transition: margin-left .5s;
-	padding: 0;
-	float: left;
-	top: 0;
-	bottom: 0;
-}
-
-#drawingpane {
-	transition: margin-left .5s;
+body, #pagewrapper, #main {
+	margin: 0;
 	padding: 0;
 	height: 100%;
 	width: 100%;
-	background-color:#FBFBFB;
-	font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
 
-#drawingsvg {
-	z-index: 0;
-	padding: 0;
-	height: 100%;
-	width: 100%;
+body {
+	position: fixed;
+}
+
+#pagewrapper {
+	top:0;
+	bottom:0;
+	right:0;
+	left: 0;
 }
 
 #querybar {
-	z-index: 5; /* Stay on top */
-	top: 0; /* Stay at the top */
-	left: 0;
-	right: 0;
-	overflow-x: hidden; /* Disable horizontal scroll */
+	/*overflow-x: hidden;  Disable horizontal scroll */
 	background-color: rgb(255, 250, 238);
 	padding-top: 3px;
     padding-right: 20px;
     padding-bottom: 5px;
     padding-left: 35px;
+	height: 100px;
+}
+
+#drawingpane {
+	overflow: hidden;
+	position: relative;
+	bottom:0;
+	height: calc(100% - 108px);
+	background-color:#FBFBFB;
+	/*background-color: silver;*/
+	font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+
+#detailcardwrapper {
+	position: absolute;
+	bottom: 1px;
+	max-height: calc(100% - 1px);
+	overflow-y: auto;
+}
+
+#viewcontrols {
+	position: absolute;
+	bottom:0;
+	right:0;
+	height: 24px;
+	width:100px;
+}
+
+#drawingsvg {
+	height: 100%;
+	width: 100%;
+	z-index: 0;
+	padding: 0;
 }
 
 .inputbox {
 	padding-top: 2px;
-    padding-right: 10px;
-    padding-bottom: 2px;
-    padding-left: 10px;
+	padding-right: 10px;
+	padding-bottom: 2px;
+	padding-left: 10px;
 	margin: 5px;
 	height: 24px;
 	border-radius: 3px;
-    border: 1px solid #111;
+	border: 1px solid #111;
 	width: 200px;
 }
 
-.center {
-    display: block;
-    margin: auto;
-}
-
-#controlpanes {
-	
-	position:absolute;
-	bottom: 0;
-}
-#controlpanes .controlpane {
-	min-width:120px;
+.pane {
+	min-width:100px;
 	background:white;
-	border: 1px solid #D6D6D6;
+	border: 2px solid #D6D6D6;
 	border-radius:5px;
-	margin: 5px;
 	padding: 5px;
+	margin-left:5px;
+	margin-right:5px;
+	margin-top:5px;
+	margin-bottom:5px;
 }
 
-#selecteditems{
-	overflow-y: auto;
-	max-height: 100vh;
-}
-
-#controlpanes #currentActiveDetails {
-	border: 2px solid black;
-}
-
-#controlpanes .detailscontrol {	
+.detailcard {	
 	min-height: 30px;
 	font-size: 10px;
 	font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
 	white-space: pre-wrap;
 }
 
-
-#controlpanes #viewcontrols {
-	height: 24px;
-	width:100px;
+.currentActiveDetailCard {
+	border: 2px solid black;
 }
 
-#viewcontrols .viewcontrol{
+
+
+.viewcontrol{
 	float: left;
 	height: 20px;
 	width: 20px;
@@ -101,6 +105,6 @@
 	margin-bottom:2px;
 }
 
-#viewcontrols .viewcontrol:hover {
+.viewcontrol:hover {
 	color:gray;
 }

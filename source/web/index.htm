@@ -24,7 +24,7 @@
 		</script>
 	</head>
     <body onload="loadPage()">
-		<div class="pagewrapper">
+    	<div id="pagewrapper">
 			<div id="menuwrapper">
 				<div id="sidemenu" class="menutext">				
 					<a href="#">About</a>
@@ -46,22 +46,18 @@
 						<p id="cypher"></p>
 					</form>
 				</div>
+				
 				<div id="drawingpane" tabindex="0">
-					<div id="controlpanes">
-						<div id="activedetails"></div>
-						<div id="selecteddetails"></div>
-						<div id="viewcontrols" class="controlpane">
-							<div onclick="restartLayout()">
-								<i id="restartIcon" class="fas fa-sync-alt viewcontrol"></i>
-							</div>
-							<div onclick="stopLayout()">
-								<i id="stopIcon" class="fas fa-pause viewcontrol"></i>
-							</div>
-							<!--<i id="reloadIcon" class="fas fa-sync viewcontrol"></i>-->
+					<div id="detailcardwrapper"></div>
+					<div id="viewcontrols" class="pane">
+						<div onclick="restartLayout()">
+							<i id="restartIcon" class="fas fa-sync-alt viewcontrol"></i>
+						</div>
+						<div onclick="stopLayout()">
+							<i id="stopIcon" class="fas fa-pause viewcontrol"></i>
 						</div>
 					</div>
 				</div>
-				
 			</div>
 		</div>
     </body>    
