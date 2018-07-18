@@ -18,7 +18,7 @@ body {
 
 #querybar {
 	/*overflow-x: hidden;  Disable horizontal scroll */
-	background-color: rgb(255, 250, 238);
+	background-color: #6BFE97;
 	padding-top: 3px;
     padding-right: 20px;
     padding-bottom: 5px;
@@ -38,15 +38,26 @@ body {
 
 #detailcardwrapper {
 	position: absolute;
-	bottom: 1px;
-	max-height: calc(100% - 1px);
+	bottom: 3px;
+	right: 0;
+	max-height: calc(100% - 3px);
 	overflow-y: auto;
+}
+
+#detailcardwrapper::-webkit-scrollbar {
+    width: 10px;  /* remove scrollbar space */
+    background: transparent;  /* optional: just make scrollbar invisible */
+}
+
+/* optional: show position indicator in red */
+#detailcardwrapper::-webkit-scrollbar-thumb {
+    background: #D6D6D6;
 }
 
 #viewcontrols {
 	position: absolute;
 	bottom:0;
-	right:0;
+	left:0;
 	height: 24px;
 	width:100px;
 }
@@ -87,13 +98,12 @@ body {
 	font-size: 10px;
 	font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
 	white-space: pre-wrap;
+	margin-right: 15px;
 }
 
 .currentActiveDetailCard {
 	border: 2px solid black;
 }
-
-
 
 .viewcontrol{
 	float: left;
