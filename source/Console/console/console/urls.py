@@ -18,6 +18,8 @@ from django.urls import path
 
 from visualizer import views
 
+admin.site.site_header='BirdsNest administration'
+
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('visualizer/', views.showviz, name='showviz_main'),
