@@ -10,20 +10,22 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/2.0/ref/settings/
 """
 
-import os
+import os, json
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
+with open(BASE_DIR + '\\config.json', "r") as config_file:
+    config = json.load(config_file)
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/2.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'lst=b6p94yimo+b)6a=7han%@rzek-8!xqs+3#+1wf5g_o^)f_'
+SECRET_KEY = config['secret_key']
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = config['debug']
 
 ALLOWED_HOSTS = []
 
@@ -105,13 +107,9 @@ AUTH_PASSWORD_VALIDATORS = [
 # https://docs.djangoproject.com/en/2.0/topics/i18n/
 
 LANGUAGE_CODE = 'en-us'
-
 TIME_ZONE = 'UTC'
-
 USE_I18N = True
-
 USE_L10N = True
-
 USE_TZ = True
 
 
@@ -119,3 +117,76 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/2.0/howto/static-files/
 
 STATIC_URL = '/static/'
+
+
+if config.get('Ldap') is not None:
+    print('Setting up LDAP configuration')
+    import ldap
+    from django_auth_ldap.config import LDAPSearch, MemberDNGroupType
+
+    ldapconfig = config['Ldap']
+
+    AUTH_LDAP_BIND_DN = ldapconfig['bind_user_dn']
+    AUTH_LDAP_BIND_PASSWORD = ldapconfig['bind_user_pw']
+    AUTH_LDAP_USER_SEARCH = LDAPSearch(ldapconfig['users_ou'],ldap.SCOPE_SUBTREE, "(samaccountname=%(user)s)")
+
+
+
+    AUTH_LDAP_SERVER_URI = "LDAP://" + ldapconfig['server']
+
+
+    # Set up the basic group parameters.
+    AUTH_LDAP_GROUP_SEARCH = LDAPSearch(ldapconfig['domain_dn'],
+        ldap.SCOPE_SUBTREE,
+        '(objectClass=groupOfNames)',
+    )
+
+    AUTH_LDAP_GROUP_TYPE = MemberDNGroupType('member')
+
+    # Simple group restrictions
+    AUTH_LDAP_REQUIRE_GROUP = ldapconfig['access_group_dn']
+    # AUTH_LDAP_DENY_GROUP = 'cn=disabled,ou=django,ou=groups,dc=example,dc=com'
+
+    # Populate the Django user from the LDAP directory.
+    AUTH_LDAP_USER_ATTR_MAP = {
+        'first_name': 'givenName',
+        'last_name': 'sn',
+        'email': 'mail',
+    }
+
+    AUTH_LDAP_USER_FLAGS_BY_GROUP = {
+        'is_active': ldapconfig['active'],
+        'is_superuser': ldapconfig['superuser'],
+        'is_staff': ldapconfig['staff'],
+    }
+
+    # This is the default, but I like to be explicit.
+    AUTH_LDAP_ALWAYS_UPDATE_USER = True
+
+    # Use LDAP group membership to calculate group permissions.
+    # AUTH_LDAP_FIND_GROUP_PERMS = True
+
+    # Cache distinguised names and group memberships for an hour to minimize
+    # LDAP traffic.
+    AUTH_LDAP_CACHE_TIMEOUT = 3600
+
+    # Keep ModelBackend around for per-user permissions and maybe a local
+    # superuser.
+    AUTHENTICATION_BACKENDS = (
+        'django_auth_ldap.backend.LDAPBackend',
+        'django.contrib.auth.backends.ModelBackend',
+    )
+
+
+############################## django-auth-ldap ##############################
+if DEBUG:
+    import logging, logging.handlers
+    logfile = config['logfile']
+    logger = logging.getLogger('django_auth_ldap')
+    logger.setLevel(logging.DEBUG)
+
+    handler = logging.handlers.RotatingFileHandler(
+       logfile, maxBytes=1024 * 500, backupCount=5)
+
+    logger.addHandler(handler)
+############################ end django-auth-ldap ############################

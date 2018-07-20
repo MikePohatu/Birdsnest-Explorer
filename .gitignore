@@ -367,3 +367,6 @@ venv.bak/
 
 
 \.DS_Store
+
+#birdsnest stuff
+source/Console/console/config.json

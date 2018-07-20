@@ -1,0 +1,16 @@
+{
+	"debug":true,
+	"logfile":"c:\\temp\\birdsnest-debug.log",
+	"secret_key":"llamallamacheesecakellamallamallamaduck",
+	"Ldap":{
+		"active":"CN=BirdsNest Users,OU=Groups,DC=domain,DC=local",
+		"superuser":"CN=BirdsNest Admins,OU=Groups,DC=domain,DC=local",
+		"staff":"CN=BirdsNest Admins,OU=Groups,DC=domain,DC=local",
+		"access_group_dn":"CN=BirdsNest Users,OU=Groups,DC=domain,DC=local",
+		"bind_user_dn":"CN=svc_birdsnest,OU=Service Accounts,DC=domain,DC=local",
+		"bind_user_pw":"badgerbadgerbadgerbadgermushroommushroom",
+		"domain_dn":"DC=domain,DC=local",
+		"users_ou":"OU=Users,DC=domain,DC=local",
+		"server":"ldapserver.domain.local"
+	}
+}
