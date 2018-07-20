@@ -122,15 +122,16 @@ STATIC_URL = '/static/'
 if config.get('Ldap') is not None:
     print('Setting up LDAP configuration')
     import ldap
-    from django_auth_ldap.config import LDAPSearch, MemberDNGroupType
+    from django_auth_ldap.config import LDAPSearch, NestedActiveDirectoryGroupType,MemberDNGroupType
 
     ldapconfig = config['Ldap']
+
+    if ldapconfig['tls'] == True: 
+        AUTH_LDAP_START_TLS = True
 
     AUTH_LDAP_BIND_DN = ldapconfig['bind_user_dn']
     AUTH_LDAP_BIND_PASSWORD = ldapconfig['bind_user_pw']
     AUTH_LDAP_USER_SEARCH = LDAPSearch(ldapconfig['users_ou'],ldap.SCOPE_SUBTREE, "(samaccountname=%(user)s)")
-
-
 
     AUTH_LDAP_SERVER_URI = "LDAP://" + ldapconfig['server']
 
@@ -160,7 +161,6 @@ if config.get('Ldap') is not None:
         'is_staff': ldapconfig['staff'],
     }
 
-    # This is the default, but I like to be explicit.
     AUTH_LDAP_ALWAYS_UPDATE_USER = True
 
     # Use LDAP group membership to calculate group permissions.
@@ -168,7 +168,20 @@ if config.get('Ldap') is not None:
 
     # Cache distinguised names and group memberships for an hour to minimize
     # LDAP traffic.
-    AUTH_LDAP_CACHE_TIMEOUT = 3600
+    AUTH_LDAP_CACHE_TIMEOUT = ldapconfig['cachetimeout']
+
+    ############################## django-auth-ldap ##############################
+    if DEBUG:
+        import logging, logging.handlers
+        ldap_logfile = config['logfile']
+        ldap_logger = logging.getLogger('django_auth_ldap')
+        ldap_logger.setLevel(logging.DEBUG)
+
+        ldap_handler = logging.handlers.RotatingFileHandler(
+           ldap_logfile, maxBytes=1024 * 500, backupCount=5)
+
+        ldap_logger.addHandler(ldap_handler)
+    ############################ end django-auth-ldap ############################
 
     # Keep ModelBackend around for per-user permissions and maybe a local
     # superuser.
@@ -176,17 +189,3 @@ if config.get('Ldap') is not None:
         'django_auth_ldap.backend.LDAPBackend',
         'django.contrib.auth.backends.ModelBackend',
     )
-
-
-############################## django-auth-ldap ##############################
-if DEBUG:
-    import logging, logging.handlers
-    logfile = config['logfile']
-    logger = logging.getLogger('django_auth_ldap')
-    logger.setLevel(logging.DEBUG)
-
-    handler = logging.handlers.RotatingFileHandler(
-       logfile, maxBytes=1024 * 500, backupCount=5)
-
-    logger.addHandler(handler)
-############################ end django-auth-ldap ############################

@@ -11,6 +11,8 @@
 		"bind_user_pw":"badgerbadgerbadgerbadgermushroommushroom",
 		"domain_dn":"DC=domain,DC=local",
 		"users_ou":"OU=Users,DC=domain,DC=local",
-		"server":"ldapserver.domain.local"
+		"server":"ldapserver.domain.local",
+		"tls":false,
+		"cachetimeout":3600
 	}
 }
