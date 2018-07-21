@@ -1,0 +1,37 @@
+.top-bar .menu a {
+	padding: 0.1rem;
+	color: #FFF;
+}
+
+.top-bar {
+	padding: 0;	
+}
+
+.top-bar, .top-bar ul {
+	background-color: #606060;
+}
+
+/*.top-bar-left {
+	margin-left: 23px;
+}*/
+
+.dropdown.menu a {
+	padding: 0.2rem 1rem;
+}
+
+.dropdown.menu .is-active a {
+	color: #FFF;
+	background-color: #656565;
+}
+
+.dropdown.menu .is-dropdown-submenu a {
+	padding: 0.4rem 1rem;
+}
+
+.dropdown.menu > li.is-dropdown-submenu-parent > a::after {
+	border-color: #6DC3FD  transparent transparent;
+}
+
+.menu .menu-text {
+	padding: 0.2rem 1rem;
+}

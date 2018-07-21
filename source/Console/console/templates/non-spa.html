@@ -1,8 +1,18 @@
 {% extends "base.html" %}
 
+{% block content-wrapper %}
+	<div class="grid-container">
+		{% block content %}
+
+		{% endblock %}
+	</div>
+{% endblock %}
+
 {% block footer %}
-	<hr>
-	<footer>
-		<p>&copy; 20Road Limited 2018</p>
-	</footer>
+	<div class="grid-container">
+		<hr>
+		<footer>
+			<p>&copy; 20Road Limited 2018</p>
+		</footer>
+	</div>
 {% endblock %}
