@@ -56,10 +56,16 @@ body {
 
 #viewcontrols {
 	position: absolute;
-	bottom:0;
+	top:0;
 	left:0;
-	height: 24px;
-	width:100px;
+	height: 26px;
+	width:85px;
+	padding:0;
+	background:white;
+	border: 2px solid #D6D6D6;
+	border-top-style: none;
+    border-left-style: none;
+	margin:0;
 }
 
 #drawingsvg {
@@ -115,6 +121,9 @@ body {
 	margin-bottom:2px;
 }
 
+.viewcontrol-right {
+	float: right;
+}
 .viewcontrol:hover {
 	color:gray;
 }

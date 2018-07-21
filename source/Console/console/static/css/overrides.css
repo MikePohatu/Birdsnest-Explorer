@@ -11,10 +11,6 @@
 	background-color: #606060;
 }
 
-/*.top-bar-left {
-	margin-left: 23px;
-}*/
-
 .dropdown.menu a {
 	padding: 0.2rem 1rem;
 }
@@ -29,7 +25,7 @@
 }
 
 .dropdown.menu > li.is-dropdown-submenu-parent > a::after {
-	border-color: #6DC3FD  transparent transparent;
+	border-color: #53FF67  transparent transparent;
 }
 
 .menu .menu-text {
