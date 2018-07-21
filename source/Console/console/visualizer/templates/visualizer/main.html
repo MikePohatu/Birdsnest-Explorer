@@ -1,11 +1,7 @@
+{% extends "base.html" %}
 {% load staticfiles %}
 
-<!DOCTYPE html>
-<html>
-    <head>
-        <meta charset="utf-8">
-        <meta http-equiv="x-ua-compatible" content="ie=edge">
-        <title>BirdsNest</title>
+{% block content %}
 
 		<link rel="stylesheet" type="text/css" href="{% static 'visualizer/css/sidenav.css' %}">
 		<link rel="stylesheet" type="text/css" href="{% static 'visualizer/css/main.css' %}">
@@ -24,8 +20,6 @@
                 drawGraph("drawingpane");
 			}
 		</script>
-	</head>
-    <body onload="loadPage()">
     	<div id="pagewrapper">
 			<div id="menuwrapper">
 				<div id="sidemenu" class="menutext">				
@@ -62,5 +56,5 @@
 				</div>
 			</div>
 		</div>
-    </body>    
-</html>
+		<script>loadPage();</script>
+{% endblock %}
