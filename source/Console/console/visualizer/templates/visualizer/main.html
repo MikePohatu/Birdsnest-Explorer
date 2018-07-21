@@ -33,14 +33,25 @@
 				<a href="javascript:void(0)" id="openclosebtn"></a>
 			</div>
 			<div id="main">
-				<div id="querybar">
+				<div id="container grid-container full querybar">
 					<form type="POST" action="javascript:restartLayout()">
-						<input type="text" id="node1" class="inputbox">
-						<input type="text" id="relationship" class="inputbox">
-						<input type="text" id="node2" class="inputbox">
-						<input type="submit">
-						<p id="cypher"></p>
+						<div class="grid-x">
+							<div large-3 medium-3 cell>
+								<input type="text" id="node1" class="inputbox">
+							</div>
+							<div large-3 medium-3 cell>
+								<input type="text" id="relationship" class="inputbox">
+							</div>
+							<div large-3 medium-3 cell>
+								<input type="text" id="node2" class="inputbox">							
+							</div>
+						</div>
+						<div class="grid-x">
+							<input type="submit">
+							<p id="cypher"></p>	
+						</div>
 					</form>
+					
 				</div>
 				
 				<div id="drawingpane" tabindex="0">
