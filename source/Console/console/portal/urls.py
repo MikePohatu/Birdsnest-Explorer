@@ -14,16 +14,12 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path, include
+from django.urls import path
 from django.contrib.auth.views import LoginView, LogoutView
-
-from visualizer import views as visualizer_views
-from portal import views as portal_views
-
-admin.site.site_header='BirdsNest administration'
+from .views import welcome
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
-    path('visualizer/', visualizer_views.showviz, name='visualizer_main'),
-    path('', include('portal.urls')),
+    path('login/', LoginView.as_view(template_name='portal/login.html'), name='portal_login'),
+	path('logout/', LogoutView.as_view(), name='portal_logout'),
+    path('', welcome, name='portal_welcome'),
 ]

@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+
+{% block title %}
+Welcome to BirdsNest
+{% endblock %}
+
+{% block content %}
+	{% if user.is_authenticated %}
+		<p>Hi {{ user.first_name }}. Open Visualizer to get started</p>
+
+		<form action="{% url 'visualizer_main' %}">
+		    <input type="submit" class="btn btn-success" value="Visualizer" />
+		</form>
+		</p>
+	{% else %}
+		<p>BirdsNest is a environment discovery and visualization tool. You must login to continue. </p>
+		<form action="{% url 'portal_login' %}">
+		<input type="submit" class="btn btn-success" value="Login" />
+		</form>
+
+	{% endif %}
+{% endblock %}
