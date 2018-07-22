@@ -219,9 +219,9 @@ functions
 
 	function nodeClicked(d) {
 		//console.log("nodeClicked");
-		d3.event.stopPropagation();
 		if (d3.event.defaultPrevented) return; // dragged
-
+		
+		d3.event.stopPropagation();
 		if (ctrlKey) {	
 			//if ctrl key is down, just toggle the node		
 			updateNodeSelection(d, !d.selected);

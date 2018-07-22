@@ -28,36 +28,55 @@ namespace NeoProxy
         {
             using (ISession session = this.Driver.Session())
             {
-                ResultSet results = new ResultSet();
+                ResultSet returnedresults = new ResultSet();
 
                 session.ReadTransaction(tx =>
                 {
-                    string query = "MATCH (n) OPTIONAL MATCH (n)-[r]-() RETURN n, r";
+                    string query = "MATCH (n) RETURN n";
                     IStatementResult dbresult = tx.Run(query);
-
-                    foreach (IRecord record in dbresult)
-                    {
-                        foreach (string key in record.Keys)
-                        {
-                            INode node = record[key] as INode;
-                            if (node != null)
-                            {
-                                results.Nodes.Add(BirdsNestNode.GetNode(node));
-                                continue;
-                            }
-
-                            IRelationship rel = record[key] as IRelationship;
-                            if (rel != null)
-                            {
-                                results.Edges.Add(BirdsNestRelationship.GetRelationship(rel));
-                                continue;
-                            }
-                        }
-                    }
+                    returnedresults.Append(ParseResults(dbresult));                    
                 });
 
-                return results;
+                session.ReadTransaction(tx =>
+                {
+                    var resultids = from node in returnedresults.Nodes select node.DbId;
+                    string query = "UNWIND $ids AS nodeid " + 
+                        "MATCH (n)-[r]->() "+
+                        "WHERE ID(n)=nodeid " +
+                        "RETURN r";
+                    IStatementResult dbresult = tx.Run(query, new { ids = resultids });
+                    returnedresults.Append(ParseResults(dbresult));
+                });
+
+                return returnedresults;
             }
+        }
+
+        private ResultSet ParseResults(IStatementResult neoresult)
+        {
+            ResultSet results = new ResultSet();
+
+            foreach (IRecord record in neoresult)
+            {
+                foreach (string key in record.Keys)
+                {
+                    INode node = record[key] as INode;
+                    if (node != null)
+                    {
+                        results.Nodes.Add(BirdsNestNode.GetNode(node));
+                        continue;
+                    }
+
+                    IRelationship rel = record[key] as IRelationship;
+                    if (rel != null)
+                    {
+                        results.Edges.Add(BirdsNestRelationship.GetRelationship(rel));
+                        continue;
+                    }
+                }
+            }
+
+            return results;
         }
 
         public void Dispose()
