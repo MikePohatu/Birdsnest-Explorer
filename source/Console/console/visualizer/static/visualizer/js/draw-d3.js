@@ -3,6 +3,7 @@ let iconsjson = '{\
 	"AD_COMPUTER":"fas fa-desktop",\
 	"AD_GROUP":"fas fa-user-friends",\
 	"BUILTIN_GROUP":"fas fa-user-friends",\
+	"BUILTIN_USER":"fas fa-user",\
 	"DEVICE":"fas fa-tablet-alt",\
 	"FS_FOLDER":"fas fa-folder-open",\
 	"FS_DATASTORE":"fas fa-hdd"\
