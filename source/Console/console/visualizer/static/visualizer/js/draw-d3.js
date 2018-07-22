@@ -1,5 +1,6 @@
 
 var iconsjson;
+var playMode = false;
 
 //iconsjsonurl is defined in template
 $.getJSON(iconsjsonurl, function(data) {
@@ -14,8 +15,26 @@ function restartLayout() {
 	simulation.restart();
 }
 
-function stopLayout() {
+function playLayout() { 
+	playMode = true;
+
+	d3.selectAll("#pausePlayIcon")
+		.classed("fa-play",false)
+		.classed("fa-pause",true);
+	d3.selectAll("#pausePlayBtn")
+		.attr('onclick', "pauseLayout()");
+	restartLayout();
+}
+
+function pauseLayout() { 
+	playMode = false;
+
 	simulation.stop();
+	d3.selectAll("#pausePlayIcon")
+		.classed("fa-pause",false)
+		.classed("fa-play",true);
+	d3.selectAll("#pausePlayBtn")
+		.attr('onclick','playLayout()');
 }
 
 function getAll() {
@@ -310,6 +329,7 @@ functions
 		}
 
 		updateLocations();
+		if (playMode === true) { restartLayout(); }
 	}
 
 	function loadNodeData(newnodedata) {
