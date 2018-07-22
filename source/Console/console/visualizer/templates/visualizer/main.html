@@ -13,13 +13,7 @@
 		
 		<script src="https://d3js.org/d3.v5.min.js"></script>
 		<script src="{% static 'visualizer/js/draw-d3.js' %}" type="text/javascript"></script>
-		
-		<script>
-			function loadPage() {
-				closeNav();
-                drawGraph("drawingpane");
-			}
-		</script>
+
     	<div id="pagewrapper">
 			<div id="menuwrapper">
 				<div id="sidemenu" class="menutext">				
@@ -70,5 +64,12 @@
 				</div>
 			</div>
 		</div>
-		<script>loadPage();</script>
+		
+{% endblock %}
+
+{% block tail %}
+	<script>
+		closeNav();
+		getAll();
+	</script>
 {% endblock %}

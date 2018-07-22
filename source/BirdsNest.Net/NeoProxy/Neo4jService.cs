@@ -49,7 +49,7 @@ namespace NeoProxy
                             IRelationship rel = record[key] as IRelationship;
                             if (rel != null)
                             {
-                                results.Relationships.Add(BirdsNestRelationship.GetRelationship(rel));
+                                results.Edges.Add(BirdsNestRelationship.GetRelationship(rel));
                                 continue;
                             }
                         }

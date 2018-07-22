@@ -8,6 +8,6 @@ namespace NeoProxy
     public class ResultSet
     {
         public List<BirdsNestNode> Nodes { get; private set; } = new List<BirdsNestNode>();
-        public List<BirdsNestRelationship> Relationships { get; private set; } = new List<BirdsNestRelationship>();
+        public List<BirdsNestRelationship> Edges { get; private set; } = new List<BirdsNestRelationship>();
     }
 }

@@ -1,52 +1,3 @@
-let json = '{\
-	"nodes":[\
-		{"db_id":1, "label": "AD_USER", "name":"Node0-bob the builder", "relatedcount":140,\
-			"properties": {\
-				"samaccountname":"bobB",\
-				"name":"bob the builder",\
-				"sid":"a;lkdjfaljdalkjdhf"\
-			}\
-		},\
-		{"db_id":2, "label": "AD_GROUP","name":"Node1-group", "relatedcount":122,\
-			"properties": {\
-				"samaccountname":"Node1Grp",\
-				"name":"Node1-group",\
-				"sid":";lkajsdfljkh"\
-			}\
-		},\
-		{"db_id":42, "label": "AD_COMPUTER","name":"Node2-Computer", "relatedcount":1},\
-		{"db_id":3, "label": "AD_USER","name":"Node3", "relatedcount":12},\
-		{"db_id":54, "label": "AD_USER","name":"Node4", "relatedcount":16},\
-		{"db_id":564, "label": "FS_DATASTORE","name":"Node5-datastore", "relatedcount":1},\
-		{"db_id":61, "label": "AD_USER","name":"Node6", "relatedcount":9},\
-		{"db_id":75, "label": "AD_USER","name":"Node7", "relatedcount":72},\
-		{"db_id":833, "label": "AD_USER","name":"Node8", "relatedcount":19},\
-		{"db_id":9112, "label": "AD_USER","name":"Node9", "relatedcount":101},\
-		{"db_id":100, "label": "AD_USER","name":"Node10", "relatedcount":14},\
-		{"db_id":450, "label": "AD_USER","name":"Node11", "relatedcount":16},\
-		{"db_id":21, "label": "AD_USER","name":"Node12", "relatedcount":98},\
-		{"db_id":33, "label": "AD_USER","name":"Node13", "relatedcount":56},\
-		{"db_id":4, "label": "FS_FOLDER","name":"Node14-folder", "relatedcount":19},\
-		{"db_id":15, "label": "AD_USER","name":"Node15", "relatedcount":13},\
-		{"db_id":16, "label": "AD_USER","name":"Node16", "relatedcount":12},\
-		{"db_id":17, "label": "AD_USER","name":"Node17", "relatedcount":76},\
-		{"db_id":18, "label": "AD_USER","name":"Node18", "relatedcount":111},\
-		{"db_id":168, "label": "APPLICATION","name":"Application", "relatedcount":123},\
-		{"db_id":185, "label": "SYSTEM","name":"System", "relatedcount":546}\
-	],\
-	"edges":[\
-		{"db_id":43, "source": 4, "target": 564, "bidir":false, "label":"ConnectedTo"},\
-		{"db_id":44, "source": 21, "target": 4, "bidir":false, "label":"GivesAccessTo"},\
-		{"db_id":45, "source": 450, "target": 1, "bidir":true, "label":"AD_MemberOf"},\
-		{"db_id":46, "source": 3, "target": 2, "bidir":true, "label":"AD_MemberOf"},\
-		{"db_id":47, "source": 9112, "target": 61, "bidir":false, "label":"AD_MemberOf"},\
-		{"db_id":48, "source": 9112, "target": 100, "bidir":false, "label":"AD_MemberOf"},\
-		{"db_id":49, "source": 15, "target": 33, "bidir":false, "label":"AD_MemberOf"},\
-		{"db_id":50, "source": 15, "target": 17, "bidir":false, "label":"AD_MemberOf"},\
-		{"db_id":51, "source": 17, "target": 18, "bidir":false, "label":"AD_MemberOf"}\
-	]\
-}';
-
 let iconsjson = '{\
 	"AD_USER":"fas fa-user",\
 	"AD_COMPUTER":"fas fa-desktop",\
@@ -57,20 +8,30 @@ let iconsjson = '{\
 	"FS_DATASTORE":"fas fa-hdd"\
 }';
 
-//let jsonData = ""
 let simulation=d3.forceSimulation();
 
-function restartLayout(){ 
+function restartLayout() { 
 	//console.log('restartLayout');
 	simulation.alpha(1);
 	simulation.restart();
 }
 
-function stopLayout(){
+function stopLayout() {
 	simulation.stop();
 }
 
-function drawGraph(selectid) {
+function getAll() {
+    //var request = new XMLHttpRequest();
+    var url = "/api/getall";
+
+    $.getJSON(url, function(data) {
+        //data is the JSON string
+        console.log(data);
+        drawGraph('drawingpane',data);
+    });
+}
+
+function drawGraph(selectid, json) {
 	let shiftKey = false;
 	let ctrlKey = false;
 
@@ -79,7 +40,7 @@ function drawGraph(selectid) {
 	let defaultsize = 40;
 	let edgelabelwidth = 70;
 
-	let jsonData = JSON.parse(json);
+	let jsonData = json;
 	let iconmappings = new IconMappings(JSON.parse(iconsjson));
 	let nodedata = jsonData.nodes;
 	let linkdata = jsonData.edges;
@@ -373,7 +334,10 @@ functions
 
 		//load the data and pre-calculate/set the values for each node 	
 		newnodedata.forEach(function(d) {
-			d.scaling = scalingRange.getYFromX(d.relatedcount);
+			if (currMaxRelated>0) { d.scaling = scalingRange.getYFromX(d.relatedcount); }
+			else { d.scaling = 1; }
+			
+			console.log(d.scaling);
 			d.radius = ((defaultsize*d.scaling)/2); 
 			d.x = 0;
 			d.y = 0;

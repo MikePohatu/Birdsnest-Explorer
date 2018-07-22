@@ -13,18 +13,9 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
-from django.contrib import admin
-from django.urls import path, include
-from django.contrib.auth.views import LoginView, LogoutView
-
-from visualizer import views as visualizer_views
-from portal import views as portal_views
-
-admin.site.site_header='BirdsNest administration'
+from django.urls import path
+from .views import getAll
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
-    path('visualizer/', visualizer_views.showviz, name='visualizer_main'),
-    path('api/', include('api.urls')),
-    path('', include('portal.urls')),
+    path('getall', getAll, name='api_getall'),
 ]

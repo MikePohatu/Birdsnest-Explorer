@@ -42,7 +42,7 @@ INSTALLED_APPS = [
     'visualizer',
     'portal',
     'api',
-]
+    ]
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
