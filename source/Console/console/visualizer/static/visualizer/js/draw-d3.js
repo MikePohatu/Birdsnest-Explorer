@@ -74,13 +74,13 @@ function drawGraph(selectid, json) {
 			)	
 		.force('charge', d3.forceManyBody()) 
 		.force('center', d3.forceCenter(paneWidth / 2, paneHeight / 2))
-		.force('collision', d3.forceCollide().radius(function(d) { return (d.size)}))
+		.force('collision', d3.forceCollide().radius(function(d) { return (d.size * 2)}))
 		.on('tick', function () {		
 			updateLocations();
 		});
 	
-	simulation.velocityDecay(0.5);
-	simulation.alphaDecay(0.02)
+	simulation.velocityDecay(0.2);
+	simulation.alphaDecay(0.1)
 	simulation.force("link")
 		.links(linkdata);
 
