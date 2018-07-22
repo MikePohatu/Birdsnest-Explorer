@@ -56,7 +56,7 @@ function drawGraph(selectid, json) {
 	simulation.nodes(nodedata)
 		.force("link", d3.forceLink()
 			.id(function(d) { return d.db_id; })
-			.distance(function(d){ return 150; })
+			.distance(function(d){ return 200; })
 			)	
 		.force('charge', d3.forceManyBody()) 
 		.force('center', d3.forceCenter(paneWidth / 2, paneHeight / 2))
@@ -220,7 +220,7 @@ functions
 	function nodeClicked(d) {
 		//console.log("nodeClicked");
 		if (d3.event.defaultPrevented) return; // dragged
-		
+
 		d3.event.stopPropagation();
 		if (ctrlKey) {	
 			//if ctrl key is down, just toggle the node		
