@@ -43,9 +43,15 @@
 }
 
 .BUILTIN_GROUP {
-	color: lightgreen;
-	stroke: lightgreen;
-	fill: green;
+	color: #474747;
+	stroke: #474747;
+	fill: #e5e5e5;
+}
+
+.BUILTIN_USER {
+	color: #474747;
+	stroke: #474747;
+	fill: #e5e5e5;
 }
 
 .DEVICE {

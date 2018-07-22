@@ -10,9 +10,6 @@
 
 		<script src="{% static 'visualizer/js/menu.js' %}" type="text/javascript"></script>
 		<script src="{% static 'visualizer/js/searchsubmit.js' %}" type="text/javascript"></script>
-		
-		<script src="https://d3js.org/d3.v5.min.js"></script>
-		<script src="{% static 'visualizer/js/draw-d3.js' %}" type="text/javascript"></script>
 
     	<div id="pagewrapper">
 			<div id="menuwrapper">
@@ -68,6 +65,11 @@
 {% endblock %}
 
 {% block tail %}
+	<script>
+		var iconsjsonurl = "{% static 'visualizer/json/labelicons.json' %}";
+	</script>
+	<script src="https://d3js.org/d3.v5.min.js"></script>
+	<script src="{% static 'visualizer/js/draw-d3.js' %}" type="text/javascript"></script>
 	<script>
 		closeNav();
 		getAll();

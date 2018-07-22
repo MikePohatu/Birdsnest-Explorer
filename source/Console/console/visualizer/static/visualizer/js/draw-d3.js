@@ -1,13 +1,10 @@
-let iconsjson = '{\
-	"AD_USER":"fas fa-user",\
-	"AD_COMPUTER":"fas fa-desktop",\
-	"AD_GROUP":"fas fa-user-friends",\
-	"BUILTIN_GROUP":"fas fa-user-friends",\
-	"BUILTIN_USER":"fas fa-user",\
-	"DEVICE":"fas fa-tablet-alt",\
-	"FS_FOLDER":"fas fa-folder-open",\
-	"FS_DATASTORE":"fas fa-hdd"\
-}';
+
+var iconsjson;
+
+//iconsjsonurl is defined in template
+$.getJSON(iconsjsonurl, function(data) {
+        iconsjson = data;
+    });
 
 let simulation=d3.forceSimulation();
 
@@ -22,12 +19,10 @@ function stopLayout() {
 }
 
 function getAll() {
-    //var request = new XMLHttpRequest();
     var url = "/api/getall";
 
     $.getJSON(url, function(data) {
         //data is the JSON string
-        console.log(data);
         drawGraph('drawingpane',data);
     });
 }
@@ -42,7 +37,7 @@ function drawGraph(selectid, json) {
 	let edgelabelwidth = 70;
 
 	let jsonData = json;
-	let iconmappings = new IconMappings(JSON.parse(iconsjson));
+	let iconmappings = new IconMappings(iconsjson);
 	let nodedata = jsonData.nodes;
 	let linkdata = jsonData.edges;
 	let currMaxRelated = 0
@@ -337,8 +332,7 @@ functions
 		newnodedata.forEach(function(d) {
 			if (currMaxRelated>0) { d.scaling = scalingRange.getYFromX(d.relatedcount); }
 			else { d.scaling = 1; }
-			
-			console.log(d.scaling);
+
 			d.radius = ((defaultsize*d.scaling)/2); 
 			d.x = 0;
 			d.y = 0;
