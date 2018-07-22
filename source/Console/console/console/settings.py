@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'visualizer',
     'portal',
+    'api',
 ]
 
 MIDDLEWARE = [
@@ -122,6 +123,13 @@ USE_TZ = True
 STATIC_URL = '/static/'
 
 STATICFILES_DIRS = [ os.path.join(BASE_DIR,"static")]
+
+# # neo4j configuration if set in config.json
+# if config.get('neo4j') is not None:
+#     print('Setting up neo4j connection')
+#     neo4jconfig = config['neo4j']
+#     # api.connect(neo4jconfig)
+
 
 # LDAP configuration if set in config.json
 if config.get('Ldap') is not None:

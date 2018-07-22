@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using Newtonsoft.Json;
 
 namespace common
@@ -17,6 +18,18 @@ namespace common
         public virtual void Dispose()
         {
             this.DB_Password = string.Empty;
+        }
+
+        public static NeoConfiguration ReadConfigurationFromFile(string filepath)
+        {
+            NeoConfiguration conf = new NeoConfiguration();
+
+            using (StreamReader file = File.OpenText(filepath))
+            {
+                JsonSerializer serializer = new JsonSerializer();
+                conf = (NeoConfiguration)serializer.Deserialize(file, typeof(NeoConfiguration));
+            }
+            return conf;
         }
     }
 }
