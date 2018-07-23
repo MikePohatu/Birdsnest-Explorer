@@ -29,24 +29,30 @@ namespace NeoProxy
             using (ISession session = this.Driver.Session())
             {
                 ResultSet returnedresults = new ResultSet();
-
-                session.ReadTransaction(tx =>
+                try
                 {
-                    string query = "MATCH (n) RETURN n";
-                    IStatementResult dbresult = tx.Run(query);
-                    returnedresults.Append(ParseResults(dbresult));                    
-                });
+                    session.ReadTransaction(tx =>
+                    {
+                        string query = "MATCH (n) RETURN n";
+                        IStatementResult dbresult = tx.Run(query);
+                        returnedresults.Append(ParseResults(dbresult));
+                    });
 
-                session.ReadTransaction(tx =>
+                    session.ReadTransaction(tx =>
+                    {
+                        var resultids = from node in returnedresults.Nodes select node.DbId;
+                        string query = "UNWIND $ids AS nodeid " +
+                            "MATCH (n)-[r]->() " +
+                            "WHERE ID(n)=nodeid " +
+                            "RETURN r";
+                        IStatementResult dbresult = tx.Run(query, new { ids = resultids });
+                        returnedresults.Append(ParseResults(dbresult));
+                    });
+                }
+                catch
                 {
-                    var resultids = from node in returnedresults.Nodes select node.DbId;
-                    string query = "UNWIND $ids AS nodeid " + 
-                        "MATCH (n)-[r]->() "+
-                        "WHERE ID(n)=nodeid " +
-                        "RETURN r";
-                    IStatementResult dbresult = tx.Run(query, new { ids = resultids });
-                    returnedresults.Append(ParseResults(dbresult));
-                });
+                    //logging to add
+                }
 
                 return returnedresults;
             }

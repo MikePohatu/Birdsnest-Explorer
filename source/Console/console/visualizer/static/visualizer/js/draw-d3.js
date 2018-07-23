@@ -70,7 +70,7 @@ function drawGraph(selectid, json) {
 	simulation.nodes(nodedata)
 		.force("link", d3.forceLink()
 			.id(function(d) { return d.db_id; })
-			.distance(function(d){ return 200; })
+			.distance(function(d){ return 175; })
 			)	
 		.force('charge', d3.forceManyBody()) 
 		.force('center', d3.forceCenter(paneWidth / 2, paneHeight / 2))
@@ -95,7 +95,7 @@ function drawGraph(selectid, json) {
 	//setup the zooming layer
 	let zoomLayer = svg.append("g");
 	svg.call(d3.zoom()
-		.scaleExtent([0.1, 5])
+		.scaleExtent([0.05, 5])
 		.on("zoom", function() {
 				zoomLayer.attr("transform", d3.event.transform);
 			}));	
@@ -227,7 +227,6 @@ functions
 	function pageClicked(d){
 		//console.log("pageClicked");
 		if (d3.event.defaultPrevented) return; // dragged
-		stopLayout();
 		unselectAllNodes();		
 	}
 
