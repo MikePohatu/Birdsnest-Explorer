@@ -62,8 +62,8 @@ function getAll(url) {
     //var url = "/api/getall";
 
     $.getJSON(getAllUrl, function(data) {
+    	addEdges(data.edges);
     	addNodes(data.nodes);
-        addEdges(data.edges);
         restartLayout();
     });
 }
@@ -182,6 +182,8 @@ function addNodes(data) {
 		.attr("font-family","arial")
 		.attr("transform",function(d) { return "translate(" + (d.size/2) + "," + (d.size + 7) + ")" }); 
 
+	console.log("enternodes");
+	console.log(enternodes);
 	enternodes.each(function (d) {
 		//console.log(d);
 		nodedata.push(d);
