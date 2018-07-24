@@ -66,13 +66,16 @@
 
 {% block tail %}
 	<script>
+		var getAllUrl = "{% static 'visualizer/json/testdata.json' %}";
+		var getAllUrl = "/api/getall";
 		var iconsjsonurl = "{% static 'visualizer/json/labelicons.json' %}";
 		var iconsjson;
-		var iconmappings
+		var iconmappings;
 		$.getJSON(iconsjsonurl, function(data) {
 		        iconsjson = data;
 		        iconmappings = new IconMappings(iconsjson);
 		    });
+		//var 
 	</script>
 	<script src="https://d3js.org/d3.v5.min.js"></script>
 	<script src="{% static 'visualizer/js/draw-d3.js' %}" type="text/javascript"></script>

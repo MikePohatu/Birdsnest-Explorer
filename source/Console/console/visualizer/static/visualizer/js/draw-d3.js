@@ -3,8 +3,8 @@ var zoomLayer;
 var svg;
 var simulation;
 var force;
-var linkdata = {};
-var nodedata = {};
+var linkdata = [];
+var nodedata = [];
 
 var playMode = false;
 var shiftKey = false;
@@ -43,39 +43,37 @@ function drawGraph(selectid) {
 				zoomLayer.attr("transform", d3.event.transform);
 			}));	
 
-	simulation=d3.forceSimulation();
-	//setup simulation/force layout, bind links to the correct node property etc
-	simulation.nodes(nodedata);
+	simulation=d3.forceSimulation()
+		.force("link", d3.forceLink()			
+			.id(function(d) { return d.db_id; })
+			.distance(175)
+			.strength(1))
+		.force('collision', d3.forceCollide().radius(function(d) { return (d.size * 2)}))
+		.force('charge', d3.forceManyBody().strength(2)) 
+		.force('center', d3.forceCenter(paneWidth / 2, paneHeight / 2))
+		.on('tick', function () {	updateLocations(); });
 
-	force = simulation.force("link", d3.forceLink()
-		.id(function(d) { return d.db_id; })
-		.distance(175)
-		.strength(1))
-	.force('charge', d3.forceManyBody()) 
-	.force('center', d3.forceCenter(paneWidth / 2, paneHeight / 2))
-	.force('collision', d3.forceCollide().radius(function(d) { return (d.size * 2)}))
-	.on('tick', function () {		
-		updateLocations();
-	});
-
-	simulation.velocityDecay(0.2);
+	simulation.velocityDecay(0.3);
 	simulation.alphaDecay(0.1);
-	simulation.force("link")
-		.links(linkdata);
 }
 
 
-function getAll() {
-    var url = "/api/getall";
+function getAll(url) {
+    //var url = "/api/getall";
 
-    $.getJSON(url, function(data) {
+    $.getJSON(getAllUrl, function(data) {
+    	addNodes(data.nodes);
         addEdges(data.edges);
-        addNodes(data.nodes);
+        restartLayout();
     });
 }
 
 function restartLayout() { 
 	//console.log('restartLayout');
+
+	simulation.nodes(nodedata);
+	simulation.force("link").links(linkdata);
+
 	simulation.alpha(1);
 	simulation.restart();
 }
@@ -110,31 +108,23 @@ setup edges and nodes
 */
 
 function addEdges(data) {
-	/*var sourceNode = findNode(sourceId);
-        var targetNode = findNode(targetId);
-
-        if((sourceNode !== undefined) && (targetNode !== undefined)) {
-            links.push({"source": sourceNode, "target": targetNode});
-            update();
-        }*/
-
 	//setup the edges
-	let edges = zoomLayer.selectAll(".edges")
+	let enteredges = zoomLayer.selectAll(".edges")
 		.data(data)
-		.enter();
+		.enter()
+		.append("g")
+		.attr("id",function(d) { return "edge_"+d.db_id; })
+		.attr("class", function(d) { return d.label })
+		.classed("edges",true);
 
-	edges.append("g")
-			.attr("class", function(d) { return d.label })
-			.classed("edges",true);
-
-	edges.append("path")
+	enteredges.append("path")
 		.classed("wrapper",true)
 		.attr("fill","none");
 
-	edges.append("path")
+	enteredges.append("path")
 		.classed("arrows",true);	
 	
-	let edgelabels = edges.append("g")
+	let edgelabels = enteredges.append("g")
 		.classed("edgelabel",true);
 
 	edgelabels.append("text")
@@ -142,10 +132,9 @@ function addEdges(data) {
 		.attr("dominant-baseline","central")
 		.text(function(d) {return d.label});
 
-	simulation.force("link")
-		.links(edges);
-
-	simulation.restart();
+	enteredges.each( function(d) {
+		linkdata.push(d);
+	});
 }
 
 	
@@ -154,13 +143,10 @@ function addNodes(data) {
 	loadNodeData(data);
 
 	//build the nodes
-	let nodes = zoomLayer.selectAll(".nodes")
+	let enternodes = zoomLayer.selectAll(".nodes")
 		.data(data)
-		.enter();
-	
-	//force.nodes.push(nodes);
-
-	nodes.append("g")
+		.enter()
+		.append("g")
 			.attr("id",function(d) { return "node_"+d.db_id; })
 			.attr("class", function(d) { return d.label })
 			.classed("nodes",true)
@@ -174,13 +160,13 @@ function addNodes(data) {
 					.on('drag',nodeDragged));
 
 	//node layout
-	nodes.append("circle")
+	enternodes.append("circle")
 		.classed("nodecircle",true)
 		.attr("r", function(d) { return d.radius + "px"; })
 		.attr("cx", function(d) { return d.radius; })
 		.attr("cy", function(d) { return d.radius; });
 		
-	nodes.append("i")
+	enternodes.append("i")
 		.attr("height", function(d) { return ( d.size * 0.6) + "px" })
 		.attr("width", function(d) { return (d.size * 0.6) + "px" })
 		.attr("x", function(d) { return (d.size * 0.2) })
@@ -188,7 +174,7 @@ function addNodes(data) {
 		.attr("class", function(d) { return iconmappings.getClassInfo(d.label); })
 		.classed("nodeicon",true); 
 
-	nodes.append("text")
+	enternodes.append("text")
 		.text(function(d) { return d.name; })
 		.attr("text-anchor","middle")
 		.attr("dominant-baseline","central")
@@ -196,13 +182,18 @@ function addNodes(data) {
 		.attr("font-family","arial")
 		.attr("transform",function(d) { return "translate(" + (d.size/2) + "," + (d.size + 7) + ")" }); 
 
-	simulation.nodes(nodes);
-
-	simulation.restart();
+	enternodes.each(function (d) {
+		//console.log(d);
+		nodedata.push(d);
+		});
 }
 	
 
-
+function findNode (id) {
+	for (var i=0; i < nodedata.length; i++) {
+		if (nodedata[i].db_id === id) { return nodedata[i]; }
+	};
+}
 
 /*
 *****************************
