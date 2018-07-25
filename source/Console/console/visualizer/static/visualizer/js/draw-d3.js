@@ -25,8 +25,6 @@ var maxScaling = 4;
 
 
 function drawGraph(selectid) {
-	//loadNodeData(jsonData.nodes);
-
 	drawPane = d3.select("#"+selectid)
 		.on("keydown", keydown)
 		.on("keyup", keyup);
@@ -43,20 +41,25 @@ function drawGraph(selectid) {
 				zoomLayer.attr("transform", d3.event.transform);
 			}));	
 
-	simulation=d3.forceSimulation()
-		.force("link", d3.forceLink()			
+	simulation=d3.forceSimulation(nodedata);
+	simulation.stop();
+
+	simulation
+		.force("link", d3.forceLink(linkdata)		
 			.id(function(d) { return d.db_id; })
 			.distance(175)
 			.strength(1))
 		.force('collision', d3.forceCollide().radius(function(d) { return (d.size * 2)}))
 		.force('charge', d3.forceManyBody().strength(2)) 
-		.force('center', d3.forceCenter(paneWidth / 2, paneHeight / 2))
-		.on('tick', function () {	updateLocations(); });
+		.force('center', d3.forceCenter(paneWidth / 2, paneHeight / 2));
+
+	simulation.on('tick', function () {	updateLocations(); });
+	
 
 	simulation.velocityDecay(0.3);
 	simulation.alphaDecay(0.1);
-}
 
+}
 
 function getAll(url) {
     //var url = "/api/getall";
@@ -70,12 +73,12 @@ function getAll(url) {
 
 function restartLayout() { 
 	//console.log('restartLayout');
-
 	simulation.nodes(nodedata);
-	simulation.force("link").links(linkdata);
 
-	simulation.alpha(1);
-	simulation.restart();
+	simulation.force("link")
+		.links(linkdata);
+
+	simulation.alpha(1).restart();
 }
 
 function playLayout() { 
@@ -110,7 +113,7 @@ setup edges and nodes
 function addEdges(data) {
 	//setup the edges
 	let enteredges = zoomLayer.selectAll(".edges")
-		.data(data)
+		.data(data, function(d) { return d.db_id; })
 		.enter()
 		.append("g")
 		.attr("id",function(d) { return "edge_"+d.db_id; })
@@ -132,7 +135,11 @@ function addEdges(data) {
 		.attr("dominant-baseline","central")
 		.text(function(d) {return d.label});
 
+	let newcount = 0;
+	//console.log("linkdata old count " + linkdata.length);
+
 	enteredges.each( function(d) {
+		newcount++;
 		linkdata.push(d);
 	});
 }
@@ -144,10 +151,11 @@ function addNodes(data) {
 
 	//build the nodes
 	let enternodes = zoomLayer.selectAll(".nodes")
-		.data(data)
-		.enter()
-		.append("g")
-			.attr("id",function(d) { return "node_"+d.db_id; })
+		.data(data, function(d) { return d.db_id; })
+		.enter();
+
+	let enternodesg = enternodes.append("g")
+			.attr("id", function(d) { return "node_" + d.db_id; })
 			.attr("class", function(d) { return d.label })
 			.classed("nodes",true)
 			.classed("selected", function(d) { 
@@ -160,13 +168,13 @@ function addNodes(data) {
 					.on('drag',nodeDragged));
 
 	//node layout
-	enternodes.append("circle")
+	enternodesg.append("circle")
 		.classed("nodecircle",true)
 		.attr("r", function(d) { return d.radius + "px"; })
 		.attr("cx", function(d) { return d.radius; })
 		.attr("cy", function(d) { return d.radius; });
 		
-	enternodes.append("i")
+	enternodesg.append("i")
 		.attr("height", function(d) { return ( d.size * 0.6) + "px" })
 		.attr("width", function(d) { return (d.size * 0.6) + "px" })
 		.attr("x", function(d) { return (d.size * 0.2) })
@@ -174,7 +182,7 @@ function addNodes(data) {
 		.attr("class", function(d) { return iconmappings.getClassInfo(d.label); })
 		.classed("nodeicon",true); 
 
-	enternodes.append("text")
+	enternodesg.append("text")
 		.text(function(d) { return d.name; })
 		.attr("text-anchor","middle")
 		.attr("dominant-baseline","central")
@@ -182,11 +190,11 @@ function addNodes(data) {
 		.attr("font-family","arial")
 		.attr("transform",function(d) { return "translate(" + (d.size/2) + "," + (d.size + 7) + ")" }); 
 
-	console.log("enternodes");
-	console.log(enternodes);
+	let newcount = 0;
+
 	enternodes.each(function (d) {
-		//console.log(d);
 		nodedata.push(d);
+		newcount++;
 		});
 }
 	
@@ -390,11 +398,13 @@ function loadNodeData(newnodedata) {
 }
 
 function updateLocations() {
-	//console.log("updateLocations");
-	zoomLayer.selectAll(".edges").each(function(d) {
+	let alledges = zoomLayer.selectAll(".edges").data(linkdata);
+
+	alledges.each(function(d) {
 		let diagLine = new Slope(d.source.cx, d.source.cy, d.target.cx, d.target.cy);
 
 		//move and rotate the edge line to the right spot
+
 		let edge = d3.select(this)
 			.attr("transform", function() {
 				return "rotate(" + diagLine.deg + " " + diagLine.x1 + " " + diagLine.y1 + ") " +
@@ -466,7 +476,7 @@ function updateLocations() {
 			})
 	});
 		
-	zoomLayer.selectAll(".nodes")
+	zoomLayer.selectAll(".nodes").data(nodedata)
 		.attr("x",function(d) { 
 			d.cx = d.x + d.radius;
 			return d.x; })
