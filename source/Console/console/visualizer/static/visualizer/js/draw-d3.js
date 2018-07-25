@@ -57,14 +57,9 @@ function drawGraph(selectid) {
 		.alphaDecay(0.1);
 }
 
-function getAll(url) {
-    //var url = "/api/getall";
-
-    $.getJSON(getAllUrl, function(data) {
-    	addEdges(data.edges);
-    	addNodes(data.nodes);
-        restartLayout();
-    });
+function addResultSet(json) {
+	addEdges(json.edges);
+	addNodes(json.nodes);
 }
 
 function restartLayout() { 
@@ -140,6 +135,17 @@ function addEdges(data) {
 	});
 }
 
+
+function getAllNodeIds() {
+	var nodeids = [];
+	zoomLayer.selectAll(".nodes")
+		.each(function (d) {
+			nodeids.push(d.db_id);
+		}
+	);
+
+	return nodeids;
+}
 	
 function addNodes(data) {
 	//populate necessary additional data for the view
@@ -159,6 +165,7 @@ function addNodes(data) {
 			.on("click", nodeClicked)
 			.on("mouseover", nodeMouseOver)
 			.on("mouseout", nodeMouseOut)
+			.on("dblclick", nodeDblClicked)
 			.call(
 				d3.drag().subject(this)
 					.on('drag',nodeDragged));
@@ -255,6 +262,14 @@ function pageClicked(d){
 	//console.log("pageClicked");
 	if (d3.event.defaultPrevented) return; // dragged
 	unselectAllNodes();		
+}
+
+function nodeDblClicked(d) {
+	console.log("nodeDblClicked");
+	if (d3.event.defaultPrevented) return; // dragged
+
+	d3.event.stopPropagation();
+	addRelated(d.db_id);
 }
 
 function nodeClicked(d) {

@@ -27,6 +27,7 @@ namespace NeoProxy
             services.AddMvc();
             services.AddSingleton<Neo4jService>();
             services.AddScoped<SearchController>();
+            services.AddScoped<NodesController>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

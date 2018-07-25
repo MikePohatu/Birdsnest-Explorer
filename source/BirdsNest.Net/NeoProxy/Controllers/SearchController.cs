@@ -32,19 +32,50 @@ namespace NeoProxy.Controllers
             return this._service.GetAll();
         }
 
-        // GET: api/Search/5
-        [HttpGet("{id}", Name = "Get")]
-        public string Get(int id)
+        // POST: api/Search/5
+        //[HttpPost("{id}", Name = "Get")]
+        //public string Get(int id)
+        //{
+        //    return "value";
+        //}
+
+        // GET: api/Search/node/5
+        [HttpGet("node/{id}")]
+        public object Get(long id)
         {
-            return "value";
+            return this._service.GetNode(id);
         }
-        
+
+        //// GET: api/Search/relatednodes/5
+        //[HttpGet("relatednodes/{id}")]
+        //public object Get(long id)
+        //{
+        //    return this._service.GetNode(id);
+        //}
+
+        //// Get all edges for a node
+        //// POST: api/Search/edges
+        //[HttpGet("edges/{id}")]
+        //public object Get(long id)
+        //{
+        //    List<long> idlist = new List<long>();
+        //    idlist.Add(id);
+        //    return this._service.GetRelationships(idlist);
+        //}
+
+        // POST: api/Search/edges
+        [HttpGet("edges")]
+        public object Get([FromBody]List<long> value)
+        {
+            return this._service.GetRelationships(value);
+        }
+
         // POST: api/Search
-        [HttpPost]
-        public void Post([FromBody]string value)
-        {
-        }
-        
+        //[HttpPost]
+        //public void Post("{relationships}", [FromBody]string value)
+        //{
+        //}
+
         // PUT: api/Search/5
         [HttpPut("{id}")]
         public void Put(int id, [FromBody]string value)

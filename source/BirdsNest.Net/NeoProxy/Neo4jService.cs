@@ -58,6 +58,92 @@ namespace NeoProxy
             }
         }
 
+        public object GetNode(long nodeid)
+        {
+            using (ISession session = this.Driver.Session())
+            {
+                ResultSet returnedresults = new ResultSet();
+                try
+                {
+                    session.ReadTransaction(tx =>
+                    {
+                        string query = "MATCH (n) " +
+                            "WHERE ID(n)=$nodeid " +
+                            "RETURN n";
+                        IStatementResult dbresult = tx.Run(query, new { nodeid = nodeid });
+                        returnedresults.Append(ParseResults(dbresult));
+                    });
+                }
+                catch
+                {
+                    //logging to add
+                }
+
+                return returnedresults;
+            }
+        }
+
+        public object GetRelationships(List<long> nodeids)
+        {
+            using (ISession session = this.Driver.Session())
+            {
+                ResultSet returnedresults = new ResultSet();
+                try
+                {
+                    session.ReadTransaction(tx =>
+                    {
+                        string query = "UNWIND $ids AS nodeid " +
+                            "MATCH (n)-[r]->() " +
+                            "WHERE ID(n)=nodeid " +
+                            "RETURN r";
+                        IStatementResult dbresult = tx.Run(query, new { ids = nodeids });
+                        returnedresults.Append(ParseResults(dbresult));
+                    });
+
+                    session.ReadTransaction(tx =>
+                    {
+                        string query = "UNWIND $ids AS nodeid " +
+                            "MATCH ()-[r]->(n) " +
+                            "WHERE ID(n)=nodeid " +
+                            "RETURN r";
+                        IStatementResult dbresult = tx.Run(query, new { ids = nodeids });
+                        returnedresults.Append(ParseResults(dbresult));
+                    });
+                }
+                catch
+                {
+                    //logging to add
+                }
+
+                return returnedresults;
+            }
+        }
+
+        public object GetRelatedNodes(long nodeid)
+        {
+            using (ISession session = this.Driver.Session())
+            {
+                ResultSet returnedresults = new ResultSet();
+                try
+                {
+                    session.ReadTransaction(tx =>
+                    {
+                        string query = "MATCH (n)-[]-(m) " +
+                            "WHERE ID(n)=$id " +
+                            "RETURN m";
+                        IStatementResult dbresult = tx.Run(query, new { id = nodeid });
+                        returnedresults.Append(ParseResults(dbresult));
+                    });
+                }
+                catch
+                {
+                    //logging to add
+                }
+
+                return returnedresults;
+            }
+        }
+
         private ResultSet ParseResults(IStatementResult neoresult)
         {
             ResultSet results = new ResultSet();
