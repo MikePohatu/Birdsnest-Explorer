@@ -51,14 +51,10 @@ function drawGraph(selectid) {
 			.strength(1))
 		.force('collision', d3.forceCollide().radius(function(d) { return (d.size * 2)}))
 		.force('charge', d3.forceManyBody().strength(2)) 
-		.force('center', d3.forceCenter(paneWidth / 2, paneHeight / 2));
-
-	simulation.on('tick', function () {	updateLocations(); });
-	
-
-	simulation.velocityDecay(0.3);
-	simulation.alphaDecay(0.1);
-
+		.force('center', d3.forceCenter(paneWidth / 2, paneHeight / 2))
+		.on('tick', function () { updateLocations(); })
+		.velocityDecay(0.3)
+		.alphaDecay(0.1);
 }
 
 function getAll(url) {
