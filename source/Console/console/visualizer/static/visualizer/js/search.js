@@ -55,12 +55,12 @@ function getAll() {
 }
 
 function addRelated(nodeid) {
-	console.log("addRelated");
+	console.log("addRelated"+ nodeid);
 	$.getJSON("/api/nodes?nodeid="+nodeid, function(data) {
     	addResultSet(data);
     	let nodeids = getAllNodeIds();
     	getEdgesForNodes(nodeids);
-    	restartLayout();
+    	
     });
 
 }
@@ -81,6 +81,6 @@ function getEdgesForNodes(nodeids) {
 		success: function(data) {
 			console.log(data);
 	    	addResultSet(data);
-   		}
+	   		}
 	});
 }

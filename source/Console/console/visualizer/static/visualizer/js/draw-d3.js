@@ -63,7 +63,9 @@ function addResultSet(json) {
 }
 
 function restartLayout() { 
-	//console.log('restartLayout');
+	console.log('restartLayout');
+	console.log(nodedata);
+	console.log(linkdata);
 	simulation.nodes(nodedata);
 
 	simulation.force("link")
@@ -105,20 +107,21 @@ function addEdges(data) {
 	//setup the edges
 	let enteredges = zoomLayer.selectAll(".edges")
 		.data(data, function(d) { return d.db_id; })
-		.enter()
-		.append("g")
+		.enter();
+
+	let enteredgesg = enteredges.append("g")
 		.attr("id",function(d) { return "edge_"+d.db_id; })
 		.attr("class", function(d) { return d.label })
 		.classed("edges",true);
 
-	enteredges.append("path")
+	enteredgesg.append("path")
 		.classed("wrapper",true)
 		.attr("fill","none");
 
-	enteredges.append("path")
+	enteredgesg.append("path")
 		.classed("arrows",true);	
 	
-	let edgelabels = enteredges.append("g")
+	let edgelabels = enteredgesg.append("g")
 		.classed("edgelabel",true);
 
 	edgelabels.append("text")
@@ -126,13 +129,12 @@ function addEdges(data) {
 		.attr("dominant-baseline","central")
 		.text(function(d) {return d.label});
 
-	let newcount = 0;
-	//console.log("linkdata old count " + linkdata.length);
+	console.log("linkdata old count " + linkdata.length);
 
 	enteredges.each( function(d) {
-		newcount++;
 		linkdata.push(d);
 	});
+	console.log("linkdata new count " + linkdata.length);
 }
 
 
