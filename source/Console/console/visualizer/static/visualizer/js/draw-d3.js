@@ -64,8 +64,6 @@ function addResultSet(json) {
 
 function restartLayout() { 
 	console.log('restartLayout');
-	console.log(nodedata);
-	console.log(linkdata);
 	simulation.nodes(nodedata);
 
 	simulation.force("link")

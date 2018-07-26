@@ -10,8 +10,6 @@ node2*/
 	let relationship = document.getElementById("relationship").value;
 	let node2 = document.getElementById("node2").value;
 
-	//getAll("/api/getall");
-	//$.getJSON(url, function(data) {
 	getNode(node1);
 }
 
@@ -32,9 +30,6 @@ function getCookie(name) {
     }
     return cookieValue;
 }
-var csrftoken = getCookie('csrftoken');
-//var csrftoken = getCookie('csrftoken');
-
 
 
 function getNode(nodeid) {
@@ -46,8 +41,6 @@ function getNode(nodeid) {
 }
 
 function getAll() {
-    //var url = "/api/getall";
-
     $.getJSON("/api/getall", function(data) {
     	addResultSet(data);
         restartLayout();
@@ -59,8 +52,7 @@ function addRelated(nodeid) {
 	$.getJSON("/api/nodes?nodeid="+nodeid, function(data) {
     	addResultSet(data);
     	let nodeids = getAllNodeIds();
-    	getEdgesForNodes(nodeids);
-    	
+    	getEdgesForNodes(nodeids);    	
     });
 
 }
@@ -76,11 +68,10 @@ function getEdgesForNodes(nodeids) {
 		headers: {
 			'X-CSRFToken': getCookie('csrftoken')
 		},
-		/*contentType: 'application/json',
-		dataType: 'JSON',*/
 		success: function(data) {
 			console.log(data);
 	    	addResultSet(data);
+	    	restartLayout();
 	   		}
 	});
 }
