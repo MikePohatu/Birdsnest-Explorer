@@ -15,9 +15,31 @@ node2*/
 	getNode(node1);
 }
 
+
+//getCookie function from django documentation
+function getCookie(name) {
+    var cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        var cookies = document.cookie.split(';');
+        for (var i = 0; i < cookies.length; i++) {
+            var cookie = jQuery.trim(cookies[i]);
+            // Does this cookie string begin with the name we want?
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
+var csrftoken = getCookie('csrftoken');
+//var csrftoken = getCookie('csrftoken');
+
+
+
 function getNode(nodeid) {
 	console.log(nodeid);
-	$.getJSON("/api/nodes/"+nodeid, function(data) {
+	$.getJSON("/api/nodes/node/"+nodeid, function(data) {
     	addResultSet(data);
         restartLayout();
     });
@@ -38,6 +60,7 @@ function addRelated(nodeid) {
     	addResultSet(data);
     	let nodeids = getAllNodeIds();
     	getEdgesForNodes(nodeids);
+    	restartLayout();
     });
 
 }
@@ -45,9 +68,19 @@ function addRelated(nodeid) {
 function getEdgesForNodes(nodeids) {
 	console.log("getEdgesForNodes");
 	console.log(nodeids);
-	$.post("/api/edges", nodeids, function(data) {
-		console.log(data);
-    	addResultSet(data);
-    	restartLayout();
-    }),"json";
+	$.ajax({
+		url: '/api/edges',
+		method: "POST",
+		data: JSON.stringify(nodeids),
+		contentType: "application/json; charset=utf-8",
+		headers: {
+			'X-CSRFToken': getCookie('csrftoken')
+		},
+		/*contentType: 'application/json',
+		dataType: 'JSON',*/
+		success: function(data) {
+			console.log(data);
+	    	addResultSet(data);
+   		}
+	});
 }

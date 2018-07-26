@@ -17,7 +17,7 @@ namespace NeoProxy.Controllers
             this._service = service;
         }
 
-        [HttpGet("{id}")]
+        [HttpGet("node/{id}")]
         public object Get(long id)
         {
             return this._service.GetNode(id);

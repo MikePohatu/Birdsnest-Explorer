@@ -29,6 +29,7 @@
 			<div id="main">
 				<div id="container grid-container full querybar">
 					<form id="searchForm" type="POST" action="javascript:search()">
+						{% csrf_token %}
 						<div class="grid-x">
 							<div large-3 medium-3 cell>
 								<input type="text" id="node1" class="inputbox">
