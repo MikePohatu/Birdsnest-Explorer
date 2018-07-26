@@ -93,18 +93,8 @@ namespace NeoProxy
                     session.ReadTransaction(tx =>
                     {
                         string query = "UNWIND $ids AS nodeid " +
-                            "MATCH (n)-[r]->() " +
-                            "WHERE ID(n)=nodeid " +
-                            "RETURN r";
-                        IStatementResult dbresult = tx.Run(query, new { ids = nodeids });
-                        returnedresults.Append(ParseResults(dbresult));
-                    });
-
-                    session.ReadTransaction(tx =>
-                    {
-                        string query = "UNWIND $ids AS nodeid " +
-                            "MATCH ()-[r]->(n) " +
-                            "WHERE ID(n)=nodeid " +
+                            "MATCH (s)-[r]-(t) " +
+                            "WHERE ID(s)=nodeid AND ID(t) IN $ids " +
                             "RETURN r";
                         IStatementResult dbresult = tx.Run(query, new { ids = nodeids });
                         returnedresults.Append(ParseResults(dbresult));
