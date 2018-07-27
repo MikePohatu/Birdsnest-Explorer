@@ -156,15 +156,15 @@ WITH {
 } AS json
 UNWIND json.users AS user
 MERGE (u {id:user.id})
-ON CREATE SET u=user,u:BUILTIN_USER
-ON MATCH SET u:BUILTIN_USER,u.description=user.description
+ON CREATE SET u=user,u:BuiltinUser
+ON MATCH SET u:BuiltinUser,u.description=user.description
 WITH json
 UNWIND json.groups AS group
 MERGE (g {id:group.id})
-ON CREATE SET g=group,g:BUILTIN_GROUP
-ON MATCH SET g:BUILTIN_GROUP,g.description=group.description
+ON CREATE SET g=group,g:BuiltinGroup
+ON MATCH SET g:BuiltinGroup,g.description=group.description
 WITH *
-MATCH (n:ORPHANED:BUILTIN_GROUP) REMOVE n:ORPHANED
+MATCH (n:ORPHANED:BuiltinGroup) REMOVE n:ORPHANED
 WITH *
-MATCH (n:ORPHANED:BUILTIN_USER) REMOVE n:ORPHANED
+MATCH (n:ORPHANED:BuiltinUser) REMOVE n:ORPHANED
 RETURN *

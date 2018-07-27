@@ -10,41 +10,41 @@ namespace common
         //edges - use camel case
 
         //general nodes
-        public static string Orphaned { get { return "ORPHANED"; } }
-        public static string Device { get { return "DEVICE"; } }
+        public static string Orphaned { get { return "Orphaned"; } }
+        public static string Device { get { return "Device"; } }
 
         //builtin nodes
-        public static string BuiltInUser { get { return "BUILTIN_USER"; } }
-        public static string BuiltInGroup { get { return "BUILTIN_GROUP"; } }
+        public static string BuiltinUser { get { return "BuiltinUser"; } }
+        public static string BuiltinGroup { get { return "BuiltinGroup"; } }
 
         //general edges
-        public static string Uses { get { return "Uses"; } }
-        public static string GivesAccessTo { get { return "GivesAccessTo"; } }
-        public static string ConnectedTo { get { return "ConnectedTo"; } }
-        public static string WritesDataTo { get { return "WritesDataTo"; } }
-        public static string ReadsDataFrom { get { return "ReadsDataFrom"; } }
+        public static string Uses { get { return "USES"; } }
+        public static string GivesAccessTo { get { return "GIVES_ACCESS_TO"; } }
+        public static string ConnectedTo { get { return "CONNECTED_TO"; } }
+        public static string WritesDataTo { get { return "WRITES_DATA_TO"; } }
+        public static string ReadsDataFrom { get { return "READS_DATA_FROM"; } }
 
         //FSScanner nodes
-        public static string Folder { get { return "FS_FOLDER"; } }
-        public static string BlockedFolder { get { return "FS_BLOCKEDFOLDER"; } }
-        public static string DfsRoot { get { return "FS_DFSROOT"; } }
-        public static string Datastore { get { return "FS_DATASTORE"; } }
+        public static string Folder { get { return "FS_Folder"; } }
+        public static string BlockedFolder { get { return "FS_BlockedFolder"; } }
+        public static string DfsRoot { get { return "FS_DfsRoot"; } }
+        public static string Datastore { get { return "FS_Datastore"; } }
 
         //FSScanner edges
-        public static string InheritsFrom { get { return "FS_InheritsFrom"; } }
-        public static string BlocksInheritanceFrom { get { return "FS_BlocksInheritanceFrom"; } }
-        public static string HostedOn { get { return "FS_HostedOn"; } }
+        public static string InheritsFrom { get { return "FS_INHERITS_FROM"; } }
+        public static string BlocksInheritanceFrom { get { return "FS_BLOCKS_INHERITANCE_FROM"; } }
+        public static string HostedOn { get { return "FS_HOSTED_ON"; } }
 
         //ADScanner nodes
-        public static string User { get { return "AD_USER"; } }
-        public static string Computer { get { return "AD_COMPUTER"; } }
-        public static string Group { get { return "AD_GROUP"; } }
-        public static string Deleted { get { return "AD_DELETED"; } }
+        public static string User { get { return "AD_User"; } }
+        public static string Computer { get { return "AD_Computer"; } }
+        public static string Group { get { return "AD_Group"; } }
+        public static string Deleted { get { return "AD_Deleted"; } }
 
         //ADScanner edges
-        public static string MemberOf { get { return "AD_MemberOf"; } }
+        public static string MemberOf { get { return "AD_MEMBER_OF"; } }
 
         //CustomAppScanner nodes
-        public static string Application { get { return "APPLICATION"; } }
+        public static string Application { get { return "Application"; } }
     }
 }

@@ -144,8 +144,9 @@ function addEdges(data) {
 
 	edgelabels.append("text")
 		.attr("text-anchor","middle")
-		.attr("dominant-baseline","central")
-		.text(function(d) {return d.label});
+		.attr("dominant-baseline","hanging")
+		.text(function(d) {return d.label})
+		.attr("transform","translate(0,2)"); ;
 }
 
 
@@ -208,8 +209,6 @@ function addNodes(data) {
 		.text(function(d) { return d.name; })
 		.attr("text-anchor","middle")
 		.attr("dominant-baseline","central")
-		.attr("font-size","10px")
-		.attr("font-family","arial")
 		.attr("transform",function(d) { return "translate(" + (d.size/2) + "," + (d.size + 7) + ")" }); 
 }
 

@@ -31,9 +31,10 @@ body {
 	position: relative;
 	bottom:0;
 	height: calc(100% - 108px);
-	background-color:#FBFBFB;
+	background-color:#e8e8e8;
 	/*background-color: silver;*/
-	font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+	font-family: 'helvetica', arial, sans-serif;
+	/*font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;*/
 }
 
 #detailcardwrapper {

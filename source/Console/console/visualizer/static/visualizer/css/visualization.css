@@ -15,6 +15,7 @@
 	font-size:10px;
 	fill:#353535;
 	stroke:none;
+	font-family: 'helvetica', arial, sans-serif;
 }
 
 .pin {
@@ -24,48 +25,48 @@
 	stroke-width:1px;
 }
 
-.AD_USER {
+.AD_User {
 	color:crimson;
 	stroke:crimson;
 	fill:#ffe2e7;	
 }
 
-.AD_COMPUTER {
+.AD_Computer {
 	color: steelblue;
 	stroke: steelblue;
 	fill: lightcyan;
 }
 
-.AD_GROUP {
+.AD_Group {
 	color: green;
 	stroke: green;
 	fill: #BBF0C6;
 }
 
-.BUILTIN_GROUP {
+.BuiltinGroup {
 	color: #474747;
 	stroke: #474747;
 	fill: #e5e5e5;
 }
 
-.BUILTIN_USER {
+.BuiltinUser {
 	color: #474747;
 	stroke: #474747;
 	fill: #e5e5e5;
 }
 
-.DEVICE {
+.Device {
 	color: mediumpurple;
 	stroke: mediumpurple;
 	fill: purple;
 }
 
-.FS_FOLDER {
+.FS_Folder {
 	color:#ad9370;
 	stroke: #ad9370;
 	fill: cornsilk;
 }
-.FS_DATASTORE {
+.FS_Datastore {
 	color:midnightblue;
 	stroke: midnightblue;
 	fill: lightblue;
@@ -75,33 +76,34 @@
 
 /*edges config*/
 .edgelabel text {
-	font-size:8px;
+	font-size:10px;
 	fill:#353535;
+	font-family: 'helvetica', arial, sans-serif;
 }
 
 .arrows {
 	fill:inherit;
 }
-.AD_MemberOf {
+.AD_MEMBER_OF {
 	fill:green;
 }
 
-.ConnectedTo {
+.CONNECTED_TO {
 	fill:blue;
 }
 
-.GivesAccessTo {
+.GIVES_ACCESS_TO {
 	fill:orange;
 }
 
-.FS_InheritsFrom {
+.FS_INHERITS_FROM {
 	fill:brown;
 }
 
-.FS_BlocksInheritanceFrom {
+.FS_BLOCKS_INHERITANCE_FROM {
 	fill: red;
 }
 
-.FS_HostedOn {
+.FS_HOSTED_ON {
 	fill: darkblue;
 }

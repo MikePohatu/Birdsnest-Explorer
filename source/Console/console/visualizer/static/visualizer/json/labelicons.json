@@ -1,10 +1,10 @@
 {
-	"AD_USER":"fas fa-user",
-	"AD_COMPUTER":"fas fa-desktop",
-	"AD_GROUP":"fas fa-user-friends",
-	"BUILTIN_GROUP":"fas fa-users",
-	"BUILTIN_USER":"fas fa-user",
-	"DEVICE":"fas fa-tablet-alt",
-	"FS_FOLDER":"fas fa-folder-open",
-	"FS_DATASTORE":"fas fa-hdd"
+	"AD_User":"fas fa-user",
+	"AD_Computer":"fas fa-desktop",
+	"AD_Group":"fas fa-user-friends",
+	"BuiltinGroup":"fas fa-users",
+	"BuiltinUser":"fas fa-user",
+	"Device":"fas fa-tablet-alt",
+	"FS_Folder":"fas fa-folder-open",
+	"FS_Datastore":"fas fa-hdd"
 }
