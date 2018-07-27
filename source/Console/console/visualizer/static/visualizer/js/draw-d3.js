@@ -493,9 +493,9 @@ function updateLocations() {
 
 				let = path = "M " + linestart + " -1 " + 
 				"L " + lineend + " -1 " +
-				"L " + lineend + " -3 " +
+				"L " + lineend + " -5 " +
 				"L " + linepoint + " 0 " +
-				"L " + lineend + " 3 " +
+				"L " + lineend + " 5 " +
 				"L " + lineend + " 1 " +
 				"L " + linestart + " 1 Z ";
 
