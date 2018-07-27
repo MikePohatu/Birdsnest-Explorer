@@ -178,6 +178,7 @@ function getAllNodeIds() {
 function addNodes(data) {	
 	data.forEach(function(d) {
 		if (findFromDbId(nodedata,d.db_id)===null) { 
+			//console.log("pushnode: " + d.name);
 			nodedata.push(d); 
 			}
 		}
@@ -381,13 +382,13 @@ function nodeHideDetailsSelected(d) {
 }
 
 function nodeMouseOver(d) {
-	//console.log("nodeMouseOver");
+	//console.log("nodeMouseOver: " + d.name);
 	d3.selectAll("#details_" + d.db_id)
 		.classed("currentActiveDetailCard",true);
 }
 
 function nodeMouseOut(d) {
-	//console.log("nodeMouseOut");
+	//console.log("nodeMouseOut: " + d.name);
 	d3.selectAll("#details_" + d.db_id)
 		.classed("currentActiveDetailCard",false);
 }
@@ -441,8 +442,6 @@ function loadNodeData(newnodedata) {
 		d.y = 0;
 		d.cx = d.x + d.radius;
 		d.cy = d.y + d.radius;
-		d.pinned = false;
-		d.selected = false;
 		d.size = defaultsize * d.scaling;
 		populateDetails(d);
 	});	
