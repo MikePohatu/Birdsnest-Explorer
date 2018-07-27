@@ -27,7 +27,7 @@ namespace ADScanner.Neo4j
 
         public static int UpdateMemberCounts(ISession session)
         {
-            string query = "MATCH ()-[r:AD_MemberOf]-(n:AD_GROUP) " +
+            string query = "MATCH ()-[r:" + Types.MemberOf + "]-(n:"+ Types.Group + ") " +
                 "WITH n,count(r) AS i " +
                 "SET n.member_count = i " +
                 "RETURN n";
@@ -112,8 +112,8 @@ namespace ADScanner.Neo4j
             string query = "MATCH(n) " +
             "WHERE n:" + Types.Computer + " OR n:" + Types.User + " " +
             "WITH n " +
-            "MATCH (g: AD_GROUP) WHERE g.rid = n.primarygroupid " +
-            "MERGE(n)-[r: AD_MemberOf]->(g) " +
+            "MATCH (g:"+ Types.Group + ") WHERE g.rid = n.primarygroupid " +
+            "MERGE(n)-[r:" + Types.MemberOf + "]->(g) " +
             "SET r.primarygroup = true " +
             "SET r.lastscan = $scanid " +
             "RETURN n.name,g.name ";
@@ -124,10 +124,10 @@ namespace ADScanner.Neo4j
 
         public static int RemoveDeletedGroupMemberShips(ISession session, string scanid)
         {
-            string query = "MATCH(n: AD_USER) " +
+            string query = "MATCH(n:" +Types.User + ") " +
             "WHERE n.lastscan = $scanid " +
             "WITH n " +
-            "MATCH(n) -[r: AD_MemberOf]->(g: AD_GROUP) " +
+            "MATCH(n) -[r:" + Types.MemberOf + "]->(g:" + Types.Group + ") " +
             "WHERE NOT EXISTS(r.lastscan) OR r.lastscan <> $scanid " +
             "DELETE r " +
             "RETURN r ";
@@ -140,7 +140,7 @@ namespace ADScanner.Neo4j
         {
             string query = "MATCH(n:" + label + ") " +
             "WHERE n.lastscan <> $scanid " +
-            "SET n:AD_DELETED " +
+            "SET n:" + Types.Deleted + " " +
             "REMOVE n:" + label + " " +
             "SET n.type='" + label + "' " +
             "WITH n " +

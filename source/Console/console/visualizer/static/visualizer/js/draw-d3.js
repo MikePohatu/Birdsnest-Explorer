@@ -1,8 +1,8 @@
 var drawpane;
 var zoomLayer;
 var svg;
-var nodescontainer;
-var edgescontainer;
+var nodeslayer;
+var edgeslayer;
 var simulation;
 var force;
 var edgedata = [];
@@ -40,11 +40,15 @@ function drawGraph(selectid) {
 	//setup the zooming layer
 	zoomLayer = svg.append("g")
 		.attr("id","zoomlayer");
-	edgescontainer = zoomLayer.append("g")
-		.attr("id","edgescontainer");
 
-	nodescontainer = zoomLayer.append("g")
-		.attr("id","nodescontainer");
+	graphbglayer = zoomLayer.append("g")
+		.attr("id","graphbglayer");
+
+	edgeslayer = zoomLayer.append("g")
+		.attr("id","edgeslayer");
+
+	nodeslayer = zoomLayer.append("g")
+		.attr("id","nodeslayer");
 
 	svg.call(d3.zoom()
 		.scaleExtent([0.05, 5])
@@ -123,7 +127,17 @@ function addEdges(data) {
 		}
 	);
 
-	let enteredges = edgescontainer.selectAll(".edges")
+	//add the bg
+	graphbglayer.selectAll('.edgebg')
+		.data(edgedata, function(d) { return d.db_id; })
+		.enter()
+		.append("path")
+			.attr("id",function(d) { return "edgebg_" + d.db_id; })
+			.classed("graphbg",true)
+			.classed("edgebg",true);
+
+
+	let enteredges = edgeslayer.selectAll(".edges")
 		.data(edgedata, function(d) { return d.db_id; })
 		.enter();
 
@@ -172,8 +186,19 @@ function addNodes(data) {
 	//populate necessary additional data for the view
 	loadNodeData(nodedata);
 
+	//add the bg
+	graphbglayer.selectAll('.nodebg')
+		.data(nodedata, function(d) { return d.db_id; })
+		.enter()
+		.append("circle")
+			.attr("r", function(d) { return (d.radius + 10) + "px"; })
+			.attr("cx", function(d) { return d.cx; })
+			.attr("cy", function(d) { return d.cy; })
+			.classed("graphbg",true)
+			.classed("nodebg",true);
+
 	//build the nodes
-	let enternodes = nodescontainer.selectAll(".nodes")
+	let enternodes = nodeslayer.selectAll(".nodes")
 		.data(nodedata, function(d) { return d.db_id; })
 		.enter();
 
@@ -253,12 +278,11 @@ function pinNode(d) {
 function unpinNode(d) {
 	//console.log("unpinNode");
 	if (d3.event.defaultPrevented) return; // dragged
+	d3.event.stopPropagation();
 	delete d.fx;
 	delete d.fy;
-	if (d.pinned) {
-		d3.selectAll("#node_" + d.db_id).select(".pin").remove();
-		d.pinned = false;
-	}
+	d3.selectAll("#node_" + d.db_id).select(".pin").remove();
+	d.pinned = false;
 }
 
 function keydown() {
@@ -280,7 +304,6 @@ function pageClicked(d){
 function nodeDblClicked(d) {
 	//console.log("nodeDblClicked");
 	if (d3.event.defaultPrevented) { return; } // dragged
-
 	d3.event.stopPropagation();
 	addRelated(d.db_id);
 }
@@ -289,8 +312,8 @@ function nodeClicked(d) {
 	//console.log("nodeClicked");
 	//console.log(d.name);
 	if (d3.event.defaultPrevented) return; // dragged
-
 	d3.event.stopPropagation();
+
 	if (ctrlKey) {	
 		//if ctrl key is down, just toggle the node		
 		updateNodeSelection(d, !d.selected);
@@ -304,17 +327,21 @@ function nodeClicked(d) {
 
 function updateNodeSelection(d, isselected) {
 	//console.log("updateNodeSelection");
-	d3.select("#node_"+ (d.db_id))
+	if (d.selected !== isselected) {
+		if (isselected) {
+			nodeShowDetailsSelected(d);
+		}
+		else {
+			nodeHideDetailsSelected(d);
+		}	
+	}	
+
+	d3.selectAll("#node_"+ (d.db_id))
 		.classed("selected", function() { 
 			d.selected = isselected;
 			return isselected;
 		});
-	if (isselected) {
-		nodeShowDetailsSelected(d);
-	}
-	else {
-		nodeHideDetailsSelected(d);
-	}
+	
 }
 
 function unselectAllOtherNodes(keptdatum) {
@@ -424,20 +451,33 @@ function loadNodeData(newnodedata) {
 }
 
 function updateLocations() {
-	let alledges = zoomLayer.selectAll(".edges").data(edgedata);
+	let alledges = edgeslayer.selectAll(".edges").data(edgedata);
+	let edgebgwidth = 13;
 
 	alledges.each(function(d) {
 		let diagLine = new Slope(d.source.cx, d.source.cy, d.target.cx, d.target.cy);
 
 		//move and rotate the edge line to the right spot
-
 		let edge = d3.select(this)
 			.attr("transform", function() {
 				return "rotate(" + diagLine.deg + " " + diagLine.x1 + " " + diagLine.y1 + ") " +
 					"translate("+ diagLine.x1 + " " + diagLine.y1 + ")";
 			});
 
-		//now the hard bit. Reevaluate the path coordinates so it looks right
+		//do the bg as well
+		graphbglayer.select("#edgebg_" + d.db_id)
+			.attr("transform", function() {
+				return "rotate(" + diagLine.deg + " " + diagLine.x1 + " " + diagLine.y1 + ") " +
+					"translate("+ diagLine.x1 + " " + diagLine.y1 + ")";
+			})
+			.attr("d",function(d) {
+				return "M 0 -"+ edgebgwidth + " " +
+					"L "+ (diagLine.length) + " -"+ edgebgwidth + " " +
+					"L "+ (diagLine.length) + " "+ edgebgwidth + " " +
+					"L 0 "+ edgebgwidth + " " + " Z"; 
+			});
+
+		// Reevaluate the path coordinates so it looks right
 		edge.selectAll(".wrapper")
 			.attr("d",function(d) {
 				return "M 0 -3 " +
@@ -448,43 +488,18 @@ function updateLocations() {
 
 		edge.selectAll(".arrows")
 			.attr("d",function(d) {
-				let line1start;
-				
-				let line1end = Math.max(diagLine.mid-30, 0);
-				let line2start = Math.min(diagLine.mid + 30,diagLine.length);
-				let line2end = Math.max(diagLine.length - d.target.radius - 8, line2start);
-				let line2point = Math.max(line2end + 5, line2end);
-				
-				let path;
-				if (d.bidir) { //bidirectional edge with double ended arrows
-					let line1point = Math.min(d.source.radius + 5,line1end-5);
-					line1start = Math.min(line1point + 5,line1end);
+				let lineend = Math.max(diagLine.length - d.target.radius - 8, 0);
+				let linepoint = Math.max(lineend + 5, lineend);
+				linestart = Math.min(d.source.radius + 5,lineend);
 
-					path = "M " + line1point + " 0 " +
-					"L " + line1start + " -3 " +
-					"L " + line1start + " -1 " +
-					"L " + line1end + " -1 " + 
-					"L " + line1end + " 1 " +
-					"L " + line1start + " 1 " +
-					"L " + line1start + " 3 Z ";
-				} 
-				else { //single direction edge with single ended arrow
-					line1start = Math.min(d.source.radius + 5,line1end);
-					line1end = Math.max(diagLine.mid-30, line1start);
+				let = path = "M " + linestart + " -1 " + 
+				"L " + lineend + " -1 " +
+				"L " + lineend + " -3 " +
+				"L " + linepoint + " 0 " +
+				"L " + lineend + " 3 " +
+				"L " + lineend + " 1 " +
+				"L " + linestart + " 1 Z ";
 
-					path = "M " + line1start + " -1 " + 
-					"L " + line1end + " -1 " + 
-					"L " + line1end + " 1 " +
-					"L " + line1start + " 1 Z ";
-				}	
-
-				path +=	"M " + line2start + " -1 " + 
-					"L " + line2end + " -1 " +
-					"L " + line2end + " -3 " +
-					"L " + line2point + " 0 " +
-					"L " + line2end + " 3 " +
-					"L " + line2end + " 1 " +
-					"L " + line2start + " 1 Z "; 
 				return path;
 			});
 
@@ -502,14 +517,17 @@ function updateLocations() {
 			})
 	});
 		
-	zoomLayer.selectAll(".nodes").data(nodedata)
+	nodeslayer.selectAll(".nodes").data(nodedata)
 		.attr("x",function(d) { 
 			d.cx = d.x + d.radius;
 			return d.x; })
 		.attr("y",function(d) { 
 			d.cy = d.y + d.radius;
 			return d.y; })
-		.attr("transform", function (d) { return "translate(" + d.x  + "," + d.y + ")" });	
+		.attr("transform", function (d) { return "translate(" + d.x  + "," + d.y + ")" });
+
+	graphbglayer.selectAll(".nodebg").data(nodedata)
+		.attr("transform", function (d) { return "translate(" + d.x  + "," + d.y + ")" });
 }
 
 //based on an angled line, eval all the relevant details

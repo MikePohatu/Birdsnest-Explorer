@@ -1,3 +1,7 @@
+.graphbg {
+	fill:white;
+}
+
 /*nodes config*/
 .nodes {
 	stroke-width:3px;
