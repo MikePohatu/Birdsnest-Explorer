@@ -38,6 +38,7 @@ function getNode(nodeid) {
 		//console.log(data);
     	addResultSet(data);
         restartLayout();
+        updateEdges();
     });
 }
 
@@ -52,8 +53,7 @@ function addRelated(nodeid) {
 	//console.log("addRelated"+ nodeid);
 	$.getJSON("/api/nodes?nodeid="+nodeid, function(data) {
     	addResultSet(data);
-    	let nodeids = getAllNodeIds();
-    	getEdgesForNodes(nodeids);    	
+   		updateEdges();
     });
 
 }
@@ -75,4 +75,9 @@ function getEdgesForNodes(nodeids) {
 	    	restartLayout();
 	   		}
 	});
+}
+
+function updateEdges() {
+	let nodeids = getAllNodeIds();
+    getEdgesForNodes(nodeids); 
 }
