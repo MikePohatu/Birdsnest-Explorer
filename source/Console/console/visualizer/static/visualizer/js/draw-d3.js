@@ -157,10 +157,10 @@ function addEdges(data) {
 		.classed("edgelabel",true);
 
 	edgelabels.append("text")
-		.attr("text-anchor","middle")
-		.attr("dominant-baseline","hanging")
 		.text(function(d) {return d.label})
-		.attr("transform","translate(0,2)"); ;
+		.attr("dominant-baseline","text-bottom")
+		.attr("text-anchor","middle")
+		.attr("transform","translate(0,-5)"); ;
 }
 
 
