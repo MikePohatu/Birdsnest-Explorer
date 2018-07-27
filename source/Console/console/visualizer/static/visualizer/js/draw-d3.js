@@ -1,9 +1,11 @@
 var drawpane;
 var zoomLayer;
 var svg;
+var nodescontainer;
+var edgescontainer;
 var simulation;
 var force;
-var linkdata = [];
+var edgedata = [];
 var nodedata = [];
 
 var playMode = false;
@@ -33,8 +35,17 @@ function drawGraph(selectid) {
 		.attr("id","drawingsvg")		
 		.on("click", pageClicked);
 
+	
+
 	//setup the zooming layer
-	zoomLayer = svg.append("g");
+	zoomLayer = svg.append("g")
+		.attr("id","zoomlayer");
+	edgescontainer = zoomLayer.append("g")
+		.attr("id","edgescontainer");
+
+	nodescontainer = zoomLayer.append("g")
+		.attr("id","nodescontainer");
+
 	svg.call(d3.zoom()
 		.scaleExtent([0.05, 5])
 		.on("zoom", function() {
@@ -45,7 +56,7 @@ function drawGraph(selectid) {
 	simulation.stop();
 
 	simulation
-		.force("link", d3.forceLink(linkdata)		
+		.force("link", d3.forceLink(edgedata)		
 			.id(function(d) { return d.db_id; })
 			.distance(175)
 			.strength(1))
@@ -63,11 +74,11 @@ function addResultSet(json) {
 }
 
 function restartLayout() { 
-	console.log('restartLayout');
+	//console.log('restartLayout');
 	simulation.nodes(nodedata);
 
 	simulation.force("link")
-		.links(linkdata);
+		.links(edgedata);
 
 	simulation.alpha(1).restart();
 }
@@ -103,8 +114,17 @@ setup edges and nodes
 
 function addEdges(data) {
 	//setup the edges
-	let enteredges = zoomLayer.selectAll(".edges")
-		.data(data, function(d) { return d.db_id; })
+	/*console.log("addEdges");
+	console.log(data);*/
+	data.forEach(function(d) {
+		if (findFromDbId(edgedata,d.db_id)===null) { 
+			edgedata.push(d); 
+			}
+		}
+	);
+
+	let enteredges = edgescontainer.selectAll(".edges")
+		.data(edgedata, function(d) { return d.db_id; })
 		.enter();
 
 	let enteredgesg = enteredges.append("g")
@@ -126,13 +146,6 @@ function addEdges(data) {
 		.attr("text-anchor","middle")
 		.attr("dominant-baseline","central")
 		.text(function(d) {return d.label});
-
-	console.log("linkdata old count " + linkdata.length);
-
-	enteredges.each( function(d) {
-		linkdata.push(d);
-	});
-	console.log("linkdata new count " + linkdata.length);
 }
 
 
@@ -147,21 +160,27 @@ function getAllNodeIds() {
 	return nodeids;
 }
 	
-function addNodes(data) {
+function addNodes(data) {	
+	data.forEach(function(d) {
+		if (findFromDbId(nodedata,d.db_id)===null) { 
+			nodedata.push(d); 
+			}
+		}
+	);
+
 	//populate necessary additional data for the view
-	loadNodeData(data);
+	loadNodeData(nodedata);
 
 	//build the nodes
-	let enternodes = zoomLayer.selectAll(".nodes")
-		.data(data, function(d) { return d.db_id; })
+	let enternodes = nodescontainer.selectAll(".nodes")
+		.data(nodedata, function(d) { return d.db_id; })
 		.enter();
 
 	let enternodesg = enternodes.append("g")
 			.attr("id", function(d) { return "node_" + d.db_id; })
 			.attr("class", function(d) { return d.label })
 			.classed("nodes",true)
-			.classed("selected", function(d) { 
-				return d.selected;})
+			.classed("selected", function(d) { return d.selected;})
 			.on("click", nodeClicked)
 			.on("mouseover", nodeMouseOver)
 			.on("mouseout", nodeMouseOut)
@@ -192,20 +211,15 @@ function addNodes(data) {
 		.attr("font-size","10px")
 		.attr("font-family","arial")
 		.attr("transform",function(d) { return "translate(" + (d.size/2) + "," + (d.size + 7) + ")" }); 
-
-	let newcount = 0;
-
-	enternodes.each(function (d) {
-		nodedata.push(d);
-		newcount++;
-		});
 }
-	
 
-function findNode (id) {
-	for (var i=0; i < nodedata.length; i++) {
-		if (nodedata[i].db_id === id) { return nodedata[i]; }
+function findFromDbId (arraydata, id) {
+	for (var i=0; i < arraydata.length; i++) {
+		if (arraydata[i].db_id === id) { 
+			return arraydata[i]; 
+		}
 	};
+	return null;
 }
 
 /*
@@ -265,8 +279,8 @@ function pageClicked(d){
 }
 
 function nodeDblClicked(d) {
-	console.log("nodeDblClicked");
-	if (d3.event.defaultPrevented) return; // dragged
+	//console.log("nodeDblClicked");
+	if (d3.event.defaultPrevented) { return; } // dragged
 
 	d3.event.stopPropagation();
 	addRelated(d.db_id);
@@ -274,6 +288,7 @@ function nodeDblClicked(d) {
 
 function nodeClicked(d) {
 	//console.log("nodeClicked");
+	//console.log(d.name);
 	if (d3.event.defaultPrevented) return; // dragged
 
 	d3.event.stopPropagation();
@@ -374,7 +389,8 @@ function nodeDragged(d){
 }
 
 function loadNodeData(newnodedata) {
-	//console.log(newnodedata);
+	/*console.log('loadNodeData');
+	console.log(newnodedata);*/
 	let rangeUpdated = false;
 	//evaluate the nodes to figure out the max and min size so we can work out the scaling
 	newnodedata.forEach(function(d) {			
@@ -409,7 +425,7 @@ function loadNodeData(newnodedata) {
 }
 
 function updateLocations() {
-	let alledges = zoomLayer.selectAll(".edges").data(linkdata);
+	let alledges = zoomLayer.selectAll(".edges").data(edgedata);
 
 	alledges.each(function(d) {
 		let diagLine = new Slope(d.source.cx, d.source.cy, d.target.cx, d.target.cy);

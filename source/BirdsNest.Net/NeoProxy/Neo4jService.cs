@@ -95,7 +95,7 @@ namespace NeoProxy
                         string query = "UNWIND $ids AS nodeid " +
                             "MATCH (s)-[r]-(t) " +
                             "WHERE ID(s)=nodeid AND ID(t) IN $ids " +
-                            "RETURN r";
+                            "RETURN DISTINCT r";
                         IStatementResult dbresult = tx.Run(query, new { ids = nodeids });
                         returnedresults.Append(ParseResults(dbresult));
                     });

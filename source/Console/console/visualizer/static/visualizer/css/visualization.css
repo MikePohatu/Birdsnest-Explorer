@@ -91,5 +91,17 @@
 }
 
 .GivesAccessTo {
-	fill:red;
+	fill:orange;
+}
+
+.FS_InheritsFrom {
+	fill:brown;
+}
+
+.FS_BlocksInheritanceFrom {
+	fill: red;
+}
+
+.FS_HostedOn {
+	fill: darkblue;
 }

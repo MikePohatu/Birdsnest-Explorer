@@ -33,8 +33,9 @@ function getCookie(name) {
 
 
 function getNode(nodeid) {
-	console.log(nodeid);
+	//console.log(nodeid);
 	$.getJSON("/api/nodes/node/"+nodeid, function(data) {
+		//console.log(data);
     	addResultSet(data);
         restartLayout();
     });
@@ -48,7 +49,7 @@ function getAll() {
 }
 
 function addRelated(nodeid) {
-	console.log("addRelated"+ nodeid);
+	//console.log("addRelated"+ nodeid);
 	$.getJSON("/api/nodes?nodeid="+nodeid, function(data) {
     	addResultSet(data);
     	let nodeids = getAllNodeIds();
@@ -58,8 +59,8 @@ function addRelated(nodeid) {
 }
 
 function getEdgesForNodes(nodeids) {
-	console.log("getEdgesForNodes");
-	console.log(nodeids);
+	//console.log("getEdgesForNodes");
+	//console.log(nodeids);
 	$.ajax({
 		url: '/api/edges',
 		method: "POST",
@@ -69,7 +70,7 @@ function getEdgesForNodes(nodeids) {
 			'X-CSRFToken': getCookie('csrftoken')
 		},
 		success: function(data) {
-			console.log(data);
+			//console.log(data);
 	    	addResultSet(data);
 	    	restartLayout();
 	   		}

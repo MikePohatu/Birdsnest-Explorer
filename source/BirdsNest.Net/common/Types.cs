@@ -13,6 +13,10 @@ namespace common
         public static string Orphaned { get { return "ORPHANED"; } }
         public static string Device { get { return "DEVICE"; } }
 
+        //builtin nodes
+        public static string BuiltInUser { get { return "BUILTIN_USER"; } }
+        public static string BuiltInGroup { get { return "BUILTIN_GROUP"; } }
+
         //general edges
         public static string Uses { get { return "Uses"; } }
         public static string GivesAccessTo { get { return "GivesAccessTo"; } }
