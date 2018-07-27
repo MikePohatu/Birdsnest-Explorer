@@ -263,15 +263,15 @@ function pinNode(d) {
 				.classed("pin",true)
 				.on("click", unpinNode);
 		ping.append("circle")
-			.attr("r",5*d.scaling)
+			.attr("r",8*d.scaling)
 			.attr("cx",5*d.scaling)
 			.attr("cy",5*d.scaling);
 		ping.append("i")
 			.classed("fas fa-thumbtack",true)
-			.attr("x",2*d.scaling)
-			.attr("y",2*d.scaling)
-			.attr("height",6*d.scaling)
-			.attr("width",6*d.scaling);
+			.attr("x",0)
+			.attr("y",1)
+			.attr("height",10*d.scaling)
+			.attr("width",10*d.scaling);
 		d.pinned = true;
 	}
 }
