@@ -115,10 +115,17 @@ function sourceLabelKeyUp() {
 
 function searchNodeNames(element, term, limit) {
 	console.log("searchNodeNames");
-	$.getJSON('/api/search/nodenames?term=' + term + '&limit=' + limit, function(data) {
-		console.log(data);
-    	autocomplete(element, data);
-    });
+	if (!isNullOrEmpty(term)) {
+		$.getJSON('/api/search/nodenames?term=' + term + '&limit=' + limit, function(data) {
+			console.log(data);
+			autocomplete(element, data);
+		});
+	}	
+}
+
+function isNullOrEmpty( s ) 
+{
+    return ( s == null || s === "" );
 }
 
 function autocomplete(inp, arr) {

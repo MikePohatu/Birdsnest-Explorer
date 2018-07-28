@@ -76,17 +76,6 @@ body {
 	padding: 0;
 }
 
-.inputbox {
-	padding-top: 2px;
-	padding-right: 10px;
-	padding-bottom: 2px;
-	padding-left: 10px;
-	margin: 5px;
-	height: 24px;
-	border: 1px solid #111;
-	width: 200px;
-}
-
 .pane {
 	min-width:100px;
 	background:white;
@@ -131,13 +120,57 @@ body {
 	color:gray;
 }
 
-input[type=submit] {
+.inputbox {
+	padding-top: 2px;
+	padding-right: 10px;
+	padding-bottom: 2px;
+	padding-left: 10px;
+	margin: 5px;
+	border: 1px solid #111;
+	width: 200px;
+	border: 1px solid transparent;
+	background-color: #f1f1f1;
+	font-size: 16px;
+}
+
+.inputbox[type=text] {
+  background-color: #f1f1f1;
+  width: 100%;
+}
+.inputbox[type=submit] {
   background-color: DodgerBlue;
   color: #fff;
 }
 
 .autocomplete {
-  /*the container must be positioned relative:*/
-  position: relative;
-  display: inline-block;
+	/*the container must be positioned relative:*/
+	position: relative;
+	display: inline-block;
+}
+
+.autocomplete-items {
+  position: absolute;
+  border: 1px solid #d4d4d4;
+  border-bottom: none;
+  border-top: none;
+  z-index: 99;
+  /*position the autocomplete items to be the same width as the container:*/
+  top: 100%;
+  left: 0;
+  right: 0;
+}
+.autocomplete-items div {
+  padding: 10px;
+  cursor: pointer;
+  background-color: #fff; 
+  border-bottom: 1px solid #d4d4d4; 
+}
+.autocomplete-items div:hover {
+  /*when hovering an item:*/
+  background-color: #e9e9e9; 
+}
+.autocomplete-active {
+  /*when navigating through the items using the arrow keys:*/
+  background-color: DodgerBlue !important; 
+  color: #ffffff; 
 }
