@@ -175,6 +175,7 @@ function getAllNodeIds() {
 	
 function addNodes(data) {	
 	data.forEach(function(d) {
+		//initialize node and push it onto the nodedata list
 		if (findFromDbId(nodedata,d.db_id)===null) { 
 			//console.log("pushnode: " + d.name);
 			d.x = 0;

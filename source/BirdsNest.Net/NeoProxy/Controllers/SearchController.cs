@@ -18,6 +18,13 @@ namespace NeoProxy.Controllers
             this._service = service;
         }
 
+        // GET: api/NodeNames
+        [HttpGet("NodeNames")]
+        public IEnumerable<string> SearchNodes([FromQuery]string term, [FromQuery]int limit)
+        {
+            return this._service.SearchNodeNames(term, limit);
+        }
+
         // GET: api/Search
         //[HttpGet]
         //public IEnumerable<string> Get()

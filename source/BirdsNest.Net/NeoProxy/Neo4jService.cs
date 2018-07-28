@@ -161,6 +161,46 @@ namespace NeoProxy
             return results;
         }
 
+        //*************************
+        // Search functions
+        //*************************
+        public IEnumerable<string> SearchNodeNames(string term, int searchlimit)
+        {
+            string regexterm = "(?i)" + term + ".*";
+            
+            IStatementResult dbresult = null;
+            using (ISession session = this.Driver.Session())
+            {
+                try
+                {
+                    session.ReadTransaction(tx =>
+                    {
+                        string query = "MATCH (n) WHERE n.name =~ $regex RETURN n.name LIMIT $limit";
+                        dbresult = tx.Run(query, new { regex = regexterm, limit = searchlimit });
+                    });
+                }
+                catch
+                {
+                    //logging to add
+                }
+            }
+
+            return ParseStringListResults(dbresult);
+        }
+
+        private List<string> ParseStringListResults(IStatementResult dbresult)
+        {
+            List<string> results = new List<string>();
+            foreach (IRecord record in dbresult)
+            {
+                foreach (string key in record.Keys)
+                {
+                    results.Add(record[key].ToString());
+                }
+            }
+            return results;
+        }
+
         public void Dispose()
         {
             this.Driver?.Dispose();

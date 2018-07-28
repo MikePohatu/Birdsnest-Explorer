@@ -130,3 +130,14 @@ body {
 .viewcontrol:hover {
 	color:gray;
 }
+
+input[type=submit] {
+  background-color: DodgerBlue;
+  color: #fff;
+}
+
+.autocomplete {
+  /*the container must be positioned relative:*/
+  position: relative;
+  display: inline-block;
+}

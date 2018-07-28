@@ -30,15 +30,10 @@
 				<div id="container grid-container full querybar">
 					<form id="searchForm" type="POST" action="javascript:search()">
 						{% csrf_token %}
-						<div class="grid-x">
-							<div large-3 medium-3 cell>
-								<input type="text" id="node1" class="inputbox">
-							</div>
-							<div large-3 medium-3 cell>
-								<input type="text" id="relationship" class="inputbox">
-							</div>
-							<div large-3 medium-3 cell>
-								<input type="text" id="node2" class="inputbox">							
+						<div class="grid-y autocomplete" style="width:200px;">
+							<input type="text" id="sourceName" class="inputbox" onkeyup="sourceNameKeyUp()"  placeholder="Name">
+							<input type="text" id="sourceLabel" class="inputbox" onkeyup="sourceLabelKeyUp()" placeholder="Type">
+							<input type="text" id="sourceProp" class="inputbox" onkeyup="sourcePropKeyUp()" placeholder="Where">
 							</div>
 						</div>
 						<div class="grid-x">
