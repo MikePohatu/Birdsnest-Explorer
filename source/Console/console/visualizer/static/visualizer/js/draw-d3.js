@@ -23,9 +23,6 @@ var minScaling = 1;
 var maxScaling = 4;
 
 
-
-
-
 function drawGraph(selectid) {
 	drawPane = d3.select("#"+selectid)
 		.on("keydown", keydown)
@@ -63,9 +60,9 @@ function drawGraph(selectid) {
 		.force("link", d3.forceLink(edgedata)		
 			.id(function(d) { return d.db_id; })
 			.distance(175)
-			.strength(1))
+			.strength(0.75))
 		.force('collision', d3.forceCollide().radius(function(d) { return (d.size * 2)}))
-		.force('charge', d3.forceManyBody().strength(2)) 
+		.force('charge', d3.forceManyBody().strength(1.5)) 
 		.force('center', d3.forceCenter(paneWidth / 2, paneHeight / 2))
 		.on('tick', function () { updateLocations(); })
 		.velocityDecay(0.3)
@@ -120,6 +117,7 @@ function addEdges(data) {
 	//setup the edges
 	/*console.log("addEdges");
 	console.log(data);*/
+
 	data.forEach(function(d) {
 		if (findFromDbId(edgedata,d.db_id)===null) { 
 			edgedata.push(d); 
@@ -179,6 +177,8 @@ function addNodes(data) {
 	data.forEach(function(d) {
 		if (findFromDbId(nodedata,d.db_id)===null) { 
 			//console.log("pushnode: " + d.name);
+			d.x = 0;
+			d.y = 0;
 			nodedata.push(d); 
 			}
 		}
@@ -438,8 +438,6 @@ function loadNodeData(newnodedata) {
 		else { d.scaling = 1; }
 
 		d.radius = ((defaultsize*d.scaling)/2); 
-		d.x = 0;
-		d.y = 0;
 		d.cx = d.x + d.radius;
 		d.cy = d.y + d.radius;
 		d.size = defaultsize * d.scaling;
