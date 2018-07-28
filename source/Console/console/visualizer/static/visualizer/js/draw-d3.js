@@ -235,7 +235,7 @@ function addNodes(data) {
 		.text(function(d) { return d.name; })
 		.attr("text-anchor","middle")
 		.attr("dominant-baseline","central")
-		.attr("transform",function(d) { return "translate(" + (d.size/2) + "," + (d.size + 7) + ")" }); 
+		.attr("transform",function(d) { return "translate(" + (d.size/2) + "," + (d.size + 10) + ")" }); 
 }
 
 function findFromDbId (arraydata, id) {

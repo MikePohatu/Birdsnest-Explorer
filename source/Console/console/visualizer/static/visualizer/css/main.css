@@ -91,7 +91,7 @@ body {
 	min-width:100px;
 	background:white;
 	border: 2px solid #D6D6D6;
-	border-radius:5px;
+	border-radius:3px;
 	padding: 5px;
 	margin-left:5px;
 	margin-right:5px;
@@ -102,6 +102,8 @@ body {
 .detailcard {	
 	min-height: 30px;
 	font-size: 10px;
+	width: 250px;
+	word-wrap: break-word;
 	font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
 	white-space: pre-wrap;
 	margin-right: 15px;
