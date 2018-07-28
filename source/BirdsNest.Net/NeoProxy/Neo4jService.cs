@@ -188,6 +188,50 @@ namespace NeoProxy
             return ParseStringListResults(dbresult);
         }
 
+        public IEnumerable<string> SearchNodeLabels()
+        {
+            IStatementResult dbresult = null;
+            using (ISession session = this.Driver.Session())
+            {
+                try
+                {
+                    session.ReadTransaction(tx =>
+                    {
+                        string query = "CALL db.labels()";
+                        dbresult = tx.Run(query);
+                    });
+                }
+                catch
+                {
+                    //logging to add
+                }
+            }
+
+            return ParseStringListResults(dbresult);
+        }
+
+        public IEnumerable<string> SearchEdgeLabels()
+        {
+            IStatementResult dbresult = null;
+            using (ISession session = this.Driver.Session())
+            {
+                try
+                {
+                    session.ReadTransaction(tx =>
+                    {
+                        string query = "CALL db.relationshipTypes()";
+                        dbresult = tx.Run(query);
+                    });
+                }
+                catch
+                {
+                    //logging to add
+                }
+            }
+
+            return ParseStringListResults(dbresult);
+        }
+
         private List<string> ParseStringListResults(IStatementResult dbresult)
         {
             List<string> results = new List<string>();

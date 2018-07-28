@@ -230,3 +230,17 @@ function autocomplete(inp, arr) {
 	closeAllLists(e.target);
 	});
 }
+
+//populate 
+function addOption (selectbox, text, value) {
+    var o = document.createElement("OPTION");
+    o.text = text;
+    o.value = value;
+    selectbox.options.add(o);  
+}
+
+function addLabelOptions(selectbox, labelList) {
+	for (var i = 0; i < labelList.length; ++i) {
+		addOption(selectbox, labelList[i], ":" + labelList[i])
+	}
+}

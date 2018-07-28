@@ -28,5 +28,12 @@ namespace NeoProxy.Controllers
         {
             return this._service.GetRelatedNodes(nodeid);
         }
+
+        // GET api/nodes/labels
+        [HttpGet("labels")]
+        public IEnumerable<string> GetLabels()
+        {
+            return this._service.SearchNodeLabels();
+        }
     }
 }

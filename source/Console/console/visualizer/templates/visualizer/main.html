@@ -28,13 +28,23 @@
 			</div>
 			<div id="main">
 				<div id="container grid-container full querybar">
-					<form id="searchForm" type="POST" action="javascript:search()">
+					<script type="text/javascript">
+						function selectClicked() {
+							if (event.currentTarget.selectedIndex === 0) {event.currentTarget.selectedIndex = 1;}
+							event.currentTarget.classList.remove("disabled");
+						}
+					</script>
+
+					<form id="searchForm" type="POST" action="javascript:search()" autocomplete="off">
 						{% csrf_token %}
 						<div class="grid-y autocomplete" style="width:200px;">
+							<select id="sourceLabel" class="inputbox disabled" onclick="selectClicked()">
+								<option value="" disabled selected hidden>Type</option>
+								<option value="">*</option>
+							</select>
 							<input type="text" id="sourceName" class="inputbox" onkeyup="sourceNameKeyUp()"  placeholder="Name">
-							<input type="text" id="sourceLabel" class="inputbox" onkeyup="sourceLabelKeyUp()" placeholder="Type">
 							<input type="text" id="sourceProp" class="inputbox" onkeyup="sourcePropKeyUp()" placeholder="Where">
-							</div>
+						</div>
 						</div>
 						<div class="grid-x">
 							<input type="submit">
@@ -73,6 +83,11 @@
 		var iconmappings;
 		$.getJSON("{% static 'visualizer/json/labelicons.json' %}", function(data) {
 		        iconmappings = new IconMappings(data);
+		    });
+		$.getJSON("/api/nodes/labels", function(data) {
+		        for (var i = 0; i < data.length; ++i) {
+					addOption(document.getElementById("sourceLabel"), data[i], ":" + data[i])
+				}
 		    });
 		//var 
 	</script>
