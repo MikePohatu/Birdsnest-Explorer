@@ -35,11 +35,41 @@
 								</div>									
 								<div class="input-group">
 									<span class="input-group-label small-3">Equals</span>
-									<input type="text" id="sourceVal" onkeyup="sourceValKeyUp()" placeholder="Value"  class="small-9 input-group-field">
+									<input type="text" id="sourceVal" placeholder="Value" class="small-9 input-group-field">
 								</div>
 							</fieldset>
 
+							<fieldset class="fieldset small-4 cell">
+								<legend>Relationship</legend>
+							
+								<div class="input-group">
+									<span class="input-group-label small-3">Type</span>
+									<select id="edgeType" class="small-9 input-group-field">
+										<option value="" disabled selected hidden></option>
+										<option value="">*</option>
+									</select>
+								</div>								
+							</fieldset>
 
+							<fieldset class="fieldset small-4 cell">
+								<legend>Target</legend>
+							
+								<div class="input-group">
+									<span class="input-group-label small-3">Type</span>
+									<select id="targetType" class="small-9 input-group-field" onchange="updateProps('target')">
+										<option value="" disabled selected hidden></option>
+										<option value="">*</option>
+									</select>
+								</div>
+								<div class="input-group">
+									<span class="input-group-label small-3">Where</span>
+									<select id="targetProps" class="small-9 input-group-field"></select>
+								</div>									
+								<div class="input-group">
+									<span class="input-group-label small-3">Equals</span>
+									<input type="text" id="targetVal" placeholder="Value" class="small-9 input-group-field">
+								</div>
+							</fieldset>
 						</div>
 						<div class="grid-x cell">
 							<input type="submit" class="button" value="Search">

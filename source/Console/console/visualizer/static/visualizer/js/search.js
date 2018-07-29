@@ -147,18 +147,18 @@ function updateProps(elementPrefix) {
 	});
 }
 
-function searchValues(elementPrefix) {
-	console.log('searchValues');
-	var type = document.getElementById(elementPrefix+"Type").value;
-	var prop = document.getElementById(elementPrefix+"Props").value;
-	var valel = document.getElementById(elementPrefix+"Val");
-	var val = valel.value;
+bindAutoComplete("source");
+bindAutoComplete("target");
+function bindAutoComplete(elementPrefix) {
+	$("#"+elementPrefix+"Val").autocomplete({
+		source: function (request, response) {
+			//console.log("autoComplete: "+ request.term);
+			var type = document.getElementById(elementPrefix+"Type").value;
+			var prop = document.getElementById(elementPrefix+"Props").value;
 
-	var url = "/api/nodes/values?type="+type+"&property="+prop+"&searchterm="+val;
-	$.getJSON(url, function(data) {
-	    console.log(data);
-	    $(valel).autocomplete({
-			source: data
-    	});
+			var url = "/api/nodes/values?type="+type+"&property="+prop+"&searchterm="+request.term;
+			$.getJSON(url,response);
+		}
 	});
 }
+
