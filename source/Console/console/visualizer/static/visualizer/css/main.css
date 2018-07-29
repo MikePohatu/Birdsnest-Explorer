@@ -20,7 +20,7 @@ body {
 	overflow: hidden;
 	position: relative;
 	bottom:0;
-	height: calc(100% - 108px);
+	height: 100%;
 	background-color:#e8e8e8;
 	/*background-color: silver;*/
 	font-family: 'helvetica', arial, sans-serif;
@@ -160,8 +160,4 @@ body {
   /*when navigating through the items using the arrow keys:*/
   background-color: DodgerBlue !important; 
   color: #ffffff; 
-}
-
-.disabled {
-	color: lightgray;
 }

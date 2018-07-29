@@ -22,11 +22,7 @@
       <div class="top-bar-right">
         <ul class="dropdown menu" data-dropdown-menu>
           <li>
-            {% if user.is_authenticated %}
-              <a href="{% url 'portal_logout' %}">Logout</a>
-            {% else %}
-              <a href="{% url 'portal_login' %}">Login</a>
-            {% endif %}
+            <a>Menu</a>
             <ul class="menu">
               <li><a href="{% url 'portal_welcome' %}">Home</a></li>
 
