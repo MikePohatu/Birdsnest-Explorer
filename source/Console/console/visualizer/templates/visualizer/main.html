@@ -27,28 +27,65 @@
 				<a href="javascript:void(0)" id="openclosebtn"></a>
 			</div>
 			<div id="main">
-				<div id="container grid-container full querybar">
-					<script type="text/javascript">
-						function selectClicked() {
-							if (event.currentTarget.selectedIndex === 0) {event.currentTarget.selectedIndex = 1;}
-							event.currentTarget.classList.remove("disabled");
-						}
-					</script>
+				<div class="querybar grid-x grid-padding-x">
+					{% csrf_token %}
+					<form id="sourceForm" class="small-12 medium-12 cell" type="POST" action="javascript:search()">
+						<div class="grid-x grid-margin-x">
+							<fieldset class="fieldset small-4 cell">
+								<legend>Source</legend>
+							
+								<div class="input-group">
+									<span class="input-group-label small-3">Type</span>
+									<select id="sourceLabel"" class="small-9 input-group-field">
+										<option value="" selected>*</option>
+									</select>
+								</div>
+								<div class="input-group">
+									<span class="input-group-label small-3">Name</span>
+									<input type="text" id="sourceName" onkeyup="sourceNameKeyUp()"  placeholder="Name"  class="small-9 input-group-field">
+								</div>									
+								<div class="input-group">
+									<span class="input-group-label small-3">Where</span>
+									<input type="text" id="sourceProp" onkeyup="sourcePropKeyUp()" placeholder="Where"  class="small-9 input-group-field">
+								</div>
+							</fieldset>
 
-					<form id="searchForm" type="POST" action="javascript:search()" autocomplete="off">
-						{% csrf_token %}
-						<div class="grid-y autocomplete" style="width:200px;">
-							<select id="sourceLabel" class="inputbox disabled" onclick="selectClicked()">
-								<option value="" disabled selected hidden>Type</option>
-								<option value="">*</option>
-							</select>
-							<input type="text" id="sourceName" class="inputbox" onkeyup="sourceNameKeyUp()"  placeholder="Name">
-							<input type="text" id="sourceProp" class="inputbox" onkeyup="sourcePropKeyUp()" placeholder="Where">
+							<fieldset class="fieldset small-4 cell">
+								<legend>Relationship</legend>
+							
+								<div class="input-group">
+									<span class="input-group-label small-3">Type</span>
+									<select id="edgeLabel"" class="small-9 input-group-field">
+										<option value="" selected>*</option>
+									</select>
+								</div>								
+								<div class="input-group">
+									<span class="input-group-label small-3">Depth</span>
+									<input type="text" id="sourceProp" onkeyup="sourcePropKeyUp()" placeholder="Depth"  class="small-9 input-group-field">
+								</div>
+							</fieldset>
+
+							<fieldset class="fieldset small-4 cell">
+								<legend>Target</legend>
+							
+								<div class="input-group">
+									<span class="input-group-label small-3">Type</span>
+									<select id="targetLabel"" class="small-9 input-group-field">
+										<option value="" selected>*</option>
+									</select>
+								</div>
+								<div class="input-group">
+									<span class="input-group-label small-3">Name</span>
+									<input type="text" id="sourceName" onkeyup="sourceNameKeyUp()"  placeholder="Name"  class="small-9 input-group-field">
+								</div>									
+								<div class="input-group">
+									<span class="input-group-label small-3">Where</span>
+									<input type="text" id="sourceProp" onkeyup="sourcePropKeyUp()" placeholder="Where"  class="small-9 input-group-field">
+								</div>						
+							</fieldset>
 						</div>
-						</div>
-						<div class="grid-x">
-							<input type="submit">
-							<p id="cypher"></p>	
+						<div class="grid-x cell">
+							<input type="submit" class="button">
 						</div>
 					</form>
 					
@@ -87,6 +124,14 @@
 		$.getJSON("/api/nodes/labels", function(data) {
 		        for (var i = 0; i < data.length; ++i) {
 					addOption(document.getElementById("sourceLabel"), data[i], ":" + data[i])
+				}
+				for (var i = 0; i < data.length; ++i) {
+					addOption(document.getElementById("targetLabel"), data[i], ":" + data[i])
+				}
+		    });
+		$.getJSON("/api/edges/labels", function(data) {
+		        for (var i = 0; i < data.length; ++i) {
+					addOption(document.getElementById("edgeLabel"), data[i], ":" + data[i])
 				}
 		    });
 		//var 
