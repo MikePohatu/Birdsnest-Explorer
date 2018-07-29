@@ -8,6 +8,7 @@
 {% block content %}
 		<link rel="stylesheet" type="text/css" href="{% static 'visualizer/css/main.css' %}">
 		<link rel="stylesheet" type="text/css" href="{% static 'visualizer/css/visualization.css' %}">
+		<link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
 		<script defer src="https://use.fontawesome.com/releases/v5.1.0/js/all.js" integrity="sha384-3LK/3kTpDE/Pkp8gTNp2gR/2gOiwQ6QaO7Td0zV76UFJVhqLl4Vl3KL1We6q6wR9" crossorigin="anonymous"></script>
 
 		<script src="{% static 'visualizer/js/searchsubmit.js' %}" type="text/javascript"></script>
@@ -68,6 +69,7 @@
 
 {% block tail %}	
 	<script src="https://d3js.org/d3.v5.min.js"></script>
+	<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 	<script src="{% static 'visualizer/js/draw-d3.js' %}" type="text/javascript"></script>
 	<script src="{% static 'visualizer/js/search.js' %}" type="text/javascript"></script>
 	<script>
