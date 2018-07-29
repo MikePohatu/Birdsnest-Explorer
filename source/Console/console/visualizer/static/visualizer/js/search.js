@@ -6,11 +6,48 @@ console.log('search');
 node1
 relationship
 node2*/
-	//var node1 = document.getElementById("sourceType").value;
-	//let relationship = document.getElementById("relationship").value;
+	
+
+	var sourcetype = document.getElementById("sourceType").value;
+	var sourceprop = document.getElementById("sourceProp").value;
+	var sourceval = document.getElementById("sourceVal").value;
+
+	var relationship = document.getElementById("edgeType").value;
+
+	var tartype = document.getElementById("targetType").value;
+	var tarprop = document.getElementById("targetProp").value;
+	var tarval = document.getElementById("targetVal").value;
+
+	let url = "/api/search/path?" + 
+		"sourcetype="+sourcetype +
+		"&sourceprop="+sourceprop +
+		"&sourceval="+sourceval +
+
+		"&relationship="+relationship +
+
+		"&tartype="+tartype +
+		"&tarprop="+tarprop +
+		"&tarval="+tarval;
 	//let node2 = document.getElementById("node2").value;
 
-	//getNode(node1);
+	console.log("sourcetype: " + sourcetype);
+	console.log("sourceprop: " + sourceprop);
+	console.log("sourceval: " + sourceval);
+
+	console.log("relationship: " + relationship);
+
+	console.log("tartype: " + tartype);
+	console.log("tarprop: " + tarprop);
+	console.log("tarval: " + tarval);
+
+	console.log(url);
+
+	$.getJSON(url, function(data) {
+		console.log(data);
+    	addResultSet(data);
+    	updateEdges();
+        restartLayout();
+    });
 }
 
 
@@ -137,7 +174,7 @@ function clearOptions(selectbox)
 
 function updateProps(elementPrefix) {
 	var type = document.getElementById(elementPrefix+"Type").value;
-	var elprops = document.getElementById(elementPrefix+"Props");
+	var elprops = document.getElementById(elementPrefix+"Prop");
 	
 	clearOptions(elprops);
 	$.getJSON("/api/nodes/properties?type="+type, function(data) {
@@ -154,7 +191,7 @@ function bindAutoComplete(elementPrefix) {
 		source: function (request, response) {
 			//console.log("autoComplete: "+ request.term);
 			var type = document.getElementById(elementPrefix+"Type").value;
-			var prop = document.getElementById(elementPrefix+"Props").value;
+			var prop = document.getElementById(elementPrefix+"Prop").value;
 
 			var url = "/api/nodes/values?type="+type+"&property="+prop+"&searchterm="+request.term;
 			$.getJSON(url,response);

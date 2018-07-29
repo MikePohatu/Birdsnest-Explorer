@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Text;
 using System.Diagnostics;
 using System.Collections.Generic;
 using System.Linq;
@@ -167,6 +168,76 @@ namespace NeoProxy
         //*************************
         // Search functions
         //*************************
+
+        public ResultSet SearchPath(string sourcetype, string sourceprop, string sourceval, string relationship, string tartype, string tarprop, string tarval)
+        {
+            using (ISession session = this.Driver.Session())
+            {
+                ResultSet returnedresults = new ResultSet();
+                try
+                {
+                    var props = new
+                    {
+                        sourcetype = sourcetype == null ? string.Empty : sourcetype,
+                        sourceprop = sourceprop == null ? string.Empty : sourceprop,
+                        sourceval = sourceval == null ? string.Empty : sourceval,
+                        relationship = relationship == null ? string.Empty : relationship,
+                        tartype = tartype == null ? string.Empty : tartype,
+                        tarprop = tarprop == null ? string.Empty : tarprop,
+                        tarval = tarval == null ? string.Empty : tarval
+                    };
+
+                    session.ReadTransaction(tx =>
+                    {
+                        StringBuilder builder = new StringBuilder();
+                        bool predacate = false;
+
+                        builder.Append("MATCH path=(s)-[r]->(t) WHERE ");
+                        if (!string.IsNullOrEmpty(sourcetype))
+                        {
+                            builder.Append("$sourcetype IN labels(s) ");
+                            predacate = true;
+                        }
+
+                        if (!string.IsNullOrEmpty(sourceval)) {
+                            if (predacate) { builder.Append("AND "); }
+                            builder.Append("s[{sourceprop}] = $sourceval ");
+                            predacate = true;
+                        }
+                        if (!string.IsNullOrEmpty(sourceval)) {
+                            if (predacate) { builder.Append("AND "); }
+                            builder.Append("TYPE(r) = $relationship ");
+                            predacate = true;
+                        }
+
+                        if (!string.IsNullOrEmpty(tartype))
+                        {
+                            if (predacate) { builder.Append("AND "); }
+                            builder.Append("$tartype IN labels(t) ");
+                        }
+
+                        if (!string.IsNullOrEmpty(sourceval)) {
+                            if (predacate) { builder.Append("AND "); }
+                            builder.Append("t[{tarprop}] = $tarval ");
+                        }
+                        builder.Append("RETURN s,t");
+
+                        string query = builder.ToString();
+                        Debug.WriteLine("Search query: " + query);
+
+
+                        IStatementResult dbresult = tx.Run(query,props);
+                        returnedresults.Append(ParseResults(dbresult));
+                    });
+                }
+                catch
+                {
+                    //logging to add
+                }
+
+                return returnedresults;
+            }
+        }
 
         public IEnumerable<string> GetNodeLabels()
         {
