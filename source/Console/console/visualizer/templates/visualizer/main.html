@@ -6,28 +6,15 @@
 {% endblock %}
 
 {% block content %}
-		<link rel="stylesheet" type="text/css" href="{% static 'visualizer/css/sidenav.css' %}">
 		<link rel="stylesheet" type="text/css" href="{% static 'visualizer/css/main.css' %}">
 		<link rel="stylesheet" type="text/css" href="{% static 'visualizer/css/visualization.css' %}">
 		<script defer src="https://use.fontawesome.com/releases/v5.1.0/js/all.js" integrity="sha384-3LK/3kTpDE/Pkp8gTNp2gR/2gOiwQ6QaO7Td0zV76UFJVhqLl4Vl3KL1We6q6wR9" crossorigin="anonymous"></script>
 
-		<script src="{% static 'visualizer/js/menu.js' %}" type="text/javascript"></script>
 		<script src="{% static 'visualizer/js/searchsubmit.js' %}" type="text/javascript"></script>
 
     	<div id="pagewrapper">
-			<div id="menuwrapper">
-				<div id="sidemenu" class="menutext">				
-					<a href="#">About</a>
-					<a href="#">Services</a>
-					<a href="#">Clients</a>
-					<a href="#">Contact</a>
-				</div>	
-			</div>
-			<div id="openclosebox" class="menutext">
-				<a href="javascript:void(0)" id="openclosebtn"></a>
-			</div>
 			<div id="main">
-				<div class="querybar grid-x grid-padding-x">
+				<div id="querybar" class="grid-x grid-padding-x">
 					{% csrf_token %}
 					<form id="sourceForm" class="small-12 medium-12 cell" type="POST" action="javascript:search()">
 						<div class="grid-x grid-margin-x">
@@ -85,7 +72,7 @@
 							</fieldset>
 						</div>
 						<div class="grid-x cell">
-							<input type="submit" class="button">
+							<input type="submit" class="button" value="Search">
 						</div>
 					</form>
 					
@@ -100,8 +87,8 @@
 						<div id="pausePlayBtn" onclick="playLayout()">
 							<i id="pausePlayIcon" class="fas fa-play viewcontrol"></i>
 						</div>
-						<div onclick="showMenu()">
-							<i id="menuIcon" class="fas fa-angle-down viewcontrol viewcontrol-right"></i>
+						<div id="menuShowHideButton">
+							<i id="menuIcon" class="fas fa-angle-up viewcontrol viewcontrol-right"></i>
 						</div>
 					</div>
 				</div>
@@ -134,10 +121,20 @@
 					addOption(document.getElementById("edgeLabel"), data[i], ":" + data[i])
 				}
 		    });
-		//var 
-	</script>
-	<script>
-		closeNav();
+		
+		$("#menuShowHideButton").click(function(){
+			var icon = $("#menuIcon");
+			if(icon.hasClass("fa-angle-up")) { 
+				icon.removeClass("fa-angle-up"); 
+				icon.addClass("fa-angle-down"); 
+			}
+			else{ 
+				icon.removeClass("fa-angle-down"); 
+				icon.addClass("fa-angle-up"); 
+			}
+			$("#querybar").slideToggle();
+		});
+
 		drawGraph('drawingpane');
 	</script>
 {% endblock %}
