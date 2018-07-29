@@ -5,7 +5,7 @@ function search() {
 node1
 relationship
 node2*/
-	var node1 = document.getElementById("node1").value;
+	var node1 = document.getElementById("sourceType").value;
 	let relationship = document.getElementById("relationship").value;
 	let node2 = document.getElementById("node2").value;
 
@@ -89,28 +89,13 @@ function timedKeyUp(timedfunction) {
     typetimer = setTimeout(timedfunction, 700);
 }
 
-function sourceNameKeyUp() {
+function sourceValKeyUp() {
 	timedKeyUp( function(d) {
-		var el = document.getElementById("sourceName");
-		var searchterm = el.value;
-		console.log(searchterm);
-		searchNodeNames(el,searchterm,20);
+		console.log('sourceValKeyUp');
+		searchValues('source');
 	});
 }
 
-function sourcePropKeyUp() {
-	timedKeyUp( function(d) {
-		var searchterm = document.getElementById("sourceProp").value;
-		console.log(searchterm);
-	});
-}
-
-function sourceLabelKeyUp() {
-	timedKeyUp( function(d) {
-		var searchterm = document.getElementById("sourceLabel").value;
-		console.log(searchterm);
-	});
-}
 
 
 function searchNodeNames(element, term, limit) {
@@ -127,6 +112,63 @@ function isNullOrEmpty( s )
 {
     return ( s == null || s === "" );
 }
+
+
+
+//populate 
+function addOption (selectbox, text, value) {
+    var o = document.createElement("OPTION");
+    o.text = text;
+    o.value = value;
+    selectbox.options.add(o);  
+}
+
+function addLabelOptions(selectbox, labelList) {
+	for (var i = 0; i < labelList.length; ++i) {
+		addOption(selectbox, labelList[i], labelList[i])
+	}
+}
+
+function clearOptions(selectbox)
+{
+	selectbox.options.length = 0;
+}
+
+function updateProps(elementPrefix) {
+	var type = document.getElementById(elementPrefix+"Type").value;
+	var elprops = document.getElementById(elementPrefix+"Props");
+	
+	clearOptions(elprops);
+	$.getJSON("/api/nodes/properties?type="+type, function(data) {
+	    for (var i = 0; i < data.length; ++i) {
+			addOption(elprops, data[i], data[i])
+		}
+	});
+}
+
+function searchValues(elementPrefix) {
+	var type = document.getElementById(elementPrefix+"Type").value;
+	var prop = document.getElementById(elementPrefix+"Props").value;
+	var valel = document.getElementById(elementPrefix+"Val");
+	var val = valel.value;
+
+	var url = "/api/nodes/values?type="+type+"&property="+prop+"&searchterm="+val;
+	$.getJSON(url, function(data) {
+	    console.log(data);
+	    autocomplete(valel, data);
+	});
+}
+
+
+
+
+
+
+
+
+
+
+
 
 function autocomplete(inp, arr) {
 	/*the autocomplete function takes two arguments,
@@ -229,18 +271,4 @@ function autocomplete(inp, arr) {
 	document.addEventListener("click", function (e) {
 	closeAllLists(e.target);
 	});
-}
-
-//populate 
-function addOption (selectbox, text, value) {
-    var o = document.createElement("OPTION");
-    o.text = text;
-    o.value = value;
-    selectbox.options.add(o);  
-}
-
-function addLabelOptions(selectbox, labelList) {
-	for (var i = 0; i < labelList.length; ++i) {
-		addOption(selectbox, labelList[i], ":" + labelList[i])
-	}
 }

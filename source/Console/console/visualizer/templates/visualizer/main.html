@@ -23,53 +23,22 @@
 							
 								<div class="input-group">
 									<span class="input-group-label small-3">Type</span>
-									<select id="sourceLabel" class="small-9 input-group-field">
-										<option value="" selected>*</option>
+									<select id="sourceType" class="small-9 input-group-field" onchange="updateProps('source')">
+										<option value="" disabled selected hidden></option>
+										<option value="">*</option>
 									</select>
 								</div>
 								<div class="input-group">
-									<span class="input-group-label small-3">Name</span>
-									<input type="text" id="sourceName" onkeyup="sourceNameKeyUp()"  placeholder="Name"  class="small-9 input-group-field">
+									<span class="input-group-label small-3">Where</span>
+									<select id="sourceProps" class="small-9 input-group-field"></select>
 								</div>									
 								<div class="input-group">
-									<span class="input-group-label small-3">Where</span>
-									<input type="text" id="sourceProp" onkeyup="sourcePropKeyUp()" placeholder="Where"  class="small-9 input-group-field">
+									<span class="input-group-label small-3">Equals</span>
+									<input type="text" id="sourceVal" onkeyup="sourceValKeyUp()" placeholder="Value"  class="small-9 input-group-field">
 								</div>
 							</fieldset>
 
-							<fieldset class="fieldset small-4 cell">
-								<legend>Relationship</legend>
-							
-								<div class="input-group">
-									<span class="input-group-label small-3">Type</span>
-									<select id="edgeLabel" class="small-9 input-group-field">
-										<option value="" selected>*</option>
-									</select>
-								</div>								
-								<div class="input-group">
-									<span class="input-group-label small-3">Depth</span>
-									<input type="text" id="sourceProp" onkeyup="sourcePropKeyUp()" placeholder="Depth"  class="small-9 input-group-field">
-								</div>
-							</fieldset>
 
-							<fieldset class="fieldset small-4 cell">
-								<legend>Target</legend>
-							
-								<div class="input-group">
-									<span class="input-group-label small-3">Type</span>
-									<select id="targetLabel" class="small-9 input-group-field">
-										<option value="" selected>*</option>
-									</select>
-								</div>
-								<div class="input-group">
-									<span class="input-group-label small-3">Name</span>
-									<input type="text" id="sourceName" onkeyup="sourceNameKeyUp()"  placeholder="Name"  class="small-9 input-group-field">
-								</div>									
-								<div class="input-group">
-									<span class="input-group-label small-3">Where</span>
-									<input type="text" id="sourceProp" onkeyup="sourcePropKeyUp()" placeholder="Where"  class="small-9 input-group-field">
-								</div>						
-							</fieldset>
 						</div>
 						<div class="grid-x cell">
 							<input type="submit" class="button" value="Search">
@@ -110,15 +79,15 @@
 		    });
 		$.getJSON("/api/nodes/labels", function(data) {
 		        for (var i = 0; i < data.length; ++i) {
-					addOption(document.getElementById("sourceLabel"), data[i], ":" + data[i])
+					addOption(document.getElementById("sourceType"), data[i], data[i])
 				}
 				for (var i = 0; i < data.length; ++i) {
-					addOption(document.getElementById("targetLabel"), data[i], ":" + data[i])
+					addOption(document.getElementById("targetType"), data[i], data[i])
 				}
 		    });
 		$.getJSON("/api/edges/labels", function(data) {
 		        for (var i = 0; i < data.length; ++i) {
-					addOption(document.getElementById("edgeLabel"), data[i], ":" + data[i])
+					addOption(document.getElementById("edgeType"), data[i], data[i])
 				}
 		    });
 		

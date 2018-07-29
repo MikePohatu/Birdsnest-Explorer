@@ -161,9 +161,61 @@ namespace NeoProxy
             return results;
         }
 
+
+
+
         //*************************
         // Search functions
         //*************************
+
+        public IEnumerable<string> GetNodeLabels()
+        {
+            IStatementResult dbresult = null;
+            using (ISession session = this.Driver.Session())
+            {
+                try
+                {
+                    session.ReadTransaction(tx =>
+                    {
+                        string query = "CALL db.labels()";
+                        dbresult = tx.Run(query);
+                    });
+                }
+                catch
+                {
+                    //logging to add
+                }
+            }
+
+            return ParseStringListResults(dbresult);
+        }
+
+        public IEnumerable<string> GetEdgeLabels()
+        {
+            IStatementResult dbresult = null;
+            using (ISession session = this.Driver.Session())
+            {
+                try
+                {
+                    session.ReadTransaction(tx =>
+                    {
+                        string query = "CALL db.relationshipTypes()";
+                        dbresult = tx.Run(query);
+                    });
+                }
+                catch
+                {
+                    //logging to add
+                }
+            }
+
+            return ParseStringListResults(dbresult);
+        }
+
+
+
+
+
         public IEnumerable<string> SearchNodeNames(string term, int searchlimit)
         {
             string regexterm = "(?i)" + term + ".*";
@@ -188,7 +240,7 @@ namespace NeoProxy
             return ParseStringListResults(dbresult);
         }
 
-        public IEnumerable<string> SearchNodeLabels()
+        public IEnumerable<string> GetNodeProperties(string type)
         {
             IStatementResult dbresult = null;
             using (ISession session = this.Driver.Session())
@@ -197,8 +249,16 @@ namespace NeoProxy
                 {
                     session.ReadTransaction(tx =>
                     {
-                        string query = "CALL db.labels()";
-                        dbresult = tx.Run(query);
+                        if (string.IsNullOrEmpty(type))
+                        {
+                            string query = "MATCH (n) UNWIND keys(n) as props RETURN DISTINCT props ORDER BY props";
+                            dbresult = tx.Run(query);
+                        }
+                        else
+                        {
+                            string query = "MATCH (n) WHERE $type IN labels(n) UNWIND keys(n) as props RETURN DISTINCT props ORDER BY props";
+                            dbresult = tx.Run(query, new { type = type });
+                        }
                     });
                 }
                 catch
@@ -210,8 +270,12 @@ namespace NeoProxy
             return ParseStringListResults(dbresult);
         }
 
-        public IEnumerable<string> SearchEdgeLabels()
+
+        public IEnumerable<string> SearchNodePropertyValues (string type, string property, string searchterm)
         {
+            if (string.IsNullOrEmpty(type) || string.IsNullOrEmpty(property) || string.IsNullOrEmpty(searchterm)) { return new List<string>(); }
+            string regexterm = "(?i).*" + searchterm + ".*";
+
             IStatementResult dbresult = null;
             using (ISession session = this.Driver.Session())
             {
@@ -219,8 +283,8 @@ namespace NeoProxy
                 {
                     session.ReadTransaction(tx =>
                     {
-                        string query = "CALL db.relationshipTypes()";
-                        dbresult = tx.Run(query);
+                        string query = "MATCH (n) WHERE $type IN labels(n) AND n[{prop}]  =~ $regex RETURN n[{prop}] ORDER BY n[{prop}]";
+                        dbresult = tx.Run(query, new { type = type, prop = property, regex= regexterm });
                     });
                 }
                 catch

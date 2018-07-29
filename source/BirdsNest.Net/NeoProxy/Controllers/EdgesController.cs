@@ -36,7 +36,7 @@ namespace NeoProxy.Controllers
         [HttpGet("labels")]
         public IEnumerable<string> GetLabels()
         {
-            return this._service.SearchEdgeLabels();
+            return this._service.GetEdgeLabels();
         }
     }
 }

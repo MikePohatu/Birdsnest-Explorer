@@ -33,7 +33,21 @@ namespace NeoProxy.Controllers
         [HttpGet("labels")]
         public IEnumerable<string> GetLabels()
         {
-            return this._service.SearchNodeLabels();
+            return this._service.GetNodeLabels();
+        }
+
+        // GET: api/nodes/properties
+        [HttpGet("properties")]
+        public IEnumerable<string> GetNodeProperties([FromQuery]string type)
+        {
+            return this._service.GetNodeProperties(type);
+        }
+
+        // GET: api/nodes/properties
+        [HttpGet("values")]
+        public IEnumerable<string> GetNodeValues([FromQuery]string type, [FromQuery]string property, [FromQuery]string searchterm)
+        {
+            return this._service.SearchNodePropertyValues(type, property, searchterm);
         }
     }
 }
