@@ -48,7 +48,7 @@ node2*/
 	console.log(url);*/
 
 	$.getJSON(url, function(data) {
-		console.log(data);
+		//console.log(data);
 		pendingResults = data;
 		document.getElementById("searchNotification").innerHTML = "Search returned " + 
 			data.nodes.length + " results. " +
@@ -60,6 +60,8 @@ function addPending() {
 	addResultSet(pendingResults);
 	updateEdges();
 	restartLayout();
+	document.getElementById("searchNotification").innerHTML = '';
+	pendingResults = null;
 }
 
 //getCookie function from django documentation

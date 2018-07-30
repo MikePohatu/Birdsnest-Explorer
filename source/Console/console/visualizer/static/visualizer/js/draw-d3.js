@@ -69,6 +69,15 @@ function drawGraph(selectid) {
 		.alphaDecay(0.1);
 }
 
+function resetView() {
+	console.log("resetView");
+	edgedata = [];
+	nodedata = [];
+	graphbglayer.selectAll("*").remove();
+	edgeslayer.selectAll("*").remove();
+	nodeslayer.selectAll("*").remove();
+}
+
 function addResultSet(json) {
 	addEdges(json.edges);
 	addNodes(json.nodes);
