@@ -1,7 +1,9 @@
+var pendingResults;
+
 //requires draw-d3.js
 function search() {
 
-console.log('search');
+//console.log('search');
 /*Search area DOM ids
 node1
 relationship
@@ -30,7 +32,7 @@ node2*/
 		"&tarval="+tarval;
 	//let node2 = document.getElementById("node2").value;
 
-	console.log("sourcetype: " + sourcetype);
+	/*console.log("sourcetype: " + sourcetype);
 	console.log("sourceprop: " + sourceprop);
 	console.log("sourceval: " + sourceval);
 
@@ -40,16 +42,22 @@ node2*/
 	console.log("tarprop: " + tarprop);
 	console.log("tarval: " + tarval);
 
-	console.log(url);
+	console.log(url);*/
 
 	$.getJSON(url, function(data) {
-		console.log(data);
-    	addResultSet(data);
-    	updateEdges();
-        restartLayout();
+		//console.log(data);
+		pendingResults = data;
+		document.getElementById("searchNotification").innerHTML = "Search returned " + 
+			data.nodes.length + " results. " +
+			"<a href='javascript:addPending()'>Add to view</a>";
     });
 }
 
+function addPending() {
+	addResultSet(pendingResults);
+	updateEdges();
+	restartLayout();
+}
 
 //getCookie function from django documentation
 function getCookie(name) {

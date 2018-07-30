@@ -204,7 +204,7 @@ namespace NeoProxy
                             builder.Append("s[{sourceprop}] = $sourceval ");
                             predacate = true;
                         }
-                        if (!string.IsNullOrEmpty(sourceval)) {
+                        if (!string.IsNullOrEmpty(relationship)) {
                             if (predacate) { builder.Append("AND "); }
                             builder.Append("TYPE(r) = $relationship ");
                             predacate = true;
@@ -216,7 +216,7 @@ namespace NeoProxy
                             builder.Append("$tartype IN labels(t) ");
                         }
 
-                        if (!string.IsNullOrEmpty(sourceval)) {
+                        if (!string.IsNullOrEmpty(tarval)) {
                             if (predacate) { builder.Append("AND "); }
                             builder.Append("t[{tarprop}] = $tarval ");
                         }
