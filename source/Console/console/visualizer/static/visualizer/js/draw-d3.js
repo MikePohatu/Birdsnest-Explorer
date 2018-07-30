@@ -603,7 +603,7 @@ function populateDetails(d) {
 		let s = "<u><b>Details</b></u><br>" +
 			"<b>Name:</b> " + d.name + "<br>" +
 			"<b>db_id:</b> " + d.db_id + "<br>" +
-			"<b>Label:</b> " + d.label + "<br>" +
+			"<b>Type:</b> " + d.label + "<br>" +
 			"<b>Related:</b> " + d.relatedcount + "<br><br><b><u>Properties</u></b><br>";
 
 		if (d.properties) {
