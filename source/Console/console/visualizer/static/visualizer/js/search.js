@@ -15,6 +15,8 @@ node2*/
 	var sourceval = document.getElementById("sourceVal").value;
 
 	var relationship = document.getElementById("edgeType").value;
+	var relmin = document.getElementById("sliderMin").value;
+	var relmax = document.getElementById("sliderMax").value;
 
 	var tartype = document.getElementById("targetType").value;
 	var tarprop = document.getElementById("targetProp").value;
@@ -26,7 +28,8 @@ node2*/
 		"&sourceval="+sourceval +
 
 		"&relationship="+relationship +
-
+		"&relmin="+relmin +
+		"&relmax="+relmax +
 		"&tartype="+tartype +
 		"&tarprop="+tarprop +
 		"&tarval="+tarval;
@@ -45,7 +48,7 @@ node2*/
 	console.log(url);*/
 
 	$.getJSON(url, function(data) {
-		//console.log(data);
+		console.log(data);
 		pendingResults = data;
 		document.getElementById("searchNotification").innerHTML = "Search returned " + 
 			data.nodes.length + " results. " +
@@ -167,6 +170,7 @@ function addOption (selectbox, text, value) {
     o.text = text;
     o.value = value;
     selectbox.options.add(o);  
+    return o;
 }
 
 function addLabelOptions(selectbox, labelList) {
@@ -185,6 +189,11 @@ function updateProps(elementPrefix) {
 	var elprops = document.getElementById(elementPrefix+"Prop");
 	
 	clearOptions(elprops);
+	let topoption=addOption(elprops, "", "");
+	topoption.setAttribute("disabled","");
+	topoption.setAttribute("hidden","");
+	topoption.setAttribute("selected","");
+
 	$.getJSON("/api/nodes/properties?type="+type, function(data) {
 	    for (var i = 0; i < data.length; ++i) {
 			addOption(elprops, data[i], data[i])

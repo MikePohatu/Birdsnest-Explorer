@@ -27,10 +27,10 @@ namespace NeoProxy.Controllers
         // GET: api/search/path
         [HttpGet("path")]
         public ResultSet GetNodeValues([FromQuery]string sourcetype, [FromQuery]string sourceprop, [FromQuery]string sourceval,
-            [FromQuery]string relationship,
+            [FromQuery]string relationship, [FromQuery]int relmin, [FromQuery]int relmax,
             [FromQuery]string tartype, [FromQuery]string tarprop, [FromQuery]string tarval)
         {
-            return this._service.SearchPath(sourcetype, sourceprop, sourceval, relationship, tartype, tarprop, tarval);
+            return this._service.SearchPath(sourcetype, sourceprop, sourceval, relationship, relmin, relmax, tartype, tarprop, tarval);
         }
     }
 }

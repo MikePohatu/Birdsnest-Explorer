@@ -528,6 +528,13 @@ function updateLocations() {
 		.attr("transform", function (d) { return "translate(" + d.x  + "," + d.y + ")" });
 }
 
+
+
+
+
+
+
+
 //based on an angled line, eval all the relevant details
 function Slope(x1, y1, x2, y2) {
 	this.x1 = x1;
@@ -564,6 +571,11 @@ Slope.prototype.getXFromY = function(y)
 	return (this.tanA / (y-this.y1))+ this.x1;
 }
 
+
+
+/*
+IconMappings object to asign the correct font awesome icon to the correct nodes
+*/
 function IconMappings(jsondata){
 	this.mappings = jsondata;
 }
@@ -573,6 +585,10 @@ IconMappings.prototype.getClassInfo = function(label) {
 	else { return "fas fa-question"; }
 }
 
+
+/*
+Build the details card for the node
+*/
 function populateDetails(d) {
 	d.detailsHTML = function () {
 		let s = "<u><b>Details</b></u><br>" +

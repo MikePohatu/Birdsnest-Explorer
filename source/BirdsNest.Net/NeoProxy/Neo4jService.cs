@@ -169,8 +169,40 @@ namespace NeoProxy
         // Search functions
         //*************************
 
-        public ResultSet SearchPath(string sourcetype, string sourceprop, string sourceval, string relationship, string tartype, string tarprop, string tarval)
+        public ResultSet SearchPath(string sourcetype, string sourceprop, string sourceval, string reltype, int relmin, int relmax, string tartype, string tarprop, string tarval)
         {
+            //validate the types/labels 
+            List<string> edgetypes = GetEdgeLabels();
+            List<string> nodetypes = GetNodeLabels();
+
+            string rellabel = string.Empty;
+            string sourcelabel = string.Empty;
+            string targetlabel = string.Empty;
+
+            
+            if (string.IsNullOrWhiteSpace(reltype))
+            { rellabel = string.Empty; }
+            else if (edgetypes.Exists(x => string.Equals(x, reltype)))
+            { rellabel = ":" + reltype;  }
+            else
+            { throw new ArgumentException("Invalid relationship type: " + reltype); }
+
+            if (string.IsNullOrWhiteSpace(sourcetype))
+            { sourcelabel = string.Empty; }
+            else if (nodetypes.Exists(x => string.Equals(x, sourcetype)))
+            { sourcelabel = ":" + sourcetype; }
+            else
+            { throw new ArgumentException("Invalid source type: " + sourcetype); }
+
+            if (string.IsNullOrWhiteSpace(tartype))
+            { targetlabel = string.Empty; }
+            else if (nodetypes.Exists(x => string.Equals(x, tartype)))
+            { targetlabel = ":" + tartype; }
+            else
+            { throw new ArgumentException("Invalid target type: " + tartype); }
+
+
+
             using (ISession session = this.Driver.Session())
             {
                 ResultSet returnedresults = new ResultSet();
@@ -178,11 +210,8 @@ namespace NeoProxy
                 {
                     var props = new
                     {
-                        sourcetype = sourcetype == null ? string.Empty : sourcetype,
                         sourceprop = sourceprop == null ? string.Empty : sourceprop,
                         sourceval = sourceval == null ? string.Empty : sourceval,
-                        relationship = relationship == null ? string.Empty : relationship,
-                        tartype = tartype == null ? string.Empty : tartype,
                         tarprop = tarprop == null ? string.Empty : tarprop,
                         tarval = tarval == null ? string.Empty : tarval
                     };
@@ -190,37 +219,39 @@ namespace NeoProxy
                     session.ReadTransaction(tx =>
                     {
                         StringBuilder builder = new StringBuilder();
-                        bool predacate = false;
+                        bool whereset = false;
 
-                        builder.Append("MATCH path=(s)-[r]->(t) WHERE ");
-                        if (!string.IsNullOrEmpty(sourcetype))
+                        if (relmax > 0)
                         {
-                            builder.Append("$sourcetype IN labels(s) ");
-                            predacate = true;
+                            builder.Append("MATCH path=(s" + sourcelabel+ ")-[" + reltype + "*" + relmin + ".." + relmax + "]->(t" + targetlabel + ") ");
+                        }
+                        else
+                        {
+                            builder.Append("MATCH (s" + sourcelabel + ") ");
                         }
 
                         if (!string.IsNullOrEmpty(sourceval)) {
-                            if (predacate) { builder.Append("AND "); }
-                            builder.Append("s[{sourceprop}] = $sourceval ");
-                            predacate = true;
-                        }
-                        if (!string.IsNullOrEmpty(relationship)) {
-                            if (predacate) { builder.Append("AND "); }
-                            builder.Append("TYPE(r) = $relationship ");
-                            predacate = true;
+                            builder.Append("WHERE s[{sourceprop}] = $sourceval ");
+                            whereset = true;
                         }
 
-                        if (!string.IsNullOrEmpty(tartype))
+                        if (relmax > 0)
+                        { 
+                            if (!string.IsNullOrEmpty(tarval))
+                            {
+                                if (whereset) { builder.Append("AND "); }
+                                else { builder.Append("WHERE "); }
+                                builder.Append("t[{tarprop}] = $tarval ");
+                            }
+
+                            builder.Append("RETURN DISTINCT t");
+                        }
+                        else
                         {
-                            if (predacate) { builder.Append("AND "); }
-                            builder.Append("$tartype IN labels(t) ");
+                            builder.Append("RETURN s");
                         }
-
-                        if (!string.IsNullOrEmpty(tarval)) {
-                            if (predacate) { builder.Append("AND "); }
-                            builder.Append("t[{tarprop}] = $tarval ");
-                        }
-                        builder.Append("RETURN s,t");
+                        
+                        
 
                         string query = builder.ToString();
                         Debug.WriteLine("Search query: " + query);
@@ -239,7 +270,7 @@ namespace NeoProxy
             }
         }
 
-        public IEnumerable<string> GetNodeLabels()
+        public List<string> GetNodeLabels()
         {
             IStatementResult dbresult = null;
             using (ISession session = this.Driver.Session())
@@ -261,7 +292,7 @@ namespace NeoProxy
             return ParseStringListResults(dbresult);
         }
 
-        public IEnumerable<string> GetEdgeLabels()
+        public List<string> GetEdgeLabels()
         {
             IStatementResult dbresult = null;
             using (ISession session = this.Driver.Session())

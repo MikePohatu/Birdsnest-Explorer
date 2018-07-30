@@ -9578,12 +9578,13 @@ var Slider = function (_Plugin) {
 
       if (isDbl) {
         //this block is to prevent 2 handles from crossing eachother. Could/should be improved.
+        //*Mike edit* removed the code to stop being on top of each other i.e. +/- this.options.step
         if (this.handles.index($hndl) === 0) {
           var h2Val = parseFloat(this.$handle2.attr('aria-valuenow'));
-          location = location >= h2Val ? h2Val - this.options.step : location;
+          location = location >= h2Val ? h2Val : location;
         } else {
           var h1Val = parseFloat(this.$handle.attr('aria-valuenow'));
-          location = location <= h1Val ? h1Val + this.options.step : location;
+          location = location <= h1Val ? h1Val : location;
         }
       }
 
