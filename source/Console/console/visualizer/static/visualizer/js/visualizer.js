@@ -70,7 +70,7 @@ function drawGraph(selectid) {
 }
 
 function resetView() {
-	console.log("resetView");
+	//console.log("resetView");
 	edgedata = [];
 	nodedata = [];
 	graphbglayer.selectAll("*").remove();

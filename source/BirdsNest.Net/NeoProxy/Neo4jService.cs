@@ -250,7 +250,7 @@ namespace NeoProxy
 
                         if (relmax > 0)
                         {
-                            builder.Append("MATCH path=(s" + sourcelabel+ ")"+ relleft+"-[" + reltype + "*" + relmin + ".." + relmax + "]-"+relright+"(t" + targetlabel + ") ");
+                            builder.Append("MATCH path=(s" + sourcelabel+ ")"+ relleft+"-[" + rellabel + "*" + relmin + ".." + relmax + "]-"+relright+"(t" + targetlabel + ") ");
                         }
                         else
                         {
