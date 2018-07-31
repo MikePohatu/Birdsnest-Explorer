@@ -143,25 +143,45 @@ namespace NeoProxy
             {
                 foreach (string key in record.Keys)
                 {
-                    INode node = record[key] as INode;
-                    if (node != null)
-                    {
-                        results.Nodes.Add(BirdsNestNode.GetNode(node));
-                        continue;
-                    }
-
-                    IRelationship rel = record[key] as IRelationship;
-                    if (rel != null)
-                    {
-                        results.Edges.Add(BirdsNestRelationship.GetRelationship(rel));
-                        continue;
-                    }
+                    AddToResultSet(record[key], results);
                 }
             }
 
             return results;
         }
 
+
+        private void AddToResultSet(object o, ResultSet results)
+        {
+            INode node = o as INode;
+            if (node != null)
+            {
+                results.Nodes.Add(BirdsNestNode.GetNode(node));
+                return;
+            }
+
+            List<object> nodelist = o as List<object>;
+            if (nodelist != null)
+            {
+                foreach (object obj in nodelist) { AddToResultSet(obj, results); }
+                return;
+            }
+        
+            IRelationship rel = o as IRelationship;
+            if (rel != null)
+            {
+                results.Edges.Add(BirdsNestRelationship.GetRelationship(rel));
+                return;
+            }
+
+            IPath path = o as IPath;
+            if (path != null)
+            {
+                foreach (INode n in path.Nodes) { results.Nodes.Add(BirdsNestNode.GetNode(n)); }
+                foreach (IRelationship r in path.Relationships) { results.Edges.Add(BirdsNestRelationship.GetRelationship(r)); }
+                return;
+            }
+        }
 
 
 
@@ -251,7 +271,7 @@ namespace NeoProxy
                                 builder.Append("t[{tarprop}] = $tarval ");
                             }
 
-                            builder.Append("RETURN DISTINCT t");
+                            builder.Append("UNWIND nodes(path) as n RETURN DISTINCT n");
                         }
                         else
                         {

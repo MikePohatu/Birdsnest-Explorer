@@ -52,11 +52,11 @@ node2*/
 	console.log(url);*/
 
 	$.getJSON(url, function(data) {
-		//console.log(data);
+		console.log(data);
 		pendingResults = data;
-		document.getElementById("searchNotification").innerHTML = "Search returned " + 
-			data.nodes.length + " results. " +
-			"<a href='javascript:addPending()'>Add to view</a>";
+		let not = "Search returned " + data.nodes.length + " results. ";
+		if (data.nodes.length !== 0) { not = not + "<a href='javascript:addPending()'>Add to view</a>" }
+		document.getElementById("searchNotification").innerHTML = not;
     });
 }
 
