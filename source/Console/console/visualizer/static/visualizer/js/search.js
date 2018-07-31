@@ -22,6 +22,8 @@ node2*/
 	var tarprop = document.getElementById("targetProp").value;
 	var tarval = document.getElementById("targetVal").value;
 
+	var dir = $('#dirIcon').attr('data-dir');
+
 	let url = "/api/search/path?" + 
 		"sourcetype="+sourcetype +
 		"&sourceprop="+sourceprop +
@@ -30,6 +32,8 @@ node2*/
 		"&relationship="+relationship +
 		"&relmin="+relmin +
 		"&relmax="+relmax +
+		"&dir="+dir +
+
 		"&tartype="+tartype +
 		"&tarprop="+tarprop +
 		"&tarval="+tarval;
@@ -62,6 +66,26 @@ function addPending() {
 	restartLayout();
 	document.getElementById("searchNotification").innerHTML = '';
 	pendingResults = null;
+}
+
+function toggleDir() {
+	console.log("toggleDir");
+	var icon = document.getElementById("dirIcon");
+	var d = $(icon).attr('data-dir');
+	if (d == 'R') {
+		icon.classList.remove("fa-arrow-right");
+		icon.classList.add("fa-exchange-alt");
+		$(icon).attr('data-dir','B');
+	} else if (d == 'B') {
+		icon.classList.remove("fa-exchange-alt");
+		icon.classList.add("fa-arrow-left");
+		$(icon).attr('data-dir','L');
+	} else if (d == 'L') {
+		icon.classList.remove("fa-arrow-left");
+		icon.classList.add("fa-arrow-right");
+		$(icon).attr('data-dir','R');
+	}
+	console.log($(icon).attr('data-dir'));
 }
 
 //getCookie function from django documentation

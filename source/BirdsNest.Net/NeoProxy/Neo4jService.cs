@@ -169,7 +169,7 @@ namespace NeoProxy
         // Search functions
         //*************************
 
-        public ResultSet SearchPath(string sourcetype, string sourceprop, string sourceval, string reltype, int relmin, int relmax, string tartype, string tarprop, string tarval)
+        public ResultSet SearchPath(string sourcetype, string sourceprop, string sourceval, string reltype, int relmin, int relmax, char dir, string tartype, string tarprop, string tarval)
         {
             //validate the types/labels 
             List<string> edgetypes = GetEdgeLabels();
@@ -178,14 +178,21 @@ namespace NeoProxy
             string rellabel = string.Empty;
             string sourcelabel = string.Empty;
             string targetlabel = string.Empty;
+            string relright = string.Empty;
+            string relleft = string.Empty;
 
-            
             if (string.IsNullOrWhiteSpace(reltype))
             { rellabel = string.Empty; }
             else if (edgetypes.Exists(x => string.Equals(x, reltype)))
             { rellabel = ":" + reltype;  }
             else
             { throw new ArgumentException("Invalid relationship type: " + reltype); }
+
+            if ((dir == 'B') || (dir == 'b')) { /*do nothing*/ }
+            else if ((dir == 'L') || (dir == 'l')) { relleft = "<"; }
+            else if ((dir == 'R') || (dir == 'r')) { relright = ">"; }
+            else
+            { throw new ArgumentException("Invalid relationship direction: " + dir); }
 
             if (string.IsNullOrWhiteSpace(sourcetype))
             { sourcelabel = string.Empty; }
@@ -223,7 +230,7 @@ namespace NeoProxy
 
                         if (relmax > 0)
                         {
-                            builder.Append("MATCH path=(s" + sourcelabel+ ")-[" + reltype + "*" + relmin + ".." + relmax + "]->(t" + targetlabel + ") ");
+                            builder.Append("MATCH path=(s" + sourcelabel+ ")"+ relleft+"-[" + reltype + "*" + relmin + ".." + relmax + "]-"+relright+"(t" + targetlabel + ") ");
                         }
                         else
                         {
@@ -385,7 +392,7 @@ namespace NeoProxy
                 {
                     session.ReadTransaction(tx =>
                     {
-                        string query = "MATCH (n) WHERE $type IN labels(n) AND n[{prop}]  =~ $regex RETURN n[{prop}] ORDER BY n[{prop}]";
+                        string query = "MATCH (n) WHERE $type IN labels(n) AND n[{prop}]  =~ $regex RETURN n[{prop}] ORDER BY n[{prop}] LIMIT 20";
                         dbresult = tx.Run(query, new { type = type, prop = property, regex= regexterm });
                     });
                 }
