@@ -84,6 +84,7 @@ function addResultSet(json) {
 	addNodes(json.nodes);
 }
 
+document.getElementById('restartLayoutBtn').addEventListener('click', restartLayout, false);
 function restartLayout() { 
 	//console.log('restartLayout');
 	simulation.nodes(nodedata);
@@ -180,6 +181,7 @@ function removeNodes() {
 	d3.selectAll(".selected")
 		.each(function(d) {
 			nodeList.push(d);
+			updateNodeSelection(d, false);
 		});
 
 	if (confirm("This will remove "+ nodeList.length + " nodes. Are you sure?") !== true) {
@@ -298,11 +300,7 @@ function findFromDbId (arraydata, id) {
 	return null;
 }
 
-/*
-*****************************
-functions
-*****************************
-*/
+
 
 function pinNode(d) {
 	//console.log("pinNode");
