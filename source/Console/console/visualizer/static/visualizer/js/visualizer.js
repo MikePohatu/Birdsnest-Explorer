@@ -1,6 +1,7 @@
 var drawpane;
 var zoomLayer;
 var svg;
+var graphbglayer;
 var nodeslayer;
 var edgeslayer;
 var simulation;
@@ -93,6 +94,7 @@ function restartLayout() {
 	simulation.alpha(1).restart();
 }
 
+document.getElementById('pausePlayBtn').addEventListener('click', playLayout, false);
 function playLayout() { 
 	playMode = true;
 
@@ -170,6 +172,45 @@ function addEdges(data) {
 		.attr("transform","translate(0,-5)"); ;
 }
 
+document.getElementById('removeBtn').addEventListener('click', removeNodes, false);
+function removeNodes() { 
+	//console.log('removeNodes');
+	var nodeList = [];
+
+	d3.selectAll(".selected")
+		.each(function(d) {
+			nodeList.push(d);
+		});
+
+	if (confirm("This will remove "+ nodeList.length + " nodes. Are you sure?") !== true) {
+		return;
+	}
+
+	//remove the edges first
+	edgedata = edgedata.filter(function(edge) {
+		return !nodeList.includes(edge.source) && !nodeList.includes(edge.target);
+	});
+
+	nodedata = nodedata.filter(function(node) {
+		return !nodeList.includes(node);
+	});
+
+	graphbglayer.selectAll('.edgebg')
+		.data(edgedata, function(d) { return d.db_id; })
+		.exit().remove();
+
+	graphbglayer.selectAll('.nodebg')
+		.data(nodedata, function(d) { return d.db_id; })
+		.exit().remove();
+
+	edgeslayer.selectAll(".edges")
+		.data(edgedata, function(d) { return d.db_id; })
+		.exit().remove();
+
+	nodeslayer.selectAll(".nodes")
+		.data(nodedata, function(d) { return d.db_id; })
+		.exit().remove();
+}
 
 function getAllNodeIds() {
 	var nodeids = [];
@@ -679,13 +720,27 @@ function search() {
 	$.getJSON(url, function(data) {
 		//console.log(data);
 		pendingResults = data;
-		let not = "Search returned " + data.nodes.length + " results. ";
+		let not = "Search returned " + data.nodes.length + " nodes. ";
 		if (data.nodes.length !== 0) { not = not + "<a href='javascript:addPending()'>Add to view</a>" }
 		document.getElementById("searchNotification").innerHTML = not;
     });
 }
 
 function addPending() {
+	//console.log(pendingResults.nodes.length);
+	if (pendingResults.nodes.length>500) {
+		if (confirm("You are adding a huge number of nodes to the view. This is not recommended. "+ 
+			" Are you sure?") !== true) {
+			return;
+		}
+	}
+	else if (pendingResults.nodes.length>100) {
+		if (confirm("You are adding a large number of nodes to the view which may slow things down. "+ 
+			" Are you sure?") !== true) {
+			return;
+		}
+	}
+	
 	addResultSet(pendingResults);
 	updateEdges();
 	restartLayout();
@@ -694,7 +749,7 @@ function addPending() {
 }
 
 function toggleDir() {
-	console.log("toggleDir");
+	//console.log("toggleDir");
 	var icon = document.getElementById("dirIcon");
 	var d = $(icon).attr('data-dir');
 	if (d == 'R') {
@@ -710,7 +765,7 @@ function toggleDir() {
 		icon.classList.add("fa-arrow-right");
 		$(icon).attr('data-dir','R');
 	}
-	console.log($(icon).attr('data-dir'));
+	//console.log($(icon).attr('data-dir'));
 }
 
 //getCookie function from django documentation
