@@ -6,7 +6,7 @@ using common;
 
 namespace FSScanner
 {
-    public class Configuration: NeoConfiguration
+    public class Configuration: IDisposable
     {
         [JsonProperty("credentials")]
         public List<Credential> Credentials { get; set; }
@@ -25,13 +25,12 @@ namespace FSScanner
             return conf;
         }
 
-        public override void Dispose()
+        public void Dispose()
         {
             foreach (Credential cred in Credentials)
             {
                 cred.Dispose();
             }
-            base.Dispose();
         }
     }
 }

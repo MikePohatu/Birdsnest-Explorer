@@ -19,6 +19,7 @@ namespace FSScanner
             List<DataStore> datastores = new List<DataStore>();
 
             string _appdir = AppDomain.CurrentDomain.BaseDirectory;
+            string neoconfigfile = _appdir + @"\neoconfig.json";
             string configfile = _appdir + @"\fsconfig.json";
             //int relcounter = 0;
             bool batchmode = false;
@@ -50,12 +51,13 @@ namespace FSScanner
                     NetworkCredential netcred = new NetworkCredential(cred.Username,cred.Password,cred.Domain);
                     credentials.Add(cred.ID, netcred);
                 }
-                datastores = config.Datastores;
-                driver = Neo4jConnector.ConnectToNeo(config);
+                datastores = config.Datastores; 
             }
 
-
-            
+            using (NeoConfiguration config = NeoConfiguration.LoadConfiguration(neoconfigfile))
+            {
+                driver = Neo4jConnector.ConnectToNeo(config);
+            }
 
             foreach (DataStore ds in datastores)
             {
@@ -65,14 +67,13 @@ namespace FSScanner
                     NetworkCredential fscred;
                     if (credentials.TryGetValue(fs.CredentialID, out fscred))
                     {
-                        crawler.CrawlRoot(ds,fs.Path, fscred);
+                        crawler.CrawlRoot(ds, fs.Path, fscred);
                     }
-                } 
+                }
             }
 
             Console.WriteLine("Finished");
             if (batchmode == false) { Console.ReadLine(); }
-            
         }
     }
 }

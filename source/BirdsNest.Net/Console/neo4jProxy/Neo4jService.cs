@@ -8,7 +8,7 @@ using common;
 using Neo4j.Driver.V1;
 using Newtonsoft.Json;
 
-namespace NeoProxy
+namespace Console.neo4jProxy
 {
     public class Neo4jService : IDisposable
     {

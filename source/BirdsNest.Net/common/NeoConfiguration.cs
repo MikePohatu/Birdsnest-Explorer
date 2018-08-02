@@ -20,7 +20,7 @@ namespace common
             this.DB_Password = string.Empty;
         }
 
-        public static NeoConfiguration ReadConfigurationFromFile(string filepath)
+        public static NeoConfiguration LoadConfiguration(string filepath)
         {
             NeoConfiguration conf = new NeoConfiguration();
 

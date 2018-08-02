@@ -17,6 +17,7 @@ namespace ADScanner
             Stopwatch totaltimer = new Stopwatch();
 
             string _appdir = AppDomain.CurrentDomain.BaseDirectory;
+            string neoconfigfile = _appdir + @"\neoconfig.json";
             string configfile = _appdir + @"\adconfig.json";
             int relcounter = 0;
             bool batchmode = false;
@@ -43,10 +44,14 @@ namespace ADScanner
             }
 
             //load the config
-            using (Configuration config = LoadConfig(configfile))
+            using (Configuration config = Configuration.LoadConfiguration(configfile))
+            {
+                rootDE = ConnectToAD(config);
+            }
+
+            using (NeoConfiguration config = NeoConfiguration.LoadConfiguration(neoconfigfile))
             {
                 driver = Neo4jConnector.ConnectToNeo(config);
-                rootDE = ConnectToAD(config);
             }
 
             //process groups
@@ -257,21 +262,6 @@ namespace ADScanner
                 Console.WriteLine("Press any key to exit");
                 Console.ReadLine();
             }
-        }
-
-        private static Configuration LoadConfig(string configfile)
-        {
-            try
-            {
-                return FileHandler.ReadConfigurationFromFile(configfile);
-            }
-            catch(Exception e)
-            {
-                Console.WriteLine("Error loading configuration file: " + e.Message);
-                Environment.Exit(1001);
-            }
-
-            return null;
         }
 
         private static DirectoryEntry ConnectToAD(Configuration config)
