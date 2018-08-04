@@ -2,22 +2,20 @@
     ViewData["Title"] = "Home";
 }
 
-<p>Hi @User.Identity.Name. Open Visualizer to get started</p>
-<form action="~/visualizer/">
-    <input type="submit" class="button" value="Visualizer" />
-</form>
-<!--		{% if user.is_superuser %}
-<form action="{% url 'admin:index' %}">
-    <input type="submit" class="button" value="Administration" />
-</form>
-        {% endif %}
-        </p>
-    {% else %}
-<p>BirdsNest is a environment discovery and visualization tool. You must login to continue. </p>
-<form action="{% url 'portal_login' %}">
-    <input type="submit" class="button" value="Login" />
-</form>
+@{
+    if (User.Identity.IsAuthenticated)
+    {
+        <p>Hi @User.Identity.Name. Open Visualizer to get started</p>
+        <form action="~/visualizer/">
+            <input type="submit" class="button" value="Visualizer" />
+        </form>
+    }
+    else
+    {
+        <p>BirdsNest is a environment discovery and visualization tool. You must login to continue. </p>
+        <form action="/login">
+            <input type="submit" class="button" value="Login" />
+        </form>
 
-    {% endif %}
-{% endblock %}
-    -->
+    }
+}

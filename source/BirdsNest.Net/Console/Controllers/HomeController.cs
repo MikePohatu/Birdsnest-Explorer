@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace Console.Controllers
 {
+    [AllowAnonymous]
     public class HomeController : Controller
     {
         public IActionResult Index()

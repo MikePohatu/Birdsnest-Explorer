@@ -13,6 +13,7 @@ using Console.neo4jProxy;
 using Console.Controllers;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc.Authorization;
+using Microsoft.AspNetCore.Authentication.Cookies;
 
 namespace Console
 {
