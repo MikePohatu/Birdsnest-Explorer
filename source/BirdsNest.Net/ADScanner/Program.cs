@@ -23,8 +23,8 @@ namespace ADScanner
             bool batchmode = false;
             string scanid = ShortGuid.NewGuid().ToString();
 
-            IDriver driver;
-            DirectoryEntry rootDE;
+            IDriver driver = null;
+            DirectoryEntry rootDE = null;
 
             totaltimer.Start();
             foreach (string arg in args)
@@ -44,15 +44,38 @@ namespace ADScanner
             }
 
             //load the config
-            using (Configuration config = Configuration.LoadConfiguration(configfile))
+            try
             {
-                rootDE = ConnectToAD(config);
+                using (Configuration config = Configuration.LoadConfiguration(configfile))
+                {
+                    rootDE = ConnectToAD(config);
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("There was an error loading your configuration");
+                Console.WriteLine(e.Message);
+                if (batchmode == false) { Console.ReadLine(); }
+                Environment.Exit(1);
             }
 
-            using (NeoConfiguration config = NeoConfiguration.LoadConfigurationFile(neoconfigfile))
+            try
             {
-                driver = Neo4jConnector.ConnectToNeo(config);
+                using (NeoConfiguration config = NeoConfiguration.LoadConfigurationFile(neoconfigfile))
+                {
+                    driver = Neo4jConnector.ConnectToNeo(config);
+                }
             }
+            catch (Exception e)
+            {
+                Console.WriteLine("There was an error loading your neo4j configuration");
+                Console.WriteLine(e.Message);
+                if (batchmode == false) { Console.ReadLine(); }
+                Environment.Exit(2);
+            }
+            
+
+            
 
             //process groups
             using (ISession session = driver.Session())

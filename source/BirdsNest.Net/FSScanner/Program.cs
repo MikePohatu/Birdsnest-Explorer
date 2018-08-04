@@ -25,7 +25,7 @@ namespace FSScanner
             bool batchmode = false;
             string scanid = ShortGuid.NewGuid().ToString();
 
-            IDriver driver;
+            IDriver driver = null;
 
             totaltimer.Start();
             foreach (string arg in args)
@@ -44,20 +44,41 @@ namespace FSScanner
                 }
             }
 
-            using (Configuration config = Configuration.LoadConfiguration(configfile))
+            try
             {
-                foreach (Credential cred in config.Credentials)
+                using (Configuration config = Configuration.LoadConfiguration(configfile))
                 {
-                    NetworkCredential netcred = new NetworkCredential(cred.Username,cred.Password,cred.Domain);
-                    credentials.Add(cred.ID, netcred);
+                    foreach (Credential cred in config.Credentials)
+                    {
+                        NetworkCredential netcred = new NetworkCredential(cred.Username, cred.Password, cred.Domain);
+                        credentials.Add(cred.ID, netcred);
+                    }
+                    datastores = config.Datastores;
                 }
-                datastores = config.Datastores; 
             }
-
-            using (NeoConfiguration config = NeoConfiguration.LoadConfigurationFile(neoconfigfile))
+            catch (Exception e)
             {
-                driver = Neo4jConnector.ConnectToNeo(config);
+                Console.WriteLine("There was an error loading your configuration");
+                Console.WriteLine(e.Message);
+                if (batchmode == false) { Console.ReadLine(); }
+                Environment.Exit(1); 
             }
+            
+            try
+            {
+                using (NeoConfiguration config = NeoConfiguration.LoadConfigurationFile(neoconfigfile))
+                {
+                    driver = Neo4jConnector.ConnectToNeo(config);
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("There was an error loading your neo4j configuration");
+                Console.WriteLine(e.Message);
+                if (batchmode == false) { Console.ReadLine(); }
+                Environment.Exit(2);
+            }
+            
 
             foreach (DataStore ds in datastores)
             {
