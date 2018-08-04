@@ -37,7 +37,7 @@ namespace Console
 
 
             //services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
-            
+
 
             services.AddAuthorization(options =>
             {
@@ -75,12 +75,16 @@ namespace Console
             app.UseStaticFiles();
             app.UseCookiePolicy();
 
-            app.UseMvc(routes =>
-            {
-                routes.MapRoute(
-                    name: "default",
-                    template: "{controller=Home}/{action=Index}/{id?}");
-            });
+            app.UseMvcWithDefaultRoute();
+            //app.UseMvc(routes =>
+            //{
+            //    routes.MapRoute(
+            //        name: "default",
+            //        template: "{controller=Home}/{action=Index}/{id?}");
+            //    routes.MapRoute(
+            //        name: "visualizer",
+            //        template: "{controller=Visualizer}/{action=Index}/{id?}");
+            //});
         }
     }
 }

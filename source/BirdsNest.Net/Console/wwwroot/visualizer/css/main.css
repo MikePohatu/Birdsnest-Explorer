@@ -1,0 +1,169 @@
+body, #pagewrapper, #main {
+	margin: 0;
+	padding: 0;
+	height: 100%;
+	width: 100%;
+}
+
+body {
+	position: fixed;
+}
+
+#pagewrapper {
+	top:0;
+	bottom:0;
+	right:0;
+	left: 0;
+}
+
+#drawingpane {
+	overflow: hidden;
+	position: relative;
+	bottom:0;
+	height: 100%;
+	background-color:#e8e8e8;
+	/*background-color: silver;*/
+	font-family: 'helvetica', arial, sans-serif;
+	/*font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;*/
+}
+
+#detailcardwrapper {
+	position: absolute;
+	bottom: 3px;
+	right: 0;
+	max-height: calc(100% - 26px);
+	overflow-y: auto;
+}
+
+#detailcardwrapper::-webkit-scrollbar {
+    width: 10px;  /* remove scrollbar space */
+    background: transparent;  /* optional: just make scrollbar invisible */
+}
+
+/* optional: show position indicator in red */
+#detailcardwrapper::-webkit-scrollbar-thumb {
+    background: #D6D6D6;
+}
+
+#viewcontrols {
+	position: absolute;
+	top:0;
+	left:0;
+	height: 38px;
+	width:135px;
+	padding:0;
+	background:white;
+	border: 2px solid #D6D6D6;
+	border-top-style: none;
+    border-left-style: none;
+	margin:0;
+}
+
+#drawingsvg {
+	height: 100%;
+	width: 100%;
+	z-index: 0;
+	padding: 0;
+}
+
+.viewcontrol{
+	float: left;
+	height: 32px;
+	width: 32px;
+	margin-left:7px;
+	margin-right:7px;
+	margin-top:2px;
+	margin-bottom:2px;
+}
+
+.pane {
+	min-width:100px;
+	background:white;
+	border: 2px solid #D6D6D6;
+	border-radius:3px;
+	padding: 5px;
+	margin-left:5px;
+	margin-right:5px;
+	margin-top:5px;
+	margin-bottom:5px;
+}
+
+.detailcard {	
+	min-height: 30px;
+	font-size: 10px;
+	width: 250px;
+	word-wrap: break-word;
+	font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+	white-space: pre-wrap;
+	margin-right: 15px;
+}
+
+.currentActiveDetailCard {
+	border: 2px solid black;
+}
+
+.viewcontrol-right {
+	float: right;
+}
+
+.viewcontrol:hover {
+	color:gray;
+}
+
+.inputbox {
+
+	margin: 5px;
+	border: 1px solid #111;
+	width: 200px;
+	border: 1px solid transparent;
+	background-color: #f1f1f1;
+	font-size: 16px;
+}
+
+.inputbox[type=text] {
+  background-color: #f1f1f1;
+  width: 100%;
+}
+.inputbox[type=submit] {
+  background-color: DodgerBlue;
+  color: #fff;
+}
+
+input[type=number] {
+    -moz-appearance:textfield;
+}
+ 
+input[type=number]::-webkit-inner-spin-button, 
+input[type=number]::-webkit-outer-spin-button { 
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    margin: 0; 
+}
+
+.slider-handle {
+  width: 0.8rem;
+}
+
+/* Tooltip text */
+.tooltip {
+    visibility: hidden;
+    width: 120px;
+    background-color: black;
+    color: #fff;
+    text-align: center;
+    padding: 5px 0;
+    border-radius: 6px;
+ 	opacity: 0;
+    transition: opacity 1s;
+
+    /* Position the tooltip text - see examples below! */
+    position: absolute;
+    z-index: 1;
+}
+
+/* Show the tooltip text when you mouse over the tooltip container */
+.viewcontrol:hover .tooltip {
+	visibility: visible;
+	opacity: 1;
+}

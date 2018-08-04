@@ -1,0 +1,10 @@
+{
+	"AD_User":"fas fa-user",
+	"AD_Computer":"fas fa-desktop",
+	"AD_Group":"fas fa-user-friends",
+	"BuiltinGroup":"fas fa-users",
+	"BuiltinUser":"fas fa-user",
+	"Device":"fas fa-tablet-alt",
+	"FS_Folder":"fas fa-folder-open",
+	"FS_Datastore":"fas fa-hdd"
+}

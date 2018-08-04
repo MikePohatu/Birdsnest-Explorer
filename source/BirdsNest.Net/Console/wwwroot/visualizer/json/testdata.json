@@ -1,0 +1,2904 @@
+{
+"nodes": [
+{
+"db_id": 12,
+"name": "This Organization",
+"label": "BUILTIN_USER",
+"relatedcount": 0,
+"properties": {
+"name": "This Organization",
+"description": "An account that is used by the default Internet Information Services (IIS) user.",
+"id": "S-1-5-17"
+}
+},
+{
+"db_id": 13,
+"name": "Local System",
+"label": "BUILTIN_USER",
+"relatedcount": 0,
+"properties": {
+"name": "Local System",
+"description": "A service account that is used by the operating system.",
+"id": "S-1-5-18"
+}
+},
+{
+"db_id": 14,
+"name": "Restricted Code",
+"label": "BUILTIN_USER",
+"relatedcount": 0,
+"properties": {
+"name": "Restricted Code",
+"description": "This SID is reserved for future use.",
+"id": "S-1-5-12"
+}
+},
+{
+"db_id": 15,
+"name": "Creator Owner Server",
+"label": "BUILTIN_USER",
+"relatedcount": 0,
+"properties": {
+"name": "Creator Owner Server",
+"description": "This SID is not used in Windows 2000.",
+"id": "S-1-3-2"
+}
+},
+{
+"db_id": 16,
+"name": "Principal Self",
+"label": "BUILTIN_USER",
+"relatedcount": 0,
+"properties": {
+"name": "Principal Self",
+"description": "The generic user Principal Self is a placeholder in an ACE on a User, Group, or Computer object in Active Directory. When you grant permission to Principal Self, you grant it to the security principal represented by the object. During an access check, the operating system replaces the SID for Principal Self with the SID for the security principal represented by the object. The identifier authority for this SID is 5 (NT Authority). It has only one subauthority value, 10 (Self RID).",
+"id": "S-1-5-10"
+}
+},
+{
+"db_id": 17,
+"name": "Null SID(Nobody)",
+"label": "BUILTIN_USER",
+"relatedcount": 0,
+"properties": {
+"name": "Null SID(Nobody)",
+"description": "A group with no members. This is often used when a sid is not known.",
+"id": "S-1–0–0"
+}
+},
+{
+"db_id": 18,
+"name": "Local Authority",
+"label": "BUILTIN_USER",
+"relatedcount": 0,
+"properties": {
+"name": "Local Authority",
+"description": "An identifier authority.",
+"id": "S-1-2"
+}
+},
+{
+"db_id": 19,
+"name": "Non-unique Authority",
+"label": "BUILTIN_USER",
+"relatedcount": 0,
+"properties": {
+"name": "Non-unique Authority",
+"description": "An identifier authority.",
+"id": "S-1-4"
+}
+},
+{
+"db_id": 20,
+"name": "NT Authority",
+"label": "BUILTIN_USER",
+"relatedcount": 0,
+"properties": {
+"name": "NT Authority",
+"description": "An identifier authority.",
+"id": "S-1-5"
+}
+},
+{
+"db_id": 21,
+"name": "Proxy",
+"label": "BUILTIN_USER",
+"relatedcount": 0,
+"properties": {
+"name": "Proxy",
+"description": "This SID is not used in Windows 2000.",
+"id": "S-1-5-8"
+}
+},
+{
+"db_id": 22,
+"name": "Everyone",
+"label": "BUILTIN_GROUP",
+"relatedcount": 0,
+"properties": {
+"name": "Everyone",
+"description": "The generic group Everyone automatically includes everyone who uses the computer, even anonymous guests. The identifier authority value for this SID is 1 (World Authority). It has only one subauthority value, 0 (Null RID).",
+"id": "S-1-1-0"
+}
+},
+{
+"db_id": 23,
+"name": "Creator Group",
+"label": "BUILTIN_GROUP",
+"relatedcount": 0,
+"properties": {
+"name": "Creator Group",
+"description": "A placeholder in an inheritable ACE. When the ACE is inherited, the system replaces this SID with the SID for the primary group of the object's creator. The primary group is used only by the POSIX subsystem.",
+"id": "S-1-3-1"
+}
+},
+{
+"db_id": 24,
+"name": "Creator Group Server",
+"label": "BUILTIN_GROUP",
+"relatedcount": 0,
+"properties": {
+"name": "Creator Group Server",
+"description": "A group that represents the current owner of the object. When an ACE that carries this SID is applied to an object, the system ignores the implicit READ_CONTROL and WRITE_DAC permissions for the object owner.",
+"id": "S-1-3-3"
+}
+},
+{
+"db_id": 25,
+"name": "Local",
+"label": "BUILTIN_GROUP",
+"relatedcount": 0,
+"properties": {
+"name": "Local",
+"description": "A group that includes all users who have logged on locally.",
+"id": "S-1-2-0"
+}
+},
+{
+"db_id": 26,
+"name": "Console Logon",
+"label": "BUILTIN_GROUP",
+"relatedcount": 0,
+"properties": {
+"name": "Console Logon",
+"description": "A group that includes users who are logged on to the physical console.",
+"id": "S-1-2-1"
+}
+},
+{
+"db_id": 27,
+"name": "Dialup",
+"label": "BUILTIN_GROUP",
+"relatedcount": 0,
+"properties": {
+"name": "Dialup",
+"description": "A group that includes all users who have logged on through a dial-up connection. Membership is controlled by the operating system.",
+"id": "S-1-5-1"
+}
+},
+{
+"db_id": 28,
+"name": "Network",
+"label": "BUILTIN_GROUP",
+"relatedcount": 0,
+"properties": {
+"name": "Network",
+"description": "A group that includes all users that have logged on through a network connection. Membership is controlled by the operating system.",
+"id": "S-1-5-2"
+}
+},
+{
+"db_id": 29,
+"name": "Batch",
+"label": "BUILTIN_GROUP",
+"relatedcount": 0,
+"properties": {
+"name": "Batch",
+"description": "A group that includes all users that have logged on through a batch queue facility. Membership is controlled by the operating system.",
+"id": "S-1-5-3"
+}
+},
+{
+"db_id": 30,
+"name": "Interactive",
+"label": "BUILTIN_GROUP",
+"relatedcount": 0,
+"properties": {
+"name": "Interactive",
+"description": "A group that includes all users that have logged on interactively. Membership is controlled by the operating system.",
+"id": "S-1-5-4"
+}
+},
+{
+"db_id": 31,
+"name": "Logon Session",
+"label": "BUILTIN_GROUP",
+"relatedcount": 0,
+"properties": {
+"name": "Logon Session",
+"description": "A logon session. The X and Y values for these SIDs are different for each session.",
+"id": "S-1-5-5-X-Y"
+}
+},
+{
+"db_id": 32,
+"name": "Service",
+"label": "BUILTIN_GROUP",
+"relatedcount": 0,
+"properties": {
+"name": "Service",
+"description": "A group that includes all security principals that have logged on as a service. Membership is controlled by the operating system.",
+"id": "S-1-5-6"
+}
+},
+{
+"db_id": 33,
+"name": "Anonymous",
+"label": "BUILTIN_GROUP",
+"relatedcount": 0,
+"properties": {
+"name": "Anonymous",
+"description": "A group that includes all users that have logged on anonymously. Membership is controlled by the operating system.",
+"id": "S-1-5-7"
+}
+},
+{
+"db_id": 34,
+"name": "Enterprise Domain Controllers",
+"label": "BUILTIN_GROUP",
+"relatedcount": 0,
+"properties": {
+"name": "Enterprise Domain Controllers",
+"description": "A group that includes all domain controllers in a forest that uses an Active Directory directory service. Membership is controlled by the operating system.",
+"id": "S-1-5-9"
+}
+},
+{
+"db_id": 35,
+"name": "Authenticated Users",
+"label": "BUILTIN_GROUP",
+"relatedcount": 0,
+"properties": {
+"name": "Authenticated Users",
+"description": "A group that includes all users whose identities were authenticated when they logged on. Membership is controlled by the operating system.",
+"id": "S-1-5-11"
+}
+},
+{
+"db_id": 36,
+"name": "Terminal Server Users",
+"label": "BUILTIN_GROUP",
+"relatedcount": 0,
+"properties": {
+"name": "Terminal Server Users",
+"description": "A group that includes all users that have logged on to a Terminal Services server. Membership is controlled by the operating system.",
+"id": "S-1-5-13"
+}
+},
+{
+"db_id": 37,
+"name": "Remote Interactive Logon",
+"label": "BUILTIN_GROUP",
+"relatedcount": 0,
+"properties": {
+"name": "Remote Interactive Logon",
+"description": "A group that includes all users who have logged on through a terminal services logon.",
+"id": "S-1-5-14"
+}
+},
+{
+"db_id": 38,
+"name": "This Organization",
+"label": "BUILTIN_GROUP",
+"relatedcount": 0,
+"properties": {
+"name": "This Organization",
+"description": "A group that includes all users from the same organization. Only included with AD accounts and only added by a Windows Server 2003 or later domain controller.",
+"id": "S-1-5-15"
+}
+},
+{
+"db_id": 39,
+"name": "Remote Desktop Users",
+"label": "AD_GROUP",
+"relatedcount": 0,
+"properties": {
+"path": "CN=Remote Desktop Users,CN=Builtin,DC=home,DC=local",
+"lastscan": "DS1TbZLSm0W0_qJJwV5X6g",
+"grouptype": "security_domainlocal",
+"name": "Remote Desktop Users",
+"id": "S-1-5-32-555",
+"type": "AD_GROUP",
+"rid": "555",
+"samaccountname": "Remote Desktop Users"
+}
+},
+{
+"db_id": 40,
+"name": "Network Configuration Operators",
+"label": "AD_GROUP",
+"relatedcount": 0,
+"properties": {
+"path": "CN=Network Configuration Operators,CN=Builtin,DC=home,DC=local",
+"lastscan": "DS1TbZLSm0W0_qJJwV5X6g",
+"grouptype": "security_domainlocal",
+"name": "Network Configuration Operators",
+"id": "S-1-5-32-556",
+"type": "AD_GROUP",
+"rid": "556",
+"samaccountname": "Network Configuration Operators"
+}
+},
+{
+"db_id": 41,
+"name": "Performance Monitor Users",
+"label": "AD_GROUP",
+"relatedcount": 0,
+"properties": {
+"path": "CN=Performance Monitor Users,CN=Builtin,DC=home,DC=local",
+"lastscan": "DS1TbZLSm0W0_qJJwV5X6g",
+"grouptype": "security_domainlocal",
+"name": "Performance Monitor Users",
+"id": "S-1-5-32-558",
+"type": "AD_GROUP",
+"rid": "558",
+"samaccountname": "Performance Monitor Users"
+}
+},
+{
+"db_id": 42,
+"name": "Performance Log Users",
+"label": "AD_GROUP",
+"relatedcount": 0,
+"properties": {
+"path": "CN=Performance Log Users,CN=Builtin,DC=home,DC=local",
+"lastscan": "DS1TbZLSm0W0_qJJwV5X6g",
+"grouptype": "security_domainlocal",
+"name": "Performance Log Users",
+"id": "S-1-5-32-559",
+"type": "AD_GROUP",
+"rid": "559",
+"samaccountname": "Performance Log Users"
+}
+},
+{
+"db_id": 43,
+"name": "Distributed COM Users",
+"label": "AD_GROUP",
+"relatedcount": 0,
+"properties": {
+"path": "CN=Distributed COM Users,CN=Builtin,DC=home,DC=local",
+"lastscan": "DS1TbZLSm0W0_qJJwV5X6g",
+"grouptype": "security_domainlocal",
+"name": "Distributed COM Users",
+"id": "S-1-5-32-562",
+"type": "AD_GROUP",
+"rid": "562",
+"samaccountname": "Distributed COM Users"
+}
+},
+{
+"db_id": 78,
+"name": "Cryptographic Operators",
+"label": "AD_GROUP",
+"relatedcount": 0,
+"properties": {
+"path": "CN=Cryptographic Operators,CN=Builtin,DC=home,DC=local",
+"lastscan": "DS1TbZLSm0W0_qJJwV5X6g",
+"grouptype": "security_domainlocal",
+"name": "Cryptographic Operators",
+"id": "S-1-5-32-569",
+"type": "AD_GROUP",
+"rid": "569",
+"samaccountname": "Cryptographic Operators"
+}
+},
+{
+"db_id": 79,
+"name": "Event Log Readers",
+"label": "AD_GROUP",
+"relatedcount": 0,
+"properties": {
+"path": "CN=Event Log Readers,CN=Builtin,DC=home,DC=local",
+"lastscan": "DS1TbZLSm0W0_qJJwV5X6g",
+"grouptype": "security_domainlocal",
+"name": "Event Log Readers",
+"id": "S-1-5-32-573",
+"type": "AD_GROUP",
+"rid": "573",
+"samaccountname": "Event Log Readers"
+}
+},
+{
+"db_id": 91,
+"name": "Creator Authority",
+"label": "BUILTIN_USER",
+"relatedcount": 0,
+"properties": {
+"name": "Creator Authority",
+"description": "An identifier authority.",
+"id": "S-1-3"
+}
+},
+{
+"db_id": 92,
+"name": "Creator Owner",
+"label": "BUILTIN_USER",
+"relatedcount": 0,
+"properties": {
+"name": "Creator Owner",
+"description": "The generic user Creator Owner is a placeholder in an inheritable access control entry (ACE). When the ACE is inherited, the system replaces the SID for Creator Owner with the SID for the object's current owner. The identifier authority value for this SID is 3 (Creator Authority). It has only one subauthority value, 0 (Null RID).",
+"id": "S-1-3-0"
+}
+},
+{
+"db_id": 110,
+"name": "Certificate Service DCOM Access",
+"label": "AD_GROUP",
+"relatedcount": 0,
+"properties": {
+"path": "CN=Certificate Service DCOM Access,CN=Builtin,DC=home,DC=local",
+"lastscan": "DS1TbZLSm0W0_qJJwV5X6g",
+"grouptype": "security_domainlocal",
+"name": "Certificate Service DCOM Access",
+"id": "S-1-5-32-574",
+"type": "AD_GROUP",
+"rid": "574",
+"samaccountname": "Certificate Service DCOM Access"
+}
+},
+{
+"db_id": 111,
+"name": "RDS Remote Access Servers",
+"label": "AD_GROUP",
+"relatedcount": 0,
+"properties": {
+"path": "CN=RDS Remote Access Servers,CN=Builtin,DC=home,DC=local",
+"lastscan": "DS1TbZLSm0W0_qJJwV5X6g",
+"grouptype": "security_domainlocal",
+"name": "RDS Remote Access Servers",
+"id": "S-1-5-32-575",
+"type": "AD_GROUP",
+"rid": "575",
+"samaccountname": "RDS Remote Access Servers"
+}
+},
+{
+"db_id": 112,
+"name": "RDS Endpoint Servers",
+"label": "AD_GROUP",
+"relatedcount": 0,
+"properties": {
+"path": "CN=RDS Endpoint Servers,CN=Builtin,DC=home,DC=local",
+"lastscan": "DS1TbZLSm0W0_qJJwV5X6g",
+"grouptype": "security_domainlocal",
+"name": "RDS Endpoint Servers",
+"id": "S-1-5-32-576",
+"type": "AD_GROUP",
+"rid": "576",
+"samaccountname": "RDS Endpoint Servers"
+}
+},
+{
+"db_id": 113,
+"name": "RDS Management Servers",
+"label": "AD_GROUP",
+"relatedcount": 0,
+"properties": {
+"path": "CN=RDS Management Servers,CN=Builtin,DC=home,DC=local",
+"lastscan": "DS1TbZLSm0W0_qJJwV5X6g",
+"grouptype": "security_domainlocal",
+"name": "RDS Management Servers",
+"id": "S-1-5-32-577",
+"type": "AD_GROUP",
+"rid": "577",
+"samaccountname": "RDS Management Servers"
+}
+},
+{
+"db_id": 114,
+"name": "Hyper-V Administrators",
+"label": "AD_GROUP",
+"relatedcount": 0,
+"properties": {
+"path": "CN=Hyper-V Administrators,CN=Builtin,DC=home,DC=local",
+"lastscan": "DS1TbZLSm0W0_qJJwV5X6g",
+"grouptype": "security_domainlocal",
+"name": "Hyper-V Administrators",
+"id": "S-1-5-32-578",
+"type": "AD_GROUP",
+"rid": "578",
+"samaccountname": "Hyper-V Administrators"
+}
+},
+{
+"db_id": 115,
+"name": "Access Control Assistance Operators",
+"label": "AD_GROUP",
+"relatedcount": 0,
+"properties": {
+"path": "CN=Access Control Assistance Operators,CN=Builtin,DC=home,DC=local",
+"lastscan": "DS1TbZLSm0W0_qJJwV5X6g",
+"grouptype": "security_domainlocal",
+"name": "Access Control Assistance Operators",
+"id": "S-1-5-32-579",
+"type": "AD_GROUP",
+"rid": "579",
+"samaccountname": "Access Control Assistance Operators"
+}
+},
+{
+"db_id": 122,
+"name": "Remote Management Users",
+"label": "AD_GROUP",
+"relatedcount": 0,
+"properties": {
+"path": "CN=Remote Management Users,CN=Builtin,DC=home,DC=local",
+"lastscan": "DS1TbZLSm0W0_qJJwV5X6g",
+"grouptype": "security_domainlocal",
+"name": "Remote Management Users",
+"id": "S-1-5-32-580",
+"type": "AD_GROUP",
+"rid": "580",
+"samaccountname": "Remote Management Users"
+}
+},
+{
+"db_id": 124,
+"name": "Domain Computers",
+"label": "AD_GROUP",
+"relatedcount": 0,
+"properties": {
+"path": "CN=Domain Computers,CN=Users,DC=home,DC=local",
+"lastscan": "DS1TbZLSm0W0_qJJwV5X6g",
+"grouptype": "security_global",
+"name": "Domain Computers",
+"id": "S-1-5-21-4107257279-1423172592-2238750195-515",
+"member_count": 15,
+"type": "AD_GROUP",
+"rid": "515",
+"samaccountname": "Domain Computers"
+}
+},
+{
+"db_id": 125,
+"name": "Cert Publishers",
+"label": "AD_GROUP",
+"relatedcount": 0,
+"properties": {
+"path": "CN=Cert Publishers,CN=Users,DC=home,DC=local",
+"lastscan": "DS1TbZLSm0W0_qJJwV5X6g",
+"grouptype": "security_domainlocal",
+"name": "Cert Publishers",
+"id": "S-1-5-21-4107257279-1423172592-2238750195-517",
+"member_count": 1,
+"type": "AD_GROUP",
+"rid": "517",
+"samaccountname": "Cert Publishers"
+}
+},
+{
+"db_id": 126,
+"name": "Domain Guests",
+"label": "AD_GROUP",
+"relatedcount": 0,
+"properties": {
+"path": "CN=Domain Guests,CN=Users,DC=home,DC=local",
+"lastscan": "DS1TbZLSm0W0_qJJwV5X6g",
+"grouptype": "security_global",
+"name": "Domain Guests",
+"id": "S-1-5-21-4107257279-1423172592-2238750195-514",
+"member_count": 2,
+"type": "AD_GROUP",
+"rid": "514",
+"samaccountname": "Domain Guests"
+}
+},
+{
+"db_id": 127,
+"name": "RAS and IAS Servers",
+"label": "AD_GROUP",
+"relatedcount": 0,
+"properties": {
+"path": "CN=RAS and IAS Servers,CN=Users,DC=home,DC=local",
+"lastscan": "DS1TbZLSm0W0_qJJwV5X6g",
+"grouptype": "security_domainlocal",
+"name": "RAS and IAS Servers",
+"id": "S-1-5-21-4107257279-1423172592-2238750195-553",
+"type": "AD_GROUP",
+"rid": "553",
+"samaccountname": "RAS and IAS Servers"
+}
+},
+{
+"db_id": 128,
+"name": "Incoming Forest Trust Builders",
+"label": "AD_GROUP",
+"relatedcount": 0,
+"properties": {
+"path": "CN=Incoming Forest Trust Builders,CN=Builtin,DC=home,DC=local",
+"lastscan": "DS1TbZLSm0W0_qJJwV5X6g",
+"grouptype": "security_domainlocal",
+"name": "Incoming Forest Trust Builders",
+"id": "S-1-5-32-557",
+"type": "AD_GROUP",
+"rid": "557",
+"samaccountname": "Incoming Forest Trust Builders"
+}
+},
+{
+"db_id": 129,
+"name": "Terminal Server License Servers",
+"label": "AD_GROUP",
+"relatedcount": 0,
+"properties": {
+"path": "CN=Terminal Server License Servers,CN=Builtin,DC=home,DC=local",
+"lastscan": "DS1TbZLSm0W0_qJJwV5X6g",
+"grouptype": "security_domainlocal",
+"name": "Terminal Server License Servers",
+"id": "S-1-5-32-561",
+"type": "AD_GROUP",
+"rid": "561",
+"samaccountname": "Terminal Server License Servers"
+}
+},
+{
+"db_id": 130,
+"name": "Allowed RODC Password Replication Group",
+"label": "AD_GROUP",
+"relatedcount": 0,
+"properties": {
+"path": "CN=Allowed RODC Password Replication Group,CN=Users,DC=home,DC=local",
+"lastscan": "DS1TbZLSm0W0_qJJwV5X6g",
+"grouptype": "security_domainlocal",
+"name": "Allowed RODC Password Replication Group",
+"id": "S-1-5-21-4107257279-1423172592-2238750195-571",
+"type": "AD_GROUP",
+"rid": "571",
+"samaccountname": "Allowed RODC Password Replication Group"
+}
+},
+{
+"db_id": 131,
+"name": "Enterprise Read-only Domain Controllers",
+"label": "AD_GROUP",
+"relatedcount": 0,
+"properties": {
+"path": "CN=Enterprise Read-only Domain Controllers,CN=Users,DC=home,DC=local",
+"lastscan": "DS1TbZLSm0W0_qJJwV5X6g",
+"grouptype": "security_universal",
+"name": "Enterprise Read-only Domain Controllers",
+"id": "S-1-5-21-4107257279-1423172592-2238750195-498",
+"type": "AD_GROUP",
+"rid": "498",
+"samaccountname": "Enterprise Read-only Domain Controllers"
+}
+},
+{
+"db_id": 132,
+"name": "Cloneable Domain Controllers",
+"label": "AD_GROUP",
+"relatedcount": 0,
+"properties": {
+"path": "CN=Cloneable Domain Controllers,CN=Users,DC=home,DC=local",
+"lastscan": "DS1TbZLSm0W0_qJJwV5X6g",
+"grouptype": "security_global",
+"name": "Cloneable Domain Controllers",
+"id": "S-1-5-21-4107257279-1423172592-2238750195-522",
+"type": "AD_GROUP",
+"rid": "522",
+"samaccountname": "Cloneable Domain Controllers"
+}
+},
+{
+"db_id": 133,
+"name": "Protected Users",
+"label": "AD_GROUP",
+"relatedcount": 0,
+"properties": {
+"path": "CN=Protected Users,CN=Users,DC=home,DC=local",
+"lastscan": "DS1TbZLSm0W0_qJJwV5X6g",
+"grouptype": "security_global",
+"name": "Protected Users",
+"id": "S-1-5-21-4107257279-1423172592-2238750195-525",
+"type": "AD_GROUP",
+"rid": "525",
+"samaccountname": "Protected Users"
+}
+},
+{
+"db_id": 134,
+"name": "Print Operators",
+"label": "AD_GROUP",
+"relatedcount": 0,
+"properties": {
+"path": "CN=Print Operators,CN=Builtin,DC=home,DC=local",
+"lastscan": "DS1TbZLSm0W0_qJJwV5X6g",
+"grouptype": "security_domainlocal",
+"name": "Print Operators",
+"id": "S-1-5-32-550",
+"type": "AD_GROUP",
+"rid": "550",
+"samaccountname": "Print Operators"
+}
+},
+{
+"db_id": 135,
+"name": "Account Operators",
+"label": "AD_GROUP",
+"relatedcount": 0,
+"properties": {
+"path": "CN=Account Operators,CN=Builtin,DC=home,DC=local",
+"lastscan": "DS1TbZLSm0W0_qJJwV5X6g",
+"grouptype": "security_domainlocal",
+"name": "Account Operators",
+"id": "S-1-5-32-548",
+"type": "AD_GROUP",
+"rid": "548",
+"samaccountname": "Account Operators"
+}
+},
+{
+"db_id": 136,
+"name": "Replicator",
+"label": "AD_GROUP",
+"relatedcount": 0,
+"properties": {
+"path": "CN=Replicator,CN=Builtin,DC=home,DC=local",
+"lastscan": "DS1TbZLSm0W0_qJJwV5X6g",
+"grouptype": "security_domainlocal",
+"name": "Replicator",
+"id": "S-1-5-32-552",
+"type": "AD_GROUP",
+"rid": "552",
+"samaccountname": "Replicator"
+}
+},
+{
+"db_id": 137,
+"name": "Server Operators",
+"label": "AD_GROUP",
+"relatedcount": 0,
+"properties": {
+"path": "CN=Server Operators,CN=Builtin,DC=home,DC=local",
+"lastscan": "DS1TbZLSm0W0_qJJwV5X6g",
+"grouptype": "security_domainlocal",
+"name": "Server Operators",
+"id": "S-1-5-32-549",
+"type": "AD_GROUP",
+"rid": "549",
+"samaccountname": "Server Operators"
+}
+},
+{
+"db_id": 138,
+"name": "Read-only Domain Controllers",
+"label": "AD_GROUP",
+"relatedcount": 0,
+"properties": {
+"path": "CN=Read-only Domain Controllers,CN=Users,DC=home,DC=local",
+"lastscan": "DS1TbZLSm0W0_qJJwV5X6g",
+"grouptype": "security_global",
+"name": "Read-only Domain Controllers",
+"id": "S-1-5-21-4107257279-1423172592-2238750195-521",
+"member_count": 1,
+"type": "AD_GROUP",
+"rid": "521",
+"samaccountname": "Read-only Domain Controllers"
+}
+},
+{
+"db_id": 139,
+"name": "Domain Controllers",
+"label": "AD_GROUP",
+"relatedcount": 0,
+"properties": {
+"path": "CN=Domain Controllers,CN=Users,DC=home,DC=local",
+"lastscan": "DS1TbZLSm0W0_qJJwV5X6g",
+"grouptype": "security_global",
+"name": "Domain Controllers",
+"id": "S-1-5-21-4107257279-1423172592-2238750195-516",
+"member_count": 3,
+"type": "AD_GROUP",
+"rid": "516",
+"samaccountname": "Domain Controllers"
+}
+},
+{
+"db_id": 140,
+"name": "Storage Replica Administrators",
+"label": "AD_GROUP",
+"relatedcount": 0,
+"properties": {
+"path": "CN=Storage Replica Administrators,CN=Builtin,DC=home,DC=local",
+"lastscan": "DS1TbZLSm0W0_qJJwV5X6g",
+"grouptype": "security_domainlocal",
+"name": "Storage Replica Administrators",
+"id": "S-1-5-32-582",
+"type": "AD_GROUP",
+"rid": "582",
+"samaccountname": "Storage Replica Administrators"
+}
+},
+{
+"db_id": 141,
+"name": "Key Admins",
+"label": "AD_GROUP",
+"relatedcount": 0,
+"properties": {
+"path": "CN=Key Admins,CN=Users,DC=home,DC=local",
+"lastscan": "DS1TbZLSm0W0_qJJwV5X6g",
+"grouptype": "security_global",
+"name": "Key Admins",
+"id": "S-1-5-21-4107257279-1423172592-2238750195-526",
+"type": "AD_GROUP",
+"rid": "526",
+"samaccountname": "Key Admins"
+}
+},
+{
+"db_id": 142,
+"name": "Enterprise Key Admins",
+"label": "AD_GROUP",
+"relatedcount": 0,
+"properties": {
+"path": "CN=Enterprise Key Admins,CN=Users,DC=home,DC=local",
+"lastscan": "DS1TbZLSm0W0_qJJwV5X6g",
+"grouptype": "security_universal",
+"name": "Enterprise Key Admins",
+"id": "S-1-5-21-4107257279-1423172592-2238750195-527",
+"type": "AD_GROUP",
+"rid": "527",
+"samaccountname": "Enterprise Key Admins"
+}
+},
+{
+"db_id": 143,
+"name": "System Managed Accounts Group",
+"label": "AD_GROUP",
+"relatedcount": 0,
+"properties": {
+"path": "CN=System Managed Accounts Group,CN=Builtin,DC=home,DC=local",
+"lastscan": "DS1TbZLSm0W0_qJJwV5X6g",
+"grouptype": "security_domainlocal",
+"name": "System Managed Accounts Group",
+"id": "S-1-5-32-581",
+"type": "AD_GROUP",
+"rid": "581",
+"samaccountname": "System Managed Accounts Group"
+}
+},
+{
+"db_id": 145,
+"name": "Group Policy Creator Owners",
+"label": "AD_GROUP",
+"relatedcount": 0,
+"properties": {
+"path": "CN=Group Policy Creator Owners,CN=Users,DC=home,DC=local",
+"lastscan": "DS1TbZLSm0W0_qJJwV5X6g",
+"grouptype": "security_global",
+"name": "Group Policy Creator Owners",
+"id": "S-1-5-21-4107257279-1423172592-2238750195-520",
+"member_count": 2,
+"type": "AD_GROUP",
+"rid": "520",
+"samaccountname": "Group Policy Creator Owners"
+}
+},
+{
+"db_id": 146,
+"name": "Users",
+"label": "AD_GROUP",
+"relatedcount": 0,
+"properties": {
+"path": "CN=Users,CN=Builtin,DC=home,DC=local",
+"lastscan": "DS1TbZLSm0W0_qJJwV5X6g",
+"grouptype": "security_domainlocal",
+"name": "Users",
+"id": "S-1-5-32-545",
+"member_count": 1,
+"type": "AD_GROUP",
+"rid": "545",
+"samaccountname": "Users"
+}
+},
+{
+"db_id": 147,
+"name": "Pre-Windows 2000 Compatible Access",
+"label": "AD_GROUP",
+"relatedcount": 0,
+"properties": {
+"path": "CN=Pre-Windows 2000 Compatible Access,CN=Builtin,DC=home,DC=local",
+"lastscan": "DS1TbZLSm0W0_qJJwV5X6g",
+"grouptype": "security_domainlocal",
+"name": "Pre-Windows 2000 Compatible Access",
+"id": "S-1-5-32-554",
+"type": "AD_GROUP",
+"rid": "554",
+"samaccountname": "Pre-Windows 2000 Compatible Access"
+}
+},
+{
+"db_id": 151,
+"name": "Enterprise Admins",
+"label": "AD_GROUP",
+"relatedcount": 0,
+"properties": {
+"path": "CN=Enterprise Admins,CN=Users,DC=home,DC=local",
+"lastscan": "DS1TbZLSm0W0_qJJwV5X6g",
+"grouptype": "security_universal",
+"name": "Enterprise Admins",
+"id": "S-1-5-21-4107257279-1423172592-2238750195-519",
+"member_count": 4,
+"type": "AD_GROUP",
+"rid": "519",
+"samaccountname": "Enterprise Admins"
+}
+},
+{
+"db_id": 152,
+"name": "Schema Admins",
+"label": "AD_GROUP",
+"relatedcount": 0,
+"properties": {
+"path": "CN=Schema Admins,CN=Users,DC=home,DC=local",
+"lastscan": "DS1TbZLSm0W0_qJJwV5X6g",
+"grouptype": "security_universal",
+"name": "Schema Admins",
+"id": "S-1-5-21-4107257279-1423172592-2238750195-518",
+"member_count": 2,
+"type": "AD_GROUP",
+"rid": "518",
+"samaccountname": "Schema Admins"
+}
+},
+{
+"db_id": 153,
+"name": "Windows Authorization Access Group",
+"label": "AD_GROUP",
+"relatedcount": 0,
+"properties": {
+"path": "CN=Windows Authorization Access Group,CN=Builtin,DC=home,DC=local",
+"lastscan": "DS1TbZLSm0W0_qJJwV5X6g",
+"grouptype": "security_domainlocal",
+"name": "Windows Authorization Access Group",
+"id": "S-1-5-32-560",
+"type": "AD_GROUP",
+"rid": "560",
+"samaccountname": "Windows Authorization Access Group"
+}
+},
+{
+"db_id": 154,
+"name": "Domain Admins",
+"label": "AD_GROUP",
+"relatedcount": 0,
+"properties": {
+"path": "CN=Domain Admins,CN=Users,DC=home,DC=local",
+"lastscan": "DS1TbZLSm0W0_qJJwV5X6g",
+"grouptype": "security_global",
+"name": "Domain Admins",
+"id": "S-1-5-21-4107257279-1423172592-2238750195-512",
+"member_count": 5,
+"type": "AD_GROUP",
+"rid": "512",
+"samaccountname": "Domain Admins"
+}
+},
+{
+"db_id": 155,
+"name": "IIS_IUSRS",
+"label": "AD_GROUP",
+"relatedcount": 0,
+"properties": {
+"path": "CN=IIS_IUSRS,CN=Builtin,DC=home,DC=local",
+"lastscan": "DS1TbZLSm0W0_qJJwV5X6g",
+"grouptype": "security_domainlocal",
+"name": "IIS_IUSRS",
+"id": "S-1-5-32-568",
+"type": "AD_GROUP",
+"rid": "568",
+"samaccountname": "IIS_IUSRS"
+}
+},
+{
+"db_id": 156,
+"name": "Denied RODC Password Replication Group",
+"label": "AD_GROUP",
+"relatedcount": 0,
+"properties": {
+"path": "CN=Denied RODC Password Replication Group,CN=Users,DC=home,DC=local",
+"lastscan": "DS1TbZLSm0W0_qJJwV5X6g",
+"grouptype": "security_domainlocal",
+"name": "Denied RODC Password Replication Group",
+"id": "S-1-5-21-4107257279-1423172592-2238750195-572",
+"member_count": 8,
+"type": "AD_GROUP",
+"rid": "572",
+"samaccountname": "Denied RODC Password Replication Group"
+}
+},
+{
+"db_id": 157,
+"name": "Administrators",
+"label": "AD_GROUP",
+"relatedcount": 0,
+"properties": {
+"path": "CN=Administrators,CN=Builtin,DC=home,DC=local",
+"lastscan": "DS1TbZLSm0W0_qJJwV5X6g",
+"grouptype": "security_domainlocal",
+"name": "Administrators",
+"id": "S-1-5-32-544",
+"member_count": 4,
+"type": "AD_GROUP",
+"rid": "544",
+"samaccountname": "Administrators"
+}
+},
+{
+"db_id": 158,
+"name": "Guests",
+"label": "AD_GROUP",
+"relatedcount": 0,
+"properties": {
+"path": "CN=Guests,CN=Builtin,DC=home,DC=local",
+"lastscan": "DS1TbZLSm0W0_qJJwV5X6g",
+"grouptype": "security_domainlocal",
+"name": "Guests",
+"id": "S-1-5-32-546",
+"member_count": 2,
+"type": "AD_GROUP",
+"rid": "546",
+"samaccountname": "Guests"
+}
+},
+{
+"db_id": 159,
+"name": "Domain Users",
+"label": "AD_GROUP",
+"relatedcount": 0,
+"properties": {
+"path": "CN=Domain Users,CN=Users,DC=home,DC=local",
+"lastscan": "DS1TbZLSm0W0_qJJwV5X6g",
+"grouptype": "security_global",
+"name": "Domain Users",
+"id": "S-1-5-21-4107257279-1423172592-2238750195-513",
+"member_count": 17,
+"type": "AD_GROUP",
+"rid": "513",
+"samaccountname": "Domain Users"
+}
+},
+{
+"db_id": 160,
+"name": "Backup Operators",
+"label": "AD_GROUP",
+"relatedcount": 0,
+"properties": {
+"path": "CN=Backup Operators,CN=Builtin,DC=home,DC=local",
+"lastscan": "DS1TbZLSm0W0_qJJwV5X6g",
+"grouptype": "security_domainlocal",
+"name": "Backup Operators",
+"id": "S-1-5-32-551",
+"member_count": 1,
+"type": "AD_GROUP",
+"rid": "551",
+"samaccountname": "Backup Operators"
+}
+},
+{
+"db_id": 161,
+"name": "Server Admins",
+"label": "AD_GROUP",
+"relatedcount": 0,
+"properties": {
+"path": "CN=Server Admins,OU=Groups,OU=LAB,DC=home,DC=local",
+"lastscan": "DS1TbZLSm0W0_qJJwV5X6g",
+"grouptype": "security_global",
+"name": "Server Admins",
+"id": "S-1-5-21-4107257279-1423172592-2238750195-2114",
+"member_count": 4,
+"type": "AD_GROUP",
+"rid": "2114",
+"samaccountname": "Server Admins"
+}
+},
+{
+"db_id": 162,
+"name": "WinRMRemoteWMIUsers__",
+"label": "AD_GROUP",
+"relatedcount": 0,
+"properties": {
+"path": "CN=WinRMRemoteWMIUsers__,CN=Users,DC=home,DC=local",
+"lastscan": "DS1TbZLSm0W0_qJJwV5X6g",
+"grouptype": "security_domainlocal",
+"name": "WinRMRemoteWMIUsers__",
+"id": "S-1-5-21-4107257279-1423172592-2238750195-1000",
+"type": "AD_GROUP",
+"rid": "1000",
+"samaccountname": "WinRMRemoteWMIUsers__"
+}
+},
+{
+"db_id": 163,
+"name": "DnsAdmins",
+"label": "AD_GROUP",
+"relatedcount": 0,
+"properties": {
+"path": "CN=DnsAdmins,CN=Users,DC=home,DC=local",
+"lastscan": "DS1TbZLSm0W0_qJJwV5X6g",
+"grouptype": "security_domainlocal",
+"name": "DnsAdmins",
+"id": "S-1-5-21-4107257279-1423172592-2238750195-1102",
+"type": "AD_GROUP",
+"rid": "1102",
+"samaccountname": "DnsAdmins"
+}
+},
+{
+"db_id": 164,
+"name": "DHCP Users",
+"label": "AD_GROUP",
+"relatedcount": 0,
+"properties": {
+"path": "CN=DHCP Users,CN=Users,DC=home,DC=local",
+"lastscan": "DS1TbZLSm0W0_qJJwV5X6g",
+"grouptype": "security_domainlocal",
+"name": "DHCP Users",
+"id": "S-1-5-21-4107257279-1423172592-2238750195-2103",
+"type": "AD_GROUP",
+"rid": "2103",
+"samaccountname": "DHCP Users"
+}
+},
+{
+"db_id": 165,
+"name": "DHCP Administrators",
+"label": "AD_GROUP",
+"relatedcount": 0,
+"properties": {
+"path": "CN=DHCP Administrators,CN=Users,DC=home,DC=local",
+"lastscan": "DS1TbZLSm0W0_qJJwV5X6g",
+"grouptype": "security_domainlocal",
+"name": "DHCP Administrators",
+"id": "S-1-5-21-4107257279-1423172592-2238750195-2104",
+"type": "AD_GROUP",
+"rid": "2104",
+"samaccountname": "DHCP Administrators"
+}
+},
+{
+"db_id": 166,
+"name": "DnsUpdateProxy",
+"label": "AD_GROUP",
+"relatedcount": 0,
+"properties": {
+"path": "CN=DnsUpdateProxy,CN=Users,DC=home,DC=local",
+"lastscan": "DS1TbZLSm0W0_qJJwV5X6g",
+"grouptype": "security_global",
+"name": "DnsUpdateProxy",
+"id": "S-1-5-21-4107257279-1423172592-2238750195-1103",
+"member_count": 1,
+"type": "AD_GROUP",
+"rid": "1103",
+"samaccountname": "DnsUpdateProxy"
+}
+},
+{
+"db_id": 167,
+"name": "SCCM Admins",
+"label": "AD_GROUP",
+"relatedcount": 0,
+"properties": {
+"path": "CN=SCCM Admins,OU=Groups,OU=LAB,DC=home,DC=local",
+"lastscan": "DS1TbZLSm0W0_qJJwV5X6g",
+"grouptype": "security_global",
+"name": "SCCM Admins",
+"id": "S-1-5-21-4107257279-1423172592-2238750195-2112",
+"member_count": 2,
+"type": "AD_GROUP",
+"rid": "2112",
+"samaccountname": "SCCM Admins"
+}
+},
+{
+"db_id": 168,
+"name": "SCCM Servers",
+"label": "AD_GROUP",
+"relatedcount": 0,
+"properties": {
+"path": "CN=SCCM Servers,OU=Groups,OU=LAB,DC=home,DC=local",
+"lastscan": "DS1TbZLSm0W0_qJJwV5X6g",
+"grouptype": "security_global",
+"name": "SCCM Servers",
+"id": "S-1-5-21-4107257279-1423172592-2238750195-4604",
+"member_count": 2,
+"type": "AD_GROUP",
+"rid": "4604",
+"samaccountname": "SCCM Servers"
+}
+},
+{
+"db_id": 169,
+"name": "sumologic_collector",
+"label": "AD_GROUP",
+"relatedcount": 0,
+"properties": {
+"path": "CN=sumologic_collector,CN=Users,DC=home,DC=local",
+"lastscan": "DS1TbZLSm0W0_qJJwV5X6g",
+"grouptype": "security_domainlocal",
+"name": "sumologic_collector",
+"id": "S-1-5-21-4107257279-1423172592-2238750195-5107",
+"member_count": 1,
+"type": "AD_GROUP",
+"rid": "5107",
+"samaccountname": "sumologic_collector"
+}
+},
+{
+"db_id": 170,
+"name": "Test Distribution Group",
+"label": "AD_GROUP",
+"relatedcount": 0,
+"properties": {
+"path": "CN=Test Distribution Group,OU=Groups,OU=LAB,DC=home,DC=local",
+"lastscan": "DS1TbZLSm0W0_qJJwV5X6g",
+"grouptype": "distribution_global",
+"name": "Test Distribution Group",
+"id": "S-1-5-21-4107257279-1423172592-2238750195-5108",
+"type": "AD_GROUP",
+"rid": "5108",
+"samaccountname": "Test Distribution Group"
+}
+},
+{
+"db_id": 171,
+"name": "Domain Read All",
+"label": "AD_GROUP",
+"relatedcount": 0,
+"properties": {
+"path": "CN=Domain Read All,OU=Groups,OU=LAB,DC=home,DC=local",
+"lastscan": "DS1TbZLSm0W0_qJJwV5X6g",
+"grouptype": "security_global",
+"name": "Domain Read All",
+"id": "S-1-5-21-4107257279-1423172592-2238750195-5112",
+"member_count": 1,
+"type": "AD_GROUP",
+"rid": "5112",
+"samaccountname": "Domain Read All"
+}
+},
+{
+"db_id": 172,
+"name": "Guest",
+"label": "AD_USER",
+"relatedcount": 0,
+"properties": {
+"path": "CN=Guest,CN=Users,DC=home,DC=local",
+"lastscan": "DS1TbZLSm0W0_qJJwV5X6g",
+"displayname": "",
+"name": "Guest",
+"id": "S-1-5-21-4107257279-1423172592-2238750195-501",
+"state": "enabled",
+"type": "AD_USER",
+"primarygroupid": "514",
+"samaccountname": "Guest"
+}
+},
+{
+"db_id": 173,
+"name": "krbtgt",
+"label": "AD_USER",
+"relatedcount": 0,
+"properties": {
+"path": "CN=krbtgt,CN=Users,DC=home,DC=local",
+"lastscan": "DS1TbZLSm0W0_qJJwV5X6g",
+"displayname": "",
+"name": "krbtgt",
+"id": "S-1-5-21-4107257279-1423172592-2238750195-502",
+"state": "enabled",
+"type": "AD_USER",
+"primarygroupid": "513",
+"samaccountname": "krbtgt"
+}
+},
+{
+"db_id": 174,
+"name": "Administrator",
+"label": "AD_USER",
+"relatedcount": 0,
+"properties": {
+"path": "CN=Administrator,CN=Users,DC=home,DC=local",
+"lastscan": "DS1TbZLSm0W0_qJJwV5X6g",
+"displayname": "",
+"name": "Administrator",
+"id": "S-1-5-21-4107257279-1423172592-2238750195-500",
+"state": "enabled",
+"type": "AD_USER",
+"primarygroupid": "513",
+"samaccountname": "Administrator"
+}
+},
+{
+"db_id": 175,
+"name": "DefaultAccount",
+"label": "AD_USER",
+"relatedcount": 0,
+"properties": {
+"path": "CN=DefaultAccount,CN=Users,DC=home,DC=local",
+"lastscan": "DS1TbZLSm0W0_qJJwV5X6g",
+"displayname": "",
+"name": "DefaultAccount",
+"id": "S-1-5-21-4107257279-1423172592-2238750195-503",
+"state": "enabled",
+"type": "AD_USER",
+"primarygroupid": "513",
+"samaccountname": "DefaultAccount"
+}
+},
+{
+"db_id": 176,
+"name": "svc_backup",
+"label": "AD_USER",
+"relatedcount": 0,
+"properties": {
+"path": "CN=svc_backup,OU=Service Accounts,OU=LAB,DC=home,DC=local",
+"lastscan": "DS1TbZLSm0W0_qJJwV5X6g",
+"displayname": "svc_backup",
+"name": "svc_backup",
+"id": "S-1-5-21-4107257279-1423172592-2238750195-4602",
+"state": "enabled",
+"type": "AD_USER",
+"primarygroupid": "513",
+"samaccountname": "svc_backup"
+}
+},
+{
+"db_id": 177,
+"name": "Mike Pohatu",
+"label": "AD_USER",
+"relatedcount": 0,
+"properties": {
+"path": "CN=Mike Pohatu,OU=Users,OU=LAB,DC=home,DC=local",
+"lastscan": "DS1TbZLSm0W0_qJJwV5X6g",
+"displayname": "Mike Pohatu",
+"name": "Mike Pohatu",
+"id": "S-1-5-21-4107257279-1423172592-2238750195-2602",
+"state": "enabled",
+"type": "AD_USER",
+"primarygroupid": "2112",
+"samaccountname": "mikep"
+}
+},
+{
+"db_id": 178,
+"name": "svc_prtg_ad",
+"label": "AD_USER",
+"relatedcount": 0,
+"properties": {
+"path": "CN=svc_prtg_ad,OU=Service Accounts,OU=LAB,DC=home,DC=local",
+"lastscan": "DS1TbZLSm0W0_qJJwV5X6g",
+"displayname": "svc_prtg_ad",
+"name": "svc_prtg_ad",
+"id": "S-1-5-21-4107257279-1423172592-2238750195-2108",
+"state": "enabled",
+"type": "AD_USER",
+"primarygroupid": "513",
+"samaccountname": "svc_prtg_ad"
+}
+},
+{
+"db_id": 179,
+"name": "svc_plex",
+"label": "AD_USER",
+"relatedcount": 0,
+"properties": {
+"path": "CN=svc_plex,OU=Service Accounts,OU=LAB,DC=home,DC=local",
+"lastscan": "DS1TbZLSm0W0_qJJwV5X6g",
+"displayname": "svc_plex",
+"name": "svc_plex",
+"id": "S-1-5-21-4107257279-1423172592-2238750195-2110",
+"state": "enabled",
+"type": "AD_USER",
+"primarygroupid": "513",
+"samaccountname": "svc_plex"
+}
+},
+{
+"db_id": 180,
+"name": "svc_sync",
+"label": "AD_USER",
+"relatedcount": 0,
+"properties": {
+"path": "CN=svc_sync,OU=Service Accounts,OU=LAB,DC=home,DC=local",
+"lastscan": "DS1TbZLSm0W0_qJJwV5X6g",
+"displayname": "svc_sync",
+"name": "svc_sync",
+"id": "S-1-5-21-4107257279-1423172592-2238750195-2107",
+"state": "enabled",
+"type": "AD_USER",
+"primarygroupid": "513",
+"samaccountname": "svc_sync"
+}
+},
+{
+"db_id": 181,
+"name": "svc_dhcp",
+"label": "AD_USER",
+"relatedcount": 0,
+"properties": {
+"path": "CN=svc_dhcp,OU=Service Accounts,OU=LAB,DC=home,DC=local",
+"lastscan": "DS1TbZLSm0W0_qJJwV5X6g",
+"displayname": "svc_dhcp",
+"name": "svc_dhcp",
+"id": "S-1-5-21-4107257279-1423172592-2238750195-2102",
+"state": "enabled",
+"type": "AD_USER",
+"primarygroupid": "513",
+"samaccountname": "svc_dhcp"
+}
+},
+{
+"db_id": 182,
+"name": "svc_sccmwebservice",
+"label": "AD_USER",
+"relatedcount": 0,
+"properties": {
+"path": "CN=svc_sccmwebservice,OU=Service Accounts,OU=LAB,DC=home,DC=local",
+"lastscan": "DS1TbZLSm0W0_qJJwV5X6g",
+"displayname": "svc_sccmwebservice",
+"name": "svc_sccmwebservice",
+"id": "S-1-5-21-4107257279-1423172592-2238750195-4606",
+"state": "enabled",
+"type": "AD_USER",
+"primarygroupid": "513",
+"samaccountname": "svc_sccmwebservice"
+}
+},
+{
+"db_id": 183,
+"name": "auth_ro",
+"label": "AD_USER",
+"relatedcount": 0,
+"properties": {
+"path": "CN=auth_ro,OU=Service Accounts,OU=LAB,DC=home,DC=local",
+"lastscan": "DS1TbZLSm0W0_qJJwV5X6g",
+"displayname": "auth_ro",
+"name": "auth_ro",
+"id": "S-1-5-21-4107257279-1423172592-2238750195-3609",
+"state": "enabled",
+"type": "AD_USER",
+"primarygroupid": "513",
+"samaccountname": "auth_ro"
+}
+},
+{
+"db_id": 184,
+"name": "svc_sql",
+"label": "AD_USER",
+"relatedcount": 0,
+"properties": {
+"path": "CN=svc_sql,OU=Service Accounts,OU=LAB,DC=home,DC=local",
+"lastscan": "DS1TbZLSm0W0_qJJwV5X6g",
+"displayname": "svc_sql",
+"name": "svc_sql",
+"id": "S-1-5-21-4107257279-1423172592-2238750195-2111",
+"state": "enabled",
+"type": "AD_USER",
+"primarygroupid": "513",
+"samaccountname": "svc_sql"
+}
+},
+{
+"db_id": 185,
+"name": "svc_prtg",
+"label": "AD_USER",
+"relatedcount": 0,
+"properties": {
+"path": "CN=svc_prtg,OU=Service Accounts,OU=LAB,DC=home,DC=local",
+"lastscan": "DS1TbZLSm0W0_qJJwV5X6g",
+"displayname": "svc_prtg",
+"name": "svc_prtg",
+"id": "S-1-5-21-4107257279-1423172592-2238750195-2109",
+"state": "enabled",
+"type": "AD_USER",
+"primarygroupid": "513",
+"samaccountname": "svc_prtg"
+}
+},
+{
+"db_id": 186,
+"name": "svc_sccm",
+"label": "AD_USER",
+"relatedcount": 0,
+"properties": {
+"path": "CN=svc_sccm,OU=Service Accounts,OU=LAB,DC=home,DC=local",
+"lastscan": "DS1TbZLSm0W0_qJJwV5X6g",
+"displayname": "svc_sccm",
+"name": "svc_sccm",
+"id": "S-1-5-21-4107257279-1423172592-2238750195-2113",
+"state": "enabled",
+"type": "AD_USER",
+"primarygroupid": "513",
+"samaccountname": "svc_sccm"
+}
+},
+{
+"db_id": 187,
+"name": "svc_neo4j",
+"label": "AD_USER",
+"relatedcount": 0,
+"properties": {
+"path": "CN=svc_neo4j,OU=Service Accounts,OU=LAB,DC=home,DC=local",
+"lastscan": "DS1TbZLSm0W0_qJJwV5X6g",
+"displayname": "svc_neo4j",
+"name": "svc_neo4j",
+"id": "S-1-5-21-4107257279-1423172592-2238750195-5109",
+"state": "enabled",
+"type": "AD_USER",
+"primarygroupid": "513",
+"samaccountname": "svc_neo4j"
+}
+},
+{
+"db_id": 188,
+"name": "svc_birdsnest",
+"label": "AD_USER",
+"relatedcount": 0,
+"properties": {
+"path": "CN=svc_birdsnest,OU=Service Accounts,OU=LAB,DC=home,DC=local",
+"lastscan": "DS1TbZLSm0W0_qJJwV5X6g",
+"displayname": "svc_birdsnest",
+"name": "svc_birdsnest",
+"id": "S-1-5-21-4107257279-1423172592-2238750195-5114",
+"state": "enabled",
+"type": "AD_USER",
+"primarygroupid": "513",
+"samaccountname": "svc_birdsnest"
+}
+},
+{
+"db_id": 189,
+"name": "HOMEDC05",
+"label": "AD_COMPUTER",
+"relatedcount": 0,
+"properties": {
+"path": "CN=HOMEDC05,OU=Domain Controllers,DC=home,DC=local",
+"lastscan": "DS1TbZLSm0W0_qJJwV5X6g",
+"name": "HOMEDC05",
+"operatingsystem": "Windows Server 2016 Standard Evaluation",
+"operatingsystemversion": "10.0 (14393)",
+"id": "S-1-5-21-4107257279-1423172592-2238750195-4607",
+"state": "enabled",
+"type": "AD_COMPUTER",
+"primarygroupid": "516",
+"samaccountname": "HOMEDC05$"
+}
+},
+{
+"db_id": 190,
+"name": "HOMEDC03",
+"label": "AD_COMPUTER",
+"relatedcount": 0,
+"properties": {
+"path": "CN=HOMEDC03,CN=Computers,DC=home,DC=local",
+"lastscan": "DS1TbZLSm0W0_qJJwV5X6g",
+"name": "HOMEDC03",
+"operatingsystem": "Windows Server 2016 Standard Evaluation",
+"operatingsystemversion": "10.0 (14393)",
+"id": "S-1-5-21-4107257279-1423172592-2238750195-2128",
+"state": "enabled",
+"type": "AD_COMPUTER",
+"primarygroupid": "515",
+"samaccountname": "HOMEDC03$"
+}
+},
+{
+"db_id": 191,
+"name": "HOMEDC04",
+"label": "AD_COMPUTER",
+"relatedcount": 0,
+"properties": {
+"path": "CN=HOMEDC04,OU=Domain Controllers,DC=home,DC=local",
+"lastscan": "DS1TbZLSm0W0_qJJwV5X6g",
+"name": "HOMEDC04",
+"operatingsystem": "Windows Server 2016 Standard Evaluation",
+"operatingsystemversion": "10.0 (14393)",
+"id": "S-1-5-21-4107257279-1423172592-2238750195-3608",
+"state": "enabled",
+"type": "AD_COMPUTER",
+"primarygroupid": "516",
+"samaccountname": "HOMEDC04$"
+}
+},
+{
+"db_id": 192,
+"name": "HOMESERVER01",
+"label": "AD_COMPUTER",
+"relatedcount": 0,
+"properties": {
+"path": "CN=HOMESERVER01,OU=Servers,OU=LAB,DC=home,DC=local",
+"lastscan": "DS1TbZLSm0W0_qJJwV5X6g",
+"name": "HOMESERVER01",
+"operatingsystem": "Windows Server 2012 R2 Standard Evaluation",
+"id": "S-1-5-21-4107257279-1423172592-2238750195-2105",
+"operatingsystemversion": "6.3 (9600)",
+"state": "enabled",
+"type": "AD_COMPUTER",
+"primarygroupid": "515",
+"samaccountname": "HOMESERVER01$"
+}
+},
+{
+"db_id": 204,
+"name": "neo4j Admins",
+"label": "AD_GROUP",
+"relatedcount": 0,
+"properties": {
+"path": "CN=neo4j Admins,OU=Groups,OU=LAB,DC=home,DC=local",
+"lastscan": "DS1TbZLSm0W0_qJJwV5X6g",
+"grouptype": "security_global",
+"name": "neo4j Admins",
+"id": "S-1-5-21-4107257279-1423172592-2238750195-5115",
+"member_count": 1,
+"type": "AD_GROUP",
+"rid": "5115",
+"samaccountname": "neo4j Admins"
+}
+},
+{
+"db_id": 205,
+"name": "neo4j Read Only",
+"label": "AD_GROUP",
+"relatedcount": 0,
+"properties": {
+"path": "CN=neo4j Read Only,OU=Groups,OU=LAB,DC=home,DC=local",
+"lastscan": "DS1TbZLSm0W0_qJJwV5X6g",
+"grouptype": "security_global",
+"name": "neo4j Read Only",
+"id": "S-1-5-21-4107257279-1423172592-2238750195-5116",
+"type": "AD_GROUP",
+"rid": "5116",
+"samaccountname": "neo4j Read Only"
+}
+},
+{
+"db_id": 210,
+"name": "contentstore",
+"label": "FS_FOLDER",
+"relatedcount": 0,
+"properties": {
+"name": "contentstore",
+"path": "\\\\contentstore.home.local\\contentstore",
+"lastscan": "gxWj-r8DK0qCN9tjB2crKg",
+"inheritancedisabled": true,
+"blocked": false
+}
+},
+{
+"db_id": 211,
+"name": "amd64",
+"label": "FS_FOLDER",
+"relatedcount": 0,
+"properties": {
+"name": "amd64",
+"path": "\\\\contentstore.home.local\\contentstore\\os\\winpe\\amd64",
+"lastscan": "gxWj-r8DK0qCN9tjB2crKg",
+"inheritancedisabled": false,
+"blocked": false,
+"lastpermission": "\\\\contentstore.home.local\\contentstore"
+}
+},
+{
+"db_id": 212,
+"name": "HP7900",
+"label": "AD_COMPUTER",
+"relatedcount": 0,
+"properties": {
+"path": "CN=HP7900,OU=HyperV-Hosts,DC=home,DC=local",
+"lastscan": "DS1TbZLSm0W0_qJJwV5X6g",
+"operatingsystem": "Hyper-V Server 2012 R2",
+"name": "HP7900",
+"id": "S-1-5-21-4107257279-1423172592-2238750195-1104",
+"operatingsystemversion": "6.3 (9600)",
+"state": "enabled",
+"type": "AD_COMPUTER",
+"primarygroupid": "515",
+"samaccountname": "HP7900$"
+}
+},
+{
+"db_id": 213,
+"name": "SYSCENTER01",
+"label": "AD_COMPUTER",
+"relatedcount": 0,
+"properties": {
+"path": "CN=SYSCENTER01,OU=Servers,OU=LAB,DC=home,DC=local",
+"lastscan": "DS1TbZLSm0W0_qJJwV5X6g",
+"name": "SYSCENTER01",
+"operatingsystem": "Windows Server 2012 R2 Standard Evaluation",
+"id": "S-1-5-21-4107257279-1423172592-2238750195-2603",
+"operatingsystemversion": "6.3 (9600)",
+"state": "enabled",
+"type": "AD_COMPUTER",
+"primarygroupid": "515",
+"samaccountname": "SYSCENTER01$"
+}
+},
+{
+"db_id": 214,
+"name": "HOMEDC00",
+"label": "AD_COMPUTER",
+"relatedcount": 0,
+"properties": {
+"path": "CN=HOMEDC00,OU=Servers,OU=LAB,DC=home,DC=local",
+"lastscan": "DS1TbZLSm0W0_qJJwV5X6g",
+"operatingsystem": "Windows Server 2012 R2 Standard",
+"name": "HOMEDC00",
+"id": "S-1-5-21-4107257279-1423172592-2238750195-1001",
+"operatingsystemversion": "6.3 (9600)",
+"state": "enabled",
+"type": "AD_COMPUTER",
+"primarygroupid": "515",
+"samaccountname": "HOMEDC00$"
+}
+},
+{
+"db_id": 215,
+"name": "TESTSERVER1",
+"label": "AD_COMPUTER",
+"relatedcount": 0,
+"properties": {
+"path": "CN=TESTSERVER1,OU=Servers,OU=LAB,DC=home,DC=local",
+"lastscan": "DS1TbZLSm0W0_qJJwV5X6g",
+"name": "TESTSERVER1",
+"operatingsystem": "Windows Server 2012 R2 Standard Evaluation",
+"id": "S-1-5-21-4107257279-1423172592-2238750195-2119",
+"operatingsystemversion": "6.3 (9600)",
+"state": "enabled",
+"type": "AD_COMPUTER",
+"primarygroupid": "515",
+"samaccountname": "TESTSERVER1$"
+}
+},
+{
+"db_id": 216,
+"name": "HOMESERVER02",
+"label": "AD_COMPUTER",
+"relatedcount": 0,
+"properties": {
+"path": "CN=HOMESERVER02,OU=Servers,OU=LAB,DC=home,DC=local",
+"lastscan": "DS1TbZLSm0W0_qJJwV5X6g",
+"name": "HOMESERVER02",
+"operatingsystem": "Windows Server 2016 Standard Evaluation",
+"id": "S-1-5-21-4107257279-1423172592-2238750195-2126",
+"operatingsystemversion": "10.0 (14393)",
+"state": "enabled",
+"type": "AD_COMPUTER",
+"primarygroupid": "515",
+"samaccountname": "HOMESERVER02$"
+}
+},
+{
+"db_id": 217,
+"name": "SYSCENTER02",
+"label": "AD_COMPUTER",
+"relatedcount": 0,
+"properties": {
+"path": "CN=SYSCENTER02,OU=Servers,OU=LAB,DC=home,DC=local",
+"lastscan": "DS1TbZLSm0W0_qJJwV5X6g",
+"name": "SYSCENTER02",
+"operatingsystem": "Windows Server 2016 Standard Evaluation",
+"id": "S-1-5-21-4107257279-1423172592-2238750195-3602",
+"operatingsystemversion": "10.0 (14393)",
+"state": "enabled",
+"type": "AD_COMPUTER",
+"primarygroupid": "515",
+"samaccountname": "SYSCENTER02$"
+}
+},
+{
+"db_id": 218,
+"name": "TEST1",
+"label": "AD_COMPUTER",
+"relatedcount": 0,
+"properties": {
+"path": "CN=TEST1,OU=SUB_OU,OU=GPO_Testing,OU=Computers,OU=LAB,DC=home,DC=local",
+"lastscan": "DS1TbZLSm0W0_qJJwV5X6g",
+"operatingsystem": "Windows 10 Enterprise",
+"name": "TEST1",
+"operatingsystemversion": "10.0 (14393)",
+"id": "S-1-5-21-4107257279-1423172592-2238750195-3603",
+"state": "enabled",
+"type": "AD_COMPUTER",
+"primarygroupid": "515",
+"samaccountname": "TEST1$"
+}
+},
+{
+"db_id": 219,
+"name": "TEST2",
+"label": "AD_COMPUTER",
+"relatedcount": 0,
+"properties": {
+"path": "CN=TEST2,OU=GPO_Testing,OU=Computers,OU=LAB,DC=home,DC=local",
+"lastscan": "DS1TbZLSm0W0_qJJwV5X6g",
+"operatingsystem": "Windows 10 Enterprise",
+"name": "TEST2",
+"operatingsystemversion": "10.0 (14393)",
+"id": "S-1-5-21-4107257279-1423172592-2238750195-3606",
+"state": "enabled",
+"type": "AD_COMPUTER",
+"primarygroupid": "515",
+"samaccountname": "TEST2$"
+}
+},
+{
+"db_id": 220,
+"name": "TEST1-2",
+"label": "AD_COMPUTER",
+"relatedcount": 0,
+"properties": {
+"path": "CN=TEST1-2,OU=GPO_Testing,OU=Computers,OU=LAB,DC=home,DC=local",
+"lastscan": "DS1TbZLSm0W0_qJJwV5X6g",
+"operatingsystem": "Windows 10 Enterprise",
+"name": "TEST1-2",
+"operatingsystemversion": "10.0 (14393)",
+"id": "S-1-5-21-4107257279-1423172592-2238750195-3607",
+"state": "enabled",
+"type": "AD_COMPUTER",
+"primarygroupid": "515",
+"samaccountname": "TEST1-2$"
+}
+},
+{
+"db_id": 221,
+"name": "BRIX01",
+"label": "AD_COMPUTER",
+"relatedcount": 0,
+"properties": {
+"path": "CN=BRIX01,OU=HyperV-Hosts,DC=home,DC=local",
+"lastscan": "DS1TbZLSm0W0_qJJwV5X6g",
+"operatingsystem": "Hyper-V Server 2012 R2",
+"name": "BRIX01",
+"id": "S-1-5-21-4107257279-1423172592-2238750195-1602",
+"operatingsystemversion": "6.3 (9600)",
+"state": "enabled",
+"type": "AD_COMPUTER",
+"primarygroupid": "515",
+"samaccountname": "BRIX01$"
+}
+},
+{
+"db_id": 222,
+"name": "SYSCENTER03",
+"label": "AD_COMPUTER",
+"relatedcount": 0,
+"properties": {
+"path": "CN=SYSCENTER03,OU=Servers,OU=LAB,DC=home,DC=local",
+"lastscan": "DS1TbZLSm0W0_qJJwV5X6g",
+"name": "SYSCENTER03",
+"operatingsystem": "Windows Server 2016 Standard Evaluation",
+"id": "S-1-5-21-4107257279-1423172592-2238750195-4603",
+"operatingsystemversion": "10.0 (14393)",
+"state": "enabled",
+"type": "AD_COMPUTER",
+"primarygroupid": "515",
+"samaccountname": "SYSCENTER03$"
+}
+},
+{
+"db_id": 223,
+"name": "TESTV1",
+"label": "AD_COMPUTER",
+"relatedcount": 0,
+"properties": {
+"path": "CN=TESTV1,OU=Computers,OU=LAB,DC=home,DC=local",
+"lastscan": "DS1TbZLSm0W0_qJJwV5X6g",
+"operatingsystem": "Windows 7 Enterprise",
+"name": "TESTV1",
+"operatingsystemversion": "6.1 (7601)",
+"id": "S-1-5-21-4107257279-1423172592-2238750195-4605",
+"state": "enabled",
+"type": "AD_COMPUTER",
+"primarygroupid": "515",
+"samaccountname": "TESTV1$"
+}
+},
+{
+"db_id": 224,
+"name": "SYSCENTER04",
+"label": "AD_COMPUTER",
+"relatedcount": 0,
+"properties": {
+"path": "CN=SYSCENTER04,OU=Servers,OU=LAB,DC=home,DC=local",
+"lastscan": "DS1TbZLSm0W0_qJJwV5X6g",
+"name": "SYSCENTER04",
+"operatingsystem": "Windows Server 2016 Standard Evaluation",
+"id": "S-1-5-21-4107257279-1423172592-2238750195-5106",
+"operatingsystemversion": "10.0 (14393)",
+"state": "enabled",
+"type": "AD_COMPUTER",
+"primarygroupid": "515",
+"samaccountname": "SYSCENTER04$"
+}
+},
+{
+"db_id": 226,
+"name": "TEST",
+"label": "FS_FOLDER",
+"relatedcount": 0,
+"properties": {
+"name": "TEST",
+"path": "\\\\contentstore.home.local\\contentstore\\test",
+"lastscan": "gxWj-r8DK0qCN9tjB2crKg",
+"inheritancedisabled": true,
+"blocked": false,
+"lastpermission": "\\\\contentstore.home.local\\contentstore"
+}
+},
+{
+"db_id": 271,
+"name": "Brix01-E",
+"label": "FS_DATASTORE",
+"relatedcount": 0,
+"properties": {
+"name": "Brix01-E",
+"host": "BRIX01",
+"comment": "External enclosure"
+}
+},
+{
+"db_id": 294,
+"name": "downloads",
+"label": "FS_FOLDER",
+"relatedcount": 0,
+"properties": {
+"name": "downloads",
+"path": "\\\\mediastore.home.local\\downloads",
+"lastscan": "gxWj-r8DK0qCN9tjB2crKg",
+"inheritancedisabled": false,
+"blocked": false
+}
+},
+{
+"db_id": 295,
+"name": "Virtual Machines",
+"label": "FS_FOLDER",
+"relatedcount": 0,
+"properties": {
+"name": "Virtual Machines",
+"path": "\\\\mediastore.home.local\\downloads\\syscenter01\\virtual machines",
+"lastscan": "gxWj-r8DK0qCN9tjB2crKg",
+"inheritancedisabled": false,
+"blocked": false,
+"lastpermission": "\\\\mediastore.home.local\\downloads"
+}
+}
+],
+"edges": [
+{
+"db_id": 156,
+"source": 13,
+"target": 294,
+"bidir": false,
+"label": "GivesAccessTo",
+"properties": {
+"lastscan": "gxWj-r8DK0qCN9tjB2crKg",
+"right": "FullControl"
+}
+},
+{
+"db_id": 7,
+"source": 35,
+"target": 294,
+"bidir": false,
+"label": "GivesAccessTo",
+"properties": {
+"lastscan": "gxWj-r8DK0qCN9tjB2crKg",
+"right": "ReadAndExecute, Synchronize"
+}
+},
+{
+"db_id": 2,
+"source": 125,
+"target": 156,
+"bidir": false,
+"label": "AD_MemberOf",
+"properties": {
+"lastscan": "DS1TbZLSm0W0_qJJwV5X6g"
+}
+},
+{
+"db_id": 3,
+"source": 126,
+"target": 158,
+"bidir": false,
+"label": "AD_MemberOf",
+"properties": {
+"lastscan": "DS1TbZLSm0W0_qJJwV5X6g"
+}
+},
+{
+"db_id": 4,
+"source": 138,
+"target": 156,
+"bidir": false,
+"label": "AD_MemberOf",
+"properties": {
+"lastscan": "DS1TbZLSm0W0_qJJwV5X6g"
+}
+},
+{
+"db_id": 9,
+"source": 139,
+"target": 156,
+"bidir": false,
+"label": "AD_MemberOf",
+"properties": {
+"lastscan": "DS1TbZLSm0W0_qJJwV5X6g"
+}
+},
+{
+"db_id": 10,
+"source": 145,
+"target": 156,
+"bidir": false,
+"label": "AD_MemberOf",
+"properties": {
+"lastscan": "DS1TbZLSm0W0_qJJwV5X6g"
+}
+},
+{
+"db_id": 23,
+"source": 146,
+"target": 294,
+"bidir": false,
+"label": "GivesAccessTo",
+"properties": {
+"lastscan": "gxWj-r8DK0qCN9tjB2crKg",
+"right": "ReadAndExecute, Synchronize"
+}
+},
+{
+"db_id": 24,
+"source": 151,
+"target": 157,
+"bidir": false,
+"label": "AD_MemberOf",
+"properties": {
+"lastscan": "DS1TbZLSm0W0_qJJwV5X6g"
+}
+},
+{
+"db_id": 25,
+"source": 151,
+"target": 156,
+"bidir": false,
+"label": "AD_MemberOf",
+"properties": {
+"lastscan": "DS1TbZLSm0W0_qJJwV5X6g"
+}
+},
+{
+"db_id": 26,
+"source": 152,
+"target": 156,
+"bidir": false,
+"label": "AD_MemberOf",
+"properties": {
+"lastscan": "DS1TbZLSm0W0_qJJwV5X6g"
+}
+},
+{
+"db_id": 28,
+"source": 154,
+"target": 156,
+"bidir": false,
+"label": "AD_MemberOf",
+"properties": {
+"lastscan": "DS1TbZLSm0W0_qJJwV5X6g"
+}
+},
+{
+"db_id": 27,
+"source": 154,
+"target": 157,
+"bidir": false,
+"label": "AD_MemberOf",
+"properties": {
+"lastscan": "DS1TbZLSm0W0_qJJwV5X6g"
+}
+},
+{
+"db_id": 177,
+"source": 157,
+"target": 226,
+"bidir": false,
+"label": "GivesAccessTo",
+"properties": {
+"lastscan": "gxWj-r8DK0qCN9tjB2crKg",
+"right": "FullControl"
+}
+},
+{
+"db_id": 143,
+"source": 157,
+"target": 210,
+"bidir": false,
+"label": "GivesAccessTo",
+"properties": {
+"lastscan": "gxWj-r8DK0qCN9tjB2crKg",
+"right": "FullControl"
+}
+},
+{
+"db_id": 155,
+"source": 157,
+"target": 294,
+"bidir": false,
+"label": "GivesAccessTo",
+"properties": {
+"lastscan": "gxWj-r8DK0qCN9tjB2crKg",
+"right": "FullControl"
+}
+},
+{
+"db_id": 29,
+"source": 159,
+"target": 146,
+"bidir": false,
+"label": "AD_MemberOf",
+"properties": {
+"lastscan": "DS1TbZLSm0W0_qJJwV5X6g"
+}
+},
+{
+"db_id": 30,
+"source": 161,
+"target": 157,
+"bidir": false,
+"label": "AD_MemberOf",
+"properties": {
+"lastscan": "DS1TbZLSm0W0_qJJwV5X6g"
+}
+},
+{
+"db_id": 35,
+"source": 167,
+"target": 161,
+"bidir": false,
+"label": "AD_MemberOf",
+"properties": {
+"lastscan": "DS1TbZLSm0W0_qJJwV5X6g"
+}
+},
+{
+"db_id": 187,
+"source": 168,
+"target": 226,
+"bidir": false,
+"label": "GivesAccessTo",
+"properties": {
+"lastscan": "gxWj-r8DK0qCN9tjB2crKg",
+"right": "Modify, Synchronize"
+}
+},
+{
+"db_id": 147,
+"source": 168,
+"target": 210,
+"bidir": false,
+"label": "GivesAccessTo",
+"properties": {
+"lastscan": "gxWj-r8DK0qCN9tjB2crKg",
+"right": "Modify, Synchronize"
+}
+},
+{
+"db_id": 82,
+"source": 172,
+"target": 126,
+"bidir": false,
+"label": "AD_MemberOf",
+"properties": {
+"lastscan": "DS1TbZLSm0W0_qJJwV5X6g",
+"primarygroup": true
+}
+},
+{
+"db_id": 36,
+"source": 172,
+"target": 158,
+"bidir": false,
+"label": "AD_MemberOf",
+"properties": {
+"lastscan": "DS1TbZLSm0W0_qJJwV5X6g"
+}
+},
+{
+"db_id": 85,
+"source": 173,
+"target": 159,
+"bidir": false,
+"label": "AD_MemberOf",
+"properties": {
+"lastscan": "DS1TbZLSm0W0_qJJwV5X6g",
+"primarygroup": true
+}
+},
+{
+"db_id": 37,
+"source": 173,
+"target": 156,
+"bidir": false,
+"label": "AD_MemberOf",
+"properties": {
+"lastscan": "DS1TbZLSm0W0_qJJwV5X6g"
+}
+},
+{
+"db_id": 86,
+"source": 174,
+"target": 159,
+"bidir": false,
+"label": "AD_MemberOf",
+"properties": {
+"lastscan": "DS1TbZLSm0W0_qJJwV5X6g",
+"primarygroup": true
+}
+},
+{
+"db_id": 41,
+"source": 174,
+"target": 151,
+"bidir": false,
+"label": "AD_MemberOf",
+"properties": {
+"lastscan": "DS1TbZLSm0W0_qJJwV5X6g"
+}
+},
+{
+"db_id": 40,
+"source": 174,
+"target": 152,
+"bidir": false,
+"label": "AD_MemberOf",
+"properties": {
+"lastscan": "DS1TbZLSm0W0_qJJwV5X6g"
+}
+},
+{
+"db_id": 42,
+"source": 174,
+"target": 145,
+"bidir": false,
+"label": "AD_MemberOf",
+"properties": {
+"lastscan": "DS1TbZLSm0W0_qJJwV5X6g"
+}
+},
+{
+"db_id": 39,
+"source": 174,
+"target": 154,
+"bidir": false,
+"label": "AD_MemberOf",
+"properties": {
+"lastscan": "DS1TbZLSm0W0_qJJwV5X6g"
+}
+},
+{
+"db_id": 38,
+"source": 174,
+"target": 157,
+"bidir": false,
+"label": "AD_MemberOf",
+"properties": {
+"lastscan": "DS1TbZLSm0W0_qJJwV5X6g"
+}
+},
+{
+"db_id": 87,
+"source": 175,
+"target": 159,
+"bidir": false,
+"label": "AD_MemberOf",
+"properties": {
+"lastscan": "DS1TbZLSm0W0_qJJwV5X6g",
+"primarygroup": true
+}
+},
+{
+"db_id": 88,
+"source": 176,
+"target": 159,
+"bidir": false,
+"label": "AD_MemberOf",
+"properties": {
+"lastscan": "DS1TbZLSm0W0_qJJwV5X6g",
+"primarygroup": true
+}
+},
+{
+"db_id": 43,
+"source": 176,
+"target": 160,
+"bidir": false,
+"label": "AD_MemberOf",
+"properties": {
+"lastscan": "DS1TbZLSm0W0_qJJwV5X6g"
+}
+},
+{
+"db_id": 158,
+"source": 177,
+"target": 211,
+"bidir": false,
+"label": "GivesAccessTo",
+"properties": {
+"lastscan": "gxWj-r8DK0qCN9tjB2crKg",
+"right": "FullControl"
+}
+},
+{
+"db_id": 115,
+"source": 177,
+"target": 204,
+"bidir": false,
+"label": "AD_MemberOf",
+"properties": {
+"lastscan": "DS1TbZLSm0W0_qJJwV5X6g"
+}
+},
+{
+"db_id": 176,
+"source": 177,
+"target": 167,
+"bidir": false,
+"label": "AD_MemberOf",
+"properties": {
+"lastscan": "DS1TbZLSm0W0_qJJwV5X6g",
+"primarygroup": true
+}
+},
+{
+"db_id": 52,
+"source": 177,
+"target": 151,
+"bidir": false,
+"label": "AD_MemberOf",
+"properties": {
+"lastscan": "DS1TbZLSm0W0_qJJwV5X6g"
+}
+},
+{
+"db_id": 45,
+"source": 177,
+"target": 159,
+"bidir": false,
+"label": "AD_MemberOf",
+"properties": {
+"lastscan": "DS1TbZLSm0W0_qJJwV5X6g"
+}
+},
+{
+"db_id": 44,
+"source": 177,
+"target": 169,
+"bidir": false,
+"label": "AD_MemberOf",
+"properties": {
+"lastscan": "DS1TbZLSm0W0_qJJwV5X6g"
+}
+},
+{
+"db_id": 46,
+"source": 177,
+"target": 154,
+"bidir": false,
+"label": "AD_MemberOf",
+"properties": {
+"lastscan": "DS1TbZLSm0W0_qJJwV5X6g"
+}
+},
+{
+"db_id": 126,
+"source": 178,
+"target": 159,
+"bidir": false,
+"label": "AD_MemberOf",
+"properties": {
+"lastscan": "DS1TbZLSm0W0_qJJwV5X6g",
+"primarygroup": true
+}
+},
+{
+"db_id": 53,
+"source": 178,
+"target": 154,
+"bidir": false,
+"label": "AD_MemberOf",
+"properties": {
+"lastscan": "DS1TbZLSm0W0_qJJwV5X6g"
+}
+},
+{
+"db_id": 129,
+"source": 179,
+"target": 159,
+"bidir": false,
+"label": "AD_MemberOf",
+"properties": {
+"lastscan": "DS1TbZLSm0W0_qJJwV5X6g",
+"primarygroup": true
+}
+},
+{
+"db_id": 154,
+"source": 180,
+"target": 294,
+"bidir": false,
+"label": "GivesAccessTo",
+"properties": {
+"lastscan": "gxWj-r8DK0qCN9tjB2crKg",
+"right": "Modify, Synchronize"
+}
+},
+{
+"db_id": 130,
+"source": 180,
+"target": 159,
+"bidir": false,
+"label": "AD_MemberOf",
+"properties": {
+"lastscan": "DS1TbZLSm0W0_qJJwV5X6g",
+"primarygroup": true
+}
+},
+{
+"db_id": 131,
+"source": 181,
+"target": 159,
+"bidir": false,
+"label": "AD_MemberOf",
+"properties": {
+"lastscan": "DS1TbZLSm0W0_qJJwV5X6g",
+"primarygroup": true
+}
+},
+{
+"db_id": 54,
+"source": 181,
+"target": 166,
+"bidir": false,
+"label": "AD_MemberOf",
+"properties": {
+"lastscan": "DS1TbZLSm0W0_qJJwV5X6g"
+}
+},
+{
+"db_id": 144,
+"source": 182,
+"target": 159,
+"bidir": false,
+"label": "AD_MemberOf",
+"properties": {
+"lastscan": "DS1TbZLSm0W0_qJJwV5X6g",
+"primarygroup": true
+}
+},
+{
+"db_id": 145,
+"source": 183,
+"target": 159,
+"bidir": false,
+"label": "AD_MemberOf",
+"properties": {
+"lastscan": "DS1TbZLSm0W0_qJJwV5X6g",
+"primarygroup": true
+}
+},
+{
+"db_id": 171,
+"source": 184,
+"target": 159,
+"bidir": false,
+"label": "AD_MemberOf",
+"properties": {
+"lastscan": "DS1TbZLSm0W0_qJJwV5X6g",
+"primarygroup": true
+}
+},
+{
+"db_id": 172,
+"source": 185,
+"target": 159,
+"bidir": false,
+"label": "AD_MemberOf",
+"properties": {
+"lastscan": "DS1TbZLSm0W0_qJJwV5X6g",
+"primarygroup": true
+}
+},
+{
+"db_id": 56,
+"source": 185,
+"target": 161,
+"bidir": false,
+"label": "AD_MemberOf",
+"properties": {
+"lastscan": "DS1TbZLSm0W0_qJJwV5X6g"
+}
+},
+{
+"db_id": 186,
+"source": 186,
+"target": 226,
+"bidir": false,
+"label": "GivesAccessTo",
+"properties": {
+"lastscan": "gxWj-r8DK0qCN9tjB2crKg",
+"right": "FullControl"
+}
+},
+{
+"db_id": 146,
+"source": 186,
+"target": 210,
+"bidir": false,
+"label": "GivesAccessTo",
+"properties": {
+"lastscan": "gxWj-r8DK0qCN9tjB2crKg",
+"right": "FullControl"
+}
+},
+{
+"db_id": 173,
+"source": 186,
+"target": 159,
+"bidir": false,
+"label": "AD_MemberOf",
+"properties": {
+"lastscan": "DS1TbZLSm0W0_qJJwV5X6g",
+"primarygroup": true
+}
+},
+{
+"db_id": 57,
+"source": 186,
+"target": 161,
+"bidir": false,
+"label": "AD_MemberOf",
+"properties": {
+"lastscan": "DS1TbZLSm0W0_qJJwV5X6g"
+}
+},
+{
+"db_id": 174,
+"source": 187,
+"target": 159,
+"bidir": false,
+"label": "AD_MemberOf",
+"properties": {
+"lastscan": "DS1TbZLSm0W0_qJJwV5X6g",
+"primarygroup": true
+}
+},
+{
+"db_id": 58,
+"source": 187,
+"target": 171,
+"bidir": false,
+"label": "AD_MemberOf",
+"properties": {
+"lastscan": "DS1TbZLSm0W0_qJJwV5X6g"
+}
+},
+{
+"db_id": 188,
+"source": 188,
+"target": 226,
+"bidir": false,
+"label": "GivesAccessTo",
+"properties": {
+"lastscan": "gxWj-r8DK0qCN9tjB2crKg",
+"right": "ReadAndExecute, Synchronize"
+}
+},
+{
+"db_id": 148,
+"source": 188,
+"target": 210,
+"bidir": false,
+"label": "GivesAccessTo",
+"properties": {
+"lastscan": "gxWj-r8DK0qCN9tjB2crKg",
+"right": "ReadAndExecute, Synchronize"
+}
+},
+{
+"db_id": 65,
+"source": 188,
+"target": 295,
+"bidir": false,
+"label": "GivesAccessTo",
+"properties": {
+"lastscan": "gxWj-r8DK0qCN9tjB2crKg",
+"right": "ReadAndExecute, Synchronize"
+}
+},
+{
+"db_id": 175,
+"source": 188,
+"target": 159,
+"bidir": false,
+"label": "AD_MemberOf",
+"properties": {
+"lastscan": "DS1TbZLSm0W0_qJJwV5X6g",
+"primarygroup": true
+}
+},
+{
+"db_id": 83,
+"source": 189,
+"target": 139,
+"bidir": false,
+"label": "AD_MemberOf",
+"properties": {
+"lastscan": "DS1TbZLSm0W0_qJJwV5X6g",
+"primarygroup": true
+}
+},
+{
+"db_id": 61,
+"source": 190,
+"target": 124,
+"bidir": false,
+"label": "AD_MemberOf",
+"properties": {
+"lastscan": "DS1TbZLSm0W0_qJJwV5X6g",
+"primarygroup": true
+}
+},
+{
+"db_id": 84,
+"source": 191,
+"target": 139,
+"bidir": false,
+"label": "AD_MemberOf",
+"properties": {
+"lastscan": "DS1TbZLSm0W0_qJJwV5X6g",
+"primarygroup": true
+}
+},
+{
+"db_id": 62,
+"source": 192,
+"target": 124,
+"bidir": false,
+"label": "AD_MemberOf",
+"properties": {
+"lastscan": "DS1TbZLSm0W0_qJJwV5X6g",
+"primarygroup": true
+}
+},
+{
+"db_id": 121,
+"source": 210,
+"target": 271,
+"bidir": false,
+"label": "FS_HostedOn",
+"properties": {}
+},
+{
+"db_id": 157,
+"source": 211,
+"target": 210,
+"bidir": false,
+"label": "FS_InheritsFrom",
+"properties": {
+"lastscan": "gxWj-r8DK0qCN9tjB2crKg"
+}
+},
+{
+"db_id": 63,
+"source": 212,
+"target": 124,
+"bidir": false,
+"label": "AD_MemberOf",
+"properties": {
+"lastscan": "DS1TbZLSm0W0_qJJwV5X6g",
+"primarygroup": true
+}
+},
+{
+"db_id": 64,
+"source": 213,
+"target": 124,
+"bidir": false,
+"label": "AD_MemberOf",
+"properties": {
+"lastscan": "DS1TbZLSm0W0_qJJwV5X6g",
+"primarygroup": true
+}
+},
+{
+"db_id": 66,
+"source": 214,
+"target": 124,
+"bidir": false,
+"label": "AD_MemberOf",
+"properties": {
+"lastscan": "DS1TbZLSm0W0_qJJwV5X6g",
+"primarygroup": true
+}
+},
+{
+"db_id": 67,
+"source": 215,
+"target": 124,
+"bidir": false,
+"label": "AD_MemberOf",
+"properties": {
+"lastscan": "DS1TbZLSm0W0_qJJwV5X6g",
+"primarygroup": true
+}
+},
+{
+"db_id": 68,
+"source": 216,
+"target": 124,
+"bidir": false,
+"label": "AD_MemberOf",
+"properties": {
+"lastscan": "DS1TbZLSm0W0_qJJwV5X6g",
+"primarygroup": true
+}
+},
+{
+"db_id": 71,
+"source": 217,
+"target": 124,
+"bidir": false,
+"label": "AD_MemberOf",
+"properties": {
+"lastscan": "DS1TbZLSm0W0_qJJwV5X6g",
+"primarygroup": true
+}
+},
+{
+"db_id": 75,
+"source": 218,
+"target": 124,
+"bidir": false,
+"label": "AD_MemberOf",
+"properties": {
+"lastscan": "DS1TbZLSm0W0_qJJwV5X6g",
+"primarygroup": true
+}
+},
+{
+"db_id": 76,
+"source": 219,
+"target": 124,
+"bidir": false,
+"label": "AD_MemberOf",
+"properties": {
+"lastscan": "DS1TbZLSm0W0_qJJwV5X6g",
+"primarygroup": true
+}
+},
+{
+"db_id": 77,
+"source": 220,
+"target": 124,
+"bidir": false,
+"label": "AD_MemberOf",
+"properties": {
+"lastscan": "DS1TbZLSm0W0_qJJwV5X6g",
+"primarygroup": true
+}
+},
+{
+"db_id": 78,
+"source": 221,
+"target": 124,
+"bidir": false,
+"label": "AD_MemberOf",
+"properties": {
+"lastscan": "DS1TbZLSm0W0_qJJwV5X6g",
+"primarygroup": true
+}
+},
+{
+"db_id": 79,
+"source": 222,
+"target": 124,
+"bidir": false,
+"label": "AD_MemberOf",
+"properties": {
+"lastscan": "DS1TbZLSm0W0_qJJwV5X6g",
+"primarygroup": true
+}
+},
+{
+"db_id": 59,
+"source": 222,
+"target": 168,
+"bidir": false,
+"label": "AD_MemberOf",
+"properties": {
+"lastscan": "DS1TbZLSm0W0_qJJwV5X6g"
+}
+},
+{
+"db_id": 80,
+"source": 223,
+"target": 124,
+"bidir": false,
+"label": "AD_MemberOf",
+"properties": {
+"lastscan": "DS1TbZLSm0W0_qJJwV5X6g",
+"primarygroup": true
+}
+},
+{
+"db_id": 81,
+"source": 224,
+"target": 124,
+"bidir": false,
+"label": "AD_MemberOf",
+"properties": {
+"lastscan": "DS1TbZLSm0W0_qJJwV5X6g",
+"primarygroup": true
+}
+},
+{
+"db_id": 60,
+"source": 224,
+"target": 168,
+"bidir": false,
+"label": "AD_MemberOf",
+"properties": {
+"lastscan": "DS1TbZLSm0W0_qJJwV5X6g"
+}
+},
+{
+"db_id": 167,
+"source": 226,
+"target": 210,
+"bidir": false,
+"label": "FS_BlocksInheritanceFrom",
+"properties": {
+"lastscan": "gxWj-r8DK0qCN9tjB2crKg"
+}
+},
+{
+"db_id": 137,
+"source": 271,
+"target": 221,
+"bidir": false,
+"label": "ConnectedTo",
+"properties": {}
+},
+{
+"db_id": 138,
+"source": 294,
+"target": 271,
+"bidir": false,
+"label": "FS_HostedOn",
+"properties": {}
+},
+{
+"db_id": 55,
+"source": 295,
+"target": 294,
+"bidir": false,
+"label": "FS_InheritsFrom",
+"properties": {
+"lastscan": "gxWj-r8DK0qCN9tjB2crKg"
+}
+}
+]
+}

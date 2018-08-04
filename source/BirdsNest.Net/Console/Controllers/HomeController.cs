@@ -9,7 +9,6 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace Console.Controllers
 {
-    [Authorize(Policy = "AdGroupMember")]
     public class HomeController : Controller
     {
         public IActionResult Index()

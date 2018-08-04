@@ -1,0 +1,113 @@
+.graphbg {
+	fill:white;
+}
+
+/*nodes config*/
+.nodes {
+	stroke-width:3px;
+	color:#474747;
+	stroke:#474747;
+	fill:#e5e5e5;	
+}
+
+.selected .nodecircle {
+	stroke-width:5px;
+	fill:#FEFE73;
+}
+
+.nodes text {
+	font-size:10px;
+	fill:#353535;
+	stroke:none;
+	font-family: 'helvetica', arial, sans-serif;
+}
+
+.pin {
+	color:white;
+	fill:#ff5b5b;
+	stroke:white;
+	stroke-width:1px;
+}
+
+.AD_User {
+	color:crimson;
+	stroke:crimson;
+	fill:#ffe2e7;	
+}
+
+.AD_Computer {
+	color: steelblue;
+	stroke: steelblue;
+	fill: lightcyan;
+}
+
+.AD_Group {
+	color: green;
+	stroke: green;
+	fill: #BBF0C6;
+}
+
+.BuiltinGroup {
+	color: #474747;
+	stroke: #474747;
+	fill: #e5e5e5;
+}
+
+.BuiltinUser {
+	color: #474747;
+	stroke: #474747;
+	fill: #e5e5e5;
+}
+
+.Device {
+	color: mediumpurple;
+	stroke: mediumpurple;
+	fill: purple;
+}
+
+.FS_Folder {
+	color:#ad9370;
+	stroke: #ad9370;
+	fill: cornsilk;
+}
+.FS_Datastore {
+	color:midnightblue;
+	stroke: midnightblue;
+	fill: lightblue;
+}
+
+
+
+/*edges config*/
+.edgelabel text {
+	font-size:8px;
+	fill:#353535;
+	font-family: 'helvetica', arial, sans-serif;
+}
+
+.arrows {
+	fill:inherit;
+}
+.AD_MEMBER_OF {
+	fill:green;
+}
+
+.CONNECTED_TO {
+	fill:blue;
+}
+
+.GIVES_ACCESS_TO {
+	fill:orange;
+}
+
+.FS_INHERITS_FROM {
+	fill:brown;
+}
+
+.FS_BLOCKS_INHERITANCE_FROM {
+	fill: red;
+}
+
+.FS_HOSTED_ON {
+	fill: darkblue;
+}
