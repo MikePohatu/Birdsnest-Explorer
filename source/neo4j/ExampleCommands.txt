@@ -1,0 +1,1 @@
+CALL dbms.security.createUser('johndoe', 'llamallamaduck', false)

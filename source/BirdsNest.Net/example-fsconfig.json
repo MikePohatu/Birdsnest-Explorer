@@ -1,9 +1,11 @@
 {
-	"credential":{
-		"id":"cred1",
-		"username": "domain\\username",
-		"password": "P@ssword1"
-	},
+	"credentials":[
+		{
+			"id":"cred1",
+			"username": "domain\\username",
+			"password": "P@ssword1"
+		}
+	],
 	"datastores":[
 		{
 			"name":"datastore1",
