@@ -11,9 +11,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FSScanner", "FSScanner\FSSc
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CustomAppScanner", "CustomAppScanner\CustomAppScanner.csproj", "{5062CB83-0AEB-4AE4-9F86-8279DFF2F48A}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NeoProxy", "NeoProxy\NeoProxy.csproj", "{EC1CF073-EEEC-40DA-A27D-12A663B6C4EE}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Console", "Console\Console.csproj", "{01AAAB3B-9700-4069-9DBA-C6146E47DC07}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Console", "Console\Console.csproj", "{01AAAB3B-9700-4069-9DBA-C6146E47DC07}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -37,10 +35,6 @@ Global
 		{5062CB83-0AEB-4AE4-9F86-8279DFF2F48A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5062CB83-0AEB-4AE4-9F86-8279DFF2F48A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5062CB83-0AEB-4AE4-9F86-8279DFF2F48A}.Release|Any CPU.Build.0 = Release|Any CPU
-		{EC1CF073-EEEC-40DA-A27D-12A663B6C4EE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{EC1CF073-EEEC-40DA-A27D-12A663B6C4EE}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{EC1CF073-EEEC-40DA-A27D-12A663B6C4EE}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{EC1CF073-EEEC-40DA-A27D-12A663B6C4EE}.Release|Any CPU.Build.0 = Release|Any CPU
 		{01AAAB3B-9700-4069-9DBA-C6146E47DC07}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{01AAAB3B-9700-4069-9DBA-C6146E47DC07}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{01AAAB3B-9700-4069-9DBA-C6146E47DC07}.Release|Any CPU.ActiveCfg = Release|Any CPU

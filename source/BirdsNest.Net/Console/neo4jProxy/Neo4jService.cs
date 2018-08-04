@@ -14,15 +14,19 @@ namespace Console.neo4jProxy
     {
         public readonly IDriver Driver;
 
-        public Neo4jService()
+        public Neo4jService(string configJson)
         {
-            string configfile = AppDomain.CurrentDomain.BaseDirectory + @"\neoconfig.json";
-
             //load the config
-            using (NeoConfiguration config = NeoConfiguration.LoadConfiguration(configfile))
+            using (NeoConfiguration config = NeoConfiguration.LoadJsonString(configJson))
             {
                 this.Driver = Neo4jConnector.ConnectToNeo(config);
             }
+        }
+
+        public Neo4jService(NeoConfiguration config)
+        {
+            //load the config
+            this.Driver = Neo4jConnector.ConnectToNeo(config);
         }
 
         public object GetAll()

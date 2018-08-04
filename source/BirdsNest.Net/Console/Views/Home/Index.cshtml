@@ -13,9 +13,7 @@
     else
     {
         <p>BirdsNest is a environment discovery and visualization tool. You must login to continue. </p>
-        <form action="/login">
-            <input type="submit" class="button" value="Login" />
-        </form>
+        <input type="submit" class="button" value="Login" onclick="@("window.location.href='" + @Url.Action("Index", "Auth") + "'");" />
 
     }
 }

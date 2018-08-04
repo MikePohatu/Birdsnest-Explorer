@@ -20,15 +20,28 @@ namespace common
             this.DB_Password = string.Empty;
         }
 
-        public static NeoConfiguration LoadConfiguration(string filepath)
+        public static NeoConfiguration LoadConfigurationFile(string filepath)
         {
             NeoConfiguration conf = new NeoConfiguration();
 
-            using (StreamReader file = File.OpenText(filepath))
+            using (StreamReader reader = File.OpenText(filepath))
             {
                 JsonSerializer serializer = new JsonSerializer();
-                conf = (NeoConfiguration)serializer.Deserialize(file, typeof(NeoConfiguration));
+                conf = (NeoConfiguration)serializer.Deserialize(reader, typeof(NeoConfiguration));
             }
+            return conf;
+        }
+
+        public static NeoConfiguration LoadJsonString(string json)
+        {
+            NeoConfiguration conf;
+            JsonSerializer serializer = new JsonSerializer();
+
+            using (StringReader reader = new StringReader(json))
+            {
+                conf = (NeoConfiguration)serializer.Deserialize(reader, typeof(NeoConfiguration));
+            }
+                
             return conf;
         }
     }

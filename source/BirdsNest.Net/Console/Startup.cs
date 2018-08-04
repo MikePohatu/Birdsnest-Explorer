@@ -14,6 +14,8 @@ using Console.Controllers;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Console.Directory;
+using common;
 
 namespace Console
 {
@@ -38,11 +40,13 @@ namespace Console
 
 
             //services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
-
+            services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+                .AddCookie();
 
             services.AddAuthorization(options =>
             {
-                options.AddPolicy("AdGroupMember", policy => policy.RequireRole(Configuration["SecuritySettings:ADGroup"]));
+                options.AddPolicy("IsBirdsNestAdmin", policy => policy.RequireClaim("BirdsNestAdmin"));
+                options.AddPolicy("IsBirdsNestUser", policy => policy.RequireClaim("BirdsNestUser"));
             });
 
             services.AddMvc(config =>
@@ -54,9 +58,28 @@ namespace Console
                 config.Filters.Add(new AuthorizeFilter(policy));
             }).SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
 
-            services.AddSingleton<Neo4jService>();
-            services.AddScoped<SearchController>();
-            services.AddScoped<NodesController>();
+            services.AddSingleton(serviceProvider =>
+            {
+                Neo4jService neoservice;
+                using (NeoConfiguration config = new NeoConfiguration())
+                {
+                    config.DB_URI = Configuration["neo4jSettings:DB_URI"];
+                    config.DB_Username = Configuration["neo4jSettings:DB_Username"];
+                    config.DB_Password = Configuration["neo4jSettings:DB_Password"];
+                    neoservice = new Neo4jService(config);
+                }
+
+                return neoservice;
+            });
+
+            services.AddSingleton(serviceProvider =>
+            {
+                DirectoryConfiguration config = new DirectoryConfiguration();
+                config.Domain = Configuration["ActiveDirectorySettings:Domain"];
+                config.AdminGroup = Configuration["ActiveDirectorySettings:AdminGroup"];
+                config.UserGroup = Configuration["ActiveDirectorySettings:UserGroup"];
+                return config;
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -76,16 +99,8 @@ namespace Console
             app.UseStaticFiles();
             app.UseCookiePolicy();
 
+            app.UseAuthentication();
             app.UseMvcWithDefaultRoute();
-            //app.UseMvc(routes =>
-            //{
-            //    routes.MapRoute(
-            //        name: "default",
-            //        template: "{controller=Home}/{action=Index}/{id?}");
-            //    routes.MapRoute(
-            //        name: "visualizer",
-            //        template: "{controller=Visualizer}/{action=Index}/{id?}");
-            //});
         }
     }
 }

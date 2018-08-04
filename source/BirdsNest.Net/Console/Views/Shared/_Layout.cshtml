@@ -22,12 +22,16 @@
                     <a>Menu</a>
                     <ul class="menu">
                         <li><a href="/">Home</a></li>
-                        <!--
-                            {% if user.is_authenticated %}
-                            <li><a href="{% url 'portal_logout">Logout</a></li>
-                            {% else %}
-                            <li><a href="{% url 'portal_login">Login</a></li>
-                            {% endif %}-->
+                        @{
+                            if (User.Identity.IsAuthenticated)
+                            {
+                                <li onclick="@("window.location.href='" + @Url.Action("Logout", "Auth") + "'");">Logout</li>
+                            }
+                            else
+                            {
+                                <li onclick="@("window.location.href='" + @Url.Action("Index", "Auth") + "'");">Login</li>
+                            }
+                        }
                     </ul>
             </ul>
         </div>

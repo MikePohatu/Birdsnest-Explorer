@@ -49,7 +49,7 @@ namespace ADScanner
                 rootDE = ConnectToAD(config);
             }
 
-            using (NeoConfiguration config = NeoConfiguration.LoadConfiguration(neoconfigfile))
+            using (NeoConfiguration config = NeoConfiguration.LoadConfigurationFile(neoconfigfile))
             {
                 driver = Neo4jConnector.ConnectToNeo(config);
             }

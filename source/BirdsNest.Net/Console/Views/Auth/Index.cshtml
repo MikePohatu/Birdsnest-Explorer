@@ -1,0 +1,33 @@
+﻿
+@using Console.ViewModels
+@model LoginViewModel
+@{
+    ViewData["Title"] = "Login";
+}
+
+
+<div class="grid-x grid-margin-x">
+    <fieldset class="fieldset small-4 cell">
+        <legend>Login</legend>
+        <form id="loginForm" class="small-12 medium-4 cell" type="POST" asp-action="Login" asp-controller="Auth">
+
+            <div class="input-group">
+                <input type="text" asp-for="UserName" placeholder="Username" class="small-8 input-group-field" />
+            </div>
+
+            <div class="input-group">
+                <input type="password" asp-for="Password" placeholder="Password" class="small-8 input-group-field" />
+            </div>
+            <div class="grid-x">
+                <div class="cell small-3 medium-3">
+                    <input type="submit" class="button" value="Login">
+                </div>
+                <p class="cell small-6 medium-6">@ViewBag.Message</p>
+            </div>
+            @Html.AntiForgeryToken()
+        </form>
+
+        <div asp-validation-summary="All"></div>
+            
+    </fieldset>
+</div>
