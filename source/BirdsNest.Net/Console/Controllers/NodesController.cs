@@ -1,9 +1,11 @@
 ﻿using System.Collections.Generic;
 using Microsoft.AspNetCore.Mvc;
 using Console.neo4jProxy;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Console.Controllers
 {
+    [Authorize(Policy = "IsBirdsNestUser")]
     [Produces("application/json")]
     [Route("api/Nodes")]
     public class NodesController : Controller

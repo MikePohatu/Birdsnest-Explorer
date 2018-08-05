@@ -45,15 +45,19 @@ namespace Console.Controllers
                         new Claim(ClaimTypes.GivenName,user.GivenName,_config.Domain),
                         new Claim(ClaimTypes.Name,user.GivenName,_config.Domain),
                         new Claim(ClaimTypes.Surname,user.Surname,_config.Domain),
-                        new Claim(ClaimTypes.Sid,user.Sid.Value,_config.Domain),
-                        new Claim("BirdsNestAdmin", 
-                            LdapAuthorizer.IsMemberOf(context, user, this._config.AdminGroup).ToString(), 
-                            ClaimValueTypes.Boolean, _config.Domain),
-                        new Claim("BirdsNestUser",
-                            LdapAuthorizer.IsMemberOf(context, user, this._config.UserGroup).ToString(),
-                            ClaimValueTypes.Boolean, _config.Domain)
-
+                        new Claim(ClaimTypes.Sid,user.Sid.Value,_config.Domain)
                         };
+
+                    if (LdapAuthorizer.IsMemberOf(context,user,this._config.UserGroup))
+                    {
+                        claims.Add(new Claim("BirdsNestUser","True",ClaimValueTypes.Boolean, _config.Domain));
+                    }
+
+                    if (LdapAuthorizer.IsMemberOf(context, user, this._config.AdminGroup))
+                    {
+                        claims.Add(new Claim("BirdsNestAdmin", "True", ClaimValueTypes.Boolean, _config.Domain));
+                    }
+
 
                     var userIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
                     var userPrincipal = new ClaimsPrincipal(userIdentity);

@@ -16,6 +16,7 @@ using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Console.Directory;
 using common;
+using Microsoft.AspNetCore.Identity;
 
 namespace Console
 {
@@ -38,6 +39,12 @@ namespace Console
                 options.MinimumSameSitePolicy = SameSiteMode.None;
             });
 
+            services.ConfigureApplicationCookie(opt =>
+            {
+                opt.LoginPath = new PathString("/auth");
+                opt.AccessDeniedPath = new PathString("/auth");
+                opt.LogoutPath = new PathString("/");
+            });
 
             //services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
             services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
@@ -45,8 +52,8 @@ namespace Console
 
             services.AddAuthorization(options =>
             {
-                options.AddPolicy("IsBirdsNestAdmin", policy => policy.RequireClaim("BirdsNestAdmin"));
-                options.AddPolicy("IsBirdsNestUser", policy => policy.RequireClaim("BirdsNestUser"));
+                options.AddPolicy("IsBirdsNestAdmin", policy => policy.RequireClaim("BirdsNestAdmin","True"));
+                options.AddPolicy("IsBirdsNestUser", policy => policy.RequireClaim("BirdsNestUser", "True"));
             });
 
             services.AddMvc(config =>
@@ -96,10 +103,9 @@ namespace Console
             }
 
             app.UseHttpsRedirection();
+            app.UseAuthentication();
             app.UseStaticFiles();
             app.UseCookiePolicy();
-
-            app.UseAuthentication();
             app.UseMvcWithDefaultRoute();
         }
     }

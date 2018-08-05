@@ -5,9 +5,11 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Console.neo4jProxy;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Console.Controllers
 {
+    [Authorize(Policy = "IsBirdsNestUser")]
     [Produces("application/json")]
     [Route("api/Edges")]
     public class EdgesController : Controller
