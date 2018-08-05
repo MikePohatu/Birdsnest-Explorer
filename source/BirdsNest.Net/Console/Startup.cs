@@ -39,13 +39,6 @@ namespace Console
                 options.MinimumSameSitePolicy = SameSiteMode.None;
             });
 
-            services.ConfigureApplicationCookie(opt =>
-            {
-                opt.LoginPath = new PathString("/auth");
-                opt.AccessDeniedPath = new PathString("/auth");
-                opt.LogoutPath = new PathString("/");
-            });
-
             //services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
             services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
                 .AddCookie();
@@ -59,6 +52,7 @@ namespace Console
             services.AddMvc(config =>
             {
                 AuthorizationPolicy policy = new AuthorizationPolicyBuilder()
+                    .RequireClaim("BirdsNestUser", "True")
                     .RequireAuthenticatedUser()
                     .Build();
 

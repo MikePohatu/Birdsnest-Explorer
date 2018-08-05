@@ -14,6 +14,10 @@ namespace Console.Controllers
     {
         public IActionResult Index()
         {
+            if (User.Identity.IsAuthenticated == true)
+            {
+                return new RedirectResult("/portal",false);
+            }
             return View();
         }
 

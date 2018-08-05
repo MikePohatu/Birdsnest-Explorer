@@ -2,18 +2,5 @@
     ViewData["Title"] = "Home";
 }
 
-@{
-    if (User.Identity.IsAuthenticated)
-    {
-        <p>Hi @User.Identity.Name. Open Visualizer to get started</p>
-        <form action="~/visualizer/">
-            <input type="submit" class="button" value="Visualizer" />
-        </form>
-    }
-    else
-    {
-        <p>BirdsNest is a environment discovery and visualization tool. You must login to continue. </p>
-        <input type="submit" class="button" value="Login" onclick="@("window.location.href='" + @Url.Action("Index", "Auth") + "'");" />
-
-    }
-}
+<p>BirdsNest is a environment discovery and visualization tool. You must login to continue. </p>
+<input type="submit" class="button" value="Login" onclick="@("window.location.href='" + @Url.Action("Login", "Account") + "'");" />
