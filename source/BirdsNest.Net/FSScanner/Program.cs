@@ -90,6 +90,10 @@ namespace FSScanner
                     {
                         crawler.CrawlRoot(ds, fs.Path, fscred);
                     }
+                    else
+                    {
+                        crawler.CrawlRoot(ds, fs.Path);
+                    }
                 }
             }
 

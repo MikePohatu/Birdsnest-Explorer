@@ -673,7 +673,12 @@ Search functionality
 
 var pendingResults;
 
+function showSearchSpinner() {
+    var el = document.getElementById("searchNotification").innerHTML = "<i class='fas fa-spinner spinner'></i>"
+}
+
 function search() {
+    showSearchSpinner();
 	//console.log('search');
 	var sourcetype = document.getElementById("sourceType").value;
 	var sourceprop = document.getElementById("sourceProp").value;
@@ -849,17 +854,6 @@ function sourceValKeyUp() {
 	});
 }
 
-
-
-/*function searchNodeNames(element, term, limit) {
-	console.log("searchNodeNames");
-	if (!isNullOrEmpty(term)) {
-		$.getJSON('/api/search/nodenames?term=' + term + '&limit=' + limit, function(data) {
-			console.log(data);
-			autocomplete(element, data);
-		});
-	}	
-}*/
 
 function isNullOrEmpty( s ) 
 {

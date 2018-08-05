@@ -9,10 +9,10 @@ namespace FSScanner
     public class Configuration: IDisposable
     {
         [JsonProperty("credentials")]
-        public List<Credential> Credentials { get; set; }
+        public List<Credential> Credentials { get; set; } = new List<Credential>();
 
         [JsonProperty("datastores")]
-        public List<DataStore> Datastores { get; set; }
+        public List<DataStore> Datastores { get; set; } = new List<DataStore>();
 
         public static Configuration LoadConfiguration (string filepath)
         {
