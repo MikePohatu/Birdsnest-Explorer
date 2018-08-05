@@ -25,11 +25,11 @@
                         @{
                             if (User.Identity.IsAuthenticated)
                             {
-                                <li onclick="@("window.location.href='" + @Url.Action("Logout", "Auth") + "'");">Logout</li>
+                                <li><a href="@Url.Action("Logout", "Auth")">Logout</a></li>
                             }
                             else
                             {
-                                <li onclick="@("window.location.href='" + @Url.Action("Index", "Auth") + "'");">Login</li>
+                                <li><a href="@Url.Action("Index", "Auth")">Login</a></li>
                             }
                         }
                     </ul>
