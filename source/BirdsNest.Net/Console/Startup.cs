@@ -52,7 +52,6 @@ namespace Console
             services.AddMvc(config =>
             {
                 AuthorizationPolicy policy = new AuthorizationPolicyBuilder()
-                    .RequireClaim("BirdsNestUser", "True")
                     .RequireAuthenticatedUser()
                     .Build();
 

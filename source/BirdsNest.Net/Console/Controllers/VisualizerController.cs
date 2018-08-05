@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Console.Controllers
 {
-    [Authorize(Policy = "IsBirdsNestUser")]
+    [Authorize]
     public class VisualizerController : Controller
     {
         public IActionResult Index()

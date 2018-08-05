@@ -9,7 +9,7 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace Console.Controllers
 {
-    [Authorize(Policy = "IsBirdsNestUser")]
+    [Authorize]
     [Produces("application/json")]
     [Route("api/Edges")]
     public class EdgesController : Controller

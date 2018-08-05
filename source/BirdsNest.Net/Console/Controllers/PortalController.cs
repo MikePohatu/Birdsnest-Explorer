@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace Console.Controllers
 {
-    [Authorize(Policy = "IsBirdsNestUser")]
+    [Authorize]
     public class PortalController : Controller
     {
         public IActionResult Index()

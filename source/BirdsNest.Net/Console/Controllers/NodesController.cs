@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace Console.Controllers
 {
-    [Authorize(Policy = "IsBirdsNestUser")]
+    [Authorize]
     [Produces("application/json")]
     [Route("api/Nodes")]
     public class NodesController : Controller
