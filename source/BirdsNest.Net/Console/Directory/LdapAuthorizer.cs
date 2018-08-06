@@ -10,40 +10,19 @@ namespace Console.Directory
     {
         public static PrincipalContext CreateContext(string domainname)
         {
-            try
-            {
-                PrincipalContext context = new PrincipalContext(ContextType.Domain, domainname);
-                return context;
-            }
-            catch (Exception e)
-            {
-                return null;
-            }
+            PrincipalContext context = new PrincipalContext(ContextType.Domain, domainname);
+            return context;
         }
 
         public static bool IsAuthenticated(PrincipalContext context, string username, string password)
         {
-            try
-            {
-                return context.ValidateCredentials(username, password);
-            }
-            catch (Exception ex)
-            {
-                throw ex;
-            }
+            return context.ValidateCredentials(username, password);
         }
 
         public static UserPrincipal GetUserPrincipal (PrincipalContext context, string username)
         {
-            try
-            {
-                // find a user
-                return UserPrincipal.FindByIdentity(context, username);
-            }
-            catch (Exception e)
-            {
-                throw e;
-            }
+            return UserPrincipal.FindByIdentity(context, username);
+
         }
             
 

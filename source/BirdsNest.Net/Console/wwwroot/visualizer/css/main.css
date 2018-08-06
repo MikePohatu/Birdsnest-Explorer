@@ -68,12 +68,20 @@ body {
 
 .viewcontrol{
 	float: left;
-	height: 32px;
-	width: 32px;
+	height: 24px;
+	width: 16px;
 	margin-left:7px;
 	margin-right:7px;
 	margin-top:2px;
 	margin-bottom:2px;
+}
+
+.viewcontrol-right {
+    float: right;
+}
+
+.viewcontrol:hover {
+    color: gray;
 }
 
 .pane {
@@ -100,14 +108,6 @@ body {
 
 .currentActiveDetailCard {
 	border: 2px solid black;
-}
-
-.viewcontrol-right {
-	float: right;
-}
-
-.viewcontrol:hover {
-	color:gray;
 }
 
 .inputbox {

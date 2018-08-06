@@ -23,7 +23,12 @@
                 <div class="cell small-3 medium-3">
                     <input type="submit" class="button" value="Login">
                 </div>
-                <p class="cell small-9 medium-9">@ViewBag.Message</p>
+                <div class="cell small-9 medium-9">
+                    <small>
+                        <b>@ViewBag.Message</b><br />@ViewBag.Errors
+                    </small>
+                </div>
+                
             </div>
             @Html.AntiForgeryToken()
         </form>

@@ -38,58 +38,67 @@ namespace Console.Controllers
         {
             if (ModelState.IsValid)
             {
-                using (var context = LdapAuthorizer.CreateContext(_config.Domain))
+                try
                 {
-                    if (LdapAuthorizer.IsAuthenticated(context, details.UserName, details.Password))
+                    using (var context = LdapAuthorizer.CreateContext(_config.Domain))
                     {
-                        bool authorized = false;
-                        UserPrincipal user = LdapAuthorizer.GetUserPrincipal(context, details.UserName);
-
-                        var claims = new List<Claim> {
-                        new Claim(ClaimTypes.GivenName,user.GivenName,_config.Domain),
-                        new Claim(ClaimTypes.Name,user.GivenName,_config.Domain),
-                        new Claim(ClaimTypes.Surname,user.Surname,_config.Domain),
-                        new Claim(ClaimTypes.Sid,user.Sid.Value,_config.Domain)
-                        };
-
-                        if (LdapAuthorizer.IsMemberOf(context, user, this._config.UserGroup))
+                        if (LdapAuthorizer.IsAuthenticated(context, details.UserName, details.Password))
                         {
-                            claims.Add(new Claim("BirdsNestUser", "True", ClaimValueTypes.Boolean, _config.Domain));
-                            authorized = true;
+                            bool authorized = false;
+                            UserPrincipal user = LdapAuthorizer.GetUserPrincipal(context, details.UserName);
+
+                            var claims = new List<Claim> {
+                                new Claim(ClaimTypes.GivenName,user.GivenName,_config.Domain),
+                                new Claim(ClaimTypes.Name,user.GivenName,_config.Domain),
+                                new Claim(ClaimTypes.Surname,user.Surname,_config.Domain),
+                                new Claim(ClaimTypes.Sid,user.Sid.Value,_config.Domain)
+                            };
+
+                            if (LdapAuthorizer.IsMemberOf(context, user, this._config.UserGroup))
+                            {
+                                claims.Add(new Claim("BirdsNestUser", "True", ClaimValueTypes.Boolean, _config.Domain));
+                                authorized = true;
+                            }
+
+                            if (LdapAuthorizer.IsMemberOf(context, user, this._config.AdminGroup))
+                            {
+                                claims.Add(new Claim("BirdsNestAdmin", "True", ClaimValueTypes.Boolean, _config.Domain));
+                                authorized = true;
+                            }
+
+                            if (authorized == false)
+                            {
+                                ViewData["Message"] = "You are not authorised to use BirdsNest. Please contact your administrator";
+                                return View();
+                            }
+
+                            var userIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+                            var userPrincipal = new ClaimsPrincipal(userIdentity);
+                            var authProperties = new AuthenticationProperties
+                            {
+                                ExpiresUtc = DateTime.UtcNow.AddMinutes(20),
+                                IsPersistent = false,
+                                AllowRefresh = false
+                            };
+
+                            await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, userPrincipal, authProperties);
+
+                            if (!string.IsNullOrEmpty(returnUrl) || Url.IsLocalUrl(returnUrl)) { return Redirect(returnUrl); }
+                            else { return RedirectToAction("Index", "Home"); }
+
                         }
-
-                        if (LdapAuthorizer.IsMemberOf(context, user, this._config.AdminGroup))
+                        else
                         {
-                            claims.Add(new Claim("BirdsNestAdmin", "True", ClaimValueTypes.Boolean, _config.Domain));
-                            authorized = true;
-                        }
-
-                        if (authorized==false)
-                        {
-                            ViewData["Message"] = "You are not authorised to use BirdsNest. Please contact your administrator";
+                            ViewData["Message"] = "Login failed";
                             return View();
                         }
-
-                        var userIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
-                        var userPrincipal = new ClaimsPrincipal(userIdentity);
-                        var authProperties = new AuthenticationProperties
-                        {
-                            ExpiresUtc = DateTime.UtcNow.AddMinutes(20),
-                            IsPersistent = false,
-                            AllowRefresh = false
-                        };
-
-                        await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, userPrincipal, authProperties);
-
-                        if (!string.IsNullOrEmpty(returnUrl) || Url.IsLocalUrl(returnUrl)) { return Redirect(returnUrl); }
-                        else { return RedirectToAction("Index", "Home"); }
-                        
-                    }
-                    else
-                    {
-                        ViewData["Message"] = "Login failed";
-                        return View();
-                    }
+                    }  
+                }
+                catch (Exception e)
+                {
+                    ViewBag.Errors = e.Message;
+                    ViewData["Message"] = "There was an error logging in." ;
+                    return View();
                 }
             }
             else

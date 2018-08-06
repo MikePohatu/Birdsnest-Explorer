@@ -108,17 +108,17 @@
 
         <div id="drawingpane" tabindex="0">
             <div id="viewcontrols">
-                <div id="restartLayoutBtn">
-                    <i id="restartIcon" class="fas fa-sync-alt viewcontrol" data-tooltip tabindex="1" title="Refresh layout"></i>
+                <span id="restartLayoutBtn" class="viewcontrol has-tip" data-tooltip title="Refresh layout">
+                    <i id="restartIcon" class="fas fa-sync-alt"></i>
+                </span>
+                <div id="pausePlayBtn" class="viewcontrol" data-tooltip title="Play/pause layout">
+                    <i id="pausePlayIcon" class="fas fa-play"></i>
                 </div>
-                <div id="pausePlayBtn">
-                    <i id="pausePlayIcon" class="fas fa-play viewcontrol" data-tooltip tabindex="1" title="Play/pause layout"></i>
+                <div id="removeBtn" class="viewcontrol" data-tooltip title="Remove node from layout">
+                    <i id="removeIcon" class="fas fa-trash-alt"></i>
                 </div>
-                <div id="removeBtn">
-                    <i id="removeIcon" class="fas fa-trash-alt viewcontrol" data-tooltip tabindex="1" title="Remove node"></i>
-                </div>
-                <div id="menuShowHideButton">
-                    <i id="menuIcon" class="fas fa-angle-up viewcontrol viewcontrol-right"></i>
+                <div id="menuShowHideButton" class="viewcontrol viewcontrol-right" data-tooltip title="Hide the search bar">
+                    <i id="menuIcon" class="fas fa-angle-up"></i>
                 </div>
             </div>
         </div>
