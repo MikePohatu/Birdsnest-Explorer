@@ -34,4 +34,5 @@
 
 #viewcontrols .has-tip {
     border-bottom: none;
+    cursor: none;
 }
