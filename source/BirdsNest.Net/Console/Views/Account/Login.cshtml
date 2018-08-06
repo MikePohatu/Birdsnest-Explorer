@@ -13,15 +13,15 @@
               asp-route-returnurl = "@ViewData["ReturnUrl"]">
 
             <div class="input-group">
-                <input type="text" asp-for="UserName" placeholder="Username" class="small-8 input-group-field" />
+                <input type="text" asp-for="UserName" placeholder="Username" tabindex="1" autofocus class="small-8 input-group-field" />
             </div>
 
             <div class="input-group">
-                <input type="password" asp-for="Password" placeholder="Password" class="small-8 input-group-field" />
+                <input type="password" asp-for="Password" placeholder="Password" tabindex="2" class="small-8 input-group-field" />
             </div>
             <div class="grid-x">
                 <div class="cell small-3 medium-3">
-                    <input type="submit" class="button" value="Login">
+                    <input type="submit" class="button" tabindex="3" value="Login">
                 </div>
                 <div class="cell small-9 medium-9">
                     <small>

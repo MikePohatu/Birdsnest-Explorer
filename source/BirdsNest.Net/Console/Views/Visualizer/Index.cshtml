@@ -1,12 +1,27 @@
+@using Microsoft.AspNetCore.Html;
+@using Console.ViewModels;
+
 @{
     ViewData["Title"] = "Visualizer";
     Layout = "_Layout";
 }
 
+@functions {
+    string CreateViewControl(string spanid, string iconid, string faclass, string tooltip)
+    {
+        var element = "<span id=\"" + spanid + "\" class=\"viewcontrol\" data-tooltip data-position=\"right\" data-alignment=\"center\" data-click-open=\"false\" data-hover-delay=\"1000\" title=\""+ tooltip + "\">" +
+            "< i id = \""+ iconid + "\" class=\"fas "+ faclass + "\"></i>"+
+            "</span>";
+        return element;
+    }
+}
 
-<link rel="stylesheet" type="text/css" href="~/visualizer/css/main.css">
-<link rel="stylesheet" type="text/css" href="~/visualizer/css/visualization.css">
-<link rel="stylesheet" type="text/css" href="~/css/jquery-ui.css">
+@section Styles
+{
+    <link rel="stylesheet" type="text/css" href="~/visualizer/css/main.css">
+    <link rel="stylesheet" type="text/css" href="~/visualizer/css/visualization.css">
+    <link rel="stylesheet" type="text/css" href="~/css/jquery-ui.css">
+}
 
 <div id="pagewrapper">
     <div id="main">
@@ -18,7 +33,7 @@
 
                         <div class="input-group">
                             <span class="input-group-label small-4">Type</span>
-                            <select id="sourceType" class="small-8 input-group-field" onchange="updateProps('source')">
+                            <select id="sourceType" class="small-8 input-group-field" autofocus onchange="updateProps('source')">
                                 <option value="" disabled selected hidden></option>
                                 <option value="">*</option>
                             </select>
@@ -106,35 +121,50 @@
 
         </div>
 
-        <div id="drawingpane" tabindex="0">
+        <div id="drawingpane">
             <div id="viewcontrols">
-                <span id="restartLayoutBtn" class="viewcontrol has-tip" data-tooltip title="Refresh layout">
-                    <i id="restartIcon" class="fas fa-sync-alt"></i>
-                </span>
-                <div id="pausePlayBtn" class="viewcontrol" data-tooltip title="Play/pause layout">
-                    <i id="pausePlayIcon" class="fas fa-play"></i>
-                </div>
-                <div id="removeBtn" class="viewcontrol" data-tooltip title="Remove node from layout">
-                    <i id="removeIcon" class="fas fa-trash-alt"></i>
-                </div>
-                <div id="menuShowHideButton" class="viewcontrol viewcontrol-right" data-tooltip title="Hide the search bar">
-                    <i id="menuIcon" class="fas fa-angle-up"></i>
-                </div>
+                @{
+                    var controls = new List<ViewControlViewModel>();
+                    controls.Add(new ViewControlViewModel
+                    {
+                        SpanID = "restartLayoutBtn",
+                        IconID = "restartIcon",
+                        FaIcon = "fa-sync-alt",
+                        ToolTipText = "Refresh layout"
+                    });
+                    controls.Add(new ViewControlViewModel
+                    {
+                        SpanID = "pausePlayBtn",
+                        IconID = "pausePlayIcon",
+                        FaIcon = "fa-play",
+                        ToolTipText = "Play/pause layout"
+                    });
+                    controls.Add(new ViewControlViewModel
+                    {
+                        SpanID = "removeBtn",
+                        IconID = "pausePlayIcon",
+                        FaIcon = "fa-trash-alt",
+                        ToolTipText = "Remove node from layout"
+                    });
+                    controls.Add(new ViewControlViewModel
+                    {
+                        SpanID = "menuShowHideButton",
+                        IconID = "menuIcon",
+                        FaIcon = "fa-angle-up",
+                        ToolTipText = "Hide the search bar",
+                        Class = "viewcontrol-right"
+                    });
+                    foreach (var control in controls)
+                    {
+                        <partial name="ViewControlPartial" model="control" />
+                    }
+                }
             </div>
         </div>
 
         <div id="detailcardwrapper"></div>
     </div>
 </div>
-
-<!--<a href="#" data-reveal-id="myModal">Click Me For A Modal</a>
-
-<div id="confirmModal" class="reveal-modal" data-reveal aria-labelledby="confirmModal" aria-hidden="true" role="dialog">
-    <h2 id="confirmModalTitle"></h2>
-    <p class="lead">Your couch.  It is mine.</p>
-    <p>I'm a cool paragraph that lives inside of an even cooler modal. Wins!</p>
-    <a class="close-reveal-modal" aria-label="Close">&#215;</a>
-</div>-->
 
 @section Scripts
     {
@@ -143,8 +173,6 @@
     <script src="~/visualizer/js/d3.min.js"></script>
     <script src="~/visualizer/js/visualizer.js" type="text/javascript"></script>
     <script>
-        //var getAllUrl = "visualizer/json/testdata.json";
-        //var getAllUrl = "/api/getall";
         var iconmappings;
         $.getJSON("json/labelicons.json", function (data) {
             iconmappings = new IconMappings(data);

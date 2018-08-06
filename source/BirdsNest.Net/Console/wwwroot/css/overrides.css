@@ -31,3 +31,7 @@
 .menu .menu-text {
 	padding: 0.2rem 1rem;
 }
+
+#viewcontrols .has-tip {
+    border-bottom: none;
+}

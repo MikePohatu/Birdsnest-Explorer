@@ -36,11 +36,10 @@ body {
 }
 
 #detailcardwrapper::-webkit-scrollbar {
-    width: 10px;  /* remove scrollbar space */
-    background: transparent;  /* optional: just make scrollbar invisible */
+    width: 10px;
+    background: transparent;  
 }
 
-/* optional: show position indicator in red */
 #detailcardwrapper::-webkit-scrollbar-thumb {
     background: #D6D6D6;
 }
@@ -72,8 +71,8 @@ body {
 	width: 16px;
 	margin-left:7px;
 	margin-right:7px;
-	margin-top:2px;
-	margin-bottom:2px;
+	margin-top:6px;
+	margin-bottom:6px;
 }
 
 .viewcontrol-right {
@@ -144,31 +143,6 @@ input[type=number]::-webkit-outer-spin-button {
 .slider-handle {
   width: 0.8rem;
 }
-
-/* Tooltip text */
-.tooltip {
-    visibility: hidden;
-    width: 120px;
-    background-color: black;
-    color: #fff;
-    text-align: center;
-    padding: 5px 0;
-    border-radius: 6px;
- 	opacity: 0;
-    transition: opacity 1s;
-
-    /* Position the tooltip text - see examples below! */
-    position: absolute;
-    z-index: 1;
-}
-
-/* Show the tooltip text when you mouse over the tooltip container */
-.viewcontrol:hover .tooltip {
-	visibility: visible;
-	opacity: 1;
-}
-
-
 
 .spinner {
     -webkit-animation: spin 4s linear infinite;

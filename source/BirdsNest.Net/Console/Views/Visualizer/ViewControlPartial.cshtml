@@ -1,0 +1,7 @@
+﻿@using Console.ViewModels;
+
+@model ViewControlViewModel
+
+<span id="@Html.DisplayFor(model => model.SpanID)" class="viewcontrol has-tip @Html.DisplayFor(model => model.Class)" data-tooltip data-position="right" data-alignment="center" data-h-offset="5" data-click-open="false" data-hover-delay="1500" title="@Html.DisplayFor(model => model.ToolTipText)">
+    <i id="@Html.DisplayFor(model => model.IconID)" class="fas @Html.DisplayFor(model => model.FaIcon)"></i>
+</span>
