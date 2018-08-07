@@ -14,12 +14,12 @@
 			"filesystems":[
 				{
 					"credentialid":"cred1",
-					"root":"\\\\server\\share1",
+					"path":"\\\\server\\share1",
 					"comment":"san1-share1"
 				},
 				{
 					"credentialid":"cred1",
-					"root":"\\\\server\\share2",
+					"path":"\\\\server\\share2",
 					"comment":"san1-share2"
 				}
 			]

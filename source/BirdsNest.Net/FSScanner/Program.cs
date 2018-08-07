@@ -85,8 +85,13 @@ namespace FSScanner
                 Crawler crawler = new Crawler(driver);
                 foreach (FileSystem fs in ds.FileSystems)
                 {
+                    if (string.IsNullOrEmpty(fs.Path))
+                    {
+                        Console.WriteLine("Filesystem missing \"path\" property");
+                        continue;
+                    }
                     NetworkCredential fscred;
-                    if (credentials.TryGetValue(fs.CredentialID, out fscred))
+                    if (!string.IsNullOrEmpty(fs.CredentialID) && (credentials.TryGetValue(fs.CredentialID, out fscred)))
                     {
                         crawler.CrawlRoot(ds, fs.Path, fscred);
                     }

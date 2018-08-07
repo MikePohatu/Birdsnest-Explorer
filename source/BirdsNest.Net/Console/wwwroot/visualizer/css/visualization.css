@@ -60,9 +60,9 @@
 }
 
 .Device {
-	color: mediumpurple;
-	stroke: mediumpurple;
-	fill: purple;
+    color: #cab4f7;
+    stroke: #cab4f7;
+    fill: purple;
 }
 
 .FS_Folder {

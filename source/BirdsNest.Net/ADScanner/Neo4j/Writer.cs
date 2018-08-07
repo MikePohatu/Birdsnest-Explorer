@@ -14,6 +14,7 @@ namespace ADScanner.Neo4j
                 "MERGE (n:" + Types.Group + "{id:g.id}) " +
                 "SET n.name = g.name " +
                 "SET n.type = g.type " +
+                "SET n.dn = g.dn " +
                 "SET n.samaccountname = g.samaccountname " +
                 "SET n.lastscan = g.scanid " +
                 "SET n.path = g.path " +
@@ -40,6 +41,7 @@ namespace ADScanner.Neo4j
             string query = "UNWIND $propertylist AS u " +
             "MERGE (n:" + Types.User + "{id:u.id}) " +
             "SET n.name = u.name " +
+            "SET n.dn = u.dn " +
             "SET n.path = u.path " +
             "SET n.type = u.type " +
             "SET n.samaccountname = u.samaccountname " +
@@ -60,6 +62,7 @@ namespace ADScanner.Neo4j
             "SET n: " + Types.Device + " " + 
             "SET n.name = c.name " +
             "SET n.path = c.path " +
+            "SET n.dn = c.dn " +
             "SET n.type = c.type " +
             "SET n.samaccountname = c.samaccountname " +
             "SET n.lastscan = c.scanid " +
@@ -81,7 +84,7 @@ namespace ADScanner.Neo4j
         public static int MergeGroupRelationships(string type, List<object> groupmappings, ISession session)
         { 
             string query = "UNWIND $groupmappings as m " +
-                "MERGE (g:" + Types.Group + "{path:m.dn}) " +
+                "MERGE (g:" + Types.Group + "{dn:m.dn}) " +
                 "MERGE (n:" + type + "{id:m.id}) " +
                 "MERGE (n)-[r:" + Types.MemberOf + "]->(g) " +
                 "SET r.lastscan = m.scanid " +

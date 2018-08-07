@@ -60,14 +60,17 @@ function drawGraph(selectid) {
 	simulation
 		.force("link", d3.forceLink(edgedata)		
 			.id(function(d) { return d.db_id; })
-			.distance(175)
-			.strength(0.75))
-		.force('collision', d3.forceCollide().radius(function(d) { return (d.size * 2)}))
-		.force('charge', d3.forceManyBody().strength(1.5)) 
+			.distance(150)
+			.strength(1.5))
+        .force('collide', d3.forceCollide()
+            .strength(1)
+            .radius(function (d) { return (d.size * 1.5) }))
+        .force('charge', d3.forceManyBody()
+            .strength(-5))
 		.force('center', d3.forceCenter(paneWidth / 2, paneHeight / 2))
 		.on('tick', function () { updateLocations(); })
-		.velocityDecay(0.3)
-		.alphaDecay(0.1);
+		.velocityDecay(0.6)
+		.alphaDecay(0.07);
 }
 
 function resetView() {
@@ -538,13 +541,13 @@ function updateLocations() {
 				let linepoint = Math.max(lineend + 5, lineend);
 				linestart = Math.min(d.source.radius + 5,lineend);
 
-				let = path = "M " + linestart + " -1 " + 
-				"L " + lineend + " -1 " +
+				let = path = "M " + linestart + " -0.5 " + 
+				"L " + lineend + " -0.5 " +
 				"L " + lineend + " -5 " +
 				"L " + linepoint + " 0 " +
 				"L " + lineend + " 5 " +
-				"L " + lineend + " 1 " +
-				"L " + linestart + " 1 Z ";
+				"L " + lineend + " 0.5 " +
+				"L " + linestart + " 0.5 Z ";
 
 				return path;
 			});
