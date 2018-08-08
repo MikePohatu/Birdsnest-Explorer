@@ -1,86 +1,100 @@
- #$creds = Get-Credential
+#$creds = Get-Credential
 #-Credential $creds 
 
-$zdc ='server'
+$zdc ='wn0ntctxzdcpp01'
 [string]$ENV = 'XA6.5_UAT'
 
 write-host "Querying $zdc"
 
-$allapps = Invoke-Command -ComputerName $zdc -ScriptBlock {
-    Add-PSSnapin “Citrix.XenApp.Commands”
-    $appslist = @()
-    $AllApplications = Get-XAApplication
-    ForEach ($Application in $AllApplications) {
-        #$myobj = "" | select BrowserName,ApplicationId,Enabled,FolderPath,LoadBalancingApplicationCheckEnabled,CommandLineExecutable,ClientFolder,AccountName,AccountDN
-        $AppGroupObj = Get-XAAccount -BrowserName $Application.BrowserName | Select *
-        $appobj = New-Object –TypeName PSObject –Prop (@{       
-            'BrowserName' = $Application.BrowserName;
-            'ApplicationId' = $Application.ApplicationId;
-            'Enabled' = $Application.Enabled;
-            'FolderPath' = $Application.FolderPath;
-            'LoadBalancingApplicationCheckEnabled' = $Application.LoadBalancingApplicationCheckEnabled;
-            'CommandLineExecutable' = $Application.CommandLineExecutable;
-            'ClientFolder' = $Application.ClientFolder;
-            'AccountName' = $AppGroupObj.AccountName;
-            'AccountDN' = $AppGroupObj.SearchPath;
-        })
-        $appslist += $appobj
+Function Get-CitrixApps {
+    Param ([Parameter(Mandatory=$true)][string]$DataCollector)
+    $allapps = Invoke-Command -ComputerName $DataCollector -ScriptBlock {
+        Add-PSSnapin “Citrix.XenApp.Commands”
+        $appslist = New-Object "System.Collections.Generic.List[object]"
+        $AllApplications = Get-XAApplication
+        ForEach ($Application in $AllApplications) {
+            $AppGroupObj = Get-XAAccount -BrowserName $Application.BrowserName | Select *
+
+            $appobj = New-Object "System.Collections.Generic.Dictionary[object]"   
+            $appobj.Add('BrowserName',$Application.BrowserName)
+            $appobj.Add('ApplicationId',$Application.ApplicationId)
+            $appobj.Add('Enabled',$Application.Enabled)
+            $appobj.Add('FolderPath', $Application.FolderPath)
+            $appobj.Add('LoadBalancingApplicationCheckEnabled', $Application.LoadBalancingApplicationCheckEnabled)
+            $appobj.Add('CommandLineExecutable', $Application.CommandLineExecutable)
+            $appobj.Add('ClientFolder', $Application.ClientFolder)
+            $appobj.Add('AccountName', $AppGroupObj.AccountName)
+            $appobj.Add('AccountDN', $AppGroupObj.SearchPath)
+
+            $appslist.Add($appobj)
+        }
+
+        return $appslist
     }
 
-    return $appslist
+    write-host "$($allapps.count) applications found"
+    return $allapps
 }
 
-write-host "$($allapps.count) applications found"
 
-#$allapps
+
+Function WriteToNeo {
+    Param (
+        [Parameter(Mandatory=$true)][string]$NeoConfigPath,
+        [Parameter(Mandatory=$true)][string]$NeoDriverPath,
+        [Parameter(Mandatory=$true)][string]$Query,
+        [object]$Parameters
+    )
+    $results = $null
+
+    try {
+        # Import DLLs
+        Add-Type -Path "$NeoDriverPath"
+
+        $neoconfig = Get-Content -Raw -Path $NeoConfigPath | ConvertFrom-Json
+        $authToken = [Neo4j.Driver.V1.AuthTokens]::Basic($neoconfig.DB_Username,$neoconfig.DB_Password)
+
+        $dbDriver = [Neo4j.Driver.V1.GraphDatabase]::Driver($neoconfig.DB_URI,$authToken)
+        $session = $dbDriver.Session()
+
+        if ($Parameters) { $results = $session.WriteTransaction({param ($tx) $tx.Run($Query,$Parameters) }) }
+        else { $results = $session.WriteTransaction({param ($tx) $tx.Run($Query) }) }
+    } 
+    finally {
+      $session = $null
+      $dbDriver = $null
+      
+    }
+    return $results
+}
+
+
+
+
+$allapps = Get-CitrixApps -DataCollector $zdc
 write-host "Writing to neo4j database"
 
 $installpath = 'C:\Tools\Temp\birdsnest\Scanners'
 
-# Import DLLs
-Add-Type -Path "$installpath\Neo4j.Driver.dll"
-
-$neoconfig = Get-Content -Raw -Path "$installpath\neoconfig.json" | ConvertFrom-Json
-$authToken = [Neo4j.Driver.V1.AuthTokens]::Basic($neoconfig.DB_Username,$neoconfig.DB_Password)
-
-$dbDriver = [Neo4j.Driver.V1.GraphDatabase]::Driver($neoconfig.DB_URI,$authToken)
-$session = $dbDriver.Session()
-
-try {
-    
-  
-    #$resultcound = $session.WriteTransaction(tx => tx.Run($query,{applications = $allapps, env = $ENV}))
-    $paramsobj = New-Object –TypeName PSObject –Prop (@{'applications'=$allapps;
-                'env'=$ENV;})
-    $query = 'WITH $env as envname, $applications as applist ' +
-            'MERGE (cenv:CTX_Farm {env:envname}) ' +
-            'WITH cenv,envname,applist '+
-            'UNWIND applist as app ' +
-            'MERGE (n:CTX_Application {id:app.ApplicationID}) ' +
-            'SET n.browsername = app.BrowserName ' +
-            'SET n.enabled = app.Enabled ' +
-            'SET n.folderpath = app.FolderPath ' +
-            'SET n.clientfolder = app.ClientFolder ' +
-            'SET n.environment = envname ' +
-            'WITH n,cenv ' +
-            'MERGE (n)-[:PUBLISHED_FROM]->(cenv) '+
-            'RETURN count(n) '
-
-    #$query = "MERGE (cenv:CTX_Farm {env:'XA6.5_UAT'}) RETURN cenv"
 
 
-    #[System.Action[Neo4j.Driver.V1.ITransaction]]$action = {
-    #    param([Neo4j.Driver.V1.ITransaction]$tx)        
-    #    $tx.Run($query,$paramsobj)
-    #}
-  #$results = $session.WriteTransaction({param ($tx) $tx.Run($query,$paramsobj) })
-  #$results = $session.WriteTransaction({param ($tx) $tx.Run($query) })
-} 
-finally {
-  $session = $null
-  $dbDriver = $null
-}
+$paramsobj = New-Object "System.Collections.Generic.Dictionary[object]"     
+$paramsobj.Add('env', $ENV)
+$paramsobj.Add('applications',$allapps)
 
-$results
-#$allapps
- 
+$query = 'WITH $env as envname, $applications as applist ' +
+        'MERGE (cenv:CTX_Farm {env:envname}) ' +
+        'WITH cenv,envname,applist '+
+        'UNWIND applist as app ' +
+        'MERGE (n:CTX_Application {id:app.ApplicationID}) ' +
+        #'SET n.browsername = app.BrowserName ' +
+        'SET n.enabled = app.Enabled ' +
+        'SET n.folderpath = app.FolderPath ' +
+        #'SET n.clientfolder = app.ClientFolder ' +
+        'SET n.environment = envname ' +
+        'WITH n,cenv ' +
+        'MERGE (n)-[:PUBLISHED_FROM]->(cenv) '+
+        'RETURN count(n) '
+
+
+WriteToNeo -NeoConfigPath "$($installpath)\neoconfig.json" -NeoDriverPath "$($installpath)\Neo4j.Driver.dll" -Query $query -Parameters $paramsobj
