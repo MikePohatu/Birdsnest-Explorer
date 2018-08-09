@@ -100,12 +100,12 @@
 	fill:orange;
 }
 
-.FS_INHERITS_FROM {
-	fill:brown;
+.FS_APPLIES_INHERITANCE_TO {
+    fill: brown;
 }
 
-.FS_BLOCKS_INHERITANCE_FROM {
-	fill: red;
+.FS_BLOCKED_INHERITANCE {
+    fill: red;
 }
 
 .FS_HOSTED_ON {

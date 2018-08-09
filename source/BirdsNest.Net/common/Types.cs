@@ -31,8 +31,8 @@ namespace common
         public static string Datastore { get { return "FS_Datastore"; } }
 
         //FSScanner edges
-        public static string InheritsFrom { get { return "FS_INHERITS_FROM"; } }
-        public static string BlocksInheritanceFrom { get { return "FS_BLOCKS_INHERITANCE_FROM"; } }
+        public static string AppliesInhertitanceTo { get { return "FS_APPLIES_INHERITANCE_TO"; } }
+        public static string BlockedInheritance { get { return "FS_BLOCKED_INHERITANCE"; } }
         public static string HostedOn { get { return "FS_HOSTED_ON"; } }
 
         //ADScanner nodes

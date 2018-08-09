@@ -83,8 +83,8 @@ namespace FSScanner
             builder.AppendLine("WITH folder ");
             builder.AppendLine("MERGE(lastfolder {path:$lastfolder}) ");
 
-            if (folder.InheritanceDisabled) { builder.AppendLine("MERGE (folder) -[r:" + Types.BlocksInheritanceFrom + "]->(lastfolder) "); }
-            else { builder.AppendLine("MERGE (folder) -[r:" + Types.InheritsFrom + "]->(lastfolder) "); }
+            if (folder.InheritanceDisabled) { builder.AppendLine("MERGE (lastfolder) -[r:" + Types.BlockedInheritance + "]->(folder) "); }
+            else { builder.AppendLine("MERGE (lastfolder) -[r:" + Types.AppliesInhertitanceTo + "]->(folder) "); }
 
             builder.AppendLine("SET r.lastscan = $scanid ");
             builder.AppendLine("RETURN folder.path");
