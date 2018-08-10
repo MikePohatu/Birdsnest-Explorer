@@ -416,7 +416,7 @@ namespace Console.neo4jProxy
                 {
                     session.ReadTransaction(tx =>
                     {
-                        string query = "MATCH (n) WHERE $type IN labels(n) AND n[{prop}]  =~ $regex RETURN n[{prop}] ORDER BY n[{prop}] LIMIT 20";
+                        string query = "MATCH (n) WHERE $type IN labels(n) AND n[{prop}]  =~ $regex RETURN DISTINCT n[{prop}] ORDER BY n[{prop}] LIMIT 10";
                         dbresult = tx.Run(query, new { type = type, prop = property, regex= regexterm });
                     });
                 }

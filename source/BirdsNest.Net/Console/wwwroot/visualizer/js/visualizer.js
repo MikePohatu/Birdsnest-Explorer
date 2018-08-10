@@ -76,10 +76,11 @@ function drawGraph(selectid) {
 function resetView() {
 	//console.log("resetView");
 	edgedata = [];
-	nodedata = [];
+    nodedata = [];
+    unselectAllNodes();	
 	graphbglayer.selectAll("*").remove();
 	edgeslayer.selectAll("*").remove();
-	nodeslayer.selectAll("*").remove();
+    nodeslayer.selectAll("*").remove(); 
 }
 
 function addResultSet(json) {
@@ -734,7 +735,13 @@ function search() {
 
 function addPending() {
 	//console.log(pendingResults.nodes.length);
-	if (pendingResults.nodes.length>500) {
+    if (pendingResults.nodes.length > 1000) {
+        if (confirm("You are adding a ridiculous number of nodes to the view. This is really, really not recommended. " +
+            " Are you sure?") !== true) {
+            return;
+        }
+    }
+    else if (pendingResults.nodes.length > 500) {
 		if (confirm("You are adding a huge number of nodes to the view. This is not recommended. "+ 
 			" Are you sure?") !== true) {
 			return;
@@ -811,9 +818,9 @@ function getAll() {
 
 function addRelated(nodeid) {
 	//console.log("addRelated"+ nodeid);
-	$.getJSON("/api/nodes?nodeid="+nodeid, function(data) {
-    	addResultSet(data);
-   		updateEdges();
+    $.getJSON("/api/nodes?nodeid=" + nodeid, function (data) {
+        pendingResults = data;
+        addPending();
     });
 
 }
@@ -850,12 +857,12 @@ function timedKeyUp(timedfunction) {
     typetimer = setTimeout(timedfunction, 700);
 }
 
-function sourceValKeyUp() {
-	timedKeyUp( function(d) {
-		console.log('sourceValKeyUp');
-		searchValues('source');
-	});
-}
+//function sourceValKeyUp() {
+//	timedKeyUp( function(d) {
+//		console.log('sourceValKeyUp');
+//		searchValues('source');
+//	});
+//}
 
 
 function isNullOrEmpty( s ) 
