@@ -76,6 +76,17 @@
 	fill: lightblue;
 }
 
+.CTX_Farm {
+    color: #80a500;
+    stroke: #80a500;
+    fill: #fbffed;
+}
+
+.CTX_Application {
+    color: #ffa500;
+    stroke: #ffa500;
+    fill: #fff1d8;
+}
 
 
 /*edges config*/
