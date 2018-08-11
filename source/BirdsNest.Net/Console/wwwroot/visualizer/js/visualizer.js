@@ -28,8 +28,10 @@ var perfmode = false; //perfmode indicates high numbers of nodes, and minimises 
 
 function drawGraph(selectid) {
     updatePaneSize(selectid);
-	drawPane = d3.select("#"+selectid)
-		.on("keydown", keydown)
+    drawPane = d3.select("#" + selectid);
+	
+    d3.select("body")
+        .on("keydown", keydown)
 		.on("keyup", keyup);
 
 	svg = drawPane.append("svg")
@@ -120,9 +122,7 @@ function addResultSet(json) {
 document.getElementById('restartLayoutBtn').addEventListener('click', restartLayout, false);
 function restartLayout() { 
     //console.log('restartLayout');
-    if (!d3.selectAll("#restartIcon").classed("spinner")) {
-        d3.selectAll("#restartIcon").classed("spinner", true);
-    }   
+    d3.selectAll("#restartIcon").classed("spinner", true, "important"); 
 	simulation.nodes(nodedata);
 
 	simulation.force("link")
@@ -393,8 +393,10 @@ function unpinNode(d) {
 }
 
 function keydown() {
+    //console.log("keydown");
 	shiftKey = d3.event.shiftKey || d3.event.metaKey;
-	ctrlKey = d3.event.ctrlKey;
+    ctrlKey = d3.event.ctrlKey;
+    //console.log(ctrlKey);
 }
 
 function keyup() {
@@ -418,7 +420,10 @@ function nodeDblClicked(d) {
 function nodeClicked(d) {
 	//console.log("nodeClicked");
 	//console.log(d.name);
-	if (d3.event.defaultPrevented) return; // dragged
+    if (d3.event.defaultPrevented) {
+        //console.log("prevented");
+        return;
+    } // dragged
 	d3.event.stopPropagation();
 
 	if (ctrlKey) {	
@@ -816,7 +821,9 @@ function addPending() {
 			return;
 		}
 	}
-	
+
+    d3.selectAll("#restartIcon").classed("spinner", true, "important");
+
 	addResultSet(pendingResults);
 	updateEdges();
 	restartLayout();

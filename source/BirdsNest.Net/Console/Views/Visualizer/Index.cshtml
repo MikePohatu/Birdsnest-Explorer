@@ -124,42 +124,19 @@
         <div id="drawingpane">
             <div id="viewcontrols">
                 <div id="viewcontrolbtns" class="grid-x">
-                    @{
-                        var controls = new List<ViewControlViewModel>();
-                        controls.Add(new ViewControlViewModel
-                        {
-                            SpanID = "restartLayoutBtn",
-                            IconID = "restartIcon",
-                            FaIcon = "fa-sync-alt",
-                            ToolTipText = "Refresh layout"
-                        });
-                        controls.Add(new ViewControlViewModel
-                        {
-                            SpanID = "pausePlayBtn",
-                            IconID = "pausePlayIcon",
-                            FaIcon = "fa-play",
-                            ToolTipText = "Play/pause layout"
-                        });
-                        controls.Add(new ViewControlViewModel
-                        {
-                            SpanID = "removeBtn",
-                            IconID = "removeIcon",
-                            FaIcon = "fa-trash-alt",
-                            ToolTipText = "Remove node from layout"
-                        });
-                        controls.Add(new ViewControlViewModel
-                        {
-                            SpanID = "menuShowHideButton",
-                            IconID = "menuIcon",
-                            FaIcon = "fa-angle-up",
-                            ToolTipText = "Hide the search bar",
-                            Class = "viewcontrol-right right"
-                        });
-                        foreach (var control in controls)
-                        {
-                            <partial name="ViewControlPartial" model="control" />
-                        }
-                    }
+                    <span id="restartLayoutBtn" class="cell viewcontrol has-tip" title="Refresh layout">
+                        <i id="restartIcon" class="fas fa-sync-alt"></i>
+                    </span>
+                    <span id="pausePlayBtn" class="cell viewcontrol has-tip" title="Play/pause layout">
+                        <i id="pausePlayIcon" class="fas fa-play"></i>
+                    </span>
+                    <span id="removeBtn" class="cell viewcontrol has-tip" title="Remove node from layout">
+                        <i id="removeIcon" class="fas fa-trash-alt"></i>
+                    </span>
+                    <span  class="cell" style="width:32px;"> </span> <!-- spacer -->
+                    <span id="menuShowHideButton" class="cell viewcontrol has-tip" title="Hide the search bar">
+                        <i id="menuIcon" class="fas fa-angle-up"></i>
+                    </span>
                 </div>
                 <div id="progress" style="width: 0;"></div>
             </div>

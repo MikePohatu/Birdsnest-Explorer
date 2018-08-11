@@ -62,7 +62,7 @@ body {
     position: absolute;
     top: 0;
     left: 0;
-    height: 38px;
+    height: 40px;
     width: 135px;
     padding: 0;
     background: white;
@@ -100,7 +100,7 @@ body {
     margin-left: 4px;
     margin-right: 4px;
     margin-top: 6px;
-    margin-bottom: 6px;
+    margin-bottom: 3px;
 }
 
 .viewcontrol-right {
