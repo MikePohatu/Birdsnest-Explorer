@@ -88,10 +88,12 @@ function updatePaneSize(selectid) {
 function onLayoutFinished() {
     updateLocations();
     d3.selectAll("#restartIcon").classed("spinner", false);
+    d3.select("#progress").style("width", "100%");
 }
 
 function onTick() {
-
+    //console.log(simulation.alpha());
+    d3.select("#progress").style("width",(100 - (simulation.alpha() * 100)) + "%");
     if (perfmode) {
         updateNodePositions();
     }

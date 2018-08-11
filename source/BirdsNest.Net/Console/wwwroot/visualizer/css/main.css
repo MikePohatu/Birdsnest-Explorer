@@ -72,6 +72,15 @@ body {
     margin: 0;
 }
 
+#progress {
+    display: block;
+    height: 5px;
+    padding: 0;
+    margin: 0;
+    background-color: lightblue;
+    z-index:5;
+}
+
 #drawingsvg {
 	height: 100%;
 	width: 100%;
@@ -79,18 +88,23 @@ body {
 	padding: 0;
 }
 
-.viewcontrol{
-	float: left;
-	height: 24px;
-	width: 16px;
-	margin-left:7px;
-	margin-right:7px;
-	margin-top:6px;
-	margin-bottom:6px;
+#viewcontrolbtns {
+    padding-left:2px;
+    padding-right:2px;
+}
+
+.viewcontrol {
+    /*float: left;*/
+    height: 24px;
+    width: 16px;
+    margin-left: 4px;
+    margin-right: 4px;
+    margin-top: 6px;
+    margin-bottom: 6px;
 }
 
 .viewcontrol-right {
-    float: right;
+    /*float: right;*/
 }
 
 .viewcontrol:hover {

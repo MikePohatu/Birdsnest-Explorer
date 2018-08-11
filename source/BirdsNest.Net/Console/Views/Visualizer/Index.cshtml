@@ -123,43 +123,47 @@
 
         <div id="drawingpane">
             <div id="viewcontrols">
-                @{
-                    var controls = new List<ViewControlViewModel>();
-                    controls.Add(new ViewControlViewModel
-                    {
-                        SpanID = "restartLayoutBtn",
-                        IconID = "restartIcon",
-                        FaIcon = "fa-sync-alt",
-                        ToolTipText = "Refresh layout"
-                    });
-                    controls.Add(new ViewControlViewModel
-                    {
-                        SpanID = "pausePlayBtn",
-                        IconID = "pausePlayIcon",
-                        FaIcon = "fa-play",
-                        ToolTipText = "Play/pause layout"
-                    });
-                    controls.Add(new ViewControlViewModel
-                    {
-                        SpanID = "removeBtn",
-                        IconID = "removeIcon",
-                        FaIcon = "fa-trash-alt",
-                        ToolTipText = "Remove node from layout"
-                    });
-                    controls.Add(new ViewControlViewModel
-                    {
-                        SpanID = "menuShowHideButton",
-                        IconID = "menuIcon",
-                        FaIcon = "fa-angle-up",
-                        ToolTipText = "Hide the search bar",
-                        Class = "viewcontrol-right"
-                    });
-                    foreach (var control in controls)
-                    {
-                        <partial name="ViewControlPartial" model="control" />
+                <div id="viewcontrolbtns" class="grid-x">
+                    @{
+                        var controls = new List<ViewControlViewModel>();
+                        controls.Add(new ViewControlViewModel
+                        {
+                            SpanID = "restartLayoutBtn",
+                            IconID = "restartIcon",
+                            FaIcon = "fa-sync-alt",
+                            ToolTipText = "Refresh layout"
+                        });
+                        controls.Add(new ViewControlViewModel
+                        {
+                            SpanID = "pausePlayBtn",
+                            IconID = "pausePlayIcon",
+                            FaIcon = "fa-play",
+                            ToolTipText = "Play/pause layout"
+                        });
+                        controls.Add(new ViewControlViewModel
+                        {
+                            SpanID = "removeBtn",
+                            IconID = "removeIcon",
+                            FaIcon = "fa-trash-alt",
+                            ToolTipText = "Remove node from layout"
+                        });
+                        controls.Add(new ViewControlViewModel
+                        {
+                            SpanID = "menuShowHideButton",
+                            IconID = "menuIcon",
+                            FaIcon = "fa-angle-up",
+                            ToolTipText = "Hide the search bar",
+                            Class = "viewcontrol-right right"
+                        });
+                        foreach (var control in controls)
+                        {
+                            <partial name="ViewControlPartial" model="control" />
+                        }
                     }
-                }
+                </div>
+                <div id="progress" style="width: 0;"></div>
             </div>
+            
 
 
         </div>
