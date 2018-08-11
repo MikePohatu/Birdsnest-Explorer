@@ -47,10 +47,22 @@
 	fill: #BBF0C6;
 }
 
+.AD_Group-security_universal {
+    color: #33563a;
+    stroke: #33563a;
+    fill: #72c182;
+}
+
+.AD_Group-security_domainlocal {
+    color: green;
+    stroke: green;
+    fill: #f2f9f3;
+}
+
 .BuiltinGroup {
-	color: #474747;
-	stroke: #474747;
-	fill: #e5e5e5;
+    color: #474747;
+    stroke: #474747;
+    fill: #e5e5e5;
 }
 
 .BuiltinUser {

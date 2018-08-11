@@ -23,8 +23,11 @@ var currMinRelated = 9007199254740991;
 var minScaling = 1;
 var maxScaling = 4;
 
+var perfmode = false; //perfmode indicates high numbers of nodes, and minimises animation
+
 
 function drawGraph(selectid) {
+    updatePaneSize(selectid);
 	drawPane = d3.select("#"+selectid)
 		.on("keydown", keydown)
 		.on("keyup", keyup);
@@ -33,7 +36,6 @@ function drawGraph(selectid) {
 		.attr("id","drawingsvg")		
 		.on("click", pageClicked);
 
-	
 
 	//setup the zooming layer
 	zoomLayer = svg.append("g")
@@ -66,11 +68,36 @@ function drawGraph(selectid) {
             .strength(1)
             .radius(function (d) { return (d.size * 1.5) }))
         .force('charge', d3.forceManyBody()
-            .strength(-5))
+            .strength(-5)
+            .distanceMax(200)
+            .distanceMin(50))
 		.force('center', d3.forceCenter(paneWidth / 2, paneHeight / 2))
-		.on('tick', function () { updateLocations(); })
+        .on('tick', function () { onTick(); })
+        .on('end', function () { onLayoutFinished(); })
 		.velocityDecay(0.6)
 		.alphaDecay(0.07);
+}
+
+function updatePaneSize(selectid) {
+    paneWidth = $("#" + selectid).width();
+    paneHeight = $("#" + selectid).height();
+    //console.log("paneWidth: " + paneWidth);
+    //console.log("paneHeight: " + paneHeight);
+}
+
+function onLayoutFinished() {
+    updateLocations();
+    d3.selectAll("#restartIcon").classed("spinner", false);
+}
+
+function onTick() {
+
+    if (perfmode) {
+        updateNodePositions();
+    }
+    else {
+        updateLocations();
+    }
 }
 
 function resetView() {
@@ -90,7 +117,10 @@ function addResultSet(json) {
 
 document.getElementById('restartLayoutBtn').addEventListener('click', restartLayout, false);
 function restartLayout() { 
-	//console.log('restartLayout');
+    //console.log('restartLayout');
+    if (!d3.selectAll("#restartIcon").classed("spinner")) {
+        d3.selectAll("#restartIcon").classed("spinner", true);
+    }   
 	simulation.nodes(nodedata);
 
 	simulation.force("link")
@@ -99,7 +129,8 @@ function restartLayout() {
 	simulation.alpha(1).restart();
 }
 
-document.getElementById('pausePlayBtn').addEventListener('click', playLayout, false);
+//document.getElementById('pausePlayBtn').addEventListener('click', playLayout, false);
+d3.selectAll("#pausePlayBtn").attr('onclick', "playLayout()");
 function playLayout() { 
 	playMode = true;
 
@@ -188,6 +219,8 @@ function removeNodes() {
 			updateNodeSelection(d, false);
 		});
 
+    if (nodeList.length === 0) { return; }
+
 	if (confirm("This will remove "+ nodeList.length + " nodes. Are you sure?") !== true) {
 		return;
 	}
@@ -200,6 +233,8 @@ function removeNodes() {
 	nodedata = nodedata.filter(function(node) {
 		return !nodeList.includes(node);
 	});
+
+    checkPerfMode();
 
 	graphbglayer.selectAll('.edgebg')
 		.data(edgedata, function(d) { return d.db_id; })
@@ -228,8 +263,15 @@ function getAllNodeIds() {
 
 	return nodeids;
 }
-	
-function addNodes(data) {	
+
+
+//check the number of nodes in the view, and enable perfmode if required
+function checkPerfMode() {
+    if (nodedata.length > 100) { perfmode = true; }
+    else { perfmode = false; }
+}
+
+function addNodes(data) {
 	data.forEach(function(d) {
 		//initialize node and push it onto the nodedata list
 		if (findFromDbId(nodedata,d.db_id)===null) { 
@@ -243,6 +285,8 @@ function addNodes(data) {
 
 	//populate necessary additional data for the view
 	loadNodeData(nodedata);
+
+    checkPerfMode();
 
 	//add the bg
 	graphbglayer.selectAll('.nodebg')
@@ -271,7 +315,7 @@ function addNodes(data) {
 			.on("dblclick", nodeDblClicked)
 			.call(
 				d3.drag().subject(this)
-					.on('drag',nodeDragged));
+            .on('drag', nodeDragged));
 
 	//node layout
 	enternodesg.append("circle")
@@ -285,14 +329,21 @@ function addNodes(data) {
 		.attr("width", function(d) { return (d.size * 0.6) + "px" })
 		.attr("x", function(d) { return (d.size * 0.2) })
 		.attr("y",function(d) { return (d.size * 0.2)})
-		.attr("class", function(d) { return iconmappings.getClassInfo(d.label); })
+        .attr("class", function (d) { return iconmappings.getIconClasses(d); })
 		.classed("nodeicon",true); 
 
 	enternodesg.append("text")
 		.text(function(d) { return d.name; })
 		.attr("text-anchor","middle")
 		.attr("dominant-baseline","central")
-		.attr("transform",function(d) { return "translate(" + (d.size/2) + "," + (d.size + 10) + ")" }); 
+        .attr("transform", function (d) { return "translate(" + (d.size / 2) + "," + (d.size + 10) + ")" }); 
+
+    //Allow styling of group types
+    d3.selectAll(".AD_Group")
+        .each(function (d) {
+            let c = d.label + "-" + d.properties.grouptype;
+            d3.select(this).classed(c,true);
+        });
 }
 
 function findFromDbId (arraydata, id) {
@@ -500,9 +551,30 @@ function loadNodeData(newnodedata) {
 	return newnodedata;	
 }
 
+function updateNodePositions() {
+    nodedata.forEach(function (d) {
+        d.cx = d.x + d.radius;
+    });
+}
+
 function updateLocations() {
 	let alledges = edgeslayer.selectAll(".edges").data(edgedata);
 	let edgebgwidth = 13;
+
+    nodeslayer.selectAll(".nodes").data(nodedata)
+        .attr("x", function (d) {
+            d.cx = d.x + d.radius;
+            return d.x;
+        })
+        .attr("y", function (d) {
+            d.cy = d.y + d.radius;
+            return d.y;
+        })
+        .attr("transform", function (d) { return "translate(" + d.x + "," + d.y + ")" });
+
+    graphbglayer.selectAll(".nodebg").data(nodedata)
+        .attr("transform", function (d) { return "translate(" + d.x + "," + d.y + ")" });
+
 
 	alledges.each(function(d) {
 		let diagLine = new Slope(d.source.cx, d.source.cy, d.target.cx, d.target.cy);
@@ -566,18 +638,6 @@ function updateLocations() {
 				}
 			})
 	});
-		
-	nodeslayer.selectAll(".nodes").data(nodedata)
-		.attr("x",function(d) { 
-			d.cx = d.x + d.radius;
-			return d.x; })
-		.attr("y",function(d) { 
-			d.cy = d.y + d.radius;
-			return d.y; })
-		.attr("transform", function (d) { return "translate(" + d.x  + "," + d.y + ")" });
-
-	graphbglayer.selectAll(".nodebg").data(nodedata)
-		.attr("transform", function (d) { return "translate(" + d.x  + "," + d.y + ")" });
 }
 
 
@@ -632,8 +692,8 @@ function IconMappings(jsondata){
 	this.mappings = jsondata;
 }
 
-IconMappings.prototype.getClassInfo = function(label) {
-	if (this.mappings.hasOwnProperty(label)) { return this.mappings[label]; }
+IconMappings.prototype.getIconClasses = function(datum) {
+    if (this.mappings.hasOwnProperty(datum.label)) { return this.mappings[datum.label]; }
 	else { return "fas fa-question"; }
 }
 
@@ -678,8 +738,9 @@ Search functionality
 var pendingResults;
 
 function showSearchSpinner() {
-    var el = document.getElementById("searchNotification").innerHTML = "<i class='fas fa-spinner spinner'></i>"
+    var el = document.getElementById("searchNotification").innerHTML = "<i class='fas fa-spinner spinner'></i>";
 }
+
 
 function search() {
     showSearchSpinner();

@@ -44,18 +44,32 @@ body {
     background: #D6D6D6;
 }
 
+#graphstatus {
+    position: absolute;
+    font-size: 12px;
+    bottom: -100px;
+    left: 10px;
+    height: 30px;
+    width: 150px;
+    padding: 3px;
+    padding-left: 7px;
+    border: 2px solid #D6D6D6;
+    background: white;
+    margin: 0;
+}
+
 #viewcontrols {
-	position: absolute;
-	top:0;
-	left:0;
-	height: 38px;
-	width:135px;
-	padding:0;
-	background:white;
-	border: 2px solid #D6D6D6;
-	border-top-style: none;
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 38px;
+    width: 135px;
+    padding: 0;
+    background: white;
+    border: 2px solid #D6D6D6;
+    border-top-style: none;
     border-left-style: none;
-	margin:0;
+    margin: 0;
 }
 
 #drawingsvg {

@@ -142,7 +142,7 @@
                     controls.Add(new ViewControlViewModel
                     {
                         SpanID = "removeBtn",
-                        IconID = "pausePlayIcon",
+                        IconID = "removeIcon",
                         FaIcon = "fa-trash-alt",
                         ToolTipText = "Remove node from layout"
                     });
@@ -160,6 +160,13 @@
                     }
                 }
             </div>
+
+
+        </div>
+
+        <div id="graphstatus" class="grid-x">
+            <span id="statusIcon" class="cell small-2"></span>
+            <span id="statusMessage" class="cell small-10"></span>
         </div>
 
         <div id="detailcardwrapper"></div>
