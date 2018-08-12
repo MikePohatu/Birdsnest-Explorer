@@ -6,8 +6,8 @@ var nodeslayer;
 var edgeslayer;
 var simulation;
 var force;
-var edgedata = [];
-var nodedata = [];
+var edgedata = new Map();
+var nodedata = new Map();
 
 var playMode = false;
 var shiftKey = false;
@@ -29,15 +29,10 @@ var perfmode = false; //perfmode indicates high numbers of nodes, and minimises 
 function drawGraph(selectid) {
     updatePaneSize(selectid);
     drawPane = d3.select("#" + selectid);
-	
-  //  d3.select("body")
-  //      .on("keydown", keydown)
-		//.on("keyup", keyup);
 
 	svg = drawPane.append("svg")
 		.attr("id","drawingsvg")		
 		.on("click", pageClicked);
-
 
 	//setup the zooming layer
 	zoomLayer = svg.append("g")
@@ -58,11 +53,11 @@ function drawGraph(selectid) {
 				zoomLayer.attr("transform", d3.event.transform);
 			}));	
 
-	simulation=d3.forceSimulation(nodedata);
+	simulation=d3.forceSimulation();
 	simulation.stop();
 
-	simulation
-		.force("link", d3.forceLink(edgedata)		
+    simulation
+        .force("link", d3.forceLink()		
 			.id(function(d) { return d.db_id; })
 			.distance(150)
 			.strength(1.5))
@@ -87,27 +82,18 @@ function updatePaneSize(selectid) {
     //console.log("paneHeight: " + paneHeight);
 }
 
-function onLayoutFinished() {
-    updateLocations();
-    d3.selectAll("#restartIcon").classed("spinner", false);
-    d3.select("#progress").style("width", "100%");
-}
-
 function onTick() {
     //console.log(simulation.alpha());
     d3.select("#progress").style("width",(100 - (simulation.alpha() * 100)) + "%");
-    if (perfmode) {
-        updateNodePositions();
-    }
-    else {
+    if (!perfmode) {
         updateLocations();
     }
 }
 
 function resetView() {
 	//console.log("resetView");
-	edgedata = [];
-    nodedata = [];
+	edgedata = new Map();
+    nodedata = new Map();
     unselectAllNodes();	
 	graphbglayer.selectAll("*").remove();
 	edgeslayer.selectAll("*").remove();
@@ -115,19 +101,33 @@ function resetView() {
 }
 
 function addResultSet(json) {
-	addEdges(json.edges);
-	addNodes(json.nodes);
+    let noderesults = json.nodes;
+    let edgereults = json.edges;
+
+    let newnodecount = loadNodeData(noderesults);
+
+    edgereults.forEach(function (d) {
+        if (!edgedata.has(d.db_id)) {
+            edgedata.set(d.db_id, d);
+        }
+    });
+
+    let edges = Array.from(edgedata.values());
+    let nodes = Array.from(nodedata.values());
+
+    checkPerfMode();
+
+    simulation.nodes(nodes);
+
+    addEdges(edges);
+    addNodes(nodes);
 }
 
-document.getElementById('restartLayoutBtn').addEventListener('click', restartLayout, false);
+d3.selectAll("#restartLayoutBtn").attr('onclick', 'restartLayout()');
 function restartLayout() { 
     //console.log('restartLayout');
     d3.selectAll("#restartIcon").classed("spinner", true, "important"); 
-	simulation.nodes(nodedata);
-
-	simulation.force("link")
-		.links(edgedata);
-
+    d3.selectAll("#restartLayoutBtn").attr('onclick', 'pauseLayout()');
 	simulation.alpha(1).restart();
 }
 
@@ -146,15 +146,23 @@ function playLayout() {
 
 function pauseLayout() { 
 	playMode = false;
+    updateLocations();
 
 	simulation.stop();
 	d3.selectAll("#pausePlayIcon")
 		.classed("fa-pause",false)
 		.classed("fa-play",true);
 	d3.selectAll("#pausePlayBtn")
-		.attr('onclick','playLayout()');
+        .attr('onclick', 'playLayout()');
+    d3.selectAll("#restartIcon").classed("spinner", false, "important");
+    d3.selectAll("#restartLayoutBtn").attr('onclick', 'restartLayout()');   
 }
 
+function onLayoutFinished() {
+    updateLocations();
+    d3.selectAll("#restartIcon").classed("spinner", false);
+    d3.select("#progress").style("width", "100%");
+}
 
 /*
 *****************************
@@ -162,21 +170,16 @@ setup edges and nodes
 *****************************
 */
 
-function addEdges(data) {
+function addEdges(edges) {
 	//setup the edges
 	/*console.log("addEdges");
 	console.log(data);*/
 
-	data.forEach(function(d) {
-		if (findFromDbId(edgedata,d.db_id)===null) { 
-			edgedata.push(d); 
-			}
-		}
-	);
-
+    //console.log(edges);
+    simulation.force("link").links(edges);
 	//add the bg
 	graphbglayer.selectAll('.edgebg')
-		.data(edgedata, function(d) { return d.db_id; })
+        .data(edges, function(d) { return d.db_id; })
 		.enter()
 		.append("path")
 			.attr("id",function(d) { return "edgebg_" + d.db_id; })
@@ -185,7 +188,7 @@ function addEdges(data) {
 
 
 	let enteredges = edgeslayer.selectAll(".edges")
-		.data(edgedata, function(d) { return d.db_id; })
+        .data(edges, function(d) { return d.db_id; })
 		.enter();
 
 	let enteredgesg = enteredges.append("g")
@@ -227,31 +230,37 @@ function removeNodes() {
 		return;
 	}
 
-	//remove the edges first
-	edgedata = edgedata.filter(function(edge) {
-		return !nodeList.includes(edge.source) && !nodeList.includes(edge.target);
-	});
+	//remove the edges first ***
+	//edgedata = edgedata.filter(function(edge) {
+	//	return !nodeList.includes(edge.source) && !nodeList.includes(edge.target);
+    //});
+    nodeList.forEach(function (d) {
+        nodedata.delete(d.db_id);
+    });
+    
 
-	nodedata = nodedata.filter(function(node) {
-		return !nodeList.includes(node);
-	});
+	//nodedata = nodedata.filter(function(node) {
+	//	return !nodeList.includes(node);
+	//});
 
     checkPerfMode();
+    let edges = Array.from(edgedata.values());
+    let nodes = Array.from(nodedata.values());
 
 	graphbglayer.selectAll('.edgebg')
-		.data(edgedata, function(d) { return d.db_id; })
+        .data(edges, function(d) { return d.db_id; })
 		.exit().remove();
 
 	graphbglayer.selectAll('.nodebg')
-		.data(nodedata, function(d) { return d.db_id; })
+        .data(nodes, function(d) { return d.db_id; })
 		.exit().remove();
 
 	edgeslayer.selectAll(".edges")
-		.data(edgedata, function(d) { return d.db_id; })
+        .data(edges, function(d) { return d.db_id; })
 		.exit().remove();
 
 	nodeslayer.selectAll(".nodes")
-		.data(nodedata, function(d) { return d.db_id; })
+        .data(nodes, function(d) { return d.db_id; })
 		.exit().remove();
 }
 
@@ -269,30 +278,16 @@ function getAllNodeIds() {
 
 //check the number of nodes in the view, and enable perfmode if required
 function checkPerfMode() {
-    if (nodedata.length > 100) { perfmode = true; }
+    if (nodedata.size > 100) { perfmode = true; }
     else { perfmode = false; }
 }
 
-function addNodes(data) {
-	data.forEach(function(d) {
-		//initialize node and push it onto the nodedata list
-		if (findFromDbId(nodedata,d.db_id)===null) { 
-			//console.log("pushnode: " + d.name);
-			d.x = 0;
-			d.y = 0;
-			nodedata.push(d); 
-			}
-		}
-	);
-
-	//populate necessary additional data for the view
-	loadNodeData(nodedata);
-
-    checkPerfMode();
-
+//add the d3 nodes
+function addNodes(nodes) {
+    //console.log(nodes);
 	//add the bg
 	graphbglayer.selectAll('.nodebg')
-		.data(nodedata, function(d) { return d.db_id; })
+        .data(nodes, function(d) { return d.db_id; })
 		.enter()
 		.append("circle")
 			.attr("r", function(d) { return (d.radius + 10) + "px"; })
@@ -303,7 +298,7 @@ function addNodes(data) {
 
 	//build the nodes
 	let enternodes = nodeslayer.selectAll(".nodes")
-		.data(nodedata, function(d) { return d.db_id; })
+        .data(nodes, function(d) { return d.db_id; })
 		.enter();
 
 	let enternodesg = enternodes.append("g")
@@ -348,16 +343,6 @@ function addNodes(data) {
         });
 }
 
-function findFromDbId (arraydata, id) {
-	for (var i=0; i < arraydata.length; i++) {
-		if (arraydata[i].db_id === id) { 
-			return arraydata[i]; 
-		}
-	};
-	return null;
-}
-
-
 
 function pinNode(d) {
 	//console.log("pinNode");
@@ -391,18 +376,6 @@ function unpinNode(d) {
 	d3.selectAll("#node_" + d.db_id).select(".pin").remove();
 	d.pinned = false;
 }
-
-//function keydown() {
-//    //console.log("keydown");
-//	shiftKey = d3.event.shiftKey || d3.event.metaKey;
-//    ctrlKey = d3.event.ctrlKey;
-//    //console.log(ctrlKey);
-//}
-
-//function keyup() {
-//	shiftKey = d3.event.shiftKey || d3.event.metaKey;
-//	ctrlKey = d3.event.ctrlKey;
-//}
 
 function pageClicked(d){
 	//console.log("pageClicked");
@@ -529,7 +502,9 @@ function nodeDragged(d){
 function loadNodeData(newnodedata) {
 	/*console.log('loadNodeData');
 	console.log(newnodedata);*/
-	let rangeUpdated = false;
+    let rangeUpdated = false;
+    let newcount = 0;
+
 	//evaluate the nodes to figure out the max and min size so we can work out the scaling
 	newnodedata.forEach(function(d) {			
 		if (d.relatedcount>currMaxRelated) {
@@ -540,35 +515,53 @@ function loadNodeData(newnodedata) {
 			rangeUpdated = true;
 			currMinRelated = d.relatedcount;
 		}
-	});	
-	let scalingRange = new Slope(currMinRelated, minScaling, currMaxRelated, maxScaling);
+    });	
 
-	//load the data and pre-calculate/set the values for each node 	
-	newnodedata.forEach(function(d) {
-		if (currMaxRelated>0) { d.scaling = scalingRange.getYFromX(d.relatedcount); }
-		else { d.scaling = 1; }
+    let scalingRange = new Slope(currMinRelated, minScaling, currMaxRelated, maxScaling);
 
-		d.radius = ((defaultsize*d.scaling)/2); 
-		d.cx = d.x + d.radius;
-		d.cy = d.y + d.radius;
-		d.size = defaultsize * d.scaling;
-		populateDetails(d);
-	});	
+    if (rangeUpdated) {
+        //update the scaling range and update all existing nodes
+        nodedata.forEach(function (d) {
+            //console.log(d);
+            if (currMaxRelated > 0) { d.scaling = scalingRange.getYFromX(d.relatedcount); }
+            else { d.scaling = 1; }
+            d.radius = ((defaultsize * d.scaling) / 2);
+            d.cx = d.x + d.radius;
+            d.cy = d.y + d.radius;
+            d.size = defaultsize * d.scaling;
+        });
+    }
 
-	return newnodedata;	
-}
+    //load the data and pre-calculate/set the values for each new node 	
+    newnodedata.forEach(function (d) {
+        //console.log(d);
+        if (!nodedata.has(d.db_id)) {
+            //console.log("New node: " + d.db_id);
+            if (currMaxRelated > 0) { d.scaling = scalingRange.getYFromX(d.relatedcount); }
+            else { d.scaling = 1; }
 
-function updateNodePositions() {
-    nodedata.forEach(function (d) {
-        d.cx = d.x + d.radius;
-    });
+            d.radius = ((defaultsize * d.scaling) / 2);
+            d.x = 0;
+            d.y = 0;
+            d.cx = d.x + d.radius;
+            d.cy = d.y + d.radius;
+            //console.log(d.x); 
+            //console.log(d.cx); 
+            d.size = defaultsize * d.scaling;
+            populateDetails(d);
+            nodedata.set(d.db_id, d); //add the node to the map
+            newcount++;
+        }
+    });	
+    //console.log(newcount);
+	return newcount;
 }
 
 function updateLocations() {
-	let alledges = edgeslayer.selectAll(".edges").data(edgedata);
+	let alledges = edgeslayer.selectAll(".edges");
 	let edgebgwidth = 13;
 
-    nodeslayer.selectAll(".nodes").data(nodedata)
+    nodeslayer.selectAll(".nodes")
         .attr("x", function (d) {
             d.cx = d.x + d.radius;
             return d.x;
@@ -579,7 +572,7 @@ function updateLocations() {
         })
         .attr("transform", function (d) { return "translate(" + d.x + "," + d.y + ")" });
 
-    graphbglayer.selectAll(".nodebg").data(nodedata)
+    graphbglayer.selectAll(".nodebg")
         .attr("transform", function (d) { return "translate(" + d.x + "," + d.y + ")" });
 
 
