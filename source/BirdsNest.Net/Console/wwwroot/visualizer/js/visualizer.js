@@ -157,6 +157,7 @@ setup edges and nodes
 */
 
 function addResultSet(json) {
+    console.log("addResultSet start: " + performance.now());
     let edges = json.edges;
     let nodes = json.nodes;
 
@@ -179,10 +180,7 @@ function addResultSet(json) {
 
     simulation.nodes(nodedata);
     simulation.force("link").links(edgedata);
-    //simulation = d3.forceSimulation(nodedata);
-    //simulation.stop();
-
-    //simulation.force("link", d3.forceLink(edgedata));
+    console.log("addResultSet end: " + performance.now());
 }
 
 
@@ -298,8 +296,8 @@ function addNodes(nodes) {
         .enter()
         .append("circle")
         .attr("r", function (d) { return (d.radius + 10) + "px"; })
-        .attr("cx", function (d) { return d.cx; })
-        .attr("cy", function (d) { return d.cy; })
+        .attr("cx", function (d) { return d.radius; })
+        .attr("cy", function (d) { return d.radius; })
         .classed("graphbg", true)
         .classed("nodebg", true);
 
@@ -853,7 +851,6 @@ function addPending() {
 
     addResultSet(pendingResults);
     updateEdges();
-    restartLayout();
     document.getElementById("searchNotification").innerHTML = '';
     pendingResults = null;
 }
@@ -923,27 +920,35 @@ function addRelated(nodeid) {
 }
 
 function getEdgesForNodes(nodeids) {
-    //console.log("getEdgesForNodes");
+    console.log("getEdgesForNodes start: " + performance.now());
+    var postdata = JSON.stringify(nodeids)
+    console.log("json stringyfied: " + performance.now());
     //console.log(nodeids);
+    
     $.ajax({
         url: '/api/edges',
         method: "POST",
-        data: JSON.stringify(nodeids),
+        async: true,
+        data: postdata,
         contentType: "application/json; charset=utf-8",
         headers: {
             'X-CSRFToken': getCookie('csrftoken')
         },
         success: function (data) {
             //console.log(data);
+            console.log("getEdgesForNodes complete: " + performance.now());
             addResultSet(data);
             restartLayout();
         }
     });
+    console.log("getEdgesForNodes post sent: " + performance.now());
 }
 
 function updateEdges() {
+    console.log("updateEdges start: " + performance.now());
     let nodeids = getAllNodeIds();
     getEdgesForNodes(nodeids);
+    console.log("updateEdges end: " + performance.now());
 }
 
 // Keystroke event handlers
