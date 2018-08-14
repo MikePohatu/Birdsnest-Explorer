@@ -1,79 +1,62 @@
 #$creds = Get-Credential
-# -Credential $creds 
+#-Credential $creds 
 
-$server ='wn0ntsccmpri02'
-[string]$sitecode = 'AD0'
-$neoURL="http://localhost:7474/db/data/transaction/commit"
+$zdc ='server'
 
-Function Get-SccmCollections {
-    Param ([Parameter(Mandatory=$true)][string]$Server,
-        [Parameter(Mandatory=$true)][string]$SiteCode)
-    $block = {
-        # Site configuration
-        $ProviderMachineName = $args[0] # SMS Provider machine name
-        $SiteCode = $args[1] # Site code 
+write-host "Querying $zdc"
+
+Function Get-CitrixApps {
+    Param ([Parameter(Mandatory=$true)][string]$DataCollector)
+    $resultobj = Invoke-Command -ComputerName $DataCollector -ScriptBlock {
+        $results = new-object 'system.collections.generic.dictionary[[string],[object]]'
+
+        Add-PSSnapin “Citrix.XenApp.Commands”
+        $appslist = New-Object 'System.Collections.Generic.List[object]'
+        $relationshipslist = New-Object 'System.Collections.Generic.List[object]'
         
-        write-host "Connecting to site: $SiteCode on server: $ProviderMachineName"
+        $FarmObj = Get-XAFarm | Select FarmName
+        $AllApplications = Get-XAApplication
 
-        # Customizations
-        $initParams = @{}
-        #$initParams.Add("Verbose", $true) # Uncomment this line to enable verbose logging
-        #$initParams.Add("ErrorAction", "Stop") # Uncomment this line to stop the script on any errors
+        ForEach ($Application in $AllApplications) {
+            $AppGroupObj = Get-XAAccount -BrowserName $Application.BrowserName | Select *
 
-        # Do not change anything below this line
+            $appobj = new-object 'system.collections.generic.dictionary[[string],[string]]'
+            $appobj.Add('BrowserName', $Application.BrowserName)
+            $appobj.Add('ApplicationId',$Application.ApplicationId)
+            $appobj.Add('Enabled', $Application.Enabled)
+            $appobj.Add('FolderPath', $Application.FolderPath)
+            $appobj.Add('LoadBalancingApplicationCheckEnabled', $Application.LoadBalancingApplicationCheckEnabled)
+            $appobj.Add('ClientFolder', $Application.ClientFolder)
 
-        # Import the ConfigurationManager.psd1 module 
-        if((Get-Module ConfigurationManager) -eq $null) {
-            Import-Module "$($ENV:SMS_ADMIN_UI_PATH)\..\ConfigurationManager.psd1" @initParams 
-        }
+            $appslist.Add($appobj)
 
-        # Connect to the site's drive if it is not already present
-        if((Get-PSDrive -Name $SiteCode -PSProvider CMSite -ErrorAction SilentlyContinue) -eq $null) {
-            New-PSDrive -Name $SiteCode -PSProvider CMSite -Root $ProviderMachineName @initParams
-        }
-
-        # Set the current location to be the site code.
-        Set-Location "$($SiteCode):\" @initParams
-
-
-        $cols = New-Object 'System.Collections.Generic.List[object]'
-        $limits = New-Object 'System.Collections.Generic.List[object]'
-
-        write-host "Gettings SCCM collections"
-        Get-CMCollection | select -Property Name, CollectionID, LimitToCollectionID, Comment | foreach {
-            #write-host $_.Name
-            $col = new-object 'system.collections.generic.dictionary[[string],[object]]'
-            $col.Add('Name',$_.Name)
-            $col.Add('ID',$_.CollectionID)
-            $col.Add('LimitingID',$_.LimitToCollectionID)
-            $col.Add('Comment',"$($_.Comment)")
-            
-            $cols.Add($col)
-
-            if ($_.LimitToCollectionID) {
-                $limit = new-object 'system.collections.generic.dictionary[[string],[object]]'
-                $limit.Add('CollectionID',$_.CollectionID)
-                $limit.Add('LimitingID',$_.LimitToCollectionID)
-                $limits.Add($limit)
+            foreach ($groupdn in $AppGroupObj.SearchPath) {
+                if ([string]::IsNullOrEmpty($groupdn) -eq $false) {
+                    $relobj = new-object 'system.collections.generic.dictionary[[string],[string]]'
+                    $relobj.Add('dn',$groupdn)
+                    $relobj.Add('appid',$Application.ApplicationId)
+                    $relationshipslist.Add($relobj)
+                }
             }
         }
 
-        $result = new-object 'system.collections.generic.dictionary[[string],[object]]'
-        $result.Add('Collections',$cols)
-        $result.Add('Limits',$limits)
-
-        return $result
+        $results.Add('applications',$appslist)
+        $results.Add('relationships',$relationshipslist)
+        $results.Add('farmname',$FarmObj.FarmName)
+        return $results
     }
 
-    write-host "Invoking command on $Server"
-    $resultobj = Invoke-Command -ComputerName $Server -ScriptBlock $block -ArgumentList $Server,$SiteCode 
+    write-host "Farm: $($resultobj.farmname)"
+    write-host "Found $($resultobj.applications.Count) applications"
+    write-host "Found $($resultobj.relationships.Count) relationships"
     return $resultobj
 }
+
+
 
 Function WriteToNeo {
     Param (
         [Parameter(Mandatory=$true)][string]$NeoConfigPath,
-        [Parameter(Mandatory=$true)][string]$serverURL,
         [Parameter(Mandatory=$true)][string]$Query,
         [System.Collections.Generic.IDictionary[[string],[object]]]$Parameters
     )
@@ -81,7 +64,7 @@ Function WriteToNeo {
 
     try {
         $neoconfig = Get-Content -Raw -Path $NeoConfigPath | ConvertFrom-Json
-        
+        $serverURL="http://localhost:7474/db/data/transaction/commit"
 
         $secPasswd = ConvertTo-SecureString $neoconfig.DB_Password -AsPlainText -Force
         $neo4jCreds = New-Object System.Management.Automation.PSCredential ($neoconfig.DB_Username, $secPasswd) 
@@ -103,11 +86,11 @@ Function WriteToNeo {
         $body.Add('statements',$statements)
 
         $bodyjson = $body |ConvertTo-Json -Depth 5
-        write-host $bodyjson
+
         
         # Call Neo4J HTTP EndPoint, Pass in creds & POST JSON Payload
         $response = Invoke-WebRequest -Uri $serverURL -Method POST -Body $bodyjson -credential $neo4jCreds -ContentType "application/json"
-        #$bodyjson | Out-File -FilePath 'c:\temp\ctxoutput.json'
+        $bodyjson | Out-File -FilePath 'c:\temp\ctxoutput.json'
 
     } 
     finally {
@@ -116,29 +99,52 @@ Function WriteToNeo {
     return $response
 }
 
-$resultsobj = Get-SccmCollections -Server $server -SiteCode $sitecode
+
+
+
+
+$resultsobj = Get-CitrixApps -DataCollector $zdc
 
 write-host "Writing to neo4j database"
 
-write-host "Writing $($resultsobj.Collections.count) collections"
-$paramsobj = new-object 'system.collections.generic.dictionary[[string],[object]]'
-$paramsobj.Add('collections',$resultsobj.Collections)
-$query = 'UNWIND $collections as col ' +
-        'MERGE (c:CM_Collection {id:col.ID}) ' +
-        'SET c.limitingcollection = col.LimitingID '+   
-        'SET c.name = col.Name '+
-        'SET c.comment = col.Comment '+
+$installpath = 'C:\Tools\Temp\birdsnest\Scanners'
+
+
+$nparamsobj = new-object 'system.collections.generic.dictionary[[string],[object]]'
+$nparamsobj.Add('farmname',$resultsobj.farmname)
+$nparamsobj.Add('applications',$resultsobj.applications)
+
+write-host "Writing $($nparamsobj.applications.count) nodes from $($nparamsobj.farmname)"
+
+$query = 'WITH $farmname as farm, $applications as applist ' +
+        'MERGE (cfarm:CTX_Farm {name:farm}) ' +
+        'WITH cfarm,farm,applist '+ 
+        'UNWIND applist as app ' +
+        'MERGE (n:CTX_Application {id:app.ApplicationId}) ' +
+        'SET n.applicationid = app.ApplicationId ' +
+        'SET n.browsername = app.BrowserName ' +
+        'SET n.name = app.BrowserName ' +
+        'SET n.enabled = app.Enabled ' +
+        'SET n.folderpath = app.FolderPath ' +
+        'SET n.path = app.FolderPath ' +
+        'SET n.clientfolder = app.ClientFolder ' +
+        'SET n.farm = farm ' +   
+        'WITH n,cfarm ' +
+        'MERGE (n)-[:PUBLISHED_FROM]->(cfarm) '+    
+        'RETURN count(n) '
+
+$noderesponse = WriteToNeo -NeoConfigPath "$($installpath)\neoconfig.json" -Query $query -Parameters $nparamsobj
+
+
+$rparamsobj = new-object 'system.collections.generic.dictionary[[string],[object]]'
+$rparamsobj.Add('relationships',$resultsobj.relationships)
+
+write-host "Writing $($rparamsobj.relationships.count) relationships"
+
+$query = 'UNWIND $relationships as rel ' +
+        'MATCH (o:AD_Object {dn:rel.dn}) ' +
+        'MATCH (a:CTX_Application {id:rel.appid}) '+
+        'MERGE p=((o)-[:GIVES_ACCESS_TO]->(a)) ' +   
         'RETURN count(p) '
 
-$response = WriteToNeo -NeoConfigPath "C:\Tools\Temp\birdsnest\Scanners\neoconfig.json" -Query $query -Parameters $paramsobj -serverURL $neoUrl
-
-write-host "Writing $($resultsobj.Limits.count) limiting collection mappings"
-$paramsobj = new-object 'system.collections.generic.dictionary[[string],[object]]'
-$paramsobj.Add('limits',$resultsobj.Limits)
-$query = 'UNWIND $limits as limit ' +
-        'MERGE (c:CM_Collection {id:limit.CollectionID}) ' +
-        'MERGE (l:CM_Collection {id:limit.LimitingID}) '+
-        'MERGE p=((l)-[:LIMITING_FOR]->(c)) ' +   
-        'RETURN count(p) '
-
-#$response = WriteToNeo -NeoConfigPath "C:\Tools\Temp\birdsnest\Scanners\neoconfig.json" -Query $query -Parameters $paramsobj -serverURL $neoUrl
+$relresponse = WriteToNeo -NeoConfigPath "$($installpath)\neoconfig.json" -Query $query -Parameters $rparamsobj
