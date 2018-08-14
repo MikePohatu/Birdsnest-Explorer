@@ -12,6 +12,9 @@ namespace ADScanner.Neo4j
         {
             string query = "UNWIND $propertylist AS g " +
                 "MERGE (n:" + Types.Group + "{id:g.id}) " +
+                "SET n: " + Types.ADObject + " " +
+                "SET n.info = g.info " +
+                "SET n.description = g.description " +
                 "SET n.name = g.name " +
                 "SET n.type = g.type " +
                 "SET n.dn = g.dn " +
@@ -40,6 +43,9 @@ namespace ADScanner.Neo4j
         {
             string query = "UNWIND $propertylist AS u " +
             "MERGE (n:" + Types.User + "{id:u.id}) " +
+            "SET n: " + Types.ADObject + " " +
+            "SET n.info = u.info " +
+            "SET n.description = u.description " +
             "SET n.name = u.name " +
             "SET n.dn = u.dn " +
             "SET n.path = u.path " +
@@ -59,7 +65,10 @@ namespace ADScanner.Neo4j
         {
             string query = "UNWIND $propertylist AS c " +
             "MERGE (n:" + Types.Computer + "{id:c.id}) " +
-            "SET n: " + Types.Device + " " + 
+            "SET n: " + Types.Device + " " +
+            "SET n: " + Types.ADObject + " " +
+            "SET n.info = c.info " +
+            "SET n.description = c.description " +
             "SET n.name = c.name " +
             "SET n.path = c.path " +
             "SET n.dn = c.dn " +

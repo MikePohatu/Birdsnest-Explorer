@@ -40,6 +40,7 @@ namespace common
         public static string Computer { get { return "AD_Computer"; } }
         public static string Group { get { return "AD_Group"; } }
         public static string Deleted { get { return "AD_Deleted"; } }
+        public static string ADObject { get { return "AD_Object"; } }
 
         //ADScanner edges
         public static string MemberOf { get { return "AD_MEMBER_OF"; } }

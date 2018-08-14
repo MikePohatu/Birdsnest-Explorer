@@ -88,6 +88,37 @@ namespace Console.neo4jProxy
             }
         }
 
+        public async Task<object> GetRelationshipsAsync(List<long> nodeids)
+        {
+            object o = null;
+            await Task.Run(() => o = GetRelationships(nodeids));
+
+            return o;
+            //using (ISession session = this.Driver.Session())
+            //{
+            //    ResultSet returnedresults = new ResultSet();
+            //    try
+            //    {
+            //        session.ReadTransaction(tx =>
+            //        {
+            //            string query = "UNWIND $ids AS nodeid " +
+            //                "MATCH (s)-[r]-(t) " +
+            //                "WHERE ID(s)=nodeid AND ID(t) IN $ids " +
+            //                "RETURN DISTINCT r";
+            //            Task<IStatementResultCursor> dbresultasync = tx.RunAsync(query, new { ids = nodeids });
+            //            IStatementResult dbresult = await dbresultasync;
+            //            returnedresults.Append(ParseResults(dbresult));
+            //        });
+            //    }
+            //    catch
+            //    {
+            //        //logging to add
+            //    }
+
+            //    return returnedresults;
+            //}
+        }
+
         public object GetRelationships(List<long> nodeids)
         {
             using (ISession session = this.Driver.Session())
@@ -138,56 +169,6 @@ namespace Console.neo4jProxy
                 return returnedresults;
             }
         }
-
-        private ResultSet ParseResults(IStatementResult neoresult)
-        {
-            ResultSet results = new ResultSet();
-
-            foreach (IRecord record in neoresult)
-            {
-                foreach (string key in record.Keys)
-                {
-                    AddToResultSet(record[key], results);
-                }
-            }
-
-            return results;
-        }
-
-
-        private void AddToResultSet(object o, ResultSet results)
-        {
-            INode node = o as INode;
-            if (node != null)
-            {
-                results.Nodes.Add(BirdsNestNode.GetNode(node));
-                return;
-            }
-
-            List<object> nodelist = o as List<object>;
-            if (nodelist != null)
-            {
-                foreach (object obj in nodelist) { AddToResultSet(obj, results); }
-                return;
-            }
-        
-            IRelationship rel = o as IRelationship;
-            if (rel != null)
-            {
-                results.Edges.Add(BirdsNestRelationship.GetRelationship(rel));
-                return;
-            }
-
-            IPath path = o as IPath;
-            if (path != null)
-            {
-                foreach (INode n in path.Nodes) { results.Nodes.Add(BirdsNestNode.GetNode(n)); }
-                foreach (IRelationship r in path.Relationships) { results.Edges.Add(BirdsNestRelationship.GetRelationship(r)); }
-                return;
-            }
-        }
-
-
 
         //*************************
         // Search functions
@@ -440,6 +421,69 @@ namespace Console.neo4jProxy
                 }
             }
             return results;
+        }
+
+        private ResultSet ParseResults(IStatementResult neoresult)
+        {
+            ResultSet results = new ResultSet();
+
+            foreach (IRecord record in neoresult)
+            {
+                foreach (string key in record.Keys)
+                {
+                    AddToResultSet(record[key], results);
+                }
+            }
+
+            return results;
+        }
+
+        //private ResultSet ParseResults(IStatementResultCursor neoresult)
+        //{
+        //    ResultSet results = new ResultSet();
+
+        //    foreach (IRecord record in neoresult.ToListAsync())
+        //    {
+        //        foreach (string key in record.Keys)
+        //        {
+        //            AddToResultSet(record[key], results);
+        //        }
+        //    }
+
+        //    return results;
+        //}
+
+
+        private void AddToResultSet(object o, ResultSet results)
+        {
+            INode node = o as INode;
+            if (node != null)
+            {
+                results.Nodes.Add(BirdsNestNode.GetNode(node));
+                return;
+            }
+
+            List<object> nodelist = o as List<object>;
+            if (nodelist != null)
+            {
+                foreach (object obj in nodelist) { AddToResultSet(obj, results); }
+                return;
+            }
+
+            IRelationship rel = o as IRelationship;
+            if (rel != null)
+            {
+                results.Edges.Add(BirdsNestRelationship.GetRelationship(rel));
+                return;
+            }
+
+            IPath path = o as IPath;
+            if (path != null)
+            {
+                foreach (INode n in path.Nodes) { results.Nodes.Add(BirdsNestNode.GetNode(n)); }
+                foreach (IRelationship r in path.Relationships) { results.Edges.Add(BirdsNestRelationship.GetRelationship(r)); }
+                return;
+            }
         }
 
         public void Dispose()

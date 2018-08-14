@@ -26,6 +26,8 @@ namespace ADScanner.ActiveDirectory
                     searcher.PropertiesToLoad.Add("objectcategory");
                     searcher.PropertiesToLoad.Add("objectSid");
                     searcher.PropertiesToLoad.Add("distinguishedName");
+                    searcher.PropertiesToLoad.Add("description");
+                    searcher.PropertiesToLoad.Add("info");
 
                     searcher.PageSize = 1000;
                     Console.WriteLine("Searching for groups");
@@ -64,7 +66,9 @@ namespace ADScanner.ActiveDirectory
                     searcher.PropertiesToLoad.Add("distinguishedName");
                     searcher.PropertiesToLoad.Add("primaryGroupID");
                     searcher.PropertiesToLoad.Add("userAccountControl");
-                    
+                    searcher.PropertiesToLoad.Add("description");
+                    searcher.PropertiesToLoad.Add("info");
+
                     searcher.PageSize = 1000;
                     Console.WriteLine("Searching for users");
                     results = searcher.FindAll();
@@ -135,6 +139,8 @@ namespace ADScanner.ActiveDirectory
                     searcher.PropertiesToLoad.Add("operatingSystem");
                     searcher.PropertiesToLoad.Add("operatingSystemVersion");
                     searcher.PropertiesToLoad.Add("primaryGroupID");
+                    searcher.PropertiesToLoad.Add("description");
+                    searcher.PropertiesToLoad.Add("info");
 
                     searcher.PageSize = 1000;
                     Console.WriteLine("Searching for computers");

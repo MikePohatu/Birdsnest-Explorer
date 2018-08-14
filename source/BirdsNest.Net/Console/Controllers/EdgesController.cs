@@ -30,9 +30,10 @@ namespace Console.Controllers
         }
 
         [HttpPost()]
-        public object GetEdgesForNodes([FromBody]List<long> value)
+        public async Task<object> GetEdgesForNodes([FromBody]List<long> value)
         {
-            return this._service.GetRelationships(value);
+            var d = await this._service.GetRelationshipsAsync(value);
+            return d;
         }
 
         // GET api/nodes/labels

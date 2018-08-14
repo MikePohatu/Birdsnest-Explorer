@@ -12,6 +12,8 @@ namespace ADScanner.ActiveDirectory
         public string Path { get; private set; }
         public string CN { get; private set; }
         public string DN { get; private set; }
+        public string Description { get; private set; }
+        public string Info { get; private set; }
         public Dictionary<string, object> Properties { get; private set; }
         public string ScanId;
 
@@ -23,6 +25,8 @@ namespace ADScanner.ActiveDirectory
             this.DN = this.Path;
             this.CN = ADSearchResultConverter.GetSinglestringValue(result, "cn");
             this.Name = ADSearchResultConverter.GetSinglestringValue(result, "Name");
+            this.Info = ADSearchResultConverter.GetSinglestringValue(result, "Info");
+            this.Description = ADSearchResultConverter.GetSinglestringValue(result, "Description");
 
             this.Properties = new Dictionary<string, object>
             {
@@ -31,6 +35,8 @@ namespace ADScanner.ActiveDirectory
                 {"path", this.Path},
                 {"dn", this.DN},
                 {"cn", this.CN },
+                {"description", this.Description },
+                {"info", this.Info },
                 {"scanid",this.ScanId }
             };
         }
