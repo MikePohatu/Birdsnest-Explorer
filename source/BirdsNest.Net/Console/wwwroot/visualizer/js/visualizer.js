@@ -876,8 +876,10 @@ function toggleDir() {
     var d = $(icon).attr('data-dir');
     if (d == 'R') {
         icon.classList.remove("fa-arrow-right");
-        icon.classList.add("fa-exchange-alt");
-        $(icon).attr('data-dir', 'B');
+        icon.classList.add("fa-arrow-left");
+        $(icon).attr('data-dir', 'L');
+        //icon.classList.add("fa-exchange-alt");
+        //$(icon).attr('data-dir', 'B');
     }
     //} else if (d == 'B') {
     //    icon.classList.remove("fa-exchange-alt");
