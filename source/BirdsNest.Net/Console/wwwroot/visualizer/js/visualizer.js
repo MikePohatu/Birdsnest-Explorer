@@ -878,11 +878,13 @@ function toggleDir() {
         icon.classList.remove("fa-arrow-right");
         icon.classList.add("fa-exchange-alt");
         $(icon).attr('data-dir', 'B');
-    } else if (d == 'B') {
-        icon.classList.remove("fa-exchange-alt");
-        icon.classList.add("fa-arrow-left");
-        $(icon).attr('data-dir', 'L');
-    } else if (d == 'L') {
+    }
+    //} else if (d == 'B') {
+    //    icon.classList.remove("fa-exchange-alt");
+    //    icon.classList.add("fa-arrow-left");
+    //    $(icon).attr('data-dir', 'L');
+    //} 
+    else if (d == 'L') {
         icon.classList.remove("fa-arrow-left");
         icon.classList.add("fa-arrow-right");
         $(icon).attr('data-dir', 'R');

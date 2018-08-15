@@ -291,7 +291,7 @@ namespace Console.neo4jProxy
                 {
                     session.ReadTransaction(tx =>
                     {
-                        string query = "CALL db.labels()";
+                        string query = "CALL db.labels() YIELD label RETURN label ORDER BY label";
                         dbresult = tx.Run(query);
                     });
                 }
@@ -313,7 +313,7 @@ namespace Console.neo4jProxy
                 {
                     session.ReadTransaction(tx =>
                     {
-                        string query = "CALL db.relationshipTypes()";
+                        string query = "CALL db.relationshipTypes() YIELD relationshipType RETURN relationshipType ORDER BY relationshipType";
                         dbresult = tx.Run(query);
                     });
                 }

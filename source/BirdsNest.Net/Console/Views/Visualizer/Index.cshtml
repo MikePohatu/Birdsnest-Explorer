@@ -33,7 +33,7 @@
 
                         <div class="input-group">
                             <span class="input-group-label small-4">Type</span>
-                            <select id="sourceType" class="small-8 input-group-field" autofocus onchange="updateProps('source')">
+                            <select id="sourceType" class="small-8 input-group-field" autofocus onchange="updateProps('source');">
                                 <option value="" disabled selected hidden></option>
                                 <option value="">*</option>
                             </select>
@@ -59,7 +59,7 @@
                             </select>
                         </div>
 
-                        <span class="">Path Length</span>
+                        <span class="">Hops</span>
                         <div class="input-group">
                             <div class="grid-x input-group-field">
                                 <div class="cell small-2">
@@ -67,9 +67,9 @@
                                 </div>
                                 <div class="cell small-8">
                                     <div class="slider" data-slider data-initial-start="0" data-initial-end="5" data-start="0" data-end="20">
-                                        <span class="slider-handle" data-slider-handle role="slider" aria-controls="sliderMin"></span>
+                                        <span class="slider-handle" data-slider-handle role="slider" aria-controls="sliderMin" title="Minimum hop count"></span>
                                         <span class="slider-fill" data-slider-fill></span>
-                                        <span class="slider-handle" data-slider-handle role="slider" aria-controls="sliderMax"></span>
+                                        <span class="slider-handle" data-slider-handle role="slider" aria-controls="sliderMax" title="Maximum hop count"></span>
                                     </div>
                                 </div>
                                 <div class="cell small-2">
@@ -91,7 +91,7 @@
 
                         <div class="input-group">
                             <span class="input-group-label small-3">Type</span>
-                            <select id="targetType" class="small-9 input-group-field" onchange="updateProps('target')">
+                            <select id="targetType" class="small-9 input-group-field" onchange="updateProps('target');">
                                 <option value="" disabled selected hidden></option>
                                 <option value="">*</option>
                             </select>
@@ -163,16 +163,17 @@
             iconmappings = new IconMappings(data);
         });
         $.getJSON("/api/nodes/labels", function (data) {
-            for (var i = 0; i < data.length; ++i) {
-                addOption(document.getElementById("sourceType"), data[i], data[i])
+            var i;
+            for (i = 0; i < data.length; ++i) {
+                addOption(document.getElementById("sourceType"), data[i], data[i]);
             }
-            for (var i = 0; i < data.length; ++i) {
-                addOption(document.getElementById("targetType"), data[i], data[i])
+            for (i = 0; i < data.length; ++i) {
+                addOption(document.getElementById("targetType"), data[i], data[i]);
             }
         });
         $.getJSON("/api/edges/labels", function (data) {
             for (var i = 0; i < data.length; ++i) {
-                addOption(document.getElementById("edgeType"), data[i], data[i])
+                addOption(document.getElementById("edgeType"), data[i], data[i]);
             }
         });
 

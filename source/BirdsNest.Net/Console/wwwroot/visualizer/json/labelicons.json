@@ -8,5 +8,6 @@
   "BuiltinUser": "fas fa-user",
   "Device": "fas fa-tablet-alt",
   "FS_Folder": "fas fa-folder-open",
-  "FS_Datastore": "fas fa-hdd"
+  "FS_Datastore": "fas fa-hdd",
+  "CM_Collection": "fas fa-layer-group"
 }

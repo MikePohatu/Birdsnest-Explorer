@@ -90,7 +90,6 @@ Function WriteToNeo {
         
         # Call Neo4J HTTP EndPoint, Pass in creds & POST JSON Payload
         $response = Invoke-WebRequest -Uri $serverURL -Method POST -Body $bodyjson -credential $neo4jCreds -ContentType "application/json"
-        $bodyjson | Out-File -FilePath 'c:\temp\ctxoutput.json'
 
     } 
     finally {

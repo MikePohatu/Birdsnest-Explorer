@@ -1,8 +1,8 @@
 ﻿#$creds = Get-Credential
 # -Credential $creds 
 
-$server ='wn0ntsccmpri02'
-[string]$sitecode = 'AD0'
+$server ='server'
+[string]$sitecode = '001'
 $neoURL="http://localhost:7474/db/data/transaction/commit"
 
 Function Get-SccmCollections {
@@ -38,10 +38,13 @@ Function Get-SccmCollections {
 
         $cols = New-Object 'System.Collections.Generic.List[object]'
         $limits = New-Object 'System.Collections.Generic.List[object]'
+
+        write-host "Getting SCCM collections"
         Get-CMCollection | select -Property Name, CollectionID, LimitToCollectionID, Comment | foreach {
             #write-host $_.Name
             $col = new-object 'system.collections.generic.dictionary[[string],[object]]'
-            $col.Add('Name',$_.Name)
+            $encodename = [System.Text.Encoding]::UTF8.GetString([System.Text.Encoding]::GetEncoding(28591).GetBytes($_.Name))
+            $col.Add('Name',$encodename)
             $col.Add('ID',$_.CollectionID)
             $col.Add('LimitingID',$_.LimitToCollectionID)
             $col.Add('Comment',"$($_.Comment)")
@@ -93,20 +96,18 @@ Function WriteToNeo {
         $statements.Add($statement)
 
         #'{"statements" : [{' +
-		#	        '"statement" : "' + $Query + '",' +
-		#	        '"parameters" : ' + $paramsjson +
-		#	        '}]' +
-		#        '}'	
+        #           '"statement" : "' + $Query + '",' +
+        #           '"parameters" : ' + $paramsjson +
+        #           '}]' +
+        #        '}'    
         $body = $statement = new-object 'system.collections.generic.dictionary[[string],[object]]'
         $body.Add('statements',$statements)
 
         $bodyjson = $body |ConvertTo-Json -Depth 5
-        write-host $bodyjson
+        #write-host $bodyjson
         
         # Call Neo4J HTTP EndPoint, Pass in creds & POST JSON Payload
         $response = Invoke-WebRequest -Uri $serverURL -Method POST -Body $bodyjson -credential $neo4jCreds -ContentType "application/json"
-        #$bodyjson | Out-File -FilePath 'c:\temp\ctxoutput.json'
-
     } 
     finally {
       
@@ -126,9 +127,9 @@ $query = 'UNWIND $collections as col ' +
         'SET c.limitingcollection = col.LimitingID '+   
         'SET c.name = col.Name '+
         'SET c.comment = col.Comment '+
-        'RETURN count(p) '
+        'RETURN count(c) '
 
-$response = WriteToNeo -NeoConfigPath "C:\Tools\Temp\birdsnest\Scanners\neoconfig.json" -Query $query -Parameters $paramsobj -serverURL $neoUrl
+$response = WriteToNeo -NeoConfigPath "C:\birdsnest\Scanners\neoconfig.json" -Query $query -Parameters $paramsobj -serverURL $neoUrl
 
 write-host "Writing $($resultsobj.Limits.count) limiting collection mappings"
 $paramsobj = new-object 'system.collections.generic.dictionary[[string],[object]]'
@@ -138,4 +139,5 @@ $query = 'UNWIND $limits as limit ' +
         'MERGE (l:CM_Collection {id:limit.LimitingID}) '+
         'MERGE p=((l)-[:LIMITING_FOR]->(c)) ' +   
         'RETURN count(p) '
-$response = WriteToNeo -NeoConfigPath "C:\Tools\Temp\birdsnest\Scanners\neoconfig.json" -Query $query -Parameters $paramsobj -serverURL $neoUrl
+
+$response = WriteToNeo -NeoConfigPath "C:\birdsnest\Scanners\neoconfig.json" -Query $query -Parameters $paramsobj -serverURL $neoUrl
