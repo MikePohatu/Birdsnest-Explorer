@@ -1,10 +1,13 @@
 ﻿#$creds = Get-Credential
 # -Credential $creds 
+Import-Module "$($PSScriptRoot)\WriteToNeo.psm1"
+$neoURL="http://localhost:7474/db/data/transaction/commit"
+$neoconf = "C:\birdsnest\Scanners\neoconfig.json"
 
 $server ='server'
 [string]$sitecode = '001'
-$neoURL="http://localhost:7474/db/data/transaction/commit"
-$neoconfig = "C:\birdsnest\Scanners\neoconfig.json"
+
+
 
 Function Get-SccmCollections {
     Param ([Parameter(Mandatory=$true)][string]$Server,
@@ -39,9 +42,12 @@ Function Get-SccmCollections {
 
         $cols = New-Object 'System.Collections.Generic.List[object]'
         $limits = New-Object 'System.Collections.Generic.List[object]'
+        $groupqueries = New-Object 'System.Collections.Generic.List[object]'
+        $includerules = New-Object 'System.Collections.Generic.List[object]'
+        $excluderules = New-Object 'System.Collections.Generic.List[object]'
 
         write-host "Getting SCCM collections"
-        Get-CMCollection | select -Property Name, CollectionID, LimitToCollectionID, Comment | foreach {
+        Get-CMCollection | select -Property Name, CollectionID, LimitToCollectionID, Comment, CollectionRules | foreach {
             #write-host $_.Name
             $col = new-object 'system.collections.generic.dictionary[[string],[object]]'
             $encodename = [System.Text.Encoding]::UTF8.GetString([System.Text.Encoding]::GetEncoding(28591).GetBytes($_.Name))
@@ -58,12 +64,47 @@ Function Get-SccmCollections {
                 $limit.Add('LimitingID',$_.LimitToCollectionID)
                 $limits.Add($limit)
             }
+
+            if ($_.CollectionRules.QueryExpression){
+                foreach ($Expression in $_.CollectionRules.QueryExpression){
+                    if ($Expression -match 'GroupName\s(.*)\s"(.*)"'){
+                        #$GroupNameQuery = $Matches[0]
+                        #$QueryOperator = $Matches[1]
+                        $GroupName = $Matches[2].Replace('\\','\').trimstart('AD\').trimstart('%').trimstart('aD\').trimstart('Ad\').trimstart('ad\')
+                        #Write-Host $GroupName -ForegroundColor Cyan
+                        $query = new-object 'system.collections.generic.dictionary[[string],[object]]'
+                        $query.Add('CollectionID',$col.ID)
+                        $query.Add('GroupName',[System.Text.Encoding]::UTF8.GetString([System.Text.Encoding]::GetEncoding(28591).GetBytes($GroupName)))
+                        $groupqueries.Add($query)
+                    }
+                }
+            }
+
+            if ($_.CollectionRules.ExcludeCollectionID){
+                foreach ($id in $_.CollectionRules.ExcludeCollectionID){
+                    $rule = new-object 'system.collections.generic.dictionary[[string],[object]]'
+                    $rule.Add('CollectionID',$col.ID)
+                    $rule.Add('ExcludeID',$id)
+                    $excluderules.Add($rule)
+                }
+            }
+
+            if ($_.CollectionRules.IncludeCollectionID){
+                foreach ($id in $_.CollectionRules.IncludeCollectionID){
+                    $rule = new-object 'system.collections.generic.dictionary[[string],[object]]'
+                    $rule.Add('CollectionID',$col.ID)
+                    $rule.Add('IncludeID',$id)
+                    $includerules.Add($rule)
+                }
+            }
         }
 
         $result = new-object 'system.collections.generic.dictionary[[string],[object]]'
         $result.Add('Collections',$cols)
         $result.Add('Limits',$limits)
-
+        $result.Add('GroupQueries',$groupqueries)
+        $result.Add('IncludeRules',$includerules)
+        $result.Add('ExcludeRules',$excluderules)
         return $result
     }
 
@@ -184,56 +225,15 @@ Function Get-SccmApplicationDeployments {
     return $resultobj
 }
 
-Function WriteToNeo {
-    Param (
-        [Parameter(Mandatory=$true)][string]$NeoConfigPath,
-        [Parameter(Mandatory=$true)][string]$serverURL,
-        [Parameter(Mandatory=$true)][string]$Query,
-        [System.Collections.Generic.IDictionary[[string],[object]]]$Parameters
-    )
-    $results = $null
 
-    try {
-        $neoconfig = Get-Content -Raw -Path $NeoConfigPath | ConvertFrom-Json
-        
 
-        $secPasswd = ConvertTo-SecureString $neoconfig.DB_Password -AsPlainText -Force
-        $neo4jCreds = New-Object System.Management.Automation.PSCredential ($neoconfig.DB_Username, $secPasswd) 
-        $paramsjson = $Parameters | ConvertTo-Json
-
-        # Cypher query using parameters to pass in properties
-        $statement = new-object 'system.collections.generic.dictionary[[string],[object]]'
-        $statement.Add('statement',$Query)
-        $statement.Add('parameters',$Parameters)
-        $statements = new-object 'system.collections.generic.list[object]'
-        $statements.Add($statement)
-
-        #'{"statements" : [{' +
-        #           '"statement" : "' + $Query + '",' +
-        #           '"parameters" : ' + $paramsjson +
-        #           '}]' +
-        #        '}'    
-        $body = $statement = new-object 'system.collections.generic.dictionary[[string],[object]]'
-        $body.Add('statements',$statements)
-
-        $bodyjson = $body |ConvertTo-Json -Depth 5
-        #write-host $bodyjson
-        
-        # Call Neo4J HTTP EndPoint, Pass in creds & POST JSON Payload
-        $response = Invoke-WebRequest -Uri $serverURL -Method POST -Body $bodyjson -credential $neo4jCreds -ContentType "application/json"
-    } 
-    finally {
-      
-    }
-    return $response
-}
+#========================================================================
 
 write-host "Getting Sccm Collections"
 $resultsobj = Get-SccmCollections -Server $server -SiteCode $sitecode
 
 write-host "Writing $($resultsobj.Collections.count) collections"
-$paramsobj = new-object 'system.collections.generic.dictionary[[string],[object]]'
-$paramsobj.Add('collections',$resultsobj.Collections)
+
 $query = 'UNWIND $collections as col ' +
         'MERGE (c:CM_Collection {id:col.ID}) ' +
         'SET c.limitingcollection = col.LimitingID '+   
@@ -241,8 +241,21 @@ $query = 'UNWIND $collections as col ' +
         'SET c.comment = col.Comment '+
         'RETURN count(c) '
 
-$response = WriteToNeo -NeoConfigPath $neoconfig -Query $query -Parameters $paramsobj -serverURL $neoUrl
+#write 500 at a time
+while ($resultsobj.Collections.count -gt 500) {   
+    $poppedlist = $resultsobj.Collections[0..499]
+    $resultsobj.Collections.RemoveRange(0,500)
 
+    $paramsobj = new-object 'system.collections.generic.dictionary[[string],[object]]'
+    $paramsobj.Add('collections',$poppedlist)    
+    $response = WriteToNeo -NeoConfigPath $neoconf -Query $query -Parameters $paramsobj -serverURL $neoUrl
+}
+
+$paramsobj = new-object 'system.collections.generic.dictionary[[string],[object]]'
+$paramsobj.Add('collections',$resultsobj.Collections)
+$response = WriteToNeo -NeoConfigPath $neoconf -Query $query -Parameters $paramsobj -serverURL $neoUrl
+
+#connect limiting collecions
 write-host "Writing $($resultsobj.Limits.count) limiting collection mappings"
 $paramsobj = new-object 'system.collections.generic.dictionary[[string],[object]]'
 $paramsobj.Add('limits',$resultsobj.Limits)
@@ -252,7 +265,43 @@ $query = 'UNWIND $limits as limit ' +
         'MERGE p=((l)-[:LIMITING_FOR]->(c)) ' +   
         'RETURN count(p) '
 
-$response = WriteToNeo -NeoConfigPath $neoconfig -Query $query -Parameters $paramsobj -serverURL $neoUrl
+$response = WriteToNeo -NeoConfigPath $neoconf -Query $query -Parameters $paramsobj -serverURL $neoUrl
+
+#connect group queries
+write-host "Writing $($resultsobj.GroupQueries.count) collection group queries"
+$paramsobj = new-object 'system.collections.generic.dictionary[[string],[object]]'
+$paramsobj.Add('groupqueries',$resultsobj.GroupQueries)
+$query = 'UNWIND $groupqueries as query ' +
+        'MATCH (c:CM_Collection {id:query.CollectionID}) ' +
+        'MATCH (g:AD_Group {samaccountname:query.GroupName}) '+
+        'MERGE p=((g)-[:QUERIED_BY]->(c)) ' +   
+        'RETURN count(p) '
+
+$response = WriteToNeo -NeoConfigPath $neoconf -Query $query -Parameters $paramsobj -serverURL $neoUrl
+
+#connect collection includes
+write-host "Writing $($resultsobj.IncludeRules.count) collection include rules"
+$paramsobj = new-object 'system.collections.generic.dictionary[[string],[object]]'
+$paramsobj.Add('includerules',$resultsobj.IncludeRules)
+$query = 'UNWIND $includerules as rule ' +
+        'MATCH (c:CM_Collection {id:rule.CollectionID}) ' +
+        'MATCH (t:CM_Collection {id:rule.IncludeID}) '+
+        'MERGE p=((t)-[:INCLUDED_IN]->(c)) ' +   
+        'RETURN count(p) '
+
+$response = WriteToNeo -NeoConfigPath $neoconf -Query $query -Parameters $paramsobj -serverURL $neoUrl
+
+#connect collection excludes
+write-host "Writing $($resultsobj.ExcludeRules.count) collection exclude rules"
+$paramsobj = new-object 'system.collections.generic.dictionary[[string],[object]]'
+$paramsobj.Add('excluderules',$resultsobj.ExcludeRules)
+$query = 'UNWIND $excluderules as rule ' +
+        'MATCH (c:CM_Collection {id:rule.CollectionID}) ' +
+        'MATCH (t:CM_Collection {id:rule.ExcludeID}) '+
+        'MERGE p=((t)-[:EXCLUDED_FROM]->(c)) ' +   
+        'RETURN count(p) '
+
+$response = WriteToNeo -NeoConfigPath $neoconf -Query $query -Parameters $paramsobj -serverURL $neoUrl
 
 #Finished with collections
 
@@ -276,7 +325,7 @@ $query = 'UNWIND $apps as app ' +
         'SET a.IsSuperseding  = app.IsSuperseding ' +  
         'RETURN count(a) '
 
-$response = WriteToNeo -NeoConfigPath $neoconfig -Query $query -Parameters $paramsobj -serverURL $neoUrl
+$response = WriteToNeo -NeoConfigPath $neoconf -Query $query -Parameters $paramsobj -serverURL $neoUrl
 
 
 
@@ -289,7 +338,7 @@ $paramsobj.Add('deps',$resultsobj)
 $query = 'UNWIND $deps as dep ' +
         'MATCH (a:CM_Application {id:dep.AppModelID}) ' +
         'MATCH (c:CM_Collection {id:dep.TargetCollectionID}) ' +
-        'MERGE p=(a)-[:DEPLOYED_TO]->(c) ' +
+        'MERGE p=(c)-[:HAS_DEPLOYMENT]->(a) ' +
         'RETURN count(p) '
 
-$response = WriteToNeo -NeoConfigPath $neoconfig -Query $query -Parameters $paramsobj -serverURL $neoUrl
+$response = WriteToNeo -NeoConfigPath $neoconf -Query $query -Parameters $paramsobj -serverURL $neoUrl
