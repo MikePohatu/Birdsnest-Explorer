@@ -10,5 +10,6 @@
   "FS_Folder": "fas fa-folder-open",
   "FS_Datastore": "fas fa-hdd",
   "CM_Collection": "fas fa-layer-group",
-  "CM_Application": "fas fa-cogs"
+  "CM_Application": "fas fa-cogs",
+  "UEM_Setting": "fas fa-rocket"
 }

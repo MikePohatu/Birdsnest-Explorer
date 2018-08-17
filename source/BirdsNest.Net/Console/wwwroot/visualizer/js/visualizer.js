@@ -18,10 +18,8 @@ var paneHeight = 480;
 var defaultsize = 40;
 var edgelabelwidth = 70;
 
-var currMaxRelated = 0
-var currMinRelated = 9007199254740991;
 var minScaling = 1;
-var maxScaling = 4;
+var maxScaling = 3;
 
 var perfmode = false; //perfmode indicates high numbers of nodes, and minimises animation
 
@@ -68,7 +66,7 @@ function drawGraph(selectid) {
             .strength(1.5))
         .force('collide', d3.forceCollide()
             .strength(1)
-            .radius(function (d) { return (d.size * 1.5) }))
+            .radius(function (d) { return d.size * 1.5; }))
         .force('charge', d3.forceManyBody()
             .strength(10)
             .distanceMax(200)
@@ -89,7 +87,7 @@ function updatePaneSize(selectid) {
 
 function onTick() {
     //console.log(simulation.alpha());
-    d3.select("#progress").style("width", (100 - (simulation.alpha() * 100)) + "%");
+    d3.select("#progress").style("width", 100 - simulation.alpha() * 100 + "%");
     if (perfmode) {
         updateNodePositions();
     }
@@ -106,6 +104,7 @@ function resetView() {
     graphbglayer.selectAll("*").remove();
     edgeslayer.selectAll("*").remove();
     nodeslayer.selectAll("*").remove();
+    resetScale();
 }
 
 d3.selectAll("#restartLayoutBtn").attr('onclick', 'restartLayout()');
@@ -114,7 +113,7 @@ function restartLayout() {
     d3.selectAll("#restartIcon").classed("spinner", true);
     d3.selectAll("#restartLayoutBtn")
         .attr('onclick', 'pauseLayout()')
-        .attr('title','Updating layout');
+        .attr('title', 'Updating layout');
     simulation.alpha(1).restart();
 }
 
@@ -209,11 +208,11 @@ function addResultSet(json) {
     checkPerfMode();
 
     edges.forEach(function (d) {
-            if (findFromDbId(edgedata, d.db_id) === null) {
-                edgedata.push(d);
-                newitemcount++;
-            }
+        if (findFromDbId(edgedata, d.db_id) === null) {
+            edgedata.push(d);
+            newitemcount++;
         }
+    }
     );
 
     if (newitemcount > 0) {
@@ -228,6 +227,30 @@ function addResultSet(json) {
     //console.log("addResultSet end: " );
 }
 
+var currMaxScope = 20;
+var currMinScope = 1;
+function resetScale() {
+    currMaxScope = 20;
+    nodedata.forEach(function (d) {
+        if (d.properties.scope > currMaxScope) {
+            currMaxScope = d.properties.scope;
+        }
+    });
+
+    let scalingRange = new Slope(currMinScope, minScaling, currMaxScope, maxScaling);
+
+    nodedata.forEach(function (d) {
+        //console.log(d);
+        d.scaling = scalingRange.getYFromX(d.scope);
+        d.radius = (defaultsize * d.scaling) / 2;
+        d.cx = d.x + d.radius;
+        d.cy = d.y + d.radius;
+        d.size = defaultsize * d.scaling;
+    });
+
+    updateNodeSizes();
+}
+
 function loadNodeData(newnodedata) {
 	/*console.log('loadNodeData');
 	console.log(newnodedata);*/
@@ -236,32 +259,26 @@ function loadNodeData(newnodedata) {
 
     //evaluate the nodes to figure out the max and min size so we can work out the scaling
     newnodedata.forEach(function (d) {
-        if (d.properties.scope != null) {
-            if (d.properties.scope > currMaxRelated) {
-                rangeUpdated = true;
-                currMaxRelated = d.properties.scope;
-            }
-            if (d.properties.scope < currMinRelated) {
-                rangeUpdated = true;
-                currMinRelated = d.properties.scope;
-            }
+        if (d.properties.scope > currMaxScope) {
+            rangeUpdated = true;
+            currMaxScope = d.properties.scope;
         }
-        else { d.properties.scope = 1; }
     });
 
-    let scalingRange = new Slope(currMinRelated, minScaling, currMaxRelated, maxScaling);
+    let scalingRange = new Slope(currMinScope, minScaling, currMaxScope, maxScaling);
 
     if (rangeUpdated) {
         //update the scaling range and update all existing nodes
         nodedata.forEach(function (d) {
             //console.log(d);
-            if (currMaxRelated > 0) { d.scaling = scalingRange.getYFromX(d.properties.scope); }
-            else { d.scaling = 1; }
-            d.radius = ((defaultsize * d.scaling) / 2);
+            d.scaling = scalingRange.getYFromX(d.scope);
+            d.radius = (defaultsize * d.scaling) / 2;
             d.cx = d.x + d.radius;
             d.cy = d.y + d.radius;
             d.size = defaultsize * d.scaling;
         });
+
+        updateNodeSizes();
     }
 
     //load the data and pre-calculate/set the values for each new node 	
@@ -269,10 +286,9 @@ function loadNodeData(newnodedata) {
         //console.log(d);
         if (findFromDbId(nodedata, d.db_id) === null) {
             //console.log("New node: " + d.db_id);
-            if (currMaxRelated > 0) { d.scaling = scalingRange.getYFromX(d.scope); }
-            else { d.scaling = 1; }
+            d.scaling = scalingRange.getYFromX(d.scope);
 
-            d.radius = ((defaultsize * d.scaling) / 2);
+            d.radius = (defaultsize * d.scaling) / 2;
             d.x = 0;
             d.y = 0;
             d.cx = d.x + d.radius;
@@ -296,7 +312,7 @@ function addNodes(nodes) {
         .data(nodes, function (d) { return d.db_id; })
         .enter()
         .append("circle")
-        .attr("r", function (d) { return (d.radius + 10) + "px"; })
+        .attr("r", function (d) { return d.radius + 10; })
         .attr("cx", function (d) { return d.radius; })
         .attr("cy", function (d) { return d.radius; })
         .classed("graphbg", true)
@@ -309,7 +325,7 @@ function addNodes(nodes) {
 
     let enternodesg = enternodes.append("g")
         .attr("id", function (d) { return "node_" + d.db_id; })
-        .attr("class", function (d) { return d.label })
+        .attr("class", function (d) { return d.label; })
         .classed("nodes", true)
         .classed("selected", function (d) { return d.selected; })
         .on("click", nodeClicked)
@@ -323,23 +339,22 @@ function addNodes(nodes) {
     //node layout
     enternodesg.append("circle")
         .classed("nodecircle", true)
-        .attr("r", function (d) { return d.radius + "px"; })
+        .attr("r", function (d) { return d.radius; })
         .attr("cx", function (d) { return d.radius; })
         .attr("cy", function (d) { return d.radius; });
 
     enternodesg.append("i")
-        .attr("height", function (d) { return (d.size * 0.6) + "px" })
-        .attr("width", function (d) { return (d.size * 0.6) + "px" })
-        .attr("x", function (d) { return (d.size * 0.2) })
-        .attr("y", function (d) { return (d.size * 0.2) })
-        .attr("class", function (d) { return iconmappings.getIconClasses(d); })
-        .classed("nodeicon", true);
+        .attr("height", function (d) { return d.size * 0.6; })
+        .attr("width", function (d) { return d.size * 0.6; })
+        .attr("x", function (d) { return d.size * 0.2; })
+        .attr("y", function (d) { return d.size * 0.2; })
+        .attr("class", function (d) { return iconmappings.getIconClasses(d) + " nodeicon"; });
 
     enternodesg.append("text")
         .text(function (d) { return d.name; })
         .attr("text-anchor", "middle")
         .attr("dominant-baseline", "central")
-        .attr("transform", function (d) { return "translate(" + (d.size / 2) + "," + (d.size + 10) + ")" });
+        .attr("transform", function (d) { return "translate(" + (d.size / 2) + "," + (d.size + 10) + ")"; });
 
     //Allow styling of subtypes types
     d3.selectAll(".AD_Group")
@@ -359,6 +374,52 @@ function addNodes(nodes) {
             let c = d.label + "-" + d.properties.name;
             d3.select(this).classed(c, true);
         });
+}
+
+function updateNodeSizes() {
+    //console.log("updateNodeSizes");
+    //add the bg
+    graphbglayer.selectAll('.nodebg')
+        .data(nodedata, function (d) { return d.db_id; })
+        .attr("r", function (d) { return d.radius + 10; })
+        .attr("cx", function (d) { return d.radius; })
+        .attr("cy", function (d) { return d.radius; });
+
+    //build the nodes
+    let allnodes = nodeslayer.selectAll(".nodes")
+        .data(nodedata, function (d) { return d.db_id; });
+
+    //node layout
+    allnodes.selectAll("circle")
+        .attr("r", function (d) { return d.radius; })
+        .attr("cx", function (d) { return d.radius; })
+        .attr("cy", function (d) { return d.radius; });
+
+    nodeslayer.selectAll(".nodeicon").remove();
+
+    allnodes.append("i")
+        .attr("height", function (d) { return d.size * 0.6; })
+        .attr("width", function (d) { return d.size * 0.6; })
+        .attr("x", function (d) { return d.size * 0.2; })
+        .attr("y", function (d) { return d.size * 0.2; })
+        .attr("class", function (d) { return iconmappings.getIconClasses(d) + " nodeicon"; });
+
+    allnodes.selectAll("text")
+        .attr("transform", function (d) { return "translate(" + (d.size / 2) + "," + (d.size + 10) + ")"; });
+
+    let pins = allnodes.selectAll(".pin");
+    pins.selectAll("circle")
+        .attr("r", function (d) { return 8 * d.scaling; })
+        .attr("cx", function (d) { return 5 * d.scaling; })
+        .attr("cy", function (d) { return 5 * d.scaling; });
+
+    nodeslayer.selectAll(".pinicon").remove();
+    pins.append("i")
+        .classed("fas fa-thumbtack", true)
+        .attr("x", 0)
+        .attr("y", 1)
+        .attr("height", function (d) { return 10 * d.scaling; })
+        .attr("width", function (d) { return 10 * d.scaling; });
 }
 
 function addEdges(edges) {
@@ -382,7 +443,7 @@ function addEdges(edges) {
 
     let enteredgesg = enteredges.append("g")
         .attr("id", function (d) { return "edge_" + d.db_id; })
-        .attr("class", function (d) { return d.label })
+        .attr("class", function (d) { return d.label; })
         .classed("edges", true);
 
     enteredgesg.append("path")
@@ -396,10 +457,10 @@ function addEdges(edges) {
         .classed("edgelabel", true);
 
     edgelabels.append("text")
-        .text(function (d) { return d.label })
+        .text(function (d) { return d.label; })
         .attr("dominant-baseline", "text-bottom")
         .attr("text-anchor", "middle")
-        .attr("transform", "translate(0,-5)");;
+        .attr("transform", "translate(0,-5)");
 }
 
 document.getElementById('removeBtn').addEventListener('click', removeNodes, false);
@@ -445,6 +506,9 @@ function removeNodes() {
     nodeslayer.selectAll(".nodes")
         .data(nodedata, function (d) { return d.db_id; })
         .exit().remove();
+
+    resetScale();
+    updateLocations();
 }
 
 function getAllNodeIds() {
@@ -470,7 +534,7 @@ function findFromDbId(arraydata, id) {
         if (arraydata[i].db_id === id) {
             return arraydata[i];
         }
-    };
+    }
     return null;
 }
 
@@ -490,7 +554,7 @@ function pinNode(d) {
             .attr("cx", 5 * d.scaling)
             .attr("cy", 5 * d.scaling);
         ping.append("i")
-            .classed("fas fa-thumbtack", true)
+            .classed("fas fa-thumbtack pinicon", true)
             .attr("x", 0)
             .attr("y", 1)
             .attr("height", 10 * d.scaling)
@@ -553,7 +617,7 @@ function updateNodeSelection(d, isselected) {
         }
     }
 
-    d3.selectAll("#node_" + (d.db_id))
+    d3.selectAll("#node_" + d.db_id)
         .classed("selected", function () {
             d.selected = isselected;
             return isselected;
@@ -651,10 +715,10 @@ function updateLocations() {
             d.cy = d.y + d.radius;
             return d.y;
         })
-        .attr("transform", function (d) { return "translate(" + d.x + "," + d.y + ")" });
+        .attr("transform", function (d) { return "translate(" + d.x + "," + d.y + ")"; });
 
     graphbglayer.selectAll(".nodebg")
-        .attr("transform", function (d) { return "translate(" + d.x + "," + d.y + ")" });
+        .attr("transform", function (d) { return "translate(" + d.x + "," + d.y + ")"; });
 
 
     alledges.each(function (d) {
@@ -675,8 +739,8 @@ function updateLocations() {
             })
             .attr("d", function (d) {
                 return "M 0 -" + edgebgwidth + " " +
-                    "L " + (diagLine.length) + " -" + edgebgwidth + " " +
-                    "L " + (diagLine.length) + " " + edgebgwidth + " " +
+                    "L " + diagLine.length + " -" + edgebgwidth + " " +
+                    "L " + diagLine.length + " " + edgebgwidth + " " +
                     "L 0 " + edgebgwidth + " " + " Z";
             });
 
@@ -684,8 +748,8 @@ function updateLocations() {
         edge.selectAll(".wrapper")
             .attr("d", function (d) {
                 return "M 0 -3 " +
-                    "L " + (diagLine.length) + " -3 " +
-                    "L " + (diagLine.length) + " 3 " +
+                    "L " + diagLine.length + " -3 " +
+                    "L " + diagLine.length + " 3 " +
                     "L 0 3 Z";
             });
 
@@ -695,7 +759,7 @@ function updateLocations() {
                 let linepoint = Math.max(lineend + 5, lineend);
                 linestart = Math.min(d.source.radius + 5, lineend);
 
-                let = path = "M " + linestart + " -0.5 " +
+                let path = "M " + linestart + " -0.5 " +
                     "L " + lineend + " -0.5 " +
                     "L " + lineend + " -5 " +
                     "L " + linepoint + " 0 " +
@@ -717,7 +781,7 @@ function updateLocations() {
                     let axis = diagLine.getCoordsFromLength(diagLine.mid);
                     return "translate(" + diagLine.mid + ",0) rotate(180)";
                 }
-            })
+            });
     });
 }
 
@@ -737,7 +801,7 @@ function Slope(x1, y1, x2, y2) {
     this.xd = x2 - x1; //delta x
     this.yd = y2 - y1; //delta y
 
-    this.length = Math.sqrt((this.xd * this.xd) + (this.yd * this.yd));
+    this.length = Math.sqrt(this.xd * this.xd + this.yd * this.yd);
     this.mid = this.length / 2;
     this.deg = Math.atan2(this.yd, this.xd) * (180 / Math.PI);
     this.sinA = this.yd / this.length;
@@ -748,19 +812,19 @@ function Slope(x1, y1, x2, y2) {
 // find coordinates of a point along the line from the source (x1,y1)
 Slope.prototype.getCoordsFromLength = function (length) {
     let ret = {
-        x: ((this.cosA / length) + this.x1),
-        y: ((this.sinA / length) + this.y1)
+        x: this.cosA / length + this.x1,
+        y: this.sinA / length + this.y1
     };
     return ret;
-}
+};
 
 Slope.prototype.getYFromX = function (x) {
-    return (this.tanA * (x - this.x1)) + this.y1;
-}
+    return this.tanA * (x - this.x1) + this.y1;
+};
 
 Slope.prototype.getXFromY = function (y) {
-    return (this.tanA / (y - this.y1)) + this.x1;
-}
+    return this.tanA / (y - this.y1) + this.x1;
+};
 
 
 
@@ -774,7 +838,7 @@ function IconMappings(jsondata) {
 IconMappings.prototype.getIconClasses = function (datum) {
     if (this.mappings.hasOwnProperty(datum.label)) { return this.mappings[datum.label]; }
     else { return "fas fa-question"; }
-}
+};
 
 
 /*
@@ -799,7 +863,7 @@ function populateDetails(d) {
             s += "empty<br>";
         }
         return s;
-    }
+    };
 }
 
 
@@ -868,7 +932,7 @@ function search() {
         //console.log(data);
         pendingResults = data;
         let not = "Search returned " + data.nodes.length + " nodes. ";
-        if (data.nodes.length !== 0) { not = not + "<a href='javascript:addPending()'>Add to view</a>" }
+        if (data.nodes.length !== 0) { not = not + "<a href='javascript:addPending()'>Add to view</a>"; }
         document.getElementById("searchNotification").innerHTML = not;
     });
 }
@@ -877,7 +941,7 @@ function toggleDir() {
     //console.log("toggleDir");
     var icon = document.getElementById("dirIcon");
     var d = $(icon).attr('data-dir');
-    if (d == 'R') {
+    if (d === 'R') {
         icon.classList.remove("fa-arrow-right");
         icon.classList.add("fa-arrow-left");
         $(icon).attr('data-dir', 'L');
@@ -889,7 +953,7 @@ function toggleDir() {
     //    icon.classList.add("fa-arrow-left");
     //    $(icon).attr('data-dir', 'L');
     //} 
-    else if (d == 'L') {
+    else if (d === 'L') {
         icon.classList.remove("fa-arrow-left");
         icon.classList.add("fa-arrow-right");
         $(icon).attr('data-dir', 'R');
@@ -944,7 +1008,7 @@ function addRelated(nodeid) {
 function updateEdges() {
     //console.log("updateEdges start");
     let nodeids = getAllNodeIds();
-    var postdata = JSON.stringify(nodeids)
+    var postdata = JSON.stringify(nodeids);
     //console.log(": json stringyfied");
     //console.log(nodeids);
 
@@ -983,7 +1047,7 @@ function timedKeyUp(timedfunction) {
 
 
 function isNullOrEmpty(s) {
-    return (s == null || s === "");
+    return s === null || s === "";
 }
 
 
@@ -999,7 +1063,7 @@ function addOption(selectbox, text, value) {
 
 function addLabelOptions(selectbox, labelList) {
     for (var i = 0; i < labelList.length; ++i) {
-        addOption(selectbox, labelList[i], labelList[i])
+        addOption(selectbox, labelList[i], labelList[i]);
     }
 }
 
@@ -1019,7 +1083,7 @@ function updateProps(elementPrefix) {
 
     $.getJSON("/api/nodes/properties?type=" + type, function (data) {
         for (var i = 0; i < data.length; ++i) {
-            addOption(elprops, data[i], data[i])
+            addOption(elprops, data[i], data[i]);
         }
     });
 }
