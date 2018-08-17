@@ -18,8 +18,8 @@ namespace Console.neo4jProxy
         [JsonProperty("label")]
         public string Label { get; private set; } = string.Empty;
 
-        [JsonProperty("relatedcount")]
-        public int RelatedCount { get; private set; } = 0;
+        [JsonProperty("scope")]
+        public long Scope { get; private set; } = 1;
 
         [JsonProperty("properties")]
         public IReadOnlyDictionary<string,object> Properties { get; private set; }
@@ -35,6 +35,11 @@ namespace Console.neo4jProxy
             if (newnode.Properties.TryGetValue("name", out o))
             {
                 newnode.Name = o.ToString();
+            }
+
+            if (newnode.Properties.TryGetValue("scope", out o))
+            {
+                newnode.Scope = (long)o;
             }
 
             foreach (string s in noderecord.Labels)

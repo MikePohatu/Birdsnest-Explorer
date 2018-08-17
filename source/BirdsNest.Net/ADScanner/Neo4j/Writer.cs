@@ -8,6 +8,18 @@ namespace ADScanner.Neo4j
 {
     public static class Writer
     {
+        public static void SetGroupScope(ISession session)
+        {
+            string query = "MATCH (o) "+
+                "WHERE o:"+Types.User+ " OR o:" + Types.Computer + " " + 
+                "MATCH (o)-[:AD_MEMBER_OF *]->(g:" +Types.Group+ ") "+
+                "WITH collect(DISTINCT o) as nodes, g " +
+                "SET g.scope = size(nodes) " +
+                "RETURN g";
+
+            session.WriteTransaction(tx => tx.Run(query));
+        }
+
         public static int MergeADGroups(List<Dictionary<string, object>> propertylist, ISession session)
         {
             string query = "UNWIND $propertylist AS g " +

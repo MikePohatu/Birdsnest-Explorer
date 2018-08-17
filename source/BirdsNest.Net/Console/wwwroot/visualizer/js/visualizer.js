@@ -236,14 +236,17 @@ function loadNodeData(newnodedata) {
 
     //evaluate the nodes to figure out the max and min size so we can work out the scaling
     newnodedata.forEach(function (d) {
-        if (d.relatedcount > currMaxRelated) {
-            rangeUpdated = true;
-            currMaxRelated = d.relatedcount;
+        if (d.properties.scope != null) {
+            if (d.properties.scope > currMaxRelated) {
+                rangeUpdated = true;
+                currMaxRelated = d.properties.scope;
+            }
+            if (d.properties.scope < currMinRelated) {
+                rangeUpdated = true;
+                currMinRelated = d.properties.scope;
+            }
         }
-        if (d.relatedcount < currMinRelated) {
-            rangeUpdated = true;
-            currMinRelated = d.relatedcount;
-        }
+        else { d.properties.scope = 1; }
     });
 
     let scalingRange = new Slope(currMinRelated, minScaling, currMaxRelated, maxScaling);
@@ -252,7 +255,7 @@ function loadNodeData(newnodedata) {
         //update the scaling range and update all existing nodes
         nodedata.forEach(function (d) {
             //console.log(d);
-            if (currMaxRelated > 0) { d.scaling = scalingRange.getYFromX(d.relatedcount); }
+            if (currMaxRelated > 0) { d.scaling = scalingRange.getYFromX(d.properties.scope); }
             else { d.scaling = 1; }
             d.radius = ((defaultsize * d.scaling) / 2);
             d.cx = d.x + d.radius;
@@ -266,7 +269,7 @@ function loadNodeData(newnodedata) {
         //console.log(d);
         if (findFromDbId(nodedata, d.db_id) === null) {
             //console.log("New node: " + d.db_id);
-            if (currMaxRelated > 0) { d.scaling = scalingRange.getYFromX(d.relatedcount); }
+            if (currMaxRelated > 0) { d.scaling = scalingRange.getYFromX(d.scope); }
             else { d.scaling = 1; }
 
             d.radius = ((defaultsize * d.scaling) / 2);
@@ -783,7 +786,7 @@ function populateDetails(d) {
             "<b>Name:</b> " + d.name + "<br>" +
             "<b>db_id:</b> " + d.db_id + "<br>" +
             "<b>Type:</b> " + d.label + "<br>" +
-            "<b>Related:</b> " + d.relatedcount + "<br><br><b><u>Properties</u></b><br>";
+            "<b>Scope:</b> " + d.properties.scope + "<br><br><b><u>Properties</u></b><br>";
 
         if (d.properties) {
             d.propertyCount = d.properties.count;

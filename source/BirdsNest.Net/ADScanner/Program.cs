@@ -263,6 +263,18 @@ namespace ADScanner
             }
             steptimer.Stop();
             Console.WriteLine("Finished cleaning up deleted items in " + steptimer.ElapsedMilliseconds + "ms");
+
+            steptimer.Restart();
+            using (ISession session = driver.Session())
+            {
+                //mark deleted objects
+                Writer.SetGroupScope(session);
+            }
+            steptimer.Stop();
+            Console.WriteLine();
+            Console.WriteLine("Set group scopes in " + steptimer.ElapsedMilliseconds + "ms");
+
+
             //cleanup
             driver.Dispose();
             rootDE.Dispose();
