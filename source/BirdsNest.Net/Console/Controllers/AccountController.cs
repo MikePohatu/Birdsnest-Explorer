@@ -78,7 +78,7 @@ namespace Console.Controllers
                             {
                                 ExpiresUtc = DateTime.UtcNow.AddMinutes(20),
                                 IsPersistent = false,
-                                AllowRefresh = false
+                                AllowRefresh = true
                             };
 
                             await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, userPrincipal, authProperties);

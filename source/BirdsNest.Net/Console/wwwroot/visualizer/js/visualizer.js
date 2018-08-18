@@ -71,7 +71,6 @@ function drawGraph(selectid) {
             .strength(10)
             .distanceMax(200)
             .distanceMin(50))
-        .force('center', d3.forceCenter(paneWidth / 2, paneHeight / 2))
         .on('tick', function () { onTick(); })
         .on('end', function () { onLayoutFinished(); })
         .velocityDecay(0.6)
