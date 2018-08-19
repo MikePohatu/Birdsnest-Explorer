@@ -40,7 +40,7 @@ namespace Console.Controllers
             {
                 try
                 {
-                    using (var context = LdapAuthorizer.CreateContext(_config.Domain))
+                    using (var context = LdapAuthorizer.CreateContext(_config.Domain,_config.ContainerDN, _config.SSL))
                     {
                         if (LdapAuthorizer.IsAuthenticated(context, details.UserName, details.Password))
                         {

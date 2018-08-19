@@ -72,14 +72,18 @@ namespace Console
                 return neoservice;
             });
 
-            services.AddSingleton(serviceProvider =>
-            {
-                DirectoryConfiguration config = new DirectoryConfiguration();
-                config.Domain = Configuration["ActiveDirectorySettings:Domain"];
-                config.AdminGroup = Configuration["ActiveDirectorySettings:AdminGroup"];
-                config.UserGroup = Configuration["ActiveDirectorySettings:UserGroup"];
-                return config;
-            });
+            //services.AddSingleton(serviceProvider =>
+            //{
+            //    services.Configure<DirectoryConfiguration>(Configuration.GetSection("ActiveDirectorySettings"));
+            //    DirectoryConfiguration config = new DirectoryConfiguration();
+            //    //config.Domain = Configuration["ActiveDirectorySettings:Domain"];
+            //    //config.AdminGroup = Configuration["ActiveDirectorySettings:AdminGroup"];
+            //    //config.UserGroup = Configuration["ActiveDirectorySettings:UserGroup"];
+            //    //config.ContainerDN = Configuration["ActiveDirectorySettings:ContainerDN"];
+            //    return config;
+            //});
+
+            services.AddSingleton(Configuration.GetSection("ActiveDirectorySettings").Get<DirectoryConfiguration>());
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

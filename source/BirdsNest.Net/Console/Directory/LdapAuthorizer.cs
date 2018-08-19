@@ -8,9 +8,19 @@ namespace Console.Directory
 {
     public static class LdapAuthorizer
     {
-        public static PrincipalContext CreateContext(string domainname)
+        public static PrincipalContext CreateContext(string domainname, string containerdn, bool ssl)
         {
-            PrincipalContext context = new PrincipalContext(ContextType.Domain, domainname);
+            PrincipalContext context;
+            if (ssl == true)
+            {
+                ContextOptions options = ContextOptions.Negotiate | ContextOptions.SecureSocketLayer;
+                context = new PrincipalContext(ContextType.Domain,domainname,containerdn, options);
+            }
+            else
+            {
+                context = new PrincipalContext(ContextType.Domain, domainname, containerdn);
+            }
+            
             return context;
         }
 
