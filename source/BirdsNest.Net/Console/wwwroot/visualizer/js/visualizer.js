@@ -162,20 +162,9 @@ function addPending() {
     //console.log(pendingResults.nodes.length);
     //console.log("addPending start");
 
-    if (pendingResults.nodes.length > 1000) {
-        if (confirm("You are adding a ridiculous number of nodes to the view. This is really, really not recommended. " +
-            " Are you sure?") !== true) {
-            return;
-        }
-    }
-    else if (pendingResults.nodes.length > 500) {
-        if (confirm("You are adding a huge number of nodes to the view. This is not recommended. " +
-            " Are you sure?") !== true) {
-            return;
-        }
-    }
-    else if (pendingResults.nodes.length > 100) {
-        if (confirm("You are adding a large number of nodes to the view which may slow things down. " +
+    if (pendingResults.nodes.length > 100) {
+        if (confirm("You are adding " + pendingResults.nodes.length + " nodes to the view. This is a " +
+            "large number of nodes. Layout animation will be disabled for performance reasons. " +
             " Are you sure?") !== true) {
             return;
         }
@@ -255,12 +244,17 @@ function loadNodeData(newnodedata) {
 	console.log(newnodedata);*/
     let rangeUpdated = false;
     let newcount = 0;
+    let newtograph = [];
 
     //evaluate the nodes to figure out the max and min size so we can work out the scaling
     newnodedata.forEach(function (d) {
-        if (d.properties.scope > currMaxScope) {
-            rangeUpdated = true;
-            currMaxScope = d.properties.scope;
+        if (findFromDbId(nodedata, d.db_id) === null) {
+            newtograph.push(d);
+
+            if (d.properties.scope > currMaxScope) {
+                rangeUpdated = true;
+                currMaxScope = d.properties.scope;
+            }
         }
     });
 
@@ -281,24 +275,21 @@ function loadNodeData(newnodedata) {
     }
 
     //load the data and pre-calculate/set the values for each new node 	
-    newnodedata.forEach(function (d) {
-        //console.log(d);
-        if (findFromDbId(nodedata, d.db_id) === null) {
-            //console.log("New node: " + d.db_id);
-            d.scaling = scalingRange.getYFromX(d.scope);
+    newtograph.forEach(function (d) {
+        //console.log("New node: " + d.db_id);
+        d.scaling = scalingRange.getYFromX(d.scope);
 
-            d.radius = (defaultsize * d.scaling) / 2;
-            d.x = 0;
-            d.y = 0;
-            d.cx = d.x + d.radius;
-            d.cy = d.y + d.radius;
-            //console.log(d.x); 
-            //console.log(d.cx); 
-            d.size = defaultsize * d.scaling;
-            populateDetails(d);
-            nodedata.push(d);
-            newcount++;
-        }
+        d.radius = (defaultsize * d.scaling) / 2;
+        d.x = 0;
+        d.y = 0;
+        d.cx = d.x + d.radius;
+        d.cy = d.y + d.radius;
+        //console.log(d.x); 
+        //console.log(d.cx); 
+        d.size = defaultsize * d.scaling;
+        populateDetails(d);
+        nodedata.push(d);
+        newcount++;
     });
     //console.log(newcount);
     return newcount;
