@@ -10,6 +10,7 @@ $neoconf = "C:\birdsnest\Scanners\neoconfig.json"
 $ShortDomain = 'AD'
 
 
+
 Function Get-UemSettings {
     Param(
         [Parameter(Mandatory=$true)][String]$Path
@@ -31,11 +32,11 @@ Function Get-UemSettings {
         }
         elseif($S.Extension -eq ".xml"){
             [XML]$XML = Get-Content -LiteralPath $S.FullName
-            if (!($XML.userEnvironmentSettings.setting.disabled -eq "1")){
+            #if (!($XML.userEnvironmentSettings.setting.disabled -eq "1")){
                 $Title = $XML.userEnvironmentSettings.setting.label
                 $SettingType = if($XML.userEnvironmentSettings.setting.type){$XML.userEnvironmentSettings.setting.type}else{$S.Directory.Name}
                 $PROCESSLINE = $XML.userEnvironmentSettings.conditions.InnerXml
-            }
+            #}
         }
         
         
@@ -211,4 +212,3 @@ $query = "MATCH (o) "+
 
 $response = WriteToNeo -NeoConfigPath $neoconf -Query $query -serverURL $neoUrl
  
-
