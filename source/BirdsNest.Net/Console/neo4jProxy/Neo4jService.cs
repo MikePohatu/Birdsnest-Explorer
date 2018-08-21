@@ -94,29 +94,6 @@ namespace Console.neo4jProxy
             await Task.Run(() => o = GetRelationships(nodeids));
 
             return o;
-            //using (ISession session = this.Driver.Session())
-            //{
-            //    ResultSet returnedresults = new ResultSet();
-            //    try
-            //    {
-            //        session.ReadTransaction(tx =>
-            //        {
-            //            string query = "UNWIND $ids AS nodeid " +
-            //                "MATCH (s)-[r]-(t) " +
-            //                "WHERE ID(s)=nodeid AND ID(t) IN $ids " +
-            //                "RETURN DISTINCT r";
-            //            Task<IStatementResultCursor> dbresultasync = tx.RunAsync(query, new { ids = nodeids });
-            //            IStatementResult dbresult = await dbresultasync;
-            //            returnedresults.Append(ParseResults(dbresult));
-            //        });
-            //    }
-            //    catch
-            //    {
-            //        //logging to add
-            //    }
-
-            //    return returnedresults;
-            //}
         }
 
         public object GetRelationships(List<long> nodeids)
@@ -131,6 +108,40 @@ namespace Console.neo4jProxy
                         string query = "UNWIND $ids AS nodeid " +
                             "MATCH (s)-[r]-(t) " +
                             "WHERE ID(s)=nodeid AND ID(t) IN $ids " +
+                            "RETURN DISTINCT r";
+                        IStatementResult dbresult = tx.Run(query, new { ids = nodeids });
+                        returnedresults.Append(ParseResults(dbresult));
+                    });
+                }
+                catch
+                {
+                    //logging to add
+                }
+
+                return returnedresults;
+            }
+        }
+
+        public async Task<object> GetDirectRelationshipsAsync(List<long> nodeids)
+        {
+            object o = null;
+            await Task.Run(() => o = GetDirectRelationships(nodeids));
+
+            return o;
+        }
+
+        public object GetDirectRelationships(List<long> nodeids)
+        {
+            using (ISession session = this.Driver.Session())
+            {
+                ResultSet returnedresults = new ResultSet();
+                try
+                {
+                    session.ReadTransaction(tx =>
+                    {
+                        string query = "UNWIND $ids AS nodeid " +
+                            "MATCH (s)-[r]-() " +
+                            "WHERE ID(s)=nodeid " +
                             "RETURN DISTINCT r";
                         IStatementResult dbresult = tx.Run(query, new { ids = nodeids });
                         returnedresults.Append(ParseResults(dbresult));

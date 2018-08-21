@@ -6,8 +6,11 @@ var nodeslayer;
 var edgeslayer;
 var simulation;
 var force;
-var edgedata = [];
-var nodedata = [];
+//var edgedata = [];
+//var nodedata = [];
+
+var graphnodes = new datumStore();
+var graphedges = new datumStore();
 
 var playMode = false;
 var shiftKey = false;
@@ -97,8 +100,11 @@ function onTick() {
 
 function resetView() {
     //console.log("resetView");
-    edgedata = [];
-    nodedata = [];
+    //edgedata = [];
+    //nodedata = [];
+    graphnodes = new datumStore();
+    graphedges = new datumStore();
+
     unselectAllNodes();
     graphbglayer.selectAll("*").remove();
     edgeslayer.selectAll("*").remove();
@@ -196,19 +202,20 @@ function addResultSet(json) {
     checkPerfMode();
 
     edges.forEach(function (d) {
-        if (findFromDbId(edgedata, d.db_id) === null) {
-            edgedata.push(d);
+        if (graphedges.DatumExists(d)===false) {
+            //edgedata.push(d);
+            graphedges.Add(d);
             newitemcount++;
         }
     }
     );
 
     if (newitemcount > 0) {
-        simulation.nodes(nodedata);
-        simulation.force("link").links(edgedata);
+        simulation.nodes(graphnodes.GetArray());
+        simulation.force("link").links(graphedges.GetArray());
 
-        addNodes(nodedata);
-        addEdges(edgedata);
+        addNodes(graphnodes.GetArray());
+        addEdges(graphedges.GetArray());
     }
     return newitemcount;
 
@@ -219,7 +226,7 @@ var currMaxScope = 20;
 var currMinScope = 1;
 function resetScale() {
     currMaxScope = 20;
-    nodedata.forEach(function (d) {
+    graphnodes.GetArray().forEach(function (d) {
         if (d.properties.scope > currMaxScope) {
             currMaxScope = d.properties.scope;
         }
@@ -227,7 +234,7 @@ function resetScale() {
 
     let scalingRange = new Slope(currMinScope, minScaling, currMaxScope, maxScaling);
 
-    nodedata.forEach(function (d) {
+    graphnodes.GetArray().forEach(function (d) {
         //console.log(d);
         d.scaling = scalingRange.getYFromX(d.scope);
         d.radius = (defaultsize * d.scaling) / 2;
@@ -248,7 +255,7 @@ function loadNodeData(newnodedata) {
 
     //evaluate the nodes to figure out the max and min size so we can work out the scaling
     newnodedata.forEach(function (d) {
-        if (findFromDbId(nodedata, d.db_id) === null) {
+        if (graphnodes.DatumExists(d)===false) {
             newtograph.push(d);
 
             if (d.properties.scope > currMaxScope) {
@@ -262,7 +269,7 @@ function loadNodeData(newnodedata) {
 
     if (rangeUpdated) {
         //update the scaling range and update all existing nodes
-        nodedata.forEach(function (d) {
+        graphnodes.GetArray().forEach(function (d) {
             //console.log(d);
             d.scaling = scalingRange.getYFromX(d.scope);
             d.radius = (defaultsize * d.scaling) / 2;
@@ -288,7 +295,7 @@ function loadNodeData(newnodedata) {
         //console.log(d.cx); 
         d.size = defaultsize * d.scaling;
         populateDetails(d);
-        nodedata.push(d);
+        graphnodes.Add(d);
         newcount++;
     });
     //console.log(newcount);
@@ -370,14 +377,14 @@ function updateNodeSizes() {
     //console.log("updateNodeSizes");
     //add the bg
     graphbglayer.selectAll('.nodebg')
-        .data(nodedata, function (d) { return d.db_id; })
+        .data(graphnodes.GetArray(), function (d) { return d.db_id; })
         .attr("r", function (d) { return d.radius + 10; })
         .attr("cx", function (d) { return d.radius; })
         .attr("cy", function (d) { return d.radius; });
 
     //build the nodes
     let allnodes = nodeslayer.selectAll(".nodes")
-        .data(nodedata, function (d) { return d.db_id; });
+        .data(graphnodes.GetArray(), function (d) { return d.db_id; });
 
     //node layout
     allnodes.selectAll("circle")
@@ -457,6 +464,7 @@ document.getElementById('removeBtn').addEventListener('click', removeNodes, fals
 function removeNodes() {
     //console.log("removeNodes: " );
     var nodeList = [];
+    var nodeids = [];
 
     d3.selectAll(".selected")
         .each(function (d) {
@@ -470,35 +478,36 @@ function removeNodes() {
         return;
     }
 
-    //remove the edges first
-    edgedata = edgedata.filter(function (edge) {
-        return !nodeList.includes(edge.source) && !nodeList.includes(edge.target);
+    nodeList.forEach(function (d) {
+        nodeids.push(d.db_id);
+        graphnodes.Remove(d);
     });
 
-    nodedata = nodedata.filter(function (node) {
-        return !nodeList.includes(node);
+    getDirectEdgesForNodeList(nodeids, function (data) {
+        //console.log(data);
+        //console.log(nodeids);
+        data.edges.forEach(function (d) { graphedges.Remove(d); });
+        checkPerfMode();
+
+        graphbglayer.selectAll('.edgebg')
+            .data(graphedges.GetArray(), function (d) { return d.db_id; })
+            .exit().remove();
+
+        graphbglayer.selectAll('.nodebg')
+            .data(graphnodes.GetArray(), function (d) { return d.db_id; })
+            .exit().remove();
+
+        edgeslayer.selectAll(".edges")
+            .data(graphedges.GetArray(), function (d) { return d.db_id; })
+            .exit().remove();
+
+        nodeslayer.selectAll(".nodes")
+            .data(graphnodes.GetArray(), function (d) { return d.db_id; })
+            .exit().remove();
+
+        resetScale();
+        updateLocations();
     });
-
-    checkPerfMode();
-
-    graphbglayer.selectAll('.edgebg')
-        .data(edgedata, function (d) { return d.db_id; })
-        .exit().remove();
-
-    graphbglayer.selectAll('.nodebg')
-        .data(nodedata, function (d) { return d.db_id; })
-        .exit().remove();
-
-    edgeslayer.selectAll(".edges")
-        .data(edgedata, function (d) { return d.db_id; })
-        .exit().remove();
-
-    nodeslayer.selectAll(".nodes")
-        .data(nodedata, function (d) { return d.db_id; })
-        .exit().remove();
-
-    resetScale();
-    updateLocations();
 }
 
 function getAllNodeIds() {
@@ -515,7 +524,7 @@ function getAllNodeIds() {
 
 //check the number of nodes in the view, and enable perfmode if required
 function checkPerfMode() {
-    if (nodedata.length > 100) { perfmode = true; }
+    if (graphnodes.GetArray().length > 100) { perfmode = true; }
     else { perfmode = false; }
 }
 
@@ -687,13 +696,13 @@ function nodeDragged(d) {
 }
 
 function updateNodePositions() {
-    nodedata.forEach(function (d) {
+    graphnodes.GetArray().forEach(function (d) {
         d.cx = d.x + d.radius;
     });
 }
 
 function updateLocations() {
-    let alledges = edgeslayer.selectAll(".edges").data(edgedata);
+    let alledges = edgeslayer.selectAll(".edges").data(graphedges.GetArray());
     let edgebgwidth = 13;
 
     nodeslayer.selectAll(".nodes")
@@ -778,8 +787,50 @@ function updateLocations() {
 
 
 
+//object to store datums for constant time insertion and delete and to abstract the handling of this data
+function datumStore() {
+    this.datumObject = new Object();
+    this.datumArray = [];
+    this.objectUpdated = false;
+}
+
+datumStore.prototype.GetArray = function () {
+    
+    if (this.objectUpdated === true) {
+        //onsole.log(this.datumObject);
+        let o = this.datumObject;
+        this.datumArray = Object.keys(o).map(function (key) {
+            //console.log("datumStore.GetArray map: " + key);
+            //console.log(o);
+            return o[key];
+        });
+
+        this.objectUpdated = false;
+    }
+    return this.datumArray;
+};
+
+datumStore.prototype.Add = function (d) {
+    //console.log("datumStore.Add: " + d.db_id);
+    this.datumObject[d.db_id] = d;
+    this.objectUpdated = true;
+};
+
+datumStore.prototype.Remove = function (d) {
+    delete this.datumObject[d.db_id];
+    this.objectUpdated = true;
+};
+
+datumStore.prototype.DatumExists = function (d) {
+    if (this.datumObject.hasOwnProperty(d.db_id)) { return true; }
+    else { return false; }
+};
 
 
+datumStore.prototype.Keyxists = function (key) {
+    if (this.datumObject.hasOwnProperty(key)) { return true; }
+    else { return false; }
+};
 
 
 //based on an angled line, eval all the relevant details
@@ -998,7 +1049,18 @@ function addRelated(nodeid) {
 function updateEdges() {
     //console.log("updateEdges start");
     let nodeids = getAllNodeIds();
-    var postdata = JSON.stringify(nodeids);
+
+    getEdgesForNodes(nodeids, function (data) {
+        //console.log(data);
+        //console.log("getEdgesForNodes complete");
+        addResultSet(data);
+        restartLayout();
+    });
+    //console.log("updateEdges end");
+}
+
+function getEdgesForNodes(nodelist, callback) {  
+    var postdata = JSON.stringify(nodelist);
     //console.log(": json stringyfied");
     //console.log(nodeids);
 
@@ -1010,14 +1072,26 @@ function updateEdges() {
         headers: {
             'X-CSRFToken': getCookie('csrftoken')
         },
-        success: function (data) {
-            //console.log(data);
-            //console.log("getEdgesForNodes complete");
-            addResultSet(data);
-            restartLayout();
-        }
+        success: callback
     });
-    //console.log("updateEdges end");
+}
+
+
+function getDirectEdgesForNodeList(nodelist, callback) {
+    var postdata = JSON.stringify(nodelist);
+    //console.log(": json stringyfied");
+    //console.log(nodeids);
+
+    $.ajax({
+        url: '/api/edges/direct',
+        method: "POST",
+        data: postdata,
+        contentType: "application/json; charset=utf-8",
+        headers: {
+            'X-CSRFToken': getCookie('csrftoken')
+        },
+        success: callback
+    });
 }
 
 // Keystroke event handlers

@@ -36,7 +36,15 @@ namespace Console.Controllers
             return d;
         }
 
-        // GET api/nodes/labels
+        // POST api/edges/direct
+        [HttpPost("direct")]
+        public async Task<object> GetDirectEdgesForNodes([FromBody]List<long> value)
+        {
+            var d = await this._service.GetDirectRelationshipsAsync(value);
+            return d;
+        }
+
+        // GET api/edges/labels
         [HttpGet("labels")]
         public IEnumerable<string> GetLabels()
         {
