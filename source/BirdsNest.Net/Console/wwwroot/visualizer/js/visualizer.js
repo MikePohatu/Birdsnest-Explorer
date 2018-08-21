@@ -305,17 +305,18 @@ function loadNodeData(newnodedata) {
 function addNodes(nodes) {
     //console.log(": addNodes");
     //add the bg
-    graphbglayer.selectAll('.nodebg')
-        .data(nodes, function (d) { return d.db_id; })
-        .enter()
-        .append("circle")
-        .attr("r", function (d) { return d.radius + 10; })
-        .attr("cx", function (d) { return d.radius; })
-        .attr("cy", function (d) { return d.radius; })
-        .classed("graphbg", true)
-        .classed("nodebg", true);
+    setTimeout(function () {
+        graphbglayer.selectAll('.nodebg')
+            .data(nodes, function (d) { return d.db_id; })
+            .enter()
+            .append("circle")
+            .attr("r", function (d) { return d.radius + 10; })
+            .attr("cx", function (d) { return d.radius; })
+            .attr("cy", function (d) { return d.radius; })
+            .classed("graphbg", true)
+            .classed("nodebg", true);
+    },1);
 
-    //build the nodes
     let enternodes = nodeslayer.selectAll(".nodes")
         .data(nodes, function (d) { return d.db_id; })
         .enter();
@@ -333,44 +334,54 @@ function addNodes(nodes) {
             d3.drag().subject(this)
                 .on('drag', nodeDragged));
 
-    //node layout
-    enternodesg.append("circle")
-        .classed("nodecircle", true)
-        .attr("r", function (d) { return d.radius; })
-        .attr("cx", function (d) { return d.radius; })
-        .attr("cy", function (d) { return d.radius; });
+    
 
-    enternodesg.append("i")
-        .attr("height", function (d) { return d.size * 0.6; })
-        .attr("width", function (d) { return d.size * 0.6; })
-        .attr("x", function (d) { return d.size * 0.2; })
-        .attr("y", function (d) { return d.size * 0.2; })
-        .attr("class", function (d) { return iconmappings.getIconClasses(d) + " nodeicon"; });
+    setTimeout(function () {
+        //node layout
+        enternodesg.append("circle")
+            .classed("nodecircle", true)
+            .attr("r", function (d) { return d.radius; })
+            .attr("cx", function (d) { return d.radius; })
+            .attr("cy", function (d) { return d.radius; });
+    }, 1);
 
-    enternodesg.append("text")
-        .text(function (d) { return d.name; })
-        .attr("text-anchor", "middle")
-        .attr("dominant-baseline", "central")
-        .attr("transform", function (d) { return "translate(" + (d.size / 2) + "," + (d.size + 10) + ")"; });
+    setTimeout(function () {
+        enternodesg.append("i")
+            .attr("height", function (d) { return d.size * 0.6; })
+            .attr("width", function (d) { return d.size * 0.6; })
+            .attr("x", function (d) { return d.size * 0.2; })
+            .attr("y", function (d) { return d.size * 0.2; })
+            .attr("class", function (d) { return iconmappings.getIconClasses(d) + " nodeicon"; });
+    }, 1);
 
-    //Allow styling of subtypes types
-    d3.selectAll(".AD_Group")
-        .each(function (d) {
-            let c = d.label + "-" + d.properties.grouptype;
-            d3.select(this).classed(c, true);
-        });
+    setTimeout(function () {
+        enternodesg.append("text")
+            .text(function (d) { return d.name; })
+            .attr("text-anchor", "middle")
+            .attr("dominant-baseline", "central")
+            .attr("transform", function (d) { return "translate(" + (d.size / 2) + "," + (d.size + 10) + ")"; });
+    }, 1);
 
-    d3.selectAll(".CTX_Application")
-        .each(function (d) {
-            let c = d.label + "-" + d.properties.farm;
-            d3.select(this).classed(c, true);
-        });
+    setTimeout(function () {
+        //Allow styling of subtypes types
+        d3.selectAll(".AD_Group")
+            .each(function (d) {
+                let c = d.label + "-" + d.properties.grouptype;
+                d3.select(this).classed(c, true);
+            });
 
-    d3.selectAll(".CTX_Farm")
-        .each(function (d) {
-            let c = d.label + "-" + d.properties.name;
-            d3.select(this).classed(c, true);
-        });
+        d3.selectAll(".CTX_Application")
+            .each(function (d) {
+                let c = d.label + "-" + d.properties.farm;
+                d3.select(this).classed(c, true);
+            });
+
+        d3.selectAll(".CTX_Farm")
+            .each(function (d) {
+                let c = d.label + "-" + d.properties.name;
+                d3.select(this).classed(c, true);
+            });
+    }, 1);
 }
 
 function updateNodeSizes() {
@@ -425,13 +436,16 @@ function addEdges(edges) {
 	console.log(data);*/
 
     //add the bg
-    graphbglayer.selectAll('.edgebg')
-        .data(edges, function (d) { return d.db_id; })
-        .enter()
-        .append("path")
-        .attr("id", function (d) { return "edgebg_" + d.db_id; })
-        .classed("graphbg", true)
-        .classed("edgebg", true);
+    setTimeout(function () {
+        graphbglayer.selectAll('.edgebg')
+            .data(edges, function (d) { return d.db_id; })
+            .enter()
+            .append("path")
+            .attr("id", function (d) { return "edgebg_" + d.db_id; })
+            .classed("graphbg", true)
+            .classed("edgebg", true);
+    }, 1);
+    
 
 
     let enteredges = edgeslayer.selectAll(".edges")
@@ -443,21 +457,27 @@ function addEdges(edges) {
         .attr("class", function (d) { return d.label; })
         .classed("edges", true);
 
-    enteredgesg.append("path")
-        .classed("wrapper", true)
-        .attr("fill", "none");
+    setTimeout(function () {
+        enteredgesg.append("path")
+            .classed("wrapper", true)
+            .attr("fill", "none");
+    }, 0);
 
-    enteredgesg.append("path")
-        .classed("arrows", true);
+    setTimeout(function () {
+        enteredgesg.append("path")
+            .classed("arrows", true);
+    }, 0);
 
-    let edgelabels = enteredgesg.append("g")
-        .classed("edgelabel", true);
+    setTimeout(function () {
+        let edgelabels = enteredgesg.append("g")
+            .classed("edgelabel", true);
 
-    edgelabels.append("text")
-        .text(function (d) { return d.label; })
-        .attr("dominant-baseline", "text-bottom")
-        .attr("text-anchor", "middle")
-        .attr("transform", "translate(0,-5)");
+        edgelabels.append("text")
+            .text(function (d) { return d.label; })
+            .attr("dominant-baseline", "text-bottom")
+            .attr("text-anchor", "middle")
+            .attr("transform", "translate(0,-5)");
+    }, 1);     
 }
 
 document.getElementById('removeBtn').addEventListener('click', removeNodes, false);
