@@ -989,12 +989,31 @@ function search() {
 
 	console.log(url);*/
 
-    $.getJSON(url, function (data) {
-        //console.log(data);
-        pendingResults = data;
-        let not = "Search returned " + data.nodes.length + " nodes. ";
-        if (data.nodes.length !== 0) { not = not + "<a href='javascript:addPending()'>Add to view</a>"; }
-        document.getElementById("searchNotification").innerHTML = not;
+    //$.getJSON(url, function (data) {
+    //    //console.log(data);
+    //    pendingResults = data;
+    //    let not = "Search returned " + data.nodes.length + " nodes. ";
+    //    if (data.nodes.length !== 0) { not = not + "<a href='javascript:addPending()'>Add to view</a>"; }
+    //    document.getElementById("searchNotification").innerHTML = not;
+    //});
+
+    $.ajax({
+        dataType: "json",
+        url: url,
+        statusCode: {
+            401: function () {
+                //console.log("401-unauthorized");
+                //$("#curtain").slideToggle();
+                showLoginCurtain();
+            }
+        },
+        success: function (data) {
+            //console.log("success");
+            pendingResults = data;
+            let not = "Search returned " + data.nodes.length + " nodes. ";
+            if (data.nodes.length !== 0) { not = not + "<a href='javascript:addPending()'>Add to view</a>"; }
+            document.getElementById("searchNotification").innerHTML = not;
+        }
     });
 }
 
@@ -1020,23 +1039,6 @@ function toggleDir() {
         $(icon).attr('data-dir', 'R');
     }
     //console.log($(icon).attr('data-dir'));
-}
-
-//getCookie function from django documentation
-function getCookie(name) {
-    var cookieValue = null;
-    if (document.cookie && document.cookie !== '') {
-        var cookies = document.cookie.split(';');
-        for (var i = 0; i < cookies.length; i++) {
-            var cookie = jQuery.trim(cookies[i]);
-            // Does this cookie string begin with the name we want?
-            if (cookie.substring(0, name.length + 1) === (name + '=')) {
-                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-                break;
-            }
-        }
-    }
-    return cookieValue;
 }
 
 

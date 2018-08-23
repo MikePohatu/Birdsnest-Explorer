@@ -1,23 +1,10 @@
-@using Microsoft.AspNetCore.Html;
-@using Console.ViewModels;
-
 @{
     ViewData["Title"] = "Visualizer";
     Layout = "_Layout";
 }
 
-@functions {
-    string CreateViewControl(string spanid, string iconid, string faclass, string tooltip)
-    {
-        var element = "<span id=\"" + spanid + "\" class=\"viewcontrol\" data-tooltip data-position=\"right\" data-alignment=\"center\" data-click-open=\"false\" data-hover-delay=\"1000\" title=\""+ tooltip + "\">" +
-            "< i id = \""+ iconid + "\" class=\"fas "+ faclass + "\"></i>"+
-            "</span>";
-        return element;
-    }
-}
-
 @section Styles
-{
+    {
     <link rel="stylesheet" type="text/css" href="~/visualizer/css/main.css">
     <link rel="stylesheet" type="text/css" href="~/visualizer/css/visualization.css">
     <link rel="stylesheet" type="text/css" href="~/css/jquery-ui.css">
@@ -133,7 +120,7 @@
                     <span id="removeBtn" class="cell viewcontrol has-tip" title="Remove node from layout">
                         <i id="removeIcon" class="fas fa-trash-alt"></i>
                     </span>
-                    <span  class="cell" style="width:32px;"> </span> <!-- spacer -->
+                    <span class="cell" style="width:32px;"> </span> <!-- spacer -->
                     <span id="menuShowHideButton" class="cell viewcontrol has-tip" title="Hide the search bar">
                         <i id="menuIcon" class="fas fa-angle-up"></i>
                     </span>

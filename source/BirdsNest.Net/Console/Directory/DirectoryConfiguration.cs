@@ -12,5 +12,6 @@ namespace Console.Directory
         public string UserGroup { get; set; }
         public string ContainerDN { get; set; }
         public bool SSL { get; set; } = false;
+        public int TimeoutSeconds { get; set; } = 900;
     }
 }

@@ -25,6 +25,13 @@ namespace Console.Controllers
         }
 
         [HttpGet()]
+        public IActionResult LogonForm(string returnUrl = null)
+        {
+            ViewData["ReturnUrl"] = returnUrl;
+            return PartialView("Login");
+        }
+
+        [HttpGet()]
         public IActionResult Login(string returnUrl = null)
         {
             ViewData["ReturnUrl"] = returnUrl;
@@ -34,70 +41,46 @@ namespace Console.Controllers
 
         [HttpPost()]
         [ValidateAntiForgeryToken]
+        public async Task<IActionResult> AjaxLogin(LoginViewModel details, string returnUrl = null)
+        {
+            if (ModelState.IsValid)
+            { 
+                bool result = await Auth(details);
+
+                if (result)
+                {
+                    if (!string.IsNullOrEmpty(returnUrl) || Url.IsLocalUrl(returnUrl)) { return Redirect(returnUrl); }
+                    else { return Ok(); }
+                }
+                else
+                {
+                    return PartialView("Login");
+                }
+            }
+            else
+            {
+                return PartialView("Login");
+            }
+        }
+
+
+        
+
+        [HttpPost()]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Login(LoginViewModel details, string returnUrl = null)
         {
             if (ModelState.IsValid)
             {
-                try
+                bool result = await Auth(details);
+
+                if (result)
                 {
-                    using (var context = LdapAuthorizer.CreateContext(_config.Domain,_config.ContainerDN, _config.SSL))
-                    {
-                        if (LdapAuthorizer.IsAuthenticated(context, details.UserName, details.Password))
-                        {
-                            bool authorized = false;
-                            UserPrincipal user = LdapAuthorizer.GetUserPrincipal(context, details.UserName);
-
-                            var claims = new List<Claim> {
-                                new Claim(ClaimTypes.GivenName,user.GivenName,_config.Domain),
-                                new Claim(ClaimTypes.Name,user.GivenName,_config.Domain),
-                                new Claim(ClaimTypes.Surname,user.Surname,_config.Domain),
-                                new Claim(ClaimTypes.Sid,user.Sid.Value,_config.Domain)
-                            };
-
-                            if (LdapAuthorizer.IsMemberOf(context, user, this._config.UserGroup))
-                            {
-                                claims.Add(new Claim("BirdsNestUser", "True", ClaimValueTypes.Boolean, _config.Domain));
-                                authorized = true;
-                            }
-
-                            if (LdapAuthorizer.IsMemberOf(context, user, this._config.AdminGroup))
-                            {
-                                claims.Add(new Claim("BirdsNestAdmin", "True", ClaimValueTypes.Boolean, _config.Domain));
-                                authorized = true;
-                            }
-
-                            if (authorized == false)
-                            {
-                                ViewData["Message"] = "You are not authorised to use BirdsNest. Please contact your administrator";
-                                return View();
-                            }
-
-                            var userIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
-                            var userPrincipal = new ClaimsPrincipal(userIdentity);
-                            var authProperties = new AuthenticationProperties
-                            {
-                                ExpiresUtc = DateTime.UtcNow.AddMinutes(20),
-                                IsPersistent = false,
-                                AllowRefresh = true
-                            };
-
-                            await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, userPrincipal, authProperties);
-
-                            if (!string.IsNullOrEmpty(returnUrl) || Url.IsLocalUrl(returnUrl)) { return Redirect(returnUrl); }
-                            else { return RedirectToAction("Index", "Home"); }
-
-                        }
-                        else
-                        {
-                            ViewData["Message"] = "Login failed";
-                            return View();
-                        }
-                    }  
+                    if (!string.IsNullOrEmpty(returnUrl) || Url.IsLocalUrl(returnUrl)) { return Redirect(returnUrl); }
+                    else { return RedirectToAction("Index", "Home"); }
                 }
-                catch (Exception e)
+                else
                 {
-                    ViewBag.Errors = e.Message;
-                    ViewData["Message"] = "There was an error logging in." ;
                     return View();
                 }
             }
@@ -112,6 +95,72 @@ namespace Console.Controllers
         {
             await HttpContext.SignOutAsync();
             return RedirectToAction("Index", "Home");
+        }
+
+        private async Task<bool> Auth(LoginViewModel details)
+        {
+            try
+            {
+                using (var context = LdapAuthorizer.CreateContext(this._config.Domain, this._config.ContainerDN, this._config.SSL))
+                {
+                    if (LdapAuthorizer.IsAuthenticated(context, details.UserName, details.Password))
+                    {
+                        bool authorized = false;
+                        UserPrincipal user = LdapAuthorizer.GetUserPrincipal(context, details.UserName);
+
+                        var claims = new List<Claim> {
+                                new Claim(ClaimTypes.GivenName,user.GivenName,this._config.Domain),
+                                new Claim(ClaimTypes.Name,user.GivenName,this._config.Domain),
+                                new Claim(ClaimTypes.Surname,user.Surname,this._config.Domain),
+                                new Claim(ClaimTypes.Sid,user.Sid.Value,this._config.Domain)
+                            };
+
+                        if (LdapAuthorizer.IsMemberOf(context, user, this._config.UserGroup))
+                        {
+                            claims.Add(new Claim("BirdsNestUser", "True", ClaimValueTypes.Boolean, this._config.Domain));
+                            authorized = true;
+                        }
+
+                        if (LdapAuthorizer.IsMemberOf(context, user, this._config.AdminGroup))
+                        {
+                            claims.Add(new Claim("BirdsNestAdmin", "True", ClaimValueTypes.Boolean, this._config.Domain));
+                            authorized = true;
+                        }
+
+                        if (authorized == false)
+                        {
+                            ViewData["Message"] = "You are not authorised to use BirdsNest. Please contact your administrator";
+                            return false;
+                        }
+
+                        var userIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+                        var userPrincipal = new ClaimsPrincipal(userIdentity);
+                        var authProperties = new AuthenticationProperties
+                        {
+                            ExpiresUtc = DateTime.UtcNow.AddSeconds(this._config.TimeoutSeconds),
+                            IsPersistent = false,
+                            AllowRefresh = true
+                        };
+
+                        //SignInResult signin = new SignInResult(CookieAuthenticationDefaults.AuthenticationScheme, userPrincipal, authProperties);
+                        //await signin.ExecuteResultAsync(ControllerContext);
+                        await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, userPrincipal, authProperties);
+
+                        return true;
+                    }
+                    else
+                    {
+                        ViewData["Message"] = "Login failed";
+                        return false;
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                ViewBag.Errors = e.Message;
+                ViewData["Message"] = "There was an error logging in.";
+                return false;
+            }
         }
     }
 }

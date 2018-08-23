@@ -1,0 +1,26 @@
+#curtain {
+    position: fixed;
+    background-color: white;
+    opacity: 0.7;
+    top: 0;
+    bottom: 0;
+    right: 0;
+    left: 0;
+    z-index: 200;
+    display: none;
+}
+
+#curtainoverlaywrapper {
+    position: fixed;
+    opacity: 1;
+    z-index: 201;
+    display: none;
+}
+
+#modal {
+    z-index: 10;
+}
+
+.loginform {
+    background-color: white;
+}

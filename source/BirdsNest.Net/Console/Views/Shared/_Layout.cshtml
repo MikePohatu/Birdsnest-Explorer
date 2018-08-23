@@ -11,6 +11,15 @@
     <title>@ViewBag.Title</title>
 </head>
 <body>
+    <div id="curtain"></div>
+    <div id="curtainoverlaywrapper">
+        <div class="grid-container fluid">
+            <div id="curtainoverlay" class="grid-x grid-margin-x"></div>
+        </div>
+    </div>
+
+    <div id="modal"></div>
+
     <div class="top-bar">
         <div class="top-bar-left">
             <ul class="menu">
@@ -40,11 +49,11 @@
 
     @RenderBody()
 
-    
+
     <environment include="Development">
         <script src="~/lib/jquery/dist/jquery.js"></script>
         <!--<script src="~/lib/bootstrap/dist/js/bootstrap.js"></script>
-        <script src="~/js/site.js" asp-append-version="true"></script>-->
+    <script src="~/js/site.js" asp-append-version="true"></script>-->
         <script src="~/js/foundation/foundation.js"></script>
         <script src="~/js/foundation/what-input.js"></script>
         <script src="~/js/app.js"></script>
@@ -52,11 +61,11 @@
     <environment exclude="Development">
         <script src="~/lib/jquery/dist/jquery.js"></script>
         <!--<script src="https://ajax.aspnetcdn.com/ajax/jquery/jquery-3.3.1.min.js"
-                asp-fallback-src="~/lib/jquery/dist/jquery.min.js"
-                asp-fallback-test="window.jQuery"
-                crossorigin="anonymous"
-                integrity="sha384-tsQFqpEReu7ZLhBV2VZlAu7zcOV+rXbYlF2cqB8txI/8aZajjp4Bqd+V6D5IgvKT">
-        </script>-->
+            asp-fallback-src="~/lib/jquery/dist/jquery.min.js"
+            asp-fallback-test="window.jQuery"
+            crossorigin="anonymous"
+            integrity="sha384-tsQFqpEReu7ZLhBV2VZlAu7zcOV+rXbYlF2cqB8txI/8aZajjp4Bqd+V6D5IgvKT">
+    </script>-->
         <!--<script src="https://ajax.aspnetcdn.com/ajax/bootstrap/3.3.7/bootstrap.min.js"
             asp-fallback-src="~/lib/bootstrap/dist/js/bootstrap.min.js"
             asp-fallback-test="window.jQuery && window.jQuery.fn && window.jQuery.fn.modal"

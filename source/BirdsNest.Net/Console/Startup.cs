@@ -71,18 +71,6 @@ namespace Console
 
                 return neoservice;
             });
-
-            //services.AddSingleton(serviceProvider =>
-            //{
-            //    services.Configure<DirectoryConfiguration>(Configuration.GetSection("ActiveDirectorySettings"));
-            //    DirectoryConfiguration config = new DirectoryConfiguration();
-            //    //config.Domain = Configuration["ActiveDirectorySettings:Domain"];
-            //    //config.AdminGroup = Configuration["ActiveDirectorySettings:AdminGroup"];
-            //    //config.UserGroup = Configuration["ActiveDirectorySettings:UserGroup"];
-            //    //config.ContainerDN = Configuration["ActiveDirectorySettings:ContainerDN"];
-            //    return config;
-            //});
-
             services.AddSingleton(Configuration.GetSection("ActiveDirectorySettings").Get<DirectoryConfiguration>());
         }
 
