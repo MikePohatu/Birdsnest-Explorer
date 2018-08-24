@@ -11,7 +11,8 @@ function showLoginCurtain(callback) {
                 processCurtainLogin(callback);
             });
             $("#curtain").slideToggle();
-            $("#curtainoverlaywrapper").slideToggle();
+            $("#curtainoverlay").slideToggle();
+            $("#username").focus();
         }
     }); 
 }
@@ -48,7 +49,7 @@ function processCurtainLogin (callback) {
             }
             else {
                 $("#curtain").slideToggle();
-                $("#curtainoverlaywrapper").slideToggle();
+                $("#curtainoverlay").slideToggle();
                 //console.log("curtainhide, run callback");
                 if (callback) { callback(); }
             }
