@@ -12,10 +12,8 @@
 </head>
 <body>
     <div id="curtain"></div>
-    <div id="curtainoverlaywrapper">
-        <div class="grid-container fluid">
-            <div id="curtainoverlay" class="grid-x grid-margin-x"></div>
-        </div>
+    <div id="curtainoverlaywrapper" class="grid-container fluid">
+        <div id="curtainoverlay" class="grid-x grid-margin-x"></div>
     </div>
 
     <div id="modal"></div>
@@ -42,6 +40,7 @@
                                 <li><a href="@Url.Action("Login", "Account")">Login</a></li>
                             }
                         }
+                        <li><a href='javascript:showLoginCurtain()'>Test</a></li>
                     </ul>
             </ul>
         </div>

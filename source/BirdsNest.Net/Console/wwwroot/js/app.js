@@ -50,7 +50,7 @@ function processCurtainLogin (callback) {
                 $("#curtain").slideToggle();
                 $("#curtainoverlaywrapper").slideToggle();
                 //console.log("curtainhide, run callback");
-                callback();
+                if (callback) { callback(); }
             }
         }
     });
