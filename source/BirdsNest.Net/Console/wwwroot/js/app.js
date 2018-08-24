@@ -1,7 +1,7 @@
 $(document).foundation();
 
 function showLoginCurtain(callback) {
-    var url = "/Account/LogonForm";
+    var url = "/Account/LogonExpiredForm";
     $.ajax({
         dataType: "html",
         url: url,
@@ -20,7 +20,7 @@ function showLoginCurtain(callback) {
 function processCurtainLogin (callback) {
     //console.log(data);   
     event.preventDefault();
-    var url = "/Account/AjaxLogin";
+    var url = "/Account/PartialLogin";
     var token = $("[name='__RequestVerificationToken']").val();
     var u = $('#username').val();
     var p = $('#pw').val();

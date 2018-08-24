@@ -25,9 +25,10 @@ namespace Console.Controllers
         }
 
         [HttpGet()]
-        public IActionResult LogonForm(string returnUrl = null)
+        public IActionResult LogonExpiredForm(string returnUrl = null)
         {
             ViewData["ReturnUrl"] = returnUrl;
+            ViewData["Message"] = "Your session has expired";
             return PartialView("Login");
         }
 
@@ -41,7 +42,7 @@ namespace Console.Controllers
 
         [HttpPost()]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> AjaxLogin(LoginViewModel details, string returnUrl = null)
+        public async Task<IActionResult> PartialLogin(LoginViewModel details, string returnUrl = null)
         {
             if (ModelState.IsValid)
             { 
