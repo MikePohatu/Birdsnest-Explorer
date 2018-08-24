@@ -6,8 +6,6 @@ var nodeslayer;
 var edgeslayer;
 var simulation;
 var force;
-//var edgedata = [];
-//var nodedata = [];
 
 var graphnodes = new datumStore();
 var graphedges = new datumStore();
@@ -30,10 +28,6 @@ var perfmode = false; //perfmode indicates high numbers of nodes, and minimises 
 function drawGraph(selectid) {
     updatePaneSize(selectid);
     drawPane = d3.select("#" + selectid);
-
-    //  d3.select("body")
-    //      .on("keydown", keydown)
-    //.on("keyup", keyup);
 
     svg = drawPane.append("svg")
         .attr("id", "drawingsvg")
@@ -100,8 +94,6 @@ function onTick() {
 
 function resetView() {
     //console.log("resetView");
-    //edgedata = [];
-    //nodedata = [];
     graphnodes = new datumStore();
     graphedges = new datumStore();
 
@@ -182,7 +174,6 @@ function addPending() {
 
     setTimeout(function () {
         let newcount = addResultSet(pendingResults);
-        //addEdges(edgedata);
         if (newcount > 0) { updateEdges(); }
         else { d3.selectAll("#restartIcon").classed("spinner", false); }
 
@@ -203,7 +194,6 @@ function addResultSet(json) {
 
     edges.forEach(function (d) {
         if (graphedges.DatumExists(d)===false) {
-            //edgedata.push(d);
             graphedges.Add(d);
             newitemcount++;
         }
@@ -218,7 +208,6 @@ function addResultSet(json) {
         addEdges(graphedges.GetArray());
     }
     return newitemcount;
-
     //console.log("addResultSet end: " );
 }
 
@@ -446,8 +435,6 @@ function addEdges(edges) {
             .classed("edgebg", true);
     }, 1);
     
-
-
     let enteredges = edgeslayer.selectAll(".edges")
         .data(edges, function (d) { return d.db_id; })
         .enter();
@@ -988,32 +975,12 @@ function search() {
 	console.log("tarval: " + tarval);
 
 	console.log(url);*/
-
-    //$.getJSON(url, function (data) {
-    //    //console.log(data);
-    //    pendingResults = data;
-    //    let not = "Search returned " + data.nodes.length + " nodes. ";
-    //    if (data.nodes.length !== 0) { not = not + "<a href='javascript:addPending()'>Add to view</a>"; }
-    //    document.getElementById("searchNotification").innerHTML = not;
-    //});
-
-    $.ajax({
-        dataType: "json",
-        url: url,
-        statusCode: {
-            401: function () {
-                //console.log("401-unauthorized");
-                //$("#curtain").slideToggle();
-                showLoginCurtain();
-            }
-        },
-        success: function (data) {
-            //console.log("success");
-            pendingResults = data;
-            let not = "Search returned " + data.nodes.length + " nodes. ";
-            if (data.nodes.length !== 0) { not = not + "<a href='javascript:addPending()'>Add to view</a>"; }
-            document.getElementById("searchNotification").innerHTML = not;
-        }
+    apiGetJson(url, function (data) {
+        //console.log("success");
+        pendingResults = data;
+        let not = "Search returned " + data.nodes.length + " nodes. ";
+        if (data.nodes.length !== 0) { not = not + "<a href='javascript:addPending()'>Add to view</a>"; }
+        document.getElementById("searchNotification").innerHTML = not;
     });
 }
 
@@ -1044,7 +1011,7 @@ function toggleDir() {
 
 function getNode(nodeid) {
     //console.log(nodeid);
-    $.getJSON("/api/nodes/node/" + nodeid, function (data) {
+    apiGetJson("/api/nodes/node/" + nodeid, function (data) {
         //console.log(data);
         addResultSet(data);
         restartLayout();
@@ -1053,7 +1020,7 @@ function getNode(nodeid) {
 }
 
 function getAll() {
-    $.getJSON("/api/getall", function (data) {
+    apiGetJson("/api/getall", function (data) {
         addResultSet(data);
         restartLayout();
     });
@@ -1061,7 +1028,7 @@ function getAll() {
 
 function addRelated(nodeid) {
     //console.log("addRelated"+ nodeid);
-    $.getJSON("/api/nodes?nodeid=" + nodeid, function (data) {
+    apiGetJson("/api/nodes?nodeid=" + nodeid, function (data) {
         pendingResults = data;
         addPending();
     });
@@ -1086,16 +1053,7 @@ function getEdgesForNodes(nodelist, callback) {
     //console.log(": json stringyfied");
     //console.log(nodeids);
 
-    $.ajax({
-        url: '/api/edges',
-        method: "POST",
-        data: postdata,
-        contentType: "application/json; charset=utf-8",
-        headers: {
-            'X-CSRFToken': getCookie('csrftoken')
-        },
-        success: callback
-    });
+    apiPostJson('/api/edges', postdata, callback);
 }
 
 
@@ -1104,16 +1062,7 @@ function getDirectEdgesForNodeList(nodelist, callback) {
     //console.log(": json stringyfied");
     //console.log(nodeids);
 
-    $.ajax({
-        url: '/api/edges/direct',
-        method: "POST",
-        data: postdata,
-        contentType: "application/json; charset=utf-8",
-        headers: {
-            'X-CSRFToken': getCookie('csrftoken')
-        },
-        success: callback
-    });
+    apiPostJson('/api/edges/direct', postdata, callback);
 }
 
 // Keystroke event handlers
@@ -1123,14 +1072,6 @@ function timedKeyUp(timedfunction) {
     clearTimeout(typetimer);
     typetimer = setTimeout(timedfunction, 700);
 }
-
-//function sourceValKeyUp() {
-//	timedKeyUp( function(d) {
-//		console.log('sourceValKeyUp');
-//		searchValues('source');
-//	});
-//}
-
 
 function isNullOrEmpty(s) {
     return s === null || s === "";
@@ -1167,7 +1108,7 @@ function updateProps(elementPrefix) {
     topoption.setAttribute("hidden", "");
     topoption.setAttribute("selected", "");
 
-    $.getJSON("/api/nodes/properties?type=" + type, function (data) {
+    apiGetJson("/api/nodes/properties?type=" + type, function (data) {
         for (var i = 0; i < data.length; ++i) {
             addOption(elprops, data[i], data[i]);
         }
@@ -1184,7 +1125,7 @@ function bindAutoComplete(elementPrefix) {
             var prop = document.getElementById(elementPrefix + "Prop").value;
 
             var url = "/api/nodes/values?type=" + type + "&property=" + prop + "&searchterm=" + request.term;
-            $.getJSON(url, response);
+            apiGetJson(url, response);
         }
     });
 }
