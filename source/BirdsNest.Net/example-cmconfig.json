@@ -1,0 +1,6 @@
+{
+  "Domain": "domain.local",
+  "Username": "user",
+  "Password": "Password1",
+  "SiteServer":"SccmServer"
+}

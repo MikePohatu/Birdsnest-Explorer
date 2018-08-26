@@ -7,7 +7,7 @@
 
         public new string ToString()
         {
-            return this._name;
+            return this.Name;
         }
     }
 }

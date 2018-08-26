@@ -56,20 +56,33 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Configuration.cs" />
+    <Compile Include="Neo4j\Writer.cs" />
     <Compile Include="Sccm\Enums.cs" />
     <Compile Include="Sccm\Factory.cs" />
+    <Compile Include="Sccm\IDeployment.cs" />
     <Compile Include="Sccm\ISccmObject.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Sccm\ResultObjectHandler.cs" />
+    <Compile Include="Sccm\SccmApplication.cs" />
+    <Compile Include="Sccm\SccmApplicationRelationship.cs" />
     <Compile Include="Sccm\SccmCollection.cs" />
+    <Compile Include="Sccm\SccmCollectionRelationship.cs" />
+    <Compile Include="Sccm\SccmConfigurationBaseline.cs" />
+    <Compile Include="Sccm\SccmConfigurationItem.cs" />
     <Compile Include="Sccm\SccmConnector.cs" />
     <Compile Include="Sccm\SccmDeployableItem.cs" />
     <Compile Include="Sccm\SccmDevice.cs" />
     <Compile Include="Sccm\SccmPackage.cs" />
     <Compile Include="Sccm\SccmPackageProgram.cs" />
     <Compile Include="Sccm\SccmResource.cs" />
+    <Compile Include="Sccm\SccmSoftwareUpdate.cs" />
+    <Compile Include="Sccm\SccmSoftwareUpdateGroup.cs" />
+    <Compile Include="Sccm\SccmTaskSequence.cs" />
     <Compile Include="Sccm\SccmUser.cs" />
+    <Compile Include="Sccm\SMS_CIRelation.cs" />
+    <Compile Include="Sccm\SMS_DeploymentInfo.cs" />
+    <Compile Include="Sccm\SMS_DeploymentSummary.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
