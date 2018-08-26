@@ -77,11 +77,11 @@ namespace CMScanner
                 Environment.Exit(2);
             }
 
-            Writer.MergeCollections(_connector.GetCollections(), driver.Session());
-            //foreach (SccmCollection col in _connector.GetCollections())
-            //{
-            //    Console.WriteLine(col.Name);
-            //}
+            int count = Writer.MergeCollections(_connector.GetCollections(), driver.Session());
+            Console.WriteLine("Created " + count + " collection nodes");
+            Writer.ConnectLimitingCollections(driver.Session());
+
+
 
 
             if (batchmode == true)

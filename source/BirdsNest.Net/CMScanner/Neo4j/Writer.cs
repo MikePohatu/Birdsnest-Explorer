@@ -45,6 +45,17 @@ namespace CMScanner.Neo4j
             return result.Summary.Counters.NodesCreated;
         }
 
+        public static int ConnectLimitingCollections(ISession session)
+        {
+            string query = "MATCH (n:" + Types.CMCollection + ")" +
+                "MATCH (l:" + Types.CMCollection + " {id:n.limitingcollection}) " +
+                "MERGE (l)-[:LIMITING_COLLECTION_FOR]->(n) " +
+                "RETURN n.name";
+
+            var result = session.WriteTransaction(tx => tx.Run(query));
+            return result.Summary.Counters.NodesCreated;
+        }
+
         private static void SetScanId(IBirdsNestNode node, string scanid)
         {
             object lastscancurrent;
