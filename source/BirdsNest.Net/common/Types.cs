@@ -45,6 +45,13 @@ namespace common
         //ADScanner edges
         public static string MemberOf { get { return "AD_MEMBER_OF"; } }
 
+        //CMScanner nodes 
+        public static string CMCollection { get { return "CM_Collection"; } }
+        public static string CMApplication { get { return "CM_Application"; } }
+        public static string CMPackage { get { return "CM_Package"; } }
+        public static string CMSoftwareUpdateGroup { get { return "CM_SoftwareUpdateGroup"; } }
+        public static string CMClientSettings { get { return "CM_ClientSettings"; } }
+
         //CustomAppScanner nodes
         public static string Application { get { return "Application"; } }
     }

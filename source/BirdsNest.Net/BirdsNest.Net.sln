@@ -13,6 +13,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CustomAppScanner", "CustomA
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Console", "Console\Console.csproj", "{01AAAB3B-9700-4069-9DBA-C6146E47DC07}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CMScanner", "CMScanner\CMScanner.csproj", "{4D563EC3-E7D4-4FEF-AF3C-327B9584AF6B}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -39,6 +41,10 @@ Global
 		{01AAAB3B-9700-4069-9DBA-C6146E47DC07}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{01AAAB3B-9700-4069-9DBA-C6146E47DC07}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{01AAAB3B-9700-4069-9DBA-C6146E47DC07}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4D563EC3-E7D4-4FEF-AF3C-327B9584AF6B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4D563EC3-E7D4-4FEF-AF3C-327B9584AF6B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4D563EC3-E7D4-4FEF-AF3C-327B9584AF6B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4D563EC3-E7D4-4FEF-AF3C-327B9584AF6B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
