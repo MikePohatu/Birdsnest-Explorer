@@ -41,8 +41,8 @@ namespace CMScanner.Sccm
             else if (deployment.FeatureType == SccmItemType.PackageProgram)
             {
                 var newitem = new SccmPackageProgram();
-                newitem.Name = deployment.SoftwareName;
-                newitem.ID = deployment.PackageID;
+                newitem.Name = deployment.ProgramName;
+                newitem.ID = deployment.PackageID + ";;" + deployment.ProgramName;
                 return newitem;
             }
 
@@ -162,6 +162,7 @@ namespace CMScanner.Sccm
             item.DeploymentIntent = ResultObjectHandler.GetInt(resource, "DeploymentIntent");
             item.SoftwareName = ResultObjectHandler.GetString(resource, "SoftwareName");
             item.PackageID = ResultObjectHandler.GetString(resource, "PackageID");
+            item.ProgramName = ResultObjectHandler.GetString(resource, "ProgramName");
             item.CIID = ResultObjectHandler.GetString(resource, "CI_ID");
             item.SoftwareName = ResultObjectHandler.GetString(resource, "SoftwareName");
             item.FeatureType = (SccmItemType)ResultObjectHandler.GetInt(resource, "FeatureType");

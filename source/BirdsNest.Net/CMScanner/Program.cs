@@ -77,12 +77,38 @@ namespace CMScanner
                 Environment.Exit(2);
             }
 
+            //collections
             int count = Writer.MergeCollections(_connector.GetCollections(), driver.Session());
             Console.WriteLine("Created " + count + " collection nodes");
             Writer.ConnectLimitingCollections(driver.Session());
 
+            //applications
+            count = Writer.MergeApplications(_connector.GetApplications(), driver.Session());
+            Console.WriteLine("Created " + count + " application nodes");
 
+            //packages
+            count = Writer.MergePackages(_connector.GetPackages(), driver.Session());
+            Console.WriteLine("Created " + count + " package nodes");
 
+            //package programs
+            count = Writer.MergePackagePrograms(_connector.GetPackagePrograms(), driver.Session());
+            Console.WriteLine("Created " + count + " package program nodes");
+
+            //task sequences
+            count = Writer.MergeTaskSequences(_connector.GetTaskSequences(), driver.Session());
+            Console.WriteLine("Created " + count + " task sequence nodes");
+
+            //SUGs
+            //count = Writer.MergeSoftwareUpdateGroups(_connector.getso(), driver.Session());
+            //Console.WriteLine("Created " + count + " package nodes");
+
+            //deployments - applications
+            count = Writer.MergeApplicationDeployments(_connector.GetApplicationDeployments(), driver.Session());
+            Console.WriteLine("Created " + count + " application deployment relationships");
+
+            //deployments - Package programs
+            count = Writer.MergePackageProgramDeployments(_connector.GetPackageProgramDeployments(), driver.Session());
+            Console.WriteLine("Created " + count + " package program deployment relationships");
 
             if (batchmode == true)
             {

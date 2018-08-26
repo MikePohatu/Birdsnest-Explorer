@@ -13,6 +13,7 @@
         public string ID { get; set; }
         public int DeploymentIntent { get; set; }
         public string PackageID { get; set; }
+        public string ProgramName { get; set; }
         public string Name { get { return this.DeploymentID; } }
         public SccmItemType FeatureType { get; set; }
         public string CIID { get; set; }

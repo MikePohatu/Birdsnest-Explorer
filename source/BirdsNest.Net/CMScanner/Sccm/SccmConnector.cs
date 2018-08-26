@@ -108,14 +108,14 @@ namespace CMScanner.Sccm
             return items;
         }
 
-        public List<IDeployment> GetSoftwareItemDeployments()
+        public List<SMS_DeploymentSummary> GetApplicationDeployments()
         {
-            List<IDeployment> items = new List<IDeployment>();
+            List<SMS_DeploymentSummary> items = new List<SMS_DeploymentSummary>();
             
             try
             {
                 // This query selects all relationships of the specified app ID
-                string query = "select * from SMS_DeploymentSummary";
+                string query = "select * from SMS_DeploymentSummary WHERE FeatureType='"+ SccmItemType.Application + "'";
 
                 // Run query
                 using (IResultObject results = this._connection.QueryProcessor.ExecuteQuery(query))
@@ -132,9 +132,33 @@ namespace CMScanner.Sccm
             return items;
         }
 
-        public List<IDeployment> GetDeployments()
+        public List<SMS_DeploymentSummary> GetPackageProgramDeployments()
         {
-            List<IDeployment> items = new List<IDeployment>();
+            List<SMS_DeploymentSummary> items = new List<SMS_DeploymentSummary>();
+
+            try
+            {
+                // This query selects all relationships of the specified app ID
+                string query = "select * from SMS_DeploymentSummary WHERE FeatureType='" + SccmItemType.PackageProgram + "'";
+
+                // Run query
+                using (IResultObject results = this._connection.QueryProcessor.ExecuteQuery(query))
+                {
+                    // Enumerate through the collection of objects returned by the query.
+                    foreach (IResultObject resource in results)
+                    {
+                        SMS_DeploymentSummary dep = Factory.GetDeploymentSummaryFromSMS_DeploymentSummaryResults(resource);
+                        items.Add(dep);
+                    }
+                }
+            }
+            catch { }
+            return items;
+        }
+
+        public List<SMS_DeploymentSummary> GetDeploymentSummarys()
+        {
+            List<SMS_DeploymentSummary> items = new List<SMS_DeploymentSummary>();
 
             try
             {
@@ -156,15 +180,13 @@ namespace CMScanner.Sccm
             return items;
         }
 
-        public List<IDeployment> GetSoftwareUpdateGroupDeployments(string updategrouname)
-        {
-            List<IDeployment> items = new List<IDeployment>();
 
+        public List<SccmTaskSequence> GetTaskSequences()
+        {
+            List<SccmTaskSequence> items = new List<SccmTaskSequence>();
             try
             {
-                // This query selects all relationships of the specified app ID
-                int type = (int)SccmItemType.SoftwareUpdateGroup;
-                string query = "select * from SMS_DeploymentSummary WHERE FeatureType='" + type.ToString() + "'";
+                string query = "select * from SMS_TaskSequencePackage";
 
                 // Run query
                 using (IResultObject results = this._connection.QueryProcessor.ExecuteQuery(query))
@@ -172,34 +194,8 @@ namespace CMScanner.Sccm
                     // Enumerate through the collection of objects returned by the query.
                     foreach (IResultObject resource in results)
                     {
-                        SMS_DeploymentSummary dep = Factory.GetDeploymentSummaryFromSMS_DeploymentSummaryResults(resource);
-                        items.Add(dep);
-                    }
-                }
-                //items = items.OrderBy(o => o.Name).ToList();
-            }
-            catch { }
-            return items;
-        }
-
-
-        public List<ISccmObject> GetTaskSequenceSccmObjectsFromSearch(string search)
-        {
-            List<ISccmObject> items = new List<ISccmObject>();
-            try
-            {
-                string query;
-                if (string.IsNullOrWhiteSpace(search)) { query = "select * from SMS_TaskSequencePackage"; }
-                else { query = "select * from SMS_TaskSequencePackage WHERE Name LIKE '%" + search + "%'"; }
-
-                // Run query
-                using (IResultObject results = this._connection.QueryProcessor.ExecuteQuery(query))
-                {
-                    // Enumerate through the collection of objects returned by the query.
-                    foreach (IResultObject resource in results)
-                    {
-                        SccmTaskSequence app = Factory.GetTaskSequenceFromSMS_TaskSequenceResults(resource);
-                        items.Add(app);
+                        SccmTaskSequence item = Factory.GetTaskSequenceFromSMS_TaskSequenceResults(resource);
+                        items.Add(item);
                     }
                 }
                 items = items.OrderBy(o => o.Name).ToList();
@@ -266,29 +262,6 @@ namespace CMScanner.Sccm
             return null;
         }
 
-        public void PopulatePackageChildren(SccmPackage package)
-        {
-            package.Programs.Clear();
-            try
-            {
-                //get programs
-                int type = (int)PackageType.RegularSoftwareDistribution;
-                string query = "select * from SMS_Program WHERE PackageType='" + type + "' AND PackageID='" + package.ID + "'";
-
-                // Run query
-                using (IResultObject results = this._connection.QueryProcessor.ExecuteQuery(query))
-                {
-                    // Enumerate through the collection of objects returned by the query.
-                    foreach (IResultObject resource in results)
-                    {
-                        SccmPackageProgram item = Factory.GetPackageProgramFromSMS_ProgramResults(resource);
-                        if (item != null) { package.Programs.Add(item); }
-                    }
-                }
-            }
-            catch { }
-        }
-
         public List<SccmPackage> GetPackages()
         {
             List<SccmPackage> items = new List<SccmPackage>();
@@ -316,6 +289,34 @@ namespace CMScanner.Sccm
             return items;
         }
 
+
+
+        public List<SccmPackageProgram> GetPackagePrograms()
+        {
+            List<SccmPackageProgram> items = new List<SccmPackageProgram>();
+            try
+            {
+                // This query selects all collections
+                int type = (int)PackageType.RegularSoftwareDistribution;
+
+                string query = "select * from SMS_Program";
+
+
+                // Run query
+                using (IResultObject results = this._connection.QueryProcessor.ExecuteQuery(query))
+                {
+                    // Enumerate through the collection of objects returned by the query.
+                    foreach (IResultObject resource in results)
+                    {
+                        SccmPackageProgram item = Factory.GetPackageProgramFromSMS_ProgramResults(resource);
+                        if (item != null) { items.Add(item); }
+                    }
+                }
+                items = items.OrderBy(o => o.Name).ToList();
+            }
+            catch { }
+            return items;
+        }
         public List<IDeployment> GetSMS_DeploymentInfoDeployments(string targettame, SccmItemType itemtype)
         {
             List<IDeployment> items = new List<IDeployment>();
