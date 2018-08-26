@@ -1,5 +1,24 @@
 $(document).foundation();
 
+function showCurtain() {
+    //console.log("showCurtain: " + $('#curtain').css('display'));
+    if ($('#curtain').css('display') === "none") {
+        //console.log("toggle");
+        $("#curtain").slideToggle();
+        $("#curtainoverlay").slideToggle();
+    }
+}
+
+function hideCurtain() {
+    //console.log("hideCurtain: " + $('#curtain').css('display'));
+
+    if ($('#curtain').css('display') !== "none") {
+        //console.log("toggle");
+        $("#curtain").slideToggle();
+        $("#curtainoverlay").slideToggle();
+    }
+}
+
 function showLoginCurtain(callback) {
     var url = "/Account/LogonExpiredForm";
     $.ajax({
@@ -10,8 +29,7 @@ function showLoginCurtain(callback) {
             $("#loginForm").submit(function () {
                 processCurtainLogin(callback);
             });
-            $("#curtain").slideToggle();
-            $("#curtainoverlay").slideToggle();
+            showCurtain();
             $("#username").focus();
         }
     }); 
@@ -48,9 +66,7 @@ function processCurtainLogin (callback) {
                 });
             }
             else {
-                $("#curtain").slideToggle();
-                $("#curtainoverlay").slideToggle();
-                //console.log("curtainhide, run callback");
+                hideCurtain();
                 if (callback) { callback(); }
             }
         }
