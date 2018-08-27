@@ -20,9 +20,6 @@ net stop neo4j
 call "%PathToNeo4j%\bin\neo4j-shell.bat" -file "%PathToSetupScript%" -path "%PathToBirdsNestDb%"
 net start neo4j 
 
-REM Install Python
-REM "%FILECALLPATH%python-3.7.0-amd64.exe" /quiet InstallAllUsers=1 Include_launcher=0 PrependPath=1 Include_doc=0 Include_test=0 Include_tcltk=0
-
 REM Copy and setup the scanners
 xcopy /i /e /h /y "%FILECALLPATH%Scanners" c:\birdsnest\Scanners
 

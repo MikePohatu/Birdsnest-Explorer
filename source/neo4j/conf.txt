@@ -1,0 +1,2 @@
+#custom settings
+cypher.min_replan_interval=1h

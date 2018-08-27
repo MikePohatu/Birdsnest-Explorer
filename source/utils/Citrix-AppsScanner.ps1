@@ -3,11 +3,11 @@
 
 Import-Module "$($PSScriptRoot)\WriteToNeo.psm1"
 $neoURL="http://localhost:7474/db/data/transaction/commit"
-$neoconf = "C:\birdsnest\Scanners\neoconfig.json"
+$installpath = 'C:\birdsnest\Scanners'
 
-$zdc ='server'
+$zdcs = @('server1','server2')
 
-write-host "Querying $zdc"
+
 
 Function Get-CitrixApps {
     Param ([Parameter(Mandatory=$true)][string]$DataCollector)
@@ -57,48 +57,50 @@ Function Get-CitrixApps {
 }
 
 
-$resultsobj = Get-CitrixApps -DataCollector $zdc
-
-write-host "Writing to neo4j database"
-
-$installpath = 'C:\Tools\Temp\birdsnest\Scanners'
 
 
-$nparamsobj = new-object 'system.collections.generic.dictionary[[string],[object]]'
-$nparamsobj.Add('farmname',$resultsobj.farmname)
-$nparamsobj.Add('applications',$resultsobj.applications)
+foreach ($zdc in $zdcs) {
+    write-host "querying server $zdc"
+    $resultsobj = Get-CitrixApps -DataCollector $zdc
 
-write-host "Writing $($nparamsobj.applications.count) nodes from $($nparamsobj.farmname)"
+    write-host "Writing to neo4j database"
 
-$query = 'WITH $farmname as farm, $applications as applist ' +
-        'MERGE (cfarm:CTX_Farm {name:farm}) ' +
-        'WITH cfarm,farm,applist '+ 
-        'UNWIND applist as app ' +
-        'MERGE (n:CTX_Application {id:app.ApplicationId}) ' +
-        'SET n.applicationid = app.ApplicationId ' +
-        'SET n.browsername = app.BrowserName ' +
-        'SET n.name = app.BrowserName ' +
-        'SET n.enabled = app.Enabled ' +
-        'SET n.folderpath = app.FolderPath ' +
-        'SET n.path = app.FolderPath ' +
-        'SET n.clientfolder = app.ClientFolder ' +
-        'SET n.farm = farm ' +   
-        'WITH n,cfarm ' +
-        'MERGE (n)-[:PUBLISHED_FROM]->(cfarm) '+    
-        'RETURN count(n) '
+    $nparamsobj = new-object 'system.collections.generic.dictionary[[string],[object]]'
+    $nparamsobj.Add('farmname',$resultsobj.farmname)
+    $nparamsobj.Add('applications',$resultsobj.applications)
 
-$noderesponse = WriteToNeo -NeoConfigPath "$($installpath)\neoconfig.json" -Query $query -Parameters $nparamsobj
+    write-host "Writing $($nparamsobj.applications.count) nodes from $($nparamsobj.farmname)"
+
+    $query = 'WITH $farmname as farm, $applications as applist ' +
+            'MERGE (cfarm:CTX_Farm {name:farm}) ' +
+            'WITH cfarm,farm,applist '+ 
+            'UNWIND applist as app ' +
+            'MERGE (n:CTX_Application {id:app.ApplicationId}) ' +
+            'SET n.applicationid = app.ApplicationId ' +
+            'SET n.browsername = app.BrowserName ' +
+            'SET n.name = app.BrowserName ' +
+            'SET n.enabled = app.Enabled ' +
+            'SET n.folderpath = app.FolderPath ' +
+            'SET n.path = app.FolderPath ' +
+            'SET n.clientfolder = app.ClientFolder ' +
+            'SET n.farm = farm ' +   
+            'WITH n,cfarm ' +
+            'MERGE (n)-[:PUBLISHED_FROM]->(cfarm) '+    
+            'RETURN count(n) '
+
+    $noderesponse = WriteToNeo -NeoConfigPath "$($installpath)\neoconfig.json" -Query $query -Parameters $nparamsobj
 
 
-$rparamsobj = new-object 'system.collections.generic.dictionary[[string],[object]]'
-$rparamsobj.Add('relationships',$resultsobj.relationships)
+    $rparamsobj = new-object 'system.collections.generic.dictionary[[string],[object]]'
+    $rparamsobj.Add('relationships',$resultsobj.relationships)
 
-write-host "Writing $($rparamsobj.relationships.count) relationships"
+    write-host "Writing $($rparamsobj.relationships.count) relationships"
 
-$query = 'UNWIND $relationships as rel ' +
-        'MATCH (o:AD_Object {dn:rel.dn}) ' +
-        'MATCH (a:CTX_Application {id:rel.appid}) '+
-        'MERGE p=((o)-[:GIVES_ACCESS_TO]->(a)) ' +   
-        'RETURN count(p) '
+    $query = 'UNWIND $relationships as rel ' +
+            'MATCH (o:AD_Object {dn:rel.dn}) ' +
+            'MATCH (a:CTX_Application {id:rel.appid}) '+
+            'MERGE p=((o)-[:GIVES_ACCESS_TO]->(a)) ' +   
+            'RETURN count(p) '
 
-$relresponse = WriteToNeo -NeoConfigPath "$($installpath)\neoconfig.json" -Query $query -Parameters $rparamsobj
+    $relresponse = WriteToNeo -NeoConfigPath "$($installpath)\neoconfig.json" -Query $query -Parameters $rparamsobj
+}
