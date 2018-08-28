@@ -102,8 +102,22 @@ namespace FSScanner
                 }
             }
 
-            Console.WriteLine("Finished");
-            if (batchmode == false) { Console.ReadLine(); }
+            totaltimer.Stop();
+            Console.WriteLine("Finished in " + (totaltimer.ElapsedMilliseconds/1000) + " seconds");
+            if (batchmode == true)
+            {
+                Console.Write("Exiting.");
+                for (int i = 0; i < 3; i++)
+                {
+                    System.Threading.Thread.Sleep(500);
+                    Console.Write(".");
+                }
+            }
+            else
+            {
+                Console.WriteLine("Press any key to exit");
+                Console.ReadLine();
+            }
         }
     }
 }

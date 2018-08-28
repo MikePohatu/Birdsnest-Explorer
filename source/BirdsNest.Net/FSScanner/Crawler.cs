@@ -156,19 +156,27 @@ namespace FSScanner
             }
             catch (Exception e)
             {
+                Console.WriteLine("Error connecting to " + path, e.Message);
                 Folder f = new Folder() { Blocked = true, Path = path, Name = path, PermParent = permparent, InheritanceDisabled=true, ScanId = this._scanid };
                 using (ISession session = this._driver.Session())
                 {
                     _writer.UpdateFolder(f, session);
                 }
-                Console.WriteLine("Unable to connect to " + path, e.Message);
                 return;
             }
 
-            foreach (string subdirpath in Directory.EnumerateDirectories(path))
+            try
             {
-                this.Crawl(subdirpath, newpermparent, false);
+                foreach (string subdirpath in Directory.EnumerateDirectories(path))
+                {
+                    this.Crawl(subdirpath, newpermparent, false);
+                }
             }
+            catch (Exception e)
+            {
+                Console.WriteLine("Error encountered while enumerating directories in " + path, e.Message);
+            }
+            
         }
 
         /// <summary>

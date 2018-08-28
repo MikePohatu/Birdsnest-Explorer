@@ -58,7 +58,7 @@ namespace FSScanner
                 path = folder.Path,
                 lastfolder = folder.PermParent,
                 inheritancedisabled = folder.InheritanceDisabled,
-                blocked = folder.Blocked,
+                blocked = folder.Blocked.ToString(),
                 name = folder.Name,
                 scanid = folder.ScanId
             }));
