@@ -47,6 +47,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ConsoleWriter.cs" />
     <Compile Include="Credential.cs" />
     <Compile Include="NeoConfiguration.cs" />
     <Compile Include="ListExtensions.cs" />

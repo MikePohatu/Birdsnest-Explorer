@@ -42,7 +42,7 @@ namespace FSScanner
             }
             catch (Exception e)
             {
-                Console.WriteLine("Error connecting to " + rootpath + " with " + cred.UserName + ": " + e.Message);
+                ConsoleWriter.WriteError("Error connecting to " + rootpath + " with " + cred.UserName + ": " + e.Message);
                 return;
             }
 
@@ -58,7 +58,7 @@ namespace FSScanner
         /// <param name="driver"></param>
         public void CrawlRoot(DataStore ds, string rootpath)
         {
-            Console.WriteLine(rootpath);
+            ConsoleWriter.WriteInfo("Crawling " + rootpath);
 
             //get the existing folders for comparison
             try
@@ -67,12 +67,12 @@ namespace FSScanner
                 {
                     TransactionResult<Dictionary<string, Folder>> existfolderstx = Reader.GetAllFoldersAsDict(rootpath, session);
                     this._existingfolders = existfolderstx.Result;
-                    Console.WriteLine("Found " + this._existingfolders.Count + " folders in database in " + existfolderstx.ElapsedMilliseconds.TotalMilliseconds + "ms");
+                    ConsoleWriter.WriteInfo("Found " + this._existingfolders.Count + " folders in database in " + existfolderstx.ElapsedMilliseconds.TotalMilliseconds + "ms");
                 }
             }
             catch (Exception e)
             {
-                Console.WriteLine("Error reading existing folders from database " + rootpath + ": " + e.Message);
+                ConsoleWriter.WriteError("Error reading existing folders from database " + rootpath + ": " + e.Message);
                 return;
             }
 
@@ -89,7 +89,7 @@ namespace FSScanner
             }
             catch (Exception e)
             {
-                Console.WriteLine("Error adding datastore " + ds.Name + ": " + e.Message);
+                ConsoleWriter.WriteError("Error adding datastore " + ds.Name + ": " + e.Message);
                 return;
             }
 
@@ -102,7 +102,7 @@ namespace FSScanner
                     _writer.FlushFolderQueue(session);
                 }
                 _timer.Stop();
-                Console.WriteLine("Crawled file system " + rootpath + " in " + _timer.Elapsed);
+                ConsoleWriter.WriteInfo("Crawled file system " + rootpath + " in " + _timer.Elapsed);
                 Console.WriteLine();
             }
             catch (Exception e)
@@ -112,7 +112,7 @@ namespace FSScanner
                     _writer.FlushFolderQueue(session);
                 }
                 _timer.Stop();
-                Console.WriteLine("Error crawling file system " + rootpath + ": " + e.Message);
+                ConsoleWriter.WriteError("Error crawling file system " + rootpath + ": " + e.Message);
                 Console.WriteLine();
                 return;
             }
@@ -128,11 +128,11 @@ namespace FSScanner
             }
             catch (Exception e)
             {
-                Console.WriteLine("Error cleaning up folders " + rootpath + ": " + e.Message);
+                ConsoleWriter.WriteError("Error cleaning up folders " + rootpath + ": " + e.Message);
                 Console.WriteLine();
             }
 
-            Console.WriteLine("Found " + _writer.FolderCount + " folders with permissions applied");
+            ConsoleWriter.WriteInfo("Found " + _writer.FolderCount + " folders with permissions applied");
         }
 
         /// <summary>
@@ -156,7 +156,7 @@ namespace FSScanner
             }
             catch (Exception e)
             {
-                Console.WriteLine("Error connecting to " + path, e.Message);
+                ConsoleWriter.WriteError("Error connecting to " + path + ": " + e.Message);
                 Folder f = new Folder() { Blocked = true, Path = path, Name = path, PermParent = permparent, InheritanceDisabled=true, ScanId = this._scanid };
                 using (ISession session = this._driver.Session())
                 {
@@ -174,7 +174,7 @@ namespace FSScanner
             }
             catch (Exception e)
             {
-                Console.WriteLine("Error encountered while enumerating directories in " + path, e.Message);
+                ConsoleWriter.WriteError("Error encountered while enumerating directories in " + path + ": " + e.Message);
             }
             
         }
@@ -191,7 +191,7 @@ namespace FSScanner
             this._counter++;
             if (_counter == 100 )
             {
-                Console.WriteLine("  Progress: " + directory.FullName);
+                ConsoleWriter.WriteProgress(directory.FullName);
                 _counter = 0;
             }
 

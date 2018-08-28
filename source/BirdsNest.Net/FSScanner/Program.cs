@@ -12,6 +12,7 @@ namespace FSScanner
     {
         static void Main(string[] args)
         {
+            ConsoleWriter.InitLine(4);
             Stopwatch steptimer = new Stopwatch();
             Stopwatch totaltimer = new Stopwatch();
 
@@ -103,6 +104,7 @@ namespace FSScanner
             }
 
             totaltimer.Stop();
+            ConsoleWriter.ClearProgress();
             Console.WriteLine("Finished in " + (totaltimer.ElapsedMilliseconds/1000) + " seconds");
             if (batchmode == true)
             {
@@ -115,6 +117,8 @@ namespace FSScanner
             }
             else
             {
+                Console.WriteLine();
+                Console.WriteLine();
                 Console.WriteLine("Press any key to exit");
                 Console.ReadLine();
             }

@@ -50,7 +50,7 @@ namespace FSScanner
             this.PermParent = permparent;
             if (rules?.Count > 0)
             {
-                Console.WriteLine("Permissions set: {0}", path);
+                ConsoleWriter.WriteInfo("Permissions set: " + path);
                 foreach (FileSystemAccessRule rule in rules)
                 {
                     this.Permissions.Add(new Permission() {
