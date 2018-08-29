@@ -29,6 +29,7 @@ namespace common
 
         public static void WriteError(string message)
         {
+            ClearProgress();
             Console.ForegroundColor = ConsoleColor.Red;
             Console.Write("Error: ");
             Console.ResetColor();
@@ -37,6 +38,7 @@ namespace common
 
         public static void WriteWarning(string message)
         {
+            ClearProgress();
             Console.ForegroundColor = ConsoleColor.DarkYellow;
             Console.Write("Warn: ");
             Console.ResetColor();
@@ -45,11 +47,13 @@ namespace common
 
         public static void WriteInfo(string message)
         {
+            ClearProgress();
             Console.WriteLine("Info: " + message);
         }
 
         public static void WriteLine()
         {
+            ClearProgress();
             Console.WriteLine();
         }
 
@@ -60,6 +64,7 @@ namespace common
 
         public static void Write(string message)
         {
+            ClearProgress();
             Console.Write(message);
         }
 
