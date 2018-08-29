@@ -15,9 +15,10 @@ namespace FSScanner
         private Dictionary<string, Folder> _existingfolders;
         private Stopwatch _timer = new Stopwatch();
         private Writer _writer;
-        private int _counter = 0;
         private string _scanid = ShortGuid.NewGuid().ToString();
         private readonly IDriver _driver;
+
+        public int FolderCount { get; private set; }
 
         public Crawler(IDriver driver)
         {
@@ -102,8 +103,9 @@ namespace FSScanner
                     _writer.FlushFolderQueue(session);
                 }
                 _timer.Stop();
+                ConsoleWriter.ClearProgress();
                 ConsoleWriter.WriteInfo("Crawled file system " + rootpath + " in " + _timer.Elapsed);
-                Console.WriteLine();
+                ConsoleWriter.WriteLine();
             }
             catch (Exception e)
             {
@@ -113,7 +115,7 @@ namespace FSScanner
                 }
                 _timer.Stop();
                 ConsoleWriter.WriteError("Error crawling file system " + rootpath + ": " + e.Message);
-                Console.WriteLine();
+                ConsoleWriter.WriteLine();
                 return;
             }
 
@@ -128,8 +130,9 @@ namespace FSScanner
             }
             catch (Exception e)
             {
+                ConsoleWriter.ClearProgress();
                 ConsoleWriter.WriteError("Error cleaning up folders " + rootpath + ": " + e.Message);
-                Console.WriteLine();
+                ConsoleWriter.WriteLine();
             }
 
             ConsoleWriter.WriteInfo("Found " + _writer.FolderCount + " folders with permissions applied");
@@ -188,11 +191,10 @@ namespace FSScanner
         /// <returns></returns>
         private Folder QueryFolder(DirectoryInfo directory, string permroot, bool isroot)
         {
-            this._counter++;
-            if (_counter == 100 )
+            this.FolderCount++;
+            if (this.FolderCount % 10 == 0 )
             {
                 ConsoleWriter.WriteProgress(directory.FullName);
-                _counter = 0;
             }
 
             DirectorySecurity dirsec = directory.GetAccessControl();

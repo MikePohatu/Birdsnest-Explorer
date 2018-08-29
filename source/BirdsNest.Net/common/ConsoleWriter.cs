@@ -10,21 +10,21 @@ namespace common
     {
         public static void WriteProgress(string message)
         {
-            int currentLineCursor = Console.CursorTop;
-            Console.SetCursorPosition(0, 0);
+            int curr = ClearProgress();
+
             Console.ForegroundColor = ConsoleColor.Green;
             Console.Write("Progress: ");
             Console.ResetColor();
-            Console.WriteLine(message);
-            Console.SetCursorPosition(0, currentLineCursor);
+            Console.Write(message);
+            Console.SetCursorPosition(0, curr);
         }
 
-        public static void ClearProgress()
+        public static int ClearProgress()
         {
-            int currentLineCursor = Console.CursorTop;
-            Console.SetCursorPosition(0, 0);
-            Console.WriteLine();
-            Console.SetCursorPosition(0, currentLineCursor);
+            int curr = Console.CursorTop;
+            Console.Write(new string(' ', Console.WindowWidth * 5));
+            Console.SetCursorPosition(0, curr);
+            return curr;
         }
 
         public static void WriteError(string message)
@@ -46,6 +46,21 @@ namespace common
         public static void WriteInfo(string message)
         {
             Console.WriteLine("Info: " + message);
+        }
+
+        public static void WriteLine()
+        {
+            Console.WriteLine();
+        }
+
+        public static void WriteLine(string message)
+        {
+            Console.WriteLine(message);
+        }
+
+        public static void Write(string message)
+        {
+            Console.Write(message);
         }
 
         public static void InitLine(int linenumber)

@@ -12,7 +12,7 @@ namespace FSScanner
     {
         static void Main(string[] args)
         {
-            ConsoleWriter.InitLine(4);
+            Console.Title = "BirdsNest File System Scanner";
             Stopwatch steptimer = new Stopwatch();
             Stopwatch totaltimer = new Stopwatch();
 
@@ -59,8 +59,7 @@ namespace FSScanner
             }
             catch (Exception e)
             {
-                Console.WriteLine("There was an error loading your configuration");
-                Console.WriteLine(e.Message);
+                ConsoleWriter.WriteError("There was an error loading your configuration: " + e.Message);
                 if (batchmode == false) { Console.ReadLine(); }
                 Environment.Exit(1); 
             }
@@ -74,8 +73,7 @@ namespace FSScanner
             }
             catch (Exception e)
             {
-                Console.WriteLine("There was an error loading your neo4j configuration");
-                Console.WriteLine(e.Message);
+                ConsoleWriter.WriteError("There was an error loading your neo4j configuration: " + e.Message);
                 if (batchmode == false) { Console.ReadLine(); }
                 Environment.Exit(2);
             }
@@ -88,7 +86,7 @@ namespace FSScanner
                 {
                     if (string.IsNullOrEmpty(fs.Path))
                     {
-                        Console.WriteLine("Filesystem missing \"path\" property");
+                        ConsoleWriter.WriteWarning("Filesystem missing \"path\" property");
                         continue;
                     }
                     NetworkCredential fscred;
@@ -105,21 +103,20 @@ namespace FSScanner
 
             totaltimer.Stop();
             ConsoleWriter.ClearProgress();
-            Console.WriteLine("Finished in " + (totaltimer.ElapsedMilliseconds/1000) + " seconds");
+            ConsoleWriter.WriteLine("Finished in " + (totaltimer.ElapsedMilliseconds/1000) + " seconds");
             if (batchmode == true)
             {
-                Console.Write("Exiting.");
+                ConsoleWriter.Write("Exiting.");
                 for (int i = 0; i < 3; i++)
                 {
                     System.Threading.Thread.Sleep(500);
-                    Console.Write(".");
+                    ConsoleWriter.Write(".");
                 }
             }
             else
             {
-                Console.WriteLine();
-                Console.WriteLine();
-                Console.WriteLine("Press any key to exit");
+                ConsoleWriter.WriteLine();
+                ConsoleWriter.WriteLine("Press any key to exit");
                 Console.ReadLine();
             }
         }
