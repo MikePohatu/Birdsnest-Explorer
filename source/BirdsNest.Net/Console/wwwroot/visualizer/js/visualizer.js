@@ -63,11 +63,7 @@ function drawGraph(selectid) {
             .strength(1.5))
         .force('collide', d3.forceCollide()
             .strength(1)
-            .radius(function (d) { return d.size * 1.5; }))
-        .force('charge', d3.forceManyBody()
-            .strength(10)
-            .distanceMax(200)
-            .distanceMin(50))
+            .radius(function (d) { return d.size * 2; }))
         .on('tick', function () { onTick(); })
         .on('end', function () { onLayoutFinished(); })
         .velocityDecay(0.6)
@@ -84,12 +80,8 @@ function updatePaneSize(selectid) {
 function onTick() {
     //console.log(simulation.alpha());
     d3.select("#progress").style("width", 100 - simulation.alpha() * 100 + "%");
-    if (perfmode) {
-        updateNodePositions();
-    }
-    else {
-        updateLocations();
-    }
+
+    if (!perfmode) { updateLocations(); }
 }
 
 function resetView() {
@@ -700,12 +692,6 @@ function nodeDragged(d) {
 
     updateLocations();
     if (playMode === true) { restartLayout(); }
-}
-
-function updateNodePositions() {
-    graphnodes.GetArray().forEach(function (d) {
-        d.cx = d.x + d.radius;
-    });
 }
 
 function updateLocations() {
