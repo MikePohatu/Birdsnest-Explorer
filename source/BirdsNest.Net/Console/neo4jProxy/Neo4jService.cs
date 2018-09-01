@@ -14,19 +14,15 @@ namespace Console.neo4jProxy
     {
         public readonly IDriver Driver;
 
-        public Neo4jService(string configJson)
-        {
-            //load the config
-            using (NeoConfiguration config = NeoConfiguration.LoadJsonString(configJson))
-            {
-                this.Driver = Neo4jConnector.ConnectToNeo(config);
-            }
-        }
-
         public Neo4jService(NeoConfiguration config)
         {
+            Config neo4jconfig = new Config();
+            neo4jconfig.ConnectionIdleTimeout = Config.InfiniteInterval;
+            neo4jconfig.MaxConnectionLifetime = Config.InfiniteInterval;
+            neo4jconfig.SocketKeepAlive = true;
+
             //load the config
-            this.Driver = Neo4jConnector.ConnectToNeo(config);
+            this.Driver = Neo4jConnector.ConnectToNeo(config, neo4jconfig);
         }
 
         public object GetAll()
@@ -338,7 +334,31 @@ namespace Console.neo4jProxy
         }
 
 
+        /// <summary>
+        /// Test function. not currently in use
+        /// </summary>
+        /// <returns></returns>
+        public int GetAllNodesCount()
+        {
+            IStatementResult dbresult = null;
+            using (ISession session = this.Driver.Session())
+            {
+                try
+                {
+                    session.ReadTransaction(tx =>
+                    {
+                        string query = "MATCH (n) RETURN count(n)";
+                        dbresult = tx.Run(query);
+                    });
+                }
+                catch
+                {
+                    //logging to add
+                }
+            }
 
+            return 0;
+        }
 
 
         public IEnumerable<string> SearchNodeNames(string term, int searchlimit)

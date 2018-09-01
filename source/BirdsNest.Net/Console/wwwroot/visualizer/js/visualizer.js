@@ -275,7 +275,7 @@ function loadNodeData(newnodedata) {
         //console.log(d.x); 
         //console.log(d.cx); 
         d.size = defaultsize * d.scaling;
-        populateDetails(d);
+        //populateDetails(d);
         graphnodes.Add(d);
         newcount++;
     });
@@ -468,7 +468,6 @@ function removeNodes() {
     d3.selectAll(".selected")
         .each(function (d) {
             nodeList.push(d);
-            updateNodeSelection(d, false);
         });
 
     if (nodeList.length === 0) { return; }
@@ -478,6 +477,7 @@ function removeNodes() {
     }
 
     nodeList.forEach(function (d) {
+        updateNodeSelection(d, false);
         nodeids.push(d.db_id);
         graphnodes.Remove(d);
     });
@@ -608,6 +608,9 @@ function updateNodeSelection(d, isselected) {
     //console.log("updateNodeSelection");
     if (d.selected !== isselected) {
         if (isselected) {
+            if (!d.hasOwnProperty('detailsHTML')) {
+                populateDetails(d);
+            }
             nodeShowDetailsSelected(d);
         }
         else {

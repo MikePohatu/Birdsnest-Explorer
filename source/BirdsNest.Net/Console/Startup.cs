@@ -58,19 +58,17 @@ namespace Console
                 config.Filters.Add(new AuthorizeFilter(policy));
             }).SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
 
-            services.AddSingleton(serviceProvider =>
+            Neo4jService neoservice;
+            using (NeoConfiguration config = new NeoConfiguration())
             {
-                Neo4jService neoservice;
-                using (NeoConfiguration config = new NeoConfiguration())
-                {
-                    config.DB_URI = Configuration["neo4jSettings:DB_URI"];
-                    config.DB_Username = Configuration["neo4jSettings:DB_Username"];
-                    config.DB_Password = Configuration["neo4jSettings:DB_Password"];
-                    neoservice = new Neo4jService(config);
-                }
+                config.DB_URI = Configuration["neo4jSettings:DB_URI"];
+                config.DB_Username = Configuration["neo4jSettings:DB_Username"];
+                config.DB_Password = Configuration["neo4jSettings:DB_Password"];
+                neoservice = new Neo4jService(config);
+            }
+            neoservice.GetAllNodesCount();
 
-                return neoservice;
-            });
+            services.AddSingleton(neoservice);
             services.AddSingleton(Configuration.GetSection("ActiveDirectorySettings").Get<DirectoryConfiguration>());
         }
 
