@@ -350,6 +350,7 @@ namespace Console.neo4jProxy
                         string query = "MATCH (n) RETURN count(n)";
                         dbresult = tx.Run(query);
                     });
+                    return dbresult.Single()[0].As<int>();
                 }
                 catch
                 {
