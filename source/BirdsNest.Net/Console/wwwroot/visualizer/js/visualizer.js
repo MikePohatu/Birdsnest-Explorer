@@ -33,7 +33,6 @@ function drawGraph(selectid) {
         .attr("id", "drawingsvg")
         .on("click", pageClicked);
 
-
     //setup the zooming layer
     zoomLayer = svg.append("g")
         .attr("id", "zoomlayer");
@@ -314,8 +313,6 @@ function addNodes(nodes) {
         .call(
             d3.drag().subject(this)
                 .on('drag', nodeDragged));
-
-    
 
     setTimeout(function () {
         //node layout
@@ -623,7 +620,6 @@ function updateNodeSelection(d, isselected) {
             d.selected = isselected;
             return isselected;
         });
-
 }
 
 function unselectAllOtherNodes(keptdatum) {
@@ -939,7 +935,7 @@ function search() {
 
     var dir = $('#dirIcon').attr('data-dir');
 
-    let url = "/api/search/path?" +
+    let url = "/api/graph/search/path?" +
         "sourcetype=" + sourcetype +
         "&sourceprop=" + sourceprop +
         "&sourceval=" + sourceval +
@@ -1000,7 +996,7 @@ function toggleDir() {
 
 function getNode(nodeid) {
     //console.log(nodeid);
-    apiGetJson("/api/nodes/node/" + nodeid, function (data) {
+    apiGetJson("/api/graph/node/" + nodeid, function (data) {
         //console.log(data);
         addResultSet(data);
         restartLayout();
@@ -1008,16 +1004,9 @@ function getNode(nodeid) {
     });
 }
 
-function getAll() {
-    apiGetJson("/api/getall", function (data) {
-        addResultSet(data);
-        restartLayout();
-    });
-}
-
 function addRelated(nodeid) {
     //console.log("addRelated"+ nodeid);
-    apiGetJson("/api/nodes?nodeid=" + nodeid, function (data) {
+    apiGetJson("/api/graph/nodes/" + nodeid, function (data) {
         pendingResults = data;
         addPending();
     });
@@ -1042,7 +1031,7 @@ function getEdgesForNodes(nodelist, callback) {
     //console.log(": json stringyfied");
     //console.log(nodeids);
 
-    apiPostJson('/api/edges', postdata, callback);
+    apiPostJson('/api/graph/edges', postdata, callback);
 }
 
 
@@ -1051,7 +1040,7 @@ function getDirectEdgesForNodeList(nodelist, callback) {
     //console.log(": json stringyfied");
     //console.log(nodeids);
 
-    apiPostJson('/api/edges/direct', postdata, callback);
+    apiPostJson('/api/graph/edges/direct', postdata, callback);
 }
 
 // Keystroke event handlers
@@ -1097,7 +1086,7 @@ function updateProps(elementPrefix) {
     topoption.setAttribute("hidden", "");
     topoption.setAttribute("selected", "");
 
-    apiGetJson("/api/nodes/properties?type=" + type, function (data) {
+    apiGetJson("/api/graph/node/properties?type=" + type, function (data) {
         for (var i = 0; i < data.length; ++i) {
             addOption(elprops, data[i], data[i]);
         }
@@ -1113,7 +1102,7 @@ function bindAutoComplete(elementPrefix) {
             var type = document.getElementById(elementPrefix + "Type").value;
             var prop = document.getElementById(elementPrefix + "Prop").value;
 
-            var url = "/api/nodes/values?type=" + type + "&property=" + prop + "&searchterm=" + request.term;
+            var url = "/api/graph/node/values?type=" + type + "&property=" + prop + "&searchterm=" + request.term;
             apiGetJson(url, response);
         }
     });

@@ -149,7 +149,7 @@
         $.getJSON("json/labelicons.json", function (data) {
             iconmappings = new IconMappings(data);
         });
-        $.getJSON("/api/nodes/labels", function (data) {
+        $.getJSON("/api/graph/node/labels", function (data) {
             var i;
             for (i = 0; i < data.length; ++i) {
                 addOption(document.getElementById("sourceType"), data[i], data[i]);
@@ -158,7 +158,7 @@
                 addOption(document.getElementById("targetType"), data[i], data[i]);
             }
         });
-        $.getJSON("/api/edges/labels", function (data) {
+        $.getJSON("/api/graph/edges/labels", function (data) {
             for (var i = 0; i < data.length; ++i) {
                 addOption(document.getElementById("edgeType"), data[i], data[i]);
             }

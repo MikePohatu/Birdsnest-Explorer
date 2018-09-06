@@ -6,7 +6,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using common;
 using Neo4j.Driver.V1;
-using Newtonsoft.Json;
 
 namespace Console.neo4jProxy
 {
@@ -176,6 +175,33 @@ namespace Console.neo4jProxy
                 return returnedresults;
             }
         }
+
+
+        public object GetAllRelated(long nodeid)
+        {
+            using (ISession session = this.Driver.Session())
+            {
+                ResultSet returnedresults = new ResultSet();
+                try
+                {
+                    session.ReadTransaction(tx =>
+                    {
+                        string query = "MATCH (n)-[r]-(m) " +
+                            "WHERE ID(n)=$id " +
+                            "RETURN m,r";
+                        IStatementResult dbresult = tx.Run(query, new { id = nodeid });
+                        returnedresults.Append(ParseResults(dbresult));
+                    });
+                }
+                catch
+                {
+                    //logging to add
+                }
+
+                return returnedresults;
+            }
+        }
+
 
         //*************************
         // Search functions
