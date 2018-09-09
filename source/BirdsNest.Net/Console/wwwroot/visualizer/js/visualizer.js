@@ -647,11 +647,14 @@ function unselectAllNodes() {
 
 function nodeShowDetailsSelected(d) {
     //console.log("nodeShowDetailsSelected");
-    d3.select("#detailcardwrapper")
-        .append("div")
-        .attr("id", "details_" + d.db_id)
-        .attr("class", "detailcard pane")
-        .html(d.detailsHTML);
+    //d3.select("#detailcardwrapper")
+    //    .append("div")
+    //    .attr("id", "details_" + d.db_id)
+    //    .attr("class", "detailcard pane")
+    //    .html(d.detailsHTML);
+    apiGet("/visualizer/details/" + d.db_id, "html", function (data) {
+        document.getElementById("detailcardwrapper").innerHTML = data;
+    });
 }
 
 function nodeHideDetailsSelected(d) {

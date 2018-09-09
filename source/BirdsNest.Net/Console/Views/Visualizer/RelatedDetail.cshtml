@@ -5,14 +5,30 @@
 
 
 @using Console.ViewModels
+@using Console.neo4jProxy
+
 @model RelatedDetailViewModel
 
 
 <div>
-    <ul class="vertical dropdown menu" data-dropdown-menu style="max-width: 250px;">
-        @foreach (string item in Model.RelatedLabelledNodes.Keys)
+    <ol class="accordion" data-accordion data-multi-expand="true" data-allow-all-closed="true">
+        @foreach (string key in Model.RelatedLabelledNodes.Keys)
         {
-            <li><a href="#">@item</a></li>
+            <li class="accordion-item" data-accordion-item>
+                <a href="#" class="accordion-title">@key (@Model.RelatedLabelledNodes[key].Count)</a>
+                <div class="accordion-content" data-tab-content>
+                    <ol class="accordion" data-accordion data-multi-expand="true" data-allow-all-closed="true">
+                        @foreach (BirdsNestNode node in Model.RelatedLabelledNodes[key])
+                        {
+                            <li class="accordion-item" data-accordion-item>
+                                <div class="accordion-content" data-tab-content>
+                                    <p>@node.Name</p>
+                                    </div>
+</li>
+                        }
+                    </ol>
+                </div>
+            </li>
         }
-    </ul>
+    </ol>
 </div>
