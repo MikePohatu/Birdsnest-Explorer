@@ -24,7 +24,7 @@ namespace Console.neo4jProxy
             this.Driver = Neo4jConnector.ConnectToNeo(config, neo4jconfig);
         }
 
-        public object GetAll()
+        public ResultSet GetAll()
         {
             using (ISession session = this.Driver.Session())
             {
@@ -58,7 +58,7 @@ namespace Console.neo4jProxy
             }
         }
 
-        public object GetNode(long nodeid)
+        public ResultSet GetNode(long nodeid)
         {
             using (ISession session = this.Driver.Session())
             {
@@ -91,7 +91,7 @@ namespace Console.neo4jProxy
             return o;
         }
 
-        public object GetRelationships(List<long> nodeids)
+        public ResultSet GetRelationships(List<long> nodeids)
         {
             using (ISession session = this.Driver.Session())
             {
@@ -125,7 +125,7 @@ namespace Console.neo4jProxy
             return o;
         }
 
-        public object GetDirectRelationships(List<long> nodeids)
+        public ResultSet GetDirectRelationships(List<long> nodeids)
         {
             using (ISession session = this.Driver.Session())
             {
@@ -151,7 +151,7 @@ namespace Console.neo4jProxy
             }
         }
 
-        public object GetRelatedNodes(long nodeid)
+        public ResultSet GetRelatedNodes(long nodeid)
         {
             using (ISession session = this.Driver.Session())
             {
@@ -177,7 +177,7 @@ namespace Console.neo4jProxy
         }
 
 
-        public object GetAllRelated(long nodeid)
+        public ResultSet GetAllRelated(long nodeid)
         {
             using (ISession session = this.Driver.Session())
             {

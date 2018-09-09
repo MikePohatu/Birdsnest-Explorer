@@ -1,0 +1,18 @@
+﻿@*
+    Context.Request.Query ["value"]
+*@
+
+
+
+@using Console.ViewModels
+@model RelatedDetailViewModel
+
+
+<div>
+    <ul class="vertical dropdown menu" data-dropdown-menu style="max-width: 250px;">
+        @foreach (string item in Model.RelatedLabelledNodes.Keys)
+        {
+            <li><a href="#">@item</a></li>
+        }
+    </ul>
+</div>

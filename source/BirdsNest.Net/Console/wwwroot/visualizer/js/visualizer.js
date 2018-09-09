@@ -895,6 +895,13 @@ function populateDetails(d) {
             d.propertyCount = 0;
             s += "empty<br>";
         }
+
+        //TESTING
+        apiGet("/visualizer/details/" + d.db_id, "html", function (data) {
+            console.log(data);
+            s = data;
+        });
+
         return s;
     };
 }
