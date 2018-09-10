@@ -669,7 +669,7 @@ function unselectAllNodes() {
 
 function nodeShowDetailsSelected(d) {
     //console.log("nodeShowDetailsSelected");
-    console.log(d.detailsHTML);
+    //console.log(d.detailsHTML);
     d3.select("#detailcardwrapper")
         .append("div")
         .attr("id", "details_" + d.db_id)
