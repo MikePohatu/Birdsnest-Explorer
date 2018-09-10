@@ -606,9 +606,16 @@ function updateNodeSelection(d, isselected) {
     if (d.selected !== isselected) {
         if (isselected) {
             if (!d.hasOwnProperty('detailsHTML')) {
-                populateDetails(d);
+                //console.log("populate");
+                populateDetails(d, function () {
+                    //console.log("populate callback");
+                    nodeShowDetailsSelected(d);
+                });
             }
-            nodeShowDetailsSelected(d);
+            else {
+                //console.log("non populate");
+                nodeShowDetailsSelected(d);
+            } 
         }
         else {
             nodeHideDetailsSelected(d);
@@ -620,6 +627,21 @@ function updateNodeSelection(d, isselected) {
             d.selected = isselected;
             return isselected;
         });
+}
+
+/*
+Build the details card for the node
+*/
+function populateDetails(d, callback) {
+    //console.log("populateDetails");
+    apiGet("/visualizer/details/" + d.db_id, "html", function (data) {
+        //console.log("populateDetails callback");
+        //document.getElementById("detailcardwrapper").innerHTML = data;
+        d.detailsHTML = data;
+        //$(document).foundation();
+        //Foundation.reInit(['accordion']);
+        callback();
+    });
 }
 
 function unselectAllOtherNodes(keptdatum) {
@@ -647,14 +669,13 @@ function unselectAllNodes() {
 
 function nodeShowDetailsSelected(d) {
     //console.log("nodeShowDetailsSelected");
-    //d3.select("#detailcardwrapper")
-    //    .append("div")
-    //    .attr("id", "details_" + d.db_id)
-    //    .attr("class", "detailcard pane")
-    //    .html(d.detailsHTML);
-    apiGet("/visualizer/details/" + d.db_id, "html", function (data) {
-        document.getElementById("detailcardwrapper").innerHTML = data;
-    });
+    console.log(d.detailsHTML);
+    d3.select("#detailcardwrapper")
+        .append("div")
+        .attr("id", "details_" + d.db_id)
+        .attr("class", "detailcard pane")
+        .html(d.detailsHTML);
+    $('#details_' + d.db_id).foundation();
 }
 
 function nodeHideDetailsSelected(d) {
@@ -875,40 +896,6 @@ IconMappings.prototype.getIconClasses = function (datum) {
     if (this.mappings.hasOwnProperty(datum.label)) { return this.mappings[datum.label]; }
     else { return "fas fa-question"; }
 };
-
-
-/*
-Build the details card for the node
-*/
-function populateDetails(d) {
-    d.detailsHTML = function () {
-        let s = "<u><b>Details</b></u><br>" +
-            "<b>Name:</b> " + d.name + "<br>" +
-            "<b>db_id:</b> " + d.db_id + "<br>" +
-            "<b>Type:</b> " + d.label + "<br>" +
-            "<b>Scope:</b> " + d.properties.scope + "<br><br><b><u>Properties</u></b><br>";
-
-        if (d.properties) {
-            d.propertyCount = d.properties.count;
-            for (let key in d.properties) {
-                s += "<b>" + key + ":</b> " + d.properties[key] + "<br>";
-            }
-        }
-        else {
-            d.propertyCount = 0;
-            s += "empty<br>";
-        }
-
-        //TESTING
-        apiGet("/visualizer/details/" + d.db_id, "html", function (data) {
-            console.log(data);
-            s = data;
-        });
-
-        return s;
-    };
-}
-
 
 
 

@@ -42,7 +42,7 @@ namespace Console.ViewModels
             BirdsNestNode relatednode;
 
             if (edge.Source == this.Node.DbId) { this.RelatedNodes.TryGetValue(edge.Target, out relatednode); }
-            else { this.RelatedNodes.TryGetValue(edge.Target, out relatednode); }
+            else { this.RelatedNodes.TryGetValue(edge.Source, out relatednode); }
 
             if (this.LabelledEdgeNodes.TryGetValue(edge.Label, out edgelist))
             {

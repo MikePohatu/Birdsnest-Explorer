@@ -1,34 +1,50 @@
-﻿@*
-    Context.Request.Query ["value"]
-*@
-
-
-
-@using Console.ViewModels
+﻿@using Console.ViewModels
 @using Console.neo4jProxy
-
 @model RelatedDetailViewModel
-
-
 <div>
-    <ol class="accordion" data-accordion data-multi-expand="true" data-allow-all-closed="true">
+    <u><b>Details</b></u>
+    <b>Name:</b> @Model.Node.Name
+    <b>db_id:</b> @Model.Node.DbId
+    <b>Type:</b> @Model.Node.Label
+    <b>Scope:</b> @Model.Node.Scope
+</div>
+
+
+@if (@Model.Node.Properties.Count > 0)
+{
+    <div>
+        <ul class="accordion" data-accordion data-allow-all-closed="true" data-multi-expand="true">
+            <li class="accordion-item" data-accordion-item>
+                <a href="#" class="accordion-title"><u><b>Properties:</b></u></a>
+                <div class="accordion-content" data-tab-content>
+                    @foreach (var key in Model.Node.Properties.Keys)
+                    {<b>@key:</b> @Model.Node.Properties[key]<br />}
+                </div>
+            </li>
+        </ul>
+    </div>
+}
+<div>
+    <ul class="accordion" data-accordion data-allow-all-closed="true" data-multi-expand="true">
         @foreach (string key in Model.RelatedLabelledNodes.Keys)
         {
             <li class="accordion-item" data-accordion-item>
                 <a href="#" class="accordion-title">@key (@Model.RelatedLabelledNodes[key].Count)</a>
                 <div class="accordion-content" data-tab-content>
-                    <ol class="accordion" data-accordion data-multi-expand="true" data-allow-all-closed="true">
-                        @foreach (BirdsNestNode node in Model.RelatedLabelledNodes[key])
-                        {
-                            <li class="accordion-item" data-accordion-item>
-                                <div class="accordion-content" data-tab-content>
-                                    <p>@node.Name</p>
-                                    </div>
-</li>
-                        }
-                    </ol>
+                    @foreach (BirdsNestNode node in Model.RelatedLabelledNodes[key])
+                    {@node.Name<br />}
                 </div>
             </li>
         }
-    </ol>
+        @foreach (string key in Model.LabelledEdgeNodes.Keys)
+        {
+            <li class="accordion-item" data-accordion-item>
+                <a href="#" class="accordion-title">@key (@Model.LabelledEdgeNodes[key].Count)</a>
+                <div class="accordion-content" data-tab-content>
+                    @foreach (BirdsNestNode node in Model.LabelledEdgeNodes[key])
+                    {@node.Name<br />}
+                </div>
+            </li>
+        }
+    </ul>
 </div>
