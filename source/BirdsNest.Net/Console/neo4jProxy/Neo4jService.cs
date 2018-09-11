@@ -162,7 +162,7 @@ namespace Console.neo4jProxy
                     {
                         string query = "MATCH (n)-[]-(m) " +
                             "WHERE ID(n)=$id " +
-                            "RETURN m";
+                            "RETURN m ORDER BY LOWER(m.name)";
                         IStatementResult dbresult = tx.Run(query, new { id = nodeid });
                         returnedresults.Append(ParseResults(dbresult));
                     });
@@ -188,7 +188,7 @@ namespace Console.neo4jProxy
                     {
                         string query = "MATCH (n)-[r]-(m) " +
                             "WHERE ID(n)=$id " +
-                            "RETURN m,r";
+                            "RETURN m,r ORDER BY LOWER(m.name)";
                         IStatementResult dbresult = tx.Run(query, new { id = nodeid });
                         returnedresults.Append(ParseResults(dbresult));
                     });
