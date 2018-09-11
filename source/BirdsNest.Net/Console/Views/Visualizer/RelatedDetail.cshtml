@@ -14,7 +14,7 @@
     <div>
         <ul class="accordion" data-accordion data-allow-all-closed="true" data-multi-expand="true">
             <li class="accordion-item" data-accordion-item>
-                <a href="#" class="accordion-title">Properties:</a>
+                <a href="#" class="accordion-title">Properties (@Model.Node.Properties.Count):</a>
                 <div class="accordion-content detaillist" data-tab-content>
                     @foreach (var key in Model.Node.Properties.Keys)
                     {<b>@key:</b> @Model.Node.Properties[key]<br />}
@@ -26,7 +26,7 @@
     <div>
         <ul class="accordion" data-accordion data-allow-all-closed="true" data-multi-expand="true">
             <li class="accordion-item" data-accordion-item>
-                <a href="#" class="accordion-title">Related:</a>
+                <a href="#" class="accordion-title">Related (@Model.RelatedNodes.Count):</a>
                 <div class="accordion-content" data-tab-content>
                     <ul class="accordion" data-accordion data-allow-all-closed="true" data-multi-expand="true">
                         @foreach (string key in Model.RelatedLabelledNodes.Keys)
