@@ -1,22 +1,21 @@
 ﻿@using Console.ViewModels
 @using Console.neo4jProxy
 @model RelatedDetailViewModel
-<div>
+<div class="detaillist">
     <u><b>Details</b></u>
-    <b>Name:</b> @Model.Node.Name
-    <b>db_id:</b> @Model.Node.DbId
-    <b>Type:</b> @Model.Node.Label
-    <b>Scope:</b> @Model.Node.Scope
+    <b>Name:</b> @Model.Node.Name<br />
+    <b>db_id:</b> @Model.Node.DbId<br />
+    <b>Type:</b> @Model.Node.Label<br />
+    <b>Scope:</b> @Model.Node.Scope<br />
 </div>
-
 
 @if (@Model.Node.Properties.Count > 0)
 {
     <div>
         <ul class="accordion" data-accordion data-allow-all-closed="true" data-multi-expand="true">
             <li class="accordion-item" data-accordion-item>
-                <a href="#" class="accordion-title"><u><b>Properties:</b></u></a>
-                <div class="accordion-content" data-tab-content>
+                <a href="#" class="accordion-title">Properties:</a>
+                <div class="accordion-content detaillist" data-tab-content>
                     @foreach (var key in Model.Node.Properties.Keys)
                     {<b>@key:</b> @Model.Node.Properties[key]<br />}
                 </div>
@@ -27,16 +26,16 @@
     <div>
         <ul class="accordion" data-accordion data-allow-all-closed="true" data-multi-expand="true">
             <li class="accordion-item" data-accordion-item>
-                <a href="#" class="accordion-title"><u><b>Related:</b></u></a>
+                <a href="#" class="accordion-title">Related:</a>
                 <div class="accordion-content" data-tab-content>
                     <ul class="accordion" data-accordion data-allow-all-closed="true" data-multi-expand="true">
                         @foreach (string key in Model.RelatedLabelledNodes.Keys)
                         {
                             <li class="accordion-item" data-accordion-item>
                                 <a href="#" class="accordion-title">@key (@Model.RelatedLabelledNodes[key].Count)</a>
-                                <div class="accordion-content" data-tab-content>
+                                <div class="accordion-content detaillist" data-tab-content>
                                     @foreach (BirdsNestNode node in Model.RelatedLabelledNodes[key])
-                                    {@node.Name<br />}
+                                    {@node.Name <a href="javascript:getNode(@node.DbId);">(+)</a><br />}
                                 </div>
                             </li>
                         }
@@ -44,9 +43,9 @@
                         {
                             <li class="accordion-item" data-accordion-item>
                                 <a href="#" class="accordion-title">@key (@Model.LabelledEdgeNodes[key].Count)</a>
-                                <div class="accordion-content" data-tab-content>
+                                <div class="accordion-content detaillist" data-tab-content>
                                     @foreach (BirdsNestNode node in Model.LabelledEdgeNodes[key])
-                                    {@node.Name<br />}
+                                    {@node.Name <a href="javascript:getNode(@node.DbId);">(+)</a><br />}
                                 </div>
                             </li>
                         }

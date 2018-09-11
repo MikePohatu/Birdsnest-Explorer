@@ -33,9 +33,9 @@ namespace Console.Controllers
 
         // GET api/graph/nodes/<id>
         [HttpGet("nodes/{id}")]
-        public object GetRelatedNodes(long nodeid)
+        public object GetRelatedNodes(long id)
         {
-            return this._service.GetRelatedNodes(nodeid);
+            return this._service.GetRelatedNodes(id);
         }
 
         // GET api/graph/node/labels

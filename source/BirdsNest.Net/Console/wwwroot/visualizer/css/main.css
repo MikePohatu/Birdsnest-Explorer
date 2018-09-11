@@ -124,21 +124,45 @@ body {
 }
 
 .detailcard {	
-	min-height: 30px;
 	font-size: 10px;
 	width: 250px;
 	word-wrap: break-word;
 	font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-	white-space: pre-wrap;
-	margin-right: 15px;
+}
+
+.detailcard .accordion-title {
+    padding: 7px;
+    /*border: 0px;*/
+}
+
+.detailcard .accordion-content {
+    padding-left: 5px;
+    padding-top: 0px;
+    padding-bottom: 0px;
+    padding-right: 0px;
+    /*border: 0px;*/
+}
+
+.detailcard .accordion-item {
+    /*border: 0px;*/
+}
+
+.detailcard ul {
+    margin: 0px;
+}
+
+.detailcard .detaillist {
+    padding-left: 7px;
+    padding-top: 5px;
+    padding-right: 5px;
+    padding-bottom: 5px;
 }
 
 .currentActiveDetailCard {
-	border: 2px solid black;
+    border: 2px solid black;
 }
 
 .inputbox {
-
 	margin: 5px;
 	border: 1px solid #111;
 	width: 200px;

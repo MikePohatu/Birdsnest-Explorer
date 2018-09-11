@@ -570,7 +570,7 @@ function unpinNode(d) {
 
 function pageClicked(d) {
     //console.log(": pageClicked");
-    if (d3.event.defaultPrevented) return; // dragged
+    if (d3.event.defaultPrevented) { return; } // dragged
     unselectAllNodes();
 }
 
@@ -584,10 +584,7 @@ function nodeDblClicked(d) {
 function nodeClicked(d) {
     //console.log(": nodeClicked");
     //console.log(": " + d.name);
-    if (d3.event.defaultPrevented) {
-        //console.log("prevented");
-        return;
-    } // dragged
+    if (d3.event.defaultPrevented) { return; } // dragged
     d3.event.stopPropagation();
 
     if (d3.event.ctrlKey) {
@@ -995,9 +992,8 @@ function getNode(nodeid) {
     //console.log(nodeid);
     apiGetJson("/api/graph/node/" + nodeid, function (data) {
         //console.log(data);
-        addResultSet(data);
-        restartLayout();
-        updateEdges();
+        pendingResults = data;
+        addPending();
     });
 }
 
