@@ -280,8 +280,6 @@ namespace Console.neo4jProxy
             else
             { throw new ArgumentException("Invalid target type: " + tartype); }
 
-
-
             using (ISession session = this.Driver.Session())
             {
                 ResultSet returnedresults = new ResultSet();
