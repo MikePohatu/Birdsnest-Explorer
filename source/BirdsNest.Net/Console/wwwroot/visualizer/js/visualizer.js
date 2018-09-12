@@ -491,7 +491,7 @@ function removeNodes() {
     getDirectEdgesForNodeList(nodeids, function (data) {
         //console.log(data);
         //console.log(nodeids);
-        data.edges.forEach(function (d) { graphedges.Remove(d); });
+        data.Edges.forEach(function (d) { graphedges.Remove(d); });
         checkPerfMode();
 
         graphbglayer.selectAll('.edgebg')
