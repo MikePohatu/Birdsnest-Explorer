@@ -151,6 +151,40 @@ namespace Console.neo4jProxy
             }
         }
 
+        public async Task<object> GetNodesAsync(List<long> nodeids)
+        {
+            object o = null;
+            await Task.Run(() => o = GetNodes(nodeids));
+
+            return o;
+        }
+
+        public ResultSet GetNodes(List<long> nodeids)
+        {
+            using (ISession session = this.Driver.Session())
+            {
+                ResultSet returnedresults = new ResultSet();
+                try
+                {
+                    session.ReadTransaction(tx =>
+                    {
+                        string query = "UNWIND $ids AS nodeid " +
+                            "MATCH (s) " +
+                            "WHERE ID(s)=nodeid " +
+                            "RETURN DISTINCT s ORDER BY LOWEr(s.name)";
+                        IStatementResult dbresult = tx.Run(query, new { ids = nodeids });
+                        returnedresults.Append(ParseResults(dbresult));
+                    });
+                }
+                catch
+                {
+                    //logging to add
+                }
+
+                return returnedresults;
+            }
+        }
+
         public ResultSet GetRelatedNodes(long nodeid)
         {
             using (ISession session = this.Driver.Session())
@@ -289,11 +323,11 @@ namespace Console.neo4jProxy
                                 builder.Append("t[{tarprop}] = $tarval ");
                             }
 
-                            builder.Append("UNWIND nodes(path) as n RETURN DISTINCT n");
+                            builder.Append("UNWIND nodes(path) as n RETURN DISTINCT n ORDER BY LOWER(n.name)");
                         }
                         else
                         {
-                            builder.Append("RETURN s");
+                            builder.Append("RETURN s ORDER BY LOWER(s.name)");
                         }
                         
                         

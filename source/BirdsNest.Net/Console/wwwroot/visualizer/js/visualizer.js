@@ -147,12 +147,12 @@ setup edges and nodes
 *****************************
 */
 
-function addPending() {
+function addSearchResults(results, clearResults) {
     //console.log(pendingResults.nodes.length);
-    //console.log("addPending start");
+    //console.log("addSearchResults start: " + results);
 
-    if (pendingResults.nodes.length > 100) {
-        if (confirm("You are adding " + pendingResults.nodes.length + " nodes to the view. This is a " +
+    if (results.Nodes.length > 100) {
+        if (confirm("You are adding " + results.Nodes.length + " nodes to the view. This is a " +
             "large number of nodes. Layout animation will be disabled for performance reasons. " +
             " Are you sure?") !== true) {
             return;
@@ -164,20 +164,29 @@ function addPending() {
         .attr('title', 'Updating data');
 
     setTimeout(function () {
-        let newcount = addResultSet(pendingResults);
+        let newcount = addResultSet(results);
         if (newcount > 0) { updateEdges(); }
         else { d3.selectAll("#restartIcon").classed("spinner", false); }
 
-        document.getElementById("searchNotification").innerHTML = '';
-        pendingResults = null;
-        //console.log("addPending end");
+        if (clearResults === true) {
+            document.getElementById("searchNotification").innerHTML = '';
+            document.getElementById("searchExpand").innerHTML = '';
+            //pendingResults = null;
+        }
+        //console.log("addSearchResults end");
     }, 10);
 }
 
+function onAddToView() {
+    let results = $('#searchResultData').val();
+    //console.log(results);
+    addSearchResults(JSON.parse(results), true);
+}
+
 function addResultSet(json) {
-    //console.log("addResultSet start: " );
-    let edges = json.edges;
-    let nodes = json.nodes;
+    //console.log("addResultSet start: " + json);
+    let edges = json.Edges;
+    let nodes = json.Nodes;
 
     //populate necessary additional data for the view
     let newitemcount = loadNodeData(nodes);
@@ -929,7 +938,7 @@ function search() {
 
     var dir = $('#dirIcon').attr('data-dir');
 
-    let url = "/api/graph/search/path?" +
+    let urlquery = "?" +
         "sourcetype=" + sourcetype +
         "&sourceprop=" + sourceprop +
         "&sourceval=" + sourceval +
@@ -954,12 +963,23 @@ function search() {
 	console.log("tarval: " + tarval);
 
 	console.log(url);*/
-    apiGetJson(url, function (data) {
+    //apiGetJson("/api/graph/search/path" + urlquery, function (data) {
+    //    //console.log("success");
+    //    pendingResults = data;
+    //    let not = "Search returned " + data.nodes.length + " nodes. ";
+    //    if (data.nodes.length !== 0) { not = not + "<a href='javascript:addSearchResults("+data +",true)'>Add to view</a>"; }
+    //    document.getElementById("searchNotification").innerHTML = not;
+    //});
+
+    apiGet("/visualizer/search" + urlquery, "html", function (data) {
         //console.log("success");
-        pendingResults = data;
-        let not = "Search returned " + data.nodes.length + " nodes. ";
-        if (data.nodes.length !== 0) { not = not + "<a href='javascript:addPending()'>Add to view</a>"; }
-        document.getElementById("searchNotification").innerHTML = not;
+        //pendingResults = data;
+        //let not = "Search returned " + data.nodes.length + " nodes. ";
+        //if (data.nodes.length !== 0) { not = not + "<a href='javascript:addSearchResults()'>Add to view</a>"; }
+        //document.getElementById("searchNotification").innerHTML = not;
+        //console.log("data: " + data);
+        document.getElementById("searchNotification").innerHTML = data;
+        $('#searchNotification').foundation();
     });
 }
 
@@ -992,16 +1012,24 @@ function getNode(nodeid) {
     //console.log(nodeid);
     apiGetJson("/api/graph/node/" + nodeid, function (data) {
         //console.log(data);
-        pendingResults = data;
-        addPending();
+        addSearchResults(data);
+    });
+}
+
+function getNodes(nodeids) {
+    var querystring = nodeids.join("&");
+
+    apiGetJson("/api/graph/nodes?" + querystring, function (data) {
+        //console.log(data);
+        addSearchResults(data);
     });
 }
 
 function addRelated(nodeid) {
     //console.log("addRelated"+ nodeid);
     apiGetJson("/api/graph/nodes/" + nodeid, function (data) {
-        pendingResults = data;
-        addPending();
+        //pendingResults = data;
+        addSearchResults(data,true);
     });
 
 }

@@ -35,12 +35,20 @@ body {
 	overflow-y: auto;
 }
 
-#detailcardwrapper::-webkit-scrollbar {
-    width: 10px;
-    background: transparent;  
+#searchresultsdetails {
+    max-height: 250px;
+    overflow-y: auto;
+    padding: 5px;
+    font-size: 10px;
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
 
-#detailcardwrapper::-webkit-scrollbar-thumb {
+.scrollable::-webkit-scrollbar {
+    width: 10px;
+    background: transparent;
+}
+
+.scrollable::-webkit-scrollbar-thumb {
     background: #D6D6D6;
 }
 
@@ -151,7 +159,7 @@ body {
     margin: 0px;
 }
 
-.detailcard .detaillist {
+.detaillist {
     padding-left: 7px;
     padding-top: 5px;
     padding-right: 5px;

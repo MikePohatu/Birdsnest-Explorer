@@ -17,6 +17,7 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Console.Directory;
 using common;
 using Microsoft.AspNetCore.Identity;
+using Newtonsoft.Json.Serialization;
 
 namespace Console
 {
@@ -56,7 +57,8 @@ namespace Console
                     .Build();
 
                 config.Filters.Add(new AuthorizeFilter(policy));
-            }).SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
+            }).SetCompatibilityVersion(CompatibilityVersion.Version_2_1)
+            .AddJsonOptions(options => options.SerializerSettings.ContractResolver = new DefaultContractResolver());
 
             Neo4jService neoservice;
             using (NeoConfiguration config = new NeoConfiguration())

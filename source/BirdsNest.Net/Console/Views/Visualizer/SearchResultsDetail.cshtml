@@ -1,0 +1,19 @@
+﻿@using Newtonsoft.Json
+@using Console.neo4jProxy
+
+@model ResultSet
+@Html.Hidden("searchResultData", JsonConvert.SerializeObject(Model))
+
+@if (Model.Nodes.Count > 0)
+{
+    <div>Search returned <a data-toggle="searchresultsdetails">@Model.Nodes.Count</a> nodes. <a href="javascript:onAddToView()">Add to view</a></div>
+
+    <div id="searchresultsdetails" class="detaillist scrollable dropdown-pane" data-dropdown data-auto-focus="true" data-close-on-click="true">
+        <div style="height:100%">
+            @foreach (BirdsNestNode node in Model.Nodes)
+            {@node.Name <a href="javascript:getNode(@node.DbId);">(+)</a><br />}
+        </div>
+    </div>
+}
+else
+{ <div>Search returned no results.</div> }

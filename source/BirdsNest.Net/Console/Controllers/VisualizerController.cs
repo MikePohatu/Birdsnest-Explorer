@@ -43,5 +43,14 @@ namespace Console.Controllers
             ViewBag.ID = id;
             return PartialView("RelatedDetail",model);
         }
+
+        // GET visualizer/search
+        public IActionResult Search([FromQuery]string sourcetype, [FromQuery]string sourceprop, [FromQuery]string sourceval,
+            [FromQuery]string relationship, [FromQuery]int relmin, [FromQuery]int relmax, [FromQuery]char dir,
+            [FromQuery]string tartype, [FromQuery]string tarprop, [FromQuery]string tarval)
+        {
+            ResultSet results = this._service.SearchPath(sourcetype, sourceprop, sourceval, relationship, relmin, relmax, dir, tartype, tarprop, tarval);
+            return PartialView("SearchResultsDetail", results);
+        }
     }
 }

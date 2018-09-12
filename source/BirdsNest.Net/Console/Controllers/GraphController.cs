@@ -38,6 +38,14 @@ namespace Console.Controllers
             return this._service.GetRelatedNodes(id);
         }
 
+        // GET api/graph/nodes?id=1&id=2
+        [HttpGet("nodes")]
+        public object GetNodes([FromQuery(Name = "id")]List<long> id)
+        {
+            return this._service.GetNodes(id);
+        }
+
+
         // GET api/graph/node/labels
         [HttpGet("node/labels")]
         public IEnumerable<string> GetLabels()
