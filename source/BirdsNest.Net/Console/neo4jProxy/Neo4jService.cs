@@ -171,7 +171,7 @@ namespace Console.neo4jProxy
                         string query = "UNWIND $ids AS nodeid " +
                             "MATCH (s) " +
                             "WHERE ID(s)=nodeid " +
-                            "RETURN DISTINCT s ORDER BY LOWEr(s.name)";
+                            "RETURN DISTINCT s ORDER BY LOWER(s.name)";
                         IStatementResult dbresult = tx.Run(query, new { ids = nodeids });
                         returnedresults.Append(ParseResults(dbresult));
                     });

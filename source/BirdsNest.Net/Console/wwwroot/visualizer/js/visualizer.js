@@ -963,21 +963,7 @@ function search() {
 	console.log("tarval: " + tarval);
 
 	console.log(url);*/
-    //apiGetJson("/api/graph/search/path" + urlquery, function (data) {
-    //    //console.log("success");
-    //    pendingResults = data;
-    //    let not = "Search returned " + data.nodes.length + " nodes. ";
-    //    if (data.nodes.length !== 0) { not = not + "<a href='javascript:addSearchResults("+data +",true)'>Add to view</a>"; }
-    //    document.getElementById("searchNotification").innerHTML = not;
-    //});
-
     apiGet("/visualizer/search" + urlquery, "html", function (data) {
-        //console.log("success");
-        //pendingResults = data;
-        //let not = "Search returned " + data.nodes.length + " nodes. ";
-        //if (data.nodes.length !== 0) { not = not + "<a href='javascript:addSearchResults()'>Add to view</a>"; }
-        //document.getElementById("searchNotification").innerHTML = not;
-        //console.log("data: " + data);
         document.getElementById("searchNotification").innerHTML = data;
         $('#searchNotification').foundation();
     });
