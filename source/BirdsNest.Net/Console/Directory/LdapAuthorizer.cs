@@ -32,19 +32,28 @@ namespace Console.Directory
         public static UserPrincipal GetUserPrincipal (PrincipalContext context, string username)
         {
             return UserPrincipal.FindByIdentity(context, username);
-
         }
-            
+
 
         public static bool IsMemberOf(PrincipalContext context, UserPrincipal user, string groupname)
         {
-            // find the group in question
-            GroupPrincipal group = GroupPrincipal.FindByIdentity(context, groupname);
-
-            if (user != null && user.IsMemberOf(group))
+            try
             {
-                return true;
+                GroupPrincipal group = GroupPrincipal.FindByIdentity(context, groupname);
+                //looks like there is a bug in .Net where LDAPS context doesn't get passed through to all 
+                //calls. Seems to be in ADStoreCtx.IsMemberOfInStore but not 100% sure. Falling back to non 
+                //recursive iteration
+                foreach (Principal p in group.Members)
+                {
+                    if (p.Equals(user)) { return true; }
+                }
+                //if (group.Members.Contains(user))
+                //{
+                //    return true;
+                //}
             }
+            catch (Exception e) { }
+
             return false;
         }
     }

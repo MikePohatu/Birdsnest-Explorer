@@ -109,6 +109,12 @@ namespace Console.Controllers
                         bool authorized = false;
                         UserPrincipal user = LdapAuthorizer.GetUserPrincipal(context, details.UserName);
 
+                        if (user == null)
+                        {
+                            ViewData["Message"] = "Could not retrieve user details";
+                            return false;
+                        }
+
                         var claims = new List<Claim> {
                                 new Claim(ClaimTypes.GivenName,user.GivenName,this._config.Domain),
                                 new Claim(ClaimTypes.Name,user.GivenName,this._config.Domain),
