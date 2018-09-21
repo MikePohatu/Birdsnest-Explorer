@@ -14,7 +14,7 @@ namespace Console.Auth
             var sections = configsection.GetChildren();
             foreach (IConfigurationSection section in sections)
             {
-                if (section.Key == "ActiveDirectorySettings")
+                if (section["Type"] == "ActiveDirectory")
                 {
                     DirectoryConfiguration dirconf = section.Get<DirectoryConfiguration>();
                     _configs.Add(dirconf);
