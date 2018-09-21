@@ -2,7 +2,9 @@
     ViewData["Title"] = "Login";
 }
 @using Console.ViewModels
+@using Console.Auth
 @model LoginViewModel
+@inject AuthConfigurations configs
 
 <div class="grid-x align-center-middle">
     <div class="cell"></div>
@@ -19,12 +21,17 @@
                 <div class="input-group">
                     <input id="pw" tabindex=2 type="password" asp-for="Password" placeholder="Password" class="small-8 input-group-field" />
                 </div>
+
+                <div class="input-group">
+                    <select id="provider" tabindex=3 asp-for="Provider" class="small-8 input-group-field">
+                        @foreach (string name in configs.ConfigurationNames) { <option value="@name">@name</option>}
+                    </select>
+                </div>
+
                 <div class="grid-x">
                     <div class="cell small-3 medium-3">
                         <input id="loginbtn" tabindex=3 type="submit" class="button" value="Login">
                     </div>
-
-
                 </div>
                 @Html.AntiForgeryToken()
             </form>
@@ -32,7 +39,7 @@
                 <div asp-validation-summary="All"></div>
                 @ViewBag.Message@ViewBag.Errors
             </div>
-            
+
 
         </fieldset>
     </div>

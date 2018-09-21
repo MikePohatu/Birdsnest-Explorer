@@ -4,7 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.DirectoryServices.AccountManagement;
 
-namespace Console.Directory
+namespace Console.Auth.Directory
 {
     public static class LdapAuthorizer
     {
@@ -39,20 +39,18 @@ namespace Console.Directory
         {
             try
             {
-                GroupPrincipal group = GroupPrincipal.FindByIdentity(context, groupname);
+                using (GroupPrincipal group = GroupPrincipal.FindByIdentity(context, groupname))
+                {
+                    foreach (Principal p in group.Members)
+                    {
+                        if (p.Equals(user)) { return true; }
+                    }
+                }
                 //looks like there is a bug in .Net where LDAPS context doesn't get passed through to all 
                 //calls. Seems to be in ADStoreCtx.IsMemberOfInStore but not 100% sure. Falling back to non 
                 //recursive iteration
-                foreach (Principal p in group.Members)
-                {
-                    if (p.Equals(user)) { return true; }
-                }
-                //if (group.Members.Contains(user))
-                //{
-                //    return true;
-                //}
             }
-            catch (Exception e) { }
+            catch { }
 
             return false;
         }

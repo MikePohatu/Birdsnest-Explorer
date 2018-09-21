@@ -14,10 +14,11 @@ using Console.Controllers;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.AspNetCore.Authentication.Cookies;
-using Console.Directory;
+using Console.Auth.Directory;
 using common;
 using Microsoft.AspNetCore.Identity;
 using Newtonsoft.Json.Serialization;
+using Console.Auth;
 
 namespace Console
 {
@@ -71,7 +72,7 @@ namespace Console
             neoservice.GetAllNodesCount();
 
             services.AddSingleton(neoservice);
-            services.AddSingleton(Configuration.GetSection("ActiveDirectorySettings").Get<DirectoryConfiguration>());
+            services.AddSingleton(new AuthConfigurations(Configuration.GetSection("Authorization")));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

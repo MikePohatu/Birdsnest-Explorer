@@ -11,5 +11,9 @@ namespace Console.ViewModels
         [Required]
         [DataType(DataType.Password)]
         public string Password { get; set; }
+
+        [Required]
+        [Display(Name = "Provider")]
+        public string Provider { get; set; }
     }
 }

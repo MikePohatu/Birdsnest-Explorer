@@ -4,24 +4,27 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Console.Directory;
+using Console.Auth.Directory;
 using System.Security.Claims;
 using Console.ViewModels;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.Extensions.Options;
 using System.DirectoryServices.AccountManagement;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Console.Auth;
 
 namespace Console.Controllers
 {
     [AllowAnonymous]
     public class AccountController : Controller
     {
-        private DirectoryConfiguration _config;
+        //private DirectoryConfiguration _config;
+        private AuthConfigurations _configlist;
 
-        public AccountController(DirectoryConfiguration configuration)
+        public AccountController(AuthConfigurations configuration)
         {
-            this._config = configuration;
+            this._configlist = configuration;
+            //this._config = configuration;
         }
 
         [HttpGet()]
@@ -102,64 +105,53 @@ namespace Console.Controllers
         {
             try
             {
-                using (var context = LdapAuthorizer.CreateContext(this._config.Domain, this._config.ContainerDN, this._config.SSL))
-                {
-                    if (LdapAuthorizer.IsAuthenticated(context, details.UserName, details.Password))
+                IAuthConfiguration conf = this._configlist.GetAuthConfiguration(details.Provider);
+                ILogin login = conf.GetLogin(details.UserName, details.Password);
+                //ILogin login = new DirectoryLogin(this._config, details.UserName, details.Password);
+                if (login.IsAuthenticated)
+                { 
+                    if (login.IsAuthorised == false)
                     {
-                        bool authorized = false;
-                        UserPrincipal user = LdapAuthorizer.GetUserPrincipal(context, details.UserName);
-
-                        if (user == null)
-                        {
-                            ViewData["Message"] = "Could not retrieve user details";
-                            return false;
-                        }
-
-                        var claims = new List<Claim> {
-                                new Claim(ClaimTypes.GivenName,user.GivenName,this._config.Domain),
-                                new Claim(ClaimTypes.Name,user.GivenName,this._config.Domain),
-                                new Claim(ClaimTypes.Surname,user.Surname,this._config.Domain),
-                                new Claim(ClaimTypes.Sid,user.Sid.Value,this._config.Domain)
-                            };
-
-                        if (LdapAuthorizer.IsMemberOf(context, user, this._config.UserGroup))
-                        {
-                            claims.Add(new Claim("BirdsNestUser", "True", ClaimValueTypes.Boolean, this._config.Domain));
-                            authorized = true;
-                        }
-
-                        if (LdapAuthorizer.IsMemberOf(context, user, this._config.AdminGroup))
-                        {
-                            claims.Add(new Claim("BirdsNestAdmin", "True", ClaimValueTypes.Boolean, this._config.Domain));
-                            authorized = true;
-                        }
-
-                        if (authorized == false)
-                        {
-                            ViewData["Message"] = "You are not authorised to use BirdsNest. Please contact your administrator";
-                            return false;
-                        }
-
-                        var userIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
-                        var userPrincipal = new ClaimsPrincipal(userIdentity);
-                        var authProperties = new AuthenticationProperties
-                        {
-                            ExpiresUtc = DateTime.UtcNow.AddSeconds(this._config.TimeoutSeconds),
-                            IsPersistent = false,
-                            AllowRefresh = true
-                        };
-
-                        //SignInResult signin = new SignInResult(CookieAuthenticationDefaults.AuthenticationScheme, userPrincipal, authProperties);
-                        //await signin.ExecuteResultAsync(ControllerContext);
-                        await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, userPrincipal, authProperties);
-
-                        return true;
-                    }
-                    else
-                    {
-                        ViewData["Message"] = "Login failed";
+                        ViewData["Message"] = "You are not authorised to use BirdsNest. Please contact your administrator";
                         return false;
                     }
+
+                    var claims = new List<Claim> {
+                        new Claim(ClaimTypes.GivenName,login.GivenName,conf.Name),
+                        new Claim(ClaimTypes.Name,login.GivenName,conf.Name),
+                        new Claim(ClaimTypes.Surname,login.Surname,conf.Name),
+                        new Claim(ClaimTypes.Sid,login.ID,conf.Name)
+                    };
+
+                    if (login.IsUser)
+                    {
+                        claims.Add(new Claim("BirdsNestUser", "True", ClaimValueTypes.Boolean, conf.Name));
+                    }
+
+                    if (login.IsAdmin)
+                    {
+                        claims.Add(new Claim("BirdsNestAdmin", "True", ClaimValueTypes.Boolean, conf.Name));
+                    }
+
+                    var userIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+                    var userPrincipal = new ClaimsPrincipal(userIdentity);
+                    var authProperties = new AuthenticationProperties
+                    {
+                        ExpiresUtc = DateTime.UtcNow.AddSeconds(login.TimeoutSeconds),
+                        IsPersistent = false,
+                        AllowRefresh = true
+                    };
+
+                    //SignInResult signin = new SignInResult(CookieAuthenticationDefaults.AuthenticationScheme, userPrincipal, authProperties);
+                    //await signin.ExecuteResultAsync(ControllerContext);
+                    await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, userPrincipal, authProperties);
+
+                    return true;
+                }
+                else
+                {
+                    ViewData["Message"] = "Login failed";
+                    return false;
                 }
             }
             catch (Exception e)
