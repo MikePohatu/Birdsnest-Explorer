@@ -16,8 +16,4 @@
     <ProjectReference Include="..\common\common.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Auth\Local\" />
-  </ItemGroup>
-
 </Project>

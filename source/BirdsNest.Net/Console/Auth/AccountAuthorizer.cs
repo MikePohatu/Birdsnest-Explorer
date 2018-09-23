@@ -1,14 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using System.DirectoryServices.AccountManagement;
+﻿using System.DirectoryServices.AccountManagement;
 
-namespace Console.Auth.Directory
+namespace Console.Auth
 {
-    public static class LdapAuthorizer
+    public static class AccountAuthorizer
     {
-        public static PrincipalContext CreateContext(string domainname, string containerdn, bool ssl)
+        public static PrincipalContext CreateLdapContext(string domainname, string containerdn, bool ssl)
         {
             PrincipalContext context;
             if (ssl == true)
@@ -22,6 +18,11 @@ namespace Console.Auth.Directory
             }
             
             return context;
+        }
+
+        public static PrincipalContext CreateLocalContext()
+        {
+            return new PrincipalContext(ContextType.Machine);
         }
 
         public static bool IsAuthenticated(PrincipalContext context, string username, string password)
@@ -41,14 +42,14 @@ namespace Console.Auth.Directory
             {
                 using (GroupPrincipal group = GroupPrincipal.FindByIdentity(context, groupname))
                 {
+                    //looks like there is a bug in .Net where LDAPS context doesn't get passed through to all 
+                    //calls. Seems to be in ADStoreCtx.IsMemberOfInStore but not 100% sure. Falling back to non 
+                    //recursive iteration
                     foreach (Principal p in group.Members)
                     {
                         if (p.Equals(user)) { return true; }
                     }
                 }
-                //looks like there is a bug in .Net where LDAPS context doesn't get passed through to all 
-                //calls. Seems to be in ADStoreCtx.IsMemberOfInStore but not 100% sure. Falling back to non 
-                //recursive iteration
             }
             catch { }
 

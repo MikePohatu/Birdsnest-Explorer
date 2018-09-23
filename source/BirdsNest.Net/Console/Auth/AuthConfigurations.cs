@@ -1,4 +1,5 @@
 ﻿using Console.Auth.Directory;
+using Console.Auth.Local;
 using Microsoft.Extensions.Configuration;
 using System.Collections.Generic;
 
@@ -16,13 +17,17 @@ namespace Console.Auth
             {
                 if (section["Type"] == "ActiveDirectory")
                 {
-                    DirectoryConfiguration dirconf = section.Get<DirectoryConfiguration>();
-                    _configs.Add(dirconf);
-                    this.ConfigurationNames.Add(dirconf.Name);
+                    DirectoryConfiguration conf = section.Get<DirectoryConfiguration>();
+                    _configs.Add(conf);
+                    this.ConfigurationNames.Add(conf.Name);
                 }
 
-                //else if (section.Key == "LocalServer")
-                //{ providers.Add(section.Get<DirectoryProvider>()); }
+                else if (section["Type"] == "LocalServer")
+                {
+                    LocalAuthConfiguration conf = section.Get<LocalAuthConfiguration>();
+                    _configs.Add(conf);
+                    this.ConfigurationNames.Add(conf.Name);
+                }
             }
         }
 
