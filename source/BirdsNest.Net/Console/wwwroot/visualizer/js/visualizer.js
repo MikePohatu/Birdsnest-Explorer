@@ -1,6 +1,6 @@
-var drawpane;
+var drawingPane;
 var zoomLayer;
-var svg;
+var drawingsvg;
 var graphbglayer;
 var nodeslayer;
 var edgeslayer;
@@ -14,8 +14,6 @@ var playMode = false;
 var shiftKey = false;
 var ctrlKey = false;
 
-var paneWidth = 640;
-var paneHeight = 480;
 var defaultsize = 40;
 var edgelabelwidth = 70;
 
@@ -24,17 +22,24 @@ var maxScaling = 3;
 
 var perfmode = false; //perfmode indicates high numbers of nodes, and minimises animation
 
+var panetransition = d3.transition()
+    .duration(900)
+    .ease(d3.easeLinear);
+
+var zoom = d3.zoom()
+    .scaleExtent([0.05, 5])
+    .on("zoom", onZoom);
 
 function drawGraph(selectid) {
-    updatePaneSize(selectid);
-    drawPane = d3.select("#" + selectid);
+    drawingPane = d3.select("#" + selectid);
 
-    svg = drawPane.append("svg")
+    drawingsvg = drawingPane.append("svg")
         .attr("id", "drawingsvg")
-        .on("click", pageClicked);
+        .on("click", pageClicked)
+        .call(zoom);
 
     //setup the zooming layer
-    zoomLayer = svg.append("g")
+    zoomLayer = drawingsvg.append("g")
         .attr("id", "zoomlayer");
 
     graphbglayer = zoomLayer.append("g")
@@ -46,11 +51,13 @@ function drawGraph(selectid) {
     nodeslayer = zoomLayer.append("g")
         .attr("id", "nodeslayer");
 
-    svg.call(d3.zoom()
-        .scaleExtent([0.05, 5])
-        .on("zoom", function () {
-            zoomLayer.attr("transform", d3.event.transform);
-        }));
+    //**center dot for testing
+    //nodeslayer.append("circle")
+    //    .classed("nodecircle", true)
+    //    .attr("r", 5)
+    //    .attr("cx", 0)
+    //    .attr("cy", 0)
+    //    .style("fill","black");
 
     simulation = d3.forceSimulation();
     simulation.stop();
@@ -63,18 +70,50 @@ function drawGraph(selectid) {
         .force('collide', d3.forceCollide()
             .strength(1)
             .radius(function (d) { return d.size * 2; }))
+        .force('center', d3.forceCenter(0, 0))
         .on('tick', function () { onTick(); })
         .on('end', function () { onLayoutFinished(); })
         .velocityDecay(0.6)
         .alphaDecay(0.08);
+
+    window.addEventListener('resize', debounce(updatePaneSize, 500, false),false);
+    updatePaneSize();
 }
 
-function updatePaneSize(selectid) {
-    paneWidth = $("#" + selectid).width();
-    paneHeight = $("#" + selectid).height();
-    //console.log("paneWidth: " + paneWidth);
-    //console.log("paneHeight: " + paneHeight);
+function onZoom() {
+    zoomLayer.attr("transform", d3.event.transform);
 }
+
+d3.selectAll("#centerBtn").attr('onclick', "updatePaneSize()");
+function updatePaneSize() {
+    //console.log("updatePaneSize");
+    var box = drawingPane.node().getBoundingClientRect();
+    var svgbox = drawingsvg.node().getBBox();
+    var k = d3.zoomTransform(drawingsvg.node()).k;
+    var x = (box.width / 2 - svgbox.x - svgbox.width / 2) /k;
+    var y = (box.height / 2 - svgbox.y - svgbox.height / 2) / k;
+
+    //console.log(svgbox);
+    //console.log(k);
+    drawingsvg.transition(panetransition).call(zoom.translateBy, x,y);
+}
+
+//https://stackoverflow.com/questions/641857/javascript-window-resize-event
+//function to stop excessive calls on resize
+const debounce = (func, wait, immediate) => {
+    var timeout;
+    return function() {
+        const context = this, args = arguments;
+        const later = function () {
+            timeout = null;
+            if (!immediate) func.apply(context, args);
+        };
+        const callNow = immediate && !timeout;
+        clearTimeout(timeout);
+        timeout = setTimeout(later, wait);
+        if (callNow) func.apply(context, args);
+    };
+};
 
 function onTick() {
     //console.log(simulation.alpha());
@@ -1052,7 +1091,6 @@ function getDirectEdgesForNodeList(nodelist, callback) {
 
 // Keystroke event handlers
 var typetimer = null;
-
 function timedKeyUp(timedfunction) {
     clearTimeout(typetimer);
     typetimer = setTimeout(timedfunction, 700);
