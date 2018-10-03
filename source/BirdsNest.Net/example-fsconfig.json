@@ -15,6 +15,7 @@
 				{
 					"credentialid":"cred1",
 					"path":"\\\\server\\share1",
+					"scanfiles":false,
 					"comment":"san1-share1"
 				},
 				{

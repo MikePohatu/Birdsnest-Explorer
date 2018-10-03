@@ -42,9 +42,12 @@ function processCurtainLogin (callback) {
     var token = $("[name='__RequestVerificationToken']").val();
     var u = $('#username').val();
     var p = $('#pw').val();
+    var prov = $('#provider').val();
+    console.log(prov);
     var postdata = {
         UserName: u,
-        Password: p
+        Password: p,
+        Provider: prov
     };
 
     //console.log(token);
