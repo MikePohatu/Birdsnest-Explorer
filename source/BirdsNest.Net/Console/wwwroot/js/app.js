@@ -43,7 +43,7 @@ function processCurtainLogin (callback) {
     var u = $('#username').val();
     var p = $('#pw').val();
     var prov = $('#provider').val();
-    console.log(prov);
+    //console.log(prov);
     var postdata = {
         UserName: u,
         Password: p,

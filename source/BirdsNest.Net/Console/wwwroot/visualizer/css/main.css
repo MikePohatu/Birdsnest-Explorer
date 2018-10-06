@@ -29,9 +29,9 @@ body {
 
 #detailcardwrapper {
 	position: absolute;
-	bottom: 3px;
+	bottom: 0px;
 	right: 0;
-	max-height: calc(100% - 26px);
+	max-height: calc(100% - 29px);
 	overflow-y: auto;
 }
 

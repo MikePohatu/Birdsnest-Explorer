@@ -100,7 +100,7 @@ function updatePaneSize() {
 
 //https://stackoverflow.com/questions/641857/javascript-window-resize-event
 //function to stop excessive calls on resize
-const debounce = (func, wait, immediate) => {
+const debounce = function (func, wait, immediate) {
     var timeout;
     return function() {
         const context = this, args = arguments;
