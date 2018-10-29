@@ -354,13 +354,13 @@ function addNodes(nodes) {
         .attr("class", function (d) { return d.label; })
         .classed("nodes", true)
         .classed("selected", function (d) { return d.selected; })
-        .on("click", nodeClicked)
-        .on("mouseover", nodeMouseOver)
-        .on("mouseout", nodeMouseOut)
-        .on("dblclick", nodeDblClicked)
+        .on("click", onNodeClicked)
+        .on("mouseover", onNodeMouseOver)
+        .on("mouseout", onNodeMouseOut)
+        .on("dblclick", onNodeDblClicked)
         .call(
             d3.drag().subject(this)
-                .on('drag', nodeDragged));
+                .on('drag', onNodeDragged));
 
     setTimeout(function () {
         //node layout
@@ -622,15 +622,15 @@ function pageClicked(d) {
     unselectAllNodes();
 }
 
-function nodeDblClicked(d) {
-    //console.log(": nodeDblClicked");
+function onNodeDblClicked(d) {
+    //console.log(": onNodeDblClicked");
     if (d3.event.defaultPrevented) { return; } // dragged
     d3.event.stopPropagation();
     addRelated(d.db_id);
 }
 
-function nodeClicked(d) {
-    //console.log(": nodeClicked");
+function onNodeClicked(d) {
+    //console.log(": onNodeClicked");
     //console.log(": " + d.name);
     if (d3.event.defaultPrevented) { return; } // dragged
     d3.event.stopPropagation();
@@ -728,20 +728,20 @@ function nodeHideDetailsSelected(d) {
     d3.selectAll("#details_" + d.db_id).remove();
 }
 
-function nodeMouseOver(d) {
-    //console.log("nodeMouseOver: " + d.name);
+function onNodeMouseOver(d) {
+    //console.log("onNodeMouseOver: " + d.name);
     d3.selectAll("#details_" + d.db_id)
         .classed("currentActiveDetailCard", true);
 }
 
-function nodeMouseOut(d) {
-    //console.log("nodeMouseOut: " + d.name);
+function onNodeMouseOut(d) {
+    //console.log("onNodeMouseOut: " + d.name);
     d3.selectAll("#details_" + d.db_id)
         .classed("currentActiveDetailCard", false);
 }
 
-function nodeDragged(d) {
-    //console.log("nodeDragged");
+function onNodeDragged(d) {
+    //console.log("onNodeDragged");
     d3.event.sourceEvent.stopPropagation();
     //if the node is selected the move it and all other selected nodes
     if (d.selected) {
