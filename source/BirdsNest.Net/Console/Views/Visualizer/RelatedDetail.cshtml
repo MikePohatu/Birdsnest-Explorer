@@ -24,11 +24,11 @@
     </div>
 }
     <div>
-        <ul class="accordion" data-accordion data-allow-all-closed="true" data-multi-expand="true">
+        <ol class="accordion" data-accordion data-allow-all-closed="true" data-multi-expand="true">
             <li class="accordion-item" data-accordion-item>
                 <a href="#" class="accordion-title">Related (@Model.RelatedNodes.Count):</a>
                 <div class="accordion-content" data-tab-content>
-                    <ul class="accordion" data-accordion data-allow-all-closed="true" data-multi-expand="true">
+                    <ol class="accordion" data-accordion data-allow-all-closed="true" data-multi-expand="true">
                         @foreach (string key in Model.LabeledNodeLists.Keys)
                         {
                             <li class="accordion-item" data-accordion-item>
@@ -49,8 +49,8 @@
                                 </div>
                             </li>
                         }
-                    </ul>
+                    </ol>
                 </div>
             </li>
-        </ul>
+        </ol>
     </div>

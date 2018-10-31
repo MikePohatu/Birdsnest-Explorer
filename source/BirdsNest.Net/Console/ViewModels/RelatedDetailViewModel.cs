@@ -47,8 +47,8 @@ namespace Console.ViewModels
             }
             else {
                 this.RelatedNodes.TryGetValue(edge.Source, out relatednode);
-                nodelabel = relatednode.Label + " -> ○";
-                edgelabel = edge.Label + " -> ○";
+                nodelabel = "○ <- " + relatednode.Label;
+                edgelabel = "○ <- " + edge.Label;
             }
 
             List<BirdsNestNode> nodelist;
