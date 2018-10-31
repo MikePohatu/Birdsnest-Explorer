@@ -28,17 +28,8 @@ namespace Console.Controllers
         {
             ResultSet set = this._service.GetNode(id);
             BirdsNestNode node = set.Nodes.First();
-            RelatedDetailViewModel model = new RelatedDetailViewModel(node);
-
-            set = this._service.GetAllRelated(id);
-            foreach (BirdsNestNode newnode in set.Nodes)
-            {
-                model.AddRelatedNode(newnode);
-            }
-            foreach (BirdsNestRelationship newrel in set.Edges)
-            {
-                model.AddDirectEdge(newrel);
-            }
+            ResultSet resultset = this._service.GetAllRelated(id);
+            RelatedDetailViewModel model = new RelatedDetailViewModel(node, resultset);
 
             ViewBag.ID = id;
             return PartialView("RelatedDetail",model);

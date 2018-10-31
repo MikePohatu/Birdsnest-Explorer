@@ -8,12 +8,21 @@ namespace Console.ViewModels
     {
         public BirdsNestNode Node { get; private set; }
         public Dictionary<string, List<BirdsNestNode>> LabelledEdgeNodes { get; private set; } = new Dictionary<string, List<BirdsNestNode>>();
-        public Dictionary<string, List<BirdsNestNode>> RelatedLabelledNodes { get; private set; } = new Dictionary<string, List<BirdsNestNode>>();
+        public Dictionary<string, List<BirdsNestNode>> LabeledNodeLists { get; private set; } = new Dictionary<string, List<BirdsNestNode>>();
         public Dictionary<long, BirdsNestNode> RelatedNodes { get; private set; } = new Dictionary<long, BirdsNestNode>();
 
-        public RelatedDetailViewModel(BirdsNestNode node)
+        public RelatedDetailViewModel(BirdsNestNode node, ResultSet set)
         {
             this.Node = node;
+
+            foreach (BirdsNestNode newnode in set.Nodes)
+            {
+                this.AddRelatedNode(newnode);
+            }
+            foreach (BirdsNestRelationship newrel in set.Edges)
+            {
+                this.AddDirectEdge(newrel);
+            }
         }
 
         public void AddRelatedNode(BirdsNestNode node)
@@ -21,18 +30,6 @@ namespace Console.ViewModels
             if (this.RelatedNodes.ContainsKey(node.DbId)==false)
             {
                 this.RelatedNodes.Add(node.DbId, node);
-
-                List<BirdsNestNode> nodelist;
-                if (this.RelatedLabelledNodes.TryGetValue(node.Label, out nodelist))
-                {
-                    nodelist.Add(node);
-                }
-                else
-                {
-                    List<BirdsNestNode> newlist = new List<BirdsNestNode>();
-                    newlist.Add(node);
-                    this.RelatedLabelledNodes.Add(node.Label, newlist);
-                }
             }
         }
 
@@ -40,11 +37,33 @@ namespace Console.ViewModels
         {
             List<BirdsNestNode> edgelist;
             BirdsNestNode relatednode;
+            string nodelabel = string.Empty;
+            string edgelabel = string.Empty;
 
-            if (edge.Source == this.Node.DbId) { this.RelatedNodes.TryGetValue(edge.Target, out relatednode); }
-            else { this.RelatedNodes.TryGetValue(edge.Source, out relatednode); }
+            if (edge.Source == this.Node.DbId) {
+                this.RelatedNodes.TryGetValue(edge.Target, out relatednode);
+                nodelabel = "○ -> " + relatednode.Label;
+                edgelabel = "○ -> " + edge.Label;
+            }
+            else {
+                this.RelatedNodes.TryGetValue(edge.Source, out relatednode);
+                nodelabel = relatednode.Label + " -> ○";
+                edgelabel = edge.Label + " -> ○";
+            }
 
-            if (this.LabelledEdgeNodes.TryGetValue(edge.Label, out edgelist))
+            List<BirdsNestNode> nodelist;
+            if (this.LabeledNodeLists.TryGetValue(nodelabel, out nodelist))
+            {
+                nodelist.Add(relatednode);
+            }
+            else
+            {
+                List<BirdsNestNode> newlist = new List<BirdsNestNode>();
+                newlist.Add(relatednode);
+                this.LabeledNodeLists.Add(nodelabel, newlist);
+            }
+
+            if (this.LabelledEdgeNodes.TryGetValue(edgelabel, out edgelist))
             {
                 edgelist.Add(relatednode);
             }
@@ -52,7 +71,7 @@ namespace Console.ViewModels
             {
                 List<BirdsNestNode> newlist = new List<BirdsNestNode>();
                 newlist.Add(relatednode);
-                this.LabelledEdgeNodes.Add(edge.Label, newlist);
+                this.LabelledEdgeNodes.Add(edgelabel, newlist);
             }
         }
     }

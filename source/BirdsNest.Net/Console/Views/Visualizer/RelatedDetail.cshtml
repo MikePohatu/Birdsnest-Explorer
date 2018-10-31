@@ -29,12 +29,12 @@
                 <a href="#" class="accordion-title">Related (@Model.RelatedNodes.Count):</a>
                 <div class="accordion-content" data-tab-content>
                     <ul class="accordion" data-accordion data-allow-all-closed="true" data-multi-expand="true">
-                        @foreach (string key in Model.RelatedLabelledNodes.Keys)
+                        @foreach (string key in Model.LabeledNodeLists.Keys)
                         {
                             <li class="accordion-item" data-accordion-item>
-                                <a href="#" class="accordion-title">@key (@Model.RelatedLabelledNodes[key].Count)</a>
+                                <a href="#" class="accordion-title">@key (@Model.LabeledNodeLists[key].Count)</a>
                                 <div class="accordion-content detaillist" data-tab-content>
-                                    @foreach (BirdsNestNode node in Model.RelatedLabelledNodes[key])
+                                    @foreach (BirdsNestNode node in Model.LabeledNodeLists[key])
                                     {@node.Name <a href="javascript:getNode(@node.DbId);">(+)</a><br />}
                                 </div>
                             </li>
