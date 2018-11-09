@@ -7,6 +7,7 @@ using System.Security.Principal;
 using System.Diagnostics;
 using Neo4j.Driver.V1;
 using common;
+using System.Threading;
 
 namespace FSScanner
 {
@@ -14,16 +15,34 @@ namespace FSScanner
     {
         private Dictionary<string, Folder> _existingfolders;
         private Stopwatch _timer = new Stopwatch();
-        private Writer _writer;
-        private string _scanid = ShortGuid.NewGuid().ToString();
-        private readonly IDriver _driver;
+        public string ScanId { get; private set; } = ShortGuid.NewGuid().ToString();
 
-        public int FolderCount { get; private set; }
+        public int ThreadCount { get; set; } = 0;
+        public int FolderCount { get; set; } = 0;
+        public IDriver Driver { get; private set; }
+        public Writer Writer { get; private set; }
+
+        public bool IsThreadAvailable { get { return this.ThreadCount < this.MaxThreads ? true : false; } }
+
+        private int _maxthreads = Environment.ProcessorCount * 2;
+        public int MaxThreads {
+            get
+            {
+                return this._maxthreads;
+            }
+            set
+            {
+                if ((value >= Environment.ProcessorCount) && (value <=20))
+                {
+                    this._maxthreads = value;
+                }
+            }
+        }
 
         public Crawler(IDriver driver)
         {
-            this._driver = driver;
-            this._writer = new Writer();
+            this.Driver = driver;
+            this.Writer = new Writer();
         }
 
         /// <summary>
@@ -48,6 +67,7 @@ namespace FSScanner
             }
 
             //now initiate the crawl
+            ThreadPool.SetMaxThreads(this.MaxThreads, this.MaxThreads);
             this.CrawlRoot(ds, rootpath);
         }
 
@@ -64,7 +84,7 @@ namespace FSScanner
             //get the existing folders for comparison
             try
             {
-                using (ISession session = this._driver.Session())
+                using (ISession session = this.Driver.Session())
                 {
                     TransactionResult<Dictionary<string, Folder>> existfolderstx = Reader.GetAllFoldersAsDict(rootpath, session);
                     this._existingfolders = existfolderstx.Result;
@@ -81,10 +101,10 @@ namespace FSScanner
             try
             {
                 _timer.Start();
-                using (ISession session = this._driver.Session())
+                using (ISession session = this.Driver.Session())
                 {
-                    _writer.SendDatastore(ds, this._scanid, session);
-                    _writer.AttachRootToDataStore(ds, rootpath.ToLower(), this._scanid, session);
+                    Writer.SendDatastore(ds, this.ScanId, session);
+                    Writer.AttachRootToDataStore(ds, rootpath.ToLower(), this.ScanId, session);
                 }
                     
             }
@@ -97,10 +117,25 @@ namespace FSScanner
             //start at root and recurse down
             try
             {
-                Crawl(rootpath, null, true);
-                using (ISession session = this._driver.Session())
+                //Crawl(rootpath, null, true);
+                CrawlerThreadWrapper threadwrapper = new CrawlerThreadWrapper(this);
+                threadwrapper.IsRoot = true;
+                threadwrapper.Path = rootpath;
+                threadwrapper.PermParent = null;
+
+                using (var countdownEvent = new CountdownEvent(this.MaxThreads))
                 {
-                    _writer.FlushFolderQueue(session);
+                    threadwrapper.Crawl();
+                    while (true)
+                    {
+                        Thread.Sleep(1000);
+                        if (this.ThreadCount == 0 ) { break; }
+                    }
+                }
+
+                using (ISession session = this.Driver.Session())
+                {
+                    Writer.FlushFolderQueue(session);
                 }
                 _timer.Stop();
                 ConsoleWriter.ClearProgress();
@@ -109,9 +144,9 @@ namespace FSScanner
             }
             catch (Exception e)
             {
-                using (ISession session = this._driver.Session())
+                using (ISession session = this.Driver.Session())
                 {
-                    _writer.FlushFolderQueue(session);
+                    Writer.FlushFolderQueue(session);
                 }
                 _timer.Stop();
                 ConsoleWriter.WriteError("Error crawling file system " + rootpath + ": " + e.Message);
@@ -122,10 +157,10 @@ namespace FSScanner
             //cleanup folders that have changed
             try
             {
-                using (ISession session = this._driver.Session())
+                using (ISession session = this.Driver.Session())
                 {
-                    _writer.CleanupChangedFolders(rootpath, this._scanid, session);
-                    _writer.CleanupInheritanceMappings(rootpath, this._scanid, session);
+                    Writer.CleanupChangedFolders(rootpath, this.ScanId, session);
+                    Writer.CleanupInheritanceMappings(rootpath, this.ScanId, session);
                 }
             }
             catch (Exception e)
@@ -135,73 +170,7 @@ namespace FSScanner
                 ConsoleWriter.WriteLine();
             }
 
-            ConsoleWriter.WriteInfo("Found " + _writer.FolderCount + " folders with permissions applied");
-        }
-
-        /// <summary>
-        /// Crawl subdirectories recursively. permparent is the last parent folder that had new permissions set
-        /// </summary>
-        /// <param name="path"></param>
-        /// <param name="permparent"></param>
-        private void Crawl(string path, string permparent, bool isroot)
-        {
-            string newpermparent = permparent;
-            try
-            {
-                Folder f = QueryFolder(new DirectoryInfo(path), permparent, isroot);
-                if ((f.Permissions.Count > 0) || isroot) {
-                    newpermparent = path;
-                    using (ISession session = this._driver.Session())
-                    {
-                        _writer.UpdateFolder(f, session);
-                    }
-                }
-            }
-            catch (Exception e)
-            {
-                ConsoleWriter.WriteError("Error connecting to " + path + ": " + e.Message);
-                Folder f = new Folder() { Blocked = true, Path = path, Name = path, PermParent = permparent, InheritanceDisabled=true, ScanId = this._scanid };
-                using (ISession session = this._driver.Session())
-                {
-                    _writer.UpdateFolder(f, session);
-                }
-                return;
-            }
-
-            try
-            {
-                foreach (string subdirpath in Directory.EnumerateDirectories(path))
-                {
-                    this.Crawl(subdirpath, newpermparent, false);
-                }
-            }
-            catch (Exception e)
-            {
-                ConsoleWriter.WriteError("Error encountered while enumerating directories in " + path + ": " + e.Message);
-            }
-            
-        }
-
-        /// <summary>
-        /// Query a folder in the file system and return a Folder object with the details
-        /// </summary>
-        /// <param name="directory"></param>
-        /// <param name="permroot"></param>
-        /// <param name="isroot"></param>
-        /// <returns></returns>
-        private Folder QueryFolder(DirectoryInfo directory, string permroot, bool isroot)
-        {
-            this.FolderCount++;
-            if (this.FolderCount % 10 == 0 )
-            {
-                ConsoleWriter.WriteProgress(directory.FullName);
-            }
-
-            DirectorySecurity dirsec = directory.GetAccessControl();
-            AuthorizationRuleCollection directrules = dirsec.GetAccessRules(true, isroot, typeof(SecurityIdentifier));
-
-            Folder f = new Folder(directory.Name, directory.FullName, permroot, directrules, dirsec.AreAccessRulesProtected, this._scanid);
-            return f;          
+            ConsoleWriter.WriteInfo("Found " + Writer.FolderCount + " folders with permissions applied");
         }
     }
 }
