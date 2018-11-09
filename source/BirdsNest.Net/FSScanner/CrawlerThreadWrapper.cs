@@ -68,11 +68,11 @@ namespace FSScanner
                     subwrapper.PermParent = newpermparent;
                     subwrapper.IsRoot = false;
 
-                    if (this._parent.IsThreadAvailable == true)
+                    if (ThreadCounter.IsThreadAvailable == true)
                     {
                         //ConsoleWriter.WriteProgress("new thread");
+                        ThreadCounter.Increment();
                         subwrapper.IsNewThread = true;
-                        this._parent.ThreadCount++;
                         ThreadPool.QueueUserWorkItem(subwrapper.Crawl);
                     }
                     else { subwrapper.Crawl(); }
@@ -82,7 +82,7 @@ namespace FSScanner
             {
                 ConsoleWriter.WriteError("Error encountered while enumerating directories in " + this.Path + ": " + e.Message);
             }
-            if (this.IsNewThread == true) { this._parent.ThreadCount--; }
+            if (this.IsNewThread == true) { ThreadCounter.Decrement(); }
         }
 
         /// <summary>
@@ -97,7 +97,7 @@ namespace FSScanner
             this._parent.FolderCount++;
             if (this._parent.FolderCount % 10 == 0)
             {
-                ConsoleWriter.WriteProgress(this._parent.ThreadCount + " | " + directory.FullName);
+                ConsoleWriter.WriteProgress(ThreadCounter.ActiveThreadCount + " | " + directory.FullName);
             }
 
             DirectorySecurity dirsec = directory.GetAccessControl();

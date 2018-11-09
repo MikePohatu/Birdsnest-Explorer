@@ -17,27 +17,9 @@ namespace FSScanner
         private Stopwatch _timer = new Stopwatch();
         public string ScanId { get; private set; } = ShortGuid.NewGuid().ToString();
 
-        public int ThreadCount { get; set; } = 0;
         public int FolderCount { get; set; } = 0;
         public IDriver Driver { get; private set; }
         public Writer Writer { get; private set; }
-
-        public bool IsThreadAvailable { get { return this.ThreadCount < this.MaxThreads ? true : false; } }
-
-        private int _maxthreads = Environment.ProcessorCount * 2;
-        public int MaxThreads {
-            get
-            {
-                return this._maxthreads;
-            }
-            set
-            {
-                if ((value >= Environment.ProcessorCount) && (value <=20))
-                {
-                    this._maxthreads = value;
-                }
-            }
-        }
 
         public Crawler(IDriver driver)
         {
@@ -67,7 +49,6 @@ namespace FSScanner
             }
 
             //now initiate the crawl
-            ThreadPool.SetMaxThreads(this.MaxThreads, this.MaxThreads);
             this.CrawlRoot(ds, rootpath);
         }
 
@@ -123,14 +104,11 @@ namespace FSScanner
                 threadwrapper.Path = rootpath;
                 threadwrapper.PermParent = null;
 
-                using (var countdownEvent = new CountdownEvent(this.MaxThreads))
+                threadwrapper.Crawl();
+                while (true)
                 {
-                    threadwrapper.Crawl();
-                    while (true)
-                    {
-                        Thread.Sleep(1000);
-                        if (this.ThreadCount == 0 ) { break; }
-                    }
+                    Thread.Sleep(1000);
+                    if (ThreadCounter.ActiveThreadCount == 0 ) { break; }
                 }
 
                 using (ISession session = this.Driver.Session())
