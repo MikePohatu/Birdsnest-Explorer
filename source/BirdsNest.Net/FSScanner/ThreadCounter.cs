@@ -10,7 +10,7 @@ namespace FSScanner
     {
         private static int _activethreads = 0;
         public static int ActiveThreadCount { get { return _activethreads;} }
-        public static int MaxThreads { get; set; } = Environment.ProcessorCount * 2;
+        public static int MaxThreads { get; set; } = 5;
         public static bool IsThreadAvailable { get { return _activethreads < MaxThreads ? true : false; } }
 
         public static void Increment()

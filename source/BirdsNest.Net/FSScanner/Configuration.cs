@@ -14,6 +14,13 @@ namespace FSScanner
         [JsonProperty("datastores")]
         public List<DataStore> Datastores { get; set; } = new List<DataStore>();
 
+        [JsonProperty("maxthreads")]
+        public int MaxThreads
+        {
+            get { return ThreadCounter.MaxThreads; }
+            set { ThreadCounter.MaxThreads = value; }
+        }
+
         public static Configuration LoadConfiguration (string filepath)
         {
             Configuration conf;
