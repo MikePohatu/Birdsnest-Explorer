@@ -9,6 +9,7 @@ namespace common
         private static string[] _progressmessages = new string[1];
         private static int[] _progresslinenumbers = new int[1];
 
+        public static bool ShowProgress { get; set; } = true;
         public static void SetProgressLineCount(int count)
         {
             _progressmessages = new string[count];
@@ -26,20 +27,23 @@ namespace common
 
         public static void WriteProgress(string message, int progresslinenumber)
         {
-            lock (locker)
+            if (ShowProgress == true)
             {
-                if (progresslinenumber < 1) { throw new IndexOutOfRangeException("Progress line less than 1"); }
-                int index = progresslinenumber - 1;
-                _progressmessages[index] = message;
-                //clear the line before write
-                Console.SetCursorPosition(0, _progresslinenumbers[index]);
-                Console.Write(new string(' ', Console.BufferWidth));
+                lock (locker)
+                {
+                    if (progresslinenumber < 1) { throw new IndexOutOfRangeException("Progress line less than 1"); }
+                    int index = progresslinenumber - 1;
+                    _progressmessages[index] = message;
+                    //clear the line before write
+                    Console.SetCursorPosition(0, _progresslinenumbers[index]);
+                    Console.Write(new string(' ', Console.BufferWidth));
 
-                Console.SetCursorPosition(0, _progresslinenumbers[index]);
-                Console.ForegroundColor = ConsoleColor.Green;
-                Console.Write("Progress: ");
-                Console.ResetColor();
-                Console.WriteLine(message);
+                    Console.SetCursorPosition(0, _progresslinenumbers[index]);
+                    Console.ForegroundColor = ConsoleColor.Green;
+                    Console.Write("Progress: ");
+                    Console.ResetColor();
+                    Console.WriteLine(message);
+                }
             }
         }
 

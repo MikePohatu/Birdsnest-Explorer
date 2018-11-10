@@ -24,6 +24,9 @@ namespace FSScanner
             }
         }
 
+        [JsonProperty("showprogress")]
+        public bool ShowProgress { get; set; } = true;
+
         public static Configuration LoadConfiguration (string filepath)
         {
             Configuration conf;

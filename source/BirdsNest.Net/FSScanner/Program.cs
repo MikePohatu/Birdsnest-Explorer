@@ -56,6 +56,7 @@ namespace FSScanner
                         credentials.Add(cred.ID, netcred);
                     }
                     datastores = config.Datastores;
+                    ConsoleWriter.ShowProgress = config.ShowProgress;
                     ConsoleWriter.SetProgressLineCount(config.MaxThreads);
                 }
             }
