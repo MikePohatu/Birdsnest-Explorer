@@ -16,6 +16,7 @@ namespace FSScanner
         private Crawler _parent;
 
         public bool IsRoot { get; set; } = false;
+        public int ThreadNumber { get; set; } = 1;
         public string PermParent { get; set; } = null;
         public string Path { get; set; } = null;
         public bool IsNewThread { get; set; } = false;
@@ -42,20 +43,14 @@ namespace FSScanner
                 if ((f.Permissions.Count > 0) || this.IsRoot)
                 {
                     newpermparent = this.Path;
-                    using (ISession session = this._parent.Driver.Session())
-                    {
-                        this._parent.Writer.UpdateFolder(f, session);
-                    }
+                    this._parent.Writer.UpdateFolder(f, this._parent.Driver);
                 }
             }
             catch (Exception e)
             {
                 ConsoleWriter.WriteError("Error connecting to " + this.Path + ": " + e.Message);
                 Folder f = new Folder() { Blocked = true, Path = this.Path, Name = this.Path, PermParent = this.PermParent, InheritanceDisabled = true, ScanId = this._parent.ScanId };
-                using (ISession session = this._parent.Driver.Session())
-                {
-                    this._parent.Writer.UpdateFolder(f, session);
-                }
+                this._parent.Writer.UpdateFolder(f, this._parent.Driver);
                 return;
             }
 
@@ -68,13 +63,17 @@ namespace FSScanner
                     subwrapper.PermParent = newpermparent;
                     subwrapper.IsRoot = false;
 
-                    if (ThreadCounter.IsThreadAvailable == true)
+                    lock (ThreadCounter.Locker)
                     {
-                        //ConsoleWriter.WriteProgress("new thread");
-                        ThreadCounter.Increment();
-                        subwrapper.IsNewThread = true;
-                        ThreadPool.QueueUserWorkItem(subwrapper.Crawl);
+                        if (ThreadCounter.IsThreadAvailable == true)
+                        {
+                            //ConsoleWriter.WriteProgress("new thread");
+                            subwrapper.ThreadNumber = ThreadCounter.Increment();
+                            subwrapper.IsNewThread = true;
+                        }
                     }
+
+                    if (subwrapper.IsNewThread == true) { ThreadPool.QueueUserWorkItem(subwrapper.Crawl); }
                     else { subwrapper.Crawl(); }
                 }
             }
@@ -95,10 +94,8 @@ namespace FSScanner
         private Folder QueryFolder(DirectoryInfo directory, string permroot, bool isroot)
         {
             this._parent.FolderCount++;
-            if (this._parent.FolderCount % 10 == 0)
-            {
-                ConsoleWriter.WriteProgress(ThreadCounter.ActiveThreadCount + " | " + directory.FullName);
-            }
+            ConsoleWriter.WriteProgress(this.ThreadNumber + " | " + directory.FullName, this.ThreadNumber);
+
 
             DirectorySecurity dirsec = directory.GetAccessControl();
             AuthorizationRuleCollection directrules = dirsec.GetAccessRules(true, isroot, typeof(SecurityIdentifier));

@@ -3,47 +3,47 @@ using Neo4j.Driver.V1;
 using System;
 using System.Text;
 using common;
+using System.Collections.Concurrent;
 
 namespace FSScanner
 {
     public class Writer
     {
-        private List<Folder> _queuedfolders = new List<Folder>();
+        private ConcurrentBag<Folder> _queuedfolders = new ConcurrentBag<Folder>();
 
         public int FolderCount { get; set; } = 0;
         public int PermissionCount { get; set; } = 0;
 
-        public void UpdateFolder(Folder newfolder, ISession session)
+        public void UpdateFolder(Folder newfolder, IDriver driver)
         {
             //try to send the folder first, queue it if not
             try
             {
                 this.FolderCount++;
-                SendFolder(newfolder, session);
+                SendFolder(newfolder, driver);
             }
             catch (Exception e)
             {
-                Console.WriteLine("Failed to send folder: " + newfolder.Path + ": " + e.Message);
+                ConsoleWriter.WriteError("Failed to send folder: " + newfolder.Path + ": " + e.Message);
                 this._queuedfolders.Add(newfolder);
             }
         }
 
-        public void FlushFolderQueue(ISession session)
+        public void FlushFolderQueue(IDriver driver)
         {
             foreach (Folder f in this._queuedfolders)
             {
                 try
                 {
-                    SendFolder(f, session);
-                    this._queuedfolders.Remove(f);
+                    int nodecount = SendFolder(f, driver);
                     this.FolderCount++;
                 }
                 catch (Exception e)
-                { Console.WriteLine("Failed to send folder: " + f.Path + ": " + e.Message); }
+                { ConsoleWriter.WriteError("Failed to send folder: " + f.Path + ": " + e.Message); }
             }
         }
 
-        public int SendFolder(Folder folder, ISession session)
+        public int SendFolder(Folder folder, IDriver driver)
         {
             string query = "MERGE(folder {path:$path}) " +
                 "SET folder:" + folder.Type + ", " +
@@ -53,30 +53,36 @@ namespace FSScanner
                 "folder.lastscan=$scanid, " +
                 "folder.blocked=$blocked " +
                 "RETURN folder";
-            IStatementResult result = session.WriteTransaction(tx => tx.Run(query, new
+
+            int nodescreated = 0;
+            using (ISession session = driver.Session())
             {
-                path = folder.Path,
-                lastfolder = folder.PermParent,
-                inheritancedisabled = folder.InheritanceDisabled,
-                blocked = folder.Blocked.ToString(),
-                name = folder.Name,
-                scanid = folder.ScanId
-            }));
+                IStatementResult result = session.WriteTransaction(tx => tx.Run(query, new
+                {
+                    path = folder.Path,
+                    lastfolder = folder.PermParent,
+                    inheritancedisabled = folder.InheritanceDisabled,
+                    blocked = folder.Blocked.ToString(),
+                    name = folder.Name,
+                    scanid = folder.ScanId
+                }));
+                nodescreated = result.Summary.Counters.NodesCreated;
+            }
 
             if (string.IsNullOrEmpty(folder.PermParent) == false)
             {
-                ConnectFolderToParent(folder, session);
+                ConnectFolderToParent(folder, driver);
             }
 
             if (folder.Permissions?.Count > 0)
             {
-                this.SendPermissions(folder.Permissions, session);
+                this.SendPermissions(folder.Permissions, driver);
             }
 
-            return result.Summary.Counters.NodesCreated;
+            return nodescreated;
         }
 
-        public int ConnectFolderToParent(Folder folder, ISession session)
+        public int ConnectFolderToParent(Folder folder, IDriver driver)
         {
             StringBuilder builder = new StringBuilder();
             builder.AppendLine("MERGE(folder {path:$path}) ");
@@ -89,15 +95,21 @@ namespace FSScanner
             builder.AppendLine("SET r.lastscan = $scanid ");
             builder.AppendLine("RETURN folder.path");
 
-            IStatementResult result = session.WriteTransaction(tx => tx.Run(builder.ToString(), new {
-                path = folder.Path,
-                lastfolder = folder.PermParent,
-                scanid = folder.ScanId
-            }));
-            return result.Summary.Counters.RelationshipsCreated;
+            int relcreated = 0;
+            using (ISession session = driver.Session())
+            {
+                IStatementResult result = session.WriteTransaction(tx => tx.Run(builder.ToString(), new
+                {
+                    path = folder.Path,
+                    lastfolder = folder.PermParent,
+                    scanid = folder.ScanId
+                }));
+                relcreated = result.Summary.Counters.RelationshipsCreated;
+            }
+            return relcreated;
         }
 
-        public int SendPermissions(List<Permission> permissions, ISession session)
+        public int SendPermissions(List<Permission> permissions, IDriver driver)
         {
             string query = "UNWIND $perms as p " +
             "MERGE(folder {path:p.Path}) " +
@@ -109,11 +121,16 @@ namespace FSScanner
             "SET r.lastscan=p.ScanId " +
             "RETURN folder.path ";
 
-            IStatementResult result = session.WriteTransaction(tx => tx.Run(query, new { perms = permissions }));
-            return result.Summary.Counters.RelationshipsCreated;
+            int relcreated = 0;
+            using (ISession session = driver.Session())
+            {
+                IStatementResult result = session.WriteTransaction(tx => tx.Run(query, new { perms = permissions }));
+                relcreated = result.Summary.Counters.RelationshipsCreated;
+            }
+            return relcreated;
         }
 
-        public int SendDatastore(DataStore ds, string scanid, ISession session)
+        public int SendDatastore(DataStore ds, string scanid, IDriver driver)
         {
             string query = "MERGE(n:" + Types.Datastore + " {name:$Name}) " +           
             "SET n.comment=$Comment " +
@@ -122,32 +139,50 @@ namespace FSScanner
             "MERGE (n)-[r:" + Types.ConnectedTo + "]->(host) " +
             "RETURN n ";
 
-            IStatementResult result = session.WriteTransaction(tx => tx.Run(query, ds));
-            return result.Summary.Counters.RelationshipsCreated;
+            int relcreated = 0;
+            using (ISession session = driver.Session())
+            {
+                IStatementResult result = session.WriteTransaction(tx => tx.Run(query, ds));
+                relcreated = result.Summary.Counters.RelationshipsCreated;
+            }
+
+            return relcreated;
         }
 
-        public int AttachRootToDataStore(DataStore ds, string rootpath, string scanid, ISession session)
+        public int AttachRootToDataStore(DataStore ds, string rootpath, string scanid, IDriver driver)
         {
             string query = "MERGE(datastore:" + Types.Datastore + " {name:$dsname}) " +
             "MERGE(root:" + Types.Folder + " {path:$rootpath}) " +
             "MERGE (root)-[r:" + Types.HostedOn + "]->(datastore) " +
             "RETURN * ";
 
-            IStatementResult result = session.WriteTransaction(tx => tx.Run(query, new { dsname=ds.Name, rootpath=rootpath?.ToLower()}));
-            return result.Summary.Counters.RelationshipsCreated;
+            int relcreated = 0;
+            using (ISession session = driver.Session())
+            {
+                IStatementResult result = session.WriteTransaction(tx => tx.Run(query, new { dsname = ds.Name, rootpath = rootpath?.ToLower() }));
+                relcreated = result.Summary.Counters.RelationshipsCreated;
+            }
+
+            return relcreated;
         }
 
-        public int CleanupChangedFolders(string rootpath, string scanid, ISession session)
+        public int CleanupChangedFolders(string rootpath, string scanid, IDriver driver)
         {
             string query = "MATCH(f:" + Types.Folder + ") " +
             "WHERE f.path STARTS WITH $rootpath AND f.lastscan<>$scanid " +
             "DETACH DELETE f ";
 
-            IStatementResult result = session.WriteTransaction(tx => tx.Run(query, new { rootpath = rootpath, scanid=scanid }));
-            return result.Summary.Counters.NodesDeleted;
+            int nodesdeleted = 0;
+            using (ISession session = driver.Session())
+            {
+                IStatementResult result = session.WriteTransaction(tx => tx.Run(query, new { rootpath = rootpath, scanid = scanid }));
+                nodesdeleted = result.Summary.Counters.NodesDeleted;
+            }
+
+            return nodesdeleted;
         }
 
-        public int CleanupInheritanceMappings(string rootpath, string scanid, ISession session)
+        public int CleanupInheritanceMappings(string rootpath, string scanid, IDriver driver)
         {
             string query = "MATCH (f:" + Types.Folder +") "+
                 "WHERE f.path STARTS WITH $rootpath " +
@@ -155,8 +190,14 @@ namespace FSScanner
                 "MATCH(f) -[r]->() WHERE r.lastscan <> $scanid " +
                 "DELETE r ";
 
-            IStatementResult result = session.WriteTransaction(tx => tx.Run(query, new { rootpath = rootpath, scanid = scanid }));
-            return result.Summary.Counters.NodesDeleted;
+            int nodesdeleted = 0;
+            using (ISession session = driver.Session())
+            {
+                IStatementResult result = session.WriteTransaction(tx => tx.Run(query, new { rootpath = rootpath, scanid = scanid }));
+                nodesdeleted = result.Summary.Counters.NodesDeleted;
+            }
+
+            return nodesdeleted;
         }
     }
 }

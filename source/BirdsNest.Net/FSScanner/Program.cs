@@ -28,6 +28,7 @@ namespace FSScanner
 
             IDriver driver = null;
 
+            ConsoleWriter.InitLine(1);
             totaltimer.Start();
             foreach (string arg in args)
             {
@@ -55,6 +56,7 @@ namespace FSScanner
                         credentials.Add(cred.ID, netcred);
                     }
                     datastores = config.Datastores;
+                    ConsoleWriter.SetProgressLineCount(config.MaxThreads);
                 }
             }
             catch (Exception e)

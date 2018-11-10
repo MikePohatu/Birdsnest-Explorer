@@ -65,12 +65,9 @@ namespace FSScanner
             //get the existing folders for comparison
             try
             {
-                using (ISession session = this.Driver.Session())
-                {
-                    TransactionResult<Dictionary<string, Folder>> existfolderstx = Reader.GetAllFoldersAsDict(rootpath, session);
-                    this._existingfolders = existfolderstx.Result;
-                    ConsoleWriter.WriteInfo("Found " + this._existingfolders.Count + " folders in database in " + existfolderstx.ElapsedMilliseconds.TotalMilliseconds + "ms");
-                }
+                TransactionResult<Dictionary<string, Folder>> existfolderstx = Reader.GetAllFoldersAsDict(rootpath, this.Driver);
+                this._existingfolders = existfolderstx.Result;
+                ConsoleWriter.WriteInfo("Found " + this._existingfolders.Count + " folders in database in " + existfolderstx.ElapsedMilliseconds.TotalMilliseconds + "ms");
             }
             catch (Exception e)
             {
@@ -82,12 +79,8 @@ namespace FSScanner
             try
             {
                 _timer.Start();
-                using (ISession session = this.Driver.Session())
-                {
-                    Writer.SendDatastore(ds, this.ScanId, session);
-                    Writer.AttachRootToDataStore(ds, rootpath.ToLower(), this.ScanId, session);
-                }
-                    
+                Writer.SendDatastore(ds, this.ScanId, this.Driver);
+                Writer.AttachRootToDataStore(ds, rootpath.ToLower(), this.ScanId, this.Driver);                    
             }
             catch (Exception e)
             {
@@ -108,13 +101,10 @@ namespace FSScanner
                 while (true)
                 {
                     Thread.Sleep(1000);
-                    if (ThreadCounter.ActiveThreadCount == 0 ) { break; }
+                    if (ThreadCounter.ActiveThreadCount == 1 ) { break; }
                 }
 
-                using (ISession session = this.Driver.Session())
-                {
-                    Writer.FlushFolderQueue(session);
-                }
+                Writer.FlushFolderQueue(this.Driver);
                 _timer.Stop();
                 ConsoleWriter.ClearProgress();
                 ConsoleWriter.WriteInfo("Crawled file system " + rootpath + " in " + _timer.Elapsed);
@@ -122,10 +112,7 @@ namespace FSScanner
             }
             catch (Exception e)
             {
-                using (ISession session = this.Driver.Session())
-                {
-                    Writer.FlushFolderQueue(session);
-                }
+                Writer.FlushFolderQueue(this.Driver);
                 _timer.Stop();
                 ConsoleWriter.WriteError("Error crawling file system " + rootpath + ": " + e.Message);
                 ConsoleWriter.WriteLine();
@@ -135,11 +122,8 @@ namespace FSScanner
             //cleanup folders that have changed
             try
             {
-                using (ISession session = this.Driver.Session())
-                {
-                    Writer.CleanupChangedFolders(rootpath, this.ScanId, session);
-                    Writer.CleanupInheritanceMappings(rootpath, this.ScanId, session);
-                }
+                Writer.CleanupChangedFolders(rootpath, this.ScanId, this.Driver);
+                Writer.CleanupInheritanceMappings(rootpath, this.ScanId, this.Driver);
             }
             catch (Exception e)
             {

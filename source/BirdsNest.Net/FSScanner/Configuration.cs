@@ -18,7 +18,10 @@ namespace FSScanner
         public int MaxThreads
         {
             get { return ThreadCounter.MaxThreads; }
-            set { ThreadCounter.MaxThreads = value; }
+            set
+            {
+                ThreadCounter.MaxThreads = value;
+            }
         }
 
         public static Configuration LoadConfiguration (string filepath)
