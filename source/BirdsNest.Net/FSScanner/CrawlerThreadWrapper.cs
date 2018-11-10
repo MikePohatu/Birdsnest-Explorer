@@ -63,18 +63,19 @@ namespace FSScanner
                     subwrapper.PermParent = newpermparent;
                     subwrapper.IsRoot = false;
 
-                    lock (ThreadCounter.Locker)
-                    {
-                        if (ThreadCounter.IsThreadAvailable == true)
-                        {
-                            //ConsoleWriter.WriteProgress("new thread");
-                            subwrapper.ThreadNumber = ThreadCounter.Increment();
-                            subwrapper.IsNewThread = true;
-                        }
-                    }
+                    int threadnum = ThreadCounter.RequestThread();
 
-                    if (subwrapper.IsNewThread == true) { ThreadPool.QueueUserWorkItem(subwrapper.Crawl); }
-                    else { subwrapper.Crawl(); }
+                    if (threadnum != -1)
+                    {
+                        subwrapper.ThreadNumber = threadnum;
+                        subwrapper.IsNewThread = true;
+                        ThreadPool.QueueUserWorkItem(subwrapper.Crawl);
+                    }
+                    else
+                    {
+                        subwrapper.ThreadNumber = this.ThreadNumber;
+                        subwrapper.Crawl();
+                    }
                 }
             }
             catch (Exception e)
