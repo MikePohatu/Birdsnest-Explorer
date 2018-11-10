@@ -78,6 +78,7 @@ namespace FSScanner
             {
                 ConsoleWriter.WriteError("Error encountered while enumerating directories in " + this.Path + ": " + e.Message);
             }
+
             if (this.IsNewThread == true) { ThreadCounter.Decrement(); }
         }
 

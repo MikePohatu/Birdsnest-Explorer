@@ -51,7 +51,6 @@ namespace common
         {
             lock (locker)
             {
-                //int abslinenum = 0;
                 for (int i = 0; i < _progresslinenumbers.Length; i++)
                 {
                     //clear the line
@@ -91,7 +90,6 @@ namespace common
         {
             lock (locker)
             {
-                //ClearProgress();
                 ShuntProgressMessages();
                 Console.SetCursorPosition(0, _loggingline);
                 Console.WriteLine("Info: " + message);
@@ -123,7 +121,8 @@ namespace common
         {
             lock (locker)
             {
-                //Console.SetCursorPosition(0, _loggingline);
+                ClearProgress();
+                Console.SetCursorPosition(0, _loggingline);
                 Console.Write(message);
             }
         }
