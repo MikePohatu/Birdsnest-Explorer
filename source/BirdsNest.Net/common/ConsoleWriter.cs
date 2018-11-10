@@ -1,14 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace common
 {
     public static class ConsoleWriter
     {
-        private static object locker = new object();
+        private static readonly object locker = new object();
         private static int _loggingline = 1;
         private static string[] _progressmessages = new string[1];
         private static int[] _progresslinenumbers = new int[1];
