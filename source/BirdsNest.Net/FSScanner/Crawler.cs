@@ -119,8 +119,12 @@ namespace FSScanner
             //cleanup folders that have changed
             try
             {
+                _timer.Restart();
+                ConsoleWriter.WriteInfo("Cleaning up ");
                 Writer.CleanupChangedFolders(rootpath, this.ScanId, this.Driver);
                 Writer.CleanupInheritanceMappings(rootpath, this.ScanId, this.Driver);
+                _timer.Stop();
+                ConsoleWriter.WriteInfo("Clean finished in " + _timer.Elapsed);
             }
             catch (Exception e)
             {
