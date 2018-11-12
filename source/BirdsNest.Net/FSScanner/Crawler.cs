@@ -128,6 +128,7 @@ namespace FSScanner
             }
             catch (Exception e)
             {
+                _timer.Stop();
                 ConsoleWriter.ClearProgress();
                 ConsoleWriter.WriteError("Error cleaning up folders " + rootpath + ": " + e.Message);
                 ConsoleWriter.WriteLine();

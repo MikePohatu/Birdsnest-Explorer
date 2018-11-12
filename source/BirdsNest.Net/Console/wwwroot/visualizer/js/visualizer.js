@@ -1,14 +1,26 @@
+var treetypes = ["FS_Folder"];
+
 var drawingPane;
 var zoomLayer;
 var drawingsvg;
 var graphbglayer;
 var nodeslayer;
 var edgeslayer;
-var simulation;
+var meshsimulation;
+var treesimulation;
+var connectingsimulation;
+var graphsimulation;
 var force;
 
 var graphnodes = new datumStore();
+var meshnodes = new datumStore();
+var treenodes = new datumStore();
+var connectingnodes = new datumStore();
+
 var graphedges = new datumStore();
+var meshedges = new datumStore();
+var treeedges = new datumStore();
+var connectingedges = new datumStore();
 
 var playMode = false;
 var shiftKey = false;
@@ -59,10 +71,45 @@ function drawGraph(selectid) {
     //    .attr("cy", 0)
     //    .style("fill","black");
 
-    simulation = d3.forceSimulation();
-    simulation.stop();
+    meshsimulation = d3.forceSimulation();
+    meshsimulation.stop();
 
-    simulation
+    treesimulation = d3.forceSimulation();
+    treesimulation.stop();
+
+    connectingsimulation = d3.forceSimulation();
+    connectingsimulation.stop();
+
+    graphsimulation = d3.forceSimulation();
+    graphsimulation.stop();
+    graphsimulation
+        .force('collide', d3.forceCollide()
+            .strength(1)
+            .radius(function (d) { return d.size * 2; }))
+        .velocityDecay(0.6)
+        .alphaDecay(0.08);
+
+    connectingsimulation
+        .force("link", d3.forceLink()
+            .id(function (d) { return d.db_id; })
+            .distance(150)
+            .strength(1.5))
+        .velocityDecay(0.6)
+        .alphaDecay(0.08);
+
+    meshsimulation
+        .force("link", d3.forceLink()
+            .id(function (d) { return d.db_id; })
+            .distance(150)
+            .strength(1.5))
+        
+        .force('center', d3.forceCenter(0, 0))
+        .on('tick', function () { onTick(); })
+        .on('end', function () { onLayoutFinished(); })
+        .velocityDecay(0.6)
+        .alphaDecay(0.08);
+
+    treesimulation
         .force("link", d3.forceLink()
             .id(function (d) { return d.db_id; })
             .distance(150)
@@ -71,8 +118,6 @@ function drawGraph(selectid) {
             .strength(1)
             .radius(function (d) { return d.size * 2; }))
         .force('center', d3.forceCenter(0, 0))
-        .on('tick', function () { onTick(); })
-        .on('end', function () { onLayoutFinished(); })
         .velocityDecay(0.6)
         .alphaDecay(0.08);
 
@@ -116,8 +161,8 @@ const debounce = function (func, wait, immediate) {
 };
 
 function onTick() {
-    //console.log(simulation.alpha());
-    d3.select("#progress").style("width", 100 - simulation.alpha() * 100 + "%");
+    //console.log(meshsimulation.alpha());
+    d3.select("#progress").style("width", 100 - meshsimulation.alpha() * 100 + "%");
 
     if (!perfmode) { updateLocations(); }
 }
@@ -141,7 +186,10 @@ function restartLayout() {
     d3.selectAll("#restartLayoutBtn")
         .attr('onclick', 'pauseLayout()')
         .attr('title', 'Updating layout');
-    simulation.alpha(1).restart();
+    meshsimulation.alpha(1).restart();
+    treesimulation.alpha(1).restart();
+    connectingsimulation.alpha(1).restart();
+    graphsimulation.alpha(1).restart();
 }
 
 d3.selectAll("#pausePlayBtn").attr('onclick', "playLayout()");
@@ -160,7 +208,8 @@ function pauseLayout() {
     playMode = false;
     updateLocations();
 
-    simulation.stop();
+    meshsimulation.stop();
+    treesimulation.stop();
     d3.selectAll("#pausePlayIcon")
         .classed("fa-pause", false)
         .classed("fa-play", true);
@@ -231,17 +280,20 @@ function addResultSet(json) {
     let newitemcount = loadNodeData(nodes);
     checkPerfMode();
 
-    edges.forEach(function (d) {
-        if (graphedges.DatumExists(d)===false) {
-            graphedges.Add(d);
-            newitemcount++;
-        }
-    }
-    );
+    newitemcount = newitemcount + loadEdgeData(edges);
 
     if (newitemcount > 0) {
-        simulation.nodes(graphnodes.GetArray());
-        simulation.force("link").links(graphedges.GetArray());
+        meshsimulation.nodes(meshnodes.GetArray());
+        meshsimulation.force("link").links(meshedges.GetArray());
+
+        treesimulation.nodes(treenodes.GetArray());
+        treesimulation.force("link").links(treeedges.GetArray());
+
+        connectingsimulation.nodes(connectingnodes.GetArray());
+        connectingsimulation.force("link").links(connectingedges.GetArray());
+
+        graphsimulation.nodes(graphnodes.GetArray());
+        graphsimulation.force("link").links(graphedges.GetArray());
 
         addNodes(graphnodes.GetArray());
         addEdges(graphedges.GetArray());
@@ -274,6 +326,39 @@ function resetScale() {
     updateNodeSizes();
 }
 
+//make sure to run loadNodeData first
+function loadEdgeData(newedgedata) {
+    //console.log("newedgedata");
+    //console.log("treenodes:");
+    //console.log(treenodes);
+    //console.log("meshnodes:");
+    //console.log(meshnodes);
+
+    let newitemcount = 0;
+
+    newedgedata.forEach(function (d) {
+        if (graphedges.DatumExists(d) === false) {
+            graphedges.Add(d);
+            newitemcount++;
+
+            if (treenodes.IdExists(d.source) && treenodes.IdExists(d.target)) { treeedges.Add(d); }
+            else if (meshnodes.IdExists(d.source) && meshnodes.IdExists(d.target)) { meshedges.Add(d); }
+            else {
+                connectingedges.Add(d);
+                connectingnodes.Add(graphnodes.Get(d.source));
+                connectingnodes.Add(graphnodes.Get(d.target));
+            }
+        }
+    });
+
+    //console.log("treeedges:");
+    //console.log(treeedges);
+    //console.log("meshedges:");
+    //console.log(meshedges);
+
+    return newitemcount;
+}
+
 function loadNodeData(newnodedata) {
 	/*console.log('loadNodeData');
 	console.log(newnodedata);*/
@@ -290,6 +375,15 @@ function loadNodeData(newnodedata) {
                 rangeUpdated = true;
                 currMaxScope = d.properties.scope;
             }
+
+            let assigned = false;
+            treetypes.forEach(function (type) {
+                if (type === d.label) {
+                    assigned = true;
+                    treenodes.Add(d);
+                }
+            });
+            if (assigned === false) { meshnodes.Add(d); }
         }
     });
 
@@ -300,7 +394,7 @@ function loadNodeData(newnodedata) {
         graphnodes.GetArray().forEach(function (d) {
             //console.log(d);
             d.scaling = scalingRange.getYFromX(d.scope);
-            d.radius = (defaultsize * d.scaling) / 2;
+            d.radius = defaultsize * d.scaling / 2;
             d.cx = d.x + d.radius;
             d.cy = d.y + d.radius;
             d.size = defaultsize * d.scaling;
@@ -458,8 +552,8 @@ function updateNodeSizes() {
 
 function addEdges(edges) {
     //setup the edges
-	/*console.log("addEdges");
-	console.log(data);*/
+	//console.log("addEdges");
+    //console.log(edges);
 
     //add the bg
     setTimeout(function () {
@@ -559,8 +653,7 @@ function getAllNodeIds() {
     zoomLayer.selectAll(".nodes")
         .each(function (d) {
             nodeids.push(d.db_id);
-        }
-        );
+        });
 
     return nodeids;
 }
@@ -877,6 +970,11 @@ datumStore.prototype.Add = function (d) {
     this.objectUpdated = true;
 };
 
+datumStore.prototype.Get = function (id) {
+    //console.log("datumStore.Add: " + d.db_id);
+    return this.datumObject[id];
+};
+
 datumStore.prototype.Remove = function (d) {
     delete this.datumObject[d.db_id];
     this.objectUpdated = true;
@@ -888,7 +986,7 @@ datumStore.prototype.DatumExists = function (d) {
 };
 
 
-datumStore.prototype.Keyxists = function (key) {
+datumStore.prototype.IdExists = function (key) {
     if (this.datumObject.hasOwnProperty(key)) { return true; }
     else { return false; }
 };
