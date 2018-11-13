@@ -88,16 +88,21 @@ namespace FSScanner
             //start at root and recurse down
             try
             {
-                //Crawl(rootpath, null, true);
                 CrawlerThreadWrapper threadwrapper = new CrawlerThreadWrapper(this);
                 threadwrapper.IsRoot = true;
                 threadwrapper.Path = rootpath;
                 threadwrapper.PermParent = null;
 
-                threadwrapper.Crawl();
+                //start a new thread for the crawl
+                int threadnum = ThreadCounter.RequestThread();
+                threadwrapper.ThreadNumber = threadnum;
+                threadwrapper.IsNewThread = true;
+                ThreadPool.QueueUserWorkItem(threadwrapper.Crawl);
+
+                //wait for threads to finish
                 while (true)
                 {
-                    Thread.Sleep(1000);
+                    Thread.Sleep(5000);
                     if (ThreadCounter.ActiveThreadCount == 0 ) { break; }
                 }
 
