@@ -32,6 +32,7 @@ namespace FSScanner
         /// <param name="permparent"></param>
         public void Crawl()
         {
+            bool connected = false;
             string newpermparent = this.PermParent;
             try
             {
@@ -41,45 +42,53 @@ namespace FSScanner
                     newpermparent = this.Path;
                     this._parent.Writer.UpdateFolder(f, this._parent.Driver);
                 }
+
+                connected = true;
             }
             catch (Exception e)
             {
                 ConsoleWriter.WriteError("Error connecting to " + this.Path + ": " + e.Message);
                 Folder f = new Folder() { Blocked = true, Path = this.Path, Name = this.Path, PermParent = this.PermParent, InheritanceDisabled = true, ScanId = this._parent.ScanId };
                 this._parent.Writer.UpdateFolder(f, this._parent.Driver);
-                return;
             }
 
-            try
+            if (connected == true)
             {
-                foreach (string subdirpath in Directory.EnumerateDirectories(this.Path))
+                try
                 {
-                    CrawlerThreadWrapper subwrapper = new CrawlerThreadWrapper(this._parent);
-                    subwrapper.Path = subdirpath;
-                    subwrapper.PermParent = newpermparent;
-                    subwrapper.IsRoot = false;
-
-                    int threadnum = ThreadCounter.RequestThread();
-
-                    if (threadnum != -1)
+                    foreach (string subdirpath in Directory.EnumerateDirectories(this.Path))
                     {
-                        subwrapper.ThreadNumber = threadnum;
-                        subwrapper.IsNewThread = true;
-                        ThreadPool.QueueUserWorkItem(subwrapper.Crawl);
-                    }
-                    else
-                    {
-                        subwrapper.ThreadNumber = this.ThreadNumber;
-                        subwrapper.Crawl();
+                        CrawlerThreadWrapper subwrapper = new CrawlerThreadWrapper(this._parent);
+                        subwrapper.Path = subdirpath;
+                        subwrapper.PermParent = newpermparent;
+                        subwrapper.IsRoot = false;
+
+                        int threadnum = ThreadCounter.RequestThread();
+
+                        if (threadnum != -1)
+                        {
+                            subwrapper.ThreadNumber = threadnum;
+                            subwrapper.IsNewThread = true;
+                            ThreadPool.QueueUserWorkItem(subwrapper.Crawl);
+                        }
+                        else
+                        {
+                            subwrapper.ThreadNumber = this.ThreadNumber;
+                            subwrapper.Crawl();
+                        }
                     }
                 }
-            }
-            catch (Exception e)
-            {
-                ConsoleWriter.WriteError("Error encountered while enumerating directories in " + this.Path + ": " + e.Message);
+                catch (Exception e)
+                {
+                    ConsoleWriter.WriteError("Error encountered while enumerating directories in " + this.Path + ": " + e.Message);
+                }
             }
 
-            if (this.IsNewThread == true) { ThreadCounter.Decrement(); }
+            if (this.IsNewThread == true)
+            {
+                ThreadCounter.Release(this.ThreadNumber);
+                ConsoleWriter.WriteProgress(this.ThreadNumber + " | " + "Released thread", this.ThreadNumber);
+            }
         }
 
         /// <summary>

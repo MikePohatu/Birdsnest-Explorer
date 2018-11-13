@@ -98,7 +98,7 @@ namespace FSScanner
                 while (true)
                 {
                     Thread.Sleep(1000);
-                    if (ThreadCounter.ActiveThreadCount == 1 ) { break; }
+                    if (ThreadCounter.ActiveThreadCount == 0 ) { break; }
                 }
 
                 Writer.FlushFolderQueue(this.Driver);
@@ -125,6 +125,7 @@ namespace FSScanner
                 Writer.CleanupInheritanceMappings(rootpath, this.ScanId, this.Driver);
                 _timer.Stop();
                 ConsoleWriter.WriteInfo("Clean finished in " + _timer.Elapsed);
+                ConsoleWriter.WriteLine();
             }
             catch (Exception e)
             {

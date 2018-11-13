@@ -4,12 +4,15 @@ namespace FSScanner
 {
     public static class ThreadCounter
     {
-        
-        private static int _activethreads = 1;
         private static readonly object _locker = new object();
-        public static int ActiveThreadCount { get { return _activethreads;} }
-        public static int MaxThreads { get; set; } = 5;
-        private static bool IsThreadAvailable { get { return _activethreads < MaxThreads ? true : false; } }
+        private static bool[] _threads = new bool[5];
+        public static int ActiveThreadCount { get; private set; } = 0;
+        public static int MaxThreads { get { return _threads.Length + 1; } }
+
+        public static void SetMaxThreads(int max)
+        {
+            _threads = new bool[max];
+        }
 
         /// <summary>
         /// Request a new thread number. Returns -1 if one not available
@@ -19,18 +22,27 @@ namespace FSScanner
         {
             lock (_locker)
             {
-                if (_activethreads < MaxThreads)
+                for (int i=0; i<_threads.Length;i++)
                 {
-                    return Interlocked.Increment(ref _activethreads);
+                    if (_threads[i]==false)
+                    {
+                        _threads[i] = true;
+                        ActiveThreadCount++;
+                        return i + 1;
+                    }
                 }
-                else
-                {
-                    return -1;
-                }
+
+                return -1;
             }
         }
 
-        public static int Decrement()
-        { return Interlocked.Decrement(ref _activethreads); }
+        public static void Release(int threadnumber)
+        {
+            lock (_locker)
+            {
+                ActiveThreadCount--;
+                _threads[threadnumber - 1] = false;
+            }
+        }
     }
 }

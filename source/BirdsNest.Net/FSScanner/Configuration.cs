@@ -20,7 +20,7 @@ namespace FSScanner
             get { return ThreadCounter.MaxThreads; }
             set
             {
-                ThreadCounter.MaxThreads = value;
+                ThreadCounter.SetMaxThreads(value);
             }
         }
 
