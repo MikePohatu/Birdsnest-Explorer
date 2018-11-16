@@ -1,26 +1,14 @@
-var treetypes = ["FS_Folder"];
-
 var drawingPane;
 var zoomLayer;
 var drawingsvg;
 var graphbglayer;
 var nodeslayer;
 var edgeslayer;
-var meshsimulation;
-var treesimulation;
-var connectingsimulation;
-var graphsimulation;
+var simulation;
 var force;
 
 var graphnodes = new datumStore();
-var meshnodes = new datumStore();
-var treenodes = new datumStore();
-var connectingnodes = new datumStore();
-
 var graphedges = new datumStore();
-var meshedges = new datumStore();
-var treeedges = new datumStore();
-var connectingedges = new datumStore();
 
 var playMode = false;
 var shiftKey = false;
@@ -71,57 +59,24 @@ function drawGraph(selectid) {
     //    .attr("cy", 0)
     //    .style("fill","black");
 
-    meshsimulation = d3.forceSimulation();
-    meshsimulation.stop();
+    simulation = d3.forceSimulation();
+    simulation.stop();
 
-    treesimulation = d3.forceSimulation();
-    treesimulation.stop();
-
-    connectingsimulation = d3.forceSimulation();
-    connectingsimulation.stop();
-
-    graphsimulation = d3.forceSimulation();
-    graphsimulation.stop();
-    graphsimulation
+    simulation
+        .force("link", d3.forceLink()
+            .id(function (d) { return d.db_id; })
+            .distance(150)
+            .strength(1.5))
         .force('collide', d3.forceCollide()
             .strength(1)
             .radius(function (d) { return d.size * 2; }))
-        .velocityDecay(0.6)
-        .alphaDecay(0.08);
-
-    connectingsimulation
-        .force("link", d3.forceLink()
-            .id(function (d) { return d.db_id; })
-            .distance(150)
-            .strength(1.5))
-        .velocityDecay(0.6)
-        .alphaDecay(0.08);
-
-    meshsimulation
-        .force("link", d3.forceLink()
-            .id(function (d) { return d.db_id; })
-            .distance(150)
-            .strength(1.5))
-        
         .force('center', d3.forceCenter(0, 0))
         .on('tick', function () { onTick(); })
         .on('end', function () { onLayoutFinished(); })
         .velocityDecay(0.6)
         .alphaDecay(0.08);
 
-    treesimulation
-        .force("link", d3.forceLink()
-            .id(function (d) { return d.db_id; })
-            .distance(150)
-            .strength(1.5))
-        .force('collide', d3.forceCollide()
-            .strength(1)
-            .radius(function (d) { return d.size * 2; }))
-        .force('center', d3.forceCenter(0, 0))
-        .velocityDecay(0.6)
-        .alphaDecay(0.08);
-
-    window.addEventListener('resize', debounce(updatePaneSize, 500, false),false);
+    window.addEventListener('resize', debounce(updatePaneSize, 500, false), false);
     updatePaneSize();
 }
 
@@ -135,19 +90,19 @@ function updatePaneSize() {
     var box = drawingPane.node().getBoundingClientRect();
     var svgbox = drawingsvg.node().getBBox();
     var k = d3.zoomTransform(drawingsvg.node()).k;
-    var x = (box.width / 2 - svgbox.x - svgbox.width / 2) /k;
+    var x = (box.width / 2 - svgbox.x - svgbox.width / 2) / k;
     var y = (box.height / 2 - svgbox.y - svgbox.height / 2) / k;
 
     //console.log(svgbox);
     //console.log(k);
-    drawingsvg.transition(panetransition).call(zoom.translateBy, x,y);
+    drawingsvg.transition(panetransition).call(zoom.translateBy, x, y);
 }
 
 //https://stackoverflow.com/questions/641857/javascript-window-resize-event
 //function to stop excessive calls on resize
 const debounce = function (func, wait, immediate) {
     var timeout;
-    return function() {
+    return function () {
         const context = this, args = arguments;
         const later = function () {
             timeout = null;
@@ -161,8 +116,14 @@ const debounce = function (func, wait, immediate) {
 };
 
 function onTick() {
-    //console.log(meshsimulation.alpha());
-    d3.select("#progress").style("width", 100 - meshsimulation.alpha() * 100 + "%");
+    //console.log(simulation.alpha());
+    d3.select("#progress").style("width", 100 - simulation.alpha() * 100 + "%");
+
+    var k = 20 * simulation.alpha();
+    d3.selectAll(".treeedge").each(function (d) {
+        d.source.y -= k;
+        d.target.y += k;
+    });
 
     if (!perfmode) { updateLocations(); }
 }
@@ -186,10 +147,7 @@ function restartLayout() {
     d3.selectAll("#restartLayoutBtn")
         .attr('onclick', 'pauseLayout()')
         .attr('title', 'Updating layout');
-    meshsimulation.alpha(1).restart();
-    treesimulation.alpha(1).restart();
-    connectingsimulation.alpha(1).restart();
-    graphsimulation.alpha(1).restart();
+    simulation.alpha(1).restart();
 }
 
 d3.selectAll("#pausePlayBtn").attr('onclick', "playLayout()");
@@ -208,8 +166,7 @@ function pauseLayout() {
     playMode = false;
     updateLocations();
 
-    meshsimulation.stop();
-    treesimulation.stop();
+    simulation.stop();
     d3.selectAll("#pausePlayIcon")
         .classed("fa-pause", false)
         .classed("fa-play", true);
@@ -280,20 +237,16 @@ function addResultSet(json) {
     let newitemcount = loadNodeData(nodes);
     checkPerfMode();
 
-    newitemcount = newitemcount + loadEdgeData(edges);
+    edges.forEach(function (d) {
+        if (graphedges.DatumExists(d) === false) {
+            graphedges.Add(d);
+            newitemcount++;
+        }
+    });
 
     if (newitemcount > 0) {
-        meshsimulation.nodes(meshnodes.GetArray());
-        meshsimulation.force("link").links(meshedges.GetArray());
-
-        treesimulation.nodes(treenodes.GetArray());
-        treesimulation.force("link").links(treeedges.GetArray());
-
-        connectingsimulation.nodes(connectingnodes.GetArray());
-        connectingsimulation.force("link").links(connectingedges.GetArray());
-
-        graphsimulation.nodes(graphnodes.GetArray());
-        graphsimulation.force("link").links(graphedges.GetArray());
+        simulation.nodes(graphnodes.GetArray());
+        simulation.force("link").links(graphedges.GetArray());
 
         addNodes(graphnodes.GetArray());
         addEdges(graphedges.GetArray());
@@ -326,39 +279,6 @@ function resetScale() {
     updateNodeSizes();
 }
 
-//make sure to run loadNodeData first
-function loadEdgeData(newedgedata) {
-    //console.log("newedgedata");
-    //console.log("treenodes:");
-    //console.log(treenodes);
-    //console.log("meshnodes:");
-    //console.log(meshnodes);
-
-    let newitemcount = 0;
-
-    newedgedata.forEach(function (d) {
-        if (graphedges.DatumExists(d) === false) {
-            graphedges.Add(d);
-            newitemcount++;
-
-            if (treenodes.IdExists(d.source) && treenodes.IdExists(d.target)) { treeedges.Add(d); }
-            else if (meshnodes.IdExists(d.source) && meshnodes.IdExists(d.target)) { meshedges.Add(d); }
-            else {
-                connectingedges.Add(d);
-                connectingnodes.Add(graphnodes.Get(d.source));
-                connectingnodes.Add(graphnodes.Get(d.target));
-            }
-        }
-    });
-
-    //console.log("treeedges:");
-    //console.log(treeedges);
-    //console.log("meshedges:");
-    //console.log(meshedges);
-
-    return newitemcount;
-}
-
 function loadNodeData(newnodedata) {
 	/*console.log('loadNodeData');
 	console.log(newnodedata);*/
@@ -368,22 +288,13 @@ function loadNodeData(newnodedata) {
 
     //evaluate the nodes to figure out the max and min size so we can work out the scaling
     newnodedata.forEach(function (d) {
-        if (graphnodes.DatumExists(d)===false) {
+        if (graphnodes.DatumExists(d) === false) {
             newtograph.push(d);
 
             if (d.properties.scope > currMaxScope) {
                 rangeUpdated = true;
                 currMaxScope = d.properties.scope;
             }
-
-            let assigned = false;
-            treetypes.forEach(function (type) {
-                if (type === d.label) {
-                    assigned = true;
-                    treenodes.Add(d);
-                }
-            });
-            if (assigned === false) { meshnodes.Add(d); }
         }
     });
 
@@ -394,7 +305,7 @@ function loadNodeData(newnodedata) {
         graphnodes.GetArray().forEach(function (d) {
             //console.log(d);
             d.scaling = scalingRange.getYFromX(d.scope);
-            d.radius = defaultsize * d.scaling / 2;
+            d.radius = (defaultsize * d.scaling) / 2;
             d.cx = d.x + d.radius;
             d.cy = d.y + d.radius;
             d.size = defaultsize * d.scaling;
@@ -437,7 +348,7 @@ function addNodes(nodes) {
             .attr("cy", function (d) { return d.radius; })
             .classed("graphbg", true)
             .classed("nodebg", true);
-    },1);
+    }, 1);
 
     let enternodes = nodeslayer.selectAll(".nodes")
         .data(nodes, function (d) { return d.db_id; })
@@ -552,8 +463,8 @@ function updateNodeSizes() {
 
 function addEdges(edges) {
     //setup the edges
-	//console.log("addEdges");
-    //console.log(edges);
+	/*console.log("addEdges");
+	console.log(data);*/
 
     //add the bg
     setTimeout(function () {
@@ -565,14 +476,21 @@ function addEdges(edges) {
             .classed("graphbg", true)
             .classed("edgebg", true);
     }, 1);
-    
+
     let enteredges = edgeslayer.selectAll(".edges")
         .data(edges, function (d) { return d.db_id; })
         .enter();
 
     let enteredgesg = enteredges.append("g")
         .attr("id", function (d) { return "edge_" + d.db_id; })
-        .attr("class", function (d) { return d.label; })
+        .attr("class", function (d) {
+            var combined;
+            if ((d.source.properties.layout === "tree") && (d.target.properties.layout === "tree")) {
+                combined = d.label + " treeedge";
+            }
+            else { combined = d.label + " meshedge"; }
+            return combined;
+        })
         .classed("edges", true);
 
     setTimeout(function () {
@@ -595,7 +513,7 @@ function addEdges(edges) {
             .attr("dominant-baseline", "text-bottom")
             .attr("text-anchor", "middle")
             .attr("transform", "translate(0,-5)");
-    }, 1);     
+    }, 1);
 }
 
 document.getElementById('removeBtn').addEventListener('click', removeNodes, false);
@@ -653,7 +571,8 @@ function getAllNodeIds() {
     zoomLayer.selectAll(".nodes")
         .each(function (d) {
             nodeids.push(d.db_id);
-        });
+        }
+        );
 
     return nodeids;
 }
@@ -753,7 +672,7 @@ function updateNodeSelection(d, isselected) {
             else {
                 //console.log("non populate");
                 nodeShowDetailsSelected(d);
-            } 
+            }
         }
         else {
             nodeHideDetailsSelected(d);
@@ -949,7 +868,7 @@ function datumStore() {
 }
 
 datumStore.prototype.GetArray = function () {
-    
+
     if (this.objectUpdated === true) {
         //onsole.log(this.datumObject);
         let o = this.datumObject;
@@ -970,11 +889,6 @@ datumStore.prototype.Add = function (d) {
     this.objectUpdated = true;
 };
 
-datumStore.prototype.Get = function (id) {
-    //console.log("datumStore.Add: " + d.db_id);
-    return this.datumObject[id];
-};
-
 datumStore.prototype.Remove = function (d) {
     delete this.datumObject[d.db_id];
     this.objectUpdated = true;
@@ -986,7 +900,7 @@ datumStore.prototype.DatumExists = function (d) {
 };
 
 
-datumStore.prototype.IdExists = function (key) {
+datumStore.prototype.Keyxists = function (key) {
     if (this.datumObject.hasOwnProperty(key)) { return true; }
     else { return false; }
 };
@@ -1092,13 +1006,10 @@ function search() {
 	/*console.log("sourcetype: " + sourcetype);
 	console.log("sourceprop: " + sourceprop);
 	console.log("sourceval: " + sourceval);
-
 	console.log("relationship: " + relationship);
-
 	console.log("tartype: " + tartype);
 	console.log("tarprop: " + tarprop);
 	console.log("tarval: " + tarval);
-
 	console.log(url);*/
     apiGet("/visualizer/search" + urlquery, "html", function (data) {
         document.getElementById("searchNotification").innerHTML = data;
@@ -1152,7 +1063,7 @@ function addRelated(nodeid) {
     //console.log("addRelated"+ nodeid);
     apiGetJson("/api/graph/nodes/" + nodeid, function (data) {
         //pendingResults = data;
-        addSearchResults(data,true);
+        addSearchResults(data, true);
     });
 
 }
@@ -1170,7 +1081,7 @@ function updateEdges() {
     //console.log("updateEdges end");
 }
 
-function getEdgesForNodes(nodelist, callback) {  
+function getEdgesForNodes(nodelist, callback) {
     var postdata = JSON.stringify(nodelist);
     //console.log(": json stringyfied");
     //console.log(nodeids);

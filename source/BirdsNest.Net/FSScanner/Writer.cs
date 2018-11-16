@@ -51,7 +51,8 @@ namespace FSScanner
                 "folder.lastpermission=$lastfolder, " +
                 "folder.inheritancedisabled=$inheritancedisabled, " +
                 "folder.lastscan=$scanid, " +
-                "folder.blocked=$blocked " +
+                "folder.blocked=$blocked, " +
+                "folder.layout='tree' " +
                 "RETURN folder";
 
             int nodescreated = 0;
@@ -135,6 +136,7 @@ namespace FSScanner
             string query = "MERGE(n:" + Types.Datastore + " {name:$Name}) " +           
             "SET n.comment=$Comment " +
             "SET n.host=$Host " +
+            "SET n.layout='tree' " +
             "MERGE(host:" + Types.Device + " {name:$Host}) " +
             "MERGE (n)-[r:" + Types.ConnectedTo + "]->(host) " +
             "RETURN n ";

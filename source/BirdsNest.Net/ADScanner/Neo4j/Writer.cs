@@ -35,6 +35,7 @@ namespace ADScanner.Neo4j
                 "SET n.path = g.path " +
                 "SET n.rid = g.rid " +
                 "SET n.grouptype = g.grouptype " +
+                "SET n.layout = 'mesh' " +
                 "RETURN n.name";
 
             var result = session.WriteTransaction(tx => tx.Run(query, new { propertylist= propertylist }));
@@ -67,6 +68,7 @@ namespace ADScanner.Neo4j
             "SET n.primarygroupid = u.primarygroupid " +
             "SET n.displayname = u.displayname " +
             "SET n.state = u.state " +
+            "SET n.layout = 'mesh' " +
             "RETURN n.name";
 
             var result = session.WriteTransaction(tx => tx.Run(query, new { propertylist = propertylist }));
@@ -91,6 +93,7 @@ namespace ADScanner.Neo4j
             "SET n.operatingsystem = c.operatingsystem " +
             "SET n.operatingsystemversion = c.operatingsystemversion " +
             "SET n.state = c.state " +
+            "SET n.layout = 'mesh' " +
             "RETURN n.name";
 
             var result = session.WriteTransaction(tx => tx.Run(query, new { propertylist = propertylist }));
