@@ -24,7 +24,7 @@ var connectedges = new datumStore();
 var force;
 
 var simVelocityDecay = 0.6;
-var simAlphaDecay = 0.1;
+var simAlphaDecay = 0.05;
 
 var playMode = false;
 var shiftKey = false;
@@ -80,7 +80,9 @@ function drawGraph(selectid) {
     connectsimulation
         .force("link", d3.forceLink()
             .id(function (d) { return d.db_id; })
-            .strength(0.1));
+            .strength(0.1))
+        .velocityDecay(simVelocityDecay)
+        .alphaDecay(simAlphaDecay);
 
     graphsimulation = d3.forceSimulation();
     graphsimulation.stop();
@@ -95,6 +97,7 @@ function drawGraph(selectid) {
         .velocityDecay(simVelocityDecay)
         .on('end', function () { onLayoutFinished(); })
         .on('tick', function () { onGraphTick(); })
+        .velocityDecay(simVelocityDecay)
         .alphaDecay(simAlphaDecay);
 
     meshsimulation = d3.forceSimulation();
@@ -103,7 +106,7 @@ function drawGraph(selectid) {
         .force("link", d3.forceLink()
             .id(function (d) { return d.db_id; })
             .distance(150)
-            .strength(1.5))
+            .strength(1))
         //.force('center', d3.forceCenter(0, 0))
         .velocityDecay(simVelocityDecay)
         .alphaDecay(simAlphaDecay);
@@ -166,13 +169,11 @@ function onGraphTick() {
 
 function onTreeTick() {
     //console.log("onTreeTick");
-    //d3.select("#progress").style("width", 100 - meshsimulation.alpha() * 100 + "%");
 
-    var k = 20 * treesimulation.alpha();
     d3.selectAll(".treeedge").each(function (d) {
         //console.log(d);
-        d.source.x -= k;
-        d.target.x += k;
+        d.source.y -= d.source.size * treesimulation.alpha();
+        d.target.y += d.target.size * treesimulation.alpha();
     });
 }
 
@@ -204,6 +205,7 @@ function restartLayout() {
     meshsimulation.alpha(1).restart();
     treesimulation.alpha(1).restart();
     graphsimulation.alpha(1).restart();
+    connectsimulation.alpha(1).restart();
 }
 
 d3.selectAll("#pausePlayBtn").attr('onclick', "playLayout()");
