@@ -23,8 +23,8 @@ var connectedges = new datumStore();
 
 var force;
 
-var simVelocityDecay = 0.6;
-var simAlphaDecay = 0.05;
+var simVelocityDecay = 0.5;
+var simAlphaDecay = 0.08;
 
 var playMode = false;
 var shiftKey = false;
@@ -75,28 +75,27 @@ function drawGraph(selectid) {
     //    .attr("cy", 0)
     //    .style("fill","black");
 
+    graphsimulation = d3.forceSimulation();
+    graphsimulation.stop();
+    graphsimulation
+        //.force('link', d3.forceLink()
+        //    .id(function (d) { return d.db_id; })
+        //    .strength(0.08))
+        .force('collide', d3.forceCollide()
+            .strength(1)
+            .radius(function (d) { return d.size * 1.5; }))
+        .on('end', onLayoutFinished)
+        .on('tick', onGraphTick)
+        .velocityDecay(simVelocityDecay)
+        .alphaDecay(simAlphaDecay);
+
     connectsimulation = d3.forceSimulation();
     connectsimulation.stop();
     connectsimulation
         .force("link", d3.forceLink()
             .id(function (d) { return d.db_id; })
+            .distance(200)
             .strength(0.1))
-        .velocityDecay(simVelocityDecay)
-        .alphaDecay(simAlphaDecay);
-
-    graphsimulation = d3.forceSimulation();
-    graphsimulation.stop();
-    graphsimulation
-        //.force("link", d3.forceLink()
-        //    .id(function (d) { return d.db_id; })
-        //    .strength(0.1))
-        //.force('center', d3.forceCenter(0, 0))
-        .force('collide', d3.forceCollide()
-            .strength(1)
-            .radius(function (d) { return d.size * 2; }))
-        .velocityDecay(simVelocityDecay)
-        .on('end', function () { onLayoutFinished(); })
-        .on('tick', function () { onGraphTick(); })
         .velocityDecay(simVelocityDecay)
         .alphaDecay(simAlphaDecay);
 
@@ -105,9 +104,7 @@ function drawGraph(selectid) {
     meshsimulation
         .force("link", d3.forceLink()
             .id(function (d) { return d.db_id; })
-            .distance(150)
-            .strength(1))
-        //.force('center', d3.forceCenter(0, 0))
+            .distance(150))
         .velocityDecay(simVelocityDecay)
         .alphaDecay(simAlphaDecay);
 
@@ -115,8 +112,9 @@ function drawGraph(selectid) {
     treesimulation.stop();
     treesimulation
         .force("link", d3.forceLink()
-            .id(function (d) { return d.db_id; }))
-        .on('tick', function () { onTreeTick(); })
+            .id(function (d) { return d.db_id; })
+            .strength(0.5))
+        .on('tick', onTreeTick)
         .velocityDecay(simVelocityDecay)
         .alphaDecay(simAlphaDecay);
 
@@ -169,11 +167,15 @@ function onGraphTick() {
 
 function onTreeTick() {
     //console.log("onTreeTick");
+    let k = treesimulation.alpha();
 
     d3.selectAll(".treeedge").each(function (d) {
         //console.log(d);
-        d.source.y -= d.source.size * treesimulation.alpha();
-        d.target.y += d.target.size * treesimulation.alpha();
+
+        if (d.source.y >= (d.target.y - d.target.size*2)) {
+            d.source.y -= k * d.source.size;
+            d.target.y += k * d.target.size;
+        }
     });
 }
 
@@ -225,6 +227,10 @@ function pauseLayout() {
     updateLocations();
 
     meshsimulation.stop();
+    graphsimulation.stop();
+    treesimulation.stop();
+    connectsimulation.stop();
+
     d3.selectAll("#pausePlayIcon")
         .classed("fa-pause", false)
         .classed("fa-play", true);
@@ -306,8 +312,8 @@ function addResultSet(json) {
             if ((src.properties.layout === "tree") && (tar.properties.layout === "tree")) { treeedges.Add(d); }
             else if ((src.properties.layout === "mesh") && (tar.properties.layout === "mesh")) { meshedges.Add(d); }
             else {
-                connectnodes.Add(graphnodes.GetDatum(d.source));
-                connectnodes.Add(graphnodes.GetDatum(d.target));
+                if (connectnodes.DatumExists(d.source) === false) { connectnodes.Add(graphnodes.GetDatum(d.source)); }
+                if (connectnodes.DatumExists(d.target) === false) { connectnodes.Add(graphnodes.GetDatum(d.target)); }
                 connectedges.Add(d);
             }
 
@@ -325,8 +331,8 @@ function addResultSet(json) {
         connectsimulation.nodes(connectnodes.GetArray());
         connectsimulation.force("link").links(connectedges.GetArray());
 
-        addNodes(graphnodes.GetArray());
-        addEdges(graphedges.GetArray());
+        addSvgNodes(graphnodes.GetArray());
+        addSvgEdges(graphedges.GetArray());
     }
     return newitemcount;
     //console.log("addResultSet end: " );
@@ -357,8 +363,8 @@ function resetScale() {
 }
 
 function loadNodeData(newnodedata) {
-	/*console.log('loadNodeData');
-	console.log(newnodedata);*/
+	//console.log('loadNodeData');
+	//console.log(newnodedata);
     let rangeUpdated = false;
     let newcount = 0;
     let newtograph = [];
@@ -396,7 +402,7 @@ function loadNodeData(newnodedata) {
         //console.log("New node: " + d.db_id);
         d.scaling = scalingRange.getYFromX(d.scope);
 
-        d.radius = (defaultsize * d.scaling) / 2;
+        d.radius = defaultsize * d.scaling / 2;
         d.x = 0;
         d.y = 0;
         d.cx = d.x + d.radius;
@@ -410,12 +416,18 @@ function loadNodeData(newnodedata) {
         else if (d.properties.layout === "tree") { treenodes.Add(d); }
         newcount++;
     });
-    //console.log(newcount);
+    //console.log("graphnodes");
+    //console.log(graphnodes);
+    //console.log("meshnodes");
+    //console.log(meshnodes);
+    //console.log("treenodes");
+    //console.log(treenodes);
+
     return newcount;
 }
 
-function addNodes(nodes) {
-    //console.log(": addNodes");
+function addSvgNodes(nodes) {
+    //console.log(": addSvgNodes");
     //add the bg
     setTimeout(function () {
         graphbglayer.selectAll('.nodebg')
@@ -540,9 +552,9 @@ function updateNodeSizes() {
         .attr("width", function (d) { return 10 * d.scaling; });
 }
 
-function addEdges(edges) {
+function addSvgEdges(edges) {
     //setup the edges
-	/*console.log("addEdges");
+	/*console.log("addSvgEdges");
 	console.log(data);*/
 
     //add the bg
@@ -564,10 +576,17 @@ function addEdges(edges) {
         .attr("id", function (d) { return "edge_" + d.db_id; })
         .attr("class", function (d) {
             var combined;
-            if ((d.source.properties.layout === "tree") && (d.target.properties.layout === "tree")) {
-                combined = d.label + " treeedge";
+            if (d.source.properties.hasOwnProperty('layout') && d.target.properties.hasOwnProperty('layout')) {
+                if ((d.source.properties.layout === "tree") && (d.target.properties.layout === "tree")) {
+                    combined = d.label + " treeedge";
+                }
+                else if ((d.source.properties.layout === "mesh") && (d.target.properties.layout === "mesh")) {
+                    combined = d.label + " meshedge";
+                }
+                else { combined = d.label + " connectingedge"; }
             }
-            else { combined = d.label + " meshedge"; }
+            else { combined = d.label + " connectingedge"; }
+            //console.log(combined);
             return combined;
         })
         .classed("edges", true);
@@ -772,10 +791,7 @@ function populateDetails(d, callback) {
     //console.log("populateDetails");
     apiGet("/visualizer/details/" + d.db_id, "html", function (data) {
         //console.log("populateDetails callback");
-        //document.getElementById("detailcardwrapper").innerHTML = data;
         d.detailsHTML = data;
-        //$(document).foundation();
-        //Foundation.reInit(['accordion']);
         callback();
     });
 }

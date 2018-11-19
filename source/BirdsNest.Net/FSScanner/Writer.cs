@@ -155,7 +155,7 @@ namespace FSScanner
         {
             string query = "MERGE(datastore:" + Types.Datastore + " {name:$dsname}) " +
             "MERGE(root:" + Types.Folder + " {path:$rootpath}) " +
-            "MERGE (root)-[r:" + Types.HostedOn + "]->(datastore) " +
+            "MERGE (datastore)-[r:" + Types.Hosts + "]->(root) " +
             "RETURN * ";
 
             int relcreated = 0;
