@@ -165,8 +165,14 @@ function onGraphTick() {
             d.target.y = d.source.y + d.source.size;
         }
         else {
-            d.target.y += k * 10;
-            d.source.y -= k * 6;
+            if (d.target.tark !== k) {
+                d.target.y += k * 8;
+                d.target.tark = k;
+            }
+            if (d.source.srck !== k) {
+                d.source.y -= k * 6;
+                d.source.srck = k;
+            }
         }
     });
     if (!perfmode) { updateLocations(); }
@@ -303,8 +309,8 @@ function addResultSet(json) {
             graphedges.Add(d);
             let src = graphnodes.GetDatum(d.source);
             let tar = graphnodes.GetDatum(d.target);
-            console.log(d);
-            console.log(src);
+            //console.log(d);
+            //console.log(src);
 
             if ((src.properties.layout === "tree") && (tar.properties.layout === "tree")) { treeedges.Add(d); }
             else if ((src.properties.layout === "mesh") && (tar.properties.layout === "mesh")) { meshedges.Add(d); }
