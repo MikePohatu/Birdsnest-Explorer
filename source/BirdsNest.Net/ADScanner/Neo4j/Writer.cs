@@ -170,10 +170,10 @@ namespace ADScanner.Neo4j
             "SET n:" + Types.Deleted + " " +
             "REMOVE n:" + label + " " +
             "SET n.type='" + label + "' " +
-            "WITH n " +
-            "MATCH (n)-[r]->() " +
-            "DELETE r " +
-            "RETURN r ";
+            //"WITH n " +
+            //"MATCH (n)-[r]->() " +
+            //"DELETE r " +
+            "RETURN n ";
 
             IStatementResult result = session.WriteTransaction(tx => tx.Run(query, new { scanid = scanid }));
             return result.Summary.Counters.RelationshipsDeleted;
