@@ -5,6 +5,9 @@ var graphbglayer;
 var nodeslayer;
 var edgeslayer;
 
+var graphnodelabels = new Object();
+var graphedgelabels = new Object();
+
 var meshsimulation;
 var meshnodes = new datumStore();
 var meshedges = new datumStore();
@@ -187,6 +190,8 @@ function resetView() {
     graphnodes = new datumStore();
     graphedges = new datumStore();
     connectedges = new datumStore();
+    graphnodelabels = new Object();
+    graphedgelabels = new Object();
 
     unselectAllNodes();
     graphbglayer.selectAll("*").remove();
@@ -241,6 +246,42 @@ function pauseLayout() {
         .attr('onclick', 'playLayout()');
     d3.selectAll("#restartIcon").classed("spinner", false);
     d3.selectAll("#restartLayoutBtn").attr('onclick', 'restartLayout()');
+}
+
+d3.selectAll("#eyeBtn").attr('onclick', "onEyeClicked()");
+function onEyeClicked() {
+    Object.keys(graphnodelabels).forEach(function (d) {
+        d3.select("#eyeNodeLabelList").append("li")
+            .append("a")
+            .attr("href", "javascript:onEyeLabelClicked(\"" + d + "\");")
+            .html(d)
+            .append("i")
+            .classed("fa fa-eye", true);
+    });
+
+    Object.keys(graphedgelabels).forEach(function (d) {
+        d3.select("#eyeEdgeLabelList").append("li")
+            .append("a")
+            .attr("href", "javascript:onEyeLabelClicked(\"" + d + "\");")
+            .html(d)
+            .append("i")
+            .classed("fa fa-eye", true);
+    });
+}
+
+//<a href="javascript:getNode(@node.DbId);">(+)</a><br />
+function onEyeLabelClicked(label) {
+    if (graphnodelabels.hasOwnProperty(label)) {
+        let currenabled = graphnodelabels[label];
+        d3.selectAll("." + label).classed("disabled_node", currenabled);
+        d3.selectAll(".eye_" + label).classed("disabled_node", currenabled);
+        graphnodelabels[label] = !currenabled;
+    }
+    else {
+        let currenabled = graphedgelabels[label];
+        d3.selectAll("." + label).classed("disabled_edge", currenabled);
+        graphedgelabels[label] = !currenabled;
+    }
 }
 
 function onLayoutFinished() {
@@ -306,6 +347,7 @@ function addResultSet(json) {
 
     edges.forEach(function (d) {
         if (graphedges.DatumExists(d) === false) {
+            graphedgelabels[d.label] = true; //record the label is in the graph
             graphedges.Add(d);
             let src = graphnodes.GetDatum(d.source);
             let tar = graphnodes.GetDatum(d.target);
@@ -375,6 +417,7 @@ function loadNodeData(newnodedata) {
     newnodedata.forEach(function (d) {
         if (graphnodes.DatumExists(d) === false) {
             newtograph.push(d);
+            graphnodelabels[d.label] = true; //record the label is in the graph
 
             if (d.properties.scope > currMaxScope) {
                 rangeUpdated = true;

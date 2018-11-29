@@ -153,3 +153,21 @@
 .FS_HOSTED_ON {
     fill: darkblue;
 }
+
+.disabled_edge {
+    fill: #dddddd;
+}
+
+.disabled_edge text {
+    fill: #dddddd;
+}
+
+.disabled_node {
+    color: #dddddd;
+    stroke: #dddddd;
+    fill: #eaeaea;
+}
+
+.disabled_node text {
+    fill: #dddddd;
+}
