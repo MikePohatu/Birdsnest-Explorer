@@ -198,6 +198,7 @@ function resetView() {
     edgeslayer.selectAll("*").remove();
     nodeslayer.selectAll("*").remove();
     resetScale();
+    refreshLabelEyes();
 }
 
 d3.selectAll("#restartLayoutBtn").attr('onclick', 'restartLayout()');
@@ -248,40 +249,48 @@ function pauseLayout() {
     d3.selectAll("#restartLayoutBtn").attr('onclick', 'restartLayout()');
 }
 
-d3.selectAll("#eyeBtn").attr('onclick', "onEyeClicked()");
-function onEyeClicked() {
+//d3.selectAll("#eyeBtn").attr('onclick', "onEyeClicked()");
+function refreshLabelEyes() {
+    let nodelabels = d3.select("#eyeNodeLabelList").html("");
     Object.keys(graphnodelabels).forEach(function (d) {
-        d3.select("#eyeNodeLabelList").append("li")
+        nodelabels.append("li")
             .append("a")
             .attr("href", "javascript:onEyeLabelClicked(\"" + d + "\");")
             .html(d)
             .append("i")
+            .attr("id", "eyeIcon_" + d)
             .classed("fa fa-eye", true);
     });
 
+    let edgelabels = d3.select("#eyeEdgeLabelList").html("");
     Object.keys(graphedgelabels).forEach(function (d) {
-        d3.select("#eyeEdgeLabelList").append("li")
+        edgelabels.append("li")
             .append("a")
             .attr("href", "javascript:onEyeLabelClicked(\"" + d + "\");")
             .html(d)
             .append("i")
+            .attr("id","eyeIcon_" + d)
             .classed("fa fa-eye", true);
     });
 }
 
 //<a href="javascript:getNode(@node.DbId);">(+)</a><br />
 function onEyeLabelClicked(label) {
-    if (graphnodelabels.hasOwnProperty(label)) {
-        let currenabled = graphnodelabels[label];
+    let currenabled;
+    if (graphnodelabels[label] !== undefined) {
+        currenabled = graphnodelabels[label];
         d3.selectAll("." + label).classed("disabled_node", currenabled);
         d3.selectAll(".eye_" + label).classed("disabled_node", currenabled);
         graphnodelabels[label] = !currenabled;
     }
     else {
-        let currenabled = graphedgelabels[label];
+        currenabled = graphedgelabels[label];
         d3.selectAll("." + label).classed("disabled_edge", currenabled);
         graphedgelabels[label] = !currenabled;
     }
+    d3.selectAll("#eyeIcon_" + label)
+        .classed("fa-eye", !currenabled)
+        .classed("fa-eye-slash", currenabled);
 }
 
 function onLayoutFinished() {
@@ -347,7 +356,9 @@ function addResultSet(json) {
 
     edges.forEach(function (d) {
         if (graphedges.DatumExists(d) === false) {
-            graphedgelabels[d.label] = true; //record the label is in the graph
+            if (graphedgelabels[d.label] === undefined) {
+                graphedgelabels[d.label] = true;
+            }//record the label is in the graph
             graphedges.Add(d);
             let src = graphnodes.GetDatum(d.source);
             let tar = graphnodes.GetDatum(d.target);
@@ -378,6 +389,7 @@ function addResultSet(json) {
         addSvgNodes(graphnodes.GetArray());
         addSvgEdges(graphedges.GetArray());
     }
+    refreshLabelEyes();
     return newitemcount;
     //console.log("addResultSet end: " );
 }
@@ -417,7 +429,9 @@ function loadNodeData(newnodedata) {
     newnodedata.forEach(function (d) {
         if (graphnodes.DatumExists(d) === false) {
             newtograph.push(d);
-            graphnodelabels[d.label] = true; //record the label is in the graph
+            if (graphnodelabels[d.label] === undefined) {
+                graphnodelabels[d.label] = true;
+            }//record the label is in the graph
 
             if (d.properties.scope > currMaxScope) {
                 rangeUpdated = true;
