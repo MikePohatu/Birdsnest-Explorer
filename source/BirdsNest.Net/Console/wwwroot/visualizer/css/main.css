@@ -43,6 +43,11 @@ body {
     font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
 
+.eyelist {
+    font-size: 12px;
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+
 .scrollable::-webkit-scrollbar {
     width: 10px;
     background: transparent;
@@ -71,7 +76,7 @@ body {
     top: 0;
     left: 0;
     height: 40px;
-    width: 185px;
+    width: 207px;
     padding: 0;
     background: white;
     border: 2px solid #D6D6D6;
@@ -117,6 +122,14 @@ body {
 
 .viewcontrol:hover {
     color: gray;
+}
+
+.viewcontrolActive {
+    color: dodgerblue;
+}
+
+.viewcontrolActive:hover {
+    color: royalblue;
 }
 
 .pane {

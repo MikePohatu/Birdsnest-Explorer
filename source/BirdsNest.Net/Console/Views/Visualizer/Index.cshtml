@@ -117,6 +117,9 @@
                     <span id="pausePlayBtn" class="cell viewcontrol has-tip" title="Play/pause layout">
                         <i id="pausePlayIcon" class="fas fa-play"></i>
                     </span>
+                    <span id="selectBtn" class="cell viewcontrol has-tip" title="Select tool">
+                        <i id="selectIcon" class="fas fa-expand"></i>
+                    </span>
                     <span id="removeBtn" class="cell viewcontrol has-tip" title="Remove node from layout">
                         <i id="removeIcon" class="fas fa-trash-alt"></i>
                     </span>
@@ -128,9 +131,9 @@
                     </span>
 
                     <div id="eyeLabelListWrapper" class="scrollable dropdown-pane" data-dropdown data-auto-focus="true" data-close-on-click="true">
-                        <div style="height:100%">
-                            <ol id="eyeNodeLabelList"></ol>
-                            <ol id="eyeEdgeLabelList"></ol>
+                        <div class="eyelist">
+                            <ol id="eyeNodeLabelList" class="no-bullet"></ol>
+                            <ol id="eyeEdgeLabelList" class="no-bullet"></ol>
                         </div>
                     </div>
 

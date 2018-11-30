@@ -5,6 +5,7 @@ var graphbglayer;
 var nodeslayer;
 var edgeslayer;
 
+//for recording the labels in teh graph and whether they are enabled e.g. AD_User,false
 var graphnodelabels = new Object();
 var graphedgelabels = new Object();
 
@@ -30,6 +31,7 @@ var force;
 var simVelocityDecay = 0.5;
 var simAlphaDecay = 0.08;
 
+var selectMode = false;
 var playMode = false;
 var shiftKey = false;
 var ctrlKey = false;
@@ -249,29 +251,43 @@ function pauseLayout() {
     d3.selectAll("#restartLayoutBtn").attr('onclick', 'restartLayout()');
 }
 
-//d3.selectAll("#eyeBtn").attr('onclick', "onEyeClicked()");
-function refreshLabelEyes() {
+function refreshLabelEyes() {  
+    function cleanLabels(obj) {
+        Object.keys(obj).forEach(function (d) {
+            if (d3.select("." + d).size() === 0) {
+                //console.log("removing eye: " + d);
+                delete obj[d];
+            }
+        });
+    }
+    cleanLabels(graphnodelabels);
+    cleanLabels(graphedgelabels);
+
+
     let nodelabels = d3.select("#eyeNodeLabelList").html("");
-    Object.keys(graphnodelabels).forEach(function (d) {
-        nodelabels.append("li")
-            .append("a")
-            .attr("href", "javascript:onEyeLabelClicked(\"" + d + "\");")
-            .html(d)
-            .append("i")
-            .attr("id", "eyeIcon_" + d)
-            .classed("fa fa-eye", true);
-    });
+    buildEyeTable(Object.keys(graphnodelabels), nodelabels);
 
     let edgelabels = d3.select("#eyeEdgeLabelList").html("");
-    Object.keys(graphedgelabels).forEach(function (d) {
-        edgelabels.append("li")
-            .append("a")
-            .attr("href", "javascript:onEyeLabelClicked(\"" + d + "\");")
-            .html(d)
-            .append("i")
-            .attr("id","eyeIcon_" + d)
-            .classed("fa fa-eye", true);
-    });
+    buildEyeTable(Object.keys(graphedgelabels), edgelabels);
+
+    function buildEyeTable(arrList, rootEl) {
+        arrList.forEach(function (d) {
+            let htlabel = rootEl.append("li")
+                .append("a")
+                .attr("href", "javascript:onEyeLabelClicked(\"" + d + "\");");
+
+            let htlabeltable = htlabel.append("div").classed("grid-x", true);
+
+            htlabeltable.append("div")
+                .attr("id", "eyeIcon_" + d)
+                .classed("cell fa fa-eye small-2", true);
+
+            htlabeltable.append("div")
+                .attr("id", "eyeLabel_" + d)
+                .classed("cell small-10", true)
+                .html(d);
+        });
+    }
 }
 
 //<a href="javascript:getNode(@node.DbId);">(+)</a><br />
@@ -720,6 +736,7 @@ function removeNodes() {
 
         resetScale();
         updateLocations();
+        refreshLabelEyes();
     });
 }
 
@@ -785,10 +802,63 @@ function unpinNode(d) {
     d.pinned = false;
 }
 
-function pageClicked(d) {
-    //console.log(": pageClicked");
+function pageClicked() {
+    //console.log("pageClicked");
     if (d3.event.defaultPrevented) { return; } // dragged
     unselectAllNodes();
+}
+
+d3.select("#selectBtn").on('click', startSelect);
+function startSelect() {
+    //console.log("startSelect");
+    d3.select("#selectBtn")
+        .on('click', stopSelect)
+        .classed('viewcontrolActive', true);
+    drawingsvg
+        .on('click', onSelectClicked, true)
+        .on('mousedown', onSelectMouseDown, true)
+        .on('touchstart', onSelectMouseDown, true);
+    drawingsvg.on(".zoom", null);
+}
+
+function stopSelect() {
+    //console.log("stopSelect");
+    d3.select("#selectBtn")
+        .on('click', startSelect)
+        .classed('viewcontrolActive', false);
+    drawingsvg
+        .on('click', pageClicked)
+        .on('mousedown', null)
+        .on('touchstart', null)
+        .on('touchend', null)
+        .on('mouseup', null)
+        .call(zoom);
+}
+
+//prevent click events so select can function
+function onSelectClicked() {
+    d3.event.stopPropagation();
+}
+
+function onSelectMouseDown() {
+    d3.event.stopPropagation();
+    console.log('select mouse down');
+    drawingsvg
+        .on('mousemove', onSelectMouseMove, true)
+        .on('mouseup', onSelectMouseUp, true);
+}
+
+function onSelectMouseMove() {
+    d3.event.stopPropagation();
+    console.log("onSelectMouseMove");
+}
+
+function onSelectMouseUp() {
+    d3.event.stopImmediatePropagation();
+    console.log('select mouse up');
+    drawingsvg
+        .on('mousemove', null)
+        .on('mouseup', null);
 }
 
 function onNodeDblClicked(d) {
