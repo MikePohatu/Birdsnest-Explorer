@@ -76,7 +76,7 @@ body {
     top: 0;
     left: 0;
     height: 40px;
-    width: 207px;
+    width: 232px;
     padding: 0;
     background: white;
     border: 2px solid #D6D6D6;
@@ -125,11 +125,16 @@ body {
 }
 
 .viewcontrolActive {
-    color: dodgerblue;
+    color: royalblue;
 }
 
 .viewcontrolActive:hover {
-    color: royalblue;
+    color: steelblue;
+}
+
+.cropBox {
+    border: 1px dotted dodgerblue;
+    fill-opacity: 0.1;
 }
 
 .pane {

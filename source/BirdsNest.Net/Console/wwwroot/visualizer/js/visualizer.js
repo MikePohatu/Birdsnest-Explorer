@@ -25,6 +25,7 @@ var graphsimulation;
 var graphnodes = new datumStore();
 var graphedges = new datumStore();
 
+var areaBox;
 
 var force;
 
@@ -45,7 +46,7 @@ var maxScaling = 3;
 var perfmode = false; //perfmode indicates high numbers of nodes, and minimises animation
 
 var panetransition = d3.transition()
-    .duration(900)
+    .duration(1000)
     .ease(d3.easeLinear);
 
 var zoom = d3.zoom()
@@ -74,12 +75,13 @@ function drawGraph(selectid) {
         .attr("id", "nodeslayer");
 
     //*center dot for testing
-    //nodeslayer.append("circle")
-    //    .classed("nodecircle", true)
-    //    .attr("r", 5)
-    //    .attr("cx", 0)
-    //    .attr("cy", 0)
-    //    .style("fill","black");
+    nodeslayer.append("circle")
+        .classed("nodecircle", true)
+        .attr("id","centerdot")
+        .attr("r", 5)
+        .attr("cx", 0)
+        .attr("cy", 0)
+        .style("fill","black");
 
     graphsimulation = d3.forceSimulation();
     graphsimulation.stop();
@@ -122,24 +124,6 @@ function drawGraph(selectid) {
 
     window.addEventListener('resize', debounce(updatePaneSize, 500, false), false);
     updatePaneSize();
-}
-
-function onZoom() {
-    zoomLayer.attr("transform", d3.event.transform);
-}
-
-d3.selectAll("#centerBtn").attr('onclick', "updatePaneSize()");
-function updatePaneSize() {
-    //console.log("updatePaneSize");
-    var box = drawingPane.node().getBoundingClientRect();
-    var svgbox = drawingsvg.node().getBBox();
-    var k = d3.zoomTransform(drawingsvg.node()).k;
-    var x = (box.width / 2 - svgbox.x - svgbox.width / 2) / k;
-    var y = (box.height / 2 - svgbox.y - svgbox.height / 2) / k;
-
-    //console.log(svgbox);
-    //console.log(k);
-    drawingsvg.transition(panetransition).call(zoom.translateBy, x, y);
 }
 
 //https://stackoverflow.com/questions/641857/javascript-window-resize-event
@@ -523,6 +507,7 @@ function addSvgNodes(nodes) {
     let enternodesg = enternodes.append("g")
         .attr("id", function (d) { return "node_" + d.db_id; })
         .attr("class", function (d) { return d.label; })
+        .attr("cursor","pointer")
         .classed("nodes", true)
         .classed("selected", function (d) { return d.selected; })
         .on("click", onNodeClicked)
@@ -814,6 +799,9 @@ function startSelect() {
     d3.select("#selectBtn")
         .on('click', stopSelect)
         .classed('viewcontrolActive', true);
+    d3.select("#cropBtn")
+        .on('click', startCrop)
+        .classed('viewcontrolActive', false);
     drawingsvg
         .on('click', onSelectClicked, true)
         .on('mousedown', onSelectMouseDown, true)
@@ -859,6 +847,154 @@ function onSelectMouseUp() {
     drawingsvg
         .on('mousemove', null)
         .on('mouseup', null);
+}
+
+d3.select("#cropBtn").on('click', startCrop);
+function startCrop() {
+    //console.log("startSelect");
+    d3.select("#selectBtn")
+        .on('click', startSelect)
+        .classed('viewcontrolActive', false);
+    d3.select("#cropBtn")
+        .on('click', stopCrop)
+        .classed('viewcontrolActive', true);
+    drawingsvg
+        .on('click', onCropClicked, true)
+        .on('mousedown', onCropMouseDown, true)
+        .on('touchstart', onCropMouseDown, true);
+    drawingsvg.on(".zoom", null);
+}
+
+function stopCrop() {
+    //console.log("stopSelect");
+    d3.select("#cropBtn")
+        .on('click', startCrop)
+        .classed('viewcontrolActive', false);
+    drawingsvg
+        .on('click', pageClicked)
+        .on('mousedown', null)
+        .on('touchstart', null)
+        .on('touchend', null)
+        .on('mouseup', null)
+        .call(zoom);
+}
+
+//prevent click events so select can function
+function onCropClicked() {
+    d3.event.stopPropagation();
+}
+
+function onCropMouseDown() {
+    d3.event.stopPropagation();
+    console.log('onCropMouseDown');
+    if (areaBox !== undefined) { areaBox.remove(); }
+    //drawingsvg
+    //    .on('mousemove', onCropMouseMove, true)
+    //    .on('mouseup', onCropMouseUp, true);
+
+    areaBox = drawingsvg.append("rect")
+        .attr("id","areaBox")
+        .attr("class", "cropBox");
+
+    var oriMouseX = d3.mouse(this)[0];
+    var oriMouseY = d3.mouse(this)[1];
+
+    drawingsvg
+        .on("mousemove", function () {
+            var newMouseX = d3.mouse(this)[0];
+            var newMouseY = d3.mouse(this)[1];
+
+            areaBox.attr("x", Math.min(oriMouseX, newMouseX))
+                .attr("y", Math.min(oriMouseY, newMouseY))
+                .attr("width", Math.abs(newMouseX - oriMouseX))
+                .attr("height", Math.abs(newMouseY - oriMouseY));
+        })
+        .on("mouseup", function () {
+            drawingsvg
+                .on("mousemove", null)
+                .on("mouseup", null);
+
+            let newMouseX = d3.mouse(this)[0];
+            let newMouseY = d3.mouse(this)[1];
+
+            if (newMouseX !== oriMouseX && newMouseY !== oriMouseY) {
+                console.log("trying to rezoom");                
+
+                let box = drawingPane.node().getBoundingClientRect();
+                let areaBoxEl = areaBox.node().getBBox();
+
+                console.log("box x,y");
+                console.log(box.x + "," + box.y);
+                //console.log("centerdot x");
+                //console.log(d3.select("#centerdot").node().getBBox().x);
+                //console.log(svgbox);
+                //console.log("k: " + k);
+                //console.log(areaBoxEl);
+                console.log("areaBoxEl x,y");
+                console.log(areaBoxEl.x + "," + areaBoxEl.y);
+                console.log('widths');
+                console.log(box.width + ',' + areaBoxEl.width);
+
+                //console.log(areaBoxEl.y);
+                
+                let k = Math.min(box.width / areaBoxEl.width, box.height / areaBoxEl.height);
+                let areaBoxElCenterX = (areaBoxEl.x + areaBoxEl.width / 2);
+                let areaBoxElCenterY = (areaBoxEl.y + areaBoxEl.height / 2);
+
+                let movex = box.width / 2 - areaBoxElCenterX;
+                let movey = box.height / 2 - areaBoxElCenterY;
+
+                console.log('k values');
+                console.log(k);
+
+                console.log('move values');
+                console.log(movex + ',' + movey + ',' + k);
+
+                drawingsvg
+                    //.transition(panetransition)
+                    .call(zoom.translateBy, movex, movey)
+                    .call(zoom.scaleBy, k)
+                    ;               
+            }
+            areaBox.remove();
+            
+        }, true);
+    d3.event.stopPropagation();
+}
+
+function onCropMouseMove() {
+    d3.event.stopPropagation();
+    console.log("onCropMouseMove");
+}
+
+function onCropMouseUp() {
+    d3.event.stopImmediatePropagation();
+    console.log('onCropMouseUp');
+    drawingsvg
+        .on('mousemove', null)
+        .on('mouseup', null);
+}
+
+function onZoom() {
+    //console.log("onZoom");
+    //console.log(zoomLayer);
+    //console.log(d3.event.transform);
+    zoomLayer.attr("transform", d3.event.transform);
+}
+
+d3.selectAll("#centerBtn").attr('onclick', "updatePaneSize()");
+function updatePaneSize() {
+    //console.log("updatePaneSize");
+    var box = drawingPane.node().getBoundingClientRect();
+    var svgbox = drawingsvg.node().getBBox();
+    var k = d3.zoomTransform(drawingsvg.node()).k;
+    var movex = (box.width / 2 - svgbox.x - svgbox.width / 2) / k;
+    var movey = (box.height / 2 - svgbox.y - svgbox.height / 2) / k;
+
+    //console.log(box);
+    //console.log(svgbox);
+    //console.log(k);
+    drawingsvg.transition(panetransition).call(zoom.translateBy, movex, movey);
 }
 
 function onNodeDblClicked(d) {
