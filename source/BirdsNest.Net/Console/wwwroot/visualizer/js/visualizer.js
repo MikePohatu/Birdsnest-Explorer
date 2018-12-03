@@ -47,7 +47,7 @@ var perfmode = false; //perfmode indicates high numbers of nodes, and minimises 
 
 var panetransition = d3.transition()
     .duration(1000)
-    .ease(d3.easeLinear);
+    .ease(d3.easeCubicInOut);
 
 var zoom = d3.zoom()
     .scaleExtent([0.05, 5])
@@ -75,13 +75,13 @@ function drawGraph(selectid) {
         .attr("id", "nodeslayer");
 
     //*center dot for testing
-    nodeslayer.append("circle")
-        .classed("nodecircle", true)
-        .attr("id","centerdot")
-        .attr("r", 5)
-        .attr("cx", 0)
-        .attr("cy", 0)
-        .style("fill","black");
+    //nodeslayer.append("circle")
+    //    .classed("nodecircle", true)
+    //    .attr("id","centerdot")
+    //    .attr("r", 5)
+    //    .attr("cx", 0)
+    //    .attr("cy", 0)
+    //    .style("fill","black");
 
     graphsimulation = d3.forceSimulation();
     graphsimulation.stop();
@@ -521,6 +521,7 @@ function addSvgNodes(nodes) {
     setTimeout(function () {
         //node layout
         enternodesg.append("circle")
+            .attr("id", function (d) { return "node_" + d.db_id + "_icon"; })
             .classed("nodecircle", true)
             .attr("r", function (d) { return d.radius; })
             .attr("cx", function (d) { return d.radius; })
@@ -829,24 +830,50 @@ function onSelectClicked() {
 }
 
 function onSelectMouseDown() {
-    d3.event.stopPropagation();
-    console.log('select mouse down');
-    drawingsvg
-        .on('mousemove', onSelectMouseMove, true)
-        .on('mouseup', onSelectMouseUp, true);
-}
+    console.log("onSelectMouseDown");
+    if (areaBox !== undefined) { areaBox.remove(); }
 
-function onSelectMouseMove() {
-    d3.event.stopPropagation();
-    console.log("onSelectMouseMove");
-}
+    areaBox = drawingsvg.append("rect")
+        .attr("id", "areaBox")
+        .attr("class", "cropBox");
 
-function onSelectMouseUp() {
-    d3.event.stopImmediatePropagation();
-    console.log('select mouse up');
+    var oriMouseX = d3.mouse(this)[0];
+    var oriMouseY = d3.mouse(this)[1];
+
     drawingsvg
-        .on('mousemove', null)
-        .on('mouseup', null);
+        .on("mousemove", function () {
+            drawAreaBox(areaBox, [oriMouseX, oriMouseY], d3.mouse(this));
+        })
+        .on("mouseup", function () {
+            console.log("onSelectMouseDown mouseup");
+            let newMouseX = d3.mouse(this)[0];
+            let newMouseY = d3.mouse(this)[1];
+
+            let areaBoxEl = areaBox.node().getBoundingClientRect();
+            console.log(areaBoxEl);
+            //console.log(areaBoxEl.width + ":" + areaBoxEl.height);
+
+            if (newMouseX !== oriMouseX && newMouseY !== oriMouseY) {
+                if (ctrlKey !== true) { unselectAllNodes(); }
+
+                d3.selectAll(".nodes")
+                    .each(function (d) {
+                        let elem = d3.select("#node_" + d.db_id + "_icon").node().getBoundingClientRect();
+
+                        if (areaBoxEl.top < elem.top && areaBoxEl.bottom > elem.bottom && areaBoxEl.left < elem.left && areaBoxEl.right > elem.right) {
+                            console.log("selecting: " + d.name + ": " + d.db_id);
+                            console.log(d);
+                            updateNodeSelection(d, true);
+                            console.log(d);
+                        }
+                    });
+            }
+            drawingsvg
+                .on("mousemove", null)
+                .on("mouseup", null);
+            areaBox.remove();
+            stopSelect();
+        }, true);
 }
 
 d3.select("#cropBtn").on('click', startCrop);
@@ -885,12 +912,7 @@ function onCropClicked() {
 }
 
 function onCropMouseDown() {
-    d3.event.stopPropagation();
-    console.log('onCropMouseDown');
     if (areaBox !== undefined) { areaBox.remove(); }
-    //drawingsvg
-    //    .on('mousemove', onCropMouseMove, true)
-    //    .on('mouseup', onCropMouseUp, true);
 
     areaBox = drawingsvg.append("rect")
         .attr("id","areaBox")
@@ -901,13 +923,7 @@ function onCropMouseDown() {
 
     drawingsvg
         .on("mousemove", function () {
-            var newMouseX = d3.mouse(this)[0];
-            var newMouseY = d3.mouse(this)[1];
-
-            areaBox.attr("x", Math.min(oriMouseX, newMouseX))
-                .attr("y", Math.min(oriMouseY, newMouseY))
-                .attr("width", Math.abs(newMouseX - oriMouseX))
-                .attr("height", Math.abs(newMouseY - oriMouseY));
+            drawAreaBox(areaBox, [oriMouseX, oriMouseY], d3.mouse(this));
         })
         .on("mouseup", function () {
             drawingsvg
@@ -918,62 +934,40 @@ function onCropMouseDown() {
             let newMouseY = d3.mouse(this)[1];
 
             if (newMouseX !== oriMouseX && newMouseY !== oriMouseY) {
-                console.log("trying to rezoom");                
-
                 let box = drawingPane.node().getBoundingClientRect();
                 let areaBoxEl = areaBox.node().getBBox();
-
-                console.log("box x,y");
-                console.log(box.x + "," + box.y);
-                //console.log("centerdot x");
-                //console.log(d3.select("#centerdot").node().getBBox().x);
-                //console.log(svgbox);
-                //console.log("k: " + k);
-                //console.log(areaBoxEl);
-                console.log("areaBoxEl x,y");
-                console.log(areaBoxEl.x + "," + areaBoxEl.y);
-                console.log('widths');
-                console.log(box.width + ',' + areaBoxEl.width);
-
-                //console.log(areaBoxEl.y);
-                
+                let currentk = d3.zoomTransform(drawingsvg.node()).k;
                 let k = Math.min(box.width / areaBoxEl.width, box.height / areaBoxEl.height);
-                let areaBoxElCenterX = (areaBoxEl.x + areaBoxEl.width / 2);
-                let areaBoxElCenterY = (areaBoxEl.y + areaBoxEl.height / 2);
-
-                let movex = box.width / 2 - areaBoxElCenterX;
-                let movey = box.height / 2 - areaBoxElCenterY;
-
-                console.log('k values');
-                console.log(k);
-
-                console.log('move values');
-                console.log(movex + ',' + movey + ',' + k);
+                let areaBoxElCenterX = areaBoxEl.x + areaBoxEl.width / 2;
+                let areaBoxElCenterY = areaBoxEl.y + areaBoxEl.height / 2;
+                let movex = (box.width / 2 - areaBoxElCenterX) / currentk;
+                let movey = (box.height / 2 - areaBoxElCenterY) / currentk;
 
                 drawingsvg
-                    //.transition(panetransition)
+                    .transition()
+                    .duration(800)
+                    .ease(d3.easeCubicInOut)
                     .call(zoom.translateBy, movex, movey)
-                    .call(zoom.scaleBy, k)
-                    ;               
+                    .on("end", function () {
+                        drawingsvg
+                            .transition()
+                            .duration(800)
+                            .ease(d3.easeCubicInOut)
+                            .call(zoom.scaleBy, k);
+                    });
             }
             areaBox.remove();
-            
+            stopCrop();
         }, true);
-    d3.event.stopPropagation();
 }
 
-function onCropMouseMove() {
-    d3.event.stopPropagation();
-    console.log("onCropMouseMove");
+function drawAreaBox(areaBoxEl, oriCoords, newCoords) {
+    areaBoxEl.attr("x", Math.min(oriCoords[0], newCoords[0]))
+        .attr("y", Math.min(newCoords[1], oriCoords[1]))
+        .attr("width", Math.abs(newCoords[0] - oriCoords[0]))
+        .attr("height", Math.abs(newCoords[1] - oriCoords[1]));
 }
 
-function onCropMouseUp() {
-    d3.event.stopImmediatePropagation();
-    console.log('onCropMouseUp');
-    drawingsvg
-        .on('mousemove', null)
-        .on('mouseup', null);
-}
 
 function onZoom() {
     //console.log("onZoom");
@@ -1042,8 +1036,9 @@ function updateNodeSelection(d, isselected) {
         }
     }
 
-    d3.selectAll("#node_" + d.db_id)
+    d3.select("#node_" + d.db_id)
         .classed("selected", function () {
+            console.log("selecting: " + isselected);
             d.selected = isselected;
             return isselected;
         });
@@ -1075,13 +1070,12 @@ function unselectAllOtherNodes(keptdatum) {
 
 function unselectAllNodes() {
     //console.log("unselectAllNodes");
+    d3.selectAll(".detailcard").remove();
     d3.selectAll(".selected")
         .classed("selected", function (d) {
             d.selected = false;
             return false;
         });
-
-    d3.selectAll(".detailcard").remove();
 }
 
 function nodeShowDetailsSelected(d) {

@@ -20,6 +20,11 @@
     fill: #353535;
     stroke: none;
     font-family: 'helvetica', arial, sans-serif;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    -o-user-select: none;
+    user-select: none;
 }
 
 .pin {
@@ -124,6 +129,11 @@
     font-size: 8px;
     fill: #353535;
     font-family: 'helvetica', arial, sans-serif;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    -o-user-select: none;
+    user-select: none;
 }
 
 .arrows {
