@@ -277,8 +277,9 @@ function onEyeLabelClicked(label) {
     let currenabled;
     if (graphnodelabels[label] !== undefined) {
         currenabled = graphnodelabels[label];
-        d3.selectAll("." + label).classed("disabled_node", currenabled);
-        d3.selectAll(".eye_" + label).classed("disabled_node", currenabled);
+        d3.selectAll("." + label)
+            .classed("disabled_node", currenabled)
+            .classed("enabled_node", !currenabled);
         graphnodelabels[label] = !currenabled;
     }
     else {
@@ -508,6 +509,7 @@ function addSvgNodes(nodes) {
         .attr("class", function (d) { return d.label; })
         .attr("cursor","pointer")
         .classed("nodes", true)
+        .classed("enabled_node", true)
         .classed("selected", function (d) { return d.selected; })
         .on("click", onNodeClicked)
         .on("mouseover", onNodeMouseOver)
@@ -854,7 +856,7 @@ function onSelectMouseDown() {
             let areaBoxEl = areaBox.node().getBoundingClientRect();
 
             if (newMouseX !== oriMouseX && newMouseY !== oriMouseY) {
-                d3.selectAll(".nodes")
+                d3.selectAll(".enabled_node")
                     .each(function (d) {
                         let elem = d3.select("#node_" + d.db_id + "_icon").node().getBoundingClientRect();
 
