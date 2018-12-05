@@ -1,28 +1,33 @@
 ﻿@using Console.ViewModels
 @using Console.neo4jProxy
 @model RelatedDetailViewModel
-<div class="detaillist">
-    <u><b>Details</b></u>
-    <b>Name:</b> @Model.Node.Name<br />
-    <b>db_id:</b> @Model.Node.DbId<br />
-    <b>Type:</b> @Model.Node.Label<br />
-    <b>Scope:</b> @Model.Node.Scope<br />
-</div>
 
-@if (@Model.Node.Properties.Count > 0)
-{
-    <div>
-        <ul class="accordion" data-accordion data-allow-all-closed="true" data-multi-expand="true">
-            <li class="accordion-item" data-accordion-item>
-                <a href="#" class="accordion-title">Properties (@Model.Node.Properties.Count):</a>
-                <div class="accordion-content detaillist" data-tab-content>
-                    @foreach (var key in Model.Node.Properties.Keys)
-                    {<b>@key:</b> @Model.Node.Properties[key]<br />}
-                </div>
-            </li>
-        </ul>
+<div id="detaillist_@Model.Node.DbId">
+    <div class="detaillist">
+        <div class="grid-x align-middle">
+            <div class="cell small-3"><u><b>Details</b></u></div>
+            <a href="javascript:onEyeNodeDetailClicked(@Model.Node.DbId);"><div id="eyeIcon_@Model.Node.DbId" class="cell far fa-eye small-2"></div></a>
+        </div>
+        <b>Name:</b> @Model.Node.Name<br />
+        <b>db_id:</b> @Model.Node.DbId<br />
+        <b>Type:</b> @Model.Node.Label<br />
+        <b>Scope:</b> @Model.Node.Scope<br />
     </div>
-}
+
+    @if (@Model.Node.Properties.Count > 0)
+    {
+        <div>
+            <ul class="accordion" data-accordion data-allow-all-closed="true" data-multi-expand="true">
+                <li class="accordion-item" data-accordion-item>
+                    <a href="#" class="accordion-title">Properties (@Model.Node.Properties.Count):</a>
+                    <div class="accordion-content detaillist" data-tab-content>
+                        @foreach (var key in Model.Node.Properties.Keys)
+                        {<b>@key:</b> @Model.Node.Properties[key]<br />}
+                    </div>
+                </li>
+            </ul>
+        </div>
+    }
     <div>
         <ol class="accordion" data-accordion data-allow-all-closed="true" data-multi-expand="true">
             <li class="accordion-item" data-accordion-item>
@@ -54,3 +59,4 @@
             </li>
         </ol>
     </div>
+</div>

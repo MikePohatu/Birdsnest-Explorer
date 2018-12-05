@@ -307,6 +307,18 @@ function onEyeHideAllClicked(element) {
         });
 }
 
+function onEyeNodeDetailClicked(dbid) {
+    //console.log("onEyeNodeDetailClicked: " + dbid);
+    let show = !d3.selectAll("#node_" + dbid).classed("enabled");
+
+    d3.select("#eyeIcon_" + dbid)
+        .classed("fa-eye", show)
+        .classed("fa-eye-slash", !show);
+
+    d3.select("#node_" + dbid)
+        .classed("enabled", show)
+        .classed("disabled", !show);
+}
 
 //<a href="javascript:getNode(@node.DbId);">(+)</a><br />
 function onEyeLabelClicked(label) {
@@ -1078,7 +1090,8 @@ function updateNodeSelection(d, isselected) {
     //console.log("updateNodeSelection : " + d.name + " : " + isselected);
     if (d.selected !== isselected) {
         d.selected = isselected;        
-        nodeslayer.select("#node_" + d.db_id).classed("selected", isselected);
+        let node = nodeslayer.select("#node_" + d.db_id)
+            .classed("selected", isselected);
         
         if (isselected) {
             if (!d.hasOwnProperty('detailsHTML')) {
@@ -1092,6 +1105,12 @@ function updateNodeSelection(d, isselected) {
                 //console.log("non populate");
                 nodeShowDetailsSelected(d);
             }
+
+            let enabled = node.classed("enabled");
+            //console.log("enabled: " + enabled);
+            d3.select("#eyeIcon_" + d.db_id)
+                .classed("fa-eye", enabled)
+                .classed("fa-eye-slash", !enabled);
         }
         else {
             nodeHideDetailsSelected(d);

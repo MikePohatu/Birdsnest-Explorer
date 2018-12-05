@@ -15,6 +15,10 @@
     fill: #FEFE73;
 }
 
+.selected.disabled .nodecircle {
+    fill: #FEFEC5;
+}
+
 .nodes text {
     font-size: 10px;
     fill: #353535;
