@@ -235,6 +235,8 @@ function pauseLayout() {
 }
 
 function refreshLabelEyes() {  
+    cleanLabels(graphnodelabels);
+    cleanLabels(graphedgelabels);
     function cleanLabels(obj) {
         Object.keys(obj).forEach(function (d) {
             if (d3.select("." + d).size() === 0) {
@@ -243,26 +245,37 @@ function refreshLabelEyes() {
             }
         });
     }
-    cleanLabels(graphnodelabels);
-    cleanLabels(graphedgelabels);
 
-    let nodelabels = d3.select("#eyeNodeLabelList").html("");
-    buildEyeTable(Object.keys(graphnodelabels), nodelabels);
+    buildEyeTable(graphnodelabels, "eyeNodeLabelList");
+    buildEyeTable(graphedgelabels, "eyeEdgeLabelList");
+    function buildEyeTable(obj, id) {
+        let arrList = Object.keys(obj);
+        let rootEl = d3.select("#"+ id).html("");
+        let htlabel = rootEl.append("li")
+            .append("div")
+            .classed("cell small-12", true);
 
-    let edgelabels = d3.select("#eyeEdgeLabelList").html("");
-    buildEyeTable(Object.keys(graphedgelabels), edgelabels);
+        htlabel.append("a")
+            .attr("href", "javascript:onEyeShowAllClicked(\"" + id + "\");")
+            .html("Show all");
+        htlabel.append("span")
+            .html(" | ");
+        htlabel.append("a")
+            .attr("href", "javascript:onEyeHideAllClicked(\"" + id + "\");")
+            .html("Hide all");
 
-    function buildEyeTable(arrList, rootEl) {
         arrList.forEach(function (d) {
-            let htlabel = rootEl.append("li")
+            htlabel = rootEl.append("li")
+                .classed("eyeListItem", true)
+                .attr("label",d)
                 .append("a")
                 .attr("href", "javascript:onEyeLabelClicked(\"" + d + "\");");
 
-            let htlabeltable = htlabel.append("div").classed("grid-x", true);
+            let htlabeltable = htlabel.append("div").classed("grid-x align-middle", true);
 
             htlabeltable.append("div")
                 .attr("id", "eyeIcon_" + d)
-                .classed("cell fa fa-eye small-2", true);
+                .classed("cell far fa-eye small-2", true);
 
             htlabeltable.append("div")
                 .attr("id", "eyeLabel_" + d)
@@ -272,24 +285,59 @@ function refreshLabelEyes() {
     }
 }
 
+function onEyeShowAllClicked(element) {
+    //console.log("onEyeShowAllClicked: " + element);
+    d3.selectAll("#" + element + " .eyeListItem")
+        .each(function (d) {
+            //console.log(this);
+            //console.log(d);
+            let label = d3.select(this).attr("label");
+            eyeShowHideLabel(label, true);
+        });
+}
+
+function onEyeHideAllClicked(element) {
+    //console.log("onEyeHideAllClicked: " + element);
+    d3.selectAll("#" + element + " .eyeListItem")
+        .each(function () {
+            //console.log(this);
+            //console.log(d);
+            let label = d3.select(this).attr("label");
+            eyeShowHideLabel(label, false);
+        });
+}
+
+
 //<a href="javascript:getNode(@node.DbId);">(+)</a><br />
 function onEyeLabelClicked(label) {
+    //console.log("onEyeLabelClicked: " + label);
     let currenabled;
     if (graphnodelabels[label] !== undefined) {
         currenabled = graphnodelabels[label];
-        d3.selectAll("." + label)
-            .classed("disabled_node", currenabled)
-            .classed("enabled_node", !currenabled);
-        graphnodelabels[label] = !currenabled;
+        //graphnodelabels[label] = !currenabled;
     }
     else {
         currenabled = graphedgelabels[label];
-        d3.selectAll("." + label).classed("disabled_edge", currenabled);
-        graphedgelabels[label] = !currenabled;
+        //graphedgelabels[label] = !currenabled;
     }
+    eyeShowHideLabel(label, !currenabled);
+}
+
+function eyeShowHideLabel(label, show) {
+    if (graphnodelabels[label] !== undefined) {
+        graphnodelabels[label] = show;
+    }
+    else {
+        graphedgelabels[label] = show;
+    }
+
+    d3.selectAll("." + label)
+        .classed("disabled", !show)
+        .classed("enabled", show);
+
     d3.selectAll("#eyeIcon_" + label)
-        .classed("fa-eye", !currenabled)
-        .classed("fa-eye-slash", currenabled);
+        .classed("fa-eye", show)
+        .classed("fa-eye-slash", !show);
 }
 
 function onLayoutFinished() {
@@ -509,7 +557,7 @@ function addSvgNodes(nodes) {
         .attr("class", function (d) { return d.label; })
         .attr("cursor","pointer")
         .classed("nodes", true)
-        .classed("enabled_node", true)
+        .classed("enabled", true)
         .classed("selected", function (d) { return d.selected; })
         .on("click", onNodeClicked)
         .on("mouseover", onNodeMouseOver)
@@ -651,7 +699,8 @@ function addSvgEdges(edges) {
             //console.log(combined);
             return combined;
         })
-        .classed("edges", true);
+        .classed("edges", true)
+        .classed("enabled",true);
 
     setTimeout(function () {
         enteredgesg.append("path")
@@ -858,7 +907,7 @@ function onSelectMouseDown() {
             let areaBoxEl = areaBox.node().getBoundingClientRect();
 
             if (newMouseX !== oriMouseX && newMouseY !== oriMouseY) {
-                d3.selectAll(".enabled_node")
+                d3.selectAll(".nodes.enabled")
                     .each(function (d) {
                         let elem = d3.select("#node_" + d.db_id + "_icon").node().getBoundingClientRect();
 
