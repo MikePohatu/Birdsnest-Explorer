@@ -263,6 +263,11 @@ function refreshLabelEyes() {
         htlabel.append("a")
             .attr("href", "javascript:onEyeHideAllClicked(\"" + id + "\");")
             .html("Hide all");
+        htlabel.append("span")
+            .html(" | ");
+        htlabel.append("a")
+            .attr("href", "javascript:onEyeInvert(\"" + id + "\");")
+            .html("Invert");
 
         arrList.forEach(function (d) {
             htlabel = rootEl.append("li")
@@ -305,6 +310,21 @@ function onEyeHideAllClicked(element) {
             let label = d3.select(this).attr("label");
             eyeShowHideLabel(label, false);
         });
+}
+
+function onEyeInvert(element) {
+    d3.selectAll("#" + element + " .eyeListItem")
+        .each(function () {
+            //console.log(this);
+            //console.log(d);
+            let label = d3.select(this).attr("label");
+            let enabled = d3.selectAll("." + label + ".enabled");
+            let disabled = d3.selectAll("." + label + ".disabled");
+
+            disabled.classed("disabled", false).classed("enabled", true);
+            enabled.classed("enabled", false).classed("disabled", true);
+        });
+    
 }
 
 function onEyeNodeDetailClicked(dbid) {
@@ -888,7 +908,7 @@ function stopSelect() {
             .on('mousedown', null)
             .on('touchstart', null)
             .call(zoom);
-    });
+    },50);
 }
 
 //prevent click events so select can function
@@ -974,7 +994,7 @@ function stopCrop() {
             .on('touchend', null)
             .on('mouseup', null)
             .call(zoom);
-    });
+    },50);
 }
 
 //prevent click events so select can function
