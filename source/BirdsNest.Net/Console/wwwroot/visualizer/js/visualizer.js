@@ -814,6 +814,8 @@ function startSelect() {
 
 function stopSelect() {
     //console.log("stopSelect");
+    if (areaBox !== undefined) { areaBox.remove(); }
+
     d3.select("#selectBtn")
         .on('click', startSelect)
         .classed('viewcontrolActive', false);
@@ -897,6 +899,7 @@ function startCrop() {
 
 function stopCrop() {
     //console.log("stopSelect");
+    if (areaBox !== undefined) { areaBox.remove(); }
     d3.select("#cropBtn")
         .on('click', startCrop)
         .classed('viewcontrolActive', false);
