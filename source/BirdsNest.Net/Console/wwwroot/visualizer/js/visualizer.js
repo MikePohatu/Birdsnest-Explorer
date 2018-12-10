@@ -52,9 +52,8 @@ function drawGraph(selectid) {
     drawingPane = d3.select("#" + selectid);
 
     drawingsvg = drawingPane.append("svg")
-        .attr("id", "drawingsvg")
-        .on("click", pageClicked)
-        .call(zoom);
+        .attr("id", "drawingsvg");
+    resetDrawingEvents();
 
     //setup the zooming layer
     zoomLayer = drawingsvg.append("g")
@@ -145,7 +144,7 @@ function onGraphTick() {
     let k = graphsimulation.alpha();
 
     d3.selectAll(".treeedge").each(function (d) {
-        if (d.target.y < (d.source.y + d.source.size /4)) {
+        if (d.target.y < d.source.y + d.source.size /4) {
             d.target.y = d.source.y + d.source.size;
         }
         else {
@@ -160,6 +159,16 @@ function onGraphTick() {
         }
     });
     //if (!perfmode) { updateLocations(); }
+}
+
+function resetDrawingEvents() {
+    drawingsvg
+        .on('click', pageClicked)
+        .on('mousedown', null)
+        .on('touchstart', null)
+        .on('touchend', null)
+        .on('mouseup', null)
+        .call(zoom);
 }
 
 function resetView() {
@@ -773,7 +782,7 @@ function removeNodes() {
 
     stopSelect(); //disable select function if used
     nodeList.forEach(function (d) {
-        updateNodeSelection(d, false);
+        updateNodeSelection(d, false, false);
         nodeids.push(d.db_id);
         graphnodes.Remove(d);
     });
@@ -900,11 +909,7 @@ function stopSelect() {
 
     //delay the re-register so any mouseup doesn't trigger a pageClick when it gets re-registered
     setTimeout(function () {
-        drawingsvg
-            .on('click', pageClicked)
-            .on('mousedown', null)
-            .on('touchstart', null)
-            .call(zoom);
+        resetDrawingEvents();
     },50);
 }
 
@@ -941,11 +946,11 @@ function onSelectMouseDown() {
                         let elem = d3.select("#node_" + d.db_id + "_icon").node().getBoundingClientRect();
 
                         if (areaBoxEl.top < elem.top && areaBoxEl.bottom > elem.bottom && areaBoxEl.left < elem.left && areaBoxEl.right > elem.right) {
-                            updateNodeSelection(d, true);
+                            updateNodeSelection(d, true, false);
                         }
                         else {
                             if (d3.event.ctrlKey === false) {
-                                updateNodeSelection(d, false);
+                                updateNodeSelection(d, false, false);
                             }
                         }
                     });
@@ -984,13 +989,7 @@ function stopCrop() {
 
     //delay the re-register so any mouseup doesn't trigger a pageClick when it gets re-registered
     setTimeout(function () {
-        drawingsvg
-            .on('click', pageClicked)
-            .on('mousedown', null)
-            .on('touchstart', null)
-            .on('touchend', null)
-            .on('mouseup', null)
-            .call(zoom);
+        resetDrawingEvents();
     },50);
 }
 
@@ -1085,57 +1084,62 @@ function updatePaneSize() {
 
 function onNodeDblClicked(d) {
     //console.log(": onNodeDblClicked");
-    if (d3.event.defaultPrevented) { return; } // dragged
-    d3.event.stopPropagation();
-    addRelated(d.db_id);
+    //if (d3.event.defaultPrevented) { return; } // dragged
+    //d3.event.stopPropagation();
+    //addRelated(d.db_id);
 }
 
 function onNodeClicked(d) {
-    //console.log(": onNodeClicked");
+    //console.log("onNodeClicked");
     //console.log(": " + d.name);
-    if (d3.event.defaultPrevented) { return; } // dragged
+    //console.log("d.x:dx | " + d.x + ":" + d3.event.x);
+    //console.log("d.y:dy | " + d.y + ":" + d3.event.y);
+    if (d3.event.defaultPrevented) {
+        //console.log("onNodeClicked: defaultPrevented");
+        return;
+    } // dragged
     d3.event.stopPropagation();
 
     if (d3.event.ctrlKey) {
         //if ctrl key is down, just toggle the node		
-        updateNodeSelection(d, !d.selected);
+        updateNodeSelection(d, !d.selected, !d.selected);
     }
     else {
         //if the ctrl key isn't down, unselect everything and select the node
         unselectAllOtherNodes(d);
-        updateNodeSelection(d, true);
+        updateNodeSelection(d, true, true);
     }
 }
 
-function updateNodeSelection(d, isselected) {
-    //console.log("updateNodeSelection : " + d.name + " : " + isselected);
-    if (d.selected !== isselected) {
-        d.selected = isselected;        
-        let node = nodeslayer.select("#node_" + d.db_id)
-            .classed("selected", isselected);
-        
-        if (isselected) {
-            if (!d.hasOwnProperty('detailsHTML')) {
-                //console.log("populate");
-                populateDetails(d, function () {
-                    //console.log("populate callback");
-                    nodeShowDetailsSelected(d);
-                });
-            }
-            else {
-                //console.log("non populate");
-                nodeShowDetailsSelected(d);
-            }
+function updateNodeSelection(d, isselected, showdetails) {
+    console.log("updateNodeSelection : " + d.name + " : " + d.selected + ":" + isselected);
+    //d.selected = isselected; 
+    //if (d.selected !== isselected) {
+            
+    let node = nodeslayer.select("#node_" + d.db_id)
+        .classed("selected", isselected);
 
-            let enabled = node.classed("enabled");
-            //console.log("enabled: " + enabled);
-            d3.select("#eyeIcon_" + d.db_id)
-                .classed("fa-eye", enabled)
-                .classed("fa-eye-slash", !enabled);
+    let enabled = node.classed("enabled");
+    //console.log("enabled: " + enabled);
+    d3.select("#eyeIcon_" + d.db_id)
+        .classed("fa-eye", enabled)
+        .classed("fa-eye-slash", !enabled);
+
+    if (d.selected !== isselected) {
+        d.selected = isselected;
+        if (isselected) {
+            if (showdetails === true) {
+                if (!d.hasOwnProperty('detailsHTML')) {
+                    //console.log("populate");
+                    populateDetails(d, function () {
+                        //console.log("populate callback");
+                        nodeShowDetailsSelected(d);
+                    });
+                }
+                else { nodeShowDetailsSelected(d); }
+            }
         }
-        else {
-            nodeHideDetailsSelected(d);
-        }
+        else { nodeHideDetailsSelected(d); }
     }
 }
 
@@ -1203,6 +1207,10 @@ function onNodeMouseOut(d) {
 
 function onNodeDragged(d) {
     //console.log("onNodeDragged");
+    //console.log("d.x:dx | " + d.x + ":" + d3.event.dx);
+    //console.log("d.y:dy | " + d.y + ":" + d3.event.dy);
+    if (d3.event.dx === 0 && 0 === d3.event.dy) { return; }
+
     d3.event.sourceEvent.stopPropagation();
     //if the node is selected the move it and all other selected nodes
     if (d.selected) {
@@ -1226,7 +1234,7 @@ function onNodeDragged(d) {
 function updateLocations(animate) {
     let alledges = edgeslayer.selectAll(".edges").data(graphedges.GetArray());
     let edgebgwidth = 13;
-    let duration = 500;
+    let duration = 2000;
 
     let nodes = nodeslayer.selectAll(".nodes")
         .attr("x", function (d) {
@@ -1264,7 +1272,6 @@ function updateLocations(animate) {
                 .transition()
                 .duration(duration);
         }
-
         edge.attr("transform", function () {
                 return "rotate(" + diagLine.deg + " " + diagLine.x1 + " " + diagLine.y1 + ") " +
                     "translate(" + diagLine.x1 + " " + diagLine.y1 + ")";
@@ -1281,7 +1288,7 @@ function updateLocations(animate) {
                 return "rotate(" + diagLine.deg + " " + diagLine.x1 + " " + diagLine.y1 + ") " +
                     "translate(" + diagLine.x1 + " " + diagLine.y1 + ")";
             })
-            .attr("d", function (d) {
+            .attr("d", function () {
                 return "M 0 -" + edgebgwidth + " " +
                     "L " + diagLine.length + " -" + edgebgwidth + " " +
                     "L " + diagLine.length + " " + edgebgwidth + " " +
