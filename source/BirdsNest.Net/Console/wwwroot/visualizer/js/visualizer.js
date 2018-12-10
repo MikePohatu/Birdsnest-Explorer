@@ -1112,7 +1112,7 @@ function onNodeClicked(d) {
 }
 
 function updateNodeSelection(d, isselected, showdetails) {
-    console.log("updateNodeSelection : " + d.name + " : " + d.selected + ":" + isselected);
+    //console.log("updateNodeSelection : " + d.name + " : " + d.selected + ":" + isselected);
     //d.selected = isselected; 
     //if (d.selected !== isselected) {
             
@@ -1234,7 +1234,7 @@ function onNodeDragged(d) {
 function updateLocations(animate) {
     let alledges = edgeslayer.selectAll(".edges").data(graphedges.GetArray());
     let edgebgwidth = 13;
-    let duration = 2000;
+    let duration = 500;
 
     let nodes = nodeslayer.selectAll(".nodes")
         .attr("x", function (d) {
