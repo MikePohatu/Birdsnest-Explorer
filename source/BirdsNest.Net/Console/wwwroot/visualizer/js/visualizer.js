@@ -44,10 +44,6 @@ var maxScaling = 3;
 
 var perfmode = false; //perfmode indicates high numbers of nodes, and minimises animation
 
-var panetransition = d3.transition()
-    .duration(1000)
-    .ease(d3.easeCubicInOut);
-
 var zoom = d3.zoom()
     .scaleExtent([0.05, 5])
     .on("zoom", onZoom);
@@ -163,7 +159,7 @@ function onGraphTick() {
             }
         }
     });
-    if (!perfmode) { updateLocations(); }
+    //if (!perfmode) { updateLocations(); }
 }
 
 function resetView() {
@@ -249,7 +245,7 @@ function refreshLabelEyes() {
     buildEyeTable(graphnodelabels, "eyeNodeLabelList");
     buildEyeTable(graphedgelabels, "eyeEdgeLabelList");
     function buildEyeTable(obj, id) {
-        let arrList = Object.keys(obj);
+        let arrList = Object.keys(obj).sort();
         let rootEl = d3.select("#"+ id).html("");
         let htlabel = rootEl.append("li")
             .append("div")
@@ -373,7 +369,8 @@ function eyeShowHideLabel(label, show) {
 }
 
 function onLayoutFinished() {
-    updateLocations();
+    if (perfmode === false) { updateLocations(true); }
+    else { updateLocations(false); }
     d3.selectAll("#restartIcon").classed("spinner", false);
     d3.select("#progress").style("width", "100%");
     d3.selectAll("#restartLayoutBtn")
@@ -958,7 +955,7 @@ function onSelectMouseDown() {
                 .on("mousemove", null)
                 .on("mouseup", null);
             areaBox.remove();
-            //stopSelect();
+            stopSelect();
         });
 }
 
@@ -1079,7 +1076,11 @@ function updatePaneSize() {
     //console.log(box);
     //console.log(svgbox);
     //console.log(k);
-    drawingsvg.transition(panetransition).call(zoom.translateBy, movex, movey);
+    drawingsvg
+        .transition()
+        .duration(1000)
+        .ease(d3.easeCubicInOut)
+        .call(zoom.translateBy, movex, movey);
 }
 
 function onNodeDblClicked(d) {
@@ -1218,13 +1219,18 @@ function onNodeDragged(d) {
         pinNode(d);
     }
 
-    updateLocations();
+    updateLocations(false);
     if (playMode === true) { restartLayout(); }
 }
 
-function updateLocations() {
+function updateLocations(animate) {
     let alledges = edgeslayer.selectAll(".edges").data(graphedges.GetArray());
     let edgebgwidth = 13;
+    let duration = 500;
+
+    if (animate === false ) { duration = 0;}
+
+
 
     nodeslayer.selectAll(".nodes")
         .attr("x", function (d) {
@@ -1235,9 +1241,13 @@ function updateLocations() {
             d.cy = d.y + d.radius;
             return d.y;
         })
+        .transition()
+        .duration(duration)
         .attr("transform", function (d) { return "translate(" + d.x + "," + d.y + ")"; });
 
     graphbglayer.selectAll(".nodebg")
+        .transition()
+        .duration(duration)
         .attr("transform", function (d) { return "translate(" + d.x + "," + d.y + ")"; });
 
 
@@ -1246,6 +1256,8 @@ function updateLocations() {
 
         //move and rotate the edge line to the right spot
         let edge = d3.select(this)
+            .transition()
+            .duration(duration)
             .attr("transform", function () {
                 return "rotate(" + diagLine.deg + " " + diagLine.x1 + " " + diagLine.y1 + ") " +
                     "translate(" + diagLine.x1 + " " + diagLine.y1 + ")";
@@ -1253,6 +1265,8 @@ function updateLocations() {
 
         //do the bg as well
         graphbglayer.select("#edgebg_" + d.db_id)
+            .transition()
+            .duration(duration)
             .attr("transform", function () {
                 return "rotate(" + diagLine.deg + " " + diagLine.x1 + " " + diagLine.y1 + ") " +
                     "translate(" + diagLine.x1 + " " + diagLine.y1 + ")";
@@ -1291,6 +1305,8 @@ function updateLocations() {
             });
 
         edge.selectAll(".edgelabel")
+            .transition()
+            .duration(duration)
             .attr("transform-origin", "30,0")
             .attr("transform", function (d) {
                 //let translation;
