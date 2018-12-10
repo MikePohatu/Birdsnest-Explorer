@@ -1228,11 +1228,7 @@ function updateLocations(animate) {
     let edgebgwidth = 13;
     let duration = 500;
 
-    if (animate === false ) { duration = 0;}
-
-
-
-    nodeslayer.selectAll(".nodes")
+    let nodes = nodeslayer.selectAll(".nodes")
         .attr("x", function (d) {
             d.cx = d.x + d.radius;
             return d.x;
@@ -1240,34 +1236,48 @@ function updateLocations(animate) {
         .attr("y", function (d) {
             d.cy = d.y + d.radius;
             return d.y;
-        })
-        .transition()
-        .duration(duration)
-        .attr("transform", function (d) { return "translate(" + d.x + "," + d.y + ")"; });
+        });
 
-    graphbglayer.selectAll(".nodebg")
-        .transition()
-        .duration(duration)
-        .attr("transform", function (d) { return "translate(" + d.x + "," + d.y + ")"; });
+    if (animate === true) {
+        nodes = nodes.transition()
+            .duration(duration);
+    }
+    nodes.attr("transform", function (d) { return "translate(" + d.x + "," + d.y + ")"; });
+
+    let nodesbg = graphbglayer.selectAll(".nodebg");
+    if (animate === true) {
+        nodesbg = nodesbg
+            .transition()
+            .duration(duration);
+    }
+    nodesbg.attr("transform", function (d) { return "translate(" + d.x + "," + d.y + ")"; });
 
 
     alledges.each(function (d) {
         let diagLine = new Slope(d.source.cx, d.source.cy, d.target.cx, d.target.cy);
 
         //move and rotate the edge line to the right spot
-        let edge = d3.select(this)
-            .transition()
-            .duration(duration)
-            .attr("transform", function () {
+        let edge = d3.select(this);
+
+        if (animate === true) {
+            edge = edge
+                .transition()
+                .duration(duration);
+        }
+
+        edge.attr("transform", function () {
                 return "rotate(" + diagLine.deg + " " + diagLine.x1 + " " + diagLine.y1 + ") " +
                     "translate(" + diagLine.x1 + " " + diagLine.y1 + ")";
             });
 
         //do the bg as well
-        graphbglayer.select("#edgebg_" + d.db_id)
-            .transition()
-            .duration(duration)
-            .attr("transform", function () {
+        let edgebg = graphbglayer.select("#edgebg_" + d.db_id);
+        if (animate === true) {
+            edgebg = edgebg.transition()
+                .duration(duration);
+        }
+
+        edgebg.attr("transform", function () {
                 return "rotate(" + diagLine.deg + " " + diagLine.x1 + " " + diagLine.y1 + ") " +
                     "translate(" + diagLine.x1 + " " + diagLine.y1 + ")";
             })
@@ -1304,10 +1314,12 @@ function updateLocations(animate) {
                 return path;
             });
 
-        edge.selectAll(".edgelabel")
-            .transition()
-            .duration(duration)
-            .attr("transform-origin", "30,0")
+        let edgelbl = edge.selectAll(".edgelabel")
+        if (animate === true) {
+            edgelbl = edgelbl.transition()
+                .duration(duration);
+        }
+        edgelbl.attr("transform-origin", "30,0")
             .attr("transform", function (d) {
                 //let translation;
                 if (diagLine.x2 > diagLine.x1) {
