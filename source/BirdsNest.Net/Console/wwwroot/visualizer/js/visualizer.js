@@ -1222,7 +1222,7 @@ function onNodeDragged(d) {
 }
 
 function updateLocations(animate) {
-    let duration = 600;
+    let duration = 750;
 
     let nodes = nodeslayer.selectAll(".nodes");
     let nodecount = nodes.size()-1;
@@ -1244,7 +1244,7 @@ function updateLocations(animate) {
                     }
                 };
             })
-            .on("end", updateLocations)
+            .ease(d3.easeCubic)
             .duration(duration);
     }
     else {
