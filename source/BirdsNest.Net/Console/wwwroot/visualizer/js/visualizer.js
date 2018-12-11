@@ -203,6 +203,12 @@ function restartLayout() {
         .attr('onclick', 'pauseLayout()')
         .attr('title', 'Updating layout');
 
+    d3.selectAll(".nodes")
+        .each(function (d) {
+            d.startx = d.x;
+            d.starty = d.y;
+        });
+
     meshsimulation.alpha(1).restart();
     treesimulation.alpha(1).restart();
     connectsimulation.alpha(1).restart();
@@ -1058,8 +1064,6 @@ function drawAreaBox(areaBoxEl, oriCoords, newCoords) {
 
 function onZoom() {
     //console.log("onZoom");
-    //console.log(zoomLayer);
-    //console.log(d3.event.transform);
     zoomLayer.attr("transform", d3.event.transform);
 }
 
@@ -1072,9 +1076,6 @@ function updatePaneSize() {
     var movex = (box.width / 2 - svgbox.x - svgbox.width / 2) / k;
     var movey = (box.height / 2 - svgbox.y - svgbox.height / 2) / k;
 
-    //console.log(box);
-    //console.log(svgbox);
-    //console.log(k);
     drawingsvg
         .transition()
         .duration(1000)
@@ -1091,13 +1092,7 @@ function onNodeDblClicked(d) {
 
 function onNodeClicked(d) {
     //console.log("onNodeClicked");
-    //console.log(": " + d.name);
-    //console.log("d.x:dx | " + d.x + ":" + d3.event.x);
-    //console.log("d.y:dy | " + d.y + ":" + d3.event.y);
-    if (d3.event.defaultPrevented) {
-        //console.log("onNodeClicked: defaultPrevented");
-        return;
-    } // dragged
+    if (d3.event.defaultPrevented) { return; } // dragged
     d3.event.stopPropagation();
 
     if (d3.event.ctrlKey) {
@@ -1112,10 +1107,7 @@ function onNodeClicked(d) {
 }
 
 function updateNodeSelection(d, isselected, showdetails) {
-    //console.log("updateNodeSelection : " + d.name + " : " + d.selected + ":" + isselected);
-    //d.selected = isselected; 
-    //if (d.selected !== isselected) {
-            
+    //console.log("updateNodeSelection : " + d.name + " : " + d.selected + ":" + isselected);     
     let node = nodeslayer.select("#node_" + d.db_id)
         .classed("selected", isselected);
 
@@ -1207,8 +1199,6 @@ function onNodeMouseOut(d) {
 
 function onNodeDragged(d) {
     //console.log("onNodeDragged");
-    //console.log("d.x:dx | " + d.x + ":" + d3.event.dx);
-    //console.log("d.y:dy | " + d.y + ":" + d3.event.dy);
     if (d3.event.dx === 0 && 0 === d3.event.dy) { return; }
 
     d3.event.sourceEvent.stopPropagation();
@@ -1232,23 +1222,42 @@ function onNodeDragged(d) {
 }
 
 function updateLocations(animate) {
-    let alledges = edgeslayer.selectAll(".edges").data(graphedges.GetArray());
-    let edgebgwidth = 13;
-    let duration = 500;
+    let duration = 600;
 
-    let nodes = nodeslayer.selectAll(".nodes")
-        .attr("x", function (d) {
-            d.cx = d.x + d.radius;
-            return d.x;
-        })
-        .attr("y", function (d) {
-            d.cy = d.y + d.radius;
-            return d.y;
-        });
+    let nodes = nodeslayer.selectAll(".nodes");
+    let nodecount = nodes.size()-1;
 
     if (animate === true) {
-        nodes = nodes.transition()
+        nodes = nodes
+            .transition()
+            .tween("link_update", function (d, i) {
+                let interx = d3.interpolateNumber(d.startx, d.x);
+                let intery = d3.interpolateNumber(d.starty, d.y);
+                return function (t) {
+                    //console.log(nodecount);
+                    d.cx = interx(t) + d.radius;
+                    d.cy = intery(t) + d.radius;
+                    //update the edge locations when you get to the end of the nodes list
+                    //don't run on the first 'tick'
+                    if (i === nodecount && t !== 0) {
+                        updateLocationsEdges();
+                    }
+                };
+            })
+            .on("end", updateLocations)
             .duration(duration);
+    }
+    else {
+        nodes
+            .attr("x", function (d) {
+                d.cx = d.x + d.radius;
+                return d.x;
+            })
+            .attr("y", function (d) {
+                d.cy = d.y + d.radius;
+                return d.y;
+            });
+        updateLocationsEdges();
     }
     nodes.attr("transform", function (d) { return "translate(" + d.x + "," + d.y + ")"; });
 
@@ -1259,32 +1268,24 @@ function updateLocations(animate) {
             .duration(duration);
     }
     nodesbg.attr("transform", function (d) { return "translate(" + d.x + "," + d.y + ")"; });
+}
 
-
+function updateLocationsEdges() {
+    //console.log("updateLocationsEdges");
+    let alledges = edgeslayer.selectAll(".edges").data(graphedges.GetArray());
+    let edgebgwidth = 13;
     alledges.each(function (d) {
         let diagLine = new Slope(d.source.cx, d.source.cy, d.target.cx, d.target.cy);
 
         //move and rotate the edge line to the right spot
-        let edge = d3.select(this);
-
-        if (animate === true) {
-            edge = edge
-                .transition()
-                .duration(duration);
-        }
-        edge.attr("transform", function () {
+       let edge = d3.select(this).attr("transform", function () {
                 return "rotate(" + diagLine.deg + " " + diagLine.x1 + " " + diagLine.y1 + ") " +
                     "translate(" + diagLine.x1 + " " + diagLine.y1 + ")";
             });
 
         //do the bg as well
-        let edgebg = graphbglayer.select("#edgebg_" + d.db_id);
-        if (animate === true) {
-            edgebg = edgebg.transition()
-                .duration(duration);
-        }
-
-        edgebg.attr("transform", function () {
+        graphbglayer.select("#edgebg_" + d.db_id)
+            .attr("transform", function () {
                 return "rotate(" + diagLine.deg + " " + diagLine.x1 + " " + diagLine.y1 + ") " +
                     "translate(" + diagLine.x1 + " " + diagLine.y1 + ")";
             })
@@ -1321,12 +1322,8 @@ function updateLocations(animate) {
                 return path;
             });
 
-        let edgelbl = edge.selectAll(".edgelabel")
-        if (animate === true) {
-            edgelbl = edgelbl.transition()
-                .duration(duration);
-        }
-        edgelbl.attr("transform-origin", "30,0")
+        edge.selectAll(".edgelabel")
+            .attr("transform-origin", "30,0")
             .attr("transform", function (d) {
                 //let translation;
                 if (diagLine.x2 > diagLine.x1) {
