@@ -1295,15 +1295,9 @@ function updateLocations(nodes, animate) {
     }
     else {
         nodes
-            .attr("x", function (d) {
-                d.cx = d.x + d.radius;
-                return d.x;
-            })
-            .attr("y", function (d) {
-                d.cy = d.y + d.radius;
-                return d.y;
-            })
             .each(function (d) {
+                d.cx = d.x + d.radius;
+                d.cy = d.y + d.radius;
                 graphbglayer.select("#nodebg_" + d.db_id)
                     .attr("transform", function (d) { return "translate(" + d.x + "," + d.y + ")"; });
             });
