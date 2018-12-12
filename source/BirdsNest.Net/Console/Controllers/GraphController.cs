@@ -60,6 +60,13 @@ namespace Console.Controllers
             return this._service.GetNodeProperties(type);
         }
 
+        // GET: api/graph/node/details
+        [HttpGet("node/details")]
+        public Dictionary<string, List<string>> GetNodeDetails()
+        {
+            return this._service.GetNodeDetails();
+        }
+
         // GET: api/graph/node/values
         [HttpGet("node/values")]
         public IEnumerable<string> GetNodeValues([FromQuery]string type, [FromQuery]string property, [FromQuery]string searchterm)

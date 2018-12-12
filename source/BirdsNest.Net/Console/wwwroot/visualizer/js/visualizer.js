@@ -26,8 +26,8 @@ var graphnodes = new datumStore();
 var graphedges = new datumStore();
 
 var areaBox;
-
 var force;
+var nodeDetails;
 
 var simRunning = false;
 var simVelocityDecay = 0.5;
@@ -50,6 +50,8 @@ var zoom = d3.zoom()
     .on("zoom", onZoom);
 
 function drawGraph(selectid) {
+    updateNodeDetails("source");
+    updateNodeDetails("target");
     drawingPane = d3.select("#" + selectid);
 
     drawingsvg = drawingPane.append("svg")
@@ -1652,18 +1654,32 @@ function clearOptions(selectbox) {
 
 function updateProps(elementPrefix) {
     var type = document.getElementById(elementPrefix + "Type").value;
-    var elprops = document.getElementById(elementPrefix + "Prop");
+    var el = document.getElementById(elementPrefix + "Prop");
 
-    clearOptions(elprops);
-    let topoption = addOption(elprops, "", "");
+    clearOptions(el);
+    let topoption = addOption(el, "", "");
     topoption.setAttribute("disabled", "");
     topoption.setAttribute("hidden", "");
     topoption.setAttribute("selected", "");
 
-    apiGetJson("/api/graph/node/properties?type=" + type, function (data) {
-        for (var i = 0; i < data.length; ++i) {
-            addOption(elprops, data[i], data[i]);
-        }
+    nodeDetails[type].forEach(function (prop) {
+        addOption(el, prop, prop);
+    });
+}
+
+function updateNodeDetails(elementPrefix) {
+    var el = document.getElementById(elementPrefix + "Type");
+    clearOptions(el);
+    let topoption = addOption(el, "", "");
+    topoption.setAttribute("disabled", "");
+    topoption.setAttribute("hidden", "");
+    topoption.setAttribute("selected", "");
+
+    apiGetJson("/api/graph/node/details", function (data) {
+        nodeDetails = data;
+        Object.keys(nodeDetails).forEach(function (label) {
+            addOption(el, label, label);
+        });
     });
 }
 

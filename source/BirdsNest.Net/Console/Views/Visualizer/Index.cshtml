@@ -13,17 +13,14 @@
 <div id="pagewrapper">
     <div id="main">
         <div id="querybar" class="grid-x grid-padding-x">
-            <form id="sourceForm" class="small-12 medium-12 cell" type="POST" action="javascript:search()">
+            <form id="sourceForm" class="small-12 medium-12 cell" type="POST" action="javascript:search()" autocomplete="off">
                 <div class="grid-x grid-margin-x">
                     <fieldset class="fieldset small-4 cell">
                         <legend>Source</legend>
 
                         <div class="input-group">
                             <span class="input-group-label small-4">Type</span>
-                            <select id="sourceType" class="small-8 input-group-field" autofocus onchange="updateProps('source');">
-                                <option value="" disabled selected hidden></option>
-                                <option value="">*</option>
-                            </select>
+                            <select id="sourceType" class="small-8 input-group-field" autofocus onchange="updateProps('source');"></select>
                         </div>
                         <div class="input-group">
                             <span class="input-group-label small-4">Where</span>
@@ -31,7 +28,7 @@
                         </div>
                         <div class="input-group">
                             <span class="input-group-label small-4">Equals</span>
-                            <input type="text" id="sourceVal" placeholder="*" class="small-8 input-group-field">
+                            <input type="search" autocomplete="off" id="sourceVal" placeholder="*" class="small-8 input-group-field">
                         </div>
                     </fieldset>
 
@@ -78,10 +75,7 @@
 
                         <div class="input-group">
                             <span class="input-group-label small-3">Type</span>
-                            <select id="targetType" class="small-9 input-group-field" onchange="updateProps('target');">
-                                <option value="" disabled selected hidden></option>
-                                <option value="">*</option>
-                            </select>
+                            <select id="targetType" class="small-9 input-group-field" onchange="updateProps('target');"></select>
                         </div>
                         <div class="input-group">
                             <span class="input-group-label small-3">Where</span>
@@ -89,7 +83,7 @@
                         </div>
                         <div class="input-group">
                             <span class="input-group-label small-3">Equals</span>
-                            <input type="text" id="targetVal" placeholder="*" class="small-9 input-group-field">
+                            <input type="search" autocomplete="off" id="targetVal" placeholder="*" class="small-9 input-group-field">
                         </div>
                     </fieldset>
                 </div>
@@ -172,15 +166,6 @@
         var iconmappings;
         $.getJSON("json/labelicons.json", function (data) {
             iconmappings = new IconMappings(data);
-        });
-        $.getJSON("/api/graph/node/labels", function (data) {
-            var i;
-            for (i = 0; i < data.length; ++i) {
-                addOption(document.getElementById("sourceType"), data[i], data[i]);
-            }
-            for (i = 0; i < data.length; ++i) {
-                addOption(document.getElementById("targetType"), data[i], data[i]);
-            }
         });
         $.getJSON("/api/graph/edges/labels", function (data) {
             for (var i = 0; i < data.length; ++i) {

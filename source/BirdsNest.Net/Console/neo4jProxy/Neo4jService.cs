@@ -444,6 +444,31 @@ namespace Console.neo4jProxy
             return ParseStringListResults(dbresult);
         }
 
+        public Dictionary<string, List<string>> GetNodeDetails()
+        {
+            IStatementResult dbresult = null;
+            using (ISession session = this.Driver.Session())
+            {
+                try
+                {
+                    session.ReadTransaction(tx =>
+                    {
+                        string query = "CALL db.labels() YIELD label " +
+                            "MATCH(n) WHERE label IN labels(n) " +
+                            "UNWIND keys(n) as property " +
+                            "RETURN DISTINCT label,property ORDER BY label, property";
+                        dbresult = tx.Run(query);
+                    });
+                }
+                catch
+                {
+                    //logging to add
+                }
+            }
+
+            return ParseDictionaryStringListResults(dbresult);
+        }
+
         public IEnumerable<string> GetNodeProperties(string type)
         {
             IStatementResult dbresult = null;
@@ -508,6 +533,29 @@ namespace Console.neo4jProxy
                 foreach (string key in record.Keys)
                 {
                     results.Add(record[key].ToString());
+                }
+            }
+            return results;
+        }
+
+        private Dictionary<string,List<string>> ParseDictionaryStringListResults(IStatementResult dbresult)
+        {
+            Dictionary<string, List<string>> results = new Dictionary<string, List<string>>();
+            List<string> lst;
+            foreach (IRecord record in dbresult)
+            {
+                string label = record["label"].ToString();
+                string prop = record["property"].ToString();
+
+                if (results.TryGetValue(label, out lst))
+                {
+                    lst.Add(prop);
+                }
+                else
+                {
+                    List<string> nlst = new List<string>();
+                    nlst.Add(prop);
+                    results.Add(label, nlst);
                 }
             }
             return results;
