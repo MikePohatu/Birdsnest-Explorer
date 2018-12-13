@@ -1661,17 +1661,17 @@ function updateProps(elementPrefix) {
     topoption.setAttribute("hidden", "");
     topoption.setAttribute("selected", "");
 
-    nodeDetails[type].forEach(function (prop) {
-        addOption(el, prop, prop);
-    });
+    if (type || type==="*") {
+        nodeDetails[type].forEach(function (prop) {
+            addOption(el, prop, prop);
+        });
+    }
 }
 
 function updateNodeDetails(elementPrefix) {
     var el = document.getElementById(elementPrefix + "Type");
     clearOptions(el);
-    let topoption = addOption(el, "", "");
-    topoption.setAttribute("disabled", "");
-    topoption.setAttribute("hidden", "");
+    let topoption = addOption(el, "*", "");
     topoption.setAttribute("selected", "");
 
     apiGetJson("/api/graph/node/details", function (data) {

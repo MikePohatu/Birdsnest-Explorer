@@ -201,5 +201,23 @@ namespace FSScanner
 
             return nodesdeleted;
         }
+
+        public static void UpdateMetadata(IDriver driver)
+        {
+            List<string> types = new List<string>() { Types.Folder, Types.Datastore };
+
+            foreach (string type in types)
+            {
+                string query = "MATCH (n:" + type + ") " +
+                    "WITH DISTINCT keys(n) as props " +
+                    "MERGE(i: _Metadata { name: 'NodeDetails'}) " +
+                    "SET i." + type + " = props " +
+                    "RETURN i";
+                using (ISession session = driver.Session())
+                {
+                    session.WriteTransaction(tx => tx.Run(query));
+                }
+            }
+        }
     }
 }

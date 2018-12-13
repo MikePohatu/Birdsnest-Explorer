@@ -107,6 +107,9 @@ namespace FSScanner
             totaltimer.Stop();
             ConsoleWriter.ClearProgress();
             ConsoleWriter.WriteLine("Finished in " + (totaltimer.ElapsedMilliseconds/1000) + " seconds");
+            ConsoleWriter.WriteLine("Updating metadata");
+            Writer.UpdateMetadata(driver);
+            ConsoleWriter.WriteLine("Done");
             if (batchmode == true)
             {
                 ConsoleWriter.Write("Exiting.");

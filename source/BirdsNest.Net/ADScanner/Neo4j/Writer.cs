@@ -8,7 +8,7 @@ namespace ADScanner.Neo4j
 {
     public static class Writer
     {
-        public static void SetGroupScope(ISession session)
+        public static void SetGroupScope(IDriver driver)
         {
             string query = "MATCH (o) "+
                 "WHERE o:"+Types.User+ " OR o:" + Types.Computer + " " + 
@@ -17,10 +17,13 @@ namespace ADScanner.Neo4j
                 "SET g.scope = size(nodes) " +
                 "RETURN g";
 
-            session.WriteTransaction(tx => tx.Run(query));
+            using (ISession session = driver.Session())
+            {
+                session.WriteTransaction(tx => tx.Run(query));
+            }
         }
 
-        public static int MergeADGroups(List<Dictionary<string, object>> propertylist, ISession session)
+        public static int MergeADGroups(List<Dictionary<string, object>> propertylist, IDriver driver)
         {
             string query = "UNWIND $propertylist AS g " +
                 "MERGE (n:" + Types.Group + "{id:g.id}) " +
@@ -38,21 +41,27 @@ namespace ADScanner.Neo4j
                 "SET n.layout = 'mesh' " +
                 "RETURN n.name";
 
-            var result = session.WriteTransaction(tx => tx.Run(query, new { propertylist= propertylist }));
-            return result.Summary.Counters.NodesCreated;
+            using (ISession session = driver.Session())
+            {
+                var result = session.WriteTransaction(tx => tx.Run(query, new { propertylist = propertylist }));
+                return result.Summary.Counters.NodesCreated;
+            }
         }
 
-        public static int UpdateMemberCounts(ISession session)
+        public static int UpdateMemberCounts(IDriver driver)
         {
             string query = "MATCH ()-[r:" + Types.MemberOf + "]-(n:"+ Types.Group + ") " +
                 "WITH n,count(r) AS i " +
                 "SET n.member_count = i " +
                 "RETURN n";
-            var result = session.WriteTransaction(tx => tx.Run(query));
-            return result.Summary.Counters.PropertiesSet;
+            using (ISession session = driver.Session())
+            {
+                var result = session.WriteTransaction(tx => tx.Run(query));
+                return result.Summary.Counters.PropertiesSet;
+            }
         }
 
-        public static int MergeAdUsers(List<Dictionary<string, object>> propertylist, ISession session)
+        public static int MergeAdUsers(List<Dictionary<string, object>> propertylist, IDriver driver)
         {
             string query = "UNWIND $propertylist AS u " +
             "MERGE (n:" + Types.User + "{id:u.id}) " +
@@ -71,11 +80,14 @@ namespace ADScanner.Neo4j
             "SET n.layout = 'mesh' " +
             "RETURN n.name";
 
-            var result = session.WriteTransaction(tx => tx.Run(query, new { propertylist = propertylist }));
-            return result.Summary.Counters.NodesCreated;
+            using (ISession session = driver.Session())
+            {
+                var result = session.WriteTransaction(tx => tx.Run(query, new { propertylist = propertylist }));
+                return result.Summary.Counters.NodesCreated;
+            }
         }
 
-        public static int MergeAdComputers(List<Dictionary<string, object>> propertylist, ISession session)
+        public static int MergeAdComputers(List<Dictionary<string, object>> propertylist, IDriver driver)
         {
             string query = "UNWIND $propertylist AS c " +
             "MERGE (n:" + Types.Computer + "{id:c.id}) " +
@@ -96,8 +108,11 @@ namespace ADScanner.Neo4j
             "SET n.layout = 'mesh' " +
             "RETURN n.name";
 
-            var result = session.WriteTransaction(tx => tx.Run(query, new { propertylist = propertylist }));
-            return result.Summary.Counters.NodesCreated;
+            using (ISession session = driver.Session())
+            {
+                var result = session.WriteTransaction(tx => tx.Run(query, new { propertylist = propertylist }));
+                return result.Summary.Counters.NodesCreated;
+            }
         }
 
         public static object GetGroupRelationshipObject(string membertype, string memberid, string groupdn, string scanid)
@@ -105,20 +120,24 @@ namespace ADScanner.Neo4j
             return new { membertype = membertype, id = memberid, dn = groupdn, scanid = scanid };
         }
 
-        public static int MergeGroupRelationships(string type, List<object> groupmappings, ISession session)
-        { 
+        public static int MergeGroupRelationships(string type, List<object> groupmappings, IDriver driver)
+        {
+            
             string query = "UNWIND $groupmappings as m " +
-                "MERGE (g:" + Types.Group + "{dn:m.dn}) " +
-                "MERGE (n:" + type + "{id:m.id}) " +
-                "MERGE (n)-[r:" + Types.MemberOf + "]->(g) " +
-                "SET r.lastscan = m.scanid " +
-                "RETURN n.name,g.dn";
+            "MERGE (g:" + Types.Group + "{dn:m.dn}) " +
+            "MERGE (n:" + type + "{id:m.id}) " +
+            "MERGE (n)-[r:" + Types.MemberOf + "]->(g) " +
+            "SET r.lastscan = m.scanid " +
+            "RETURN n.name,g.dn";
 
-            var result = session.WriteTransaction(tx => tx.Run(query, new { groupmappings=groupmappings }));
-            return result.Summary.Counters.RelationshipsCreated;
+            using (ISession session = driver.Session())
+            {
+                var result = session.WriteTransaction(tx => tx.Run(query, new { groupmappings = groupmappings }));
+                return result.Summary.Counters.RelationshipsCreated;
+            }
         }
 
-        public static void MergeNodeOnID(IBirdsNestNode node, ISession session, string scanid)
+        public static void MergeNodeOnID(IBirdsNestNode node, IDriver driver, string scanid)
         {
             SetScanId(node, scanid);
 
@@ -128,10 +147,13 @@ namespace ADScanner.Neo4j
             "SET n.lastscan = $scanid " +
             "RETURN n";
 
-            session.WriteTransaction(tx => tx.Run(query, node.Properties));
+            using (ISession session = driver.Session())
+            {
+                session.WriteTransaction(tx => tx.Run(query, node.Properties));
+            }
         }
 
-        public static int CreatePrimaryGroupRelationships(ISession session, string scanid)
+        public static int CreatePrimaryGroupRelationships(IDriver driver, string scanid)
         {
             Dictionary<string, object> properties = new Dictionary<string, object>();
             properties.Add("scanid", scanid);
@@ -139,44 +161,71 @@ namespace ADScanner.Neo4j
             string query = "MATCH(n) " +
             "WHERE n:" + Types.Computer + " OR n:" + Types.User + " " +
             "WITH n " +
-            "MATCH (g:"+ Types.Group + ") WHERE g.rid = n.primarygroupid " +
+            "MATCH (g:" + Types.Group + ") WHERE g.rid = n.primarygroupid " +
             "MERGE(n)-[r:" + Types.MemberOf + "]->(g) " +
             "SET r.primarygroup = true " +
             "SET r.lastscan = $scanid " +
             "RETURN n.name,g.name ";
 
-            IStatementResult result = session.WriteTransaction(tx => tx.Run(query, properties));
-            return result.Summary.Counters.RelationshipsCreated;
+            using (ISession session = driver.Session())
+            {
+                IStatementResult result = session.WriteTransaction(tx => tx.Run(query, properties));
+                return result.Summary.Counters.RelationshipsCreated;
+            }
         }
 
-        public static int RemoveDeletedGroupMemberShips(ISession session, string scanid)
+        public static int RemoveDeletedGroupMemberShips(IDriver driver, string scanid)
         {
-            string query = "MATCH(n:" +Types.User + ") " +
-            "WHERE n.lastscan = $scanid " +
-            "WITH n " +
-            "MATCH(n) -[r:" + Types.MemberOf + "]->(g:" + Types.Group + ") " +
-            "WHERE NOT EXISTS(r.lastscan) OR r.lastscan <> $scanid " +
-            "DELETE r " +
-            "RETURN r ";
+            string query = "MATCH(n:" + Types.User + ") " +
+                "WHERE n.lastscan = $scanid " +
+                "WITH n " +
+                "MATCH(n) -[r:" + Types.MemberOf + "]->(g:" + Types.Group + ") " +
+                "WHERE NOT EXISTS(r.lastscan) OR r.lastscan <> $scanid " +
+                "DELETE r " +
+                "RETURN r ";
 
-            IStatementResult result = session.WriteTransaction(tx => tx.Run(query, new { scanid=scanid }));
-            return result.Summary.Counters.RelationshipsDeleted;
+            using (ISession session = driver.Session())
+            {
+                IStatementResult result = session.WriteTransaction(tx => tx.Run(query, new { scanid = scanid }));
+                return result.Summary.Counters.RelationshipsDeleted;
+            }
         }
 
-        public static int FindAndMarkDeletedItems(string label, ISession session, string scanid)
+        public static int FindAndMarkDeletedItems(string label, IDriver driver, string scanid)
         {
             string query = "MATCH(n:" + label + ") " +
-            "WHERE n.lastscan <> $scanid " +
-            "SET n:" + Types.Deleted + " " +
-            "REMOVE n:" + label + " " +
-            "SET n.type='" + label + "' " +
-            //"WITH n " +
-            //"MATCH (n)-[r]->() " +
-            //"DELETE r " +
-            "RETURN n ";
+                "WHERE n.lastscan <> $scanid " +
+                "SET n:" + Types.Deleted + " " +
+                "REMOVE n:" + label + " " +
+                "SET n.type='" + label + "' " +
+                //"WITH n " +
+                //"MATCH (n)-[r]->() " +
+                //"DELETE r " +
+                "RETURN n ";
 
-            IStatementResult result = session.WriteTransaction(tx => tx.Run(query, new { scanid = scanid }));
-            return result.Summary.Counters.RelationshipsDeleted;
+            using (ISession session = driver.Session())
+            {
+                IStatementResult result = session.WriteTransaction(tx => tx.Run(query, new { scanid = scanid }));
+                return result.Summary.Counters.RelationshipsDeleted;
+            }
+        }
+
+        public static void UpdateMetadata(IDriver driver)
+        {
+            List<string> types = new List<string>() { Types.ADObject, Types.Computer, Types.User, Types.Group};
+
+            foreach (string type in types)
+            {
+                string query = "MATCH (n:" + type + ") " +
+                    "WITH DISTINCT keys(n) as props " +
+                    "MERGE(i: _Metadata { name: 'NodeDetails'}) " +
+                    "SET i." + type + " = props " +
+                    "RETURN i";
+                using (ISession session = driver.Session())
+                {
+                    session.WriteTransaction(tx => tx.Run(query));
+                }
+            }
         }
 
         private static void SetScanId(IBirdsNestNode node, string scanid)

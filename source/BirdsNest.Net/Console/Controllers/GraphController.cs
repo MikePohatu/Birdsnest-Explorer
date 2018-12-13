@@ -62,7 +62,7 @@ namespace Console.Controllers
 
         // GET: api/graph/node/details
         [HttpGet("node/details")]
-        public Dictionary<string, List<string>> GetNodeDetails()
+        public SortedDictionary<string, List<string>> GetNodeDetails()
         {
             return this._service.GetNodeDetails();
         }

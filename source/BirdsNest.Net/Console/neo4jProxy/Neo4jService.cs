@@ -6,6 +6,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using common;
 using Neo4j.Driver.V1;
+using Newtonsoft.Json;
 
 namespace Console.neo4jProxy
 {
@@ -253,6 +254,7 @@ namespace Console.neo4jProxy
             string relright = string.Empty;
             string relleft = string.Empty;
 
+            //relationship type
             if (string.IsNullOrWhiteSpace(reltype))
             { rellabel = string.Empty; }
             else if (edgetypes.Exists(x => string.Equals(x, reltype)))
@@ -260,20 +262,23 @@ namespace Console.neo4jProxy
             else
             { throw new ArgumentException("Invalid relationship type: " + reltype); }
 
+            //relationship direction
             if ((dir == 'B') || (dir == 'b')) { /*do nothing*/ }
             else if ((dir == 'L') || (dir == 'l')) { relleft = "<"; }
             else if ((dir == 'R') || (dir == 'r')) { relright = ">"; }
             else
             { throw new ArgumentException("Invalid relationship direction: " + dir); }
 
-            if (string.IsNullOrWhiteSpace(sourcetype))
+            //source
+            if (string.IsNullOrWhiteSpace(sourcetype) || sourcetype=="*")
             { sourcelabel = string.Empty; }
             else if (nodetypes.Exists(x => string.Equals(x, sourcetype)))
             { sourcelabel = ":" + sourcetype; }
             else
             { throw new ArgumentException("Invalid source type: " + sourcetype); }
 
-            if (string.IsNullOrWhiteSpace(tartype))
+            //target
+            if (string.IsNullOrWhiteSpace(tartype) || tartype == "*")
             { targetlabel = string.Empty; }
             else if (nodetypes.Exists(x => string.Equals(x, tartype)))
             { targetlabel = ":" + tartype; }
@@ -444,34 +449,56 @@ namespace Console.neo4jProxy
             return ParseStringListResults(dbresult);
         }
 
-        public Dictionary<string, List<string>> GetNodeDetails()
-        {
-            List<string> labels = GetNodeLabels();
-            Dictionary<string, List<string>> result = new Dictionary<string, List<string>>();
 
-            foreach (string label in labels)
+        //example build query
+        //MATCH(n:AD_Group)
+        //WITH DISTINCT keys(n) as props
+        //MERGE(i:_Meta { name: 'NodeDetails'})
+        //SET i.AD_Group = props
+        //RETURN i
+        public SortedDictionary<string, List<string>> GetNodeDetails()
+        {
+            SortedDictionary<string, List<string>> result = new SortedDictionary<string, List<string>>();
+
+            IStatementResult dbresult = null;
+            using (ISession session = this.Driver.Session())
             {
-                IStatementResult dbresult = null;
-                using (ISession session = this.Driver.Session())
+                try
                 {
-                    try
+                    session.ReadTransaction(tx =>
                     {
-                        session.ReadTransaction(tx =>
+                        string query = "MATCH (i:_Metadata {name:'NodeDetails'}) RETURN i";
+                        dbresult = tx.Run(query);
+                    });
+                }
+                catch
+                {
+                    //logging to add
+                }
+            }
+
+            ResultSet r = ParseResults(dbresult);
+
+            foreach (BirdsNestNode node in r.Nodes)
+            {
+                foreach (string key in node.Properties.Keys)
+                {
+                    if (key != "name")
+                    {
+                        object val;
+                        if (node.Properties.TryGetValue(key, out val))
                         {
-                            string query = "MATCH(n:"+label+") UNWIND keys(n) as property RETURN DISTINCT property ORDER BY property";
-                            dbresult = tx.Run(query);
-                        });
-                    }
-                    catch
-                    {
-                        //logging to add
+                            List<string> lst = new List<string>();
+                            foreach (object o in (List<object>)val)
+                            {
+                                lst.Add((string)o);
+                            }
+                            lst.Sort();
+                            result.Add(key, lst);
+                        }
                     }
                 }
-
-                List<string> lst = ParseStringListResults(dbresult);
-                result.Add(label, lst);
             }
-            
 
             return result;
         }
@@ -545,28 +572,28 @@ namespace Console.neo4jProxy
             return results;
         }
 
-        private Dictionary<string,List<string>> ParseDictionaryStringListResults(IStatementResult dbresult)
-        {
-            Dictionary<string, List<string>> results = new Dictionary<string, List<string>>();
-            List<string> lst;
-            foreach (IRecord record in dbresult)
-            {
-                string label = record["label"].ToString();
-                string prop = record["property"].ToString();
+        //private Dictionary<string,List<string>> ParseDictionaryStringListResults(IStatementResult dbresult)
+        //{
+        //    Dictionary<string, List<string>> results = new Dictionary<string, List<string>>();
+        //    List<string> lst;
+        //    foreach (IRecord record in dbresult)
+        //    {
+        //        string label = record["label"].ToString();
+        //        string prop = record["property"].ToString();
 
-                if (results.TryGetValue(label, out lst))
-                {
-                    lst.Add(prop);
-                }
-                else
-                {
-                    List<string> nlst = new List<string>();
-                    nlst.Add(prop);
-                    results.Add(label, nlst);
-                }
-            }
-            return results;
-        }
+        //        if (results.TryGetValue(label, out lst))
+        //        {
+        //            lst.Add(prop);
+        //        }
+        //        else
+        //        {
+        //            List<string> nlst = new List<string>();
+        //            nlst.Add(prop);
+        //            results.Add(label, nlst);
+        //        }
+        //    }
+        //    return results;
+        //}
 
         private ResultSet ParseResults(IStatementResult neoresult)
         {
@@ -582,22 +609,6 @@ namespace Console.neo4jProxy
 
             return results;
         }
-
-        //private ResultSet ParseResults(IStatementResultCursor neoresult)
-        //{
-        //    ResultSet results = new ResultSet();
-
-        //    foreach (IRecord record in neoresult.ToListAsync())
-        //    {
-        //        foreach (string key in record.Keys)
-        //        {
-        //            AddToResultSet(record[key], results);
-        //        }
-        //    }
-
-        //    return results;
-        //}
-
 
         private void AddToResultSet(object o, ResultSet results)
         {

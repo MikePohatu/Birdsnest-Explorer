@@ -78,201 +78,186 @@ namespace ADScanner
             
 
             //process groups
-            using (ISession session = driver.Session())
+            //load the groups
+            using (SearchResultCollection results = QueryHandler.GetAllGroupResults(rootDE))
             {
-                //load the groups
-                using (SearchResultCollection results = QueryHandler.GetAllGroupResults(rootDE))
+                Console.Write("Adding groups to graph");
+                if (results != null)
                 {
-                    Console.Write("Adding groups to graph");
-                    if (results != null)
+                    steptimer.Restart();
+                    int groupcount = 0;
+                    int relationshipcount = 0;
+                    List<object> groupmappings = new List<object>();
+                    List<Dictionary<string, object>> groupprops = new List<Dictionary<string, object>>(); 
+
+                    foreach (SearchResult result in results)
                     {
-                        steptimer.Restart();
-                        int groupcount = 0;
-                        int relationshipcount = 0;
-                        List<object> groupmappings = new List<object>();
-                        List<Dictionary<string, object>> groupprops = new List<Dictionary<string, object>>(); 
-
-                        foreach (SearchResult result in results)
+                        ADGroup g = new ADGroup(result,scanid);
+                        groupprops.Add(g.Properties);
+                        if (groupprops.Count >= 1000)
                         {
-                            ADGroup g = new ADGroup(result,scanid);
-                            groupprops.Add(g.Properties);
-                            if (groupprops.Count >= 1000)
-                            {
-                                Console.Write(".");
-                                groupcount = groupcount + Writer.MergeADGroups(ListExtensions.ListPop(groupprops,1000), session);
-                            }
-                            foreach (string dn in g.MemberOfDNs)
-                            {
-                                groupmappings.Add(Writer.GetGroupRelationshipObject(g.Type, g.ID, dn, scanid));
-                            }
-                        }
-                        //purge any remaining groups and mappings to the database
-                        if (groupprops.Count > 0) { groupcount = groupcount + Writer.MergeADGroups(groupprops, session); }
-                        steptimer.Stop();
-                        Console.WriteLine();
-                        Console.WriteLine("Created " + groupcount + " groups in " + steptimer.ElapsedMilliseconds + "ms");
-
-                        Console.Write("Creating group->group mappings");
-                        steptimer.Restart();
-                        while (groupmappings.Count > 0)
-                        {
-                            relationshipcount = relationshipcount + Writer.MergeGroupRelationships(Types.Group, ListExtensions.ListPop(groupmappings, 1000), session);
                             Console.Write(".");
+                            groupcount = groupcount + Writer.MergeADGroups(ListExtensions.ListPop(groupprops,1000), driver);
                         }
-                        steptimer.Stop();
-                        Console.WriteLine();
-                        Console.WriteLine("Created " + relationshipcount + " group->group mappings in " + steptimer.ElapsedMilliseconds + "ms");
-                        Console.WriteLine();
-                    }   
-                }
+                        foreach (string dn in g.MemberOfDNs)
+                        {
+                            groupmappings.Add(Writer.GetGroupRelationshipObject(g.Type, g.ID, dn, scanid));
+                        }
+                    }
+                    //purge any remaining groups and mappings to the database
+                    if (groupprops.Count > 0) { groupcount = groupcount + Writer.MergeADGroups(groupprops, driver); }
+                    steptimer.Stop();
+                    Console.WriteLine();
+                    Console.WriteLine("Created " + groupcount + " groups in " + steptimer.ElapsedMilliseconds + "ms");
+
+                    Console.Write("Creating group->group mappings");
+                    steptimer.Restart();
+                    while (groupmappings.Count > 0)
+                    {
+                        relationshipcount = relationshipcount + Writer.MergeGroupRelationships(Types.Group, ListExtensions.ListPop(groupmappings, 1000), driver);
+                        Console.Write(".");
+                    }
+                    steptimer.Stop();
+                    Console.WriteLine();
+                    Console.WriteLine("Created " + relationshipcount + " group->group mappings in " + steptimer.ElapsedMilliseconds + "ms");
+                    Console.WriteLine();
+                }   
             }
 
             //process users
-            using (ISession session = driver.Session())
+            //load the users
+            using (SearchResultCollection results = QueryHandler.GetAllUserResults(rootDE))
             {
-                //load the users
-                using (SearchResultCollection results = QueryHandler.GetAllUserResults(rootDE))
+                Console.Write("Adding users to graph");
+                if (results != null)
                 {
-                    Console.Write("Adding users to graph");
-                    if (results != null)
+                    steptimer.Restart();
+                    int usercount = 0;
+                    int relationshipcount = 0;
+                    List<object> groupmappings = new List<object>();
+                    List<Dictionary<string, object>> userprops = new List<Dictionary<string, object>>();
+
+                    foreach (SearchResult result in results)
                     {
-                        steptimer.Restart();
-                        int usercount = 0;
-                        int relationshipcount = 0;
-                        List<object> groupmappings = new List<object>();
-                        List<Dictionary<string, object>> userprops = new List<Dictionary<string, object>>();
-
-                        foreach (SearchResult result in results)
+                        ADUser u = new ADUser(result, scanid);
+                        userprops.Add(u.Properties);
+                        if (userprops.Count >= 1000)
                         {
-                            ADUser u = new ADUser(result, scanid);
-                            userprops.Add(u.Properties);
-                            if (userprops.Count >= 1000)
-                            {
-                                Console.Write(".");
-                                usercount = usercount + Writer.MergeAdUsers(ListExtensions.ListPop(userprops, 1000), session);
-                            }
-                            foreach (string dn in u.MemberOfDNs)
-                            {
-                                groupmappings.Add(Writer.GetGroupRelationshipObject(u.Type, u.ID, dn, scanid));
-                            }
-                        }
-                        //purge any remaining groups and mappings to the database
-                        if (userprops.Count > 0) { usercount = usercount + Writer.MergeAdUsers(userprops, session); }
-                        steptimer.Stop();
-                        Console.WriteLine();
-                        Console.WriteLine("Created " + usercount + " users in " + steptimer.ElapsedMilliseconds + "ms");
-
-                        Console.Write("Creating user->group mappings");
-                        steptimer.Restart();
-                        while (groupmappings.Count > 0)
-                        {
-                            relationshipcount = relationshipcount + Writer.MergeGroupRelationships(Types.User, ListExtensions.ListPop(groupmappings, 1000), session);
                             Console.Write(".");
+                            usercount = usercount + Writer.MergeAdUsers(ListExtensions.ListPop(userprops, 1000), driver);
                         }
-                        steptimer.Stop();
-                        Console.WriteLine();
-                        Console.WriteLine("Created " + relationshipcount + " user->group mappings in " + steptimer.ElapsedMilliseconds + "ms");
-                        Console.WriteLine();
+                        foreach (string dn in u.MemberOfDNs)
+                        {
+                            groupmappings.Add(Writer.GetGroupRelationshipObject(u.Type, u.ID, dn, scanid));
+                        }
                     }
+                    //purge any remaining groups and mappings to the database
+                    if (userprops.Count > 0) { usercount = usercount + Writer.MergeAdUsers(userprops, driver); }
+                    steptimer.Stop();
+                    Console.WriteLine();
+                    Console.WriteLine("Created " + usercount + " users in " + steptimer.ElapsedMilliseconds + "ms");
+
+                    Console.Write("Creating user->group mappings");
+                    steptimer.Restart();
+                    while (groupmappings.Count > 0)
+                    {
+                        relationshipcount = relationshipcount + Writer.MergeGroupRelationships(Types.User, ListExtensions.ListPop(groupmappings, 1000), driver);
+                        Console.Write(".");
+                    }
+                    steptimer.Stop();
+                    Console.WriteLine();
+                    Console.WriteLine("Created " + relationshipcount + " user->group mappings in " + steptimer.ElapsedMilliseconds + "ms");
+                    Console.WriteLine();
                 }
             }
 
-            using (ISession session = driver.Session())
+            //load the computers
+            using (SearchResultCollection results = QueryHandler.GetAllComputerResults(rootDE))
             {
-                //load the computers
-                using (SearchResultCollection results = QueryHandler.GetAllComputerResults(rootDE))
+                Console.Write("Adding computers to graph");
+                if (results != null)
                 {
-                    Console.Write("Adding computers to graph");
-                    if (results != null)
+                    steptimer.Restart();
+                    int computercount = 0;
+                    int relationshipcount = 0;
+
+                    List<object> groupmappings = new List<object>();
+                    List<Dictionary<string, object>> compprops = new List<Dictionary<string, object>>();
+                    foreach (SearchResult result in results)
                     {
-                        steptimer.Restart();
-                        int computercount = 0;
-                        int relationshipcount = 0;
-
-                        List<object> groupmappings = new List<object>();
-                        List<Dictionary<string, object>> compprops = new List<Dictionary<string, object>>();
-                        foreach (SearchResult result in results)
+                        ADComputer c = new ADComputer(result, scanid);
+                        compprops.Add(c.Properties);
+                        if (compprops.Count >= 1000)
                         {
-                            ADComputer c = new ADComputer(result, scanid);
-                            compprops.Add(c.Properties);
-                            if (compprops.Count >= 1000)
-                            {
-                                Console.Write(".");
-                                computercount = computercount + Writer.MergeAdComputers(ListExtensions.ListPop(compprops, 1000), session);
-                            }
-                            foreach (string dn in c.MemberOfDNs)
-                            {
-                                groupmappings.Add(Writer.GetGroupRelationshipObject(c.Type, c.ID, dn, scanid));
-                            }
-                        }
-                        //purge any remaining groups and mappings to the database
-                        if (compprops.Count > 0) { computercount = computercount + Writer.MergeAdComputers(compprops, session); }
-                        steptimer.Stop();
-                        Console.WriteLine();
-                        Console.WriteLine("Created " + computercount + " computers in " + steptimer.ElapsedMilliseconds + "ms");
-
-                        Console.Write("Creating computer->group mappings");
-                        steptimer.Restart();
-                        while (groupmappings.Count > 0)
-                        {
-                            relationshipcount = relationshipcount + Writer.MergeGroupRelationships(Types.Computer, ListExtensions.ListPop(groupmappings, 1000), session);
                             Console.Write(".");
+                            computercount = computercount + Writer.MergeAdComputers(ListExtensions.ListPop(compprops, 1000), driver);
                         }
-                        steptimer.Stop();
-                        Console.WriteLine();
-                        Console.WriteLine("Created " + relationshipcount + " computer->group mappings in " + steptimer.ElapsedMilliseconds + "ms");
-                        Console.WriteLine();
+                        foreach (string dn in c.MemberOfDNs)
+                        {
+                            groupmappings.Add(Writer.GetGroupRelationshipObject(c.Type, c.ID, dn, scanid));
+                        }
                     }
+                    //purge any remaining groups and mappings to the database
+                    if (compprops.Count > 0) { computercount = computercount + Writer.MergeAdComputers(compprops, driver); }
+                    steptimer.Stop();
+                    Console.WriteLine();
+                    Console.WriteLine("Created " + computercount + " computers in " + steptimer.ElapsedMilliseconds + "ms");
+
+                    Console.Write("Creating computer->group mappings");
+                    steptimer.Restart();
+                    while (groupmappings.Count > 0)
+                    {
+                        relationshipcount = relationshipcount + Writer.MergeGroupRelationships(Types.Computer, ListExtensions.ListPop(groupmappings, 1000), driver);
+                        Console.Write(".");
+                    }
+                    steptimer.Stop();
+                    Console.WriteLine();
+                    Console.WriteLine("Created " + relationshipcount + " computer->group mappings in " + steptimer.ElapsedMilliseconds + "ms");
+                    Console.WriteLine();
                 }
             }
 
-            using (ISession session = driver.Session())
-            {
-                steptimer.Restart();
-                //create primary group mappings
-                relcounter = relcounter + Writer.CreatePrimaryGroupRelationships(session, scanid);
-                steptimer.Stop();
-                Console.WriteLine("Created " + relcounter + " primary group relationships in " + steptimer.ElapsedMilliseconds + "ms");
-            }
+            steptimer.Restart();
+            //create primary group mappings
+            relcounter = relcounter + Writer.CreatePrimaryGroupRelationships(driver, scanid);
+            steptimer.Stop();
+            Console.WriteLine("Created " + relcounter + " primary group relationships in " + steptimer.ElapsedMilliseconds + "ms");
 
+            steptimer.Restart();
+            //create primary group mappings
+            int propcounter = Writer.UpdateMemberCounts(driver);
+            steptimer.Stop();
+            Console.WriteLine("Created " + propcounter + " group membership counts updated in " + steptimer.ElapsedMilliseconds + "ms");
 
-            using (ISession session = driver.Session())
-            {
-                steptimer.Restart();
-                //create primary group mappings
-                int propcounter = Writer.UpdateMemberCounts(session);
-                steptimer.Stop();
-                Console.WriteLine("Created " + propcounter + " group membership counts updated in " + steptimer.ElapsedMilliseconds + "ms");
-            }
 
             Console.WriteLine();
             Console.WriteLine("Cleaning up deleted items");
             steptimer.Restart();
-            using (ISession session = driver.Session())
-            {
-                //*cleanup deleted items
-                //remove group memberships that have been deleted
-                Console.WriteLine("Deleted " + Writer.RemoveDeletedGroupMemberShips(session, scanid) + " relationships");
-            }
 
-            using (ISession session = driver.Session())
-            {
-                //mark deleted objects
-                Console.WriteLine("Deleted " + Writer.FindAndMarkDeletedItems(Types.User, session, scanid) + " deleted user relationships");
-                Console.WriteLine("Deleted " + Writer.FindAndMarkDeletedItems(Types.Computer, session, scanid) + " deleted computer relationships");
-            }
+            //*cleanup deleted items
+            //remove group memberships that have been deleted
+            Console.WriteLine("Deleted " + Writer.RemoveDeletedGroupMemberShips(driver, scanid) + " relationships");
+
+            //mark deleted objects
+            Console.WriteLine("Deleted " + Writer.FindAndMarkDeletedItems(Types.User, driver, scanid) + " deleted user relationships");
+            Console.WriteLine("Deleted " + Writer.FindAndMarkDeletedItems(Types.Computer, driver, scanid) + " deleted computer relationships");
+
             steptimer.Stop();
             Console.WriteLine("Finished cleaning up deleted items in " + steptimer.ElapsedMilliseconds + "ms");
 
+            //mark deleted objects
             steptimer.Restart();
-            using (ISession session = driver.Session())
-            {
-                //mark deleted objects
-                Writer.SetGroupScope(session);
-            }
+            Writer.SetGroupScope(driver);
             steptimer.Stop();
-            Console.WriteLine();
+            //Console.WriteLine();
             Console.WriteLine("Set group scopes in " + steptimer.ElapsedMilliseconds + "ms");
+
+            //mark deleted objects
+            steptimer.Restart();
+            Writer.UpdateMetadata(driver);
+            steptimer.Stop();
+            //Console.WriteLine();
+            Console.WriteLine("Updated metadata " + steptimer.ElapsedMilliseconds + "ms");
 
 
             //cleanup
