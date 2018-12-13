@@ -1254,12 +1254,11 @@ function onNodeDragStart(d) {
 function onNodeDragFinished(d) {
     //console.log("onNodeDragFinished");
     d3.event.sourceEvent.stopPropagation();
-
+    
     if (playMode === true && d.dragged === true) {
-        d.dragged = false;
-        //playLayout();
         restartLayout();
     }
+    d.dragged = false;
 }
 
 //update location for all nodes
@@ -1313,7 +1312,7 @@ function updateLocationsEdges() {
     let alledges = edgeslayer.selectAll(".edges").data(graphedges.GetArray());
     let edgebgwidth = 13;
     alledges.each(function (d) {
-        let diagLine = new Slope(d.source.cx, d.source.cy, d.target.cx, d.target.cy);
+       let diagLine = new Slope(d.source.cx, d.source.cy, d.target.cx, d.target.cy);
 
         //move and rotate the edge line to the right spot
        let edge = d3.select(this).attr("transform", function () {

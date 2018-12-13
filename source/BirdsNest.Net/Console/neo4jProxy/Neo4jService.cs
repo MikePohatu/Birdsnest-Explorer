@@ -446,27 +446,34 @@ namespace Console.neo4jProxy
 
         public Dictionary<string, List<string>> GetNodeDetails()
         {
-            IStatementResult dbresult = null;
-            using (ISession session = this.Driver.Session())
-            {
-                try
-                {
-                    session.ReadTransaction(tx =>
-                    {
-                        string query = "CALL db.labels() YIELD label " +
-                            "MATCH(n) WHERE label IN labels(n) " +
-                            "UNWIND keys(n) as property " +
-                            "RETURN DISTINCT label,property ORDER BY label, property";
-                        dbresult = tx.Run(query);
-                    });
-                }
-                catch
-                {
-                    //logging to add
-                }
-            }
+            List<string> labels = GetNodeLabels();
+            Dictionary<string, List<string>> result = new Dictionary<string, List<string>>();
 
-            return ParseDictionaryStringListResults(dbresult);
+            foreach (string label in labels)
+            {
+                IStatementResult dbresult = null;
+                using (ISession session = this.Driver.Session())
+                {
+                    try
+                    {
+                        session.ReadTransaction(tx =>
+                        {
+                            string query = "MATCH(n:"+label+") UNWIND keys(n) as property RETURN DISTINCT property ORDER BY property";
+                            dbresult = tx.Run(query);
+                        });
+                    }
+                    catch
+                    {
+                        //logging to add
+                    }
+                }
+
+                List<string> lst = ParseStringListResults(dbresult);
+                result.Add(label, lst);
+            }
+            
+
+            return result;
         }
 
         public IEnumerable<string> GetNodeProperties(string type)
