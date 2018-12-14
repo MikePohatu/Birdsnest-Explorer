@@ -916,7 +916,6 @@ function startSelect() {
         .on('click', startCrop)
         .classed('viewcontrolActive', false);
     drawingsvg
-        .on('click', onSelectClicked, true)
         .on('mousedown', onSelectMouseDown, true)
         .on('touchstart', onSelectMouseDown, true)
         .on(".zoom", null);
@@ -936,13 +935,9 @@ function stopSelect() {
     },50);
 }
 
-//prevent click events so select can function
-function onSelectClicked() {
-    d3.event.stopPropagation();
-}
-
 function onSelectMouseDown() {
     //console.log("onSelectMouseDown");
+    d3.event.stopPropagation();
     if (areaBox !== undefined) { areaBox.remove(); }
 
     areaBox = drawingsvg.append("rect")
@@ -997,7 +992,6 @@ function startCrop() {
         .on('click', stopCrop)
         .classed('viewcontrolActive', true);
     drawingsvg
-        .on('click', onCropClicked, true)
         .on('mousedown', onCropMouseDown, true)
         .on('touchstart', onCropMouseDown, true);
     drawingsvg.on(".zoom", null);
@@ -1016,12 +1010,8 @@ function stopCrop() {
     },50);
 }
 
-//prevent click events so select can function
-function onCropClicked() {
-    d3.event.stopPropagation();
-}
-
 function onCropMouseDown() {
+    d3.event.stopPropagation();
     if (areaBox !== undefined) { areaBox.remove(); }
 
     areaBox = drawingsvg.append("rect")
