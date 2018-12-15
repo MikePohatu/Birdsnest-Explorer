@@ -916,6 +916,7 @@ function startSelect() {
         .on('click', startCrop)
         .classed('viewcontrolActive', false);
     drawingsvg
+        .on('click', onDrawAreaBoxClick, true)
         .on('mousedown', onSelectMouseDown, true)
         .on('touchstart', onSelectMouseDown, true)
         .on(".zoom", null);
@@ -933,6 +934,10 @@ function stopSelect() {
     setTimeout(function () {
         resetDrawingEvents();
     },50);
+}
+
+function onDrawAreaBoxClick() {
+    d3.event.stopPropagation();
 }
 
 function onSelectMouseDown() {
@@ -992,6 +997,7 @@ function startCrop() {
         .on('click', stopCrop)
         .classed('viewcontrolActive', true);
     drawingsvg
+        .on('click', onDrawAreaBoxClick, true)
         .on('mousedown', onCropMouseDown, true)
         .on('touchstart', onCropMouseDown, true);
     drawingsvg.on(".zoom", null);
