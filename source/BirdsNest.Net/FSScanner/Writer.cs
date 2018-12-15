@@ -210,7 +210,7 @@ namespace FSScanner
             {
                 string query = "MATCH (n:" + type + ") " +
                     "WITH DISTINCT keys(n) as props " +
-                    "MERGE(i: _Metadata { name: 'NodeDetails'}) " +
+                    "MERGE(i: _Metadata { name: 'NodeProperties'}) " +
                     "SET i." + type + " = props " +
                     "RETURN i";
                 using (ISession session = driver.Session())

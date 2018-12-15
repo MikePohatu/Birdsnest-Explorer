@@ -1670,7 +1670,7 @@ function updateNodeDetails(elementPrefix) {
     let topoption = addOption(el, "*", "");
     topoption.setAttribute("selected", "");
 
-    apiGetJson("/api/graph/node/details", function (data) {
+    apiGetJson("/api/graph/node/properties", function (data) {
         nodeDetails = data;
         Object.keys(nodeDetails).forEach(function (label) {
             addOption(el, label, label);

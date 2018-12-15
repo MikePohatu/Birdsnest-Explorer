@@ -55,16 +55,9 @@ namespace Console.Controllers
 
         // GET: api/graph/node/properties
         [HttpGet("node/properties")]
-        public IEnumerable<string> GetNodeProperties([FromQuery]string type)
+        public SortedDictionary<string, List<string>> GetNodeProperties()
         {
-            return this._service.GetNodeProperties(type);
-        }
-
-        // GET: api/graph/node/details
-        [HttpGet("node/details")]
-        public SortedDictionary<string, List<string>> GetNodeDetails()
-        {
-            return this._service.GetNodeDetails();
+            return this._service.GetNodeProperties();
         }
 
         // GET: api/graph/node/values

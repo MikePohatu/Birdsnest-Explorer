@@ -456,7 +456,7 @@ namespace Console.neo4jProxy
         //MERGE(i:_Meta { name: 'NodeDetails'})
         //SET i.AD_Group = props
         //RETURN i
-        public SortedDictionary<string, List<string>> GetNodeDetails()
+        public SortedDictionary<string, List<string>> GetNodeProperties()
         {
             SortedDictionary<string, List<string>> result = new SortedDictionary<string, List<string>>();
 
@@ -467,7 +467,7 @@ namespace Console.neo4jProxy
                 {
                     session.ReadTransaction(tx =>
                     {
-                        string query = "MATCH (i:_Metadata {name:'NodeDetails'}) RETURN i";
+                        string query = "MATCH (i:_Metadata {name:'NodeProperties'}) RETURN i";
                         dbresult = tx.Run(query);
                     });
                 }
@@ -502,37 +502,6 @@ namespace Console.neo4jProxy
 
             return result;
         }
-
-        public IEnumerable<string> GetNodeProperties(string type)
-        {
-            IStatementResult dbresult = null;
-            using (ISession session = this.Driver.Session())
-            {
-                try
-                {
-                    session.ReadTransaction(tx =>
-                    {
-                        if (string.IsNullOrEmpty(type))
-                        {
-                            string query = "MATCH (n) UNWIND keys(n) as props RETURN DISTINCT props ORDER BY props";
-                            dbresult = tx.Run(query);
-                        }
-                        else
-                        {
-                            string query = "MATCH (n) WHERE $type IN labels(n) UNWIND keys(n) as props RETURN DISTINCT props ORDER BY props";
-                            dbresult = tx.Run(query, new { type = type });
-                        }
-                    });
-                }
-                catch
-                {
-                    //logging to add
-                }
-            }
-
-            return ParseStringListResults(dbresult);
-        }
-
 
         public IEnumerable<string> SearchNodePropertyValues (string type, string property, string searchterm)
         {
