@@ -12,6 +12,7 @@ using Microsoft.Extensions.Options;
 using System.DirectoryServices.AccountManagement;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Console.Auth;
+using Microsoft.Extensions.Logging;
 
 namespace Console.Controllers
 {
@@ -19,11 +20,13 @@ namespace Console.Controllers
     public class AccountController : Controller
     {
         //private DirectoryConfiguration _config;
+        private readonly ILogger<AccountController> _logger;
         private AuthConfigurations _configlist;
 
-        public AccountController(AuthConfigurations configuration)
+        public AccountController(ILogger<AccountController> logger, AuthConfigurations configuration)
         {
             this._configlist = configuration;
+            this._logger = logger;
             //this._config = configuration;
         }
 
@@ -113,6 +116,7 @@ namespace Console.Controllers
                     if (login.IsAuthorised == false)
                     {
                         ViewData["Message"] = "You are not authorised to use BirdsNest. Please contact your administrator";
+                        this._logger.LogWarning("Login not authorised: {username}",details.UserName);
                         return false;
                     }
 
@@ -145,7 +149,7 @@ namespace Console.Controllers
                     //SignInResult signin = new SignInResult(CookieAuthenticationDefaults.AuthenticationScheme, userPrincipal, authProperties);
                     //await signin.ExecuteResultAsync(ControllerContext);
                     await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, userPrincipal, authProperties);
-
+                    this._logger.LogInformation("Login successful: {username}", details.UserName);
                     return true;
                 }
                 else
@@ -158,6 +162,7 @@ namespace Console.Controllers
             {
                 ViewBag.Errors = e.Message;
                 ViewData["Message"] = "There was an error logging in.";
+                this._logger.LogInformation("Login error: {username}. Error: {error}", details.UserName, e.Message);
                 return false;
             }
         }

@@ -7,27 +7,33 @@ using System.Threading.Tasks;
 using common;
 using Neo4j.Driver.V1;
 using Newtonsoft.Json;
+using Microsoft.Extensions.Logging;
 
 namespace Console.neo4jProxy
 {
     public class Neo4jService : IDisposable
     {
-        public readonly IDriver Driver;
+        private readonly ILogger<Neo4jService> _logger;
+        private readonly IDriver _driver;
 
-        public Neo4jService(NeoConfiguration config)
+        public Neo4jService(ILogger<Neo4jService> logger, NeoConfiguration config)
         {
+            this._logger = logger;
             Config neo4jconfig = new Config();
             neo4jconfig.ConnectionIdleTimeout = Config.InfiniteInterval;
             neo4jconfig.MaxConnectionLifetime = Config.InfiniteInterval;
             neo4jconfig.SocketKeepAlive = true;
 
             //load the config
-            this.Driver = Neo4jConnector.ConnectToNeo(config, neo4jconfig);
+            Stopwatch stopwatch = Stopwatch.StartNew();
+            this._driver = Neo4jConnector.ConnectToNeo(config, neo4jconfig);
+            stopwatch.Stop();
+            this._logger.LogInformation("Connected to neo4j in {elapsed} ms", stopwatch.ElapsedMilliseconds);
         }
 
         public ResultSet GetAll()
         {
-            using (ISession session = this.Driver.Session())
+            using (ISession session = this._driver.Session())
             {
                 ResultSet returnedresults = new ResultSet();
                 try
@@ -61,7 +67,7 @@ namespace Console.neo4jProxy
 
         public ResultSet GetNode(long nodeid)
         {
-            using (ISession session = this.Driver.Session())
+            using (ISession session = this._driver.Session())
             {
                 ResultSet returnedresults = new ResultSet();
                 try
@@ -94,7 +100,7 @@ namespace Console.neo4jProxy
 
         public ResultSet GetRelationships(List<long> nodeids)
         {
-            using (ISession session = this.Driver.Session())
+            using (ISession session = this._driver.Session())
             {
                 ResultSet returnedresults = new ResultSet();
                 try
@@ -128,7 +134,7 @@ namespace Console.neo4jProxy
 
         public ResultSet GetDirectRelationships(List<long> nodeids)
         {
-            using (ISession session = this.Driver.Session())
+            using (ISession session = this._driver.Session())
             {
                 ResultSet returnedresults = new ResultSet();
                 try
@@ -162,7 +168,7 @@ namespace Console.neo4jProxy
 
         public ResultSet GetNodes(List<long> nodeids)
         {
-            using (ISession session = this.Driver.Session())
+            using (ISession session = this._driver.Session())
             {
                 ResultSet returnedresults = new ResultSet();
                 try
@@ -188,7 +194,7 @@ namespace Console.neo4jProxy
 
         public ResultSet GetRelatedNodes(long nodeid)
         {
-            using (ISession session = this.Driver.Session())
+            using (ISession session = this._driver.Session())
             {
                 ResultSet returnedresults = new ResultSet();
                 try
@@ -214,7 +220,7 @@ namespace Console.neo4jProxy
 
         public ResultSet GetAllRelated(long nodeid)
         {
-            using (ISession session = this.Driver.Session())
+            using (ISession session = this._driver.Session())
             {
                 ResultSet returnedresults = new ResultSet();
                 try
@@ -285,7 +291,7 @@ namespace Console.neo4jProxy
             else
             { throw new ArgumentException("Invalid target type: " + tartype); }
 
-            using (ISession session = this.Driver.Session())
+            using (ISession session = this._driver.Session())
             {
                 ResultSet returnedresults = new ResultSet();
                 try
@@ -355,7 +361,7 @@ namespace Console.neo4jProxy
         public List<string> GetNodeLabels()
         {
             IStatementResult dbresult = null;
-            using (ISession session = this.Driver.Session())
+            using (ISession session = this._driver.Session())
             {
                 try
                 {
@@ -377,7 +383,7 @@ namespace Console.neo4jProxy
         public List<string> GetEdgeLabels()
         {
             IStatementResult dbresult = null;
-            using (ISession session = this.Driver.Session())
+            using (ISession session = this._driver.Session())
             {
                 try
                 {
@@ -404,7 +410,7 @@ namespace Console.neo4jProxy
         public int GetAllNodesCount()
         {
             IStatementResult dbresult = null;
-            using (ISession session = this.Driver.Session())
+            using (ISession session = this._driver.Session())
             {
                 try
                 {
@@ -430,7 +436,7 @@ namespace Console.neo4jProxy
             string regexterm = "(?i)" + term + ".*";
             
             IStatementResult dbresult = null;
-            using (ISession session = this.Driver.Session())
+            using (ISession session = this._driver.Session())
             {
                 try
                 {
@@ -461,7 +467,7 @@ namespace Console.neo4jProxy
             SortedDictionary<string, List<string>> result = new SortedDictionary<string, List<string>>();
 
             IStatementResult dbresult = null;
-            using (ISession session = this.Driver.Session())
+            using (ISession session = this._driver.Session())
             {
                 try
                 {
@@ -509,7 +515,7 @@ namespace Console.neo4jProxy
             string regexterm = "(?i).*" + searchterm + ".*";
 
             IStatementResult dbresult = null;
-            using (ISession session = this.Driver.Session())
+            using (ISession session = this._driver.Session())
             {
                 try
                 {
@@ -540,29 +546,6 @@ namespace Console.neo4jProxy
             }
             return results;
         }
-
-        //private Dictionary<string,List<string>> ParseDictionaryStringListResults(IStatementResult dbresult)
-        //{
-        //    Dictionary<string, List<string>> results = new Dictionary<string, List<string>>();
-        //    List<string> lst;
-        //    foreach (IRecord record in dbresult)
-        //    {
-        //        string label = record["label"].ToString();
-        //        string prop = record["property"].ToString();
-
-        //        if (results.TryGetValue(label, out lst))
-        //        {
-        //            lst.Add(prop);
-        //        }
-        //        else
-        //        {
-        //            List<string> nlst = new List<string>();
-        //            nlst.Add(prop);
-        //            results.Add(label, nlst);
-        //        }
-        //    }
-        //    return results;
-        //}
 
         private ResultSet ParseResults(IStatementResult neoresult)
         {
@@ -613,7 +596,7 @@ namespace Console.neo4jProxy
 
         public void Dispose()
         {
-            this.Driver?.Dispose();
+            this._driver?.Dispose();
         }
     }
 }

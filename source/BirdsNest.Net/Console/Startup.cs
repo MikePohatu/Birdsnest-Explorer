@@ -19,22 +19,33 @@ using common;
 using Microsoft.AspNetCore.Identity;
 using Newtonsoft.Json.Serialization;
 using Console.Auth;
+using Console.Diagnostics;
+using Microsoft.Extensions.Logging;
 
 namespace Console
 {
     public class Startup
     {
-        public Startup(IConfiguration configuration)
+        private readonly IHostingEnvironment _env;
+        private readonly IConfiguration _config;
+        private readonly ILoggerFactory _loggerFactory;
+
+        public Startup(IHostingEnvironment env, IConfiguration config,
+            ILoggerFactory loggerFactory)
         {
-            Configuration = configuration;
+            _env = env;
+            _config = config;
+            _loggerFactory = loggerFactory;
         }
 
-        public IConfiguration Configuration { get; }
+        //public IConfiguration Configuration { get; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.Configure<CookiePolicyOptions>(options =>
+            //var logger = this._loggerFactory.CreateLogger<Startup>();
+
+;            services.Configure<CookiePolicyOptions>(options =>
             {
                 // This lambda determines whether user consent for non-essential cookies is needed for a given request.
                 options.CheckConsentNeeded = context => true;
@@ -64,15 +75,15 @@ namespace Console
             Neo4jService neoservice;
             using (NeoConfiguration config = new NeoConfiguration())
             {
-                config.DB_URI = Configuration["neo4jSettings:DB_URI"];
-                config.DB_Username = Configuration["neo4jSettings:DB_Username"];
-                config.DB_Password = Configuration["neo4jSettings:DB_Password"];
-                neoservice = new Neo4jService(config);
+                config.DB_URI = _config["neo4jSettings:DB_URI"];
+                config.DB_Username = _config["neo4jSettings:DB_Username"];
+                config.DB_Password = _config["neo4jSettings:DB_Password"];
+                neoservice = new Neo4jService(this._loggerFactory.CreateLogger<Neo4jService>(), config);
             }
             neoservice.GetAllNodesCount();
 
             services.AddSingleton(neoservice);
-            services.AddSingleton(new AuthConfigurations(Configuration.GetSection("Authorization")));
+            services.AddSingleton(new AuthConfigurations(_config.GetSection("Authorization")));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

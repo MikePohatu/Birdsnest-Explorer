@@ -2,6 +2,12 @@
 
   <PropertyGroup>
     <TargetFramework>netcoreapp2.1</TargetFramework>
+    <Company>20Road Limited</Company>
+    <Product>BirdsNest</Product>
+    <Authors>Mike Pohatu</Authors>
+    <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
+    <PackageProjectUrl>https://github.com/MikePohatu/BirdsNest</PackageProjectUrl>
+    <PackageLicenseUrl>https://github.com/MikePohatu/BirdsNest/blob/master/LICENSE</PackageLicenseUrl>
   </PropertyGroup>
 
   <ItemGroup>
@@ -14,6 +20,12 @@
 
   <ItemGroup>
     <ProjectReference Include="..\common\common.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Update="NLog.config">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
 
 </Project>
