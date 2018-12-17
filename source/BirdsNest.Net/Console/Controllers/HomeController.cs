@@ -6,12 +6,19 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Console.Models;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.Extensions.Logging;
 
 namespace Console.Controllers
 {
     [AllowAnonymous]
     public class HomeController : Controller
     {
+        private readonly ILogger _logger;
+        public HomeController(ILogger<HomeController> logger)
+        {
+            this._logger = logger;
+        }
+
         public IActionResult Index()
         {
             if (User.Identity.IsAuthenticated == true)

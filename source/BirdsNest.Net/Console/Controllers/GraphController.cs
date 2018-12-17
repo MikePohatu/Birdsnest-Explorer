@@ -6,6 +6,7 @@ using Console.neo4jProxy;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 
 namespace Console.Controllers
 {
@@ -16,8 +17,11 @@ namespace Console.Controllers
     public class GraphController : ControllerBase
     {
         private readonly Neo4jService _service;
-        public GraphController(Neo4jService service)
+        private readonly ILogger _logger;
+
+        public GraphController(ILogger<GraphController> logger, Neo4jService service)
         {
+            this._logger = logger;
             this._service = service;
         }
 

@@ -21,6 +21,7 @@ using Newtonsoft.Json.Serialization;
 using Console.Auth;
 using Console.Diagnostics;
 using Microsoft.Extensions.Logging;
+using System.Diagnostics;
 
 namespace Console
 {
@@ -43,9 +44,10 @@ namespace Console
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            //var logger = this._loggerFactory.CreateLogger<Startup>();
+            var logger = this._loggerFactory.CreateLogger<Startup>();
+            Stopwatch stopwatch = new Stopwatch();
 
-;            services.Configure<CookiePolicyOptions>(options =>
+            services.Configure<CookiePolicyOptions>(options =>
             {
                 // This lambda determines whether user consent for non-essential cookies is needed for a given request.
                 options.CheckConsentNeeded = context => true;
@@ -72,6 +74,7 @@ namespace Console
             }).SetCompatibilityVersion(CompatibilityVersion.Version_2_1)
             .AddJsonOptions(options => options.SerializerSettings.ContractResolver = new DefaultContractResolver());
 
+            logger.LogInformation("Loading neo4j configuration");
             Neo4jService neoservice;
             using (NeoConfiguration config = new NeoConfiguration())
             {
@@ -80,10 +83,16 @@ namespace Console
                 config.DB_Password = _config["neo4jSettings:DB_Password"];
                 neoservice = new Neo4jService(this._loggerFactory.CreateLogger<Neo4jService>(), config);
             }
+            stopwatch.Restart();
             neoservice.GetAllNodesCount();
+            logger.LogInformation("Initialised neo4j connection in {elapsed}ms", stopwatch.ElapsedMilliseconds);
+            stopwatch.Stop();
 
             services.AddSingleton(neoservice);
+
+            logger.LogInformation("Loading authentication configuration");
             services.AddSingleton(new AuthConfigurations(_config.GetSection("Authorization")));
+            logger.LogDebug("Finished loading authentication configuration");
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

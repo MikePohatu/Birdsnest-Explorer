@@ -6,6 +6,7 @@ using Console.neo4jProxy;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Console.ViewModels;
+using Microsoft.Extensions.Logging;
 
 namespace Console.Controllers
 {
@@ -13,8 +14,11 @@ namespace Console.Controllers
     public class VisualizerController : Controller
     {
         private readonly Neo4jService _service;
-        public VisualizerController(Neo4jService service)
+        private readonly ILogger _logger;
+
+        public VisualizerController(ILogger<VisualizerController> logger, Neo4jService service)
         {
+            this._logger = logger;
             this._service = service;
         }
 
