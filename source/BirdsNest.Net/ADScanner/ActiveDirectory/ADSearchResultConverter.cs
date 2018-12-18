@@ -9,20 +9,22 @@ namespace ADScanner.ActiveDirectory
     {
         public static string GetSinglestringValue(SearchResult result, string property)
         {
+            string res = string.Empty;
             if (result?.Properties[property] != null && result.Properties[property].Count > 0)
             {
                 if (result.Properties[property][0].GetType().IsArray)
                 {
                     byte[] resulttext = (byte[])result.Properties[property][0];
-                    return Encoding.UTF8.GetString(resulttext);
+                    res = Encoding.UTF8.GetString(resulttext);
                 }
                 else
                 {
-                    return result.Properties[property][0].ToString();
+                    res = result.Properties[property][0].ToString();
                 }
                     
             }
-            return string.Empty;
+            if (res == null) { return string.Empty; }
+            return res;
         }
 
         public static int GetIntSingleValue(SearchResult result, string property)

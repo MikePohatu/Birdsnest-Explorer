@@ -83,16 +83,16 @@ namespace Console
                 config.DB_Password = _config["neo4jSettings:DB_Password"];
                 neoservice = new Neo4jService(this._loggerFactory.CreateLogger<Neo4jService>(), config);
             }
-            stopwatch.Restart();
-            neoservice.GetAllNodesCount();
-            logger.LogInformation("Initialised neo4j connection in {elapsed}ms", stopwatch.ElapsedMilliseconds);
-            stopwatch.Stop();
-
             services.AddSingleton(neoservice);
 
             logger.LogInformation("Loading authentication configuration");
             services.AddSingleton(new AuthConfigurations(_config.GetSection("Authorization")));
             logger.LogDebug("Finished loading authentication configuration");
+
+            stopwatch.Restart();
+            neoservice.GetAllNodesCount();
+            logger.LogInformation("Initialised connection in {elapsed}ms", stopwatch.ElapsedMilliseconds);
+            stopwatch.Stop();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

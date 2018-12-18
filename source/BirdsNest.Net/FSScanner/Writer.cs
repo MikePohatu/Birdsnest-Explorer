@@ -208,11 +208,15 @@ namespace FSScanner
 
             foreach (string type in types)
             {
-                string query = "MATCH (n:" + type + ") " +
-                    "WITH DISTINCT keys(n) as props " +
-                    "MERGE(i: _Metadata { name: 'NodeProperties'}) " +
-                    "SET i." + type + " = props " +
-                    "RETURN i";
+                string query =
+                "MATCH (n:" + type + ") " +
+                "WITH DISTINCT keys(n) as props " +
+                "UNWIND props as p " +
+                "WITH DISTINCT p as disprops " +
+                "WITH collect(disprops) as allprops " +
+                "MERGE(i: _Metadata { name: 'NodeProperties'}) " +
+                "SET i." + type + " = allprops " +
+                "RETURN i";
                 using (ISession session = driver.Session())
                 {
                     session.WriteTransaction(tx => tx.Run(query));
