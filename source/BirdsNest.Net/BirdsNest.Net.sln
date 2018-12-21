@@ -15,6 +15,14 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FSScanner", "FSScanner\FSSc
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CustomAppScanner", "CustomAppScanner\CustomAppScanner.csproj", "{5062CB83-0AEB-4AE4-9F86-8279DFF2F48A}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{6E949BF3-DFB4-479B-8A7D-7A3057C1A342}"
+	ProjectSection(SolutionItems) = preProject
+		example-adconfig.json = example-adconfig.json
+		example-cmconfig.json = example-cmconfig.json
+		example-fsconfig.json = example-fsconfig.json
+		example-neoconfig.json = example-neoconfig.json
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU

@@ -13,6 +13,12 @@ namespace FSScanner
 
         public int FolderCount { get; set; } = 0;
         public int PermissionCount { get; set; } = 0;
+        public string FsID { get; private set; }
+
+        public Writer(string fsid)
+        {
+            this.FsID = fsid;
+        }
 
         public void UpdateFolder(Folder newfolder, IDriver driver)
         {
@@ -51,6 +57,7 @@ namespace FSScanner
                 "folder.lastpermission=$lastfolder, " +
                 "folder.inheritancedisabled=$inheritancedisabled, " +
                 "folder.lastscan=$scanid, " +
+                "folder.fsid=$fsid, " +
                 "folder.blocked=$blocked, " +
                 "folder.layout='tree' " +
                 "RETURN folder";
@@ -65,7 +72,8 @@ namespace FSScanner
                     inheritancedisabled = folder.InheritanceDisabled,
                     blocked = folder.Blocked.ToString(),
                     name = folder.Name,
-                    scanid = folder.ScanId
+                    scanid = folder.ScanId,
+                    fsid = this.FsID
                 }));
                 nodescreated = result.Summary.Counters.NodesCreated;
             }

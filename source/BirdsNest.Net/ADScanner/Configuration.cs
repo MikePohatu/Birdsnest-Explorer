@@ -6,6 +6,9 @@ namespace ADScanner
 {
     public class Configuration: IDisposable
     {
+        [JsonProperty("ID")]
+        public string ID { get; set; } = string.Empty;
+
         [JsonProperty("AD_DomainPath")]
         public string AD_DomainPath { get; set; }
 

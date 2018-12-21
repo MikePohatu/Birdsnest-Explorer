@@ -48,6 +48,19 @@ namespace ADScanner
             {
                 using (Configuration config = Configuration.LoadConfiguration(configfile))
                 {
+                    Writer.DomainID = config.ID;
+                    if (string.IsNullOrEmpty(Writer.DomainID))
+                    {
+                        Console.WriteLine("Your configuration does not have a scanner ID. A random ID will be generated for you below:");
+                        Console.WriteLine(ShortGuid.NewGuid().ToString());
+                        Console.WriteLine();
+                        if (batchmode == false)
+                        {
+                            Console.WriteLine("Press any key to exit");
+                            Console.ReadLine();
+                        }
+                        Environment.Exit(2);
+                    }
                     rootDE = ConnectToAD(config);
                 }
             }
@@ -58,7 +71,10 @@ namespace ADScanner
                 if (batchmode == false) { Console.ReadLine(); }
                 Environment.Exit(1);
             }
+            
 
+
+            //load the neo4j config
             try
             {
                 using (NeoConfiguration config = NeoConfiguration.LoadConfigurationFile(neoconfigfile))

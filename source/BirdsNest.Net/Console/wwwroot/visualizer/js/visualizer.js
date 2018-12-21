@@ -44,6 +44,7 @@ var minScaling = 1;
 var maxScaling = 3;
 
 var perfmode = false; //perfmode indicates high numbers of nodes, and minimises animation
+var maxAnimateNodes = 300;
 
 var zoom = d3.zoom()
     .scaleExtent([0.05, 5])
@@ -418,7 +419,7 @@ function addSearchResults(results, clearResults) {
     //console.log(pendingResults.nodes.length);
     //console.log("addSearchResults start: " + results);
 
-    if (results.Nodes.length > 100) {
+    if (results.Nodes.length > maxAnimateNodes) {
         if (confirm("You are adding " + results.Nodes.length + " nodes to the view. This is a " +
             "large number of nodes. Layout animation will be disabled for performance reasons. " +
             " Are you sure?") !== true) {
@@ -852,7 +853,7 @@ function getAllNodeIds() {
 
 //check the number of nodes in the view, and enable perfmode if required
 function checkPerfMode() {
-    if (graphnodes.GetArray().length > 100) { perfmode = true; }
+    if (graphnodes.GetArray().length > maxAnimateNodes) { perfmode = true; }
     else { perfmode = false; }
 }
 

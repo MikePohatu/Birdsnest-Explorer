@@ -84,7 +84,7 @@ namespace FSScanner
 
             foreach (DataStore ds in datastores)
             {
-                Crawler crawler = new Crawler(driver);
+                
                 foreach (FileSystem fs in ds.FileSystems)
                 {
                     if (string.IsNullOrEmpty(fs.Path))
@@ -92,6 +92,19 @@ namespace FSScanner
                         ConsoleWriter.WriteWarning("Filesystem missing \"path\" property");
                         continue;
                     }
+                    if (string.IsNullOrEmpty(fs.ID))
+                    {
+                        ConsoleWriter.WriteError("Filesystem does have have an ID configured: " + fs.Path);
+                        ConsoleWriter.WriteError("A random ID has been generated for you to use in your config: " + ShortGuid.NewGuid().ToString());
+                        if (batchmode == false)
+                        {
+                            ConsoleWriter.WriteLine("Press any key to continue");
+                            Console.ReadLine();
+                        }
+                        continue;
+                    }
+                    Crawler crawler = new Crawler(driver, fs.ID);
+
                     NetworkCredential fscred;
                     if (!string.IsNullOrEmpty(fs.CredentialID) && (credentials.TryGetValue(fs.CredentialID, out fscred)))
                     {

@@ -12,5 +12,8 @@ namespace FSScanner
 
         [JsonProperty("credentialid")]
         public string CredentialID { get; set; }
+
+        [JsonProperty("id")]
+        public string ID { get; set; }
     }
 }

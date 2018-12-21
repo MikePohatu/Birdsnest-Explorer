@@ -8,6 +8,9 @@ namespace FSScanner
 {
     public class Configuration: IDisposable
     {
+        [JsonProperty("ScannerID")]
+        public string ScannerID { get; set; } = string.Empty;
+
         [JsonProperty("credentials")]
         public List<Credential> Credentials { get; set; } = new List<Credential>();
 
