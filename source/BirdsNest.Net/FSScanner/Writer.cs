@@ -14,10 +14,12 @@ namespace FSScanner
         public int FolderCount { get; set; } = 0;
         public int PermissionCount { get; set; } = 0;
         public string FsID { get; private set; }
+        public string ScanID { get; private set; }
 
-        public Writer(string fsid)
+        public Writer(string fsid, string scanid)
         {
             this.FsID = fsid;
+            this.ScanID = scanid;
         }
 
         public void UpdateFolder(Folder newfolder, IDriver driver)
@@ -72,7 +74,7 @@ namespace FSScanner
                     inheritancedisabled = folder.InheritanceDisabled,
                     blocked = folder.Blocked.ToString(),
                     name = folder.Name,
-                    scanid = folder.ScanId,
+                    scanid = this.ScanID,
                     fsid = this.FsID
                 }));
                 nodescreated = result.Summary.Counters.NodesCreated;
@@ -111,7 +113,7 @@ namespace FSScanner
                 {
                     path = folder.Path,
                     lastfolder = folder.PermParent,
-                    scanid = folder.ScanId
+                    scanid = this.ScanID
                 }));
                 relcreated = result.Summary.Counters.RelationshipsCreated;
             }
@@ -179,13 +181,17 @@ namespace FSScanner
         public int CleanupChangedFolders(string rootpath, string scanid, IDriver driver)
         {
             string query = "MATCH(f:" + Types.Folder + ") " +
-            "WHERE f.path STARTS WITH $rootpath AND f.lastscan<>$scanid " +
+            "WHERE f.fsid = $fsid AND f.lastscan<>$scanid " +
             "DETACH DELETE f ";
 
             int nodesdeleted = 0;
             using (ISession session = driver.Session())
             {
-                IStatementResult result = session.WriteTransaction(tx => tx.Run(query, new { rootpath = rootpath, scanid = scanid }));
+                IStatementResult result = session.WriteTransaction(tx => tx.Run(query, new {
+                    rootpath = rootpath,
+                    scanid = scanid,
+                    fsid = this.FsID
+                }));
                 nodesdeleted = result.Summary.Counters.NodesDeleted;
             }
 
@@ -195,7 +201,7 @@ namespace FSScanner
         public int CleanupInheritanceMappings(string rootpath, string scanid, IDriver driver)
         {
             string query = "MATCH (f:" + Types.Folder +") "+
-                "WHERE f.path STARTS WITH $rootpath " +
+                "WHERE f.fsid = $fsid " +
                 "WITH f " +
                 "MATCH(f) -[r]->() WHERE r.lastscan <> $scanid " +
                 "DELETE r ";
@@ -203,7 +209,10 @@ namespace FSScanner
             int nodesdeleted = 0;
             using (ISession session = driver.Session())
             {
-                IStatementResult result = session.WriteTransaction(tx => tx.Run(query, new { rootpath = rootpath, scanid = scanid }));
+                IStatementResult result = session.WriteTransaction(tx => tx.Run(query, new {
+                    rootpath = rootpath,
+                    scanid = scanid,
+                    fsid = this.FsID }));
                 nodesdeleted = result.Summary.Counters.NodesDeleted;
             }
 

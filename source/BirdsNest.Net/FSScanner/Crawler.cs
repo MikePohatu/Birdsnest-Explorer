@@ -13,17 +13,17 @@ namespace FSScanner
         private Dictionary<string, Folder> _existingfolders;
         private Stopwatch _timer = new Stopwatch();
         public string ScanId { get; private set; } = ShortGuid.NewGuid().ToString();
-        public string FsID { get; set; }
+        public string FsID { get; private set; }
 
         public int FolderCount { get; set; } = 0;
         public IDriver Driver { get; private set; }
         public Writer Writer { get; private set; }
 
-        public Crawler(IDriver driver, string fsid)
+        public Crawler(IDriver driver, FileSystem fs)
         {
-            this.FsID = fsid;
+            this.FsID = fs.ID;
             this.Driver = driver;
-            this.Writer = new Writer(fsid);
+            this.Writer = new Writer(this.FsID, this.ScanId);
         }
 
         /// <summary>

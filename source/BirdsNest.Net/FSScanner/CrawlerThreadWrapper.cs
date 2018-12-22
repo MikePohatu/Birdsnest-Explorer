@@ -48,7 +48,7 @@ namespace FSScanner
             catch (Exception e)
             {
                 ConsoleWriter.WriteError("Error connecting to " + this.Path + ": " + e.Message);
-                Folder f = new Folder() { Blocked = true, Path = this.Path, Name = this.Path, PermParent = this.PermParent, InheritanceDisabled = true, ScanId = this._parent.ScanId };
+                Folder f = new Folder() { Blocked = true, Path = this.Path, Name = this.Path, PermParent = this.PermParent, InheritanceDisabled = true };
                 this._parent.Writer.UpdateFolder(f, this._parent.Driver);
             }
 
@@ -107,7 +107,7 @@ namespace FSScanner
             DirectorySecurity dirsec = directory.GetAccessControl();
             AuthorizationRuleCollection directrules = dirsec.GetAccessRules(true, isroot, typeof(SecurityIdentifier));
 
-            Folder f = new Folder(directory.Name, directory.FullName, permroot, directrules, dirsec.AreAccessRulesProtected, this._parent.ScanId);
+            Folder f = new Folder(directory.Name, directory.FullName, permroot, directrules, dirsec.AreAccessRulesProtected);
             return f;
         }
     }

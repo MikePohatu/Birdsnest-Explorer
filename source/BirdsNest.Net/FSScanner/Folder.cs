@@ -17,8 +17,8 @@ namespace FSScanner
         [JsonProperty("name")]
         public string Name { get; set; } = string.Empty;
 
-        [JsonProperty("scanid")]
-        public string ScanId { get; set; }
+        //[JsonProperty("scanid")]
+        //public string ScanId { get; set; }
 
         public virtual string Type { get { return Types.Folder; } }
         private string _permparent = string.Empty;
@@ -39,12 +39,12 @@ namespace FSScanner
 
         public Folder() { }
 
-        public Folder(string name, string path, string permparent, AuthorizationRuleCollection rules, bool isinheritancedisabled, string scanid)
+        public Folder(string name, string path, string permparent, AuthorizationRuleCollection rules, bool isinheritancedisabled)
         {
             if (string.IsNullOrEmpty(name)) { this.Name = path; }
             else  { this.Name = name; }
 
-            this.ScanId = scanid;
+            //this.ScanId = scanid;
             this.InheritanceDisabled = isinheritancedisabled;
             this.Path = path;
             this.PermParent = permparent;
@@ -56,8 +56,7 @@ namespace FSScanner
                     this.Permissions.Add(new Permission() {
                         ID = rule.IdentityReference.Value,
                         Path = this._path,
-                        Right = rule.FileSystemRights.ToString(),
-                        ScanId = scanid
+                        Right = rule.FileSystemRights.ToString()
                     });
                     //Console.WriteLine("{0} | Account: {1} | Permission: {2}", path, rule.IdentityReference.Value, rule.FileSystemRights.ToString());
                 }

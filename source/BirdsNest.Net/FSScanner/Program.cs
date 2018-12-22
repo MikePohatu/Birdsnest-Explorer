@@ -103,7 +103,7 @@ namespace FSScanner
                         }
                         continue;
                     }
-                    Crawler crawler = new Crawler(driver, fs.ID);
+                    Crawler crawler = new Crawler(driver, fs);
 
                     NetworkCredential fscred;
                     if (!string.IsNullOrEmpty(fs.CredentialID) && (credentials.TryGetValue(fs.CredentialID, out fscred)))
