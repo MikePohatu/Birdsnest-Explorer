@@ -182,17 +182,21 @@ namespace ADScanner.Neo4j
 
         public static int RemoveDeletedGroupMemberShips(IDriver driver, string scanid)
         {
-            string query = "MATCH(n:" + Types.User + ") " +
-                "WHERE n.domainid = $scanid " +
+            Dictionary<string, object> scanprops = new Dictionary<string, object>();
+            scanprops.Add("scanid", scanid);
+            scanprops.Add("domainid", Writer.DomainID);
+
+            string query = "MATCH(n:" + Types.ADObject + ") " +
+                "WHERE n.domainid = $domainid " +
                 "WITH n " +
-                "MATCH(n) -[r:" + Types.MemberOf + "]->(g:" + Types.Group + ") " +
+                "MATCH(n) -[r:" + Types.MemberOf + " {domainid:$domainid}]->(g:" + Types.Group + ") " +
                 "WHERE NOT EXISTS(r.lastscan) OR r.lastscan <> $scanid " +
                 "DELETE r " +
                 "RETURN r ";
 
             using (ISession session = driver.Session())
             {
-                IStatementResult result = session.WriteTransaction(tx => tx.Run(query, new { scanid = Writer.DomainID }));
+                IStatementResult result = session.WriteTransaction(tx => tx.Run(query, scanprops));
                 return result.Summary.Counters.RelationshipsDeleted;
             }
         }
