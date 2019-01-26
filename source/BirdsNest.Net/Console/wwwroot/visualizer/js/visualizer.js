@@ -417,7 +417,7 @@ setup edges and nodes
 *****************************
 */
 
-function addSearchResults(results, clearResults) {
+function addSearchResults(results, clearResults, callback) {
     //console.log(pendingResults.nodes.length);
     //console.log("addSearchResults start: " + results);
 
@@ -444,6 +444,10 @@ function addSearchResults(results, clearResults) {
             //pendingResults = null;
         }
         //console.log("addSearchResults end");
+        if (callback !== undefined) {
+            //console.log(callback);
+            callback();
+        }
     }, 10);
 }
 
@@ -463,48 +467,59 @@ function resultsQueue() {
 }
 
 resultsQueue.prototype.QueueResults = function (json) {
-    this.pendingResults = true;
-    if (this.jsonQueued.hasOwnProperty('Edges') === false) {
-        this.jsonQueued.Edges = json.Edges;
+    //console.log("resultsQueue.prototype.QueueResults start: ");
+    //console.log(json);
+    var me = this;
+    me.pendingResults = true;
+    if (me.jsonQueued.hasOwnProperty('Edges') === false) {
+        me.jsonQueued.Edges = json.Edges;
     }
     else {
-        this.jsonQueued.Edges.concat(json.Edges);
+        me.jsonQueued.Edges = me.jsonQueued.Edges.concat(json.Edges);
     }
 
-    if (this.jsonQueued.hasOwnProperty('Nodes') === false) {
-        this.jsonQueued.Nodes = json.Nodes;
+    if (me.jsonQueued.hasOwnProperty('Nodes') === false) {
+        //console.log("New nodes");
+        me.jsonQueued.Nodes = json.Nodes;
     }
     else {
-        this.jsonQueued.Nodes.concat(json.Nodes);
+        //console.log("Concat nodes");
+        me.jsonQueued.Nodes = me.jsonQueued.Nodes.concat(json.Nodes);
     }
 
-    if (this.processing === false) {
-        clearTimeout(this.timeout);
-        var procfunc = this.Process();
-        this.timeout = setTimeout(function () {
-            procfunc();
+    //console.log("jsonQueued");
+    //console.log(me.jsonQueued);
+    if (me.processing === false) {
+        clearTimeout(me.timeout);
+        me.timeout = setTimeout(function () {
+            me.Process();
         }, 1000);
     }
 };
 
 resultsQueue.prototype.Process = function () {
-    this.processing = true;
-    this.jsonProcessing = this.jsonQueued;
-    this.jsonQueued = new Object();
-    this.pendingResults = false;
-    addResultSet(this.jsonQueued, function () {
-        this.processing = false;
-        if (this.pendingResults === true) {
-            this.Process();
+    //console.log("resultsQueue.prototype.Process start:");
+    //console.log(this.jsonQueued);
+    var me = this;
+    me.processing = true;
+    me.jsonProcessing = me.jsonQueued;
+    me.jsonQueued = new Object();
+    me.pendingResults = false;
+    addSearchResults(me.jsonProcessing, true, function () {
+        me.processing = false;
+        me.jsonProcessing = undefined;
+        if (me.pendingResults === true) {
+            me.Process();
         }
     });
 };
 
-function addResultSet(json, callback) {
+function addResultSet(json) {
     //console.log("addResultSet start: " + json);
     let edges = json.Edges;
     let nodes = json.Nodes;
 
+    //console.log(nodes);
     //populate necessary additional data for the view
     let newitemcount = loadNodeData(nodes);
     checkPerfMode();
@@ -545,10 +560,7 @@ function addResultSet(json, callback) {
         addSvgEdges(graphedges.GetArray());
     }
     refreshLabelEyes();
-    if (callback !== undefined) {
-        console.log(callback);
-        callback();
-    }
+    
     return newitemcount;
     //console.log("addResultSet end: " );
 }
