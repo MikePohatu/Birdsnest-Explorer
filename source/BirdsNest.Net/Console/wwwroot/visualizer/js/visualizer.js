@@ -5,6 +5,8 @@ var graphbglayer;
 var nodeslayer;
 var edgeslayer;
 
+var queue = new resultsQueue()
+
 //for recording the labels in teh graph and whether they are enabled e.g. AD_User,false
 var graphnodelabels = new Object();
 var graphedgelabels = new Object();
@@ -451,7 +453,54 @@ function onAddToView() {
     addSearchResults(JSON.parse(results), true);
 }
 
-function addResultSet(json) {
+
+function resultsQueue() {
+    this.jsonQueued = new Object();
+    this.jsonProcessing;
+    this.processing = false;
+    this.pendingResults = false;
+    this.timeout;
+}
+
+resultsQueue.prototype.QueueResults = function (json) {
+    this.pendingResults = true;
+    if (this.jsonQueued.hasOwnProperty('Edges') === false) {
+        this.jsonQueued.Edges = json.Edges;
+    }
+    else {
+        this.jsonQueued.Edges.concat(json.Edges);
+    }
+
+    if (this.jsonQueued.hasOwnProperty('Nodes') === false) {
+        this.jsonQueued.Nodes = json.Nodes;
+    }
+    else {
+        this.jsonQueued.Nodes.concat(json.Nodes);
+    }
+
+    if (this.processing === false) {
+        clearTimeout(this.timeout);
+        var procfunc = this.Process();
+        this.timeout = setTimeout(function () {
+            procfunc();
+        }, 1000);
+    }
+};
+
+resultsQueue.prototype.Process = function () {
+    this.processing = true;
+    this.jsonProcessing = this.jsonQueued;
+    this.jsonQueued = new Object();
+    this.pendingResults = false;
+    addResultSet(this.jsonQueued, function () {
+        this.processing = false;
+        if (this.pendingResults === true) {
+            this.Process();
+        }
+    });
+};
+
+function addResultSet(json, callback) {
     //console.log("addResultSet start: " + json);
     let edges = json.Edges;
     let nodes = json.Nodes;
@@ -496,6 +545,10 @@ function addResultSet(json) {
         addSvgEdges(graphedges.GetArray());
     }
     refreshLabelEyes();
+    if (callback !== undefined) {
+        console.log(callback);
+        callback();
+    }
     return newitemcount;
     //console.log("addResultSet end: " );
 }
@@ -1564,7 +1617,7 @@ function getNode(nodeid) {
     //console.log(nodeid);
     apiGetJson("/api/graph/node/" + nodeid, function (data) {
         //console.log(data);
-        addSearchResults(data);
+        queue.QueueResults(data);
     });
 }
 
@@ -1573,7 +1626,7 @@ function getNodes(nodeids) {
 
     apiGetJson("/api/graph/nodes?" + querystring, function (data) {
         //console.log(data);
-        addSearchResults(data);
+        queue.QueueResults(data);
     });
 }
 
@@ -1581,7 +1634,7 @@ function addRelated(nodeid) {
     //console.log("addRelated"+ nodeid);
     apiGetJson("/api/graph/nodes/" + nodeid, function (data) {
         //pendingResults = data;
-        addSearchResults(data, true);
+        queue.QueueResults(data);
     });
 
 }
