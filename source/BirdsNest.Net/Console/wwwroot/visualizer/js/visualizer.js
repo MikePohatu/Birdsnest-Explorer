@@ -419,7 +419,8 @@ setup edges and nodes
 
 function addSearchResults(results, clearResults, callback) {
     //console.log(pendingResults.nodes.length);
-    //console.log("addSearchResults start: " + results);
+    //console.log("addSearchResults start: " );
+    //console.log(results);
 
     if (results.Nodes.length > maxAnimateNodes) {
         if (confirm("You are adding " + results.Nodes.length + " nodes to the view. This is a " +
@@ -433,22 +434,82 @@ function addSearchResults(results, clearResults, callback) {
     d3.selectAll("#restartLayoutBtn")
         .attr('title', 'Updating data');
 
-    setTimeout(function () {
-        let newcount = addResultSet(results);
-        if (newcount > 0) { updateEdges(); }
-        else { d3.selectAll("#restartIcon").classed("spinner", false); }
+    let newcount = addResultSet(results);
+    if (newcount > 0) {
+        //let nodeids = getAllNodeIds();
+        let nodeids = graphnodes.GetIDs();
+        //console.log("nodeids");
+        //console.log(nodeids);
+        getEdgesForNodes(nodeids, function (data) {
+            //console.log("getEdgesForNodes complete");
+            //console.log(data);
+            
+            addResultSet(data);
+            addSvgNodes(graphnodes.GetArray());
+            addSvgEdges(graphedges.GetArray());
+            restartLayout();
+        });
+    }
+    else { d3.selectAll("#restartIcon").classed("spinner", false); }
 
-        if (clearResults === true) {
-            document.getElementById("searchNotification").innerHTML = '';
-            document.getElementById("searchExpand").innerHTML = '';
-            //pendingResults = null;
+    if (clearResults === true) {
+        document.getElementById("searchNotification").innerHTML = '';
+        document.getElementById("searchExpand").innerHTML = '';
+        //pendingResults = null;
+    }
+    //console.log("addSearchResults end");
+    if (callback !== undefined) {
+        //console.log(callback);
+        callback();
+    }
+}
+
+function addResultSet(json) {
+    //console.log("addResultSet start: " + json);
+    let edges = json.Edges;
+    let nodes = json.Nodes;
+
+    //console.log(nodes);
+    //populate necessary additional data for the view
+    let newitemcount = loadNodeData(nodes);
+    checkPerfMode();
+
+    edges.forEach(function (d) {
+        if (graphedges.DatumExists(d) === false) {
+            if (graphedgelabels[d.label] === undefined) {
+                graphedgelabels[d.label] = true;
+            }//record the label is in the graph
+            graphedges.Add(d);
+            let src = graphnodes.GetDatum(d.source);
+            let tar = graphnodes.GetDatum(d.target);
+            //console.log(d);
+            //console.log(src);
+
+            if ((src.properties.layout === "tree") && (tar.properties.layout === "tree")) { treeedges.Add(d); }
+            else if ((src.properties.layout === "mesh") && (tar.properties.layout === "mesh")) { meshedges.Add(d); }
+            else {
+                if (connectnodes.DatumExists(d.source) === false) { connectnodes.Add(graphnodes.GetDatum(d.source)); }
+                if (connectnodes.DatumExists(d.target) === false) { connectnodes.Add(graphnodes.GetDatum(d.target)); }
+                connectedges.Add(d);
+            }
+
+            newitemcount++;
         }
-        //console.log("addSearchResults end");
-        if (callback !== undefined) {
-            //console.log(callback);
-            callback();
-        }
-    }, 10);
+    });
+
+    if (newitemcount > 0) {
+        meshsimulation.nodes(meshnodes.GetArray());
+        meshsimulation.force("link").links(meshedges.GetArray());
+        treesimulation.nodes(treenodes.GetArray());
+        treesimulation.force("link").links(treeedges.GetArray());
+        connectsimulation.nodes(connectnodes.GetArray());
+        connectsimulation.force("link").links(connectedges.GetArray());
+        graphsimulation.nodes(graphnodes.GetArray());
+    }
+    refreshLabelEyes();
+
+    return newitemcount;
+    //console.log("addResultSet end: " );
 }
 
 function onAddToView() {
@@ -513,57 +574,6 @@ resultsQueue.prototype.Process = function () {
         }
     });
 };
-
-function addResultSet(json) {
-    //console.log("addResultSet start: " + json);
-    let edges = json.Edges;
-    let nodes = json.Nodes;
-
-    //console.log(nodes);
-    //populate necessary additional data for the view
-    let newitemcount = loadNodeData(nodes);
-    checkPerfMode();
-
-    edges.forEach(function (d) {
-        if (graphedges.DatumExists(d) === false) {
-            if (graphedgelabels[d.label] === undefined) {
-                graphedgelabels[d.label] = true;
-            }//record the label is in the graph
-            graphedges.Add(d);
-            let src = graphnodes.GetDatum(d.source);
-            let tar = graphnodes.GetDatum(d.target);
-            //console.log(d);
-            //console.log(src);
-
-            if ((src.properties.layout === "tree") && (tar.properties.layout === "tree")) { treeedges.Add(d); }
-            else if ((src.properties.layout === "mesh") && (tar.properties.layout === "mesh")) { meshedges.Add(d); }
-            else {
-                if (connectnodes.DatumExists(d.source) === false) { connectnodes.Add(graphnodes.GetDatum(d.source)); }
-                if (connectnodes.DatumExists(d.target) === false) { connectnodes.Add(graphnodes.GetDatum(d.target)); }
-                connectedges.Add(d);
-            }
-
-            newitemcount++;
-        }
-    });
-
-    if (newitemcount > 0) {
-        meshsimulation.nodes(meshnodes.GetArray());
-        meshsimulation.force("link").links(meshedges.GetArray());
-        treesimulation.nodes(treenodes.GetArray());
-        treesimulation.force("link").links(treeedges.GetArray());
-        connectsimulation.nodes(connectnodes.GetArray());
-        connectsimulation.force("link").links(connectedges.GetArray());
-        graphsimulation.nodes(graphnodes.GetArray());
-
-        addSvgNodes(graphnodes.GetArray());
-        addSvgEdges(graphedges.GetArray());
-    }
-    refreshLabelEyes();
-    
-    return newitemcount;
-    //console.log("addResultSet end: " );
-}
 
 var currMaxScope = 20;
 var currMinScope = 1;
@@ -791,8 +801,8 @@ function updateNodeSizes() {
 
 function addSvgEdges(edges) {
     //setup the edges
-	/*console.log("addSvgEdges");
-	console.log(data);*/
+	//console.log("addSvgEdges");
+ //   console.log(edges);
 
     //add the bg
     setTimeout(function () {
@@ -904,16 +914,16 @@ function removeNodes() {
     });
 }
 
-function getAllNodeIds() {
-    var nodeids = [];
-    zoomLayer.selectAll(".nodes")
-        .each(function (d) {
-            nodeids.push(d.db_id);
-        }
-        );
+//function getAllNodeIds() {
+//    var nodeids = [];
+//    zoomLayer.selectAll(".nodes")
+//        .each(function (d) {
+//            nodeids.push(d.db_id);
+//        }
+//    );
 
-    return nodeids;
-}
+//    return nodeids;
+//}
 
 
 //check the number of nodes in the view, and enable perfmode if required
@@ -1443,6 +1453,7 @@ function updateLocationsEdges() {
 function datumStore() {
     this.datumObject = new Object();
     this.datumArray = [];
+    this.idArray = [];
     this.objectUpdated = false;
 }
 
@@ -1450,20 +1461,32 @@ datumStore.prototype.GetDatum = function (id) {
     return this.datumObject[id];
 };
 
+datumStore.prototype.GetIDs = function (id) {
+    if (this.objectUpdated === true) {
+        //onsole.log(this.datumObject);
+        this.RefreshArrays();
+    }
+    return this.idArray;
+};
+
 datumStore.prototype.GetArray = function () {
 
     if (this.objectUpdated === true) {
         //onsole.log(this.datumObject);
-        let o = this.datumObject;
-        this.datumArray = Object.keys(o).map(function (key) {
-            //console.log("datumStore.GetArray map: " + key);
-            //console.log(o);
-            return o[key];
-        });
-
-        this.objectUpdated = false;
+        this.RefreshArrays();
     }
     return this.datumArray;
+};
+
+datumStore.prototype.RefreshArrays = function () {
+    let o = this.datumObject;
+    this.idArray = Object.keys(o);
+    this.datumArray = this.idArray.map(function (key) {
+        //console.log("datumStore.GetArray map: " + key);
+        //console.log(o);
+        return o[key];
+    });
+    this.objectUpdated = false;
 };
 
 datumStore.prototype.Add = function (d) {
@@ -1649,19 +1672,6 @@ function addRelated(nodeid) {
         queue.QueueResults(data);
     });
 
-}
-
-function updateEdges() {
-    //console.log("updateEdges start");
-    let nodeids = getAllNodeIds();
-
-    getEdgesForNodes(nodeids, function (data) {
-        //console.log(data);
-        //console.log("getEdgesForNodes complete");
-        addResultSet(data);
-        restartLayout();
-    });
-    //console.log("updateEdges end");
 }
 
 function getEdgesForNodes(nodelist, callback) {
