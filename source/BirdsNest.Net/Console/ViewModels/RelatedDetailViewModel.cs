@@ -39,30 +39,18 @@ namespace Console.ViewModels
             BirdsNestNode relatednode;
             string nodelabel = string.Empty;
             string edgelabel = string.Empty;
+            string dir = string.Empty;
 
             if (edge.Source == this.Node.DbId) {
                 this.RelatedNodes.TryGetValue(edge.Target, out relatednode);
-                nodelabel = "○ -> " + relatednode.Labels.ToString();
-                edgelabel = "○ -> " + edge.Label;
+                dir = "○ -> ";
             }
             else {
                 this.RelatedNodes.TryGetValue(edge.Source, out relatednode);
-                nodelabel = "○ <- " + relatednode.Labels.ToString();
-                edgelabel = "○ <- " + edge.Label;
+                dir = "○ <- ";
             }
 
-            List<BirdsNestNode> nodelist;
-            if (this.LabeledNodeLists.TryGetValue(nodelabel, out nodelist))
-            {
-                nodelist.Add(relatednode);
-            }
-            else
-            {
-                List<BirdsNestNode> newlist = new List<BirdsNestNode>();
-                newlist.Add(relatednode);
-                this.LabeledNodeLists.Add(nodelabel, newlist);
-            }
-
+            edgelabel = dir + edge.Label;
             if (this.LabelledEdgeNodes.TryGetValue(edgelabel, out edgelist))
             {
                 edgelist.Add(relatednode);
@@ -72,6 +60,26 @@ namespace Console.ViewModels
                 List<BirdsNestNode> newlist = new List<BirdsNestNode>();
                 newlist.Add(relatednode);
                 this.LabelledEdgeNodes.Add(edgelabel, newlist);
+            }
+
+            foreach (string label in relatednode.Labels)
+            {
+                nodelabel = dir + label;
+                
+
+                List<BirdsNestNode> nodelist;
+                if (this.LabeledNodeLists.TryGetValue(nodelabel, out nodelist))
+                {
+                    nodelist.Add(relatednode);
+                }
+                else
+                {
+                    List<BirdsNestNode> newlist = new List<BirdsNestNode>();
+                    newlist.Add(relatednode);
+                    this.LabeledNodeLists.Add(nodelabel, newlist);
+                }
+
+               
             }
         }
     }
