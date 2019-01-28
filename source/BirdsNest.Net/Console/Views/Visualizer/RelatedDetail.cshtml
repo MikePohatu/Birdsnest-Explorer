@@ -10,7 +10,7 @@
         </div>
         <b>Name:</b> @Model.Node.Name<br />
         <b>db_id:</b> @Model.Node.DbId<br />
-        <b>Type:</b> @Model.Node.Label<br />
+        <b>Types:</b> @string.Join(", ",Model.Node.Labels)<br />
         <b>Scope:</b> @Model.Node.Scope<br />
     </div>
 

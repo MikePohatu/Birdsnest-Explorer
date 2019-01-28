@@ -38,18 +38,6 @@
     stroke-width: 1px;
 }
 
-.AD_User {
-    color: crimson;
-    stroke: crimson;
-    fill: #ffe2e7;
-}
-
-.AD_Computer {
-    color: steelblue;
-    stroke: steelblue;
-    fill: lightcyan;
-}
-
 .AD_Group {
     color: green;
     stroke: green;
@@ -84,6 +72,18 @@
     color: #cab4f7;
     stroke: #cab4f7;
     fill: purple;
+}
+
+.AD_User {
+    color: crimson;
+    stroke: crimson;
+    fill: #ffe2e7;
+}
+
+.AD_Computer {
+    color: steelblue;
+    stroke: steelblue;
+    fill: lightcyan;
 }
 
 .FS_Folder {

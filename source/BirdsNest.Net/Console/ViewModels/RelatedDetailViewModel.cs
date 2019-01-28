@@ -42,12 +42,12 @@ namespace Console.ViewModels
 
             if (edge.Source == this.Node.DbId) {
                 this.RelatedNodes.TryGetValue(edge.Target, out relatednode);
-                nodelabel = "○ -> " + relatednode.Label;
+                nodelabel = "○ -> " + relatednode.Labels.ToString();
                 edgelabel = "○ -> " + edge.Label;
             }
             else {
                 this.RelatedNodes.TryGetValue(edge.Source, out relatednode);
-                nodelabel = "○ <- " + relatednode.Label;
+                nodelabel = "○ <- " + relatednode.Labels.ToString();
                 edgelabel = "○ <- " + edge.Label;
             }
 

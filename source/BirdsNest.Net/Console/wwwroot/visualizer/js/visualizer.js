@@ -5,7 +5,7 @@ var graphbglayer;
 var nodeslayer;
 var edgeslayer;
 
-var queue = new resultsQueue()
+var queue = new resultsQueue();
 
 //for recording the labels in teh graph and whether they are enabled e.g. AD_User,false
 var graphnodelabels = new Object();
@@ -689,7 +689,13 @@ function addSvgNodes(nodes) {
 
     let enternodesg = enternodes.append("g")
         .attr("id", function (d) { return "node_" + d.db_id; })
-        .attr("class", function (d) { return d.label; })
+        .attr("class", function (d) {
+            let labelclasses = "";
+            d.labels.forEach(function(label) {
+                labelclasses = labelclasses + " " + label;
+            });
+            return labelclasses;
+        })
         .attr("cursor","pointer")
         .classed("nodes", true)
         .classed("enabled", true)
@@ -699,7 +705,7 @@ function addSvgNodes(nodes) {
         .on("mouseout", onNodeMouseOut)
         .on("dblclick", onNodeDblClicked)
         .call(
-        d3.drag().subject(this)
+            d3.drag().subject(this)
             .on('start', onNodeDragStart)
             .on('drag', onNodeDragged)
             .on('end', onNodeDragFinished));
@@ -720,7 +726,7 @@ function addSvgNodes(nodes) {
             .attr("width", function (d) { return d.size * 0.6; })
             .attr("x", function (d) { return d.size * 0.2; })
             .attr("y", function (d) { return d.size * 0.2; })
-            .attr("class", function (d) { return iconmappings.getIconClasses(d) + " nodeicon"; });
+            .attr("class", function (d) { return iconmappings.getIconClass(d) + " nodeicon"; });
     }, 1);
 
     setTimeout(function () {
@@ -779,7 +785,7 @@ function updateNodeSizes() {
         .attr("width", function (d) { return d.size * 0.6; })
         .attr("x", function (d) { return d.size * 0.2; })
         .attr("y", function (d) { return d.size * 0.2; })
-        .attr("class", function (d) { return iconmappings.getIconClasses(d) + " nodeicon"; });
+        .attr("class", function (d) { return iconmappings.getIconClass(d) + " nodeicon"; });
 
     allnodes.selectAll("text")
         .attr("transform", function (d) { return "translate(" + (d.size / 2) + "," + (d.size + 10) + ")"; });
@@ -1551,13 +1557,47 @@ Slope.prototype.getXFromY = function (y) {
 /*
 IconMappings object to asign the correct font awesome icon to the correct nodes
 */
+
+var iconmappings;
+$.getJSON("json/labelicons.json", function (data) {
+    iconmappings = new IconMappings(data);
+});
+$.getJSON("/api/graph/edges/labels", function (data) {
+    for (var i = 0; i < data.length; ++i) {
+        addOption(document.getElementById("edgeType"), data[i], data[i]);
+    }
+});
+
 function IconMappings(jsondata) {
     this.mappings = jsondata;
+    this.keys = Object.keys(this.mappings);
 }
 
-IconMappings.prototype.getIconClasses = function (datum) {
-    if (this.mappings.hasOwnProperty(datum.label)) { return this.mappings[datum.label]; }
-    else { return "fas fa-question"; }
+IconMappings.prototype.getIconClass = function (datum) {
+    //console.log("IconMappings.prototype.getIconClass start:");
+    //console.log(datum);
+    //console.log(this.mappings);
+    var me = this;
+    var finalmapping = "fas fa-question";
+    var mappinglabel = "";
+    var datumlabel = "";
+    var found = false;
+    for (i = 0; i < this.keys.length; i++) {
+        mappinglabel = this.keys[i];
+        for (j = 0; j < datum.labels.length; j++) {
+            datumlabel = datum.labels[j];
+            if (datumlabel === mappinglabel) {
+                //console.log("return");
+                //console.log(me.mappings[mappinglabel]);
+                finalmapping = me.mappings[mappinglabel];
+                found = true;
+                break;
+            }
+        }
+        if (found === true) { break; }
+    }
+
+    return finalmapping;
 };
 
 

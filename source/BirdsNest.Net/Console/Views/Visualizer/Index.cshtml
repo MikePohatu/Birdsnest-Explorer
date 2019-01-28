@@ -163,16 +163,6 @@
     <script src="~/visualizer/js/d3.min.js"></script>
     <script src="~/visualizer/js/visualizer.js" type="text/javascript"></script>
     <script>
-        var iconmappings;
-        $.getJSON("json/labelicons.json", function (data) {
-            iconmappings = new IconMappings(data);
-        });
-        $.getJSON("/api/graph/edges/labels", function (data) {
-            for (var i = 0; i < data.length; ++i) {
-                addOption(document.getElementById("edgeType"), data[i], data[i]);
-            }
-        });
-
         $("#menuShowHideButton").click(function () {
             var icon = $("#menuIcon");
             if (icon.hasClass("fa-angle-up")) {

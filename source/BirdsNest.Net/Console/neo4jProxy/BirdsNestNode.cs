@@ -15,8 +15,8 @@ namespace Console.neo4jProxy
         [JsonProperty("name")]
         public string Name { get; private set; } = string.Empty;
 
-        [JsonProperty("label")]
-        public string Label { get; private set; } = string.Empty;
+        [JsonProperty("labels")]
+        public List<string> Labels { get; private set; } = new List<string>();
 
         [JsonProperty("scope")]
         public long Scope { get; private set; } = 1;
@@ -42,11 +42,7 @@ namespace Console.neo4jProxy
                 newnode.Scope = (long)o;
             }
 
-            foreach (string s in noderecord.Labels)
-            {
-                newnode.Label = s;
-                break;
-            }
+            newnode.Labels = noderecord.Labels as List<string>;
 
             return newnode;
         }
