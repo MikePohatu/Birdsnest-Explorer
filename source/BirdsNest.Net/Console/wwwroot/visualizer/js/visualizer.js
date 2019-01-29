@@ -194,7 +194,7 @@ function resetView() {
     edgeslayer.selectAll("*").remove();
     nodeslayer.selectAll("*").remove();
     resetScale();
-    refreshLabelEyes();
+    cleanAndUpdateLabelEyes();
 }
 
 d3.selectAll("#restartLayoutBtn").attr('onclick', 'restartLayout()');
@@ -260,23 +260,29 @@ function pauseLayout() {
     d3.selectAll("#restartLayoutBtn").attr('onclick', 'restartLayout()');
 }
 
-function refreshLabelEyes() {  
+function cleanAndUpdateLabelEyes() {
     cleanLabels(graphnodelabels);
     cleanLabels(graphedgelabels);
     function cleanLabels(obj) {
         Object.keys(obj).forEach(function (d) {
+            //console.log("checking label: " + d);
             if (d3.select("." + d).size() === 0) {
                 //console.log("removing eye: " + d);
                 delete obj[d];
             }
         });
     }
+    updateLabelEyes();
+}
 
-    buildEyeTable(graphnodelabels, "eyeNodeLabelList");
-    buildEyeTable(graphedgelabels, "eyeEdgeLabelList");
-    function buildEyeTable(obj, id) {
+function updateLabelEyes() {  
+    buildEyeTable(graphnodelabels, "eyeNodeLabelList", "nodes");
+    buildEyeTable(graphedgelabels, "eyeEdgeLabelList", "edges");
+    function buildEyeTable(obj, id, classtype) {
         let arrList = Object.keys(obj).sort();
-        let rootEl = d3.select("#"+ id).html("");
+        let rootEl = d3.select("#" + id).html("");
+        rootEl.attr("classtype", classtype);
+
         let htlabel = rootEl.append("li")
             .append("div")
             .classed("cell small-12", true);
@@ -339,18 +345,13 @@ function onEyeHideAllClicked(element) {
 }
 
 function onEyeInvert(element) {
-    d3.selectAll("#" + element + " .eyeListItem")
-        .each(function () {
-            //console.log(this);
-            //console.log(d);
-            let label = d3.select(this).attr("label");
-            let enabled = d3.selectAll("." + label + ".enabled");
-            let disabled = d3.selectAll("." + label + ".disabled");
-
-            disabled.classed("disabled", false).classed("enabled", true);
-            enabled.classed("enabled", false).classed("disabled", true);
-        });
-    
+    let el = d3.selectAll("#" + element);
+    let type = el.attr("classtype");
+    let enabled = d3.selectAll(".enabled." + type);
+    let disabled = d3.selectAll(".disabled." + type);
+    disabled.classed("disabled", false).classed("enabled", true);
+    enabled.classed("enabled", false).classed("disabled", true);
+        
 }
 
 function onEyeNodeDetailClicked(dbid) {
@@ -506,7 +507,7 @@ function addResultSet(json) {
         connectsimulation.force("link").links(connectedges.GetArray());
         graphsimulation.nodes(graphnodes.GetArray());
     }
-    refreshLabelEyes();
+    updateLabelEyes();
 
     return newitemcount;
     //console.log("addResultSet end: " );
@@ -563,10 +564,11 @@ resultsQueue.prototype.Process = function () {
     //console.log(this.jsonQueued);
     var me = this;
     me.processing = true;
+    stopSimulations();
     me.jsonProcessing = me.jsonQueued;
     me.jsonQueued = new Object();
     me.pendingResults = false;
-    addSearchResults(me.jsonProcessing, true, function () {
+    addSearchResults(me.jsonProcessing, false, function () {
         me.processing = false;
         me.jsonProcessing = undefined;
         if (me.pendingResults === true) {
@@ -610,9 +612,11 @@ function loadNodeData(newnodedata) {
     newnodedata.forEach(function (d) {
         if (graphnodes.DatumExists(d) === false) {
             newtograph.push(d);
-            if (graphnodelabels[d.label] === undefined) {
-                graphnodelabels[d.label] = true;
-            }//record the label is in the graph
+            d.labels.forEach(function (label) {
+                if (graphnodelabels[label] === undefined) {
+                    graphnodelabels[label] = true;
+                }//record the label is in the graph
+            });
 
             if (d.properties.scope > currMaxScope) {
                 rangeUpdated = true;
@@ -916,7 +920,7 @@ function removeNodes() {
 
         resetScale();
         //updateAllNodeLocations();
-        refreshLabelEyes();
+        cleanAndUpdateLabelEyes();
     });
 }
 
