@@ -612,6 +612,8 @@ function loadNodeData(newnodedata) {
     newnodedata.forEach(function (d) {
         if (graphnodes.DatumExists(d) === false) {
             newtograph.push(d);
+            d.x = 0;
+            d.y = 0;
             d.labels.forEach(function (label) {
                 if (graphnodelabels[label] === undefined) {
                     graphnodelabels[label] = true;
@@ -647,8 +649,6 @@ function loadNodeData(newnodedata) {
         d.scaling = scalingRange.getYFromX(d.scope);
 
         d.radius = defaultsize * d.scaling / 2;
-        d.x = 0;
-        d.y = 0;
         d.cx = d.x + d.radius;
         d.cy = d.y + d.radius;
         //console.log(d.x); 
@@ -1350,6 +1350,7 @@ function updateAllNodeLocations(animate) {
 }
 
 function updateLocations(nodes, animate) {
+    if (queue.processing === true) { return; }
     let duration = 750;
 
     if (animate === true) {
