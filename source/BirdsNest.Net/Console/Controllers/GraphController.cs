@@ -44,9 +44,9 @@ namespace Console.Controllers
 
         // GET api/graph/nodes?id=1&id=2
         [HttpGet("nodes")]
-        public object GetNodes([FromQuery(Name = "id")]List<long> id)
+        public object GetNodes([FromQuery(Name = "id")]List<long> ids)
         {
-            return this._service.GetNodes(id);
+            return this._service.GetNodes(ids);
         }
 
 

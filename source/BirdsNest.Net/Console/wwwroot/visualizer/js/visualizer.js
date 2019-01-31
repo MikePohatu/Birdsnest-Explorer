@@ -52,7 +52,7 @@ var zoom = d3.zoom()
     .scaleExtent([0.05, 5])
     .on("zoom", onZoom);
 
-function drawGraph(selectid) {
+function drawGraph(selectid, loaddata) {
     updateNodeDetails("source");
     updateNodeDetails("target");
     drawingPane = d3.select("#" + selectid);
@@ -124,6 +124,10 @@ function drawGraph(selectid) {
 
     window.addEventListener('resize', debounce(updatePaneSize, 500, false), false);
     updatePaneSize();
+    if (loaddata !== undefined) {
+        //console.log(loaddata);
+        getNodes(loaddata);
+    }
 }
 
 //https://stackoverflow.com/questions/641857/javascript-window-resize-event
@@ -1564,7 +1568,7 @@ IconMappings object to asign the correct font awesome icon to the correct nodes
 */
 
 var iconmappings;
-$.getJSON("json/labelicons.json", function (data) {
+$.getJSON("/visualizer/json/labelicons.json", function (data) {
     iconmappings = new IconMappings(data);
 });
 $.getJSON("/api/graph/edges/labels", function (data) {
@@ -1701,9 +1705,15 @@ function getNode(nodeid) {
     });
 }
 
+// GET api/graph/nodes?id=1&id=2
 function getNodes(nodeids) {
-    var querystring = nodeids.join("&");
+    var tempArr = [];
+    nodeids.forEach(function (id) {
+        tempArr.push("id=" + id);
+    });
 
+    var querystring = tempArr.join("&");
+    //console.log(querystring);
     apiGetJson("/api/graph/nodes?" + querystring, function (data) {
         //console.log(data);
         queue.QueueResults(data);

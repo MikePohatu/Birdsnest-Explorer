@@ -22,8 +22,10 @@ namespace Console.Controllers
             this._service = service;
         }
 
-        public IActionResult Index()
+        // GET visualizer/nodes?id=1&id=2
+        public IActionResult Index([FromQuery(Name = "id")]List<long> ids)
         {
+            ViewData["LoadIDs"] = ids;
             return View();
         }
 
