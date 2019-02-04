@@ -1,4 +1,6 @@
-﻿
+﻿@using Microsoft.AspNetCore.Authorization
+@inject IAuthorizationService AuthorizationService
+
 @{
     ViewData["Title"] = "Portal";
 }
@@ -8,3 +10,11 @@
     <input type="submit" class="button" value="Visualizer" />
 </form>
 
+@{
+    if ((await AuthorizationService.AuthorizeAsync(User, "IsBirdsNestAdmin")).Succeeded)
+    {
+        <form action="~/admin/">
+            <input type="submit" class="button" value="Admin" />
+        </form>
+    }
+}
