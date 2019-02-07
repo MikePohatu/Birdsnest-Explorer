@@ -60,8 +60,8 @@ namespace Console
 
             services.AddAuthorization(options =>
             {
-                options.AddPolicy("IsBirdsNestAdmin", policy => policy.RequireClaim("BirdsNestAdmin","True"));
-                options.AddPolicy("IsBirdsNestUser", policy => policy.RequireClaim("BirdsNestUser", "True"));
+                options.AddPolicy(Console.Auth.Types.BirdsNestAdminsPolicy, policy => policy.RequireClaim(Console.Auth.Types.BirdsNestAdminsClaim,"True"));
+                options.AddPolicy(Console.Auth.Types.BirdsNestUsersPolicy, policy => policy.RequireClaim(Console.Auth.Types.BirdsNestUsersClaim, "True"));
             });
 
             services.AddMvc(config =>

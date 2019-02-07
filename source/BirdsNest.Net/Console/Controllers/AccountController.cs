@@ -129,12 +129,12 @@ namespace Console.Controllers
 
                     if (login.IsUser)
                     {
-                        claims.Add(new Claim("BirdsNestUser", "True", ClaimValueTypes.Boolean, conf.Name));
+                        claims.Add(new Claim(Types.BirdsNestUsersClaim, "True", ClaimValueTypes.Boolean, conf.Name));
                     }
 
                     if (login.IsAdmin)
                     {
-                        claims.Add(new Claim("BirdsNestAdmin", "True", ClaimValueTypes.Boolean, conf.Name));
+                        claims.Add(new Claim(Types.BirdsNestAdminsClaim, "True", ClaimValueTypes.Boolean, conf.Name));
                     }
 
                     var userIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);

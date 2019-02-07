@@ -8,41 +8,13 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Console.Controllers
 {
-    [Authorize(Policy = "IsBirdsNestAdmin")]
-    [Route("api/[controller]")]
-    [ApiController]
-    public class AdminController : ControllerBase
+    [Authorize(Policy = Console.Auth.Types.BirdsNestAdminsPolicy)]
+    public class AdminController : Controller
     {
         // GET: api/Admin
-        [HttpGet]
-        public IEnumerable<string> Get()
+        public IActionResult Index()
         {
-            return new string[] { "value1", "value2" };
-        }
-
-        // GET: api/Admin/5
-        [HttpGet("{id}", Name = "Get")]
-        public string Get(int id)
-        {
-            return "value";
-        }
-
-        // POST: api/Admin
-        [HttpPost]
-        public void Post([FromBody] string value)
-        {
-        }
-
-        // PUT: api/Admin/5
-        [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
-        {
-        }
-
-        // DELETE: api/ApiWithActions/5
-        [HttpDelete("{id}")]
-        public void Delete(int id)
-        {
+            return View();
         }
     }
 }
