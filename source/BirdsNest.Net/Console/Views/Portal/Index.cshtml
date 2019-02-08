@@ -1,12 +1,17 @@
-﻿@using Console.Auth;
+﻿@using Console.Auth
 @using Microsoft.AspNetCore.Authorization
 @inject IAuthorizationService AuthorizationService
 
 @{
+    string welcomemsg = "Open Visualizer to get started. Or not. I'm not your mother.";
     ViewData["Title"] = "Portal";
+    if (string.IsNullOrEmpty(User.Identity.Name)==false)
+    {
+        welcomemsg = "Hi " + User.Identity.Name + ". " + welcomemsg;
+    }
 }
 
-<p>Hi @User.Identity.Name. Open Visualizer to get started. Or not. I'm not your mother. </p>
+<p>@welcomemsg</p>
 <form action="~/visualizer/">
     <input type="submit" class="button" value="Visualizer" />
 </form>
@@ -16,12 +21,6 @@
     {
         <form action="~/admin/">
             <input type="submit" class="button" value="Admin" />
-        </form>
-    }
-    else
-    {
-        <form action="~/admin/">
-            <input type="submit" class="button" value="Test" />
         </form>
     }
 }

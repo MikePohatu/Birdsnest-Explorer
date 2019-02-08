@@ -1,4 +1,9 @@
-﻿<!DOCTYPE html>
+﻿@using Console.Auth
+@using Microsoft.AspNetCore.Authorization
+@inject IAuthorizationService AuthorizationService
+
+
+<!DOCTYPE html>
 <html class="no-js" lang="en" dir="ltr">
 <head>
     <meta charset="utf-8">
@@ -29,14 +34,20 @@
                     <ul class="menu">
                         <li><a href="/">Home</a></li>
                         @{
+                            if ((await AuthorizationService.AuthorizeAsync(User, Types.BirdsNestAdminsPolicy)).Succeeded)
+                            {
+                                <li><a asp-area="" asp-controller="Admin" asp-action="Index">Admin</a></li>
+                            }
+
                             if (User.Identity.IsAuthenticated)
                             {
-                                <li><a href="@Url.Action("Logout", "Account")">Logout</a></li>
+                                <li><a asp-area="" asp-controller="Account" asp-action="Logout">Logout</a></li>
                             }
                             else
                             {
-                                <li><a href="@Url.Action("Login", "Account")">Login</a></li>
+                                <li><a asp-area="" asp-controller="Account" asp-action="Login">Login</a></li>
                             }
+
                         }
                         <!--<li><a href='javascript:showLoginCurtain()'>Test</a></li>-->
                     </ul>
@@ -50,7 +61,7 @@
     <environment include="Development">
         <script src="~/lib/jquery/dist/jquery.js"></script>
         <!--<script src="~/lib/bootstrap/dist/js/bootstrap.js"></script>
-    <script src="~/js/site.js" asp-append-version="true"></script>-->
+        <script src="~/js/site.js" asp-append-version="true"></script>-->
         <script src="~/js/foundation/foundation.js"></script>
         <script src="~/js/foundation/what-input.js"></script>
         <script src="~/js/app.js"></script>
@@ -58,18 +69,18 @@
     <environment exclude="Development">
         <script src="~/lib/jquery/dist/jquery.js"></script>
         <!--<script src="https://ajax.aspnetcdn.com/ajax/jquery/jquery-3.3.1.min.js"
-            asp-fallback-src="~/lib/jquery/dist/jquery.min.js"
-            asp-fallback-test="window.jQuery"
-            crossorigin="anonymous"
-            integrity="sha384-tsQFqpEReu7ZLhBV2VZlAu7zcOV+rXbYlF2cqB8txI/8aZajjp4Bqd+V6D5IgvKT">
-    </script>-->
+                asp-fallback-src="~/lib/jquery/dist/jquery.min.js"
+                asp-fallback-test="window.jQuery"
+                crossorigin="anonymous"
+                integrity="sha384-tsQFqpEReu7ZLhBV2VZlAu7zcOV+rXbYlF2cqB8txI/8aZajjp4Bqd+V6D5IgvKT">
+        </script>-->
         <!--<script src="https://ajax.aspnetcdn.com/ajax/bootstrap/3.3.7/bootstrap.min.js"
-            asp-fallback-src="~/lib/bootstrap/dist/js/bootstrap.min.js"
-            asp-fallback-test="window.jQuery && window.jQuery.fn && window.jQuery.fn.modal"
-            crossorigin="anonymous"
-            integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa">
-    </script>
-        <script src="~/js/site.min.js" asp-append-version="true"></script>-->
+                asp-fallback-src="~/lib/bootstrap/dist/js/bootstrap.min.js"
+                asp-fallback-test="window.jQuery && window.jQuery.fn && window.jQuery.fn.modal"
+                crossorigin="anonymous"
+                integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa">
+        </script>
+            <script src="~/js/site.min.js" asp-append-version="true"></script>-->
         <script src="~/js/foundation/foundation.js"></script>
         <script src="~/js/foundation/what-input.js"></script>
         <script src="~/js/app.js"></script>
