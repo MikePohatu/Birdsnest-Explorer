@@ -5,7 +5,7 @@ var graphbglayer;
 var nodeslayer;
 var edgeslayer;
 
-var queue = new resultsQueue();
+var queue = new ResultsQueue(addSearchResults);
 
 //for recording the labels in teh graph and whether they are enabled e.g. AD_User,false
 var graphnodelabels = new Object();
@@ -422,7 +422,7 @@ setup edges and nodes
 *****************************
 */
 
-function addSearchResults(results, clearResults, callback) {
+function addSearchResults(results, callback) {
     //console.log(pendingResults.nodes.length);
     //console.log("addSearchResults start: " );
     //console.log(results);
@@ -457,11 +457,6 @@ function addSearchResults(results, clearResults, callback) {
     }
     else { d3.selectAll("#restartIcon").classed("spinner", false); }
 
-    if (clearResults === true) {
-        document.getElementById("searchNotification").innerHTML = '';
-        document.getElementById("searchExpand").innerHTML = '';
-        //pendingResults = null;
-    }
     //console.log("addSearchResults end");
     if (callback !== undefined) {
         //console.log(callback);
@@ -520,66 +515,13 @@ function addResultSet(json) {
 function onAddToView() {
     let results = $('#searchResultData').val();
     //console.log(results);
-    addSearchResults(JSON.parse(results), true);
+    addSearchResults(JSON.parse(results));
+    document.getElementById("searchNotification").innerHTML = '';
+    document.getElementById("searchExpand").innerHTML = '';
 }
 
 
-function resultsQueue() {
-    this.jsonQueued = new Object();
-    this.jsonProcessing;
-    this.processing = false;
-    this.pendingResults = false;
-    this.timeout;
-}
 
-resultsQueue.prototype.QueueResults = function (json) {
-    //console.log("resultsQueue.prototype.QueueResults start: ");
-    //console.log(json);
-    var me = this;
-    me.pendingResults = true;
-    if (me.jsonQueued.hasOwnProperty('Edges') === false) {
-        me.jsonQueued.Edges = json.Edges;
-    }
-    else {
-        me.jsonQueued.Edges = me.jsonQueued.Edges.concat(json.Edges);
-    }
-
-    if (me.jsonQueued.hasOwnProperty('Nodes') === false) {
-        //console.log("New nodes");
-        me.jsonQueued.Nodes = json.Nodes;
-    }
-    else {
-        //console.log("Concat nodes");
-        me.jsonQueued.Nodes = me.jsonQueued.Nodes.concat(json.Nodes);
-    }
-
-    //console.log("jsonQueued");
-    //console.log(me.jsonQueued);
-    if (me.processing === false) {
-        clearTimeout(me.timeout);
-        me.timeout = setTimeout(function () {
-            me.Process();
-        }, 1000);
-    }
-};
-
-resultsQueue.prototype.Process = function () {
-    //console.log("resultsQueue.prototype.Process start:");
-    //console.log(this.jsonQueued);
-    var me = this;
-    me.processing = true;
-    stopSimulations();
-    me.jsonProcessing = me.jsonQueued;
-    me.jsonQueued = new Object();
-    me.pendingResults = false;
-    addSearchResults(me.jsonProcessing, false, function () {
-        me.processing = false;
-        me.jsonProcessing = undefined;
-        if (me.pendingResults === true) {
-            me.Process();
-        }
-    });
-};
 
 var currMaxScope = 20;
 var currMinScope = 1;
@@ -1354,7 +1296,6 @@ function updateAllNodeLocations(animate) {
 }
 
 function updateLocations(nodes, animate) {
-    if (queue.processing === true) { return; }
     let duration = 750;
 
     if (animate === true) {
