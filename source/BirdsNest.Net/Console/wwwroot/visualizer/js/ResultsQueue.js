@@ -1,38 +1,34 @@
 ﻿
 function ResultsQueue(procFunc) {
-    this.jsonQueued = new Object();
-    this.processing = false;
-    this.pendingResults = false;
-    this.timeout;
-    this.processingFunction = procFunc;
+    this.QueuedData = new Object();
+    this.IsProcessing = false;
+    this.AreResultsPending = false;
+    this.Timeout;
+    this.ProcessingFunction = procFunc;
 }
 
 ResultsQueue.prototype.QueueResults = function (json) {
     //console.log("ResultsQueue.prototype.QueueResults start: ");
     //console.log(json);
     var me = this;
-    me.pendingResults = true;
-    if (me.jsonQueued.hasOwnProperty('Edges') === false) {
-        me.jsonQueued.Edges = json.Edges;
-    }
-    else {
-        me.jsonQueued.Edges = me.jsonQueued.Edges.concat(json.Edges);
+    me.AreResultsPending = true;
+
+    for (var propertyName in json) {
+        if (me.QueuedData.hasOwnProperty(propertyName) === false) {
+            //console.log("New nodes");
+            me.QueuedData[propertyName] = json[propertyName];
+        }
+        else {
+            //console.log("Concat nodes");
+            me.QueuedData[propertyName] = me.QueuedData[propertyName].concat(json[propertyName]);
+        }
     }
 
-    if (me.jsonQueued.hasOwnProperty('Nodes') === false) {
-        //console.log("New nodes");
-        me.jsonQueued.Nodes = json.Nodes;
-    }
-    else {
-        //console.log("Concat nodes");
-        me.jsonQueued.Nodes = me.jsonQueued.Nodes.concat(json.Nodes);
-    }
-
-    //console.log("jsonQueued");
-    //console.log(me.jsonQueued);
-    if (me.processing === false) {
-        clearTimeout(me.timeout);
-        me.timeout = setTimeout(function () {
+    //console.log("QueuedData");
+    //console.log(me.QueuedData);
+    if (me.IsProcessing === false) {
+        clearTimeout(me.Timeout);
+        me.Timeout = setTimeout(function () {
             me.Process();
         }, 1000);
     }
@@ -40,15 +36,15 @@ ResultsQueue.prototype.QueueResults = function (json) {
 
 ResultsQueue.prototype.Process = function () {
     //console.log("ResultsQueue.prototype.Process start:");
-    //console.log(this.jsonQueued);
+    //console.log(this.QueuedData);
     var me = this;
-    me.processing = true;
-    var jsonProcessing = me.jsonQueued;
-    me.jsonQueued = new Object();
-    me.pendingResults = false;
-    me.processingFunction(jsonProcessing, function () {
-        me.processing = false;
-        if (me.pendingResults === true) {
+    me.IsProcessing = true;
+    var jsonProcessing = me.QueuedData;
+    me.QueuedData = new Object();
+    me.AreResultsPending = false;
+    me.ProcessingFunction(jsonProcessing, function () {
+        me.IsProcessing = false;
+        if (me.AreResultsPending === true) {
             me.Process();
         }
     });
