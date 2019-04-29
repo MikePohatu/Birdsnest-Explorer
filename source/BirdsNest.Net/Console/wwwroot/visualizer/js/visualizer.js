@@ -5,7 +5,7 @@ var graphbglayer;
 var nodeslayer;
 var edgeslayer;
 
-var queue = new ResultsQueue(addSearchResults);
+var queue = new DataQueue(addSearchResults);
 var simController = new SimulationController();
 simController.ProgressBarTag = "#progress";
 simController.TreeEdgeTag = ".treeedge";
@@ -36,10 +36,6 @@ var graphedges = new datumStore();
 var areaBox;
 var force;
 var nodeDetails;
-
-//var simRunning = false;
-//var simVelocityDecay = 0.5;
-//var simAlphaDecay = 0.1;
 
 var selectMode = false;
 var playMode = false;
@@ -373,15 +369,22 @@ function addSearchResults(results, callback) {
             addSvgNodes(graphnodes.GetArray());
             addSvgEdges(graphedges.GetArray());
             restartLayout();
+            if (callback !== undefined) {
+                //console.log(callback);
+                callback();
+            }
         });
     }
-    else { d3.selectAll("#restartIcon").classed("spinner", false); }
+    else {
+        d3.selectAll("#restartIcon").classed("spinner", false);
+        if (callback !== undefined) {
+            //console.log(callback);
+            callback();
+        }
+    }
 
     //console.log("addSearchResults end");
-    if (callback !== undefined) {
-        //console.log(callback);
-        callback();
-    }
+    
 }
 
 function addResultSet(json) {
@@ -643,8 +646,8 @@ function updateNodeSizes() {
         .attr("cx", function (d) { return d.radius; })
         .attr("cy", function (d) { return d.radius; });
 
+    //remove all the icons so they can be regenerated the correct size
     nodeslayer.selectAll(".nodeicon").remove();
-
     allnodes.append("i")
         .attr("height", function (d) { return d.size * 0.6; })
         .attr("width", function (d) { return d.size * 0.6; })
@@ -661,6 +664,7 @@ function updateNodeSizes() {
         .attr("cx", function (d) { return 5 * d.scaling; })
         .attr("cy", function (d) { return 5 * d.scaling; });
 
+    //remove all the icons so they can be regenerated the correct size
     nodeslayer.selectAll(".pinicon").remove();
     pins.append("i")
         .classed("fas fa-thumbtack", true)
@@ -1184,7 +1188,7 @@ function onNodeDragged(d) {
         pinNode(d);
     }
 
-    updateLocations(nodes, false);
+    updateNodeLocations(nodes, false);
 }
 
 function onNodeDragStart(d) {
@@ -1207,10 +1211,10 @@ function onNodeDragFinished(d) {
 //update location for all nodes
 function updateAllNodeLocations(animate) {
     let nodes = nodeslayer.selectAll(".nodes");
-    updateLocations(nodes, animate);
+    updateNodeLocations(nodes, animate);
 }
 
-function updateLocations(nodes, animate) {
+function updateNodeLocations(nodes, animate) {
     //console.log("updateLocations");
     //console.log(nodes);
     let duration = 750;
@@ -1436,37 +1440,7 @@ $.getJSON("/api/graph/edges/labels", function (data) {
     }
 });
 
-function IconMappings(jsondata) {
-    this.mappings = jsondata;
-    this.keys = Object.keys(this.mappings);
-}
 
-IconMappings.prototype.getIconClass = function (datum) {
-    //console.log("IconMappings.prototype.getIconClass start:");
-    //console.log(datum);
-    //console.log(this.mappings);
-    var me = this;
-    var finalmapping = "fas fa-question";
-    var mappinglabel = "";
-    var datumlabel = "";
-    var found = false;
-    for (i = 0; i < this.keys.length; i++) {
-        mappinglabel = this.keys[i];
-        for (j = 0; j < datum.labels.length; j++) {
-            datumlabel = datum.labels[j];
-            if (datumlabel === mappinglabel) {
-                //console.log("return");
-                //console.log(me.mappings[mappinglabel]);
-                finalmapping = me.mappings[mappinglabel];
-                found = true;
-                break;
-            }
-        }
-        if (found === true) { break; }
-    }
-
-    return finalmapping;
-};
 
 
 

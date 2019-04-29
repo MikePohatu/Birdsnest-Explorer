@@ -116,15 +116,29 @@ SimulationController.prototype.RestartSimulation = function () {
 };
 
 SimulationController.prototype.StopSimulations = function () {
-    this.meshsimulation.stop();
-    this.graphsimulation.stop();
-    this.treesimulation.stop();
-    this.connectsimulation.stop();
+    if (this.simRunning === true) {
+        this.meshsimulation.stop();
+        this.graphsimulation.stop();
+        this.treesimulation.stop();
+        this.connectsimulation.stop();
+
+        //reset the datum values to before they started. this should match because the
+        //layout hasn't updated yet
+        d3.selectAll(this.NodeTag)
+            .each(function (d) {
+                //console.log("set x to startx: ");
+                d.x = d.startx;
+                d.y = d.starty;
+            });
+    }
+    
+    this.simRunning = false;
 };
 
 SimulationController.prototype.SetNodes = function (graphs, meshes, trees, connects) {
     //console.log("SimulationController.SetNodes");
     //console.log(graphs);
+    this.StopSimulations();
     this.meshsimulation.nodes(meshes);
     this.treesimulation.nodes(trees);
     this.connectsimulation.nodes(connects);
@@ -133,6 +147,7 @@ SimulationController.prototype.SetNodes = function (graphs, meshes, trees, conne
 
 SimulationController.prototype.SetEdges = function (meshes, trees, connects) {
     //console.log("SimulationController.SetEdges");
+    this.StopSimulations();
     this.meshsimulation.force("link").links(meshes);
     this.treesimulation.force("link").links(trees);
     this.connectsimulation.force("link").links(connects);

@@ -1,5 +1,5 @@
 ﻿
-function ResultsQueue(procFunc) {
+function DataQueue(procFunc) {
     this.QueuedData = new Object();
     this.IsProcessing = false;
     this.AreResultsPending = false;
@@ -7,7 +7,7 @@ function ResultsQueue(procFunc) {
     this.ProcessingFunction = procFunc;
 }
 
-ResultsQueue.prototype.QueueResults = function (json) {
+DataQueue.prototype.QueueResults = function (json) {
     //console.log("ResultsQueue.prototype.QueueResults start: ");
     //console.log(json);
     var me = this;
@@ -34,7 +34,7 @@ ResultsQueue.prototype.QueueResults = function (json) {
     }
 };
 
-ResultsQueue.prototype.Process = function () {
+DataQueue.prototype.Process = function () {
     //console.log("ResultsQueue.prototype.Process start:");
     //console.log(this.QueuedData);
     var me = this;
