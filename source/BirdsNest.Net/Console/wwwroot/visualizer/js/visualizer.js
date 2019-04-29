@@ -1401,9 +1401,9 @@ function search() {
         "&relmax=" + relmax +
         "&dir=" + dir +
 
-        "&tartype=" + tartype +
-        "&tarprop=" + tarprop +
-        "&tarval=" + tarval;
+        "&targettype=" + tartype +
+        "&targetprop=" + tarprop +
+        "&targetval=" + tarval;
 
 	/*console.log("sourcetype: " + sourcetype);
 	console.log("sourceprop: " + sourceprop);

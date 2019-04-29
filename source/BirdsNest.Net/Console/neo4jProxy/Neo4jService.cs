@@ -248,6 +248,118 @@ namespace Console.neo4jProxy
         // Search functions
         //*************************
 
+        public ResultSet FriendlySearch(string sourcetype, string sourceprop, string sourceval, string reltype, int relmin, int relmax, char dir, string tartype, string tarprop, string tarval)
+        {
+            //validate the types/labels 
+            List<string> edgetypes = GetEdgeLabels();
+            List<string> nodetypes = GetNodeLabels();
+
+            string rellabel = string.Empty;
+            string sourcelabel = string.Empty;
+            string targetlabel = string.Empty;
+            string relright = string.Empty;
+            string relleft = string.Empty;
+
+            //relationship type
+            if (string.IsNullOrWhiteSpace(reltype))
+            { rellabel = string.Empty; }
+            else if (edgetypes.Exists(x => string.Equals(x, reltype)))
+            { rellabel = ":" + reltype; }
+            else
+            { throw new ArgumentException("Invalid relationship type: " + reltype); }
+
+            //relationship direction
+            if ((dir == 'B') || (dir == 'b')) { /*do nothing*/ }
+            else if ((dir == 'L') || (dir == 'l')) { relleft = "<"; }
+            else if ((dir == 'R') || (dir == 'r')) { relright = ">"; }
+            else
+            { throw new ArgumentException("Invalid relationship direction: " + dir); }
+
+            //source
+            if (string.IsNullOrWhiteSpace(sourcetype) || sourcetype == "*")
+            { sourcelabel = string.Empty; }
+            else if (nodetypes.Exists(x => string.Equals(x, sourcetype)))
+            { sourcelabel = ":" + sourcetype; }
+            else
+            { throw new ArgumentException("Invalid source type: " + sourcetype); }
+
+            //target
+            if (string.IsNullOrWhiteSpace(tartype) || tartype == "*")
+            { targetlabel = string.Empty; }
+            else if (nodetypes.Exists(x => string.Equals(x, tartype)))
+            { targetlabel = ":" + tartype; }
+            else
+            { throw new ArgumentException("Invalid target type: " + tartype); }
+
+            using (ISession session = this._driver.Session())
+            {
+                ResultSet returnedresults = new ResultSet();
+                try
+                {
+                    var props = new
+                    {
+                        sourceprop = sourceprop == null ? string.Empty : sourceprop,
+                        sourceval = sourceval == null ? string.Empty : sourceval,
+                        tarprop = tarprop == null ? string.Empty : tarprop,
+                        tarval = tarval == null ? string.Empty : tarval
+                    };
+
+                    StringBuilder builder = new StringBuilder();
+                    bool whereset = false;
+
+                    if (relmax > 0)
+                    {
+                        builder.Append("MATCH path=(s" + sourcelabel + ")" + relleft + "-[" + rellabel + "*" + relmin + ".." + relmax + "]-" + relright + "(t" + targetlabel + ") ");
+                    }
+                    else
+                    {
+                        builder.Append("MATCH (s" + sourcelabel + ") ");
+                    }
+
+                    if (!string.IsNullOrEmpty(sourceval))
+                    {
+                        builder.Append("WHERE s[{sourceprop}] = $sourceval ");
+                        whereset = true;
+                    }
+
+                    if (relmax > 0)
+                    {
+                        if (!string.IsNullOrEmpty(tarval))
+                        {
+                            if (whereset) { builder.Append("AND "); }
+                            else { builder.Append("WHERE "); }
+                            builder.Append("t[{tarprop}] = $tarval ");
+                        }
+
+                        builder.Append("UNWIND nodes(path) as n RETURN DISTINCT n ORDER BY LOWER(n.name)");
+                    }
+                    else
+                    {
+                        builder.Append("RETURN s ORDER BY LOWER(s.name)");
+                    }
+
+                    //"MATCH (n) WHERE $type IN labels(n) AND n[{prop}]  =~ $regex RETURN DISTINCT n[{prop}] ORDER BY n[{prop}] LIMIT 20"
+                    //if (string.IsNullOrEmpty(type) || string.IsNullOrEmpty(property) || string.IsNullOrEmpty(searchterm)) { return new List<string>(); }
+                    //string regexterm = "(?i).*" + searchterm + ".*";
+
+                    string query = builder.ToString();
+                    Debug.WriteLine("Search query: " + query);
+
+                    session.ReadTransaction(tx =>
+                    {
+                        IStatementResult dbresult = tx.Run(query, props);
+                        returnedresults.Append(ParseResults(dbresult));
+                    });
+                }
+                catch
+                {
+                    //logging to add
+                }
+
+                return returnedresults;
+            }
+        }
+
         public ResultSet SearchPath(string sourcetype, string sourceprop, string sourceval, string reltype, int relmin, int relmax, char dir, string tartype, string tarprop, string tarval)
         {
             //validate the types/labels 
@@ -521,7 +633,7 @@ namespace Console.neo4jProxy
                 {
                     session.ReadTransaction(tx =>
                     {
-                        string query = "MATCH (n) WHERE $type IN labels(n) AND n[{prop}]  =~ $regex RETURN DISTINCT n[{prop}] ORDER BY n[{prop}] LIMIT 10";
+                        string query = "MATCH (n) WHERE $type IN labels(n) AND n[{prop}]  =~ $regex RETURN DISTINCT n[{prop}] ORDER BY n[{prop}] LIMIT 20";
                         dbresult = tx.Run(query, new { type = type, prop = property, regex= regexterm });
                     });
                 }
