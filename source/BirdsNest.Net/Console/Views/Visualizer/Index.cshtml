@@ -170,19 +170,7 @@
     <script src="~/visualizer/js/SimulationController.js" type="text/javascript"></script>
     <script src="~/visualizer/js/visualizer.js" type="text/javascript"></script>
     <script>
-        $("#menuShowHideButton").click(function () {
-            var icon = $("#menuIcon");
-            if (icon.hasClass("fa-angle-up")) {
-                icon.removeClass("fa-angle-up");
-                icon.addClass("fa-angle-down");
-            }
-            else {
-                icon.removeClass("fa-angle-down");
-                icon.addClass("fa-angle-up");
-            }
-            $("#querybar").slideToggle();
-        });
         var paramdata = @Html.Raw(JsonConvert.SerializeObject(ViewData["LoadIDs"]));
-        drawGraph('drawingpane',paramdata);
+        drawGraph('drawingpane', paramdata);
     </script>
 }

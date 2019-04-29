@@ -54,6 +54,35 @@ var zoom = d3.zoom()
     .scaleExtent([0.05, 5])
     .on("zoom", onZoom);
 
+/*
+IconMappings object to asign the correct font awesome icon to the correct nodes
+*/
+var iconmappings;
+$.getJSON("/visualizer/json/labelicons.json", function (data) {
+    iconmappings = new IconMappings(data);
+});
+$.getJSON("/api/graph/edges/labels", function (data) {
+    for (var i = 0; i < data.length; ++i) {
+        addOption(document.getElementById("edgeType"), data[i], data[i]);
+    }
+});
+
+$("#menuShowHideButton").click(function () {
+    var icon = $("#menuIcon");
+    if (icon.hasClass("fa-angle-up")) {
+        icon.removeClass("fa-angle-up");
+        icon.addClass("fa-angle-down");
+    }
+    else {
+        icon.removeClass("fa-angle-down");
+        icon.addClass("fa-angle-up");
+    }
+    $("#querybar").slideToggle();
+});
+
+
+
+
 function drawGraph(selectid, loaddata) {
     updateNodeDetails("source");
     updateNodeDetails("target");
@@ -1051,7 +1080,7 @@ function onNodeDblClicked(d) {
     //console.log(": onNodeDblClicked");
     //if (d3.event.defaultPrevented) { return; } // dragged
     //d3.event.stopPropagation();
-    //addRelated(d.db_id);
+    //getRelated(d.db_id);
 }
 
 function onNodeClicked(d) {
@@ -1331,25 +1360,6 @@ function updateLocationsEdges() {
 
 
 
-
-
-/*
-IconMappings object to asign the correct font awesome icon to the correct nodes
-*/
-
-var iconmappings;
-$.getJSON("/visualizer/json/labelicons.json", function (data) {
-    iconmappings = new IconMappings(data);
-});
-$.getJSON("/api/graph/edges/labels", function (data) {
-    for (var i = 0; i < data.length; ++i) {
-        addOption(document.getElementById("edgeType"), data[i], data[i]);
-    }
-});
-
-
-
-
 /* 
 ****************************
 Search functionality
@@ -1457,8 +1467,8 @@ function getNodes(nodeids) {
     });
 }
 
-function addRelated(nodeid) {
-    //console.log("addRelated"+ nodeid);
+function getRelated(nodeid) {
+    //console.log("getRelated"+ nodeid);
     apiGetJson("/api/graph/nodes/" + nodeid, function (data) {
         //pendingResults = data;
         queue.QueueResults(data);
