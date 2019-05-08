@@ -31,21 +31,22 @@ namespace Console.neo4jProxy
                 throw new ArgumentException("Number of edges doesn't match number of nodes");
             }
 
-            var nodeenum = this.Nodes.GetEnumerator();
-            var condenum = this.Edges.GetEnumerator();
-
-            if (nodeenum.MoveNext()!=false)
+            using (var nodeenum = this.Nodes.GetEnumerator())
+            using (var condenum = this.Edges.GetEnumerator())
             {
-                pathstr += nodeenum.Current.GetPathString();
-                condstr += nodeenum.Current.GetWhereString();
-
-                while (nodeenum.MoveNext() == true)
+                if (nodeenum.MoveNext() != false)
                 {
-                    condenum.MoveNext();
-                    pathstr += condenum.Current.GetPathString();
                     pathstr += nodeenum.Current.GetPathString();
-                    condstr += condenum.Current.GetWhereString();
                     condstr += nodeenum.Current.GetWhereString();
+
+                    while (nodeenum.MoveNext() == true)
+                    {
+                        condenum.MoveNext();
+                        pathstr += condenum.Current.GetPathString();
+                        pathstr += nodeenum.Current.GetPathString();
+                        condstr += condenum.Current.GetWhereString();
+                        condstr += nodeenum.Current.GetWhereString();
+                    }
                 }
             }
 
