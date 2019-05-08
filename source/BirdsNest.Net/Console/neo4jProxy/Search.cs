@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -7,31 +8,36 @@ namespace Console.neo4jProxy
 {
     public class Search
     {
-        public SearchNode Head { get; set; }
-        public SearchNode Tail { get; set; }
+        [JsonProperty("limit")]
+        public int Limit { get; set; } = 1000;
 
-        public void AddToTail(SearchEdge edge, SearchNode node)
+        /// <summary>
+        /// First/left most node of the search
+        /// </summary>
+        [JsonProperty("root")]
+        public SearchNode Root { get; set; }
+
+        public string GetSearchString()
         {
-            if (this.Head == null)
-            {
-                //exception/logging to add
-            }
+            SearchNode current = this.Root;
+            string pathstr = string.Empty;
+            string condstr = string.Empty;
 
-            edge.Source = this.Tail;
-            edge.Target = node;
-            this.Tail = node;
+            while (current != null)
+            {
+                pathstr += current.GetPathString();
+                condstr += current.GetWhereString();
+                if (current.Next != null)
+                {
+                    pathstr += current.NextEdge.GetPathString();
+                    condstr += current.NextEdge.GetWhereString();
+                }
+                current = current.Next;
+            }
+            
+            if (string.IsNullOrEmpty(pathstr)) { return "MATCH (n) RETURN n LIMIT " + this.Limit; }
+            else { return "MATCH p=" + pathstr + " WHERE " + condstr + " UNWIND nodes(p) as n RETURN DISTINCT n LIMIT " + this.Limit + " ORDER BY LOWER(n.name)"; }
         }
 
-        public void AddToTail(SearchNode node)
-        {
-            if (this.Head == null)
-            {
-                //exception/logging to add
-            }
-            SearchEdge edge = new SearchEdge();
-            edge.Source = this.Tail;
-            edge.Target = node;
-            this.Tail = node;
-        }
     }
 }

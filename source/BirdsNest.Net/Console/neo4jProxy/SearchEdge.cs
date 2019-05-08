@@ -1,49 +1,66 @@
-﻿using System.Text;
+﻿using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
+using System.Text;
 
 namespace Console.neo4jProxy
 {
-    public class SearchEdge
+    public class SearchEdge: ISearchObject
     {
         private int min = 0;
         private int max = 1;
-        
-        public string RelationshipType { get; set; }
-        public int RelationshipMin
+
+        [JsonProperty("identifier")]
+        public string Identifier { get; set; }
+        [JsonProperty("type")]
+        public string Type { get; set; }
+        [JsonProperty("min")]
+        public int Min
         {
             get { return this.min; }
             set { this.min = value < 0 ? 0 : value; }
         }
-        public int RelationshipMax
+        [JsonProperty("max")]
+        public int Max
         {
             get { return this.max; }
             set { this.max = value < 0 ? 0 : value; }
         }
         public enum QueryDirection { Right, Left, Bidirectional }
-        public QueryDirection Direction { get; set; } = QueryDirection.Right;
-        public SearchNode Source { get; set; }
-        public SearchNode Target { get; set; }
 
-        public override string ToString()
+        [JsonConverter(typeof(StringEnumConverter))]
+        public QueryDirection Direction { get; set; } = QueryDirection.Right;
+
+        [JsonProperty("condition")]
+        public ISearchConditionObject Condition { get; set; }
+
+        public string GetPathString()
         {
             StringBuilder builder = new StringBuilder();
             if (this.Direction != QueryDirection.Right) { builder.Append("<"); }
             builder.Append("-[");
 
-            if (string.IsNullOrEmpty(this.RelationshipType)) { builder.Append("*"); }
-            else { builder.Append(":" + this.RelationshipType); }
+            builder.Append(this.Identifier);
 
-            if ((this.RelationshipMin == 0) && (this.RelationshipMax == int.MaxValue))
+            if (string.IsNullOrEmpty(this.Type)) { builder.Append("*"); }
+            else { builder.Append(":" + this.Type); }
+
+            if ((this.Min == 0) && (this.Max == int.MaxValue))
             {
                 //this is a no limit search. require extra logging I think
             }
             else
             {
-                builder.Append(this.RelationshipMin + ".." + this.RelationshipMax);
+                builder.Append(this.Min + ".." + this.Max);
             }
 
             builder.Append("]-");
             if (this.Direction != QueryDirection.Left) { builder.Append(">"); }
             return builder.ToString();
+        }
+
+        public string GetWhereString()
+        {
+            return this.Condition.GetSearchString();
         }
     }
 }

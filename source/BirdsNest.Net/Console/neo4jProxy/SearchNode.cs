@@ -1,28 +1,36 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
 namespace Console.neo4jProxy
 {
-    public class SearchNode
+    public class SearchNode: ISearchObject
     {
-        
-
+        [JsonProperty("identifier")]
         public string Identifier { get; set; }
+
+        [JsonProperty("type")]
         public string Type { get; set; }
 
-        public List<SearchCondition> Conditions { get; private set; } = new List<SearchCondition>();
+        [JsonProperty("next")]
+        public SearchNode Next { get; set; }
 
-        public string NodeString()
+        [JsonProperty("nextedge")]
+        public SearchEdge NextEdge { get; set; }
+
+        [JsonProperty("condition")]
+        public ISearchConditionObject Condition { get; private set; }
+
+        public string GetPathString()
         {
             return string.IsNullOrEmpty(this.Type) ? "(" + this.Identifier + ")" : "(" + this.Identifier + ":" + this.Type + ")";
         }
 
-        public string WhereString()
+        public string GetWhereString()
         {
-            StringBuilder builder = new StringBuilder();
-            return builder.ToString();
+            return this.Condition.GetSearchString();
         }
     }
 }
