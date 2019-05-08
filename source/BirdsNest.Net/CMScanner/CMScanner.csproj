@@ -35,19 +35,19 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="AdminUI.WqlQueryEngine">
-      <HintPath>.\AdminUI.WqlQueryEngine.dll</HintPath>
+      <HintPath>libraries\AdminUI.WqlQueryEngine.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.ConfigurationManagement.ManagementProvider">
-      <HintPath>.\Microsoft.ConfigurationManagement.ManagementProvider.dll</HintPath>
+      <HintPath>libraries\Microsoft.ConfigurationManagement.ManagementProvider.dll</HintPath>
     </Reference>
-    <Reference Include="Neo4j.Driver, Version=1.7.91.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Neo4j.Driver.1.7.0\lib\net452\Neo4j.Driver.dll</HintPath>
+    <Reference Include="Neo4j.Driver, Version=1.7.226.2, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Neo4j.Driver.1.7.2\lib\net452\Neo4j.Driver.dll</HintPath>
     </Reference>
     <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <HintPath>..\packages\Newtonsoft.Json.12.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
+      <HintPath>..\packages\Newtonsoft.Json.12.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="NLog, Version=4.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c, processorArchitecture=MSIL">
-      <HintPath>..\packages\NLog.4.5.11\lib\net45\NLog.dll</HintPath>
+      <HintPath>..\packages\NLog.4.6.3\lib\net45\NLog.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Configuration" />
