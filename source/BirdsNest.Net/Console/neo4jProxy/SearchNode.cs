@@ -21,7 +21,7 @@ namespace Console.neo4jProxy
         public SearchEdge NextEdge { get; set; }
 
         [JsonProperty("condition")]
-        public ISearchConditionObject Condition { get; private set; }
+        public ISearchConditionObject Condition { get; set; }
 
         public string GetPathString()
         {
@@ -30,7 +30,7 @@ namespace Console.neo4jProxy
 
         public string GetWhereString()
         {
-            return this.Condition.GetSearchString();
+            return this.Condition?.GetSearchString();
         }
     }
 }

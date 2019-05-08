@@ -11,20 +11,24 @@ namespace Console.neo4jProxy
 
         [JsonProperty("identifier")]
         public string Identifier { get; set; }
+
         [JsonProperty("type")]
         public string Type { get; set; }
+
         [JsonProperty("min")]
         public int Min
         {
             get { return this.min; }
             set { this.min = value < 0 ? 0 : value; }
         }
+
         [JsonProperty("max")]
         public int Max
         {
             get { return this.max; }
             set { this.max = value < 0 ? 0 : value; }
         }
+
         public enum QueryDirection { Right, Left, Bidirectional }
 
         [JsonConverter(typeof(StringEnumConverter))]
@@ -50,7 +54,7 @@ namespace Console.neo4jProxy
             }
             else
             {
-                builder.Append(this.Min + ".." + this.Max);
+                builder.Append("*" + this.Min + ".." + this.Max);
             }
 
             builder.Append("]-");
@@ -60,7 +64,7 @@ namespace Console.neo4jProxy
 
         public string GetWhereString()
         {
-            return this.Condition.GetSearchString();
+            return this.Condition?.GetSearchString();
         }
     }
 }

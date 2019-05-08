@@ -12,30 +12,45 @@ namespace Console.neo4jProxy
         public int Limit { get; set; } = 1000;
 
         /// <summary>
-        /// First/left most node of the search
+        /// List of nodes 
         /// </summary>
-        [JsonProperty("root")]
-        public SearchNode Root { get; set; }
+        [JsonProperty("nodes")]
+        public List<SearchNode> Nodes { get; set; } = new List<SearchNode>();
+
+        [JsonProperty("edges")]
+        public List<SearchEdge> Edges { get; set; } = new List<SearchEdge>();
+
 
         public string GetSearchString()
         {
-            SearchNode current = this.Root;
             string pathstr = string.Empty;
             string condstr = string.Empty;
 
-            while (current != null)
+            if (this.Nodes.Count != this.Edges.Count +1 )
             {
-                pathstr += current.GetPathString();
-                condstr += current.GetWhereString();
-                if (current.Next != null)
-                {
-                    pathstr += current.NextEdge.GetPathString();
-                    condstr += current.NextEdge.GetWhereString();
-                }
-                current = current.Next;
+                throw new ArgumentException("Number of edges doesn't match number of nodes");
             }
-            
+
+            var nodeenum = this.Nodes.GetEnumerator();
+            var condenum = this.Edges.GetEnumerator();
+
+            if (nodeenum.MoveNext()!=false)
+            {
+                pathstr += nodeenum.Current.GetPathString();
+                condstr += nodeenum.Current.GetWhereString();
+
+                while (nodeenum.MoveNext() == true)
+                {
+                    condenum.MoveNext();
+                    pathstr += condenum.Current.GetPathString();
+                    pathstr += nodeenum.Current.GetPathString();
+                    condstr += condenum.Current.GetWhereString();
+                    condstr += nodeenum.Current.GetWhereString();
+                }
+            }
+
             if (string.IsNullOrEmpty(pathstr)) { return "MATCH (n) RETURN n LIMIT " + this.Limit; }
+            else if (string.IsNullOrEmpty(condstr)) { return "MATCH p=" + pathstr + " UNWIND nodes(p) as n RETURN DISTINCT n LIMIT " + this.Limit + " ORDER BY LOWER(n.name)"; }
             else { return "MATCH p=" + pathstr + " WHERE " + condstr + " UNWIND nodes(p) as n RETURN DISTINCT n LIMIT " + this.Limit + " ORDER BY LOWER(n.name)"; }
         }
 
