@@ -7,9 +7,10 @@ namespace common
         private static readonly object locker = new object();
         private static int _loggingline = 1;
         private static string[] _progressmessages = new string[1];
-        private static int[] _progresslinenumbers = new int[1];
+        private static int[] _progresslinenumbers = new int[1] { 2 };
 
         public static bool ShowProgress { get; set; } = true;
+
         public static void SetProgressLineCount(int count)
         {
             _progressmessages = new string[count];
@@ -17,6 +18,69 @@ namespace common
             for (int i = 0; i < count; i++)
             {
                 _progresslinenumbers[i] = _loggingline + i + 1;
+            }
+        }
+
+        public static void WriteError(string message)
+        {
+            lock (locker)
+            {
+                PrepareForWrite(message);
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.Write("Error: ");
+                Console.ResetColor();
+                Console.WriteLine(message);
+            }
+        }
+
+        public static void WriteWarning(string message)
+        {
+            lock (locker)
+            {
+                PrepareForWrite(message);
+                Console.ForegroundColor = ConsoleColor.DarkYellow;
+                Console.Write("Warn: ");
+                Console.ResetColor();
+                Console.WriteLine(message);
+            }
+        }
+
+        public static void WriteInfo(string message)
+        {
+            lock (locker)
+            {
+                PrepareForWrite(message);
+                Console.WriteLine("Info: " + message);
+            }
+        }
+
+        public static void WriteLine()
+        {
+            lock (locker)
+            {
+                PrepareForWrite(string.Empty);
+                Console.WriteLine();
+            }
+        }
+
+        public static void WriteLine(string message)
+        {
+            lock (locker)
+            {
+                PrepareForWrite(message);
+                FitBufferWidthToString(message);
+                Console.WriteLine(message);
+            }
+        }
+
+        public static void Write(string message)
+        {
+            lock (locker)
+            {
+                //ClearProgress();
+                Console.SetCursorPosition(0, _loggingline);
+                FitBufferWidthToString(message);
+                Console.Write(message);
             }
         }
 
@@ -39,6 +103,7 @@ namespace common
                     Console.Write(new string(' ', Console.BufferWidth));
 
                     Console.SetCursorPosition(0, _progresslinenumbers[index]);
+                    FitBufferWidthToString(message);
                     Console.ForegroundColor = ConsoleColor.Green;
                     Console.Write("Progress: ");
                     Console.ResetColor();
@@ -55,87 +120,32 @@ namespace common
                 {
                     //clear the line
                     Console.SetCursorPosition(0, _progresslinenumbers[i]);
-                    Console.Write(new string(' ', Console.BufferWidth));
+                    Console.WriteLine(new string(' ', Console.BufferWidth));
                 }
             }
-        }
 
-        public static void WriteError(string message)
-        {
-            lock (locker)
-            {
-                ShuntProgressMessages();
-                Console.SetCursorPosition(0, _loggingline);
-                Console.ForegroundColor = ConsoleColor.Red;
-                Console.Write("Error: ");
-                Console.ResetColor();
-                Console.WriteLine(message);
-            }
         }
-
-        public static void WriteWarning(string message)
-        {
-            lock (locker)
-            {
-                ShuntProgressMessages();
-                Console.SetCursorPosition(0, _loggingline);
-                Console.ForegroundColor = ConsoleColor.DarkYellow;
-                Console.Write("Warn: ");
-                Console.ResetColor();
-                Console.WriteLine(message);
-            }
-        }
-
-        public static void WriteInfo(string message)
-        {
-            lock (locker)
-            {
-                ShuntProgressMessages();
-                Console.SetCursorPosition(0, _loggingline);
-                Console.WriteLine("Info: " + message);
-            }
-        }
-
-        public static void WriteLine()
-        {
-            lock (locker)
-            {
-                ShuntProgressMessages();
-                Console.SetCursorPosition(0, _loggingline);
-                Console.WriteLine();
-            }
-        }
-
-        public static void WriteLine(string message)
-        {
-            lock (locker)
-            {
-                _loggingline++;
-                ClearProgress();
-                Console.SetCursorPosition(0, _loggingline);
-                Console.WriteLine(message);
-            }
-        }
-
-        public static void Write(string message)
-        {
-            lock (locker)
-            {
-                ClearProgress();
-                Console.SetCursorPosition(0, _loggingline);
-                Console.Write(message);
-            }
-        }
-
         public static void InitLine(int linenumber)
         {
             lock (locker)
             {
                 Console.Clear();
-                Console.SetBufferSize(300, Console.BufferHeight);
+                //Console.SetBufferSize(300, Console.BufferHeight);
                 _loggingline = linenumber;
                 Console.SetCursorPosition(0, linenumber);
             }
+        }
+
+        /// <summary>
+        /// Prep the console for writing a message. Shunt progress messages, set cursor, and fit 
+        /// BufferWidth if necessary
+        /// </summary>
+        /// <param name="message"></param>
+        private static void PrepareForWrite(string message)
+        {
+            ShuntProgressMessages();
+            Console.SetCursorPosition(0, _loggingline);
+            FitBufferWidthToString(message);
         }
 
         private static void ShuntProgressMessages()
@@ -147,11 +157,26 @@ namespace common
             {
                 _progresslinenumbers[i] = _loggingline + i + 1;
 
-                if (string.IsNullOrEmpty(_progressmessages[i]) == false)
+                if (_progresslinenumbers[i]>=Console.BufferHeight)
                 {
-                    WriteProgress(_progressmessages[i], i + 1);
+                    //Console.WriteLine();
+                    ExtendBufferHeight();
                 }
+
+                WriteProgress(_progressmessages[i], i + 1);
             }
+        }
+
+        private static void FitBufferWidthToString(string message)
+        {
+            if (message == null) { return; }
+            //add 10 to the message for the prepended category etc
+            if (Console.BufferWidth < message.Length + 10) { Console.BufferWidth = message.Length + 50; }
+        }
+
+        private static void ExtendBufferHeight()
+        {
+            Console.BufferHeight = Console.BufferHeight + 500;
         }
     }
 }
