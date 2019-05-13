@@ -5,9 +5,9 @@ namespace common
     public static class ConsoleWriter
     {
         private static readonly object locker = new object();
-        private static int _loggingline = -1;
+        private static int _loggingline = 1;
         private static string[] _progressmessages = new string[1];
-        private static int[] _progresslinenumbers = new int[1] { 0 };
+        private static int[] _progresslinenumbers = new int[1] { 2 };
 
         public static bool ShowProgress { get; set; } = true;
 
@@ -63,10 +63,7 @@ namespace common
         {
             lock (locker)
             {
-                _loggingline++;
-                ClearProgress();
-                Console.SetCursorPosition(0, _loggingline);
-                FitBufferWidthToString(message);
+                PrepareForWrite(message);
                 Console.Write(message);
             }
         }
@@ -75,10 +72,7 @@ namespace common
         {
             lock (locker)
             {
-                _loggingline++;
-                ClearProgress();
                 Console.SetCursorPosition(0, _loggingline);
-                FitBufferWidthToString(message);
                 Console.Write(message);
             }
         }
@@ -159,7 +153,7 @@ namespace common
             int lastlinenum = _progresslinenumbers[_progresslinenumbers.Length-1];
             ClearProgress();
 
-            if (lastlinenum + 1 < Console.BufferHeight)
+            if (lastlinenum + 1 < Console.BufferHeight-1)
             {
                 _loggingline++;
             }
@@ -167,6 +161,7 @@ namespace common
             {
                 //add an extra line. This will push the oldest message off the buffer and shunt everything up
                 Console.SetCursorPosition(Console.BufferWidth - 1, lastlinenum);
+                Console.WriteLine();
                 Console.WriteLine();
             }
 

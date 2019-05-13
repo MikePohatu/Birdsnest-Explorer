@@ -25,6 +25,14 @@ namespace ConsoleWriterTests
                 //Console.WriteLine(i);
             }
             //Console.WriteLine(Console.BufferHeight);
+            ConsoleWriter.ClearProgress();
+            ConsoleWriter.WriteInfo("Tester finished");
+            ConsoleWriter.WriteLine();
+            ConsoleWriter.WriteLine();
+            ConsoleWriter.WriteLine();
+            ConsoleWriter.WriteLine();
+            ConsoleWriter.WriteLine();
+            ConsoleWriter.WriteLine();
             Console.ReadLine();
         }
     }
