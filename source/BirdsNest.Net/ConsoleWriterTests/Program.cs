@@ -27,12 +27,18 @@ namespace ConsoleWriterTests
             //Console.WriteLine(Console.BufferHeight);
             ConsoleWriter.ClearProgress();
             ConsoleWriter.WriteInfo("Tester finished");
+            ConsoleWriter.WriteLine("1");
+            ConsoleWriter.WriteLine("1");
+            ConsoleWriter.WriteLine("1");
             ConsoleWriter.WriteLine();
+            ConsoleWriter.ClearProgress();
             ConsoleWriter.WriteLine();
-            ConsoleWriter.WriteLine();
-            ConsoleWriter.WriteLine();
-            ConsoleWriter.WriteLine();
-            ConsoleWriter.WriteLine();
+            ConsoleWriter.Write("Exiting.");
+            for (int j = 0; j < 3; j++)
+            {
+                System.Threading.Thread.Sleep(500);
+                ConsoleWriter.Write(".");
+            }
             Console.ReadLine();
         }
     }

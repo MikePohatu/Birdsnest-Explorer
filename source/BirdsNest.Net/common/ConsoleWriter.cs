@@ -64,7 +64,7 @@ namespace common
             lock (locker)
             {
                 PrepareForWrite(message);
-                Console.Write(message);
+                Console.WriteLine(message);
             }
         }
 
@@ -72,7 +72,6 @@ namespace common
         {
             lock (locker)
             {
-                Console.SetCursorPosition(0, _loggingline);
                 Console.Write(message);
             }
         }
@@ -117,6 +116,7 @@ namespace common
                     Console.SetCursorPosition(0, _progresslinenumbers[i]);
                     Console.Write(new string(' ', Console.BufferWidth-1));
                 }
+                Console.SetCursorPosition(0, _loggingline);
             }
 
         }
