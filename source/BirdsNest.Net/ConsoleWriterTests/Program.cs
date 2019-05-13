@@ -13,6 +13,7 @@ namespace ConsoleWriterTests
             int i = 1;
             int dotsmult = 1;
             int dotscount = 0;
+            ConsoleWriter.SetProgressLineCount(2);
 
             while (i < 12000)
             {
@@ -20,18 +21,21 @@ namespace ConsoleWriterTests
                 string dots = new String('.', dotscount);
 
                 ConsoleWriter.WriteInfo(i.ToString() + ":" + Console.BufferHeight + ":" + dots);
+                ConsoleWriter.WriteProgress(i.ToString() + ":1",1);
+                ConsoleWriter.WriteProgress(i.ToString() + ":2",2);
                 if (i % 300 == 0) { dotsmult = dotsmult * -1; }
                 i++;
                 //Console.WriteLine(i);
             }
             //Console.WriteLine(Console.BufferHeight);
+            ConsoleWriter.ShowProgress = false;
             ConsoleWriter.ClearProgress();
             ConsoleWriter.WriteInfo("Tester finished");
             ConsoleWriter.WriteLine("1");
             ConsoleWriter.WriteLine("1");
             ConsoleWriter.WriteLine("1");
             ConsoleWriter.WriteLine();
-            ConsoleWriter.ClearProgress();
+            //ConsoleWriter.ClearProgress();
             ConsoleWriter.WriteLine();
             ConsoleWriter.Write("Exiting.");
             for (int j = 0; j < 3; j++)

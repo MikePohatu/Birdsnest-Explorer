@@ -11,8 +11,10 @@ CREATE CONSTRAINT ON (app:CTX_Application) ASSERT app.id IS UNIQUE;
 CREATE CONSTRAINT ON (farm:CTX_Farm) ASSERT farm.name IS UNIQUE;
 
 CREATE INDEX ON :FS_Datastore(name);
+CREATE INDEX ON :FS_Folder(scannerid);
 CREATE INDEX ON :AD_Group(dn);
 CREATE INDEX ON :AD_Object(dn);
+CREATE INDEX ON :AD_Object(scannerid);
 CREATE INDEX ON :AD_User(dn);
 CREATE INDEX ON :AD_Computer(dn);
 

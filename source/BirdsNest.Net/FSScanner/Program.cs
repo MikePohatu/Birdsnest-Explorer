@@ -118,6 +118,7 @@ namespace FSScanner
             }
 
             totaltimer.Stop();
+            ConsoleWriter.ShowProgress = false;
             ConsoleWriter.ClearProgress();
             ConsoleWriter.WriteLine("Finished in " + (totaltimer.ElapsedMilliseconds/1000) + " seconds");
             ConsoleWriter.WriteLine("Updating metadata");

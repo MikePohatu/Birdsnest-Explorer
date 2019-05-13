@@ -101,7 +101,7 @@ namespace common
                     Console.ForegroundColor = ConsoleColor.Green;
                     Console.Write("Progress: ");
                     Console.ResetColor();
-                    Console.Write(message);
+                    Console.WriteLine(message);
                 }
             }
         }
@@ -146,6 +146,7 @@ namespace common
             FitBufferWidthToString(message);
             Console.SetCursorPosition(0, _loggingline);
         }
+
 
         private static void ShuntProgressMessages()
         {
