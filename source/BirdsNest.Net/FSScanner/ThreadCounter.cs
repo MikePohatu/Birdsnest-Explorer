@@ -7,7 +7,7 @@ namespace FSScanner
         private static readonly object _locker = new object();
         private static bool[] _threads = new bool[5];
         public static int ActiveThreadCount { get; private set; } = 0;
-        public static int MaxThreads { get { return _threads.Length + 1; } }
+        public static int MaxThreads { get { return _threads.Length; } }
 
         public static void SetMaxThreads(int max)
         {
