@@ -255,9 +255,10 @@ namespace ADScanner
             Console.WriteLine("Deleted " + Writer.RemoveDeletedGroupMemberShips(driver, scanid) + " relationships");
 
             //mark deleted objects
-            Console.WriteLine("Deleted " + Writer.FindAndMarkDeletedItems(Types.User, driver, scanid) + " deleted user relationships");
-            Console.WriteLine("Deleted " + Writer.FindAndMarkDeletedItems(Types.Computer, driver, scanid) + " deleted computer relationships");
-
+            Console.WriteLine("Marked " + Writer.FindAndMarkDeletedItems(Types.User, driver, scanid) + " users as deleted");
+            Console.WriteLine("Marked " + Writer.FindAndMarkDeletedItems(Types.Computer, driver, scanid) + " computers as deleted");
+            Console.WriteLine("Marked " + Writer.FindAndMarkDeletedItems(Types.Group, driver, scanid) + " groups as deleted");
+            Console.WriteLine();
             steptimer.Stop();
             Console.WriteLine("Finished cleaning up deleted items in " + steptimer.ElapsedMilliseconds + "ms");
 

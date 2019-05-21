@@ -43,6 +43,7 @@ namespace ADScanner.Neo4j
                 "SET n.domainid = $scanprops.domainid " +
                 "SET n.path = g.path " +
                 "SET n.rid = g.rid " +
+                "SET n.scope = 0 " +
                 "SET n.grouptype = g.grouptype " +
                 "SET n.layout = 'mesh' " +
                 "RETURN n.name";
