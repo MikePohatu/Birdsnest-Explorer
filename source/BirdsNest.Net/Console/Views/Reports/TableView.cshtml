@@ -10,19 +10,22 @@
 
 @if (Model.Nodes.Count > 0)
 {
-    <div>
-        <ul class="dropdown menu" data-dropdown-menu data-close-on-click="false" data-close-on-click-inside="false">
-            <li>
-                <a>Query returned @Model.Nodes.Count nodes.</a>
-                <ul class="menu">
-                    <li>
-                        <a href="#">Columns</a>
-                        <ul class="vertical menu nested" id="columnstoggles"></ul>
-                    </li>
-                    <li><a id="downloadlink" href="#" onclick="javascript:onDownloadClicked()">Download</a></li>
-                    <li><a id="visualizerlink" href="#" onclick="javascript:onVisualizerClicked()">Open in Visualizer</a></li>
-                </ul>
-        </ul>
+    <div class="grid-x">
+        <div class="cell auto">
+            <ul class="dropdown menu" data-dropdown-menu data-close-on-click="false" data-close-on-click-inside="false">
+                <li>
+                    <a>Query returned @Model.Nodes.Count nodes.</a>
+                    <ul class="menu">
+                        <li>
+                            <a href="#">Columns</a>
+                            <ul class="vertical menu nested" id="columnstoggles"></ul>
+                        </li>
+                        <li><a id="downloadlink" href="#" onclick="javascript:onDownloadClicked()">Download</a></li>
+                        <li><a id="visualizerlink" href="#" onclick="javascript:onVisualizerClicked()">Open in Visualizer</a></li>
+                    </ul>
+            </ul>
+        </div>
+        <div class="cell auto"><text id="status"></text></div>
     </div>
     <div class="table-scroll">
         <table id="outputtable" class="hover">
@@ -48,7 +51,61 @@ else
         var toggleprefix = "toggle-";
         var columnstoggles = document.getElementById("columnstoggles");
 
-        //add the header
+        document.getElementById("status").innerHTML = "Building results table. Please wait...";
+        setTimeout(function () {
+            //add the header
+            Object.keys(resultset.PropertyFilters).forEach(function (key) {
+                addTH(key);
+            });
+
+            Object.keys(resultset.PropertyNames).forEach(function (key) {
+                if (!(key in resultset.PropertyFilters)) {
+                    addTH(key);
+                }
+            });
+
+            //add the cells
+            resultset.Nodes.forEach(function (node) {
+                var contents;
+                var row = tBody.insertRow();
+
+                function addTD(key) {
+                    if (key in node.properties) { contents = node.properties[key]; }
+                    else { contents = ""; }
+
+                    el = document.createElement("TD");
+                    el.classList.add(columnstyleprefix + key);
+                    el.classList.add("visible");
+                    el.innerHTML = contents;
+                    row.appendChild(el);
+                }
+
+                Object.keys(resultset.PropertyFilters).forEach(function (key) {
+                    addTD(key);
+                });
+
+                Object.keys(resultset.PropertyNames).forEach(function (key) {
+                    if (!(key in resultset.PropertyFilters)) {
+                        addTD(key);
+                    }
+                });
+            });
+
+            //update visibility to hide unneeded columns
+            if (resultset.PropertyFiltersApplied === true) {
+            
+                Object.keys(resultset.PropertyNames).forEach(function (key) {
+                    var shown = (key in resultset.PropertyFilters);
+                    SetClassVisible(columnstyleprefix + key, shown);
+                    var togglebox = document.getElementById(toggleprefix + key);
+                    togglebox.checked = shown;
+                });
+            }
+            document.getElementById("status").innerHTML = "";
+        }, 50);
+        
+
+
         function addTH(key) {
             el = document.createElement("TH");
             el.classList.add(columnstyleprefix + key);
@@ -83,55 +140,6 @@ else
             label.appendChild(textpart);
             columnstoggles.appendChild(li);
         }
-
-        Object.keys(resultset.PropertyFilters).forEach(function (key) {
-            addTH(key);
-        });
-
-        Object.keys(resultset.PropertyNames).forEach(function (key) {
-            if (!(key in resultset.PropertyFilters)) {
-                addTH(key);
-            }
-        });
-
-        //add the cells
-        resultset.Nodes.forEach(function (node) {
-            var contents;
-            var row = tBody.insertRow();
-
-            function addTD(key) {
-                if (key in node.properties) { contents = node.properties[key]; }
-                else { contents = ""; }
-
-                el = document.createElement("TD");
-                el.classList.add(columnstyleprefix + key);
-                el.classList.add("visible");
-                el.innerHTML = contents;
-                row.appendChild(el);
-            }
-
-            Object.keys(resultset.PropertyFilters).forEach(function (key) {
-                addTD(key);
-            });
-
-            Object.keys(resultset.PropertyNames).forEach(function (key) {
-                if (!(key in resultset.PropertyFilters)) {
-                    addTD(key);
-                }
-            });
-        });
-
-        //update visibility to hide unneeded columns
-        if (resultset.PropertyFiltersApplied === true) {
-            
-            Object.keys(resultset.PropertyNames).forEach(function (key) {
-                var shown = (key in resultset.PropertyFilters);
-                SetClassVisible(columnstyleprefix + key, shown);
-                var togglebox = document.getElementById(toggleprefix + key);
-                togglebox.checked = shown;
-            });
-        }
-
         function onToggleClicked() {
             var el = event.target;
             var key = columnstyleprefix + el.dataset.label;

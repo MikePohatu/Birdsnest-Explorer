@@ -15,13 +15,11 @@ namespace Console.Controllers
     {
         private readonly Neo4jService _service;
         private readonly ILogger _logger;
-        private readonly Queries _adqueries;
 
         public ReportsController(ILogger<ReportsController> logger, Neo4jService service)
         {
             this._logger = logger;
             this._service = service;
-            this._adqueries = new Queries(this._service);
         }
 
         public IActionResult Index()
@@ -32,8 +30,9 @@ namespace Console.Controllers
         // GET reports/emptygroups
         public IActionResult EmptyGroups()
         {
+            string query = ADQueries.EmptyGroups;
             
-            ResultSet results = this._adqueries.GetEmptyGroups();
+            ResultSet results = _service.GetResultSetFromQuery(query);
             results.AddPropertyFilter("name");
             results.AddPropertyFilter("dn");
             //results.AddPropertyFilter("scope");
@@ -45,8 +44,8 @@ namespace Console.Controllers
         // GET reports/grouploops
         public IActionResult GroupLoops()
         {
-
-            ResultSet results = this._adqueries.GetGroupLoops();
+            string query = ADQueries.GroupLoops;
+            ResultSet results = _service.GetResultSetFromQuery(query);
             results.AddPropertyFilter("name");
             results.AddPropertyFilter("dn");
             //results.AddPropertyFilter("scope");
