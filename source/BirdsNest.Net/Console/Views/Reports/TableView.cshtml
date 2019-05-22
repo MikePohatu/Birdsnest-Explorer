@@ -10,9 +10,9 @@
 
 @if (Model.Nodes.Count > 0)
 {
-    <div class="grid-x grid-padding-x grid-padding-y">
-        <div class="cell">Query returned @Model.Nodes.Count nodes. </div>
-        <div><a id="downloadlink" href="#" onclick="javascript:onDownloadClicked()">Download</a></div>
+    <div class="row">
+        <div class="columns small-2 large-4">Query returned @Model.Nodes.Count nodes. </div>
+        <div class="columns small-2 large-4"><a id="downloadlink" href="#" onclick="javascript:onDownloadClicked()">Download</a></div>
     </div>
 
     <div class="table-scroll">
@@ -150,9 +150,9 @@ else
                 a.setAttribute('download', fileName);
                 document.body.appendChild(a);
                 a.onclick = function () { console.log("clicked"); };
-                a.innerHTML = "Ready";
+                //a.innerHTML = "Ready";
                 a.click();
-                   // document.body.removeChild(a);
+                document.body.removeChild(a);
                 
             } else {
                 location.href = 'data:application/octet-stream,' + encodeURIComponent(content); // only this mime type is supported
