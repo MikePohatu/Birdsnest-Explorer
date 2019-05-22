@@ -18,9 +18,12 @@ DataQueue.prototype.QueueResults = function (json) {
             //console.log("New nodes");
             me.QueuedData[propertyName] = json[propertyName];
         }
-        else {
-            //console.log("Concat nodes");
+        else if (Array.isArray(me.QueuedData[propertyName])) {
+            //console.log("Concat nodes: " + propertyName);
             me.QueuedData[propertyName] = me.QueuedData[propertyName].concat(json[propertyName]);
+        }
+        else {
+            me.QueuedData[propertyName] = json[propertyName];
         }
     }
 

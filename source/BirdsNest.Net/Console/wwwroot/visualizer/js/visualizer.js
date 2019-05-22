@@ -83,7 +83,7 @@ $("#menuShowHideButton").click(function () {
 
 
 
-function drawGraph(selectid, loaddata) {
+function drawGraph(selectid, loaddata, usestored) {
     updateNodeDetails("source");
     updateNodeDetails("target");
     drawingPane = d3.select("#" + selectid);
@@ -119,6 +119,13 @@ function drawGraph(selectid, loaddata) {
     if (loaddata !== undefined) {
         //console.log(loaddata);
         getNodes(loaddata);
+    }
+    if (usestored) {
+        //console.log('loading stored result set')
+        var results = JSON.parse(sessionStorage.getItem("birdsnest_resultset"));
+        //console.log(results);
+        if (results !== null) { queue.QueueResults(results); }
+        
     }
 }
 

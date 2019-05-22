@@ -20,7 +20,7 @@
                         <ul class="vertical menu nested" id="columnstoggles"></ul>
                     </li>
                     <li><a id="downloadlink" href="#" onclick="javascript:onDownloadClicked()">Download</a></li>
-
+                    <li><a id="visualizerlink" href="#" onclick="javascript:onVisualizerClicked()">Open in Visualizer</a></li>
                 </ul>
         </ul>
     </div>
@@ -151,6 +151,17 @@ else
                     classelements[i].classList.add('hidden');
                     classelements[i].classList.remove('visible');
                 }
+            }
+        }
+
+        function onVisualizerClicked() {
+            if (typeof (Storage) !== "undefined") {
+                sessionStorage.birdsnest_resultset = JSON.stringify(resultset);
+                window.location.href = "/visualizer?usestored=true";
+                // Code for localStorage/sessionStorage.
+            } else {
+                console.log("No Web Storage support..");
+                // Sorry! No Web Storage support..
             }
         }
 
