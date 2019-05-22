@@ -10,11 +10,20 @@
 
 @if (Model.Nodes.Count > 0)
 {
-    <div class="row">
-        <div class="columns small-2 large-4">Query returned @Model.Nodes.Count nodes. </div>
-        <div class="columns small-2 large-4"><a id="downloadlink" href="#" onclick="javascript:onDownloadClicked()">Download</a></div>
-    </div>
+    <div>
+        <ul class="dropdown menu" data-dropdown-menu data-close-on-click="false" data-close-on-click-inside="false">
+            <li>
+                <a>Query returned @Model.Nodes.Count nodes.</a>
+                <ul class="menu">
+                    <li>
+                        <a href="#">Columns</a>
+                        <ul class="vertical menu nested" id="columnstoggles"></ul>
+                    </li>
+                    <li><a id="downloadlink" href="#" onclick="javascript:onDownloadClicked()">Download</a></li>
 
+                </ul>
+        </ul>
+    </div>
     <div class="table-scroll">
         <table id="outputtable" class="hover">
             <thead>
@@ -36,7 +45,8 @@ else
         var tBody = document.getElementById('outputBody');
         var el;
         var columnstyleprefix = "col-";
-
+        var toggleprefix = "toggle-";
+        var columnstoggles = document.getElementById("columnstoggles");
 
         //add the header
         function addTH(key) {
@@ -45,6 +55,33 @@ else
             el.classList.add("visible");
             el.innerHTML = key;
             tHeader.appendChild(el);
+
+            //<li>
+            //        <label class="filter" for="toggle-dn">
+            //            <input id="toggle-dn" type="checkbox" data-label="dn" />
+            //            <text>TEST</text>
+            //        </label>
+            //</li>
+            var li = document.createElement("li");
+                     
+
+            var label = document.createElement("label");
+            label.attributes.for = toggleprefix + key;
+            label.classList.add("toggleitem");
+
+            var textpart = document.createTextNode(key);
+
+            var checkbox = document.createElement("input");
+            checkbox.classList.add("toggleitem");
+            checkbox.id = toggleprefix + key;
+            checkbox.type = "checkbox";
+            checkbox.onchange = onToggleClicked;
+            checkbox.dataset.label = key;
+
+            li.appendChild(label);
+            label.appendChild(checkbox);
+            label.appendChild(textpart);
+            columnstoggles.appendChild(li);
         }
 
         Object.keys(resultset.PropertyFilters).forEach(function (key) {
@@ -86,14 +123,23 @@ else
 
         //update visibility to hide unneeded columns
         if (resultset.PropertyFiltersApplied === true) {
-            var shown = true;
+            
             Object.keys(resultset.PropertyNames).forEach(function (key) {
-                SetClassVisible(columnstyleprefix + key, (key in resultset.PropertyFilters));
+                var shown = (key in resultset.PropertyFilters);
+                SetClassVisible(columnstyleprefix + key, shown);
+                var togglebox = document.getElementById(toggleprefix + key);
+                togglebox.checked = shown;
             });
         }
 
+        function onToggleClicked() {
+            var el = event.target;
+            var key = columnstyleprefix + el.dataset.label;
+            SetClassVisible(key, el.checked);
+        }
 
         function SetClassVisible(classname, show) {
+            //console.log("SetClassVisible: " + classname + ":" + show);
             var classelements = document.getElementsByClassName(classname);
 
             for (var i = 0; i < classelements.length; i++) {
@@ -125,7 +171,6 @@ else
             }
 
             Download(text, "results.csv", 'text/csv;encoding:utf-8');
-            //Download(text, "results.csv");
         }
 
         //https://stackoverflow.com/questions/14964035/how-to-export-javascript-array-info-to-csv-on-client-side

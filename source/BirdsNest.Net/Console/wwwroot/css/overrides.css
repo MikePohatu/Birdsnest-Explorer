@@ -11,21 +11,21 @@
 	background-color: #606060;
 }
 
-.dropdown.menu a {
-	padding: 0.2rem 1rem;
+.top-bar-right .dropdown.menu a {
+    padding: 0.2rem 1rem;
 }
 
-.dropdown.menu .is-active a {
-	color: #FFF;
-	background-color: #656565;
+.top-bar-right .dropdown.menu .is-active a {
+    color: #FFF;
+    background-color: #656565;
 }
 
-.dropdown.menu .is-dropdown-submenu a {
-	padding: 0.4rem 1rem;
+.top-bar-right .dropdown.menu .is-dropdown-submenu a {
+    padding: 0.4rem 1rem;
 }
 
-.dropdown.menu > li.is-dropdown-submenu-parent > a::after {
-	border-color: #53FF67  transparent transparent;
+.top-bar-right .dropdown.menu > li.is-dropdown-submenu-parent > a::after {
+    border-color: #53FF67 transparent transparent;
 }
 
 .menu .menu-text {
