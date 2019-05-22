@@ -10,14 +10,15 @@
 
 @if (Model.Nodes.Count > 0)
 {
-    <div>Query returned @Model.Nodes.Count nodes. </div>
+    <div class="grid-x grid-padding-x grid-padding-y">
+        <div class="cell">Query returned @Model.Nodes.Count nodes. </div>
+        <div><a id="downloadlink" href="#" onclick="javascript:onDownloadClicked()">Download</a></div>
+    </div>
 
     <div class="table-scroll">
         <table id="outputtable" class="hover">
             <thead>
-                <tr id="outputHeader">
-
-                </tr>
+                <tr id="outputHeader"></tr>
             </thead>
             <tbody id="outputBody"></tbody>
         </table>
@@ -39,21 +40,22 @@ else
 
         //add the header
         function addTH(key) {
-            el = document.createElement("TH"); 
+            el = document.createElement("TH");
             el.classList.add(columnstyleprefix + key);
-            el.innerHTML = key; 
+            el.classList.add("visible");
+            el.innerHTML = key;
             tHeader.appendChild(el);
         }
 
-        for (let key of Object.keys(resultset.PropertyFilters)) {
+        Object.keys(resultset.PropertyFilters).forEach(function (key) {
             addTH(key);
-        }
+        });
 
-        for (let key of Object.keys(resultset.PropertyNames)) {
+        Object.keys(resultset.PropertyNames).forEach(function (key) {
             if (!(key in resultset.PropertyFilters)) {
                 addTH(key);
-            }   
-        }
+            }
+        });
 
         //add the cells
         resultset.Nodes.forEach(function (node) {
@@ -66,37 +68,95 @@ else
 
                 el = document.createElement("TD");
                 el.classList.add(columnstyleprefix + key);
+                el.classList.add("visible");
                 el.innerHTML = contents;
                 row.appendChild(el);
             }
 
-            for (let key of Object.keys(resultset.PropertyFilters)) {
+            Object.keys(resultset.PropertyFilters).forEach(function (key) {
                 addTD(key);
-            }
+            });
 
-            for (let key of Object.keys(resultset.PropertyNames)) {
+            Object.keys(resultset.PropertyNames).forEach(function (key) {
                 if (!(key in resultset.PropertyFilters)) {
                     addTD(key);
-                }   
-            }
-                
+                }
+            });
         });
 
         //update visibility to hide unneeded columns
         if (resultset.PropertyFiltersApplied === true) {
-            for (let key of Object.keys(resultset.PropertyNames)) {
+            var shown = true;
+            Object.keys(resultset.PropertyNames).forEach(function (key) {
                 SetClassVisible(columnstyleprefix + key, (key in resultset.PropertyFilters));
-            }
-        } 
+            });
+        }
+
 
         function SetClassVisible(classname, show) {
             var classelements = document.getElementsByClassName(classname);
 
-            for(var i = 0; i < classelements.length; i++)
-            {
-                classelements[i].classList.toggle('hidden', !show);
+            for (var i = 0; i < classelements.length; i++) {
+
+                if (show === true) {
+                    classelements[i].classList.add('visible');
+                    classelements[i].classList.remove('hidden');
+                } else {
+                    classelements[i].classList.add('hidden');
+                    classelements[i].classList.remove('visible');
+                }
             }
         }
 
+        function onDownloadClicked() {
+            var text = "";
+	        var rows = document.querySelectorAll("#outputtable tr");
+	
+            for (var i = 0; i < rows.length; i++) {
+                var row = [];
+                var cols = rows[i].querySelectorAll("td.visible, th.visible");
+                var celltext = "";
+                for (var j = 0; j < cols.length; j++) {
+                    celltext = cols[j].innerText === null ? "" : cols[j].innerText;
+                    celltext = celltext.replace("\"", "\"\"");
+                    row.push("\"" + celltext + "\""); 
+                } 
+                text = text + (row.join(",")) + "\n";
+            }
+
+            Download(text, "results.csv", 'text/csv;encoding:utf-8');
+            //Download(text, "results.csv");
+        }
+
+        //https://stackoverflow.com/questions/14964035/how-to-export-javascript-array-info-to-csv-on-client-side
+        // The download function takes a CSV string, the filename and mimeType as parameters
+        // Scroll/look down at the bottom of this snippet to see how download is called
+        function Download(content, fileName, mimeType) {
+            console.log("Download:");
+            //console.log(content);
+            var a = document.createElement('a');
+            mimeType = mimeType || 'application/octet-stream';
+
+            if (navigator.msSaveBlob) { // IE10
+                navigator.msSaveBlob(new Blob([content], {
+                    type: mimeType
+                }), fileName);
+            } else if (URL && 'download' in a) { //html5 A[download]
+                console.log("HTML5");
+                a.href = URL.createObjectURL(new Blob([content], {
+                    type: mimeType
+                }));
+                //a.href = 'data:application/octet-stream,' + encodeURIComponent(content);
+                a.setAttribute('download', fileName);
+                document.body.appendChild(a);
+                a.onclick = function () { console.log("clicked"); };
+                a.innerHTML = "Ready";
+                a.click();
+                   // document.body.removeChild(a);
+                
+            } else {
+                location.href = 'data:application/octet-stream,' + encodeURIComponent(content); // only this mime type is supported
+            }
+        }
     </script>
 }
