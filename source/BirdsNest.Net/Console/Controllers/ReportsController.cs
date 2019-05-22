@@ -41,5 +41,19 @@ namespace Console.Controllers
             ViewData["Title"] = "Empty Groups";
             return View("TableView", results);
         }
+
+        // GET reports/grouploops
+        public IActionResult GroupLoops()
+        {
+
+            ResultSet results = this._adqueries.GetGroupLoops();
+            results.AddPropertyFilter("name");
+            results.AddPropertyFilter("dn");
+            //results.AddPropertyFilter("scope");
+
+            ViewData["Title"] = "Group Loops";
+            return View("TableView", results);
+        }
+
     }
 }

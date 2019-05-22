@@ -23,5 +23,11 @@ namespace Console.ActiveDirectory
             string query = "MATCH (n:" + Types.Group + ") where n.scope=0 RETURN n ORDER BY n.name";
             return _service.GetResultSetFromQuery(query);
         }
+
+        public ResultSet GetGroupLoops()
+        {
+            string query = "MATCH p=(n:" + Types.Group + ")-[:" + Types.MemberOf + "*]->(n) RETURN p";
+            return _service.GetResultSetFromQuery(query);
+        }
     }
 }
