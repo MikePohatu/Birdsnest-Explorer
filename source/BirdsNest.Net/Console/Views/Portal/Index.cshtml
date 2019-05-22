@@ -16,6 +16,9 @@
     <input type="submit" class="button" value="Visualizer" />
 </form>
 
+<form action="~/reports/">
+    <input type="submit" class="button" value="Reports" />
+</form>
 @{
     @if ((await AuthorizationService.AuthorizeAsync(User, Types.BirdsNestAdminsPolicy)).Succeeded)
     {

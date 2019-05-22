@@ -1,0 +1,102 @@
+﻿@using Newtonsoft.Json
+@using Console.neo4jProxy
+
+@{
+    Layout = "_Layout_NonSpa";
+}
+
+@model ResultSet
+@Html.Hidden("results", JsonConvert.SerializeObject(Model))
+
+@if (Model.Nodes.Count > 0)
+{
+    <div>Query returned @Model.Nodes.Count nodes. </div>
+
+    <div class="table-scroll">
+        <table id="outputtable" class="hover">
+            <thead>
+                <tr id="outputHeader">
+
+                </tr>
+            </thead>
+            <tbody id="outputBody"></tbody>
+        </table>
+
+    </div>
+}
+else
+{ <div>Search returned no results.</div>}
+
+@section Scripts
+    {
+    <script>
+        var resultset = JSON.parse(results.value);
+        var tHeader = document.getElementById('outputHeader');
+        var tBody = document.getElementById('outputBody');
+        var el;
+        var columnstyleprefix = "col-";
+
+
+        //add the header
+        function addTH(key) {
+            el = document.createElement("TH"); 
+            el.classList.add(columnstyleprefix + key);
+            el.innerHTML = key; 
+            tHeader.appendChild(el);
+        }
+
+        for (let key of Object.keys(resultset.PropertyFilters)) {
+            addTH(key);
+        }
+
+        for (let key of Object.keys(resultset.PropertyNames)) {
+            if (!(key in resultset.PropertyFilters)) {
+                addTH(key);
+            }   
+        }
+
+        //add the cells
+        resultset.Nodes.forEach(function (node) {
+            var contents;
+            var row = tBody.insertRow();
+
+            function addTD(key) {
+                if (key in node.properties) { contents = node.properties[key]; }
+                else { contents = ""; }
+
+                el = document.createElement("TD");
+                el.classList.add(columnstyleprefix + key);
+                el.innerHTML = contents;
+                row.appendChild(el);
+            }
+
+            for (let key of Object.keys(resultset.PropertyFilters)) {
+                addTD(key);
+            }
+
+            for (let key of Object.keys(resultset.PropertyNames)) {
+                if (!(key in resultset.PropertyFilters)) {
+                    addTD(key);
+                }   
+            }
+                
+        });
+
+        //update visibility to hide unneeded columns
+        if (resultset.PropertyFiltersApplied === true) {
+            for (let key of Object.keys(resultset.PropertyNames)) {
+                SetClassVisible(columnstyleprefix + key, (key in resultset.PropertyFilters));
+            }
+        } 
+
+        function SetClassVisible(classname, show) {
+            var classelements = document.getElementsByClassName(classname);
+
+            for(var i = 0; i < classelements.length; i++)
+            {
+                classelements[i].classList.toggle('hidden', !show);
+            }
+        }
+
+    </script>
+}

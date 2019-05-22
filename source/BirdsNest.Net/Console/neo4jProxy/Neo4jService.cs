@@ -31,6 +31,29 @@ namespace Console.neo4jProxy
             this._logger.LogInformation("Connected to neo4j in {elapsed} ms", stopwatch.ElapsedMilliseconds);
         }
 
+
+        public ResultSet GetResultSetFromQuery(string query)
+        {
+            using (ISession session = this._driver.Session())
+            {
+                ResultSet returnedresults = new ResultSet();
+                try
+                {
+                    session.ReadTransaction(tx =>
+                    {
+                        IStatementResult dbresult = tx.Run(query);
+                        returnedresults.Append(ParseResults(dbresult));
+                    });
+                }
+                catch
+                {
+                    //logging to add
+                }
+
+                return returnedresults;
+            }
+        }
+
         public ResultSet GetAll()
         {
             using (ISession session = this._driver.Session())
