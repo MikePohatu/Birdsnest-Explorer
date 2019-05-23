@@ -22,6 +22,7 @@
                     </li>
                     <li><a id="downloadlink" href="#" onclick="javascript:onDownloadClicked()">Download</a></li>
                     <li><a id="visualizerlink" href="#" onclick="javascript:onVisualizerClicked()">Open in Visualizer</a></li>
+                    <li><a href="#" data-open="querydialog">Show query</a></li>
                 </ul>
         </ul>
     </div>
@@ -41,7 +42,13 @@
         </thead>
         <tbody id="outputBody"></tbody>
     </table>
+</div>
 
+<div id="querydialog" class="reveal" data-reveal>
+    <p>@ViewData["Query"]</p>
+    <button class="close-button" data-close aria-label="Close query dialog" type="button">
+        <span aria-hidden="true">&times;</span>
+    </button>
 </div>
 
 

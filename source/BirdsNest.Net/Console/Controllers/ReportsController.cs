@@ -27,8 +27,8 @@ namespace Console.Controllers
             return View();
         }
 
-        // GET reports/emptygroups
-        public IActionResult EmptyGroups()
+        // GET reports/ademptygroups
+        public IActionResult ADEmptyGroups()
         {
             string query = ADQueries.EmptyGroups;
             
@@ -43,8 +43,8 @@ namespace Console.Controllers
             return View("TableView", results);
         }
 
-        // GET reports/grouploops
-        public IActionResult GroupLoops()
+        // GET reports/adgrouploops
+        public IActionResult ADGroupLoops()
         {
             string query = ADQueries.GroupLoops;
             ResultSet results = _service.GetResultSetFromQuery(query);
@@ -55,6 +55,21 @@ namespace Console.Controllers
 
             ViewData["Query"] = query;
             ViewData["Title"] = "Group Loops";
+            return View("TableView", results);
+        }
+
+        // GET reports/addeeppaths
+        public IActionResult ADDeepPaths()
+        {
+            string query = ADQueries.DeepPaths;
+            ResultSet results = _service.GetResultSetFromQuery(query);
+            results.AddPropertyFilter("name");
+            results.AddPropertyFilter("dn");
+            results.AddPropertyFilter("description");
+            results.AddPropertyFilter("scope");
+
+            ViewData["Query"] = query;
+            ViewData["Title"] = "Deep paths";
             return View("TableView", results);
         }
 

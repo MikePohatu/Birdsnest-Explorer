@@ -13,5 +13,6 @@ namespace Console.ActiveDirectory
     {
         public static string EmptyGroups { get { return "MATCH (n:" + Types.Group + ") where n.scope=0 RETURN n ORDER BY n.name"; } }
         public static string GroupLoops { get { return "MATCH p=(n:" + Types.Group + ")-[:" + Types.MemberOf + "*]->(n) RETURN p"; } }
+        public static string DeepPaths { get { return "MATCH p=(n:" + Types.Group + ")-[:" + Types.MemberOf + "*5..]->(:" + Types.Group + ") RETURN p"; } }
     }
 }
