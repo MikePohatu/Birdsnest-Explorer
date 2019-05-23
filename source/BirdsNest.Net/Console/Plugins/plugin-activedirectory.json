@@ -1,0 +1,36 @@
+{
+  "name": "active-directory",
+  "displayname": "Active Directory",
+  "icons": {
+    "AD_User": "fas fa-user",
+    "AD_Computer": "fas fa-desktop",
+    "AD_Group": "fas fa-user-friends"
+  },
+  "nodelabels": [
+    "AD_User", "AD_Group", "AD_Computer", "AD_Object", "AD_Deleted"
+  ],
+  "edgelabels": [
+    "AD_MEMBER_OF"
+  ],
+  "reports": {
+    "ad-deeppaths": {
+      "displayname": "AD Deep Paths",
+      "description": "Lists Active Directory groups that are part of 'Member Of' chains with 5 hops or more",
+      "query": "MATCH p=(n:AD_Group)-[:AD_MEMBER_OF*5..]->(:AD_Group) WITH nodes(p) AS groups UNWIND groups as group RETURN DISTINCT group",
+      "propertyfilters": [ "name", "dn", "description", "scope" ]
+    },
+    "ad-emptygroups": {
+      "displayname": "AD Empty Groups",
+      "description": "Lists Active Directory groups that contain no users or computers, either directly or indirectly",
+      "query": "MATCH (n:AD_Group) where n.scope=0 RETURN n ORDER BY n.name",
+      "propertyfilters": [ "name", "dn", "description" ]
+    },
+    "ad-grouploops": {
+      "displayname": "AD Group Loops",
+      "description": "Lists Active Directory groups that have membership loops back to themselves",
+      "query": "MATCH p=(n:AD_Group)-[:AD_MEMBER_OF*]->(n) WITH nodes(p) as groups UNWIND groups as group RETURN DISTINCT group",
+      "propertyfilters": [ "name", "dn", "description", "scope" ]
+    }
+  }
+
+}

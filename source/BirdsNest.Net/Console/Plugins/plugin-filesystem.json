@@ -1,0 +1,28 @@
+{
+  "name": "filesystem",
+  "displayname": "File System",
+  "icons": {
+    "FS_Folder": "fas fa-folder-open",
+    "FS_Datastore": "fas fa-hdd"
+  },
+  "nodelabels": [
+    "FS_Folder",
+    "FS_Datastore",
+    "FS_BlockedFolder",
+    "FS_DfsRoot"
+  ],
+  "edgelabels": [
+    "FS_APPLIES_INHERITANCE_TO",
+    "FS_BLOCKED_INHERITANCE",
+    "FS_HOSTS"
+  ],
+  "reports": {
+    "fs-orphanedperms": {
+      "displayname": "FS Orphaned Permissions",
+      "description": "Lists folders with permissions for deleted permissions",
+      "query": "MATCH p=(n:AD_Group)-[:AD_MEMBER_OF*5..]->(:AD_Group) WITH nodes(p) AS groups UNWIND groups as group RETURN DISTINCT group",
+      "propertyfilters": [ ]
+    }
+  }
+
+}

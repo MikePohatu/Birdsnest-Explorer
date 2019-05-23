@@ -1,30 +1,14 @@
-﻿
+﻿@using Console.Plugins
+
+
 @{
     ViewData["Title"] = "Reports";
     Layout = "_Layout_NonSpa";
 }
 
-    <div class="table-scroll">
-        <table id="outputtable" class="hover">
-            <thead>
-                <tr>
-                    <th>Report</th><th>Description</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td><a href="~/reports/ademptygroups">AD Empty Groups</a></td>
-                    <td>Lists Active Directory groups that contain no users or computers, either directly or indirectly</td>
-                </tr>
-                <tr>
-                    <td><a href="~/reports/addeeppaths">AD Deep Paths</a></td>
-                    <td>Lists Active Directory groups that are part of 'Member Of' chains with 5 hops or more</td>
-                </tr>
-                <tr>
-                    <td><a href="~/reports/adgrouploops">AD Group Loops</a></td>
-                    <td>Lists Active Directory groups that have membership loops back to themselves</td>
-                </tr>
-            </tbody>
-        </table>
-
-    </div>
+@{
+    foreach (Plugin plugin in PluginManager.Plugins.Values)
+    {
+        @await Html.PartialAsync("PluginReportListPartial", plugin);
+    }
+}

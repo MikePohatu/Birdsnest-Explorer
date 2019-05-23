@@ -6,7 +6,7 @@ using Console.neo4jProxy;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using Console.ActiveDirectory;
+using Console.Plugins;
 
 namespace Console.Controllers
 {
@@ -27,51 +27,20 @@ namespace Console.Controllers
             return View();
         }
 
-        // GET reports/ademptygroups
-        public IActionResult ADEmptyGroups()
+        // GET reports/query?query
+        public IActionResult PluginQuery(string pluginname, string reportname)
         {
-            string query = ADQueries.EmptyGroups;
-            
-            ResultSet results = _service.GetResultSetFromQuery(query);
-            results.AddPropertyFilter("name");
-            results.AddPropertyFilter("dn");
-            results.AddPropertyFilter("description");
-            //results.AddPropertyFilter("scope");
+            Plugin plugin;
+            PluginManager.Plugins.TryGetValue(pluginname, out plugin);
+            Report rep;
+            plugin.Reports.TryGetValue(reportname, out rep);
 
-            ViewData["Query"] = query;
-            ViewData["Title"] = "Empty Groups";
+            ResultSet results = _service.GetResultSetFromQuery(rep.Query);
+            foreach (string filter in rep.PropertyFilters)
+            { results.AddPropertyFilter(filter); }
+
+            ViewData["Query"] = rep.Query;
             return View("TableView", results);
         }
-
-        // GET reports/adgrouploops
-        public IActionResult ADGroupLoops()
-        {
-            string query = ADQueries.GroupLoops;
-            ResultSet results = _service.GetResultSetFromQuery(query);
-            results.AddPropertyFilter("name");
-            results.AddPropertyFilter("dn");
-            results.AddPropertyFilter("description");
-            results.AddPropertyFilter("scope");
-
-            ViewData["Query"] = query;
-            ViewData["Title"] = "Group Loops";
-            return View("TableView", results);
-        }
-
-        // GET reports/addeeppaths
-        public IActionResult ADDeepPaths()
-        {
-            string query = ADQueries.DeepPaths;
-            ResultSet results = _service.GetResultSetFromQuery(query);
-            results.AddPropertyFilter("name");
-            results.AddPropertyFilter("dn");
-            results.AddPropertyFilter("description");
-            results.AddPropertyFilter("scope");
-
-            ViewData["Query"] = query;
-            ViewData["Title"] = "Deep paths";
-            return View("TableView", results);
-        }
-
     }
 }

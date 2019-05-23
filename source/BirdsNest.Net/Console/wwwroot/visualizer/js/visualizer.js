@@ -58,8 +58,10 @@ var zoom = d3.zoom()
 IconMappings object to asign the correct font awesome icon to the correct nodes
 */
 var iconmappings;
-$.getJSON("/visualizer/json/labelicons.json", function (data) {
+$.getJSON("/visualizer/icons", function (data) {
+    //console.log(data);
     iconmappings = new IconMappings(data);
+    console.log(iconmappings);
 });
 $.getJSON("/api/graph/edges/labels", function (data) {
     for (var i = 0; i < data.length; ++i) {
@@ -68,7 +70,6 @@ $.getJSON("/api/graph/edges/labels", function (data) {
 });
 
 $("#menuShowHideButton").click(menuShowHide);
-
 function menuShowHide() {
     var icon = $("#menuIcon");
     if (icon.hasClass("fa-angle-up")) {

@@ -4,6 +4,24 @@
     Layout = "_Layout_NonSpa";
 }
 
-<div id="Test">
-    Llama Llama Duck
+<p></p>
+<div class="grid-x grid-margin-x">
+    <div class="cell shrink">
+        <form action="javascript:ReloadPlugins()">
+            <input type="submit" class="button" value="Reload Plugins" />
+        </form>
+    </div>
+    <div class="cell shrink">
+        <text id="reloadmessage"></text>
+    </div>
 </div>
+
+<script>
+    function ReloadPlugins() {
+        $.getJSON("reloadplugins", function (data) {
+            //console.log(data);
+            document.getElementById("reloadmessage").innerHTML = data.message;
+        });
+    }
+    
+</script>

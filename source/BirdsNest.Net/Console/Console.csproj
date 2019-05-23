@@ -11,6 +11,13 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="ActiveDirectory\**" />
+    <Content Remove="ActiveDirectory\**" />
+    <EmbeddedResource Remove="ActiveDirectory\**" />
+    <None Remove="ActiveDirectory\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.App" />
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.1.9" />
     <PackageReference Include="Neo4j.Driver" Version="1.7.2" />

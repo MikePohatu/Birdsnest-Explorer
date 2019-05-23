@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Console.ViewModels;
 using Microsoft.Extensions.Logging;
+using Console.Plugins;
 
 namespace Console.Controllers
 {
@@ -60,5 +61,9 @@ namespace Console.Controllers
             return PartialView("SearchResultsDetail", results);
         }
 
+        public object Icons()
+        {
+            return PluginManager.Icons;
+        }
     }
 }

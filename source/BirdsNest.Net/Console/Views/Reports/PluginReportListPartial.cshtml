@@ -1,0 +1,29 @@
+﻿@using Console.Plugins
+
+@model Plugin
+
+<div class="table-scroll">
+    <table id="outputtable" class="hover">
+        <thead>
+            <tr>
+                <th>Report</th>
+                <th>Description</th>
+            </tr>
+        </thead>
+        <tbody>
+            @{
+                foreach (string key in Model.Reports.Keys)
+                {
+                    Report rep;
+                    Model.Reports.TryGetValue(key, out rep);
+                    <tr>
+                        <td><a href=@("pluginquery?pluginname="+ Model.Name +"&reportname=" + key)>@(rep.DisplayName)</a></td>
+                        <td>@(rep.Description)</td>
+                    </tr>
+                    }
+            }
+
+        </tbody>
+    </table>
+
+</div>

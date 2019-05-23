@@ -22,6 +22,7 @@ using Console.Auth;
 using Console.Diagnostics;
 using Microsoft.Extensions.Logging;
 using System.Diagnostics;
+using Console.Plugins;
 
 namespace Console
 {
@@ -46,6 +47,8 @@ namespace Console
         {
             var logger = this._loggerFactory.CreateLogger<Startup>();
             Stopwatch stopwatch = new Stopwatch();
+
+            PluginManager.Reload();
 
             services.Configure<CookiePolicyOptions>(options =>
             {
