@@ -11,7 +11,6 @@ namespace Console.Plugins
     {
         private static string _path = "Plugins";
         public static Dictionary<string, Plugin> Plugins { get; private set; } = new Dictionary<string, Plugin>();
-        public static Dictionary<string, Report> Reports { get; private set; } = new Dictionary<string, Report>();
         public static List<string> NodeLabels { get; private set; } = new List<string>();
         public static List<string> EdgeLabels { get; private set; } = new List<string>();
 
@@ -23,7 +22,6 @@ namespace Console.Plugins
             List<string> nodelabels = new List<string>();
             List<string> edgelabels = new List<string>();
             Dictionary<string, string> icons = new Dictionary<string, string>();
-            Dictionary<string, Report> reports = new Dictionary<string, Report>();
         
             try
             {
@@ -45,21 +43,12 @@ namespace Console.Plugins
                         }
 
                     }
-                    foreach (string key in plug.Reports.Keys)
-                    {
-                        if (!reports.TryAdd(key, plug.Reports[key]))
-                        {
-                            //logging to add
-                        }
-
-                    }
                 }
             }
             catch
             {
                 return false;
             }
-            Reports = reports;
             Icons = icons;
             Plugins = plugins;
             NodeLabels = nodelabels;
