@@ -64,7 +64,7 @@
         var recordcount = resultset.Nodes.length + resultset.Edges.length;
         var maxpagenum = Math.ceil(recordcount / maxrecords);
 
-        document.getElementById("reportmenutext").innerHTML = "Query returned " + recordcount + " records.";
+        document.getElementById("reportmenutext").innerHTML = "Query returned " + recordcount + " records";
 
         if (recordcount === 0) {
             document.getElementById("columnsli").classList.add("hidden");
