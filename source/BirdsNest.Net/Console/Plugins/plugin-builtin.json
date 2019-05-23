@@ -5,7 +5,9 @@
     "Orphaned": "fas fa-question"
   },
   "nodelabels": [
-    "Orphaned"
+    "Orphaned",
+    "BuiltinUser",
+    "BuiltinGroup"
   ],
   "edgelabels": [
   ],

@@ -153,6 +153,7 @@ function addTH(key) {
 }
 
 function onPageUpClicked() {
+    clearStatus();
     if (pagenum < maxpagenum) {
         pagenum++;
         tBody.innerHTML = "";
@@ -161,6 +162,7 @@ function onPageUpClicked() {
 }
 
 function onPageDownClicked() {
+    clearStatus();
     if (pagenum > 1) {
         pagenum--;
         tBody.innerHTML = "";
@@ -169,6 +171,7 @@ function onPageDownClicked() {
 }
 
 function onToggleClicked() {
+    clearStatus();
     var el = event.target;
     var key = columnstyleprefix + el.dataset.label;
     SetClassVisible(key, el.checked);
@@ -190,10 +193,25 @@ function SetClassVisible(classname, show) {
     }
 }
 
+function updateStatus(message) {
+    document.getElementById("status").innerHTML = message;
+}
+
+function clearStatus() {
+    document.getElementById("status").innerHTML = "";
+}
+
 function onVisualizerClicked() {
+    clearStatus();
     if (typeof (Storage) !== "undefined") {
-        sessionStorage.birdsnest_resultset = JSON.stringify(resultset);
-        window.location.href = "/visualizer?usestored=true";
+        try {
+            sessionStorage.birdsnest_resultset = JSON.stringify(resultset);
+            window.location.href = "/visualizer?usestored=true";
+        }
+        catch {
+            updateStatus("There was an error opening visualizer. Your result set may be too large");
+        }
+        
         // Code for localStorage/sessionStorage.
     } else {
         console.log("No Web Storage support..");
@@ -201,8 +219,13 @@ function onVisualizerClicked() {
     }
 }
 
+function onShowQueryClicked() {
+    clearStatus();
+}
+
 function onDownloadClicked() {
     //console.log("onDownloadClicked");
+    clearStatus();
     var text = "";
     var visiblecols = tHeader.querySelectorAll(".visible");
     var props = [];
