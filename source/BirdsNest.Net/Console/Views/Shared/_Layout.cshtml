@@ -34,13 +34,16 @@
                     <ul class="menu">
                         <li><a href="/">Home</a></li>
                         @{
-                            if ((await AuthorizationService.AuthorizeAsync(User, Types.BirdsNestAdminsPolicy)).Succeeded)
-                            {
-                                <li><a asp-area="" asp-controller="Admin" asp-action="Index">Admin</a></li>
-                            }
+
 
                             if (User.Identity.IsAuthenticated)
                             {
+                                if ((await AuthorizationService.AuthorizeAsync(User, Types.BirdsNestAdminsPolicy)).Succeeded)
+                                    {
+                                    <li><a asp-area="" asp-controller="Admin" asp-action="Index">Admin</a></li>
+                                    }
+                                <li><a asp-area="" asp-controller="Reports" asp-action="Index">Reports</a></li>
+                                <li><a asp-area="" asp-controller="Visualizer" asp-action="Index">Visualizer</a></li>
                                 <li><a asp-area="" asp-controller="Account" asp-action="Logout">Logout</a></li>
                             }
                             else

@@ -12,18 +12,29 @@
 }
 
 <p>@welcomemsg</p>
-<form action="~/visualizer/">
-    <input type="submit" class="button" value="Visualizer" />
-</form>
 
-<form action="~/reports/">
-    <input type="submit" class="button" value="Reports" />
-</form>
-@{
-    @if ((await AuthorizationService.AuthorizeAsync(User, Types.BirdsNestAdminsPolicy)).Succeeded)
-    {
-        <form action="~/admin/">
-            <input type="submit" class="button" value="Admin" />
+<div class="grid-x grid-margin-x">
+    <div class="cell shrink">
+        <form action="~/visualizer/">
+            <input type="submit" class="button" value="Visualizer" />
         </form>
+    </div>
+    <div class="cell shrink">
+        <form action="~/reports/">
+            <input type="submit" class="button" value="Reports" />
+        </form>
+    </div>
+    
+    @{
+        @if ((await AuthorizationService.AuthorizeAsync(User, Types.BirdsNestAdminsPolicy)).Succeeded)
+        {
+            <div class="cell shrink">
+                <form action="~/admin/">
+                    <input type="submit" class="button" value="Admin" />
+                </form>
+            </div>
+        }
     }
-}
+    <div class="cell auto"></div>
+</div>
+

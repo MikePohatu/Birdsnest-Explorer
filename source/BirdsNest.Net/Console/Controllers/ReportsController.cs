@@ -35,8 +35,10 @@ namespace Console.Controllers
             ResultSet results = _service.GetResultSetFromQuery(query);
             results.AddPropertyFilter("name");
             results.AddPropertyFilter("dn");
+            results.AddPropertyFilter("description");
             //results.AddPropertyFilter("scope");
 
+            ViewData["Query"] = query;
             ViewData["Title"] = "Empty Groups";
             return View("TableView", results);
         }
@@ -48,8 +50,10 @@ namespace Console.Controllers
             ResultSet results = _service.GetResultSetFromQuery(query);
             results.AddPropertyFilter("name");
             results.AddPropertyFilter("dn");
-            //results.AddPropertyFilter("scope");
+            results.AddPropertyFilter("description");
+            results.AddPropertyFilter("scope");
 
+            ViewData["Query"] = query;
             ViewData["Title"] = "Group Loops";
             return View("TableView", results);
         }
