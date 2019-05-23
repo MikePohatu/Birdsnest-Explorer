@@ -20,7 +20,7 @@
     "fs-orphanedperms": {
       "displayname": "FS Orphaned Permissions",
       "description": "Lists folders with permissions for deleted permissions",
-      "query": "MATCH (:AD_Deleted)-[]->(f:FS_Folder) RETURN DISTINCT f",
+      "query": "MATCH p=(a:AD_Deleted)-[]->(f:FS_Folder) WITH nodes(p) AS items UNWIND items as item RETURN DISTINCT item",
       "propertyfilters": []
     }
   }
