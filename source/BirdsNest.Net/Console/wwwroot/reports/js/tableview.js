@@ -81,6 +81,13 @@ function buildBody() {
             togglebox.checked = shown;
         });
     }
+    else {
+        Object.keys(resultset.PropertyNames).forEach(function (key) {
+            SetClassVisible(columnstyleprefix + key, true);
+            var togglebox = document.getElementById(toggleprefix + key);
+            togglebox.checked = true;
+        });
+    }
     document.getElementById("status").innerHTML = "";
 
     function addRecord(node) {
