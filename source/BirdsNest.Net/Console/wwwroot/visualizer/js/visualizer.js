@@ -115,7 +115,7 @@ function drawGraph(selectid, loaddata, usestored) {
 
     window.addEventListener('resize', debounce(updatePaneSize, 500, false), false);
     updatePaneSize();
-    if (loaddata !== undefined) {
+    if (loaddata !== undefined && loaddata.length > 0) {
         //console.log(loaddata);
         getNodes(loaddata);
         menuShowHide();
