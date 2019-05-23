@@ -1,0 +1,15 @@
+{
+  "name": "uem",
+  "displayname": "VMware UEM",
+  "icons": {
+    "UEM_Setting": "fas fa-rocket"
+  },
+  "nodelabels": [
+    "UEM_Setting"
+  ],
+  "edgelabels": [
+    "ACTIVATES"
+  ],
+  "reports": {
+  }
+}

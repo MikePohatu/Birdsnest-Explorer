@@ -1,0 +1,20 @@
+{
+  "name": "builtin",
+  "displayname": "Built In",
+  "icons": {
+    "Orphaned": "fas fa-question"
+  },
+  "nodelabels": [
+    "Orphaned"
+  ],
+  "edgelabels": [
+  ],
+  "reports": {
+    "builtin-connectedorphans": {
+      "displayname": "Connected Orphans",
+      "description": "Finds orphaned items that still have connections",
+      "query": "MATCH p=(n:Orphaned)-[]->(a) WITH nodes(p) as items UNWIND items as item RETURN DISTINCT item",
+      "propertyfilters": []
+    }
+  }
+}

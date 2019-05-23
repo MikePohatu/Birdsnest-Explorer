@@ -4,7 +4,8 @@
   "icons": {
     "AD_User": "fas fa-user",
     "AD_Computer": "fas fa-desktop",
-    "AD_Group": "fas fa-user-friends"
+    "AD_Group": "fas fa-user-friends",
+    "AD_Deleted": "far fa-trash-alt"
   },
   "nodelabels": [
     "AD_User", "AD_Group", "AD_Computer", "AD_Object", "AD_Deleted"

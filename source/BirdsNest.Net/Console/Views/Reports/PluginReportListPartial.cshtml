@@ -20,7 +20,7 @@
                     Report rep;
                     Model.Reports.TryGetValue(key, out rep);
                     <tr>
-                        <td><a href=@("pluginquery?pluginname="+ Model.Name +"&reportname=" + key)>@(rep.DisplayName)</a></td>
+                        <td><a href=@("/reports/pluginquery?pluginname="+ Model.Name +"&reportname=" + key)>@(rep.DisplayName)</a></td>
                         <td>@(rep.Description)</td>
                     </tr>
                     }

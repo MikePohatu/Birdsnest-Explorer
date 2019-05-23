@@ -1,0 +1,24 @@
+{
+  "name": "xenapp6.5",
+  "displayname": "XenApp 6.5",
+  "icons": {
+    "CTX_Farm": "fas fa-server",
+    "CTX_Application": "fas fa-clone"
+  },
+  "nodelabels": [
+    "CTX_Farm",
+    "CTX_Application"
+  ],
+  "edgelabels": [
+    "PUBLISHED_FROM",
+    "GIVES_ACCESS_TO"
+  ],
+  "reports": {
+    "ctx-orphanedapps": {
+      "displayname": "CTX Orphaned Apps",
+      "description": "Lists applications with permissions for deleted objects",
+      "query": "MATCH p=(d:AD_Deleted)-[]->(a:CTX_Application) WITH nodes(p) AS items UNWIND items as item RETURN DISTINCT item",
+      "propertyfilters": []
+    }
+  }
+}
