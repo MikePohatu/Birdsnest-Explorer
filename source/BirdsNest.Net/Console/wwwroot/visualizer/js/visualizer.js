@@ -67,7 +67,9 @@ $.getJSON("/api/graph/edges/labels", function (data) {
     }
 });
 
-$("#menuShowHideButton").click(function () {
+$("#menuShowHideButton").click(menuShowHide);
+
+function menuShowHide() {
     var icon = $("#menuIcon");
     if (icon.hasClass("fa-angle-up")) {
         icon.removeClass("fa-angle-up");
@@ -78,10 +80,7 @@ $("#menuShowHideButton").click(function () {
         icon.addClass("fa-angle-up");
     }
     $("#querybar").slideToggle();
-});
-
-
-
+}
 
 function drawGraph(selectid, loaddata, usestored) {
     updateNodeDetails("source");
@@ -119,13 +118,16 @@ function drawGraph(selectid, loaddata, usestored) {
     if (loaddata !== undefined) {
         //console.log(loaddata);
         getNodes(loaddata);
+        menuShowHide();
     }
     if (usestored) {
         //console.log('loading stored result set')
         var results = JSON.parse(sessionStorage.getItem("birdsnest_resultset"));
         //console.log(results);
-        if (results !== null) { queue.QueueResults(results); }
-        
+        if (results !== null) {
+            queue.QueueResults(results);
+            menuShowHide();
+        }
     }
 }
 
