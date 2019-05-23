@@ -7,21 +7,18 @@
 
 @model ResultSet
 @Html.Hidden("results", JsonConvert.SerializeObject(Model))
-@{
-    int recordcount = Model.Nodes.Count + Model.Edges.Count;
-}
 <div class="grid-x">
     <div class="cell auto" id="reportmenu">
         <ul class="dropdown menu" data-dropdown-menu data-close-on-click="false" data-close-on-click-inside="false">
             <li>
                 <a id="reportmenutext"></a>
                 <ul class="menu">
-                    <li>
+                    <li id="columnsli">
                         <a href="#">Columns</a>
                         <ul class="vertical menu nested" id="columnstoggles"></ul>
                     </li>
-                    <li><a id="downloadlink" href="#" onclick="javascript:onDownloadClicked()">Download</a></li>
-                    <li><a id="visualizerlink" href="#" onclick="javascript:onVisualizerClicked()">Open in Visualizer</a></li>
+                    <li id="downloadli"><a  href="#" onclick="javascript:onDownloadClicked()">Download</a></li>
+                    <li id="visualizerli"><a href="#" onclick="javascript:onVisualizerClicked()">Open in Visualizer</a></li>
                     <li><a href="#" data-open="querydialog">Show query</a></li>
                 </ul>
         </ul>
@@ -67,15 +64,19 @@
         var recordcount = resultset.Nodes.length + resultset.Edges.length;
         var maxpagenum = Math.ceil(recordcount / maxrecords);
 
+        document.getElementById("reportmenutext").innerHTML = "Query returned " + recordcount + " records.";
+
         if (recordcount === 0) {
-            document.getElementById("status").innerHTML = "Query return no results";
-            document.getElementById("reportmenu").classList.add("hidden");
+            document.getElementById("columnsli").classList.add("hidden");
+            document.getElementById("visualizerli").classList.add("hidden");
+            document.getElementById("downloadli").classList.add("hidden");
+            document.getElementById("pages").classList.add("hidden");
         } else {
             if (recordcount < maxrecords) { document.getElementById("pages").classList.add("hidden"); }
 
             document.getElementById("status").innerHTML = "Building results table. Please wait...";
             
-            document.getElementById("reportmenutext").innerHTML = "Query returned " + recordcount + " records.";
+            
             Object.keys(resultset.PropertyFilters).forEach(function (key) {
                 addTH(key);
             });
