@@ -13,6 +13,13 @@ namespace Console.Controllers
     [Authorize(Policy = Console.Auth.Types.BirdsNestAdminsPolicy)]
     public class AdminController : Controller
     {
+        private readonly PluginManager _pluginmanager;
+
+        public AdminController(PluginManager plugman)
+        {
+            this._pluginmanager = plugman;
+        }
+
         // GET: api/Admin
         public IActionResult Index()
         {
@@ -22,7 +29,7 @@ namespace Console.Controllers
         public object ReloadPlugins()
         {
             Dictionary<string,object> data = new Dictionary<string, object>();
-            if (PluginManager.Reload())
+            if (this._pluginmanager.Reload())
             {
                 data.Add("status",200);
                 data.Add("message", "Plugins updated OK");

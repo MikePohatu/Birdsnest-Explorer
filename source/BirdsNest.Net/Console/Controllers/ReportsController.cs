@@ -15,11 +15,13 @@ namespace Console.Controllers
     {
         private readonly Neo4jService _service;
         private readonly ILogger _logger;
+        private readonly PluginManager _pluginmanager;
 
-        public ReportsController(ILogger<ReportsController> logger, Neo4jService service)
+        public ReportsController(ILogger<ReportsController> logger, Neo4jService service, PluginManager plugman)
         {
             this._logger = logger;
             this._service = service;
+            this._pluginmanager = plugman;
         }
 
         public IActionResult Index()
@@ -31,7 +33,7 @@ namespace Console.Controllers
         public IActionResult PluginQuery(string pluginname, string reportname)
         {
             Plugin plugin;
-            PluginManager.Plugins.TryGetValue(pluginname, out plugin);
+            this._pluginmanager.Plugins.TryGetValue(pluginname, out plugin);
             Report rep;
             plugin.Reports.TryGetValue(reportname, out rep);
 

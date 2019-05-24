@@ -48,8 +48,6 @@ namespace Console
             var logger = this._loggerFactory.CreateLogger<Startup>();
             Stopwatch stopwatch = new Stopwatch();
 
-            PluginManager.Reload();
-
             services.Configure<CookiePolicyOptions>(options =>
             {
                 // This lambda determines whether user consent for non-essential cookies is needed for a given request.
@@ -87,6 +85,10 @@ namespace Console
                 neoservice = new Neo4jService(this._loggerFactory.CreateLogger<Neo4jService>(), config);
             }
             services.AddSingleton(neoservice);
+
+            PluginManager plugman = new PluginManager(this._loggerFactory.CreateLogger<PluginManager>());
+            plugman.Reload();
+            services.AddSingleton(plugman);
 
             logger.LogInformation("Loading authentication configuration");
             services.AddSingleton(new AuthConfigurations(_config.GetSection("Authorization")));

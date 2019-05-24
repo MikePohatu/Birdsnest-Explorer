@@ -3,7 +3,7 @@ var pagenum = 1;
 var resultset = JSON.parse(results.value);
 var tHeader = document.getElementById('outputHeader');
 var tBody = document.getElementById('outputBody');
-var el;
+
 var columnstyleprefix = "col-";
 var toggleprefix = "toggle-";
 var columnstoggles = document.getElementById("columnstoggles");
@@ -119,7 +119,7 @@ function addRecord(node) {
         if (key in node.properties) { contents = node.properties[key]; }
         else { contents = ""; }
 
-        el = document.createElement("TD");
+        var el = document.createElement("TD");
         el.classList.add(columnstyleprefix + key);
         el.innerHTML = contents;
         row.appendChild(el);
@@ -137,7 +137,7 @@ function addRecord(node) {
 }
 
 function addTH(key) {
-    el = document.createElement("TH");
+    var el = document.createElement("TH");
     el.classList.add(columnstyleprefix + key);
     el.classList.add("visible");
     el.innerHTML = key;

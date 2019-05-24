@@ -1,5 +1,5 @@
 ﻿@using Console.Plugins
-
+@inject PluginManager _pluginmanager
 
 @{
     ViewData["Title"] = "Reports";
@@ -7,7 +7,7 @@
 }
 
 @{
-    foreach (Plugin plugin in PluginManager.Plugins.Values)
+    foreach (Plugin plugin in _pluginmanager.Plugins.Values)
     {
         @await Html.PartialAsync("PluginReportListPartial", plugin);
     }

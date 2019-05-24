@@ -4,20 +4,28 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.IO;
 using Newtonsoft.Json;
+using Microsoft.Extensions.Logging;
 
 namespace Console.Plugins
 {
-    public static class PluginManager
+    public class PluginManager
     {
-        private static string _path = "Plugins";
-        public static Dictionary<string, Plugin> Plugins { get; private set; } = new Dictionary<string, Plugin>();
-        public static List<string> NodeLabels { get; private set; } = new List<string>();
-        public static List<string> EdgeLabels { get; private set; } = new List<string>();
+        private string _path = "Plugins";
+        private ILogger _logger;
+        public Dictionary<string, Plugin> Plugins { get; private set; } = new Dictionary<string, Plugin>();
+        public List<string> NodeLabels { get; private set; } = new List<string>();
+        public List<string> EdgeLabels { get; private set; } = new List<string>();
 
-        public static Dictionary<string, string> Icons { get; private set; } = new Dictionary<string, string>();
+        public Dictionary<string, string> Icons { get; private set; } = new Dictionary<string, string>();
 
-        public static bool Reload()
+        public PluginManager(ILogger logger)
         {
+            this._logger = logger;
+        }
+
+        public bool Reload()
+        {
+            this._logger.LogError("PluginManager reload initiated");
             Dictionary<string, Plugin> plugins = new Dictionary<string, Plugin>();
             List<string> nodelabels = new List<string>();
             List<string> edgelabels = new List<string>();
@@ -29,7 +37,7 @@ namespace Console.Plugins
 
                 foreach (string filename in pluginfilenames)
                 {
-
+                    this._logger.LogInformation("Loading " + filename);
                     string json = File.ReadAllText(filename);
                     Plugin plug = JsonConvert.DeserializeObject<Plugin>(json);
                     plugins.Add(plug.Name, plug);
@@ -39,14 +47,15 @@ namespace Console.Plugins
                     {
                         if (!icons.TryAdd(key, plug.Icons[key]))
                         {
-                            //logging to add
+                            this._logger.LogError("Error loading icon: " + key);
                         }
 
                     }
                 }
             }
-            catch
+            catch(Exception e)
             {
+                this._logger.LogError(e.Message);
                 return false;
             }
             Icons = icons;

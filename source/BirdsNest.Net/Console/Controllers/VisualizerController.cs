@@ -16,11 +16,13 @@ namespace Console.Controllers
     {
         private readonly Neo4jService _service;
         private readonly ILogger _logger;
+        private readonly PluginManager _plugingmanager;
 
-        public VisualizerController(ILogger<VisualizerController> logger, Neo4jService service)
+        public VisualizerController(ILogger<VisualizerController> logger, Neo4jService service, PluginManager plugman)
         {
             this._logger = logger;
             this._service = service;
+            this._plugingmanager = plugman;
         }
 
         // GET visualizer/id=1&id=2&usestored=false
@@ -63,7 +65,7 @@ namespace Console.Controllers
 
         public object Icons()
         {
-            return PluginManager.Icons;
+            return this._plugingmanager.Icons;
         }
     }
 }
