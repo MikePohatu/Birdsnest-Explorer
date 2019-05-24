@@ -10,8 +10,11 @@ namespace Console.Plugins
 {
     public class PluginManager
     {
-        private string _path = "Plugins";
+        private string _pluginspath = "Plugins";
+        private string _csspath = "wwwroot/css";
         private ILogger _logger;
+
+
         public Dictionary<string, Plugin> Plugins { get; private set; } = new Dictionary<string, Plugin>();
         public List<string> NodeLabels { get; private set; } = new List<string>();
         public List<string> EdgeLabels { get; private set; } = new List<string>();
@@ -34,7 +37,7 @@ namespace Console.Plugins
         
             try
             {
-                IEnumerable<string> pluginfilenames = Directory.EnumerateFiles(_path, "plugin-*.json");
+                IEnumerable<string> pluginfilenames = Directory.EnumerateFiles(_pluginspath, "plugin-*.json");
 
                 foreach (string filename in pluginfilenames)
                 {
@@ -52,6 +55,24 @@ namespace Console.Plugins
                         }
 
                     }
+                }
+
+                pluginfilenames = Directory.EnumerateFiles(_pluginspath, "plugin-*.css");
+                string combinedcss = string.Empty;
+
+                foreach (string filename in pluginfilenames)
+                {
+                    combinedcss = combinedcss + File.ReadAllText(filename) + Environment.NewLine;
+                }
+
+                this._logger.LogInformation("Writing plugins.css");
+                try
+                {
+                    File.WriteAllText(this._csspath + "/plugins.css", combinedcss);
+                }
+                catch (Exception e)
+                {
+                    this._logger.LogError(e.Message);
                 }
             }
             catch(Exception e)

@@ -61,7 +61,7 @@ var iconmappings;
 $.getJSON("/visualizer/icons", function (data) {
     //console.log(data);
     iconmappings = new IconMappings(data);
-    console.log(iconmappings);
+    //console.log(iconmappings);
 });
 $.getJSON("/api/graph/edges/labels", function (data) {
     for (var i = 0; i < data.length; ++i) {

@@ -1,0 +1,31 @@
+.FS_Folder {
+    color: #ad9370;
+    stroke: #ad9370;
+    fill: cornsilk;
+}
+
+.FS_Datastore {
+    color: midnightblue;
+    stroke: midnightblue;
+    fill: lightblue;
+}
+
+.CONNECTED_TO {
+    fill: blue;
+}
+
+.GIVES_ACCESS_TO {
+    fill: orange;
+}
+
+.FS_APPLIES_INHERITANCE_TO {
+    fill: teal;
+}
+
+.FS_BLOCKED_INHERITANCE {
+    fill: red;
+}
+
+.FS_HOSTED_ON {
+    fill: darkblue;
+}

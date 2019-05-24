@@ -2,7 +2,9 @@
   "name": "builtin",
   "displayname": "Built-In",
   "icons": {
-    "Orphaned": "fas fa-question"
+    "Orphaned": "fas fa-question",
+    "BuiltinGroup": "fas fa-users",
+    "BuiltinUser": "fas fa-user"
   },
   "nodelabels": [
     "Orphaned",

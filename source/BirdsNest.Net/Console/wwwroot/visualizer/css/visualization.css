@@ -38,35 +38,8 @@
     stroke-width: 1px;
 }
 
-.AD_Group {
-    color: green;
-    stroke: green;
-    fill: #BBF0C6;
-}
 
-.AD_Group-security_universal {
-    color: #33563a;
-    stroke: #33563a;
-    fill: #72c182;
-}
 
-.AD_Group-security_domainlocal {
-    color: green;
-    stroke: green;
-    fill: #f2f9f3;
-}
-
-.BuiltinGroup {
-    color: #474747;
-    stroke: #474747;
-    fill: #e5e5e5;
-}
-
-.BuiltinUser {
-    color: #474747;
-    stroke: #474747;
-    fill: #e5e5e5;
-}
 
 .Device {
     color: #cab4f7;
@@ -74,58 +47,8 @@
     fill: purple;
 }
 
-.AD_User {
-    color: crimson;
-    stroke: crimson;
-    fill: #ffe2e7;
-}
-
-.AD_Computer {
-    color: steelblue;
-    stroke: steelblue;
-    fill: lightcyan;
-}
-
-.FS_Folder {
-    color: #ad9370;
-    stroke: #ad9370;
-    fill: cornsilk;
-}
-
-.FS_Datastore {
-    color: midnightblue;
-    stroke: midnightblue;
-    fill: lightblue;
-}
-
-.CTX_Farm {
-    color: #80a500;
-    stroke: #80a500;
-    fill: #fbffed;
-}
-
-.CTX_Application {
-    color: #ffa500;
-    stroke: #ffa500;
-    fill: #fff1d8;
-}
-
-.CM_Collection {
-    color: #4626ff;
-    stroke: #4626ff;
-    fill: #e5f1ff;
-}
-
-.CM_Application {
-    color: #4626ff;
-    stroke: #4626ff;
-    fill: #e5f1ff;
-}
-
-.UEM_Setting {
-    color: #E8590C;
-    stroke: #E8590C;
-    fill: #E9E9E9;
+.GIVES_ACCESS_TO {
+    fill: orange;
 }
 
 /*edges config*/
@@ -142,30 +65,6 @@
 
 .arrows {
     fill: inherit;
-}
-
-.AD_MEMBER_OF {
-    fill: green;
-}
-
-.CONNECTED_TO {
-    fill: blue;
-}
-
-.GIVES_ACCESS_TO {
-    fill: orange;
-}
-
-.FS_APPLIES_INHERITANCE_TO {
-    fill: teal;
-}
-
-.FS_BLOCKED_INHERITANCE {
-    fill: red;
-}
-
-.FS_HOSTED_ON {
-    fill: darkblue;
 }
 
 .edges.disabled {
