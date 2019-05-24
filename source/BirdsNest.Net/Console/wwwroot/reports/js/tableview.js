@@ -9,9 +9,10 @@ var toggleprefix = "toggle-";
 var columnstoggles = document.getElementById("columnstoggles");
 var recordcount = resultset.Nodes.length + resultset.Edges.length;
 var maxpagenum = Math.ceil(recordcount / maxrecords);
+var columnvisibilities;
 
 document.getElementById("reportmenutext").innerHTML = "Query returned " + recordcount + " records";
-console.log(resultset);
+//console.log(resultset);
 if (recordcount === 0) {
     document.getElementById("columnsli").classList.add("hidden");
     document.getElementById("visualizerli").classList.add("hidden");
@@ -71,50 +72,68 @@ function buildBody() {
     }
 
 
-    //update visibility to hide unneeded columns
-    if (resultset.PropertyFiltersApplied === true) {
+    updateVisibility();
+    document.getElementById("status").innerHTML = ""; 
+}
 
-        Object.keys(resultset.PropertyNames).forEach(function (key) {
-            var shown = (key in resultset.PropertyFilters);
-            SetClassVisible(columnstyleprefix + key, shown);
+function updateVisibility() {
+    if (columnvisibilities) {
+        Object.keys(columnvisibilities).forEach(function (key) {
+            var shown = columnvisibilities[key];
             var togglebox = document.getElementById(toggleprefix + key);
             togglebox.checked = shown;
+            SetClassVisible(columnstyleprefix + key, shown);
         });
     }
     else {
-        Object.keys(resultset.PropertyNames).forEach(function (key) {
-            SetClassVisible(columnstyleprefix + key, true);
-            var togglebox = document.getElementById(toggleprefix + key);
-            togglebox.checked = true;
-        });
-    }
-    document.getElementById("status").innerHTML = "";
+        //columnvisiblities object needs to be built
+        columnvisibilities = new Object;
+        //console.log("building columnvisibilities");
+        //update visibility to hide unneeded columns
+        if (resultset.PropertyFiltersApplied === true) {
 
-    function addRecord(node) {
-
-        var contents;
-        var row = tBody.insertRow();
-
-        function addTD(key) {
-            if (key in node.properties) { contents = node.properties[key]; }
-            else { contents = ""; }
-
-            el = document.createElement("TD");
-            el.classList.add(columnstyleprefix + key);
-            el.innerHTML = contents;
-            row.appendChild(el);
+            Object.keys(resultset.PropertyNames).forEach(function (key) {
+                var shown = (key in resultset.PropertyFilters);
+                SetClassVisible(columnstyleprefix + key, shown);
+                var togglebox = document.getElementById(toggleprefix + key);
+                togglebox.checked = shown;
+                columnvisibilities[key] = shown;
+            });
         }
-
-        Object.keys(resultset.PropertyFilters).forEach(function (key) {
-            addTD(key);
-        });
-
-        Object.keys(resultset.PropertyNames).forEach(function (key) {
-            if (!(key in resultset.PropertyFilters)) {
-                addTD(key);
-            }
-        });
+        else {
+            Object.keys(resultset.PropertyNames).forEach(function (key) {
+                SetClassVisible(columnstyleprefix + key, true);
+                var togglebox = document.getElementById(toggleprefix + key);
+                togglebox.checked = true;
+                columnvisibilities[key] = true;
+            });
+        }
     }
+}
+
+function addRecord(node) {
+    var contents;
+    var row = tBody.insertRow();
+
+    function addTD(key) {
+        if (key in node.properties) { contents = node.properties[key]; }
+        else { contents = ""; }
+
+        el = document.createElement("TD");
+        el.classList.add(columnstyleprefix + key);
+        el.innerHTML = contents;
+        row.appendChild(el);
+    }
+
+    Object.keys(resultset.PropertyFilters).forEach(function (key) {
+        addTD(key);
+    });
+
+    Object.keys(resultset.PropertyNames).forEach(function (key) {
+        if (!(key in resultset.PropertyFilters)) {
+            addTD(key);
+        }
+    });
 }
 
 function addTH(key) {
@@ -174,13 +193,14 @@ function onToggleClicked() {
     clearStatus();
     var el = event.target;
     var key = columnstyleprefix + el.dataset.label;
+    columnvisibilities[el.dataset.label] = el.checked;
     SetClassVisible(key, el.checked);
 }
 
 function SetClassVisible(classname, show) {
     //console.log("SetClassVisible: " + classname + ":" + show);
     var classelements = document.getElementsByClassName(classname);
-
+    
     for (var i = 0; i < classelements.length; i++) {
 
         if (show === true) {

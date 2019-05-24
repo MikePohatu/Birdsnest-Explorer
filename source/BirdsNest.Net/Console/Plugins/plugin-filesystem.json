@@ -22,6 +22,12 @@
       "description": "Lists folders with permissions for deleted permissions",
       "query": "MATCH p=(a:AD_Deleted)-[]->(f:FS_Folder) WITH nodes(p) AS items UNWIND items as item RETURN DISTINCT item",
       "propertyfilters": []
+    },
+    "fs-inheritancedisabled": {
+      "displayname": "FS Inheritance Disabled",
+      "description": "Lists folders with inherited permissions disabled",
+      "query": "MATCH (n:FS_Folder) WHERE n.inheritancedisabled=True return n ORDER BY n.path",
+      "propertyfilters": ["path"]
     }
   }
 }

@@ -2,19 +2,18 @@
 
 @model Plugin
 
-<div class="table-scroll">
-    <table id="outputtable" class="hover">
-        <thead>
-            <tr>
-                <td><h4>@(Model.DisplayName) Reports</h4></td>
-            </tr>
-            <tr>
-                <th>Report</th>
-                <th>Description</th>
-            </tr>
-        </thead>
-        <tbody>
-            @{
+    <div class="table-scroll">
+        <p><h4>@(Model.DisplayName) Reports</h4></p>
+        <table id="outputtable" class="hover">
+            <thead>
+
+                <tr>
+                    <th>Report</th>
+                    <th>Description</th>
+                </tr>
+            </thead>
+            <tbody>
+                @{
                 foreach (string key in Model.Reports.Keys)
                 {
                     Report rep;
@@ -24,9 +23,9 @@
                         <td>@(rep.Description)</td>
                     </tr>
                     }
-            }
+                }
 
-        </tbody>
-    </table>
+            </tbody>
+        </table>
 
-</div>
+    </div>
