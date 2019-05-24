@@ -21,6 +21,7 @@ namespace Console.Plugins
         public PluginManager(ILogger logger)
         {
             this._logger = logger;
+            this.Reload();
         }
 
         public bool Reload()

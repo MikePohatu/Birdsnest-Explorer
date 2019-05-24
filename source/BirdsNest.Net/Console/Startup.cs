@@ -87,7 +87,6 @@ namespace Console
             services.AddSingleton(neoservice);
 
             PluginManager plugman = new PluginManager(this._loggerFactory.CreateLogger<PluginManager>());
-            plugman.Reload();
             services.AddSingleton(plugman);
 
             logger.LogInformation("Loading authentication configuration");
