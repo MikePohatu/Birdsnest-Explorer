@@ -9,6 +9,9 @@
 @{
     foreach (Plugin plugin in _pluginmanager.Plugins.Values)
     {
-        @await Html.PartialAsync("PluginReportListPartial", plugin);
+        if (plugin.Reports.Count > 0)
+        {
+            @await Html.PartialAsync("PluginReportListPartial", plugin);
+        }        
     }
 }
