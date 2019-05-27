@@ -75,14 +75,7 @@ namespace Console.Plugins
                 }
 
                 this._logger.LogInformation("Writing plugins.css");
-                try
-                {
-                    File.WriteAllText(this._csspath + "/plugins.css", combinedcss);
-                }
-                catch (Exception e)
-                {
-                    this._logger.LogError(e.Message);
-                }
+                File.WriteAllText(this._csspath + "/plugins.css", combinedcss);
             }
             catch(Exception e)
             {

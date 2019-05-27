@@ -14,7 +14,8 @@
     "GIVES_ACCESS_TO"
   ],
   "subtypeproperties": {
-    "CTX_Farm": "farm"
+    "CTX_Farm": "farm",
+    "CTX_Application":  "farm"
   },
   "reports": {
     "ctx-deleteditemaccess": {
