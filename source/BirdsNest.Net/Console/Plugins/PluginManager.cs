@@ -18,7 +18,7 @@ namespace Console.Plugins
         public Dictionary<string, Plugin> Plugins { get; private set; } = new Dictionary<string, Plugin>();
         public List<string> NodeLabels { get; private set; } = new List<string>();
         public List<string> EdgeLabels { get; private set; } = new List<string>();
-
+        public Dictionary<string, string> SubTypeProperties { get; private set; } = new Dictionary<string, string>();
         public Dictionary<string, string> Icons { get; private set; } = new Dictionary<string, string>();
 
         public PluginManager(ILogger logger)
@@ -34,7 +34,8 @@ namespace Console.Plugins
             List<string> nodelabels = new List<string>();
             List<string> edgelabels = new List<string>();
             Dictionary<string, string> icons = new Dictionary<string, string>();
-        
+            Dictionary<string, string> subtypes = new Dictionary<string, string>();
+
             try
             {
                 IEnumerable<string> pluginfilenames = Directory.EnumerateFiles(_pluginspath, "plugin-*.json");
@@ -47,13 +48,21 @@ namespace Console.Plugins
                     plugins.Add(plug.Name, plug);
                     nodelabels.AddRange(plug.NodeLabels);
                     edgelabels.AddRange(plug.EdgeLabels);
+
                     foreach (string key in plug.Icons.Keys)
                     {
                         if (!icons.TryAdd(key, plug.Icons[key]))
                         {
                             this._logger.LogError("Error loading icon: " + key);
                         }
+                    }
 
+                    foreach (string key in plug.SubTypeProperties.Keys)
+                    {
+                        if (!subtypes.TryAdd(key, plug.SubTypeProperties[key]))
+                        {
+                            this._logger.LogError("Error loading subtype: " + key);
+                        }
                     }
                 }
 
@@ -84,6 +93,7 @@ namespace Console.Plugins
             Plugins = plugins;
             NodeLabels = nodelabels;
             EdgeLabels = edgelabels;
+            SubTypeProperties = subtypes;
             return true;
         }
     }

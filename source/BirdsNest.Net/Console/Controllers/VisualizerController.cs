@@ -67,5 +67,10 @@ namespace Console.Controllers
         {
             return this._plugingmanager.Icons;
         }
+
+        public object SubTypeProperties()
+        {
+            return this._plugingmanager.SubTypeProperties;
+        }
     }
 }

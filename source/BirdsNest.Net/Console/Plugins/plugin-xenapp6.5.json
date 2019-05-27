@@ -13,18 +13,21 @@
     "PUBLISHED_FROM",
     "GIVES_ACCESS_TO"
   ],
+  "subtypeproperties": {
+    "CTX_Farm": "farm"
+  },
   "reports": {
     "ctx-deleteditemaccess": {
       "displayname": "CTX Deleted Item Access",
       "description": "Lists applications with permissions for deleted objects",
       "query": "MATCH p=(d:AD_Deleted)-[]->(a:CTX_Application) WITH nodes(p) AS items UNWIND items as item RETURN DISTINCT item",
-      "propertyfilters": ["name", "farm", "dn", "type", "folderpath", "samaccountname", "enabled" ]
+      "propertyfilters": [ "name", "farm", "dn", "type", "folderpath", "samaccountname", "enabled" ]
     },
     "ctx-orphanedaccess": {
       "displayname": "CTX Orphaned Item Access",
       "description": "Lists applications with permissions for orphaned objects",
       "query": "MATCH p=(d:Orphaned)-[]->(a:CTX_Application) WITH nodes(p) AS items UNWIND items as item RETURN DISTINCT item",
-      "propertyfilters": ["name", "farm", "dn", "type", "folderpath", "samaccountname", "enabled" ]
+      "propertyfilters": [ "name", "farm", "dn", "type", "folderpath", "samaccountname", "enabled" ]
     }
   }
 }

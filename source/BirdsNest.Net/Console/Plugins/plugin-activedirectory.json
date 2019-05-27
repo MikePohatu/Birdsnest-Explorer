@@ -8,11 +8,18 @@
     "AD_Deleted": "far fa-trash-alt"
   },
   "nodelabels": [
-    "AD_User", "AD_Group", "AD_Computer", "AD_Object", "AD_Deleted"
+    "AD_User",
+    "AD_Group",
+    "AD_Computer",
+    "AD_Object",
+    "AD_Deleted"
   ],
   "edgelabels": [
     "AD_MEMBER_OF"
   ],
+  "subtypeproperties": {
+    "AD_Group": "grouptype"
+  },
   "reports": {
     "ad-deeppaths": {
       "displayname": "AD Deep Paths",

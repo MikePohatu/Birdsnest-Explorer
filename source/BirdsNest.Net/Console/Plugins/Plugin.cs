@@ -12,6 +12,12 @@ namespace Console.Plugins
         public Dictionary<string, string> Icons { get; private set; } = new Dictionary<string, string>();
         public List<string> NodeLabels { get; private set; } = new List<string>();
         public List<string> EdgeLabels { get; private set; } = new List<string>();
+
+        /// <summary>
+        /// SubTypeProperties sets the property on the node that specifies a sub-type. This is used to create another css
+        /// class in the visualizer that can be used for styling
+        /// </summary>
+        public Dictionary<string, string> SubTypeProperties { get; private set; } = new Dictionary<string, string>();
         public Dictionary<string,Report> Reports { get; private set; } = new Dictionary<string, Report>();
     }
 }

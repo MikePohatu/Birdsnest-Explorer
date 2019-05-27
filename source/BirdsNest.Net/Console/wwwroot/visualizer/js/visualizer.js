@@ -54,15 +54,23 @@ var zoom = d3.zoom()
     .scaleExtent([0.05, 5])
     .on("zoom", onZoom);
 
-/*
-IconMappings object to asign the correct font awesome icon to the correct nodes
-*/
+
+//IconMappings object to asign the correct font awesome icon to the correct nodes
 var iconmappings;
 $.getJSON("/visualizer/icons", function (data) {
     //console.log(data);
-    iconmappings = new IconMappings(data);
+    iconmappings = new Mappings(data, "fas fa-question");
     //console.log(iconmappings);
 });
+
+//SubTypeMappings object to asign the correct font awesome icon to the correct nodes
+var subtypeproperties;
+$.getJSON("/visualizer/subtypeproperties", function (data) {
+    //console.log(data);
+    subtypeproperties = new Mappings(data, "");
+    //console.log(subtypeproperties);
+});
+
 $.getJSON("/api/graph/edges/labels", function (data) {
     for (var i = 0; i < data.length; ++i) {
         addOption(document.getElementById("edgeType"), data[i], data[i]);
@@ -527,6 +535,18 @@ function loadNodeData(newnodedata) {
                 rangeUpdated = true;
                 currMaxScope = d.properties.scope;
             }
+
+            d.icon = iconmappings.getMappingFromArray(d.labels) + " nodeicon";
+            let labelclasses = "";
+            d.labels.forEach(function (label) {
+                //console.log(label);
+                labelclasses += " " + label;
+                var subtype = subtypeproperties.getMappingFromValue(label);
+                //console.log(subtype);
+                if (subtype !== "") { labelclasses += " " + label + "-" + d.properties[subtype]; }
+            });
+            //console.log(labelclasses);
+            d.classes = labelclasses;
         }
     });
 
@@ -596,13 +616,7 @@ function addSvgNodes(nodes) {
 
     let enternodesg = enternodes.append("g")
         .attr("id", function (d) { return "node_" + d.db_id; })
-        .attr("class", function (d) {
-            let labelclasses = "";
-            d.labels.forEach(function(label) {
-                labelclasses = labelclasses + " " + label;
-            });
-            return labelclasses;
-        })
+        .attr("class", function (d) { return d.classes; })
         .attr("cursor","pointer")
         .classed("nodes", true)
         .classed("enabled", true)
@@ -633,7 +647,7 @@ function addSvgNodes(nodes) {
             .attr("width", function (d) { return d.size * 0.6; })
             .attr("x", function (d) { return d.size * 0.2; })
             .attr("y", function (d) { return d.size * 0.2; })
-            .attr("class", function (d) { return iconmappings.getIconClass(d) + " nodeicon"; });
+            .attr("class", function (d) { return d.icon; });
     }, 1);
 
     setTimeout(function () {
@@ -642,27 +656,6 @@ function addSvgNodes(nodes) {
             .attr("text-anchor", "middle")
             .attr("dominant-baseline", "central")
             .attr("transform", function (d) { return "translate(" + (d.size / 2) + "," + (d.size + 10) + ")"; });
-    }, 1);
-
-    setTimeout(function () {
-        //Allow styling of subtypes types
-        d3.selectAll(".AD_Group")
-            .each(function (d) {
-                let c = d.label + "-" + d.properties.grouptype;
-                d3.select(this).classed(c, true);
-            });
-
-        d3.selectAll(".CTX_Application")
-            .each(function (d) {
-                let c = d.label + "-" + d.properties.farm;
-                d3.select(this).classed(c, true);
-            });
-
-        d3.selectAll(".CTX_Farm")
-            .each(function (d) {
-                let c = d.label + "-" + d.properties.name;
-                d3.select(this).classed(c, true);
-            });
     }, 1);
 }
 
@@ -692,7 +685,7 @@ function updateNodeSizes() {
         .attr("width", function (d) { return d.size * 0.6; })
         .attr("x", function (d) { return d.size * 0.2; })
         .attr("y", function (d) { return d.size * 0.2; })
-        .attr("class", function (d) { return iconmappings.getIconClass(d) + " nodeicon"; });
+        .attr("class", function (d) { return d.icon; });
 
     allnodes.selectAll("text")
         .attr("transform", function (d) { return "translate(" + (d.size / 2) + "," + (d.size + 10) + ")"; });
