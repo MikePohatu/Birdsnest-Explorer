@@ -29,7 +29,7 @@ namespace Console.Plugins
 
         public bool Reload()
         {
-            this._logger.LogError("PluginManager reload initiated");
+            this._logger.LogInformation("PluginManager reload initiated");
             Dictionary<string, Plugin> plugins = new Dictionary<string, Plugin>();
             List<string> nodelabels = new List<string>();
             List<string> edgelabels = new List<string>();
@@ -74,8 +74,10 @@ namespace Console.Plugins
                     combinedcss = combinedcss + File.ReadAllText(filename) + Environment.NewLine;
                 }
 
-                this._logger.LogInformation("Writing plugins.css");
-                File.WriteAllText(this._csspath + "/plugins.css", combinedcss);
+                string css = this._csspath + "/plugins.css";
+                this._logger.LogInformation("Writing " + css);
+                File.WriteAllText(css, combinedcss);
+                File.SetAttributes(css, FileAttributes.Normal);
             }
             catch(Exception e)
             {
