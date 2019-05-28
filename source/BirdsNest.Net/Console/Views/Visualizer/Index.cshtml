@@ -172,7 +172,6 @@
     <script src="~/visualizer/js/visualizer.js" type="text/javascript"></script>
     <script>
         var paramdata = @Html.Raw(JsonConvert.SerializeObject(ViewData["LoadIDs"]));
-        var usestored = @ViewData["UseStored"].ToString().ToLower();
-        drawGraph('drawingpane', paramdata, usestored);
+        drawGraph('drawingpane', paramdata);
     </script>
 }

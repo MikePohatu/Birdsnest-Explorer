@@ -76,8 +76,9 @@ namespace Console.Plugins
 
                 string css = this._csspath + "/plugins.css";
                 this._logger.LogInformation("Writing " + css);
+                if (File.Exists(css)) { File.SetAttributes(css, FileAttributes.Normal); }
                 File.WriteAllText(css, combinedcss);
-                File.SetAttributes(css, FileAttributes.Normal);
+                
             }
             catch(Exception e)
             {

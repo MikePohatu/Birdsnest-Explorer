@@ -226,7 +226,7 @@ function onVisualizerClicked() {
     if (typeof (Storage) !== "undefined") {
         try {
             sessionStorage.birdsnest_resultset = JSON.stringify(resultset);
-            window.location.href = "/visualizer?usestored=true";
+            window.location.href = "/visualizer";
         }
         catch {
             updateStatus("There was an error opening visualizer. Your result set may be too large");

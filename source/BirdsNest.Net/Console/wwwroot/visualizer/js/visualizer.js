@@ -91,7 +91,7 @@ function menuShowHide() {
     $("#querybar").slideToggle();
 }
 
-function drawGraph(selectid, loaddata, usestored) {
+function drawGraph(selectid, loaddata) {
     updateNodeDetails("source");
     updateNodeDetails("target");
     drawingPane = d3.select("#" + selectid);
@@ -129,14 +129,15 @@ function drawGraph(selectid, loaddata, usestored) {
         getNodes(loaddata);
         menuShowHide();
     }
-    if (usestored) {
-        //console.log('loading stored result set')
-        var results = JSON.parse(sessionStorage.getItem("birdsnest_resultset"));
-        //console.log(results);
-        if (results !== null) {
-            queue.QueueResults(results);
-            menuShowHide();
-        }
+
+    //look for a stored resultset. if found, load it and clear it
+    //console.log('loading stored result set')
+    var results = JSON.parse(sessionStorage.getItem("birdsnest_resultset"));
+    sessionStorage.removeItem("birdsnest_resultset");
+    //console.log(results);
+    if (results !== null) {
+        queue.QueueResults(results);
+        menuShowHide();
     }
 }
 

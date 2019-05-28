@@ -26,10 +26,9 @@ namespace Console.Controllers
         }
 
         // GET visualizer/id=1&id=2&usestored=false
-        public IActionResult Index([FromQuery(Name = "id")]List<long> ids, bool usestored)
+        public IActionResult Index([FromQuery(Name = "id")]List<long> ids)
         {
             ViewData["LoadIDs"] = ids;
-            ViewData["UseStored"] = usestored;
             return View();
         }
 
