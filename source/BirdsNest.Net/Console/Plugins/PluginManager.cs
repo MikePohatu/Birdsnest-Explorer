@@ -78,6 +78,9 @@ namespace Console.Plugins
                 this._logger.LogInformation("Writing " + css);
                 if (File.Exists(css)) { File.SetAttributes(css, FileAttributes.Normal); }
                 File.WriteAllText(css, combinedcss);
+
+                nodelabels.Sort();
+                edgelabels.Sort();
                 
             }
             catch(Exception e)

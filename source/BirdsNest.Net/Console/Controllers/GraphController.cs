@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using Console.Plugins;
 
 namespace Console.Controllers
 {
@@ -18,11 +19,13 @@ namespace Console.Controllers
     {
         private readonly Neo4jService _service;
         private readonly ILogger _logger;
+        private readonly PluginManager _pluginmanager;
 
-        public GraphController(ILogger<GraphController> logger, Neo4jService service)
+        public GraphController(ILogger<GraphController> logger, Neo4jService service, PluginManager pluginmanager)
         {
             this._logger = logger;
             this._service = service;
+            this._pluginmanager = pluginmanager;
         }
 
 
@@ -54,7 +57,7 @@ namespace Console.Controllers
         [HttpGet("node/labels")]
         public IEnumerable<string> GetLabels()
         {
-            return this._service.GetNodeLabels();
+            return this._pluginmanager.NodeLabels;
         }
 
         // GET: api/graph/node/properties
@@ -102,7 +105,7 @@ namespace Console.Controllers
         [HttpGet("edges/labels")]
         public IEnumerable<string> GetEdgeLabels()
         {
-            return this._service.GetEdgeLabels();
+            return this._pluginmanager.EdgeLabels;
         }
 
 
