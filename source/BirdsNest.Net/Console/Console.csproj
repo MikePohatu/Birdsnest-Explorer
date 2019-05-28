@@ -18,6 +18,14 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Content Remove="wwwroot\css\plugins.css" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="wwwroot\css\plugins.css" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.App" />
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.1.9" />
     <PackageReference Include="Neo4j.Driver" Version="1.7.2" />
