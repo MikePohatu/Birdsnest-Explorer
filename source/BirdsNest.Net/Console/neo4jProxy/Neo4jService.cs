@@ -669,6 +669,25 @@ namespace Console.neo4jProxy
             return ParseStringListResults(dbresult);
         }
 
+        public void UpdateMetadata(string label)
+        {
+            List<string> types = new List<string>() { Types.ADObject, Types.Computer, Types.User, Types.Group };
+
+            string query =
+            "MATCH (n:" + label + ") " +
+            "WITH DISTINCT keys(n) as props " +
+            "UNWIND props as p " +
+            "WITH DISTINCT p as disprops " +
+            "WITH collect(disprops) as allprops " +
+            "MERGE(i: _Metadata { name: 'NodeProperties'}) " +
+            "SET i." + label + " = allprops " +
+            "RETURN i";
+            using (ISession session = this._driver.Session())
+            {
+                session.WriteTransaction(tx => tx.Run(query));
+            }
+        }
+
         private List<string> ParseStringListResults(IStatementResult dbresult)
         {
             List<string> results = new List<string>();

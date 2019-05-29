@@ -92,8 +92,8 @@ function menuShowHide() {
 }
 
 function drawGraph(selectid, loaddata) {
-    updateNodeDetails("source");
-    updateNodeDetails("target");
+    updateNodeLabels("source");
+    updateNodeLabels("target");
     drawingPane = d3.select("#" + selectid);
 
     drawingsvg = drawingPane.append("svg")
@@ -1546,15 +1546,14 @@ function updateProps(elementPrefix) {
     }
 }
 
-function updateNodeDetails(elementPrefix) {
+function updateNodeLabels(elementPrefix) {
     var el = document.getElementById(elementPrefix + "Type");
     clearOptions(el);
     let topoption = addOption(el, "*", "");
     topoption.setAttribute("selected", "");
 
-    apiGetJson("/api/graph/node/properties", function (data) {
-        nodeDetails = data;
-        Object.keys(nodeDetails).forEach(function (label) {
+    apiGetJson("/api/graph/node/labels", function (data) {
+        data.forEach(function (label) {
             addOption(el, label, label);
         });
     });
