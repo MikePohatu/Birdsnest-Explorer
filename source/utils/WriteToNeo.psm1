@@ -43,3 +43,20 @@ Function WriteToNeo {
     }
     return $response
 }
+
+function Get-UpdateMetaDataQuery {
+    Param (
+        [Parameter(Mandatory=$true)][string]$Type
+       )
+
+    $query = "MATCH (n:" + $type + ") " +
+    "WITH DISTINCT keys(n) as props " +
+    "UNWIND props as p " +
+    "WITH DISTINCT p as disprops " +
+    "WITH collect(disprops) as allprops " +
+    "MERGE(i:_Metadata { name: 'NodeProperties'}) " +
+    "SET i." + $type + " = allprops " +
+    "RETURN i"
+
+    return $query
+}

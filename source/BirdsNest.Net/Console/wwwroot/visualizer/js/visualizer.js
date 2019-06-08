@@ -77,6 +77,12 @@ $.getJSON("/api/graph/edges/labels", function (data) {
     }
 });
 
+$.getJSON("/api/graph/node/properties", function (data) {
+    //console.log(data);
+    nodeDetails = data;
+});
+
+
 $("#menuShowHideButton").click(menuShowHide);
 function menuShowHide() {
     var icon = $("#menuIcon");
