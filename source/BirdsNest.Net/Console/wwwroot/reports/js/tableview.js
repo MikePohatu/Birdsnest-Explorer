@@ -275,7 +275,7 @@ function onDownloadClicked() {
             var celltext = "";
             if (prop in record.properties) {
                 celltext = record.properties[prop];
-                celltext = celltext.replace("\"", "\"\"");
+                celltext = celltext.toString().replace("\"", "\"\"");
                 celltext = "\"" + celltext + "\"";
             }
 
