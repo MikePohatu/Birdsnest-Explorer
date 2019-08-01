@@ -29,7 +29,7 @@ namespace Console.Controllers
             return View();
         }
 
-        // GET reports/query?query
+        // GET reports/pluginquery?pluginname=***&reportname=****
         public IActionResult PluginQuery(string pluginname, string reportname)
         {
             Plugin plugin;
@@ -42,6 +42,17 @@ namespace Console.Controllers
             { results.AddPropertyFilter(filter); }
 
             ViewData["Query"] = rep.Query;
+            return View("TableView", results);
+        }
+
+        // GET reports/nodesquery?id=1&id=2
+        public IActionResult NodesQuery([FromQuery(Name = "id")]List<long> ids, [FromQuery(Name = "property")]List<string> propertyfilters)
+        {
+            ResultSet results = this._service.GetNodes(ids);
+            foreach (string filter in propertyfilters)
+            { results.AddPropertyFilter(filter); }
+
+            ViewData["Query"] = "";
             return View("TableView", results);
         }
     }

@@ -296,6 +296,47 @@ function updateLabelEyes() {
     }
 }
 
+function onReportClicked(sametab) {
+    //console.log("onReportClicked started");
+
+    if (typeof (Storage) !== "undefined") {
+        try {
+            var exportnodes = graphnodes.GetArray();
+            if (exportnodes.length !== 0) {
+                var tempArr = [];
+                exportnodes.forEach(function (d) {
+                    tempArr.push("id=" + d.db_id);
+                });
+
+                tempArr.push("property=name");
+                tempArr.push("property=id");
+
+                var querystring = tempArr.join("&");
+                //console.log(querystring);
+                if (sametab) {
+                    window.location.href = "/reports/nodesquery?" + querystring;
+                }
+                else {
+                    window.open("/reports/nodesquery?" + querystring,'_blank');
+                }
+                
+            }
+            else {
+                console.log("Nothing to export");
+            }
+            
+        }
+        catch {
+            //updateStatus("There was an error opening report view. Your result set may be too large");
+        }
+
+        // Code for localStorage/sessionStorage.
+    } else {
+        console.log("No Web Storage support..");
+        // Sorry! No Web Storage support..
+    }
+}
+
 function onEyeShowAllClicked(element) {
     //console.log("onEyeShowAllClicked: " + element);
     d3.selectAll("#" + element + " .eyeListItem")

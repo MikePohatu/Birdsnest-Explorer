@@ -129,21 +129,31 @@
                     <span id="eyeBtn" class="cell viewcontrol has-tip" data-toggle="eyeLabelListWrapper" title="Hide/show items">
                         <i id="eyeIcon" class="far fa-eye"></i>
                     </span>
+                    <span id="reportBtn" class="cell viewcontrol has-tip" title="Export to report view" onclick="javascript:onReportClicked(false)">
+                        <i id="reportIcon" class="fas fa-file-export"></i>
+                    </span>
                     <span class="cell" style="width:32px;"> </span> <!-- spacer -->
                     <span id="menuShowHideButton" class="cell viewcontrol has-tip" title="Hide the search bar">
                         <i id="menuIcon" class="fas fa-angle-up"></i>
                     </span>
 
-                    <div id="eyeLabelListWrapper" class="scrollable dropdown-pane" data-dropdown data-auto-focus="true" data-close-on-click="true">
-                        <div class="eyelist">
-                            <div><b>Nodes</b></div>
-                            <ol id="eyeNodeLabelList" class="no-bullet"></ol>
-                            <div><b>Relationships</b></div>
-                            <ol id="eyeEdgeLabelList" class="no-bullet"></ol>
-                        </div>
-                    </div>
+                    <!--<div id="reportOptionsWrapper" class="scrollable dropdown-pane" data-dropdown data-close-on-click="true">
+                        <p><a href='javascript:onReportClicked(false)'>Report view (new tab)</a></p>
+                        <p><a href='javascript:onReportClicked(true)'>Report view</a></p>
+                        <div id="reportNewTabBtn" class="button">Report view (new tab)</div>
+                        <div id="reportSameTabBtn" class="button">Report view</div>
+                    </div>-->
 
+                <div id="eyeLabelListWrapper" class="scrollable dropdown-pane" data-dropdown data-auto-focus="true" data-close-on-click="true">
+                    <div class="eyelist">
+                        <div><b>Nodes</b></div>
+                        <ol id="eyeNodeLabelList" class="no-bullet"></ol>
+                        <div><b>Relationships</b></div>
+                        <ol id="eyeEdgeLabelList" class="no-bullet"></ol>
+                    </div>
                 </div>
+
+            </div>
                 <div id="progress" style="width: 0;"></div>
             </div>
         </div>
