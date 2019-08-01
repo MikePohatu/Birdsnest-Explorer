@@ -415,23 +415,32 @@ function eyeShowHideLabel(label, show) {
 }
 
 function onTargetAddClicked(nodeid) {
-    //console.log("onTargetAddClicked: " + nodeid);
-    var node = graphnodes.GetDatum(nodeid);
-    //console.log(node);
-    d3.select("#targetType").property('value', node.labels[0]);
-    updateProps('target');
-    d3.select("#targetProp").property('value', "name");
-    d3.select("#targetVal").property('value', node.name);
+    updateSearchDetails(nodeid, 'target');
 }
 
 function onSourceAddClicked(nodeid) {
+    updateSearchDetails(nodeid, 'source');
+}
+
+function updateSearchDetails(nodeid, elprefix) {
     //console.log("onSourceAddClicked: " + nodeid);
     var node = graphnodes.GetDatum(nodeid);
     //console.log(node);
-    d3.select("#sourceType").property('value', node.labels[0]);
-    updateProps('source');
-    d3.select("#sourceProp").property('value', "name");
-    d3.select("#sourceVal").property('value', node.name);
+    d3.select("#" + elprefix + "Type").property('value', node.labels[0]);
+    updateProps(elprefix);
+    var propname = 'name';
+    var propval = node.name;
+
+    if (node.properties.hasOwnProperty('id')) {
+        propname = 'id';
+        propval = node.properties.id;
+    } else if(node.properties.hasOwnProperty('path')) {
+        propname = 'path';
+        propval = node.properties.path;
+    }
+
+    d3.select("#" + elprefix + "Prop").property('value', propname);
+    d3.select("#" + elprefix + "Val").property('value', propval);
 }
 
 function onLayoutFinished() {
@@ -445,6 +454,7 @@ function onLayoutFinished() {
         .attr('onclick', 'restartLayout()')
         .attr('title', 'Refresh layout');
 }
+
 
 
 /*
