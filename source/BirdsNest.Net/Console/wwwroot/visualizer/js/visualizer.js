@@ -419,6 +419,7 @@ function onTargetAddClicked(nodeid) {
     var node = graphnodes.GetDatum(nodeid);
     //console.log(node);
     d3.select("#targetType").property('value', node.labels[0]);
+    updateProps('target');
     d3.select("#targetProp").property('value', "name");
     d3.select("#targetVal").property('value', node.name);
 }
@@ -428,6 +429,7 @@ function onSourceAddClicked(nodeid) {
     var node = graphnodes.GetDatum(nodeid);
     //console.log(node);
     d3.select("#sourceType").property('value', node.labels[0]);
+    updateProps('source');
     d3.select("#sourceProp").property('value', "name");
     d3.select("#sourceVal").property('value', node.name);
 }
