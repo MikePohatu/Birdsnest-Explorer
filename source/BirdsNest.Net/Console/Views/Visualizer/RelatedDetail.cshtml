@@ -6,11 +6,19 @@
     <div class="detaillist">
         <div class="grid-x align-middle">
             <div class="cell small-3"><u><b>Details</b></u></div>
-            <a href="javascript:onEyeNodeDetailClicked(@Model.Node.DbId);"><div id="eyeIcon_@Model.Node.DbId" class="cell far fa-eye small-2"></div></a>
+            <div class="cell small-1" title="Show/hide node">
+                <a href="javascript:onEyeNodeDetailClicked(@Model.Node.DbId);"><div id="eyeIcon_@Model.Node.DbId" class="cell far fa-eye small-2"></div></a>
+            </div>
+            <div class="cell small-1" title="Set as search source">
+                <a href="javascript:onSourceAddClicked(@Model.Node.DbId);"><div id="sourceAddIcon_@Model.Node.DbId" class="cell far fa-hand-point-left small-2"></div></a>
+            </div>
+            <div class="cell small-1" title="Set as search target">
+                <a href="javascript:onTargetAddClicked(@Model.Node.DbId);"><div id="targetAddIcon_@Model.Node.DbId" class="cell far fa-hand-point-right small-2"></div></a>
+            </div>
         </div>
         <b>Name:</b> @Model.Node.Name<br />
         <b>db_id:</b> @Model.Node.DbId<br />
-        <b>Types:</b> @string.Join(", ",Model.Node.Labels)<br />
+        <b>Types:</b> @string.Join(", ", Model.Node.Labels)<br />
         <b>Scope:</b> @Model.Node.Scope<br />
     </div>
 
