@@ -23,31 +23,38 @@ namespace Console.neo4jProxy.AdvancedSearch
         public string ToSearchString()
         {
             StringBuilder builder = new StringBuilder();
+            string ret = string.Empty;
             builder.Append("MATCH p=");
-            using (IEnumerator<SearchNode> nodeEmumerator = this.Nodes.GetEnumerator())
+            try
             {
-                
-                while (nodeEmumerator.MoveNext())
+                using (IEnumerator<SearchNode> nodeEmumerator = this.Nodes.GetEnumerator())
                 {
-                    SearchNode n = nodeEmumerator.Current;
-                    using (IEnumerator<SearchRelationship> edgeEmumerator = this.Edges.GetEnumerator())
+                    while (nodeEmumerator.MoveNext())
                     {
-                        while (edgeEmumerator.MoveNext())
+                        SearchNode n = nodeEmumerator.Current;
+                        using (IEnumerator<SearchRelationship> edgeEmumerator = this.Edges.GetEnumerator())
                         {
-                            SearchRelationship r = edgeEmumerator.Current;
-                            builder.Append(n.ToSearchString() + r.ToSearchString());
-                            nodeEmumerator.MoveNext();
-                            n = nodeEmumerator.Current;
+                            while (edgeEmumerator.MoveNext())
+                            {
+                                SearchRelationship r = edgeEmumerator.Current;
+                                builder.Append(n.ToSearchString() + r.ToSearchString());
+                                nodeEmumerator.MoveNext();
+                                n = nodeEmumerator.Current;
+                            }
                         }
+                        builder.Append(n.ToSearchString());
                     }
-                    builder.Append(n.ToSearchString());
                 }
-                    
+                string cond = this.Condition.ToSearchString();
+                if (string.IsNullOrWhiteSpace(cond) == false) { cond = " WHERE " + cond; }
+                ret = builder.ToString() + cond + " RETURN p";
             }
-            string cond = this.Condition.ToSearchString();
-            if (string.IsNullOrWhiteSpace(cond)==false) { cond = " WHERE " + cond; }
+            catch (Exception e)
+            {
+                return "There was an error building the query string: " + e.Message;
+            }
 
-            return builder.ToString() + cond + " RETURN p";
+            return ret;
         }
     }
 }

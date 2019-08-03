@@ -14,6 +14,9 @@ namespace Console.neo4jProxy.AdvancedSearch
         [JsonProperty("label")]
         public string Label { get; set; } = string.Empty;
 
+        [JsonProperty("direction")]
+        public string Direction { get; set; } = ">";
+
         [JsonProperty("min")]
         public int Min { get; set; } = -1;
 
@@ -22,7 +25,24 @@ namespace Console.neo4jProxy.AdvancedSearch
 
         public string ToSearchString()
         {
-            return "-[" + this.Name + ":" + this.Label + "]-";
+            string left = string.Empty;
+            string right = string.Empty;
+            string pathlength = string.Empty;
+            if (this.Min > -1 || this.Max > -1)
+            {
+                string min = "";
+                string max = "";
+                if (this.Min > -1) { min = this.Min.ToString(); }
+                if (this.Max > -1) { max = this.Max.ToString(); }
+                pathlength = "*" + min + ".." + max;
+            }
+
+            if (this.Direction == ">")
+            { right = ">"; }
+            else
+            { left = "<"; }
+
+            return left + "-[" + this.Name + ":" + this.Label + pathlength + "]-" + right;
         }
     }
 }
