@@ -1,4 +1,20 @@
 {
+  "nodes": [
+    {
+      "name": "n1",
+      "label": "NodeType"
+    },
+    {
+      "name": "n2",
+      "label": "NodeType"
+    }
+  ],
+  "edges": [
+    {
+      "name": "r1",
+      "label": "RelType"
+    }
+  ],
   "condition": {
     "type": "AND",
     "left": {

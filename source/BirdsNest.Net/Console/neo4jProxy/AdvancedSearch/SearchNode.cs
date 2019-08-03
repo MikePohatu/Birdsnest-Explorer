@@ -9,9 +9,14 @@ namespace Console.neo4jProxy.AdvancedSearch
     public class SearchNode
     {
         [JsonProperty("name")]
-        public string Name { get; set; }
+        public string Name { get; set; } = string.Empty;
 
         [JsonProperty("label")]
-        public string Label { get; set; }
+        public string Label { get; set; } = string.Empty;
+
+        public string ToSearchString()
+        {
+            return "(" + this.Name + ":" + this.Label + ")";
+        }
     }
 }
