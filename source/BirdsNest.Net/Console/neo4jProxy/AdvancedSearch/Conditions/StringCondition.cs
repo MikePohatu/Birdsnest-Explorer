@@ -41,8 +41,14 @@ namespace Console.neo4jProxy.AdvancedSearch.Conditions
                 case "EQUALS":
                     this._comparator = "=";
                     break;
+                case "CONTAINS":
+                    this._comparator = "CONTAINS";
+                    break;
                 case "STARTSWITH":
                     this._comparator = "STARTS WITH";
+                    break;
+                case "ENDSWITH":
+                    this._comparator = "ENDS WITH";
                     break;
                 default:
                     break;

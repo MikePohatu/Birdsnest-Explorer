@@ -1,0 +1,29 @@
+{
+  "condition": {
+    "type": "AND",
+    "left": {
+      "type": "MATH",
+      "name": "n1",
+      "property": "tpropn1",
+      "value": 1,
+      "operator": "="
+    },
+    "right": {
+      "type": "OR",
+      "left": {
+        "type": "STRING",
+        "name": "n2",
+        "property": "tpropn2",
+        "value": "testn2",
+        "comparator": "STARTSWITH"
+      },
+      "right": {
+        "type": "STRING",
+        "name": "r1",
+        "property": "tpropr1",
+        "value": "testr1",
+        "comparator": "EQUALS"
+      }
+    }
+  }
+}

@@ -97,6 +97,30 @@ namespace Console.Controllers
             }
         }
 
+        [HttpPost()]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> BareLogin(LoginViewModel details, string returnUrl = null)
+        {
+            if (ModelState.IsValid)
+            {
+                bool result = await Auth(details);
+
+                if (result)
+                {
+                    
+                    return new JsonResult("OK"); ;
+                }
+                else
+                {
+                    return new JsonResult("Login failed");
+                }
+            }
+            else
+            {
+                return new JsonResult("Invalid login data");
+            }
+        }
+
         [HttpGet()]
         public async Task<IActionResult> Logout()
         {

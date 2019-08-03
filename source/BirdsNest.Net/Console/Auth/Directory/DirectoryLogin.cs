@@ -4,10 +4,10 @@ namespace Console.Auth.Directory
 {
     public class DirectoryLogin: ILogin
     {
-        public string ID { get; private set; }
-        public string GivenName { get; private set; }
-        public string Surname { get; private set; }
-        public string Name { get; private set; }
+        public string ID { get; private set; } = string.Empty;
+        public string GivenName { get; private set; } = string.Empty;
+        public string Surname { get; private set; } = string.Empty;
+        public string Name { get; private set; } = string.Empty;
         public bool IsUser { get; private set; } = false;
         public bool IsAdmin { get; private set; } = false;
         public bool IsAuthorised { get { return this.IsAdmin || this.IsUser; } }
@@ -25,10 +25,10 @@ namespace Console.Auth.Directory
                     this.IsAuthenticated = true;
                     using (UserPrincipal user = AccountAuthorizer.GetUserPrincipal(context, username))
                     {
-                        this.GivenName = user.GivenName;
-                        this.Surname = user.Surname;
+                        this.GivenName = user.GivenName != null ? user.GivenName : string.Empty;
+                        this.Surname = user.Surname != null? user.Surname : string.Empty;
                         this.ID = user.Sid.Value;
-                        this.Name = user.GivenName;
+                        this.Name = user.UserPrincipalName;
 
                         if (AccountAuthorizer.IsMemberOf(context, user, config.UserGroup))
                         {

@@ -12,5 +12,10 @@ namespace Console.neo4jProxy.AdvancedSearch
         [JsonProperty("condition")]
         [JsonConverter(typeof(ConditionConverter))]
         public ICondition Condition { get; set; }
+
+        public string ToSearchString()
+        {
+            return "MATCH ..." + this.Condition.ToSearchString();
+        }
     }
 }

@@ -50,6 +50,7 @@ function processCurtainLogin (callback) {
         Provider: prov
     };
 
+    //console.log(postdata);
     //console.log(token);
     //console.log(url);
     $.ajax({
