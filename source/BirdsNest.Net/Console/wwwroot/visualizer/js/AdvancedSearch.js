@@ -153,7 +153,7 @@ AdvancedSearchController.prototype.AddNode = function () {
     //console.log("AdvancedSearchController.prototype.onAddButtonPressed started");
     var me = this;
     var radius = 30;
-    var spacing = 70;
+    var spacing = 140;
     //console.log(me);
     var newNode = me.Search.AddNode();
 
@@ -167,7 +167,7 @@ AdvancedSearchController.prototype.AddNode = function () {
         .classed("searchnode",true)
         .attr("width", radius)
         .attr("height", radius)
-        .attr("transform", function (d) { return "translate(" + ((spacing * me.Search.AddedNodes) + (radius * (me.Search.AddedNodes - 1) * 2)) + "," + spacing + ")"; })
+        .attr("transform", function (d) { return "translate(" + (spacing * me.Search.AddedNodes - spacing * 0.5) + "," + spacing + ")"; })
         .attr("data-open", "searchNodeDetails")
         .on("click", me.onSearchItemClicked("searchNodeDetails"));
 
@@ -182,7 +182,11 @@ AdvancedSearchController.prototype.AddNode = function () {
         //.attr("transform", function (d) { return "translate(0," + (radius + 10) + ")"; });
 
     if (me.Search.Nodes.length > 1) {
-        var subspacing = (spacing * (me.Search.AddedNodes - 1) + (radius * (me.Search.AddedNodes - 1)) + ((spacing / 2) - (radius / 4)));
+        var rectwidth = radius;
+        var rectheight = radius *0.7;
+        var subspacingx = ((me.Search.AddedNodes - 0.5) * spacing - rectwidth / 2 - spacing * 0.5);
+        var subspacingy = spacing - rectheight / 2;
+
         var newedgeg = viewel.selectAll(".searchedge")
             .data(me.Search.Edges, function (d) { return d.Name; })
             .enter()
@@ -191,17 +195,20 @@ AdvancedSearchController.prototype.AddNode = function () {
             .classed("nodes", true)
             .classed("searchedge", true)
             .on("click", me.onSearchItemClicked("searchEdgeDetails"))
-            .attr("transform", function (d) { return "translate(" + subspacing + "," + spacing + ")"; })
+            .attr("transform", function (d) { return "translate(" + subspacingx + "," + subspacingy + ")"; })
             .attr("data-open", "searchEdgeDetails");
 
-        newedgeg.append("circle")
+        newedgeg.append("rect")
             .attr("id", function (d) { return "searchnodebg_" + d.Name; })
-            .attr("r", radius /2);
+            .attr("width", rectwidth)
+            .attr("height", rectheight);
 
         newedgeg.append("text")
             .text(function (d) { return d.Name; })
             .attr("text-anchor", "middle")
-            .attr("dominant-baseline", "central");
+            .attr("dominant-baseline", "middle")
+            .attr("x", rectwidth / 2)
+            .attr("y", rectheight / 2);
     }
 };
 
