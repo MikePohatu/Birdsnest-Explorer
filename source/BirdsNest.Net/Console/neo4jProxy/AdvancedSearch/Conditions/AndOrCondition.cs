@@ -8,14 +8,14 @@ namespace Console.neo4jProxy.AdvancedSearch.Conditions
 {
     public class AndOrCondition: ICondition
     {
-        [JsonProperty("type")]
+        [JsonProperty("Type")]
         public string Type { get; set; }
 
-        [JsonProperty("left")]
+        [JsonProperty("Left")]
         [JsonConverter(typeof(ConditionConverter))]
         public ICondition Left { get; set; }
 
-        [JsonProperty("right")]
+        [JsonProperty("Right")]
         [JsonConverter(typeof(ConditionConverter))]
         public ICondition Right { get; set; }
 

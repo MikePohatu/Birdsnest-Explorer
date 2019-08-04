@@ -1,44 +1,44 @@
 {
-  "nodes": [
+  "Nodes": [
     {
-      "name": "n1",
-      "label": "NodeType"
+      "Name": "n1",
+      "Label": "NodeType"
     },
     {
-      "name": "n2",
-      "label": "NodeType"
+      "Name": "n2",
+      "Label": "NodeType"
     }
   ],
-  "edges": [
+  "Edges": [
     {
-      "name": "r1",
-      "label": "RelType"
+      "Name": "r1",
+      "Label": "RelType"
     }
   ],
-  "condition": {
-    "type": "AND",
-    "left": {
-      "type": "MATH",
-      "name": "n1",
-      "property": "tpropn1",
-      "value": 1,
-      "operator": "="
+  "Condition": {
+    "Type": "AND",
+    "Left": {
+      "Type": "MATH",
+      "Name": "n1",
+      "Property": "tpropn1",
+      "Value": 1,
+      "Operator": "="
     },
-    "right": {
-      "type": "OR",
-      "left": {
-        "type": "STRING",
-        "name": "n2",
-        "property": "tpropn2",
-        "value": "testn2",
-        "comparator": "STARTSWITH"
+    "Right": {
+      "Type": "OR",
+      "Left": {
+        "Type": "STRING",
+        "Name": "n2",
+        "Property": "tpropn2",
+        "Value": "testn2",
+        "Comparator": "STARTSWITH"
       },
-      "right": {
-        "type": "STRING",
-        "name": "r1",
-        "property": "tpropr1",
-        "value": "testr1",
-        "comparator": "EQUALS"
+      "Right": {
+        "Type": "STRING",
+        "Name": "r1",
+        "Property": "tpropr1",
+        "Value": "testr1",
+        "Comparator": "EQUALS"
       }
     }
   }

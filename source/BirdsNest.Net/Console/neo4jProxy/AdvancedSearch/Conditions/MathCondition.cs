@@ -10,19 +10,19 @@ namespace Console.neo4jProxy.AdvancedSearch.Conditions
         private string[] _validoperators = new string[] { "=", ">", "<" };
         private string _operator = "=";
 
-        [JsonProperty("type")]
+        [JsonProperty("Type")]
         public string Type { get { return "MATH"; } }
 
-        [JsonProperty("name")]
+        [JsonProperty("Name")]
         public string Name { get; set; }
 
-        [JsonProperty("property")]
+        [JsonProperty("Property")]
         public string Property { get; set; }
 
-        [JsonProperty("value")]
+        [JsonProperty("Value")]
         public double Value { get; set; }
 
-        [JsonProperty("operator")]
+        [JsonProperty("Operator")]
         public string Operator
         {
             get { return this._operator; }

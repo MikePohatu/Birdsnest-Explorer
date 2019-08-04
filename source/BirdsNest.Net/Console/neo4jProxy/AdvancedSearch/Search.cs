@@ -10,13 +10,13 @@ namespace Console.neo4jProxy.AdvancedSearch
 {
     public class Search
     {
-        [JsonProperty("nodes")]
+        [JsonProperty("Nodes")]
         public List<SearchNode> Nodes { get; set; }
 
-        [JsonProperty("edges")]
-        public List<SearchRelationship> Edges { get; set; }
+        [JsonProperty("Edges")]
+        public List<SearchEdge> Edges { get; set; }
 
-        [JsonProperty("condition")]
+        [JsonProperty("Condition")]
         [JsonConverter(typeof(ConditionConverter))]
         public ICondition Condition { get; set; }
 
@@ -32,12 +32,12 @@ namespace Console.neo4jProxy.AdvancedSearch
                     while (nodeEmumerator.MoveNext())
                     {
                         SearchNode n = nodeEmumerator.Current;
-                        using (IEnumerator<SearchRelationship> edgeEmumerator = this.Edges.GetEnumerator())
+                        using (IEnumerator<SearchEdge> edgeEmumerator = this.Edges.GetEnumerator())
                         {
                             while (edgeEmumerator.MoveNext())
                             {
-                                SearchRelationship r = edgeEmumerator.Current;
-                                builder.Append(n.ToSearchString() + r.ToSearchString());
+                                SearchEdge edge = edgeEmumerator.Current;
+                                builder.Append(n.ToSearchString() + edge.ToSearchString());
                                 nodeEmumerator.MoveNext();
                                 n = nodeEmumerator.Current;
                             }

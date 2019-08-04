@@ -6,21 +6,21 @@ using Newtonsoft.Json;
 
 namespace Console.neo4jProxy.AdvancedSearch
 {
-    public class SearchRelationship
+    public class SearchEdge
     {
-        [JsonProperty("name")]
+        [JsonProperty("Name")]
         public string Name { get; set; } = string.Empty;
 
-        [JsonProperty("label")]
+        [JsonProperty("Label")]
         public string Label { get; set; } = string.Empty;
 
-        [JsonProperty("direction")]
+        [JsonProperty("Direction")]
         public string Direction { get; set; } = ">";
 
-        [JsonProperty("min")]
+        [JsonProperty("Min")]
         public int Min { get; set; } = -1;
 
-        [JsonProperty("max")]
+        [JsonProperty("Max")]
         public int Max { get; set; } = -1;
 
         public string ToSearchString()

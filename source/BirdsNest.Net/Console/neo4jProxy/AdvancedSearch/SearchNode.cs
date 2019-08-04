@@ -8,10 +8,10 @@ namespace Console.neo4jProxy.AdvancedSearch
 {
     public class SearchNode
     {
-        [JsonProperty("name")]
+        [JsonProperty("Name")]
         public string Name { get; set; } = string.Empty;
 
-        [JsonProperty("label")]
+        [JsonProperty("Label")]
         public string Label { get; set; } = string.Empty;
 
         public string ToSearchString()

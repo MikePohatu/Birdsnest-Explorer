@@ -8,11 +8,17 @@ namespace Console.neo4jProxy.AdvancedSearch.Conditions
 {
     public class RegExCondition: ICondition
     {
-        [JsonProperty("type")]
+        [JsonProperty("Type")]
         public string Type { get { return "REGEX"; } }
 
-        [JsonProperty("name")]
+        [JsonProperty("Name")]
         public string Name { get; set; }
+
+        [JsonProperty("Property")]
+        public string Property { get; set; }
+
+        [JsonProperty("Value")]
+        public string Value { get; set; }
 
         public string ToSearchString()
         {

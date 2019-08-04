@@ -10,19 +10,19 @@ namespace Console.neo4jProxy.AdvancedSearch.Conditions
     {
         private string _comparator = "=";
 
-        [JsonProperty("type")]
+        [JsonProperty("Type")]
         public string Type { get { return "STRING"; } }
 
-        [JsonProperty("name")]
+        [JsonProperty("Name")]
         public string Name { get; set; }
 
-        [JsonProperty("property")]
+        [JsonProperty("Property")]
         public string Property { get; set; }
 
-        [JsonProperty("value")]
+        [JsonProperty("Value")]
         public string Value { get; set; }
 
-        [JsonProperty("comparator")]
+        [JsonProperty("Comparator")]
         public string Comparator
         {
             get { return this._comparator; }
@@ -38,6 +38,9 @@ namespace Console.neo4jProxy.AdvancedSearch.Conditions
         {
             switch (s.ToUpper())
             {
+                case "=":
+                    this._comparator = "=";
+                    break;
                 case "EQUALS":
                     this._comparator = "=";
                     break;

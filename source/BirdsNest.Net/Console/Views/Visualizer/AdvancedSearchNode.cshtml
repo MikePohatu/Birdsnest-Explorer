@@ -1,0 +1,23 @@
+﻿
+@*
+    For more information on enabling MVC for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
+*@
+
+    <div>
+        <fieldset class="fieldset small-4 cell">
+            <legend>Node</legend>
+
+            <div class="input-group">
+                <span class="input-group-label small-4">Type</span>
+                <select id="nodeType" class="small-8 input-group-field" autofocus onchange="updateProps('node');"></select>
+            </div>
+            <div class="input-group">
+                <span class="input-group-label small-4">Where</span>
+                <select id="nodeProp" class="small-8 input-group-field"></select>
+            </div>
+            <div class="input-group">
+                <span class="input-group-label small-4">Equals</span>
+                <input type="search" autocomplete="off" id="nodeVal" placeholder="*" class="small-8 input-group-field">
+            </div>
+        </fieldset>
+    </div>
