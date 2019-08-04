@@ -107,7 +107,7 @@ namespace WUScanner
                 }
 
                 
-                UpdateCollection allupdates = updateserver.GetUpdates(ApprovedStates.Any, DateTime.MinValue, DateTime.MaxValue, null, null);
+                //UpdateCollection allupdates = updateserver.GetUpdates(ApprovedStates.Any, DateTime.MinValue, DateTime.MaxValue, null, null);
             }
             catch (Exception e)
             {

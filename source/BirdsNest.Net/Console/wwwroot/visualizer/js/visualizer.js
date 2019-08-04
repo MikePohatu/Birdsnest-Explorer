@@ -533,8 +533,8 @@ function addResultSet(json) {
             //console.log(d);
             //console.log(src);
 
-            if ((src.properties.layout === "tree") && (tar.properties.layout === "tree")) { treeedges.Add(d); }
-            else if ((src.properties.layout === "mesh") && (tar.properties.layout === "mesh")) { meshedges.Add(d); }
+            if (src.properties.layout === "tree" && tar.properties.layout === "tree") { treeedges.Add(d); }
+            else if (src.properties.layout === "mesh" && tar.properties.layout === "mesh") { meshedges.Add(d); }
             else {
                 if (connectnodes.DatumExists(d.source) === false) { connectnodes.Add(graphnodes.GetDatum(d.source)); }
                 if (connectnodes.DatumExists(d.target) === false) { connectnodes.Add(graphnodes.GetDatum(d.target)); }
@@ -809,10 +809,10 @@ function addSvgEdges(edges) {
         .attr("class", function (d) {
             var combined;
             if (d.source.properties.hasOwnProperty('layout') && d.target.properties.hasOwnProperty('layout')) {
-                if ((d.source.properties.layout === "tree") && (d.target.properties.layout === "tree")) {
+                if (d.source.properties.layout === "tree" && d.target.properties.layout === "tree") {
                     combined = d.label + " treeedge";
                 }
-                else if ((d.source.properties.layout === "mesh") && (d.target.properties.layout === "mesh")) {
+                else if (d.source.properties.layout === "mesh" && d.target.properties.layout === "mesh") {
                     combined = d.label + " meshedge";
                 }
                 else { combined = d.label + " connectingedge"; }

@@ -153,6 +153,7 @@ AdvancedSearchController.prototype.AddNode = function () {
     //console.log("AdvancedSearchController.prototype.onAddButtonPressed started");
     var me = this;
     var radius = 30;
+    var spacing = 70;
     //console.log(me);
     var newNode = me.Search.AddNode();
 
@@ -161,14 +162,14 @@ AdvancedSearchController.prototype.AddNode = function () {
         .data(me.Search.Nodes, function (d) { return d.Name; })
         .enter()
         .append("g")
-        .attr("id", function (d) { return "searchnodenode_" + d.Name; })
+        .attr("id", function (d) { return "searchnode_" + d.Name; })
         .classed("nodes", true)
-        .classed("enabled", true)
+        .classed("searchnode",true)
         .attr("width", radius)
         .attr("height", radius)
-        .on("click", me.onSearchNodeClicked)
-        .attr("transform", function (d) { return "translate(" + ((70 * me.Search.AddedNodes) + (radius * (me.Search.AddedNodes - 1))) + "," + 70 + ")"; })
-        .attr("data-open", "searchNodeDetails");
+        .attr("transform", function (d) { return "translate(" + ((spacing * me.Search.AddedNodes) + (radius * (me.Search.AddedNodes - 1) * 2)) + "," + spacing + ")"; })
+        .attr("data-open", "searchNodeDetails")
+        .on("click", me.onSearchItemClicked("searchNodeDetails"));
 
     newnodeg.append("circle")
         .attr("id", function (d) { return "searchnodebg_" + d.Name; })
@@ -179,19 +180,60 @@ AdvancedSearchController.prototype.AddNode = function () {
         .attr("text-anchor", "middle")
         .attr("dominant-baseline", "central");
         //.attr("transform", function (d) { return "translate(0," + (radius + 10) + ")"; });
+
+    if (me.Search.Nodes.length > 1) {
+        var subspacing = (spacing * (me.Search.AddedNodes - 1) + (radius * (me.Search.AddedNodes - 1)) + ((spacing / 2) - (radius / 4)));
+        var newedgeg = viewel.selectAll(".searchedge")
+            .data(me.Search.Edges, function (d) { return d.Name; })
+            .enter()
+            .append("g")
+            .attr("id", function (d) { return "searchedge_" + d.Name; })
+            .classed("nodes", true)
+            .classed("searchedge", true)
+            .on("click", me.onSearchItemClicked("searchEdgeDetails"))
+            .attr("transform", function (d) { return "translate(" + subspacing + "," + spacing + ")"; })
+            .attr("data-open", "searchEdgeDetails");
+
+        newedgeg.append("circle")
+            .attr("id", function (d) { return "searchnodebg_" + d.Name; })
+            .attr("r", radius /2);
+
+        newedgeg.append("text")
+            .text(function (d) { return d.Name; })
+            .attr("text-anchor", "middle")
+            .attr("dominant-baseline", "central");
+    }
 };
 
 
-AdvancedSearchController.prototype.onSearchNodeClicked = function () {
-    //console.log("AdvancedSearchController.prototype.onSearchNodeClicked started");
-    //console.log(this);
-    var nodedetails = d3.select("#searchNodeDetails");
-    var nodedatum = d3.select(this).datum();
-    console.log(nodedatum);
-    nodedetails.datum(nodedatum);
+AdvancedSearchController.prototype.onSearchItemClicked = function (elementid) {
+    console.log("AdvancedSearchController.prototype.onSearchItemClicked started");
+    console.log(this);
+    console.log(elementid);
+    var details = d3.select("#" + elementid);
+    var datum = d3.select(this).datum();
+    console.log(datum);
+    details.datum(datum);
 };
 
 AdvancedSearchController.prototype.onSearchNodeSaveBtnClicked = function () {
+    console.log("AdvancedSearchController.prototype.onSearchNodeSaveBtnClicked started");
+    //console.log(this);
+    var node = d3.select("#searchNodeDetails").datum();
+    node.Name = node.Name + "testsave";
+    node.Label = node.Label + "testsavelabel";
+};
+
+//AdvancedSearchController.prototype.onSearchEdgeClicked = function () {
+//    //console.log("AdvancedSearchController.prototype.onSearchEdgeClicked started");
+//    //console.log(this);
+//    var details = d3.select("#searchEdgeDetails");
+//    var datum = d3.select(this).datum();
+//    console.log(datum);
+//    details.datum(datum);
+//};
+
+AdvancedSearchController.prototype.onSearchEdgeSaveBtnClicked = function () {
     console.log("AdvancedSearchController.prototype.onSearchNodeSaveBtnClicked started");
     //console.log(this);
     var node = d3.select("#searchNodeDetails").datum();

@@ -93,7 +93,7 @@ function updateVisibility() {
         if (resultset.PropertyFiltersApplied === true) {
 
             Object.keys(resultset.PropertyNames).forEach(function (key) {
-                var shown = (key in resultset.PropertyFilters);
+                var shown = key in resultset.PropertyFilters;
                 SetClassVisible(columnstyleprefix + key, shown);
                 var togglebox = document.getElementById(toggleprefix + key);
                 togglebox.checked = shown;

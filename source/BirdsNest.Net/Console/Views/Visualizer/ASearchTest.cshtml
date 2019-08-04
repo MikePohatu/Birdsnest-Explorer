@@ -35,10 +35,37 @@
     <button class="close-button" data-close aria-label="Close query dialog" type="button">
         <span aria-hidden="true">&times;</span>
     </button>
-    <button id="searchNodeSaveBtn" class="button" data-close aria-label="Close query dialog" type="button">
+    <button id="searchNodeSaveBtn" class="button" data-close aria-label="Close node dialog" type="button">
         <span aria-hidden="true">Save</span>
     </button>
-</div>                          
+</div>
+
+
+<div id="searchEdgeDetails" class="reveal" data-reveal>
+    <fieldset class="fieldset small-4 cell">
+        <legend>Relationship</legend>
+
+        <div class="input-group">
+            <span class="input-group-label small-4">Type</span>
+            <select id="edgeType" class="small-8 input-group-field" autofocus onchange="updateProps('node');"></select>
+        </div>
+        <div class="input-group">
+            <span class="input-group-label small-4">Where</span>
+            <select id="edgeProp" class="small-8 input-group-field"></select>
+        </div>
+        <div class="input-group">
+            <span class="input-group-label small-4">Equals</span>
+            <input type="search" autocomplete="off" id="edgeVal" placeholder="*" class="small-8 input-group-field">
+        </div>
+    </fieldset>
+    <button class="close-button" data-close aria-label="Close query dialog" type="button">
+        <span aria-hidden="true">&times;</span>
+    </button>
+    <button id="searchEdgeSaveBtn" class="button" data-close aria-label="Close relationship dialog" type="button">
+        <span aria-hidden="true">Save</span>
+    </button>
+</div>
+
 
 <div id="advSearchView" style="margin: 0; padding: 0; height: 100%; width: 100%;">
     <svg id="drawingSvg" style="margin: 0; padding: 0; height: 100%; width: 100%; border: 1px solid #000000;">
@@ -68,6 +95,7 @@
         var controller = new AdvancedSearchController("zoomLayer");
         d3.select("#addIcon").on("click", onAddButtonPressed);
         d3.select("#searchNodeSaveBtn").on("click", controller.onSearchNodeSaveBtnClicked);
+        d3.select("#searchEdgeSaveBtn").on("click", controller.onSearchEdgeSaveBtnClicked);
         function onAddButtonPressed() {
             controller.AddNode();
         }
