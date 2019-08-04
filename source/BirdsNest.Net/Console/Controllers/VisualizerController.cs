@@ -32,6 +32,13 @@ namespace Console.Controllers
             return View();
         }
 
+        // GET visualizer/ASearchTest
+        public IActionResult ASearchTest()
+        {
+            return View("ASearchTest");
+        }
+
+
         // GET visualizer/details
         public IActionResult Details(long id)
         {

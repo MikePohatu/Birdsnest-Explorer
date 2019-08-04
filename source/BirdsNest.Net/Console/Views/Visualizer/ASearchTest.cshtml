@@ -1,0 +1,75 @@
+﻿
+@{
+    ViewData["Title"] = "ASearchTest";
+    Layout = "_Layout";
+}
+@section Styles
+    {
+    <link rel="stylesheet" type="text/css" href="~/visualizer/css/main.css">
+    <link rel="stylesheet" type="text/css" href="~/visualizer/css/visualization.css">
+    <link rel="stylesheet" type="text/css" href="~/css/jquery-ui.css">
+    <link rel="stylesheet" type="text/css" href="~/css/plugins.css">
+}
+
+<div id="addIcon" >
+    <i class="fas fa-plus-circle"></i>
+</div>
+
+<div id="searchNodeDetails" class="reveal" data-reveal>
+    <fieldset class="fieldset small-4 cell">
+        <legend>Node</legend>
+
+        <div class="input-group">
+            <span class="input-group-label small-4">Type</span>
+            <select id="nodeType" class="small-8 input-group-field" autofocus onchange="updateProps('node');"></select>
+        </div>
+        <div class="input-group">
+            <span class="input-group-label small-4">Where</span>
+            <select id="nodeProp" class="small-8 input-group-field"></select>
+        </div>
+        <div class="input-group">
+            <span class="input-group-label small-4">Equals</span>
+            <input type="search" autocomplete="off" id="nodeVal" placeholder="*" class="small-8 input-group-field">
+        </div>
+    </fieldset>
+    <button class="close-button" data-close aria-label="Close query dialog" type="button">
+        <span aria-hidden="true">&times;</span>
+    </button>
+    <button id="searchNodeSaveBtn" class="button" data-close aria-label="Close query dialog" type="button">
+        <span aria-hidden="true">Save</span>
+    </button>
+</div>                          
+
+<div id="advSearchView" style="margin: 0; padding: 0; height: 100%; width: 100%;">
+    <svg id="drawingSvg" style="margin: 0; padding: 0; height: 100%; width: 100%; border: 1px solid #000000;">
+        <g id="zoomLayer" >
+
+        </g>
+    </svg>
+</div>
+
+
+
+
+
+@section Scripts
+    {
+    <script defer src="~/js/fontawesome/all.js" type="text/javascript"></script>
+    <script src="~/js/jquery-ui/jquery-ui.js"></script>
+    <script src="~/visualizer/js/d3.min.js"></script>
+    <script src="~/visualizer/js/Slope.js" type="text/javascript"></script>
+    <script src="~/visualizer/js/DatumStore.js" type="text/javascript"></script>
+    <script src="~/visualizer/js/DataQueue.js" type="text/javascript"></script>
+    <script src="~/visualizer/js/Mappings.js" type="text/javascript"></script>
+    <script src="~/visualizer/js/SimulationController.js" type="text/javascript"></script>
+    @*<script src="~/visualizer/js/visualizer.js" type="text/javascript"></script>*@
+    <script src="~/visualizer/js/AdvancedSearch.js" type="text/javascript"></script>
+    <script>
+        var controller = new AdvancedSearchController("zoomLayer");
+        d3.select("#addIcon").on("click", onAddButtonPressed);
+        d3.select("#searchNodeSaveBtn").on("click", controller.onSearchNodeSaveBtnClicked);
+        function onAddButtonPressed() {
+            controller.AddNode();
+        }
+    </script>
+}

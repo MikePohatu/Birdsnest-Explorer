@@ -21,7 +21,14 @@ namespace Console.neo4jProxy.AdvancedSearch.Conditions
 
         public string ToSearchString()
         {
-            return "(" + this.Left.ToSearchString() + " " + this.Type + " " + this.Right.ToSearchString() + ")";
+            string s;
+            if ((this.Right == null ) && ( this.Left == null )) { return string.Empty; }
+
+            if (this.Right == null) { s = "(" + this.Left.ToSearchString() + ")"; }
+            else if (this.Left == null) { s = "(" + this.Right.ToSearchString() + ")"; }
+            else { s = "(" + this.Left.ToSearchString() + " " + this.Type + " " + this.Right.ToSearchString() + ")"; }
+            
+            return s;
         }
     }
 }
