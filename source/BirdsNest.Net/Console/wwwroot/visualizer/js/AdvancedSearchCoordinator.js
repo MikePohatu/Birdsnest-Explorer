@@ -160,7 +160,7 @@ AdvancedSearchCoordinator.prototype.AddNode = function () {
                 if (d.Direction === ">") {
                     return "fas fa-minus";
                 }
-                else { return "fas fa-less-than"}
+                else { return "fas fa-less-than"; }
             })
             .classed("searcharrow", true)
             .attr("x", 0 - relarrowwidth)
@@ -347,7 +347,7 @@ AdvancedSearchCoordinator.prototype.UpdateNodeLabels = function () {
             addOption(el, label, label);
         });
     });
-}
+};
 
 AdvancedSearchCoordinator.prototype.BindAutoComplete = function () {
     $("#" + elementPrefix + "Val").autocomplete({
@@ -360,4 +360,4 @@ AdvancedSearchCoordinator.prototype.BindAutoComplete = function () {
             apiGetJson(url, response);
         }
     });
-}
+};
