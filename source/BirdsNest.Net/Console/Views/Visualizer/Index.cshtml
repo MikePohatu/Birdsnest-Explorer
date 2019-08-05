@@ -10,6 +10,7 @@
     <link rel="stylesheet" type="text/css" href="~/visualizer/css/main.css">
     <link rel="stylesheet" type="text/css" href="~/visualizer/css/visualization.css">
     <link rel="stylesheet" type="text/css" href="~/css/jquery-ui.css">
+    <link rel="stylesheet" type="text/css" href="~/css/motion-ui.css">
     <link rel="stylesheet" type="text/css" href="~/css/plugins.css">
 }
 
@@ -22,7 +23,7 @@
                 </span>
             </div>
 
-            <div id="searchNodeDetails" class="reveal" data-reveal>
+            <div id="searchNodeDetails" class="reveal" data-reveal data-animation-in="hinge-in-from-top fast" data-overlay="false">
                 <fieldset class="fieldset small-4 cell">
                     <legend>Node</legend>
 
@@ -42,12 +43,14 @@
                 <button class="close-button" data-close aria-label="Close query dialog" type="button">
                     <span aria-hidden="true">&times;</span>
                 </button>
-                <button id="searchNodeSaveBtn" class="button" data-close aria-label="Save this node" type="button">Save</button>
-                <button id="searchNodeDeleteBtn" class="button" data-close aria-label="Delete this node" type="button">Delete</button>
+                <div>
+                    <button id="searchNodeSaveBtn" class="button" data-close aria-label="Save this node" type="button">Save</button>
+                    <button id="searchNodeDeleteBtn" class="alert button" data-close aria-label="Delete this node" type="button">Delete</button>
+                </div>
             </div>
 
 
-            <div id="searchEdgeDetails" class="reveal" data-reveal>
+            <div id="searchEdgeDetails" class="reveal" data-reveal data-animation-in="hinge-in-from-top fast" data-overlay="false">
                 <fieldset class="fieldset small-4 cell">
                     <legend>Relationship</legend>
 
