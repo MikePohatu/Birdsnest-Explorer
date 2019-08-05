@@ -67,18 +67,19 @@ AdvancedSearchCoordinator.prototype.Search = function () {
     var me = this;
 
     var postdata = JSON.stringify(me.AdvancedSearch);
-    console.log(postdata);
+    //console.log("search post:");
+    //console.log(postdata);
     showSearchSpinner();
     apiPostJson("AdvancedSearch", postdata, function (data) {
-        console.log(data);
+        //console.log(data);
         document.getElementById("searchNotification").innerHTML = data;
         $('#searchNotification').foundation();
     });
 };
 
 AdvancedSearchCoordinator.prototype.Clear = function () {
-    console.log("AdvancedSearchCoordinator.prototype.Clear started");
-    console.log(this);
+    //console.log("AdvancedSearchCoordinator.prototype.Clear started");
+    //console.log(this);
     var me = this;
     var viewel = d3.select("#" + me.ElementID);
     viewel.selectAll("*").remove();
@@ -86,8 +87,8 @@ AdvancedSearchCoordinator.prototype.Clear = function () {
 };
 
 AdvancedSearchCoordinator.prototype.AddNode = function () {
-    console.log("AdvancedSearchCoordinator.prototype.onAddButtonPressed started");
-    console.log(this);
+    //console.log("AdvancedSearchCoordinator.prototype.onAddButtonPressed started");
+    //console.log(this);
 
     var me = this;
     var radius = 30;

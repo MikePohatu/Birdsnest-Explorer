@@ -29,13 +29,23 @@ namespace Console.neo4jProxy.AdvancedSearch
             string right = string.Empty;
             string pathlength = string.Empty;
             string label = string.IsNullOrWhiteSpace(this.Label) ? string.Empty : ":" + this.Label;
-            if (this.Min > -1 || this.Max > -1)
+
+            string min = "";
+            string max = "";
+                
+            if (this.Min < 0 && this.Max < 0)
             {
-                string min = "";
-                string max = "";
+                pathlength = "*";
+            }
+            else if (this.Min == 1 && this.Max == 1)
+            {
+                pathlength = string.Empty;
+            }
+            else
+            {
                 if (this.Min > -1) { min = this.Min.ToString(); }
                 if (this.Max > -1) { max = this.Max.ToString(); }
-                pathlength = "*" + min + ".." + max;
+                pathlength = "*" + this.Min + ".." + this.Max;
             }
 
             if (this.Direction == ">")
