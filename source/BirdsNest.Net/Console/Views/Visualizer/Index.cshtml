@@ -16,93 +16,87 @@
 <div id="pagewrapper">
     <div id="main">
         <div id="querybar" class="grid-x grid-padding-x">
-            <form id="sourceForm" class="small-12 medium-12 cell" type="POST" action="javascript:search()" autocomplete="off">
-                <div class="grid-x grid-margin-x">
-                    <fieldset class="fieldset small-4 cell">
-                        <legend>Source</legend>
+            <div>
+                <span id="addIcon">
+                    <i class="fas fa-plus-circle"></i>
+                </span>
+            </div>
 
-                        <div class="input-group">
-                            <span class="input-group-label small-4">Type</span>
-                            <select id="sourceType" class="small-8 input-group-field" autofocus onchange="updateProps('source');"></select>
-                        </div>
-                        <div class="input-group">
-                            <span class="input-group-label small-4">Where</span>
-                            <select id="sourceProp" class="small-8 input-group-field"></select>
-                        </div>
-                        <div class="input-group">
-                            <span class="input-group-label small-4">Equals</span>
-                            <input type="search" autocomplete="off" id="sourceVal" placeholder="*" class="small-8 input-group-field">
-                        </div>
-                    </fieldset>
+            <div id="searchNodeDetails" class="reveal" data-reveal>
+                <fieldset class="fieldset small-4 cell">
+                    <legend>Node</legend>
 
-                    <fieldset class="fieldset small-4 cell">
-                        <legend>Relationship</legend>
+                    <div class="input-group">
+                        <span class="input-group-label small-4">Type</span>
+                        <select id="nodeType" class="small-8 input-group-field" autofocus onchange="updateNodeProps();"></select>
+                    </div>
+                    <div class="input-group">
+                        <span class="input-group-label small-4">Where</span>
+                        <select id="nodeProp" class="small-8 input-group-field"></select>
+                    </div>
+                    <div class="input-group">
+                        <span class="input-group-label small-4">Equals</span>
+                        <input type="search" autocomplete="off" id="nodeVal" placeholder="*" class="small-8 input-group-field">
+                    </div>
+                </fieldset>
+                <button class="close-button" data-close aria-label="Close query dialog" type="button">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                <button id="searchNodeSaveBtn" class="button" data-close aria-label="Save this node" type="button">Save</button>
+                <button id="searchNodeDeleteBtn" class="button" data-close aria-label="Delete this node" type="button">Delete</button>
+            </div>
 
-                        <div class="input-group">
-                            <span class="input-group-label small-3">Type</span>
-                            <select id="edgeType" class="small-9 input-group-field">
-                                <option value="" disabled selected hidden></option>
-                                <option value="">*</option>
-                            </select>
-                        </div>
 
-                        <span class="">Hops</span>
-                        <div class="input-group">
-                            <div class="grid-x input-group-field">
-                                <div class="cell small-2">
-                                    <input type="number" id="sliderMin">
-                                </div>
-                                <div class="cell small-8">
-                                    <div class="slider" data-slider data-initial-start="0" data-initial-end="1" data-start="0" data-end="20">
-                                        <span class="slider-handle" data-slider-handle role="slider" aria-controls="sliderMin" title="Minimum hop count"></span>
-                                        <span class="slider-fill" data-slider-fill></span>
-                                        <span class="slider-handle" data-slider-handle role="slider" aria-controls="sliderMax" title="Maximum hop count"></span>
-                                    </div>
-                                </div>
-                                <div class="cell small-2">
-                                    <input type="number" id="sliderMax">
+            <div id="searchEdgeDetails" class="reveal" data-reveal>
+                <fieldset class="fieldset small-4 cell">
+                    <legend>Relationship</legend>
+
+                    <div class="input-group">
+                        <span class="input-group-label small-3">Type</span>
+                        <select id="edgeType" class="small-9 input-group-field">
+                            <option value="" disabled selected hidden></option>
+                            <option value="">*</option>
+                        </select>
+                    </div>
+
+                    <span class="">Hops</span>
+                    <div class="input-group">
+                        <div class="grid-x input-group-field">
+                            <div class="cell small-2">
+                                <input type="number" id="sliderMin">
+                            </div>
+                            <div class="cell small-8">
+                                <div class="slider" data-slider data-initial-start="0" data-initial-end="1" data-start="0" data-end="20">
+                                    <span class="slider-handle" data-slider-handle role="slider" aria-controls="sliderMin" title="Minimum hop count"></span>
+                                    <span class="slider-fill" data-slider-fill></span>
+                                    <span class="slider-handle" data-slider-handle role="slider" aria-controls="sliderMax" title="Maximum hop count"></span>
                                 </div>
                             </div>
+                            <div class="cell small-2">
+                                <input type="number" id="sliderMax">
+                            </div>
                         </div>
-
-                        <div class="grid-x cell align-top">
-                            <span class="cell small-3 align-middle">Direction</span>
-                            <a class="cell small-1 text-left" href='javascript:toggleDir()'>
-                                <i id='dirIcon' class="fas fa-arrow-right" data-dir="R"></i>
-                            </a>
-                        </div>
-                    </fieldset>
-
-                    <fieldset class="fieldset small-4 cell">
-                        <legend>Target</legend>
-
-                        <div class="input-group">
-                            <span class="input-group-label small-3">Type</span>
-                            <select id="targetType" class="small-9 input-group-field" onchange="updateProps('target');"></select>
-                        </div>
-                        <div class="input-group">
-                            <span class="input-group-label small-3">Where</span>
-                            <select id="targetProp" class="small-9 input-group-field"></select>
-                        </div>
-                        <div class="input-group">
-                            <span class="input-group-label small-3">Equals</span>
-                            <input type="search" autocomplete="off" id="targetVal" placeholder="*" class="small-9 input-group-field">
-                        </div>
-                    </fieldset>
-                </div>
-                <div class="grid-x cell align-middle">
-                    <div class="cell small-3 medium-1">
-                        <input type="submit" class="button" value="Search">
                     </div>
-                    <div class="cell small-7 medium-auto">
-                        <p><div id="searchNotification"></div><div id="searchExpand"></div></p>
-                    </div>
-                    <div class="cell small-2 text-right">
-                        <p><a href='javascript:resetView()'>Clear view</a></p>
-                    </div>
-                </div>
-            </form>
 
+                    <div class="grid-x cell align-top">
+                        <span class="cell small-3 align-middle">Direction</span>
+                        <a class="cell small-1 text-left" href='javascript:toggleDir()'>
+                            <i id='dirIcon' class="fas fa-arrow-right" data-dir="R"></i>
+                        </a>
+                    </div>
+                </fieldset>
+                <button class="close-button" data-close aria-label="Close query dialog" type="button">&times;</button>
+                <button id="searchEdgeSaveBtn" class="button" data-close aria-label="Close relationship dialog" type="button">Save</button>
+            </div>
+
+
+            <div id="advSearchView" style="margin: 0; padding: 0; height: 100%; width: 100%;">
+                <svg id="drawingSvg" style="margin: 0; padding: 0; height: 100%; width: 100%; border: 1px solid #000000;">
+                    <g id="zoomLayer">
+
+                    </g>
+                </svg>
+            </div>
         </div>
 
         <div id="drawingpane">
@@ -181,6 +175,7 @@
     <script src="~/visualizer/js/SimulationController.js" type="text/javascript"></script>
     <script src="~/visualizer/js/visualizer.js" type="text/javascript"></script>
     <script src="~/visualizer/js/AdvancedSearch.js" type="text/javascript"></script>
+    <script src="~/visualizer/js/AdvancedSearchController.js" type="text/javascript"></script>
     <script>
         var paramdata = @Html.Raw(JsonConvert.SerializeObject(ViewData["LoadIDs"]));
         drawGraph('drawingpane', paramdata);

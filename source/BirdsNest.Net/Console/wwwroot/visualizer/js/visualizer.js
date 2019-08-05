@@ -13,6 +13,8 @@ simController.NodeTag = ".nodes";
 simController.onPercentUpdated = updateProgressBar;
 simController.onFinishSimulation = onLayoutFinished;
 
+var searchcontroller;
+
 //for recording the labels in teh graph and whether they are enabled e.g. AD_User,false
 var graphnodelabels = new Object();
 var graphedgelabels = new Object();
@@ -98,8 +100,8 @@ function menuShowHide() {
 }
 
 function drawGraph(selectid, loaddata) {
-    updateNodeLabels("source");
-    updateNodeLabels("target");
+    
+    //updateNodeLabels("target");
     drawingPane = d3.select("#" + selectid);
 
     drawingsvg = drawingPane.append("svg")
@@ -145,6 +147,18 @@ function drawGraph(selectid, loaddata) {
         queue.QueueResults(results);
         menuShowHide();
     }
+
+    searchcontroller = new AdvancedSearchController("zoomLayer");
+
+    d3.select("#searchNodeSaveBtn").on("click", searchcontroller.onSearchNodeSaveBtnClicked);
+    d3.select("#searchEdgeSaveBtn").on("click", searchcontroller.onSearchEdgeSaveBtnClicked);
+    d3.select("#addIcon").on("click", function () {
+        searchcontroller.AddNode();
+    });
+
+    updateNodeLabels();
+
+
 }
 
 //https://stackoverflow.com/questions/641857/javascript-window-resize-event
@@ -427,7 +441,7 @@ function updateSearchDetails(nodeid, elprefix) {
     var node = graphnodes.GetDatum(nodeid);
     //console.log(node);
     d3.select("#" + elprefix + "Type").property('value', node.labels[0]);
-    updateProps(elprefix);
+    updateNodeProps();
     var propname = 'name';
     var propval = node.name;
 
@@ -1606,9 +1620,10 @@ function clearOptions(selectbox) {
     selectbox.options.length = 0;
 }
 
-function updateProps(elementPrefix) {
-    var type = document.getElementById(elementPrefix + "Type").value;
-    var el = document.getElementById(elementPrefix + "Prop");
+function updateNodeProps() {
+    console.log("updateNodeProps started");
+    var type = document.getElementById("nodeType").value;
+    var el = document.getElementById("nodeProp");
 
     clearOptions(el);
     let topoption = addOption(el, "", "");
@@ -1616,15 +1631,24 @@ function updateProps(elementPrefix) {
     topoption.setAttribute("hidden", "");
     topoption.setAttribute("selected", "");
 
+    console.log(nodeDetails);
+    console.log(type);
+
     if (type || type==="*") {
-        nodeDetails[type].forEach(function (prop) {
-            addOption(el, prop, prop);
-        });
+        var typedeets = nodeDetails[type];
+        if (typedeets) {
+            typedeets.forEach(function (prop) {
+                addOption(el, prop, prop);
+            });
+        }
+        else {
+            addOption(el, "name", "name");
+        }
     }
 }
 
-function updateNodeLabels(elementPrefix) {
-    var el = document.getElementById(elementPrefix + "Type");
+function updateNodeLabels() {
+    var el = document.getElementById("nodeType");
     clearOptions(el);
     let topoption = addOption(el, "*", "");
     topoption.setAttribute("selected", "");
