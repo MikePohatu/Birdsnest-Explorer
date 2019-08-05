@@ -45,9 +45,9 @@ namespace Console.neo4jProxy.AdvancedSearch
                         builder.Append(n.ToSearchString());
                     }
                 }
-                string cond = this.Condition.ToSearchString();
+                string cond = this.Condition?.ToSearchString();
                 if (string.IsNullOrWhiteSpace(cond) == false) { cond = " WHERE " + cond; }
-                ret = builder.ToString() + cond + " RETURN p";
+                ret = builder.ToString() + cond + " UNWIND nodes(p) as bnest_nodes RETURN DISTINCT bnest_nodes ORDER BY LOWER(bnest_nodes.name)";
             }
             catch (Exception e)
             {

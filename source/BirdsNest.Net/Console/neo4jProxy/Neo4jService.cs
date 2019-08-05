@@ -493,6 +493,41 @@ namespace Console.neo4jProxy
             }
         }
 
+        public ResultSet AdvancedSearch(neo4jProxy.AdvancedSearch.Search search)
+        {
+            //validate the types/labels 
+            List<string> edgetypes = GetEdgeLabels();
+            List<string> nodetypes = GetNodeLabels();
+
+            using (ISession session = this._driver.Session())
+            {
+                ResultSet returnedresults = new ResultSet();
+                try
+                {
+                    string query = search.ToSearchString();
+                    //var props = new
+                    //{
+                    //    sourceprop = sourceprop == null ? string.Empty : sourceprop,
+                    //    sourceval = sourceval == null ? string.Empty : sourceval,
+                    //    tarprop = tarprop == null ? string.Empty : tarprop,
+                    //    tarval = tarval == null ? string.Empty : tarval
+                    //};
+
+                    session.ReadTransaction(tx =>
+                    {
+                        IStatementResult dbresult = tx.Run(query);
+                        returnedresults.Append(ParseResults(dbresult));
+                    });
+                }
+                catch
+                {
+                    //logging to add
+                }
+
+                return returnedresults;
+            }
+        }
+
         public List<string> GetNodeLabels()
         {
             IStatementResult dbresult = null;

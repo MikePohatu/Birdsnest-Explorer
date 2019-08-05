@@ -148,17 +148,7 @@ function drawGraph(selectid, loaddata) {
         menuShowHide();
     }
 
-    searchcontroller = new AdvancedSearchController("zoomLayer");
-
-    d3.select("#searchNodeSaveBtn").on("click", searchcontroller.onSearchNodeSaveBtnClicked);
-    d3.select("#searchEdgeSaveBtn").on("click", searchcontroller.onSearchEdgeSaveBtnClicked);
-    d3.select("#addIcon").on("click", function () {
-        searchcontroller.AddNode();
-    });
-
-    updateNodeLabels();
-
-
+    searchcontroller = new AdvancedSearchCoordinator("zoomLayer");
 }
 
 //https://stackoverflow.com/questions/641857/javascript-window-resize-event
@@ -429,11 +419,11 @@ function eyeShowHideLabel(label, show) {
 }
 
 function onTargetAddClicked(nodeid) {
-    updateSearchDetails(nodeid, 'target');
+    //updateSearchDetails(nodeid, 'target');
 }
 
 function onSourceAddClicked(nodeid) {
-    updateSearchDetails(nodeid, 'source');
+    //updateSearchDetails(nodeid, 'source');
 }
 
 function updateSearchDetails(nodeid, elprefix) {
@@ -1618,59 +1608,4 @@ function addLabelOptions(selectbox, labelList) {
 
 function clearOptions(selectbox) {
     selectbox.options.length = 0;
-}
-
-function updateNodeProps() {
-    console.log("updateNodeProps started");
-    var type = document.getElementById("nodeType").value;
-    var el = document.getElementById("nodeProp");
-
-    clearOptions(el);
-    let topoption = addOption(el, "", "");
-    topoption.setAttribute("disabled", "");
-    topoption.setAttribute("hidden", "");
-    topoption.setAttribute("selected", "");
-
-    console.log(nodeDetails);
-    console.log(type);
-
-    if (type || type==="*") {
-        var typedeets = nodeDetails[type];
-        if (typedeets) {
-            typedeets.forEach(function (prop) {
-                addOption(el, prop, prop);
-            });
-        }
-        else {
-            addOption(el, "name", "name");
-        }
-    }
-}
-
-function updateNodeLabels() {
-    var el = document.getElementById("nodeType");
-    clearOptions(el);
-    let topoption = addOption(el, "*", "");
-    topoption.setAttribute("selected", "");
-
-    apiGetJson("/api/graph/node/labels", function (data) {
-        data.forEach(function (label) {
-            addOption(el, label, label);
-        });
-    });
-}
-
-bindAutoComplete("source");
-bindAutoComplete("target");
-function bindAutoComplete(elementPrefix) {
-    $("#" + elementPrefix + "Val").autocomplete({
-        source: function (request, response) {
-            //console.log("autoComplete: "+ request.term);
-            var type = document.getElementById(elementPrefix + "Type").value;
-            var prop = document.getElementById(elementPrefix + "Prop").value;
-
-            var url = "/api/graph/node/values?type=" + type + "&property=" + prop + "&searchterm=" + request.term;
-            apiGetJson(url, response);
-        }
-    });
 }

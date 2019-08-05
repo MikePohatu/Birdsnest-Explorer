@@ -102,8 +102,8 @@ function SearchEdge() {
     this.Name = "";
     this.Label = "";
     this.Direction = ">";
-    this.Min = -1;
-    this.Max = -1;
+    this.Min = 1;
+    this.Max = 1;
 }
 
 function MathCondition() {

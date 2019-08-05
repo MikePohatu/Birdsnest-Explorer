@@ -78,5 +78,12 @@ namespace Console.Controllers
         {
             return this._plugingmanager.SubTypeProperties;
         }
+
+        [HttpPost]
+        public IActionResult AdvancedSearch([FromBody] neo4jProxy.AdvancedSearch.Search search)
+        {
+            ResultSet results = this._service.AdvancedSearch(search);
+            return PartialView("SearchResultsDetail", results);
+        }
     }
 }
