@@ -67,17 +67,19 @@
             <div class="input-group" id="hopsPane">
                 <div class="grid-x input-group-field">
                     <div class="cell small-2">
-                        <input type="number" id="sliderMin" class="hopscontrol">
+                        <input type="text" id="minSliderVal" class="hopscontrol">
                     </div>
                     <div class="cell small-8">
-                        <div class="slider hopscontrol" data-slider data-initial-start="0" data-initial-end="1" data-start="0" data-end="20">
-                            <span class="slider-handle" data-slider-handle role="slider" aria-controls="sliderMin" title="Minimum hop count"></span>
-                            <span class="slider-fill" data-slider-fill></span>
-                            <span class="slider-handle" data-slider-handle role="slider" aria-controls="sliderMax" title="Maximum hop count"></span>
+                        <div id="hopsSlider" class="slider hopscontrol" data-slider data-initial-start="1" data-initial-end="1" data-start="0" data-end="20">
+                            <span id="minSlider" class="slider-handle" data-slider-handle role="slider" title="Minimum hop count" aria-controls="minSliderVal"></span>
+                            <span id="sliderFill" class="slider-fill" data-slider-fill></span>
+                            <span id="maxSlider" class="slider-handle" data-slider-handle role="slider" title="Maximum hop count" aria-controls="maxSliderVal"></span>
+                            @*<input id="minSliderVal" type="hidden">
+                            <input id="maxSliderVal" type="hidden">*@
                         </div>
                     </div>
                     <div class="cell small-2">
-                        <input type="number" id="sliderMax" class="hopscontrol">
+                        <input type="text" id="maxSliderVal" class="hopscontrol">
                     </div>
                 </div>
             </div>

@@ -33,11 +33,31 @@ function AdvancedSearchCoordinator(elementid) {
     d3.select("#advSearchClearIcon").on("click", function () {
         me.Clear();
     });
-    d3.selectAll(".hopscontrol").on("input", function () {
+    d3.select("#hopsSwitch").on("change", function () {
         me.onHopsSwitchChanged();
     });
 
-    
+    //d3 select doesn't work on this for some reason
+    //$("#hopsSlider").on('moved.zf.slider', function () {
+    //    //console.log($(this).chlidren('.slider-handle').attr('aria-valuenow'));
+    //    console.log("hopsSlider on.moved.zf.slider");
+
+
+    //    function updateSliderView(slidervalid, sliderviewid) {
+    //        var val = document.getElementById(slidervalid).value;
+    //        console.log(val);
+    //        if (val < 0 || val > 20) {
+    //            document.getElementById(sliderviewid).value = "*";
+    //        }
+    //        else {
+    //            document.getElementById(sliderviewid).value = val;
+    //        }
+    //    }
+
+    //    updateSliderView("minSliderVal", "minSliderView");
+    //    updateSliderView("maxSliderVal", "maxSliderView");
+    //});
+
     this.UpdateNodeLabels();
 }
 
@@ -177,30 +197,43 @@ AdvancedSearchCoordinator.prototype.onSearchEdgeClicked = function () {
     //console.log(this);
     var datum = AdvancedSearchCoordinator.prototype.UpdateItemDatum("searchEdgeDetails", this);
     document.getElementById("edgeType").value = datum.Label;
-    document.getElementById("sliderMin").value = datum.Min;
-    document.getElementById("sliderMax").value = datum.Max;
     document.getElementById("edgeIdentifier").value = datum.Name;
-    var hopsswitch = document.getElementById("hopsSwitch");
 
-    if (datum.Min === -1 || datum.Max === -1) {
+    var hopsswitch = document.getElementById("hopsSwitch");
+    var minsliderval = document.getElementById("minSliderVal");
+    var maxsliderval = document.getElementById("maxSliderVal");
+
+    if (datum.Min < 0 || datum.Max < 0) {
         hopsswitch.checked = false;
+        minsliderval.value = 1;
+        maxsliderval.value = 1;
     }
     else {
         hopsswitch.checked = true;
+        minsliderval.value = datum.Min;
+        maxsliderval.value = datum.Max;
     }
+
+    hopsswitch.dispatchEvent(new Event('change'));
+    minsliderval.dispatchEvent(new Event('change'));
+    maxsliderval.dispatchEvent(new Event('change'));
+    //document.getElementById("sliderFill").dispatchEvent(new Event('input'));
 };
 
 AdvancedSearchCoordinator.prototype.onHopsSwitchChanged = function () {
     console.log("AdvancedSearchCoordinator.prototype.onHopsSwitchChanged started");
     var hopsswitch = document.getElementById("hopsSwitch");
-    d3.select("#hopsPane")
-        .classed("disabled", !hopsswitch.checked);
-    //if (hopsswitch.checked) {
-    //    hopspane.disabled = true;
-    //}
-    //else {
-    //    hopspane.enabled = false;
-    //}
+    console.log(hopsswitch.checked);
+
+    if (hopsswitch.checked) {
+        d3.selectAll(".hopscontrol")
+            .attr("disabled", null);
+    }
+    else {
+        d3.selectAll(".hopscontrol")
+            .attr("disabled", "disabled");
+    }
+    
 };
 
 AdvancedSearchCoordinator.prototype.UpdateItemDatum = function (elementid, callingitem) {
@@ -250,12 +283,21 @@ AdvancedSearchCoordinator.prototype.onSearchEdgeSaveBtnClicked = function () {
         edgeEl.classed(edge.Label, false);
     }
 
-
     edge.Name = document.getElementById("edgeIdentifier").value;
     edge.Label = document.getElementById("edgeType").value;
-    edge.Min = document.getElementById("sliderMin").value;
-    edge.Max = document.getElementById("sliderMax").value;
-    console.log(edge);
+
+    var hopsswitch = document.getElementById("hopsSwitch");
+    if (hopsswitch.checked) {
+        edge.Min = document.getElementById("minSliderVal").value;
+        edge.Max = document.getElementById("maxSliderVal").value;
+    }
+    else {
+        edge.Min = -1;
+        edge.Max = -1;
+    }
+    
+    
+    //console.log(edge);
 
     edgeEl
         .attr("id", "searchedge_" + edge.Name)
