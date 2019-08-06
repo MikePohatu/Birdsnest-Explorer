@@ -74,8 +74,6 @@
                             <span id="minSlider" class="slider-handle" data-slider-handle role="slider" title="Minimum hop count" aria-controls="minSliderVal"></span>
                             <span id="sliderFill" class="slider-fill" data-slider-fill></span>
                             <span id="maxSlider" class="slider-handle" data-slider-handle role="slider" title="Maximum hop count" aria-controls="maxSliderVal"></span>
-                            @*<input id="minSliderVal" type="hidden">
-                            <input id="maxSliderVal" type="hidden">*@
                         </div>
                     </div>
                     <div class="cell small-2">
@@ -86,9 +84,9 @@
 
             <div class="grid-x cell align-top">
                 <span class="cell small-3 align-middle">Direction</span>
-                <a class="cell small-1 text-left" href='javascript:toggleDir()'>
-                    <i id='dirIcon' class="fas fa-arrow-right" data-dir="R"></i>
-                </a>
+                <div id='dirIconClicker' class="cell small-1 text-left">
+                    <i id='dirIcon' class="fas fa-arrow-right" data-dir=">"></i>
+                </div>
             </div>
         </fieldset>
         <button class="close-button" data-close aria-label="Close query dialog" type="button">&times;</button>

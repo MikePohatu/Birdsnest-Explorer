@@ -16,7 +16,10 @@ namespace Console.neo4jProxy.AdvancedSearch
 
         public string ToSearchString()
         {
-            return "(" + this.Name + ":" + this.Label + ")";
+            string s = string.Empty;
+            if (string.IsNullOrEmpty(this.Label)) { s = "(" + this.Name + ")"; }
+            else { s = "(" + this.Name + ":" + this.Label + ")"; }
+            return s;
         }
     }
 }

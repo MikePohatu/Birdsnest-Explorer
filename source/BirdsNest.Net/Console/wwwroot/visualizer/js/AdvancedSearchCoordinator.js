@@ -1,10 +1,13 @@
 ﻿//requires d3js
 function AdvancedSearchCoordinator(elementid) {
-    console.log("AdvancedSearchCoordinator started: " + elementid);
-    console.log(this);
+    //console.log("AdvancedSearchCoordinator started: " + elementid);
+    //console.log(this);
     var me = this;
     me.AdvancedSearch = new AdvancedSearch();
     me.ElementID = elementid;
+    me.Radius = 30;
+    me.XSpacing = 150;
+    me.YSpacing = 70;
 
     bindEnterToButton("searchEdgeDetails", "searchEdgeSaveBtn");
     bindEnterToButton("searchNodeDetails", "searchNodeSaveBtn");
@@ -22,8 +25,15 @@ function AdvancedSearchCoordinator(elementid) {
     }
 
     //d3.select("#nodeType").on("change", this.UpdateNodeProps);
-    d3.select("#searchNodeSaveBtn").on("click", this.onSearchNodeSaveBtnClicked);
-    d3.select("#searchEdgeSaveBtn").on("click", this.onSearchEdgeSaveBtnClicked);
+    d3.select("#searchNodeSaveBtn").on("click", function () {
+        me.onSearchNodeSaveBtnClicked();
+    });
+    d3.select("#searchEdgeSaveBtn").on("click", function () {
+        me.onSearchEdgeSaveBtnClicked();
+    });
+    d3.select("#dirIconClicker").on("click", function () {
+        me.ToggleDir();
+    });
     d3.select("#searchBtn").on("click", function () {
         me.Search();
     });
@@ -36,27 +46,6 @@ function AdvancedSearchCoordinator(elementid) {
     d3.select("#hopsSwitch").on("change", function () {
         me.onHopsSwitchChanged();
     });
-
-    //d3 select doesn't work on this for some reason
-    //$("#hopsSlider").on('moved.zf.slider', function () {
-    //    //console.log($(this).chlidren('.slider-handle').attr('aria-valuenow'));
-    //    console.log("hopsSlider on.moved.zf.slider");
-
-
-    //    function updateSliderView(slidervalid, sliderviewid) {
-    //        var val = document.getElementById(slidervalid).value;
-    //        console.log(val);
-    //        if (val < 0 || val > 20) {
-    //            document.getElementById(sliderviewid).value = "*";
-    //        }
-    //        else {
-    //            document.getElementById(sliderviewid).value = val;
-    //        }
-    //    }
-
-    //    updateSliderView("minSliderVal", "minSliderView");
-    //    updateSliderView("maxSliderVal", "maxSliderView");
-    //});
 
     this.UpdateNodeLabels();
 }
@@ -87,14 +76,10 @@ AdvancedSearchCoordinator.prototype.Clear = function () {
 };
 
 AdvancedSearchCoordinator.prototype.AddNode = function () {
-    //console.log("AdvancedSearchCoordinator.prototype.onAddButtonPressed started");
-    //console.log(this);
-
+    console.log("AdvancedSearchCoordinator.prototype.onAddButtonPressed started");
+    console.log(this);
     var me = this;
-    var radius = 30;
-
-    var xspacing = 150;
-    var yspacing = 70;
+    
     //console.log(me);
     me.AdvancedSearch.AddNode();
 
@@ -105,104 +90,121 @@ AdvancedSearchCoordinator.prototype.AddNode = function () {
         .append("g")
         .attr("id", function (d) { return "searchnode_" + d.Name; })
         .classed("searchnode",true)
-        .attr("width", radius)
-        .attr("height", radius)
-        .attr("transform", function (d) { return "translate(" + (xspacing * me.AdvancedSearch.AddedNodes - xspacing * 0.5) + "," + yspacing + ")"; })
+        .attr("width", me.Radius)
+        .attr("height", me.Radius)
+        .attr("transform", function (d) { return "translate(" + (me.XSpacing * me.AdvancedSearch.AddedNodes - me.XSpacing * 0.5) + "," + me.YSpacing + ")"; })
         .attr("data-open", "searchNodeDetails")
         .on("click", me.onSearchNodeClicked);
 
     newnodeg.append("circle")
         .attr("id", function (d) { return "searchnodebg_" + d.Name; })
         .classed("searchnodecircle",true)
-        .attr("r",radius);
+        .attr("r",me.Radius);
 
     newnodeg.append("text")
         .text(function (d) { return d.Name; })
         .attr("text-anchor", "middle")
         .attr("dominant-baseline", "central");
-        //.attr("transform", function (d) { return "translate(0," + (radius + 10) + ")"; });
+        //.attr("transform", function (d) { return "translate(0," + (me.Radius + 10) + ")"; });
 
     if (me.AdvancedSearch.Nodes.length > 1) {
-        var rectwidth = radius;
-        var rectheight = radius *0.7;
-        var subspacingx = (me.AdvancedSearch.AddedNodes - 0.5) * xspacing - rectwidth / 2 - xspacing * 0.5;
-        var subspacingy = yspacing - rectheight / 2;
-        var relarrowwidth = 20;
-
-        var newedgeg = viewel.selectAll(".searchedge")
-            .data(me.AdvancedSearch.Edges, function (d) { return d.Name; })
-            .enter()
-            .append("g")
-            .attr("id", function (d) { return "searchedge_" + d.Name; })
-            .classed("searchedge", true)
-            .on("click", me.onSearchEdgeClicked)
-            .attr("transform", function (d) { return "translate(" + subspacingx + "," + subspacingy + ")"; })
-            .attr("data-open", "searchEdgeDetails");
-
-        newedgeg.append("rect")
-            .attr("id", function (d) { return "searchedgebg_" + d.Name; })
-            .classed("searchedgerect", true)
-            .attr("width", rectwidth)
-            .attr("height", rectheight);
-
-        newedgeg.append("text")
-            .text(function (d) { return d.Name; })
-            .attr("text-anchor", "middle")
-            .attr("dominant-baseline", "middle")
-            .attr("x", rectwidth / 2)
-            .attr("y", rectheight / 2);
-
-        newedgeg.selectAll(".searchleftarrow")
-            .data(me.AdvancedSearch.Edges, function (d) { return d.Name; })
-            .enter()
-            .append("i")
-            .attr("class", function (d) {
-                if (d.Direction === ">") {
-                    return "fas fa-minus";
-                }
-                else { return "fas fa-less-than"; }
-            })
-            .classed("searcharrow", true)
-            .attr("x", 0 - relarrowwidth)
-            .attr("y", 0)
-            .attr("width", relarrowwidth)
-            .attr("height", relarrowwidth);
-
-        newedgeg.selectAll(".searchrightarrow")
-            .data(me.AdvancedSearch.Edges, function (d) { return d.Name; })
-            .enter()
-            .append("i")
-            .attr("class", function (d) {
-                if (d.Direction === "<") { return "fas fa-minus"; }
-                else { return "fas fa-arrow-right"; }
-            })
-            .classed("searcharrow", true)
-            .attr("x", rectwidth)
-            .attr("y",0)
-            .attr("width", relarrowwidth)
-            .attr("height", relarrowwidth);
+        me.AddEdge(me.AdvancedSearch.AddedNodes -1);
     }
+};
+
+AdvancedSearchCoordinator.prototype.AddEdge = function (slotnum) {
+    console.log("AdvancedSearchCoordinator.prototype.AddEdge start: " + slotnum);
+    console.log(this);
+    console.log(typeof slotnum);
+    var me = this;
+
+    var rectwidth = me.Radius;
+    var rectheight = me.Radius * 0.7;
+    var subspacingx = (slotnum + 0.5) * me.XSpacing - rectwidth / 2 - me.XSpacing * 0.5;
+    var subspacingy = me.YSpacing - rectheight / 2;
+    var relarrowwidth = 20;
+
+    console.log("subspacingx: " + subspacingx);
+    console.log("subspacingy: " + subspacingy);
+
+    var viewel = d3.select("#" + me.ElementID);
+    var newedgeg = viewel.selectAll(".searchedge")
+        .data(me.AdvancedSearch.Edges, function (d) { return d.Name; })
+        .enter()
+        .append("g")
+        .attr("id", function (d) { return "searchedge_" + d.Name; })
+        .attr("data-slotnum",slotnum)
+        .classed("searchedge", true)
+        .on("click", function () { me.onSearchEdgeClicked(this); })
+        .attr("transform", function (d) { return "translate(" + subspacingx + "," + subspacingy + ")"; })
+        .attr("data-open", "searchEdgeDetails");
+
+    newedgeg.append("rect")
+        .attr("id", function (d) { return "searchedgebg_" + d.Name; })
+        .classed("searchedgerect", true)
+        .attr("width", rectwidth)
+        .attr("height", rectheight);
+
+    newedgeg.append("text")
+        .text(function (d) { return d.Name; })
+        .attr("text-anchor", "middle")
+        .attr("dominant-baseline", "middle")
+        .attr("x", rectwidth / 2)
+        .attr("y", rectheight / 2);
+
+    newedgeg.selectAll(".searchleftarrow")
+        .data(me.AdvancedSearch.Edges, function (d) { return d.Name; })
+        .enter()
+        .append("i")
+        .attr("id", function (d) { return "searchleftarr_" + d.Name; })
+        .attr("class", function (d) {
+            if (d.Direction === ">") { return "fas fa-minus"; }
+            else { return "fas fa-arrow-left"; }
+        })
+        .classed("searcharrow", true)
+        .attr("x", 0 - relarrowwidth)
+        .attr("y", 0)
+        .attr("width", relarrowwidth)
+        .attr("height", relarrowwidth);
+
+    newedgeg.selectAll(".searchrightarrow")
+        .data(me.AdvancedSearch.Edges, function (d) { return d.Name; })
+        .enter()
+        .append("i")
+        .attr("id", function (d) { return "searchrightarr_" + d.Name; })
+        .attr("class", function (d) {
+            if (d.Direction === "<") { return "fas fa-minus"; }
+            else { return "fas fa-arrow-right"; }
+        })
+        .classed("searcharrow", true)
+        .attr("x", rectwidth)
+        .attr("y", 0)
+        .attr("width", relarrowwidth)
+        .attr("height", relarrowwidth);
 };
 
 
 AdvancedSearchCoordinator.prototype.onSearchNodeClicked = function () {
     //console.log("AdvancedSearchCoordinator.prototype.onSearchNodeClicked started");
     //console.log(this);
-    var datum = AdvancedSearchCoordinator.prototype.UpdateItemDatum("searchNodeDetails", this);
+    var datum = this.UpdateItemDatum("searchNodeDetails", this);
     document.getElementById("nodeType").value = datum.Label;
     document.getElementById("nodeIdentifier").value = datum.Name;
+    this.UpdateDirIcon(datum.Direction);
 };
 
-AdvancedSearchCoordinator.prototype.onSearchEdgeClicked = function () {
+AdvancedSearchCoordinator.prototype.onSearchEdgeClicked = function (callingEl) {
     //console.log("AdvancedSearchCoordinator.prototype.onSearchEdgeClicked started");
     //console.log(this);
-    var datum = AdvancedSearchCoordinator.prototype.UpdateItemDatum("searchEdgeDetails", this);
+    var datum = this.UpdateItemDatum("searchEdgeDetails", callingEl);
     document.getElementById("edgeType").value = datum.Label;
     document.getElementById("edgeIdentifier").value = datum.Name;
 
     var hopsswitch = document.getElementById("hopsSwitch");
     var minsliderval = document.getElementById("minSliderVal");
     var maxsliderval = document.getElementById("maxSliderVal");
+
+    this.UpdateDirIcon(datum.Direction, document.getElementById("dirIcon"));
 
     if (datum.Min < 0 || datum.Max < 0) {
         hopsswitch.checked = false;
@@ -222,9 +224,9 @@ AdvancedSearchCoordinator.prototype.onSearchEdgeClicked = function () {
 };
 
 AdvancedSearchCoordinator.prototype.onHopsSwitchChanged = function () {
-    console.log("AdvancedSearchCoordinator.prototype.onHopsSwitchChanged started");
+    //console.log("AdvancedSearchCoordinator.prototype.onHopsSwitchChanged started");
     var hopsswitch = document.getElementById("hopsSwitch");
-    console.log(hopsswitch.checked);
+    //console.log(hopsswitch.checked);
 
     if (hopsswitch.checked) {
         d3.selectAll(".hopscontrol")
@@ -254,16 +256,15 @@ AdvancedSearchCoordinator.prototype.onSearchNodeSaveBtnClicked = function () {
     var node = d3.select("#searchNodeDetails").datum();
     var nodeEl = d3.select("#searchnode_" + node.Name);
 
-    console.log(node);
+    //console.log(node);
 
     if (node.Label !== "") {
         nodeEl.classed(node.Label, false);
     }
-    
 
     node.Name = document.getElementById("nodeIdentifier").value;
     node.Label = document.getElementById("nodeType").value;
-    console.log(node);
+    //console.log(node);
 
     nodeEl
         .attr("id", "searchnode_" + node.Name)
@@ -272,20 +273,53 @@ AdvancedSearchCoordinator.prototype.onSearchNodeSaveBtnClicked = function () {
         .text(node.Name);
 };
 
+AdvancedSearchCoordinator.prototype.ToggleDir = function() {
+    //console.log("AdvancedSearchCoordinator.prototype.ToggleDir");
+    var icon = document.getElementById("dirIcon");
+    var dir = icon.dataset.dir;
+    if (dir === '>') {
+        AdvancedSearchCoordinator.prototype.UpdateDirIcon("<", icon);
+    }
+    else if (dir === '<') {
+        AdvancedSearchCoordinator.prototype.UpdateDirIcon(">", icon);
+    }
+};
+
+AdvancedSearchCoordinator.prototype.UpdateDirIcon = function (dir, iconEl) {
+    //console.log("AdvancedSearchCoordinator.prototype.UpdateDirIcon started");
+    iconEl.dataset.dir = dir;
+    if (dir === '<') {
+        iconEl.classList.remove("fa-arrow-right");
+        iconEl.classList.add("fa-arrow-left");
+    }
+    else {
+        iconEl.classList.remove("fa-arrow-left");
+        iconEl.classList.add("fa-arrow-right");
+    }
+    //console.log("newdir: " + dir);
+};
+
 AdvancedSearchCoordinator.prototype.onSearchEdgeSaveBtnClicked = function () {
     console.log("AdvancedSearchCoordinator.prototype.onSearchNodeSaveBtnClicked started");
     console.log(this);
+
+    var me = this;
     var edge = d3.select("#searchEdgeDetails").datum();
     var edgeEl = d3.select("#searchedge_" + edge.Name);
 
-    console.log(edge);
+    //console.log(edge);
 
-    if (edge.Label !== "") {
-        edgeEl.classed(edge.Label, false);
-    }
+    //if (edge.Label !== "") {
+    //    edgeEl.classed(edge.Label, false);
+    //}
 
     edge.Name = document.getElementById("edgeIdentifier").value;
     edge.Label = document.getElementById("edgeType").value;
+    var newdir = document.getElementById('dirIcon').dataset.dir;
+    if (newdir !== edge.Direction) {
+        edge.Direction = document.getElementById('dirIcon').dataset.dir;
+    }
+    
 
     var hopsswitch = document.getElementById("hopsSwitch");
     if (hopsswitch.checked) {
@@ -296,21 +330,20 @@ AdvancedSearchCoordinator.prototype.onSearchEdgeSaveBtnClicked = function () {
         edge.Min = -1;
         edge.Max = -1;
     }
-    
-    
-    //console.log(edge);
 
-    edgeEl
-        .attr("id", "searchedge_" + edge.Name)
-        .classed(edge.Label, true);
-    edgeEl.select("text")
-        .text(edge.Name);
+    var edgeslot = parseInt(edgeEl.attr("data-slotnum"),10);
+    console.log("slot");
+    console.log(edgeslot);
+    edgeEl.remove();
+    setTimeout(function () {
+        me.AddEdge(edgeslot);
+    },50);
 };
 
 
 
 AdvancedSearchCoordinator.prototype.UpdateNodeProps = function () {
-    console.log("updateNodeProps started");
+    //console.log("updateNodeProps started");
     var type = document.getElementById("nodeType").value;
     var el = document.getElementById("nodeProp");
 
@@ -320,8 +353,8 @@ AdvancedSearchCoordinator.prototype.UpdateNodeProps = function () {
     topoption.setAttribute("hidden", "");
     topoption.setAttribute("selected", "");
 
-    console.log(nodeDetails);
-    console.log(type);
+    //console.log(nodeDetails);
+    //console.log(type);
 
     if (type || type === "*") {
         var typedeets = nodeDetails[type];

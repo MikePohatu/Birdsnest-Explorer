@@ -1504,30 +1504,6 @@ function search() {
     });
 }
 
-function toggleDir() {
-    //console.log("toggleDir");
-    var icon = document.getElementById("dirIcon");
-    var d = $(icon).attr('data-dir');
-    if (d === 'R') {
-        icon.classList.remove("fa-arrow-right");
-        icon.classList.add("fa-arrow-left");
-        $(icon).attr('data-dir', 'L');
-        //icon.classList.add("fa-exchange-alt");
-        //$(icon).attr('data-dir', 'B');
-    }
-    //} else if (d == 'B') {
-    //    icon.classList.remove("fa-exchange-alt");
-    //    icon.classList.add("fa-arrow-left");
-    //    $(icon).attr('data-dir', 'L');
-    //} 
-    else if (d === 'L') {
-        icon.classList.remove("fa-arrow-left");
-        icon.classList.add("fa-arrow-right");
-        $(icon).attr('data-dir', 'R');
-    }
-    //console.log($(icon).attr('data-dir'));
-}
-
 
 function getNode(nodeid) {
     //console.log(nodeid);
