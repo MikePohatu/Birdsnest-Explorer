@@ -25,35 +25,37 @@ AdvancedSearch.prototype.AddNode = function () {
     //console.log(me);
 };
 
+
+//remove the node and return the index of the node that was removed
 AdvancedSearch.prototype.RemoveNode = function (node) {
     var me = this;
-    var found = false;
+    var foundindex = -1;
     for (i = 0; i < me.Nodes.length; i++) {
-        if (found) { //if found already, start shifting nodes back on in the array
+        if (foundindex !== -1) { //if found already, start shifting nodes back on in the array
             me.Nodes[i - 1] = me.Nodes[i];
             if (i < me.Edges.length) { me.Edges[i - 1] = me.Edges[i]; }
         }
         else {
             if (me.Nodes[i] === node) {
-                found = true;
+                foundindex = i;
                 if (i === 0) {
                     me.Nodes.shift(); //remove the first node
                     if (me.Edges.length > 0) { me.Edges.shift(); } //if there is an edge, remove that too
 
                     //we're done
-                    return found;
+                    return foundindex;
                 }
             }
         }
     }
 
-    if (found) {
+    if (foundindex !== -1) {
         // pop off the end if the node wasn't first i.e hasn't been removed with shift()
         me.Nodes.pop();
         me.Edges.pop();
     }
 
-    return found;
+    return foundindex;
 };
 
 AdvancedSearch.prototype.MoveNodeRight = function (node) {

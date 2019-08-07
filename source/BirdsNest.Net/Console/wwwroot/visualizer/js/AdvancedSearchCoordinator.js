@@ -3,11 +3,11 @@ function AdvancedSearchCoordinator(elementid) {
     //console.log("AdvancedSearchCoordinator started: " + elementid);
     //console.log(this);
     var me = this;
-    me.AdvancedSearch = new AdvancedSearch();
-    me.ElementID = elementid;
-    me.Radius = 30;
-    me.XSpacing = 170;
-    me.YSpacing = 70;
+    this.AdvancedSearch = new AdvancedSearch();
+    this.ElementID = elementid;
+    this.Radius = 30;
+    this.XSpacing = 170;
+    this.YSpacing = 70;
 
     bindEnterToButton("searchEdgeDetails", "searchEdgeSaveBtn");
     bindEnterToButton("searchNodeDetails", "searchNodeSaveBtn");
@@ -28,6 +28,9 @@ function AdvancedSearchCoordinator(elementid) {
     d3.select("#searchNodeSaveBtn").on("click", function () {
         me.onSearchNodeSaveBtnClicked();
     });
+    d3.select("#searchNodeDeleteBtn").on("click", function () {
+        me.onSearchNodeDelBtnClicked(this);
+    });
     d3.select("#searchEdgeSaveBtn").on("click", function () {
         me.onSearchEdgeSaveBtnClicked();
     });
@@ -38,7 +41,9 @@ function AdvancedSearchCoordinator(elementid) {
         me.Search();
     });
     d3.select("#addIcon").on("click", function () {
-        me.AddNode();
+        me.AdvancedSearch.AddNode();
+        me.UpdateNodes();
+        me.UpdateEdges();
     });
     d3.select("#advSearchClearIcon").on("click", function () {
         me.Clear();
@@ -46,16 +51,17 @@ function AdvancedSearchCoordinator(elementid) {
     d3.select("#hopsSwitch").on("change", function () {
         me.onHopsSwitchChanged();
     });
+    
 
-    this.UpdateNodeLabels();
+    me.UpdateNodeLabels();
 }
 
 AdvancedSearchCoordinator.prototype.Search = function () {
     //console.log("AdvancedSearchCoordinator.prototype.Search started");
     //console.log(this);
-    var me = this;
+    
 
-    var postdata = JSON.stringify(me.AdvancedSearch);
+    var postdata = JSON.stringify(this.AdvancedSearch);
     //console.log("search post:");
     //console.log(postdata);
     showSearchSpinner();
@@ -69,78 +75,85 @@ AdvancedSearchCoordinator.prototype.Search = function () {
 AdvancedSearchCoordinator.prototype.Clear = function () {
     //console.log("AdvancedSearchCoordinator.prototype.Clear started");
     //console.log(this);
-    var me = this;
-    var viewel = d3.select("#" + me.ElementID);
+    
+    var viewel = d3.select("#" + this.ElementID);
     viewel.selectAll("*").remove();
-    me.AdvancedSearch = new AdvancedSearch();
+    this.AdvancedSearch = new AdvancedSearch();
 };
 
-AdvancedSearchCoordinator.prototype.AddNode = function () {
-    //console.log("AdvancedSearchCoordinator.prototype.onAddButtonPressed started");
+AdvancedSearchCoordinator.prototype.UpdateNodes = function () {
+    //console.log("AdvancedSearchCoordinator.prototype.UpdateNodes started");
     //console.log(this);
     var me = this;
-    
-    //console.log(me);
-    me.AdvancedSearch.AddNode();
+    var currslot = 0;
 
-    var viewel = d3.select("#" + me.ElementID);
+    var viewel = d3.select("#" + this.ElementID);
     var newnodeg = viewel.selectAll(".searchnode")
-        .data(me.AdvancedSearch.Nodes, function (d) { return d.Name; })
+        .data(this.AdvancedSearch.Nodes, function (d) { return d.Name; })
         .enter()
         .append("g")
         .attr("id", function (d) { return "searchnode_" + d.Name; })
         .classed("searchnode",true)
-        .attr("width", me.Radius)
-        .attr("height", me.Radius)
-        .attr("transform", function (d) { return "translate(" + (me.XSpacing * me.AdvancedSearch.AddedNodes - me.XSpacing * 0.5) + "," + me.YSpacing + ")"; })
+        .attr("width", this.Radius)
+        .attr("height", this.Radius)
         .attr("data-open", "searchNodeDetails")
         .on("click", function () {
             me.onSearchNodeClicked(this);
         });
 
+    viewel.selectAll(".searchnode")
+        .data(this.AdvancedSearch.Nodes, function (d) { return d.Name; })
+        .attr("transform", function () {
+            currslot++;
+            return "translate(" + (me.XSpacing * currslot - me.XSpacing * 0.5) + "," + me.YSpacing + ")";
+        });
+
     newnodeg.append("circle")
         .attr("id", function (d) { return "searchnodebg_" + d.Name; })
         .classed("searchnodecircle",true)
-        .attr("r",me.Radius);
+        .attr("r",this.Radius);
 
     newnodeg.append("text")
         .text(function (d) { return d.Name; })
         .attr("text-anchor", "middle")
         .attr("dominant-baseline", "central");
-        //.attr("transform", function (d) { return "translate(0," + (me.Radius + 10) + ")"; });
-
-    if (me.AdvancedSearch.Nodes.length > 1) {
-        me.AddEdge(me.AdvancedSearch.AddedNodes -1);
-    }
+        //.attr("transform", function (d) { return "translate(0," + (this.Radius + 10) + ")"; });
 };
 
-AdvancedSearchCoordinator.prototype.AddEdge = function (slotnum) {
-    //console.log("AdvancedSearchCoordinator.prototype.AddEdge start: " + slotnum);
+AdvancedSearchCoordinator.prototype.UpdateEdges = function () {
+    console.log("AdvancedSearchCoordinator.prototype.UpdateEdges start");
     //console.log(this);
     //console.log(typeof slotnum);
     var me = this;
 
-    var rectwidth = me.Radius*2;
-    var rectheight = me.Radius * 0.7;
-    var subspacingx = (slotnum + 0.5) * me.XSpacing - rectwidth / 2 - me.XSpacing * 0.5;
-    var subspacingy = me.YSpacing - rectheight / 2;
+    var rectwidth = this.Radius*2;
+    var rectheight = this.Radius * 0.7;
+    
     var relarrowwidth = 20;
-
+    var currslot = 0;
     //console.log("subspacingx: " + subspacingx);
     //console.log("subspacingy: " + subspacingy);
 
-    var viewel = d3.select("#" + me.ElementID);
+    var viewel = d3.select("#" + this.ElementID);
     var newedgeg = viewel.selectAll(".searchedge")
-        .data(me.AdvancedSearch.Edges, function (d) { return d.Name; })
+        .data(this.AdvancedSearch.Edges)
         .enter()
         .append("g")
         .attr("id", function (d) { return "searchedge_" + d.Name; })
-        .attr("data-slotnum", slotnum)
         .attr("class", function (d) { return d.Label; })
         .classed("searchedge", true)
-        .on("click", function () { me.onSearchEdgeClicked(this); })
-        .attr("transform", function (d) { return "translate(" + subspacingx + "," + subspacingy + ")"; })
+        .on("click", function () { this.onSearchEdgeClicked(this); })
         .attr("data-open", "searchEdgeDetails");
+
+    viewel.selectAll(".searchedge")
+        .data(this.AdvancedSearch.Edges)
+        .attr("transform", function () {
+            currslot++;
+            var subspacingx = (currslot + 0.5) * me.XSpacing - rectwidth / 2 - me.XSpacing * 0.5;
+            var subspacingy = me.YSpacing - rectheight / 2;
+            console.log(currslot + ": " + subspacingx + ": " + subspacingy);
+            return "translate(" + subspacingx + "," + subspacingy + ")";
+        });
 
     newedgeg.append("rect")
         .attr("id", function (d) { return "searchedgebg_" + d.Name; })
@@ -271,6 +284,28 @@ AdvancedSearchCoordinator.prototype.onSearchNodeSaveBtnClicked = function () {
         .text(node.Name);
 };
 
+AdvancedSearchCoordinator.prototype.onSearchNodeDelBtnClicked = function (callingitem) {
+    console.log("AdvancedSearchCoordinator.prototype.onSearchNodeDelBtnClicked started: " + callingitem);
+    console.log(this);
+
+    var nodedatum = d3.select("#searchNodeDetails").datum();
+    console.log(nodedatum);
+    this.AdvancedSearch.RemoveNode(nodedatum);
+
+    var viewel = d3.select("#" + this.ElementID);
+    viewel.selectAll(".searchnode")
+        .data(this.AdvancedSearch.Nodes, function (d) { return d.Name; })
+        .exit()
+        .remove();
+    viewel.selectAll(".searchedge")
+        .data(this.AdvancedSearch.Edges, function (d) { return d.Name; })
+        .exit()
+        .remove();
+
+    this.UpdateNodes();
+    this.UpdateEdges();
+};
+
 AdvancedSearchCoordinator.prototype.ToggleDir = function() {
     //console.log("AdvancedSearchCoordinator.prototype.ToggleDir");
     var icon = document.getElementById("dirIcon");
@@ -301,7 +336,7 @@ AdvancedSearchCoordinator.prototype.onSearchEdgeSaveBtnClicked = function () {
     //console.log("AdvancedSearchCoordinator.prototype.onSearchNodeSaveBtnClicked started");
     //console.log(this);
 
-    var me = this;
+    
     var edge = d3.select("#searchEdgeDetails").datum();
     var edgeEl = d3.select("#searchedge_" + edge.Name);
 
@@ -334,7 +369,7 @@ AdvancedSearchCoordinator.prototype.onSearchEdgeSaveBtnClicked = function () {
     //console.log(edgeslot);
     edgeEl.remove();
     setTimeout(function () {
-        me.AddEdge(edgeslot);
+        this.UpdateEdges();
     },5);
 };
 
