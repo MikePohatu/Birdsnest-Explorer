@@ -76,8 +76,8 @@ AdvancedSearchCoordinator.prototype.Clear = function () {
 };
 
 AdvancedSearchCoordinator.prototype.AddNode = function () {
-    console.log("AdvancedSearchCoordinator.prototype.onAddButtonPressed started");
-    console.log(this);
+    //console.log("AdvancedSearchCoordinator.prototype.onAddButtonPressed started");
+    //console.log(this);
     var me = this;
     
     //console.log(me);
@@ -94,7 +94,9 @@ AdvancedSearchCoordinator.prototype.AddNode = function () {
         .attr("height", me.Radius)
         .attr("transform", function (d) { return "translate(" + (me.XSpacing * me.AdvancedSearch.AddedNodes - me.XSpacing * 0.5) + "," + me.YSpacing + ")"; })
         .attr("data-open", "searchNodeDetails")
-        .on("click", me.onSearchNodeClicked);
+        .on("click", function () {
+            me.onSearchNodeClicked(this);
+        });
 
     newnodeg.append("circle")
         .attr("id", function (d) { return "searchnodebg_" + d.Name; })
@@ -113,9 +115,9 @@ AdvancedSearchCoordinator.prototype.AddNode = function () {
 };
 
 AdvancedSearchCoordinator.prototype.AddEdge = function (slotnum) {
-    console.log("AdvancedSearchCoordinator.prototype.AddEdge start: " + slotnum);
-    console.log(this);
-    console.log(typeof slotnum);
+    //console.log("AdvancedSearchCoordinator.prototype.AddEdge start: " + slotnum);
+    //console.log(this);
+    //console.log(typeof slotnum);
     var me = this;
 
     var rectwidth = me.Radius;
@@ -124,8 +126,8 @@ AdvancedSearchCoordinator.prototype.AddEdge = function (slotnum) {
     var subspacingy = me.YSpacing - rectheight / 2;
     var relarrowwidth = 20;
 
-    console.log("subspacingx: " + subspacingx);
-    console.log("subspacingy: " + subspacingy);
+    //console.log("subspacingx: " + subspacingx);
+    //console.log("subspacingy: " + subspacingy);
 
     var viewel = d3.select("#" + me.ElementID);
     var newedgeg = viewel.selectAll(".searchedge")
@@ -133,7 +135,8 @@ AdvancedSearchCoordinator.prototype.AddEdge = function (slotnum) {
         .enter()
         .append("g")
         .attr("id", function (d) { return "searchedge_" + d.Name; })
-        .attr("data-slotnum",slotnum)
+        .attr("data-slotnum", slotnum)
+        .attr("class", function (d) { return d.Label; })
         .classed("searchedge", true)
         .on("click", function () { me.onSearchEdgeClicked(this); })
         .attr("transform", function (d) { return "translate(" + subspacingx + "," + subspacingy + ")"; })
@@ -152,30 +155,26 @@ AdvancedSearchCoordinator.prototype.AddEdge = function (slotnum) {
         .attr("x", rectwidth / 2)
         .attr("y", rectheight / 2);
 
-    newedgeg.selectAll(".searchleftarrow")
-        .data(me.AdvancedSearch.Edges, function (d) { return d.Name; })
-        .enter()
-        .append("i")
+    newedgeg.append("i")
         .attr("id", function (d) { return "searchleftarr_" + d.Name; })
         .attr("class", function (d) {
             if (d.Direction === ">") { return "fas fa-minus"; }
             else { return "fas fa-arrow-left"; }
         })
+        .classed("searchleftarrow", true)
         .classed("searcharrow", true)
         .attr("x", 0 - relarrowwidth)
         .attr("y", 0)
         .attr("width", relarrowwidth)
         .attr("height", relarrowwidth);
 
-    newedgeg.selectAll(".searchrightarrow")
-        .data(me.AdvancedSearch.Edges, function (d) { return d.Name; })
-        .enter()
-        .append("i")
+    newedgeg.append("i")
         .attr("id", function (d) { return "searchrightarr_" + d.Name; })
         .attr("class", function (d) {
             if (d.Direction === "<") { return "fas fa-minus"; }
             else { return "fas fa-arrow-right"; }
         })
+        .classed("searchrightarrow", true)
         .classed("searcharrow", true)
         .attr("x", rectwidth)
         .attr("y", 0)
@@ -184,13 +183,12 @@ AdvancedSearchCoordinator.prototype.AddEdge = function (slotnum) {
 };
 
 
-AdvancedSearchCoordinator.prototype.onSearchNodeClicked = function () {
+AdvancedSearchCoordinator.prototype.onSearchNodeClicked = function (callingEl) {
     //console.log("AdvancedSearchCoordinator.prototype.onSearchNodeClicked started");
     //console.log(this);
-    var datum = this.UpdateItemDatum("searchNodeDetails", this);
+    var datum = this.UpdateItemDatum("searchNodeDetails", callingEl);
     document.getElementById("nodeType").value = datum.Label;
     document.getElementById("nodeIdentifier").value = datum.Name;
-    this.UpdateDirIcon(datum.Direction);
 };
 
 AdvancedSearchCoordinator.prototype.onSearchEdgeClicked = function (callingEl) {
@@ -300,8 +298,8 @@ AdvancedSearchCoordinator.prototype.UpdateDirIcon = function (dir, iconEl) {
 };
 
 AdvancedSearchCoordinator.prototype.onSearchEdgeSaveBtnClicked = function () {
-    console.log("AdvancedSearchCoordinator.prototype.onSearchNodeSaveBtnClicked started");
-    console.log(this);
+    //console.log("AdvancedSearchCoordinator.prototype.onSearchNodeSaveBtnClicked started");
+    //console.log(this);
 
     var me = this;
     var edge = d3.select("#searchEdgeDetails").datum();
@@ -332,12 +330,12 @@ AdvancedSearchCoordinator.prototype.onSearchEdgeSaveBtnClicked = function () {
     }
 
     var edgeslot = parseInt(edgeEl.attr("data-slotnum"),10);
-    console.log("slot");
-    console.log(edgeslot);
+    //console.log("slot");
+    //console.log(edgeslot);
     edgeEl.remove();
     setTimeout(function () {
         me.AddEdge(edgeslot);
-    },50);
+    },5);
 };
 
 
