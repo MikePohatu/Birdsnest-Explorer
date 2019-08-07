@@ -6,7 +6,7 @@ function AdvancedSearchCoordinator(elementid) {
     me.AdvancedSearch = new AdvancedSearch();
     me.ElementID = elementid;
     me.Radius = 30;
-    me.XSpacing = 150;
+    me.XSpacing = 170;
     me.YSpacing = 70;
 
     bindEnterToButton("searchEdgeDetails", "searchEdgeSaveBtn");
@@ -120,7 +120,7 @@ AdvancedSearchCoordinator.prototype.AddEdge = function (slotnum) {
     //console.log(typeof slotnum);
     var me = this;
 
-    var rectwidth = me.Radius;
+    var rectwidth = me.Radius*2;
     var rectheight = me.Radius * 0.7;
     var subspacingx = (slotnum + 0.5) * me.XSpacing - rectwidth / 2 - me.XSpacing * 0.5;
     var subspacingy = me.YSpacing - rectheight / 2;

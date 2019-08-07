@@ -12,12 +12,12 @@ AdvancedSearch.prototype.AddNode = function () {
     me.AddedNodes++;
     var newNode = new SearchNode();
     this.Nodes.push(newNode);
-    newNode.Name = "n" + me.AddedNodes;
+    newNode.Name = "node" + me.AddedNodes;
 
     if (me.Nodes.length > 1) {
         var newEdge = new SearchEdge();
         this.Edges.push(newEdge);
-        newEdge.Name = "r" + (me.AddedNodes - 1);
+        newEdge.Name = "hop" + (me.AddedNodes - 1);
     }
 
     return newNode;
