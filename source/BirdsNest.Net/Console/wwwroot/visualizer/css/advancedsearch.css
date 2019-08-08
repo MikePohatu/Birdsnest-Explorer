@@ -1,0 +1,11 @@
+﻿
+.searchLabel {
+    opacity: 0.3;
+}
+
+.searchSvgContainer {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    width: 100%;
+}

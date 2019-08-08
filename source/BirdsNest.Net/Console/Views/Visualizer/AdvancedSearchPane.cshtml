@@ -1,6 +1,6 @@
 ﻿    <div class="small-12 medium-12 cell">
         <div>
-            <span id="addIcon" class="cell viewcontrol has-tip" title="Add node to search">
+            <span id="addIcon" class="cell viewcontrol has-tip" title="Add node to search path">
                 <i class="fas fa-plus-circle"></i>
             </span>
             <span class="cell" style="width:12px;"> </span>
@@ -96,25 +96,29 @@
         </div>
 
         <div id="advSearchView">
-            <div class="grid-x">
-                <div id="pathLabel" class="cell small-1 medium-1">
-                    <h2 class="searchlabel"><b>PATH:</b></h2>
+            <div class="grid-x align-middle">
+                <div id="pathLabel" class="cell small-2 medium-2 searchLabel">
+                     <h2><b>PATH:</b></h2>
                 </div>
-                <div class="cell small-10 medium-10" ">
-                    <svg id="searchPathSvg" style="margin: 0; padding: 0; height: 100%; width: 100%;">
-                        <g id="zoomLayer">
+                <div class="cell small-10 medium-10">
+                    <svg id="searchPathSvg" class="searchSvgContainer">
+                        <g id="pathZoomLayer">
 
                         </g>
                     </svg>
                 </div>
             </div>
 
-            <div class="grid-x">
-                <div id="conditionsLabel">
-                    <h2 class="searchlabel"><b>WHERE:</b></h2>
+            <div class="grid-x align-middle">
+                <div id="conditionsLabel" class="cell small-2 medium-2 searchLabel">
+                    <h2><b>WHERE:</b></h2>
                 </div>
-                <div style="margin: 0; padding: 0; height: 100%; width: 100%;">
+                <div class="cell small-10 medium-10">
+                    <svg id="searchConditionSvg" class="searchSvgContainer">
+                        <g id="condZoomLayer">
 
+                        </g>
+                    </svg>
                 </div>
             </div>
 
