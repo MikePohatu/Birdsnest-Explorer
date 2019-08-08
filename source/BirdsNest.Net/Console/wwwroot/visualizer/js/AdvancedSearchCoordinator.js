@@ -75,10 +75,14 @@ AdvancedSearchCoordinator.prototype.Search = function () {
 AdvancedSearchCoordinator.prototype.Clear = function () {
     //console.log("AdvancedSearchCoordinator.prototype.Clear started");
     //console.log(this);
+
+    if (confirm("Are you sure you want to clear this search?") === true) {
+
+        var viewel = d3.select("#" + this.ElementID);
+        viewel.selectAll("*").remove();
+        this.AdvancedSearch = new AdvancedSearch();
+    }
     
-    var viewel = d3.select("#" + this.ElementID);
-    viewel.selectAll("*").remove();
-    this.AdvancedSearch = new AdvancedSearch();
 };
 
 AdvancedSearchCoordinator.prototype.UpdateNodes = function () {

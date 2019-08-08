@@ -180,22 +180,25 @@ function resetDrawingEvents() {
 
 function resetView() {
     //console.log("resetView");
-    meshnodes = new datumStore();
-    meshedges = new datumStore();
-    treenodes = new datumStore();
-    treeedges = new datumStore();
-    graphnodes = new datumStore();
-    graphedges = new datumStore();
-    connectedges = new datumStore();
-    graphnodelabels = new Object();
-    graphedgelabels = new Object();
 
-    unselectAllNodes();
-    graphbglayer.selectAll("*").remove();
-    edgeslayer.selectAll("*").remove();
-    nodeslayer.selectAll("*").remove();
-    resetScale();
-    cleanAndUpdateLabelEyes();
+    if (confirm("Are you sure you want to clear the display?") === true) {
+        meshnodes = new datumStore();
+        meshedges = new datumStore();
+        treenodes = new datumStore();
+        treeedges = new datumStore();
+        graphnodes = new datumStore();
+        graphedges = new datumStore();
+        connectedges = new datumStore();
+        graphnodelabels = new Object();
+        graphedgelabels = new Object();
+
+        unselectAllNodes();
+        graphbglayer.selectAll("*").remove();
+        edgeslayer.selectAll("*").remove();
+        nodeslayer.selectAll("*").remove();
+        resetScale();
+        cleanAndUpdateLabelEyes();
+    }
 }
 
 
