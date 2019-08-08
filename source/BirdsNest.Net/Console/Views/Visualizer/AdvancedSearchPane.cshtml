@@ -1,105 +1,105 @@
-﻿<div class="small-12 medium-12 cell">
-    <div>
-        <span class="cell" id="addIcon">
-            <i class="fas fa-plus-circle"></i>
-        </span>
-        <span class="cell" style="width:12px;"> </span>
-        <span class="cell" id="advSearchClearIcon">
-            <i class="fas fa-eraser"></i>
-        </span>
-    </div>
+﻿            <div class="small-12 medium-12 cell">
+                <div>
+                    <span class="cell" id="addIcon">
+                        <i class="fas fa-plus-circle"></i>
+                    </span>
+                    <span class="cell" style="width:12px;"> </span>
+                    <span class="cell" id="advSearchClearIcon">
+                        <i class="fas fa-eraser"></i>
+                    </span>
+                </div>
 
-    <div id="searchNodeDetails" class="reveal" data-reveal data-animation-in="hinge-in-from-top fast" data-overlay="false">
-        <fieldset class="fieldset small-4 cell">
-            <legend>Node</legend>
+                <div id="searchNodeDetails" class="reveal" data-reveal data-animation-in="hinge-in-from-top fast" data-overlay="false">
+                    <fieldset class="fieldset small-4 cell">
+                        <legend>Node</legend>
 
-            <div class="input-group">
-                <span class="input-group-label small-4">Type</span>
-                <select id="nodeType" class="small-8 input-group-field" autofocus></select>
-            </div>
-            <div class="input-group">
-                <span class="input-group-label small-4">Identifier</span>
-                <input id="nodeIdentifier" type="search" autocomplete="off" placeholder="*" class="small-8 input-group-field">
-            </div>
-        </fieldset>
-        <button class="close-button" data-close aria-label="Close query dialog" type="button">
-            <span aria-hidden="true">&times;</span>
-        </button>
-        <div>
-            <button id="searchNodeSaveBtn" class="button" data-close aria-label="Save this node" type="button">Save</button>
-            <button id="searchNodeDeleteBtn" class="alert button" data-close aria-label="Delete this node" type="button">Delete</button>
-        </div>
-    </div>
-
-
-    <div id="searchEdgeDetails" class="reveal" data-reveal data-animation-in="hinge-in-from-top fast" data-overlay="false">
-        <fieldset class="fieldset small-4 cell">
-            <legend>Relationship</legend>
-
-            <div class="input-group">
-                <span class="input-group-label small-3">Type</span>
-                <select id="edgeType" class="small-9 input-group-field">
-                    <option value="" disabled selected hidden></option>
-                    <option value="">*</option>
-                </select>
-            </div>
-
-            <div class="input-group">
-                <span class="input-group-label small-4">Identifier</span>
-                <input id="edgeIdentifier" type="search" autocomplete="off" placeholder="*" class="small-8 input-group-field">
-            </div>
-
-            <span class="">Hops</span>
-
-            <div class="switch tiny">
-                <input class="switch-input" id="hopsSwitch" type="checkbox" name="hopsSwitch" checked>
-                <label class="switch-paddle" for="hopsSwitch"></label>
-            </div>
-
-            <div class="input-group" id="hopsPane">
-                <div class="grid-x input-group-field">
-                    <div class="cell small-2">
-                        <input type="text" id="minSliderVal" class="hopscontrol">
+                        <div class="input-group">
+                            <span class="input-group-label small-4">Type</span>
+                            <select id="nodeType" class="small-8 input-group-field" autofocus></select>
+                        </div>
+                        <div class="input-group">
+                            <span class="input-group-label small-4">Identifier</span>
+                            <input id="nodeIdentifier" type="search" autocomplete="off" placeholder="*" class="small-8 input-group-field">
+                        </div>
+                    </fieldset>
+                    <button class="close-button" data-close aria-label="Close query dialog" type="button">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                    <div>
+                        <button id="searchNodeSaveBtn" class="button" data-close aria-label="Save this node" type="button">Save</button>
+                        <button id="searchNodeDeleteBtn" class="alert button" data-close aria-label="Delete this node" type="button">Delete</button>
                     </div>
-                    <div class="cell small-8">
-                        <div id="hopsSlider" class="slider hopscontrol" data-slider data-initial-start="1" data-initial-end="1" data-start="0" data-end="20">
-                            <span id="minSlider" class="slider-handle" data-slider-handle role="slider" title="Minimum hop count" aria-controls="minSliderVal"></span>
-                            <span id="sliderFill" class="slider-fill" data-slider-fill></span>
-                            <span id="maxSlider" class="slider-handle" data-slider-handle role="slider" title="Maximum hop count" aria-controls="maxSliderVal"></span>
+                </div>
+
+
+                <div id="searchEdgeDetails" class="reveal" data-reveal data-animation-in="hinge-in-from-top fast" data-overlay="false">
+                    <fieldset class="fieldset small-4 cell">
+                        <legend>Relationship</legend>
+
+                        <div class="input-group">
+                            <span class="input-group-label small-3">Type</span>
+                            <select id="edgeType" class="small-9 input-group-field">
+                                <option value="" disabled selected hidden></option>
+                                <option value="">*</option>
+                            </select>
+                        </div>
+
+                        <div class="input-group">
+                            <span class="input-group-label small-4">Identifier</span>
+                            <input id="edgeIdentifier" type="search" autocomplete="off" placeholder="*" class="small-8 input-group-field">
+                        </div>
+
+                        <span class="">Hops</span>
+
+                        <div class="switch tiny">
+                            <input class="switch-input" id="hopsSwitch" type="checkbox" name="hopsSwitch" checked>
+                            <label class="switch-paddle" for="hopsSwitch"></label>
+                        </div>
+
+                        <div class="input-group" id="hopsPane">
+                            <div class="grid-x input-group-field">
+                                <div class="cell small-2">
+                                    <input type="text" id="minSliderVal" class="hopscontrol">
+                                </div>
+                                <div class="cell small-8">
+                                    <div id="hopsSlider" class="slider hopscontrol" data-slider data-initial-start="1" data-initial-end="1" data-start="0" data-end="20">
+                                        <span id="minSlider" class="slider-handle" data-slider-handle role="slider" title="Minimum hop count" aria-controls="minSliderVal"></span>
+                                        <span id="sliderFill" class="slider-fill" data-slider-fill></span>
+                                        <span id="maxSlider" class="slider-handle" data-slider-handle role="slider" title="Maximum hop count" aria-controls="maxSliderVal"></span>
+                                    </div>
+                                </div>
+                                <div class="cell small-2">
+                                    <input type="text" id="maxSliderVal" class="hopscontrol">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="grid-x cell align-top">
+                            <span class="cell small-3 align-middle">Direction</span>
+                            <div id='dirIconClicker' class="cell small-1 text-left">
+                                <i id='dirIcon' class="fas fa-arrow-right" data-dir=">"></i>
+                            </div>
+                        </div>
+                    </fieldset>
+                    <button class="close-button" data-close aria-label="Close query dialog" type="button">&times;</button>
+                    <button id="searchEdgeSaveBtn" class="button" data-close aria-label="Close relationship dialog" type="button">Save</button>
+                </div>
+
+
+                <div id="advSearchView">
+                    <svg id="drawingSvg" style="margin: 0; padding: 0; height: 100%; width: 100%;">
+                        <g id="zoomLayer">
+
+                        </g>
+                    </svg>
+
+                    <div class="grid-x cell align-middle">
+                        <div class="cell small-3 medium-1">
+                            <button id="searchBtn" class="button" aria-label="Submit search" type="button">Search</button>
+                        </div>
+                        <div class="cell small-9 medium-auto">
+                            <p><div id="searchNotification"></div><div id="searchExpand"></div></p>
                         </div>
                     </div>
-                    <div class="cell small-2">
-                        <input type="text" id="maxSliderVal" class="hopscontrol">
-                    </div>
                 </div>
             </div>
-
-            <div class="grid-x cell align-top">
-                <span class="cell small-3 align-middle">Direction</span>
-                <div id='dirIconClicker' class="cell small-1 text-left">
-                    <i id='dirIcon' class="fas fa-arrow-right" data-dir=">"></i>
-                </div>
-            </div>
-        </fieldset>
-        <button class="close-button" data-close aria-label="Close query dialog" type="button">&times;</button>
-        <button id="searchEdgeSaveBtn" class="button" data-close aria-label="Close relationship dialog" type="button">Save</button>
-    </div>
-
-
-    <div id="advSearchView">
-        <svg id="drawingSvg" style="margin: 0; padding: 0; height: 100%; width: 100%;">
-            <g id="zoomLayer">
-
-            </g>
-        </svg>
-
-        <div class="grid-x cell align-middle">
-            <div class="cell small-3 medium-1">
-                <button id="searchBtn" class="button" aria-label="Submit search" type="button">Search</button>
-            </div>
-            <div class="cell small-9 medium-auto">
-                <p><div id="searchNotification"></div><div id="searchExpand"></div></p>
-            </div>
-        </div>
-    </div>
-</div>

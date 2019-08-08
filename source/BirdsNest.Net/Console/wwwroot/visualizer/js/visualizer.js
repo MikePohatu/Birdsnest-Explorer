@@ -303,7 +303,7 @@ function updateLabelEyes() {
 function onReportClicked(sametab) {
     //console.log("onReportClicked started");
 
-    if (typeof (Storage) !== "undefined") {
+    if (typeof Storage !== "undefined") {
         try {
             var exportnodes = graphnodes.GetArray();
             if (exportnodes.length !== 0) {
@@ -330,11 +330,10 @@ function onReportClicked(sametab) {
             }
             
         }
-        catch {
-            //updateStatus("There was an error opening report view. Your result set may be too large");
+        catch (err) {
+            updateStatus("There was an error opening report view. Your result set may be too large");
         }
 
-        // Code for localStorage/sessionStorage.
     } else {
         console.log("No Web Storage support..");
         // Sorry! No Web Storage support..
