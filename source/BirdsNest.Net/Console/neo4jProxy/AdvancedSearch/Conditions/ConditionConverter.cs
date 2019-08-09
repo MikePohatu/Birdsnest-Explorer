@@ -31,7 +31,7 @@ namespace Console.neo4jProxy.AdvancedSearch.Conditions
             JObject jsonObject = JObject.Load(reader);
             ICondition retcond = null;
 
-            switch (jsonObject["type"].Value<string>())
+            switch (jsonObject["Type"].Value<string>())
             {
                 case "AND":
                     retcond = new AndOrCondition();

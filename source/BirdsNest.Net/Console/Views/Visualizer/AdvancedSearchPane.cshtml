@@ -1,8 +1,6 @@
 ﻿    <div class="small-12 medium-12 cell">
         <div>
-            <span id="addIcon" class="cell viewcontrol has-tip" title="Add node to search path">
-                <i class="fas fa-plus-circle"></i>
-            </span>
+            
             <span class="cell" style="width:12px;"> </span>
             <span id="advSearchClearIcon" class="cell viewcontrol has-tip" title="Clear search">
                 <i class="fas fa-eraser"></i>
@@ -98,7 +96,12 @@
         <div id="advSearchView">
             <div class="grid-x align-middle">
                 <div id="pathLabel" class="cell small-2 medium-2 searchLabel">
-                     <h2><b>PATH:</b></h2>
+                    <h2>
+                        <b>PATH:</b>
+                        <span id="addIcon" class="cell viewcontrol has-tip" title="Add node to search path">
+                            <i class="fas fa-plus-circle"></i>
+                        </span>
+                    </h2>
                 </div>
                 <div class="cell small-10 medium-10">
                     <svg id="searchPathSvg" class="searchSvgContainer">

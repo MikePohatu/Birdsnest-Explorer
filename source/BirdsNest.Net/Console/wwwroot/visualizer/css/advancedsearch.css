@@ -3,6 +3,10 @@
     opacity: 0.3;
 }
 
+    .searchLabel.viewcontrol {
+        opacity: 0.6;
+    }
+
 .searchSvgContainer {
     margin: 0;
     padding: 0;

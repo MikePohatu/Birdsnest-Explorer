@@ -17,29 +17,33 @@
   ],
   "Condition": {
     "Type": "AND",
-    "Left": {
-      "Type": "MATH",
-      "Name": "n1",
-      "Property": "tpropn1",
-      "Value": 1,
-      "Operator": "="
-    },
-    "Right": {
-      "Type": "OR",
-      "Left": {
-        "Type": "STRING",
-        "Name": "n2",
-        "Property": "tpropn2",
-        "Value": "testn2",
-        "Comparator": "STARTSWITH"
+    "Conditions": [
+      {
+        "Type": "MATH",
+        "Name": "n1",
+        "Property": "tpropn1",
+        "Value": 1,
+        "Operator": "="
       },
-      "Right": {
-        "Type": "STRING",
-        "Name": "r1",
-        "Property": "tpropr1",
-        "Value": "testr1",
-        "Comparator": "EQUALS"
+      {
+        "Type": "OR",
+        "Conditions": [
+          {
+            "Type": "STRING",
+            "Name": "n2",
+            "Property": "tpropn2",
+            "Value": "testn2",
+            "Comparator": "STARTSWITH"
+          },
+          {
+            "Type": "STRING",
+            "Name": "r1",
+            "Property": "tpropr1",
+            "Value": "testr1",
+            "Comparator": "EQUALS"
+          }
+        ]
       }
-    }
+    ]
   }
 }

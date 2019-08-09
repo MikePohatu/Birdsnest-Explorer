@@ -241,10 +241,10 @@ AdvancedSearchCoordinator.prototype.onSearchEdgeClicked = function (callingEl) {
         maxsliderval.value = datum.Max;
     }
 
-    hopsswitch.dispatchEvent(new Event('change'));
-    minsliderval.dispatchEvent(new Event('change'));
-    maxsliderval.dispatchEvent(new Event('change'));
-    //document.getElementById("sliderFill").dispatchEvent(new Event('input'));
+    this.onHopsSwitchChanged();
+    //Foundation.reInit($('#hopsSlider'));
+    d3.select('#minSliderVal').dispatch('change');
+    d3.select('#maxSliderVal').dispatch('change');
 };
 
 AdvancedSearchCoordinator.prototype.onHopsSwitchChanged = function () {
@@ -311,8 +311,8 @@ AdvancedSearchCoordinator.prototype.onSearchNodeDelBtnClicked = function (callin
 
 AdvancedSearchCoordinator.prototype.ToggleDir = function() {
     //console.log("AdvancedSearchCoordinator.prototype.ToggleDir");
-    var icon = document.getElementById("dirIcon");
-    var dir = icon.dataset.dir;
+    var iconEl = document.getElementById("dirIcon");
+    var dir = iconEl.getAttribute("data-dir");
     if (dir === '>') {
         this.UpdateDirIcon("<");
     }
@@ -323,17 +323,15 @@ AdvancedSearchCoordinator.prototype.ToggleDir = function() {
 
 AdvancedSearchCoordinator.prototype.UpdateDirIcon = function (dir) {
     //console.log("AdvancedSearchCoordinator.prototype.UpdateDirIcon started");
-    var iconEl = document.getElementById("dirIcon");
-    //console.log(iconEl);
-    iconEl.dataset.dir = dir;
+    var rightArr = true;
     if (dir === '<') {
-        iconEl.classList.remove("fa-arrow-right");
-        iconEl.classList.add("fa-arrow-left");
+        rightArr = false;
     }
-    else {
-        iconEl.classList.remove("fa-arrow-left");
-        iconEl.classList.add("fa-arrow-right");
-    }
+
+    d3.select("#dirIcon")
+        .attr("data-dir", dir)
+        .classed("fa-arrow-right", rightArr)
+        .classed("fa-arrow-left", !rightArr);
     //console.log("newdir: " + dir);
 };
 
@@ -350,7 +348,7 @@ AdvancedSearchCoordinator.prototype.onSearchEdgeSaveBtnClicked = function () {
 
     edge.Name = document.getElementById("edgeIdentifier").value;
     edge.Label = document.getElementById("edgeType").value;
-    edge.Direction = document.getElementById('dirIcon').dataset.dir;    
+    edge.Direction = document.getElementById('dirIcon').getAttribute("data-dir");    
 
     var hopsswitch = document.getElementById("hopsSwitch");
     if (hopsswitch.checked) {
