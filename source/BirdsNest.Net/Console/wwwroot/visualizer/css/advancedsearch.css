@@ -20,3 +20,7 @@
     stroke: #474747;
     fill: white;
 }
+
+.searchcontrol:hover {
+    color: gray;
+}

@@ -59,7 +59,7 @@ function AdvancedSearchCoordinator(pathelementid, conditionelementid) {
     });
     d3.select("#searchConditionDeleteBtn").on("click", function () {
         me.onSearchConditionDeleteClicked();
-    })
+    });
 
     me.UpdateNodeLabels();
 }
@@ -459,8 +459,8 @@ AdvancedSearchCoordinator.prototype.AddConditionRoot = function () {
     this.ConditionRoot = new ViewTreeNode(andcond, "Conditions");
     andcond.Conditions.push(cond1);
     andcond.Conditions.push(cond2);
-    //andcond.Conditions.push(cond4);
-    andcond.Conditions.push(cond3);
+    andcond.Conditions.push(cond4);
+    //andcond.Conditions.push(cond3);
     cond3.Conditions.push(cond4);
     cond3.Conditions.push(cond5);
     this.ConditionRoot.Build();
@@ -497,6 +497,8 @@ AdvancedSearchCoordinator.prototype.UpdateConditions = function () {
     var xpadding = 5;
     var xspacing = 50;
     var ypadding = 5;
+    var pluswidth = 25;
+    var editwidth = 25;
 
     var viewel = d3.select("#" + this.ConditionElementID);
     console.log(nodes);
@@ -505,36 +507,39 @@ AdvancedSearchCoordinator.prototype.UpdateConditions = function () {
         .enter()
         .append("g")
         .attr("id", function (d) { return "searchcondition_" + d.data.ID; })
-        .attr("data-open", "searchConditionDetails")
-        .classed("searchcondition", true)
-        .on("click", function () { me.onSearchConditionClicked(this); })
-        .attr("data-open", "searchConditionDetails")
-        .on("click", function () {
-            me.onSearchConditionClicked(this);
+        .attr("class", function (d) {
+            if (d.data.Item.Conditions) {
+                return "conditiongroup";
+            }
+            else {
+                return "";
+            }
         })
-        .each(function (d) {
-            console.log("each");
-            console.log(d.descendants().length);
-            console.log(d);
-        });
+        .classed("searchcondition", true);
+        //.each(function (d) {
+        //    console.log("each");
+        //    console.log(d.descendants().length);
+        //    console.log(d);
+        //});
 
     enter.append("rect")
         .attr("id", function (d) { return "searchconditionbg_" + d.data.ID; })
         .classed("searchconditionrect", true)
-        .attr("width", rectwidth)
         .attr("height", function (d) {
-            console.log(d.ancestors());
-            return rectheight - d.depth * ypadding * 2;
+            //console.log(d.ancestors());
+            d.rectheight = rectheight - d.depth * ypadding * 2;
+            return d.rectheight;
         })
         .attr("width", function (d) {
             if (d.value > 1) {
-                return (2 * xpadding + rectwidth) * d.value + (d.value - 1) * xspacing;
+                d.rectwidth = (2 * xpadding + rectwidth) * d.value + (d.value - 1) * xspacing + pluswidth;
             }
             else {
-                return rectwidth;
+                d.rectwidth = rectwidth;
             }
+            return d.rectwidth;
         })
-        .attr("rx",5);
+        .attr("rx", 5);
 
     enter.append("text")
         .text(function (d) { return d.Type; })
@@ -543,8 +548,57 @@ AdvancedSearchCoordinator.prototype.UpdateConditions = function () {
         .attr("x", rectwidth / 2)
         .attr("y", rectheight / 2);
 
+    var enteredit = enter.append("g")
+        .attr("id", function (d) { return "searchconditionedit_" + d.data.ID; })
+        .classed("searchconditionedit", true)
+        .classed("searchcontrol", true)
+        .attr("data-open", "searchConditionDetails")
+        .on("click", function () {
+            me.onSearchConditionEditClicked(this);
+        });
 
-    //console.log(this.SearchData.Edges);
+    enteredit.append("i")
+        .attr("class", "fas fa-edit")
+        .attr("width", editwidth)
+        .attr("height", editwidth)
+        .attr("x", function (d) { return d.rectwidth - editwidth - xpadding * 2; })
+        .attr("y", ypadding);
+
+    enteredit.append("rect")
+        .attr("width", editwidth)
+        .attr("height", editwidth)
+        .attr("fill", "white")
+        .attr("fill-opacity", "0.4")
+        .attr("stroke-width", "0")
+        .attr("x", function (d) { return d.rectwidth - editwidth - xpadding * 2; })
+        .attr("y", ypadding);
+
+    //setup the + button for group nodes e.g. AND/OR
+    var groupaddbtns = viewel.selectAll(".conditiongroup")
+        .append("g")
+        .attr("id", function (d) { return "searchconditionplus_" + d.data.ID; })
+        .classed("searchconditionplus", true)
+        .classed("searchcontrol", true)
+        .on("click", function () {
+            me.onSearchConditionAddClicked(this);
+        });
+
+    groupaddbtns.append("i")
+        .attr("class", "fas fa-plus")
+        .attr("width", pluswidth)
+        .attr("height", pluswidth)
+        .attr("x", function (d) { return d.rectwidth - pluswidth - xpadding * 2; })
+        .attr("y", function (d) { return d.rectheight - ypadding - pluswidth; });
+
+
+    groupaddbtns.append("rect")
+        .attr("width", pluswidth)
+        .attr("height", pluswidth)
+        .attr("fill", "white")
+        .attr("fill-opacity", "0.4")
+        .attr("stroke-width", "0")
+        .attr("x", function (d) { return d.rectwidth - pluswidth - xpadding * 2; })
+        .attr("y", function (d) { return d.rectheight - ypadding - pluswidth; });
 
     viewel.selectAll(".searchcondition")
         .data(nodes, function (d) { return d.data.ID; })
@@ -555,7 +609,7 @@ AdvancedSearchCoordinator.prototype.UpdateConditions = function () {
             if (d.parent !== null) {
                 //console.log("parent");
                 //console.log(d.parent);
-                x = d.parent.x + xpadding * (d.data.Index + 1) + (xspacing * d.data.Index) + (d.data.Index * rectwidth);
+                x = d.parent.x + xpadding * 2 + (xspacing * d.data.Index) + (d.data.Index * rectwidth);
                 y = ypadding * d.depth;
             }
             d.x = x;
@@ -566,8 +620,19 @@ AdvancedSearchCoordinator.prototype.UpdateConditions = function () {
         .remove();
 };
 
-AdvancedSearchCoordinator.prototype.onSearchConditionClicked = function (callingelement) {
-    console.log("AdvancedSearchCoordinator.prototype.onSearchConditionClicked started");
+AdvancedSearchCoordinator.prototype.onSearchConditionEditClicked = function (callingelement) {
+    console.log("AdvancedSearchCoordinator.prototype.onSearchConditionEditClicked started");
+    //var datum;
+    //d3.select(callingelement)
+    //    .each(function (d) { datum = d.data; });
+    //console.log(datum);
+    this.UpdateItemDatum("searchConditionDetails", callingelement);
+    //d3.select("#searchConditionDetails").attr("data-item", datum);
+    //d3.select("#testSearch").append("span").text( datum.Item.Type);
+};
+
+AdvancedSearchCoordinator.prototype.onSearchConditionAddClicked = function (callingelement) {
+    console.log("AdvancedSearchCoordinator.prototype.onSearchConditionAddClicked started");
     //var datum;
     //d3.select(callingelement)
     //    .each(function (d) { datum = d.data; });
