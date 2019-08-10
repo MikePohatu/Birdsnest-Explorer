@@ -1,12 +1,12 @@
-﻿function AdvancedSearch() {
+﻿function Search() {
     this.Condition;
     this.Nodes = [];
     this.Edges = [];
     this.AddedNodes = 0;
 }
 
-AdvancedSearch.prototype.AddNode = function () {
-    //console.log("AdvancedSearch.prototype.AddNode start:");
+Search.prototype.AddNode = function () {
+    //console.log("Search.prototype.AddNode start:");
     //console.log(this);
     var me = this;
     me.AddedNodes++;
@@ -21,13 +21,13 @@ AdvancedSearch.prototype.AddNode = function () {
     }
 
     return newNode;
-    //console.log("AdvancedSearch.prototype.AddNode end:");
+    //console.log("Search.prototype.AddNode end:");
     //console.log(me);
 };
 
 
 //remove the node and return the index of the node that was removed
-AdvancedSearch.prototype.RemoveNode = function (node) {
+Search.prototype.RemoveNode = function (node) {
     var me = this;
     var foundindex = -1;
     for (i = 0; i < me.Nodes.length; i++) {
@@ -58,7 +58,7 @@ AdvancedSearch.prototype.RemoveNode = function (node) {
     return foundindex;
 };
 
-AdvancedSearch.prototype.MoveNodeRight = function (node) {
+Search.prototype.MoveNodeRight = function (node) {
     var me = this;
     var i;
     for (i = 0; i < me.Nodes.length; i++) {
@@ -76,7 +76,7 @@ AdvancedSearch.prototype.MoveNodeRight = function (node) {
     return false;
 };
 
-AdvancedSearch.prototype.MoveNodeLeft = function (node) {
+Search.prototype.MoveNodeLeft = function (node) {
     var me = this;
     var i;
 
@@ -118,14 +118,14 @@ function MathCondition() {
 
 function AndCondition() {
     this.Type = "AND";
-    this.Left;
-    this.Right;
+    this.Name = "";
+    this.Conditions = [];
 }
 
 function OrCondition() {
     this.Type = "OR";
-    this.Left;
-    this.Right;
+    this.Name = "";
+    this.Conditions = [];
 }
 
 function StringCondition() {

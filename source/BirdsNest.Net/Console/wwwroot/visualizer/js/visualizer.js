@@ -148,7 +148,7 @@ function drawGraph(selectid, loaddata) {
         menuShowHide();
     }
 
-    searchcontroller = new AdvancedSearchCoordinator("pathZoomLayer");
+    searchcontroller = new AdvancedSearchCoordinator("pathZoomLayer", "condZoomLayer");
 }
 
 //https://stackoverflow.com/questions/641857/javascript-window-resize-event

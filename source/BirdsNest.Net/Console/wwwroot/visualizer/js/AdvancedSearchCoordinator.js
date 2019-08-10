@@ -1,13 +1,16 @@
 ﻿//requires d3js
-function AdvancedSearchCoordinator(elementid) {
+function AdvancedSearchCoordinator(pathelementid, conditionelementid) {
     //console.log("AdvancedSearchCoordinator started: " + elementid);
     //console.log(this);
     var me = this;
-    this.AdvancedSearch = new AdvancedSearch();
-    this.ElementID = elementid;
+    this.SearchData = new Search();
+    this.PathElementID = pathelementid;
+    this.ConditionElementID = conditionelementid;
     this.Radius = 30;
     this.XSpacing = 170;
     this.YSpacing = 70;
+    this.ConditionRoot = null;
+    this.ConditionD3Root = null;
 
     bindEnterToButton("searchEdgeDetails", "searchEdgeSaveBtn");
     bindEnterToButton("searchNodeDetails", "searchNodeSaveBtn");
@@ -38,12 +41,15 @@ function AdvancedSearchCoordinator(elementid) {
         me.ToggleDir();
     });
     d3.select("#searchBtn").on("click", function () {
-        me.Search();
+        me.RunSearch();
     });
-    d3.select("#addIcon").on("click", function () {
-        me.AdvancedSearch.AddNode();
+    d3.select("#pathAddIcon").on("click", function () {
+        me.SearchData.AddNode();
         me.UpdateNodes();
         me.UpdateEdges();
+    });
+    d3.select("#whereAddIcon").on("click", function () {
+        me.AddConditionRoot();
     });
     d3.select("#advSearchClearIcon").on("click", function () {
         me.Clear();
@@ -51,17 +57,19 @@ function AdvancedSearchCoordinator(elementid) {
     d3.select("#hopsSwitch").on("change", function () {
         me.onHopsSwitchChanged();
     });
-    
+    d3.select("#searchConditionDeleteBtn").on("click", function () {
+        me.onSearchConditionDeleteClicked();
+    })
 
     me.UpdateNodeLabels();
 }
 
-AdvancedSearchCoordinator.prototype.Search = function () {
-    //console.log("AdvancedSearchCoordinator.prototype.Search started");
+AdvancedSearchCoordinator.prototype.RunSearch = function () {
+    //console.log("AdvancedSearchCoordinator.prototype.RunSearch started");
     //console.log(this);
     
 
-    var postdata = JSON.stringify(this.AdvancedSearch);
+    var postdata = JSON.stringify(this.SearchData);
     //console.log("search post:");
     //console.log(postdata);
     showSearchSpinner();
@@ -78,9 +86,9 @@ AdvancedSearchCoordinator.prototype.Clear = function () {
 
     if (confirm("Are you sure you want to clear this search?") === true) {
 
-        var viewel = d3.select("#" + this.ElementID);
+        var viewel = d3.select("#" + this.PathElementID);
         viewel.selectAll("*").remove();
-        this.AdvancedSearch = new AdvancedSearch();
+        this.SearchData = new Search();
     }
     
 };
@@ -91,9 +99,9 @@ AdvancedSearchCoordinator.prototype.UpdateNodes = function () {
     var me = this;
     var currslot = 0;
 
-    var viewel = d3.select("#" + this.ElementID);
+    var viewel = d3.select("#" + this.PathElementID);
     var newnodeg = viewel.selectAll(".searchnode")
-        .data(this.AdvancedSearch.Nodes, function (d) { return d.Name; })
+        .data(this.SearchData.Nodes, function (d) { return d.Name; })
         .enter()
         .append("g")
         .attr("id", function (d) { return "searchnode_" + d.Name; })
@@ -106,7 +114,7 @@ AdvancedSearchCoordinator.prototype.UpdateNodes = function () {
         });
 
     viewel.selectAll(".searchnode")
-        .data(this.AdvancedSearch.Nodes, function (d) { return d.Name; })
+        .data(this.SearchData.Nodes, function (d) { return d.Name; })
         .attr("transform", function () {
             currslot++;
             return "translate(" + (me.XSpacing * currslot - me.XSpacing * 0.5) + "," + me.YSpacing + ")";
@@ -140,9 +148,9 @@ AdvancedSearchCoordinator.prototype.UpdateEdges = function () {
     //console.log("subspacingx: " + subspacingx);
     //console.log("subspacingy: " + subspacingy);
 
-    var viewel = d3.select("#" + this.ElementID);
+    var viewel = d3.select("#" + this.PathElementID);
     var newedgeg = viewel.selectAll(".searchedge")
-        .data(this.AdvancedSearch.Edges, function (d) { return d.Name; })
+        .data(this.SearchData.Edges, function (d) { return d.Name; })
         .enter()
         .append("g")
         .attr("id", function (d) { return "searchedge_" + d.Name; })
@@ -190,10 +198,10 @@ AdvancedSearchCoordinator.prototype.UpdateEdges = function () {
         .attr("width", relarrowwidth)
         .attr("height", relarrowwidth);
 
-    //console.log(this.AdvancedSearch.Edges);
+    //console.log(this.SearchData.Edges);
 
     viewel.selectAll(".searchedge")
-        .data(this.AdvancedSearch.Edges, function (d) { return d.Name; })
+        .data(this.SearchData.Edges, function (d) { return d.Name; })
         .attr("transform", function (d) {
             //console.log(d);
             currslot++;
@@ -267,12 +275,23 @@ AdvancedSearchCoordinator.prototype.UpdateItemDatum = function (elementid, calli
     //console.log("AdvancedSearchCoordinator.prototype.SearchItemClicked started");
     //console.log(this);
     //console.log(elementid);
-    var details = d3.select("#" + elementid);
+    var el = d3.select("#" + elementid);
     var datum = d3.select(callingitem).datum();
     //console.log(datum);
-    details.datum(datum);
+    el.datum(datum);
     return datum;
 };
+
+AdvancedSearchCoordinator.prototype.GetItemDatum = function (elementid) {
+    console.log("AdvancedSearchCoordinator.prototype.GetItemDatum started");
+    //console.log(this);
+    console.log(elementid);
+    var el = d3.select("#" + elementid);
+    var datum = el.datum();
+    console.log(datum);
+    return datum;
+};
+
 
 AdvancedSearchCoordinator.prototype.onSearchNodeSaveBtnClicked = function () {
     //console.log("AdvancedSearchCoordinator.prototype.onSearchNodeSaveBtnClicked started");
@@ -303,7 +322,7 @@ AdvancedSearchCoordinator.prototype.onSearchNodeDelBtnClicked = function (callin
 
     var nodedatum = d3.select("#searchNodeDetails").datum();
     //console.log(nodedatum);
-    this.AdvancedSearch.RemoveNode(nodedatum);
+    this.SearchData.RemoveNode(nodedatum);
 
     this.UpdateNodes();
     this.UpdateEdges();
@@ -420,4 +439,159 @@ AdvancedSearchCoordinator.prototype.BindAutoComplete = function () {
             apiGetJson(url, response);
         }
     });
+};
+
+
+
+AdvancedSearchCoordinator.prototype.AddConditionRoot = function () {
+    console.log("AdvancedSearchCoordinator.prototype.AddConditionRoot started");
+    //d3.select("#whereAddIcon").classed("hidden", true);
+
+    var cond1 = new StringCondition();
+    var cond2 = new StringCondition();
+    var cond3 = new AndCondition();
+    var cond4 = new StringCondition();
+    var cond5 = new StringCondition();
+
+    var andcond = new AndCondition();
+
+    this.SearchData.Condition = andcond;
+    this.ConditionRoot = new ViewTreeNode(andcond, "Conditions");
+    andcond.Conditions.push(cond1);
+    andcond.Conditions.push(cond2);
+    //andcond.Conditions.push(cond4);
+    andcond.Conditions.push(cond3);
+    cond3.Conditions.push(cond4);
+    cond3.Conditions.push(cond5);
+    this.ConditionRoot.Build();
+
+    //this.ConditionRoot.AddChildItem(cond1);
+    //this.ConditionRoot.AddChildItem(cond2);
+
+    this.ConditionD3Root = d3.hierarchy(this.ConditionRoot, function (d) { return d.Children; });
+    //console.log(this.ConditionD3Root);
+    this.UpdateConditions();
+};
+
+AdvancedSearchCoordinator.prototype.onAddCondition = function () {
+
+};
+
+AdvancedSearchCoordinator.prototype.NewCondition = function () {
+    return new StringCondition();
+};
+
+AdvancedSearchCoordinator.prototype.UpdateConditions = function () {
+    console.log("AdvancedSearchCoordinator.prototype.UpdateConditions start:" + this.ConditionElementID);
+    //console.log(this);
+    //console.log(this.SearchData.Edges);
+    if (this.ConditionD3Root === null) { return; }
+
+    var nodes = this.ConditionD3Root.descendants();
+    this.ConditionD3Root.count();
+    //var links = this.tree.links(nodes);
+    var me = this;
+
+    var rectwidth = 100;
+    var rectheight = 70;
+    var xpadding = 5;
+    var xspacing = 50;
+    var ypadding = 5;
+
+    var viewel = d3.select("#" + this.ConditionElementID);
+    console.log(nodes);
+    var enter = viewel.selectAll(".searchcondition")
+        .data(nodes, function (d) { return d.data.ID; })
+        .enter()
+        .append("g")
+        .attr("id", function (d) { return "searchcondition_" + d.data.ID; })
+        .attr("data-open", "searchConditionDetails")
+        .classed("searchcondition", true)
+        .on("click", function () { me.onSearchConditionClicked(this); })
+        .attr("data-open", "searchConditionDetails")
+        .on("click", function () {
+            me.onSearchConditionClicked(this);
+        })
+        .each(function (d) {
+            console.log("each");
+            console.log(d.descendants().length);
+            console.log(d);
+        });
+
+    enter.append("rect")
+        .attr("id", function (d) { return "searchconditionbg_" + d.data.ID; })
+        .classed("searchconditionrect", true)
+        .attr("width", rectwidth)
+        .attr("height", function (d) {
+            console.log(d.ancestors());
+            return rectheight - d.depth * ypadding * 2;
+        })
+        .attr("width", function (d) {
+            if (d.value > 1) {
+                return (2 * xpadding + rectwidth) * d.value + (d.value - 1) * xspacing;
+            }
+            else {
+                return rectwidth;
+            }
+        })
+        .attr("rx",5);
+
+    enter.append("text")
+        .text(function (d) { return d.Type; })
+        .attr("text-anchor", "middle")
+        .attr("dominant-baseline", "middle")
+        .attr("x", rectwidth / 2)
+        .attr("y", rectheight / 2);
+
+
+    //console.log(this.SearchData.Edges);
+
+    viewel.selectAll(".searchcondition")
+        .data(nodes, function (d) { return d.data.ID; })
+        .attr("transform", function (d) {
+            console.log(d);
+            var x = 0;
+            var y = 0;
+            if (d.parent !== null) {
+                //console.log("parent");
+                //console.log(d.parent);
+                x = d.parent.x + xpadding * (d.data.Index + 1) + (xspacing * d.data.Index) + (d.data.Index * rectwidth);
+                y = ypadding * d.depth;
+            }
+            d.x = x;
+            d.y = y;
+            return "translate(" + x + "," + y + ")";
+        })
+        .exit()
+        .remove();
+};
+
+AdvancedSearchCoordinator.prototype.onSearchConditionClicked = function (callingelement) {
+    console.log("AdvancedSearchCoordinator.prototype.onSearchConditionClicked started");
+    //var datum;
+    //d3.select(callingelement)
+    //    .each(function (d) { datum = d.data; });
+    //console.log(datum);
+    this.UpdateItemDatum("searchConditionDetails", callingelement);
+    //d3.select("#searchConditionDetails").attr("data-item", datum);
+    //d3.select("#testSearch").append("span").text( datum.Item.Type);
+};
+
+AdvancedSearchCoordinator.prototype.onSearchConditionDeleteClicked = function () {
+    console.log("AdvancedSearchCoordinator.prototype.onSearchConditionDeleteClicked started");
+    //searchConditionDetails
+
+    //datum is the d3 tree datum. Use datum.data to get the ViewTreeNode datum
+    var datum = this.GetItemDatum("searchConditionDetails");
+    console.log(datum);
+    if (this.ConditionRoot.ID === datum.data.ID) {
+        this.ConditionRoot = null;
+        this.ConditionD3Root = null;
+        d3.selectAll(".searchcondition").remove();
+    }
+    else {
+        datum.parent.data.RemoveChild(datum.data);
+        datum.parent.data.Rebuild();
+        this.UpdateConditions();
+    }
 };
