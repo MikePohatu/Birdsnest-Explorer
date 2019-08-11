@@ -75,6 +75,10 @@ namespace Console
             }).SetCompatibilityVersion(CompatibilityVersion.Version_2_1)
             .AddJsonOptions(options => options.SerializerSettings.ContractResolver = new DefaultContractResolver());
 
+            logger.LogInformation("Loading plugin manager");
+            PluginManager plugman = new PluginManager(this._loggerFactory.CreateLogger<PluginManager>());
+            services.AddSingleton(plugman);
+
             logger.LogInformation("Loading neo4j configuration");
             Neo4jService neoservice;
             using (NeoConfiguration config = new NeoConfiguration())
@@ -82,12 +86,11 @@ namespace Console
                 config.DB_URI = _config["neo4jSettings:DB_URI"];
                 config.DB_Username = _config["neo4jSettings:DB_Username"];
                 config.DB_Password = _config["neo4jSettings:DB_Password"];
-                neoservice = new Neo4jService(this._loggerFactory.CreateLogger<Neo4jService>(), config);
+                neoservice = new Neo4jService(this._loggerFactory.CreateLogger<Neo4jService>(), config, plugman);
             }
             services.AddSingleton(neoservice);
 
-            PluginManager plugman = new PluginManager(this._loggerFactory.CreateLogger<PluginManager>());
-            services.AddSingleton(plugman);
+            
 
             logger.LogInformation("Loading authentication configuration");
             services.AddSingleton(new AuthConfigurations(_config.GetSection("Authorization")));

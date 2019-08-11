@@ -11,6 +11,8 @@ function AdvancedSearchCoordinator(pathelementid, conditionelementid) {
     this.YSpacing = 70;
     this.ConditionRoot = null;
     this.ConditionD3Root = null;
+    this.NodeDetails = null;
+    this.EdgeDetails = null;
 
     bindEnterToButton("searchEdgeDetails", "searchEdgeSaveBtn");
     bindEnterToButton("searchNodeDetails", "searchNodeSaveBtn");
@@ -62,6 +64,15 @@ function AdvancedSearchCoordinator(pathelementid, conditionelementid) {
     });
 
     me.UpdateNodeLabels();
+    me.UpdateEdgeLabels();
+    apiGetJson("/api/graph/node/properties", function (data) {
+        //console.log(data);
+        me.NodeDetails = data;
+    });
+    apiGetJson("/api/graph/edge/properties", function (data) {
+        //console.log(data);
+        me.EdgeDetails = data;
+    });
 }
 
 AdvancedSearchCoordinator.prototype.RunSearch = function () {
@@ -283,12 +294,23 @@ AdvancedSearchCoordinator.prototype.UpdateItemDatum = function (elementid, calli
 };
 
 AdvancedSearchCoordinator.prototype.GetItemDatum = function (elementid) {
-    console.log("AdvancedSearchCoordinator.prototype.GetItemDatum started");
+    //console.log("AdvancedSearchCoordinator.prototype.GetItemDatum started");
     //console.log(this);
-    console.log(elementid);
+    //console.log(elementid);
     var el = d3.select("#" + elementid);
     var datum = el.datum();
-    console.log(datum);
+    //console.log(datum);
+    return datum;
+};
+
+
+AdvancedSearchCoordinator.prototype.GetElementDatum = function (element) {
+    //console.log("AdvancedSearchCoordinator.prototype.GetElementDatum started");
+    //console.log(this);
+    //console.log(elementid);
+    var el = d3.select(element);
+    var datum = el.datum();
+    //console.log(datum);
     return datum;
 };
 
@@ -393,40 +415,74 @@ AdvancedSearchCoordinator.prototype.UpdateNodeProps = function () {
     var type = document.getElementById("nodeType").value;
     var el = document.getElementById("nodeProp");
 
-    clearOptions(el);
-    let topoption = addOption(el, "", "");
+    this.ClearOptions(el);
+    let topoption = this.AddOption(el, "", "");
     topoption.setAttribute("disabled", "");
     topoption.setAttribute("hidden", "");
     topoption.setAttribute("selected", "");
 
-    //console.log(nodeDetails);
+    //console.log(this.NodeDetails);
     //console.log(type);
 
     if (type || type === "*") {
-        var typedeets = nodeDetails[type];
+        var typedeets = this.NodeDetails[type];
         if (typedeets) {
             typedeets.forEach(function (prop) {
-                addOption(el, prop, prop);
+                this.AddOption(el, prop, prop);
             });
         }
         else {
-            addOption(el, "name", "name");
+            this.AddOption(el, "name", "name");
         }
     }
 };
 
 AdvancedSearchCoordinator.prototype.UpdateNodeLabels = function () {
     var el = document.getElementById("nodeType");
-    clearOptions(el);
-    let topoption = addOption(el, "*", "");
+    var me = this;
+    this.ClearOptions(el);
+    let topoption = this.AddOption(el, "*", "");
     topoption.setAttribute("selected", "");
 
     apiGetJson("/api/graph/node/labels", function (data) {
         data.forEach(function (label) {
-            addOption(el, label, label);
+            me.AddOption(el, label, label);
         });
     });
 };
+
+AdvancedSearchCoordinator.prototype.UpdateEdgeLabels = function () {
+    var el = document.getElementById("edgeType");
+    var me = this;
+    this.ClearOptions(el);
+    let topoption = this.AddOption(el, "*", "");
+    topoption.setAttribute("selected", "");
+
+    apiGetJson("/api/graph/edges/labels", function (data) {
+        for (var i = 0; i < data.length; ++i) {
+            me.AddOption(el, data[i], data[i]);
+        }
+    });
+};
+
+AdvancedSearchCoordinator.prototype.ClearOptions = function(selectboxEl) {
+    selectboxEl.options.length = 0;
+};
+
+//populate 
+AdvancedSearchCoordinator.prototype.AddOption = function (selectbox, text, value) {
+    var o = document.createElement("OPTION");
+    o.text = text;
+    o.value = value;
+    selectbox.options.add(o);
+    return o;
+};
+
+//function addLabelOptions(selectbox, labelList) {
+//    for (var i = 0; i < labelList.length; ++i) {
+//        this.AddOption(selectbox, labelList[i], labelList[i]);
+//    }
+//}
 
 AdvancedSearchCoordinator.prototype.BindAutoComplete = function () {
     $("#" + elementPrefix + "Val").autocomplete({
@@ -444,7 +500,7 @@ AdvancedSearchCoordinator.prototype.BindAutoComplete = function () {
 
 
 AdvancedSearchCoordinator.prototype.AddConditionRoot = function () {
-    console.log("AdvancedSearchCoordinator.prototype.AddConditionRoot started");
+    //console.log("AdvancedSearchCoordinator.prototype.AddConditionRoot started");
     //d3.select("#whereAddIcon").classed("hidden", true);
 
     var cond1 = new StringCondition();
@@ -482,7 +538,7 @@ AdvancedSearchCoordinator.prototype.NewCondition = function () {
 };
 
 AdvancedSearchCoordinator.prototype.UpdateConditions = function () {
-    console.log("AdvancedSearchCoordinator.prototype.UpdateConditions start:" + this.ConditionElementID);
+    //console.log("AdvancedSearchCoordinator.prototype.UpdateConditions start:" + this.ConditionElementID);
     //console.log(this);
     //console.log(this.SearchData.Edges);
     if (this.ConditionD3Root === null) { return; }
@@ -502,7 +558,7 @@ AdvancedSearchCoordinator.prototype.UpdateConditions = function () {
     var editwidth = 25;
 
     var viewel = d3.select("#" + this.ConditionElementID);
-    console.log(nodes);
+    //console.log(nodes);
     var enter = viewel.selectAll(".searchcondition")
         .data(nodes, function (d) { return d.data.ID; })
         .enter()
@@ -516,7 +572,11 @@ AdvancedSearchCoordinator.prototype.UpdateConditions = function () {
                 return "";
             }
         })
-        .classed("searchcondition", true);
+        .classed("searchcondition", true)
+        .attr("data-open", "searchConditionDetails")
+        .on("click", function () {
+            me.onSearchConditionClicked(this);
+        });
         //.each(function (d) {
         //    console.log("each");
         //    console.log(d.descendants().length);
@@ -551,30 +611,30 @@ AdvancedSearchCoordinator.prototype.UpdateConditions = function () {
         .attr("x", rectwidth / 2)
         .attr("y", rectheight / 2);
 
-    var enteredit = enter.append("g")
-        .attr("id", function (d) { return "searchconditionedit_" + d.data.ID; })
-        .classed("searchconditionedit", true)
-        .classed("searchcontrol", true)
-        .attr("data-open", "searchConditionDetails")
-        .on("click", function () {
-            me.onSearchConditionEditClicked(this);
-        });
+    //var enteredit = enter.append("g")
+    //    .attr("id", function (d) { return "searchconditionedit_" + d.data.ID; })
+    //    .classed("searchconditionedit", true)
+    //    .classed("searchcontrol", true)
+    //    .attr("data-open", "searchConditionDetails")
+    //    .on("click", function () {
+    //        me.onSearchConditionEditClicked(this);
+    //    });
 
-    enteredit.append("i")
-        .attr("class", "fas fa-edit")
-        .attr("width", editwidth)
-        .attr("height", editwidth)
-        .attr("x", function (d) { return d.rectwidth - editwidth - xpadding; })
-        .attr("y", ypadding);
+    //enteredit.append("i")
+    //    .attr("class", "fas fa-edit")
+    //    .attr("width", editwidth)
+    //    .attr("height", editwidth)
+    //    .attr("x", function (d) { return d.rectwidth - editwidth - xpadding; })
+    //    .attr("y", ypadding);
 
-    enteredit.append("rect")
-        .attr("width", editwidth)
-        .attr("height", editwidth)
-        .attr("fill", "white")
-        .attr("fill-opacity", "0.4")
-        .attr("stroke-width", "0")
-        .attr("x", function (d) { return d.rectwidth - editwidth - xpadding; })
-        .attr("y", ypadding);
+    //enteredit.append("rect")
+    //    .attr("width", editwidth)
+    //    .attr("height", editwidth)
+    //    .attr("fill", "white")
+    //    .attr("fill-opacity", "0.4")
+    //    .attr("stroke-width", "0")
+    //    .attr("x", function (d) { return d.rectwidth - editwidth - xpadding; })
+    //    .attr("y", ypadding);
 
     //setup the + button for group nodes e.g. AND/OR
     var groupaddbtns = viewel.selectAll(".conditiongroup")
@@ -606,7 +666,7 @@ AdvancedSearchCoordinator.prototype.UpdateConditions = function () {
     viewel.selectAll(".searchcondition")
         .data(nodes, function (d) { return d.data.ID; })
         .attr("transform", function (d) {
-            console.log(d);
+            //console.log(d);
             var x = 0;
             var y = 0;
             if (d.parent !== null) {
@@ -623,15 +683,44 @@ AdvancedSearchCoordinator.prototype.UpdateConditions = function () {
         .remove();
 };
 
-AdvancedSearchCoordinator.prototype.onSearchConditionEditClicked = function (callingelement) {
-    console.log("AdvancedSearchCoordinator.prototype.onSearchConditionEditClicked started");
+AdvancedSearchCoordinator.prototype.onSearchConditionClicked = function (callingelement) {
+    //console.log("AdvancedSearchCoordinator.prototype.onSearchConditionClicked started");
     //var datum;
     //d3.select(callingelement)
     //    .each(function (d) { datum = d.data; });
-    //console.log(datum);
+    //console.log(callingelement);
     this.UpdateItemDatum("searchConditionDetails", callingelement);
-    //d3.select("#searchConditionDetails").attr("data-item", datum);
-    //d3.select("#testSearch").append("span").text( datum.Item.Type);
+    this.UpdateConditionDetails();
+    
+};
+
+AdvancedSearchCoordinator.prototype.UpdateConditionDetails = function () {
+    console.log("AdvancedSearchCoordinator.prototype.UpdateConditionDetails started");
+    //console.log(this.SearchData.Nodes);
+    var me = this;
+    var datum = this.GetItemDatum("searchEdgeDetails");
+
+    var searchItem = document.getElementById("searchItem");
+    this.ClearOptions(searchItem);
+
+    //set empty top option
+    var option = this.AddOption(searchItem, "", "");
+    option.setAttribute("disabled", "");
+    option.setAttribute("hidden", "");
+    option.setAttribute("selected", "");
+
+    option = this.AddOption(searchItem, "Nodes", "Nodes");
+    option.setAttribute("disabled", "");
+    this.SearchData.Nodes.forEach(function (item) {
+        me.AddOption(searchItem, item.Name, item.Name);
+    });
+
+    option = this.AddOption(searchItem, "Relationships", "Relationships");
+    option.setAttribute("disabled", "");
+    this.SearchData.Edges.forEach(function (item) {
+        me.AddOption(searchItem, item.Name, item.Name);
+    });
+    
 };
 
 AdvancedSearchCoordinator.prototype.onSearchConditionAddClicked = function (callingelement) {

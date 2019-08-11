@@ -36,10 +36,7 @@
 
                 <div class="input-group">
                     <span class="input-group-label small-3">Type</span>
-                    <select id="edgeType" class="small-9 input-group-field">
-                        <option value="" disabled selected hidden></option>
-                        <option value="">*</option>
-                    </select>
+                    <select id="edgeType" class="small-9 input-group-field"></select>
                 </div>
 
                 <div class="input-group">
@@ -84,14 +81,29 @@
         </div>
 
         <div id="searchConditionDetails" class="reveal" data-reveal data-animation-in="hinge-in-from-top fast" data-overlay="false">
-            <div id="testSearch"></div>
-            <button class="close-button" data-close aria-label="Close condition dialog" type="button">
-                <span aria-hidden="true">&times;</span>
-            </button>
-            <div>
-                <button id="searchConditionSaveBtn" class="button" data-close aria-label="Save this condition" type="button">Save</button>
-                <button id="searchConditionDeleteBtn" class="alert button" data-close aria-label="Delete this condition" type="button">Delete</button>
-            </div>
+            <fieldset class="fieldset small-4 cell">
+                <legend>Condition</legend>
+                <div class="input-group">
+                    <span class="input-group-label small-4">Referenced Item</span>
+                    <select id="searchItem" class="small-8 input-group-field" autofocus></select>
+                </div>
+                <div class="input-group">
+                    <span class="input-group-label small-4">Property</span>
+                    <select id="searchProp" class="small-8 input-group-field"></select>
+                </div>
+                <div class="input-group">
+                    <span class="input-group-label small-4">Equals</span>
+                    <input id="searchType" type="search" autocomplete="off" placeholder="*" class="small-8 input-group-field">
+                </div>
+
+                <button class="close-button" data-close aria-label="Close condition dialog" type="button">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                <div>
+                    <button id="searchConditionSaveBtn" class="button" data-close aria-label="Save this condition" type="button">Save</button>
+                    <button id="searchConditionDeleteBtn" class="alert button" data-close aria-label="Delete this condition" type="button">Delete</button>
+                </div>
+            </fieldset>
         </div>
 
         <div id="advSearchView">

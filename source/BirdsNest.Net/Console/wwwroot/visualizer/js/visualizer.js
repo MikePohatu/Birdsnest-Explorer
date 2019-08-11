@@ -37,7 +37,6 @@ var graphedges = new datumStore();
 
 var areaBox;
 var force;
-var nodeDetails;
 
 var selectMode = false;
 var playMode = false;
@@ -73,16 +72,7 @@ $.getJSON("/visualizer/subtypeproperties", function (data) {
     //console.log(subtypeproperties);
 });
 
-$.getJSON("/api/graph/edges/labels", function (data) {
-    for (var i = 0; i < data.length; ++i) {
-        addOption(document.getElementById("edgeType"), data[i], data[i]);
-    }
-});
 
-$.getJSON("/api/graph/node/properties", function (data) {
-    //console.log(data);
-    nodeDetails = data;
-});
 
 
 $("#menuShowHideButton").click(menuShowHide);
@@ -1565,25 +1555,4 @@ function timedKeyUp(timedfunction) {
 
 function isNullOrEmpty(s) {
     return s === null || s === "";
-}
-
-
-
-//populate 
-function addOption(selectbox, text, value) {
-    var o = document.createElement("OPTION");
-    o.text = text;
-    o.value = value;
-    selectbox.options.add(o);
-    return o;
-}
-
-function addLabelOptions(selectbox, labelList) {
-    for (var i = 0; i < labelList.length; ++i) {
-        addOption(selectbox, labelList[i], labelList[i]);
-    }
-}
-
-function clearOptions(selectbox) {
-    selectbox.options.length = 0;
 }

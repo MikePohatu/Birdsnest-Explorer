@@ -11,6 +11,17 @@
             <input type="submit" class="button" value="Reload Plugins" />
         </form>
     </div>
+</div>
+<div class="grid-x grid-margin-x">
+    <div class="cell input-group">
+        <span class="input-group-label small-4">Reload Properties</span>
+        <input id="label" type="search" autocomplete="off" placeholder="Label (case sensitive)" class="small-8 input-group-field">
+        <div class="input-group-button">
+            <input type="submit" class="button" value="Go" onclick="javascript:UpdateProperties()" />
+        </div>
+    </div>
+</div>
+<div class="grid-x grid-margin-x">
     <div class="cell shrink">
         <text id="reloadmessage"></text>
     </div>
@@ -23,5 +34,15 @@
             document.getElementById("reloadmessage").innerHTML = data.message;
         });
     }
-    
+
+    function UpdateProperties() {
+        var label = document.getElementById("label").value;
+        console.log(label);
+
+
+        $.getJSON("/admin/updateproperties?label=" + label, function (data) {
+            //console.log(data);
+            document.getElementById("reloadmessage").innerHTML = data.message;
+        });
+    }
 </script>

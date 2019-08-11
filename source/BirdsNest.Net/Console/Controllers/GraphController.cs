@@ -108,6 +108,20 @@ namespace Console.Controllers
             return this._pluginmanager.EdgeLabels;
         }
 
+        // GET: api/graph/edge/properties
+        [HttpGet("edge/properties")]
+        public SortedDictionary<string, List<string>> GetEdgeProperties()
+        {
+            return this._service.GetEdgeProperties();
+        }
+
+        // GET: api/graph/edge/values
+        [HttpGet("edge/values")]
+        public IEnumerable<string> GetEdgeValues([FromQuery]string type, [FromQuery]string property, [FromQuery]string searchterm)
+        {
+            return this._service.SearchEdgePropertyValues(type, property, searchterm);
+        }
+
 
         //search stuff
         //*******************

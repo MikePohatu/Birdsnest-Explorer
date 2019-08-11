@@ -8,6 +8,7 @@ using common;
 using Neo4j.Driver.V1;
 using Newtonsoft.Json;
 using Microsoft.Extensions.Logging;
+using Console.Plugins;
 
 namespace Console.neo4jProxy
 {
@@ -15,10 +16,12 @@ namespace Console.neo4jProxy
     {
         private readonly ILogger<Neo4jService> _logger;
         private readonly IDriver _driver;
+        private readonly PluginManager _pluginmanager;
 
-        public Neo4jService(ILogger<Neo4jService> logger, NeoConfiguration config)
+        public Neo4jService(ILogger<Neo4jService> logger, NeoConfiguration config, PluginManager manager)
         {
             this._logger = logger;
+            this._pluginmanager = manager;
             Config neo4jconfig = new Config();
             neo4jconfig.ConnectionIdleTimeout = Config.InfiniteInterval;
             neo4jconfig.MaxConnectionLifetime = Config.InfiniteInterval;
@@ -704,23 +707,125 @@ namespace Console.neo4jProxy
             return ParseStringListResults(dbresult);
         }
 
-        public void UpdateMetadata(string label)
+        public SortedDictionary<string, List<string>> GetEdgeProperties()
         {
-            List<string> types = new List<string>() { Types.ADObject, Types.Computer, Types.User, Types.Group };
+            SortedDictionary<string, List<string>> result = new SortedDictionary<string, List<string>>();
 
-            string query =
-            "MATCH (n:" + label + ") " +
-            "WITH DISTINCT keys(n) as props " +
-            "UNWIND props as p " +
-            "WITH DISTINCT p as disprops " +
-            "WITH collect(disprops) as allprops " +
-            "MERGE(i: _Metadata { name: 'NodeProperties'}) " +
-            "SET i." + label + " = allprops " +
-            "RETURN i";
+            IStatementResult dbresult = null;
             using (ISession session = this._driver.Session())
             {
-                session.WriteTransaction(tx => tx.Run(query));
+                try
+                {
+                    session.ReadTransaction(tx =>
+                    {
+                        string query = "MATCH (i:_Metadata {name:'EdgeProperties'}) RETURN i";
+                        dbresult = tx.Run(query);
+                    });
+                }
+                catch
+                {
+                    //logging to add
+                }
             }
+
+            ResultSet r = ParseResults(dbresult);
+
+            foreach (BirdsNestNode node in r.Nodes)
+            {
+                foreach (string key in node.Properties.Keys)
+                {
+                    if (key != "name")
+                    {
+                        object val;
+                        if (node.Properties.TryGetValue(key, out val))
+                        {
+                            List<string> lst = new List<string>();
+                            foreach (object o in (List<object>)val)
+                            {
+                                lst.Add((string)o);
+                            }
+                            lst.Sort();
+                            result.Add(key, lst);
+                        }
+                    }
+                }
+            }
+
+            return result;
+        }
+
+        public IEnumerable<string> SearchEdgePropertyValues(string type, string property, string searchterm)
+        {
+            if (string.IsNullOrEmpty(type) || string.IsNullOrEmpty(property) || string.IsNullOrEmpty(searchterm)) { return new List<string>(); }
+            string regexterm = "(?i).*" + searchterm + ".*";
+
+            IStatementResult dbresult = null;
+            using (ISession session = this._driver.Session())
+            {
+                try
+                {
+                    session.ReadTransaction(tx =>
+                    {
+                        string query = "MATCH ()-[r]->() WHERE $type IN labels(r) AND r[{prop}]  =~ $regex RETURN DISTINCT r[{prop}] ORDER BY r[{prop}] LIMIT 20";
+                        dbresult = tx.Run(query, new { type = type, prop = property, regex = regexterm });
+                    });
+                }
+                catch
+                {
+                    //logging to add
+                }
+            }
+
+            return ParseStringListResults(dbresult);
+        }
+
+        public async Task<bool> UpdateMetadataAsync(string label)
+        {
+            bool b = false;
+            await Task.Run(() => b = UpdateMetadata(label));
+
+            return b;
+        }
+
+        public bool UpdateMetadata(string label)
+        {
+            if (this._pluginmanager.NodeLabels.Contains(label))
+            {
+                string query =
+                "MATCH (n:" + label + ") " +
+                "WITH DISTINCT keys(n) as props " +
+                "UNWIND props as p " +
+                "WITH DISTINCT p as disprops " +
+                "WITH collect(disprops) as allprops " +
+                "MERGE(i: _Metadata { name: 'NodeProperties'}) " +
+                "SET i." + label + " = allprops " +
+                "RETURN i";
+                using (ISession session = this._driver.Session())
+                {
+                    session.WriteTransaction(tx => tx.Run(query));
+                }
+            }
+            else if (this._pluginmanager.EdgeLabels.Contains(label))
+            {
+                string query = "MATCH ()-[r:" + label + "]->()" +
+                "WITH DISTINCT keys(r) as props " +
+                "UNWIND props as p " +
+                "WITH DISTINCT p as disprops " +
+                "WITH collect(disprops) as allprops " +
+                "MERGE(i: _Metadata { name: 'EdgeProperties'}) " +
+                "SET i." + label + " = allprops " +
+                "RETURN i";
+                using (ISession session = this._driver.Session())
+                {
+                    session.WriteTransaction(tx => tx.Run(query));
+                }
+            }
+            else
+            {
+                throw new ArgumentException(label + " is not a valid plugin label");
+            }
+        
+            return true;
         }
 
         private List<string> ParseStringListResults(IStatementResult dbresult)
