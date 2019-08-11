@@ -459,8 +459,8 @@ AdvancedSearchCoordinator.prototype.AddConditionRoot = function () {
     this.ConditionRoot = new ViewTreeNode(andcond, "Conditions");
     andcond.Conditions.push(cond1);
     andcond.Conditions.push(cond2);
-    andcond.Conditions.push(cond4);
-    //andcond.Conditions.push(cond3);
+    //andcond.Conditions.push(cond4);
+    andcond.Conditions.push(cond3);
     cond3.Conditions.push(cond4);
     cond3.Conditions.push(cond5);
     this.ConditionRoot.Build();
@@ -497,6 +497,7 @@ AdvancedSearchCoordinator.prototype.UpdateConditions = function () {
     var xpadding = 5;
     var xspacing = 50;
     var ypadding = 5;
+    var strokewidth = 3;
     var pluswidth = 25;
     var editwidth = 25;
 
@@ -532,13 +533,15 @@ AdvancedSearchCoordinator.prototype.UpdateConditions = function () {
         })
         .attr("width", function (d) {
             if (d.value > 1) {
-                d.rectwidth = (2 * xpadding + rectwidth) * d.value + (d.value - 1) * xspacing + pluswidth;
+                d.rectwidth = d.value * rectwidth + (d.value - 1) * xspacing + (d.descendants().length - 1) * 2 + strokewidth * d.value + editwidth + xpadding *2;
             }
             else {
                 d.rectwidth = rectwidth;
             }
             return d.rectwidth;
         })
+        .attr("x", strokewidth)
+        .attr("y", strokewidth)
         .attr("rx", 5);
 
     enter.append("text")
@@ -561,7 +564,7 @@ AdvancedSearchCoordinator.prototype.UpdateConditions = function () {
         .attr("class", "fas fa-edit")
         .attr("width", editwidth)
         .attr("height", editwidth)
-        .attr("x", function (d) { return d.rectwidth - editwidth - xpadding * 2; })
+        .attr("x", function (d) { return d.rectwidth - editwidth - xpadding; })
         .attr("y", ypadding);
 
     enteredit.append("rect")
@@ -570,7 +573,7 @@ AdvancedSearchCoordinator.prototype.UpdateConditions = function () {
         .attr("fill", "white")
         .attr("fill-opacity", "0.4")
         .attr("stroke-width", "0")
-        .attr("x", function (d) { return d.rectwidth - editwidth - xpadding * 2; })
+        .attr("x", function (d) { return d.rectwidth - editwidth - xpadding; })
         .attr("y", ypadding);
 
     //setup the + button for group nodes e.g. AND/OR
@@ -587,7 +590,7 @@ AdvancedSearchCoordinator.prototype.UpdateConditions = function () {
         .attr("class", "fas fa-plus")
         .attr("width", pluswidth)
         .attr("height", pluswidth)
-        .attr("x", function (d) { return d.rectwidth - pluswidth - xpadding * 2; })
+        .attr("x", function (d) { return d.rectwidth - pluswidth - xpadding; })
         .attr("y", function (d) { return d.rectheight - ypadding - pluswidth; });
 
 
@@ -597,7 +600,7 @@ AdvancedSearchCoordinator.prototype.UpdateConditions = function () {
         .attr("fill", "white")
         .attr("fill-opacity", "0.4")
         .attr("stroke-width", "0")
-        .attr("x", function (d) { return d.rectwidth - pluswidth - xpadding * 2; })
+        .attr("x", function (d) { return d.rectwidth - pluswidth - xpadding; })
         .attr("y", function (d) { return d.rectheight - ypadding - pluswidth; });
 
     viewel.selectAll(".searchcondition")
@@ -609,12 +612,12 @@ AdvancedSearchCoordinator.prototype.UpdateConditions = function () {
             if (d.parent !== null) {
                 //console.log("parent");
                 //console.log(d.parent);
-                x = d.parent.x + xpadding * 2 + (xspacing * d.data.Index) + (d.data.Index * rectwidth);
+                x = d.parent.x + xpadding + (xspacing * d.data.Index) + (d.data.Index * rectwidth);
                 y = ypadding * d.depth;
             }
             d.x = x;
             d.y = y;
-            return "translate(" + x + "," + y + ")";
+            return "translate(" + x + "," + (y + me.YSpacing / 2 ) + ")";
         })
         .exit()
         .remove();
@@ -634,12 +637,7 @@ AdvancedSearchCoordinator.prototype.onSearchConditionEditClicked = function (cal
 AdvancedSearchCoordinator.prototype.onSearchConditionAddClicked = function (callingelement) {
     console.log("AdvancedSearchCoordinator.prototype.onSearchConditionAddClicked started");
     //var datum;
-    //d3.select(callingelement)
-    //    .each(function (d) { datum = d.data; });
-    //console.log(datum);
-    this.UpdateItemDatum("searchConditionDetails", callingelement);
-    //d3.select("#searchConditionDetails").attr("data-item", datum);
-    //d3.select("#testSearch").append("span").text( datum.Item.Type);
+    
 };
 
 AdvancedSearchCoordinator.prototype.onSearchConditionDeleteClicked = function () {
