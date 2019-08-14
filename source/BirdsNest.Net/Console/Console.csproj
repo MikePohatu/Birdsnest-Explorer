@@ -19,6 +19,9 @@
 
   <ItemGroup>
     <Content Remove="wwwroot\css\plugins.css" />
+    <Content Remove="wwwroot\script\crap.ts" />
+    <Content Remove="wwwroot\script\datacrap.ts" />
+    <Content Remove="wwwroot\script\domcrap.ts" />
   </ItemGroup>
 
   <ItemGroup>
@@ -27,6 +30,10 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.App" />
+    <PackageReference Include="Microsoft.TypeScript.MSBuild" Version="3.6.0">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.1.9" />
     <PackageReference Include="Neo4j.Driver" Version="1.7.2" />
     <PackageReference Include="NLog.Web.AspNetCore" Version="4.8.2" />
@@ -35,6 +42,10 @@
 
   <ItemGroup>
     <ProjectReference Include="..\common\common.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <TypeScriptCompile Include="wwwroot\script\domcrap.ts" />
   </ItemGroup>
 
   <ItemGroup>

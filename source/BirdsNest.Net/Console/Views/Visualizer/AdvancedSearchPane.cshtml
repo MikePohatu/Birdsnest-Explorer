@@ -87,7 +87,7 @@
                 <span class="input-group-label small-4">Referenced Item</span>
                 <select id="searchItem" class="small-8 input-group-field" autofocus></select>
             </div>
-            
+
             <div id="searchOptions">
                 <div class="input-group">
                     <span class="input-group-label small-4">Property</span>
@@ -104,21 +104,45 @@
             </button>
             <div class="grid-x align-middle">
                 <div class="cell small-2 medium-2">
-                    <button id="searchConditionSaveBtn" class="button" data-close aria-label="Save this condition" type="button">Save</button>
+                    <button id="searchConditionSaveBtn" class="button" aria-label="Save this condition" type="button">Save</button>
                 </div>
                 <div class="cell small-2 medium-2">
                     <button id="searchConditionDeleteBtn" class="alert button" data-close aria-label="Delete this condition" type="button">Delete</button>
                 </div>
                 <div class="cell small-7 medium-7"></div>
                 <div class="cell small-1 medium-1">
-                    <span id="alertIcon" data-open="searchAlert">
+                    <div id="alertIcon">
                         <i class="fas fa-exclamation-triangle" style="margin: 0 0 1rem 0; color:orange;"></i>
-                    </span>
+                    </div>
                 </div>
             </div>
         </fieldset>
     </div>
 
+    <div id="searchAndOrDetails" class="reveal tiny" data-reveal data-animation-in="hinge-in-from-top fast" data-overlay="false">
+        <fieldset class="fieldset small-4 cell">
+            <legend>And/Or</legend>
+            <div class="input-group">
+                <span class="input-group-label small-4">Type</span>
+                <select id="searchAndOr" class="small-8 input-group-field" autofocus>
+                    <option value="AND">AND</option>
+                    <option value="OR">OR</option>
+                </select>
+            </div>
+
+            <button class="close-button" data-close aria-label="Close condition dialog" type="button">
+                <span aria-hidden="true">&times;</span>
+            </button>
+            <div class="grid-x align-middle">
+                <div class="cell small-3 medium-3">
+                    <button id="searchAndOrSaveBtn" class="button" data-close aria-label="Save this condition" type="button">Save</button>
+                </div>
+                <div class="cell small-3 medium-3">
+                    <button id="searchAndOrDeleteBtn" class="alert button" data-close aria-label="Delete this condition" type="button">Delete</button>
+                </div>
+            </div>
+        </fieldset>
+    </div>
     <div id="advSearchView">
         <div class="grid-x align-middle">
             <div id="pathLabel" class="cell small-3 medium-3 searchLabel">
@@ -167,16 +191,16 @@
         </div>
     </div>
 
-    <div id="searchAlert" class="reveal" data-reveal data-animation-in="hinge-in-from-top fast" data-overlay="false">
-        <div class="grid-x align-middle">
-            <div>
-                <span id="alertMessage"></span>
+    @*<div id="searchAlert" class="reveal" data-reveal data-animation-in="hinge-in-from-top fast" data-overlay="false">
+            <div class="grid-x align-middle">
+                <div>
+                    <span id="alertMessage"></span>
+                </div>
+                <button class="button" data-close aria-label="Close alert dialog" type="button">
+                    <span aria-hidden="true">OK</span>
+                </button>
             </div>
-            <button class="button" data-close aria-label="Close alert dialog" type="button">
-                <span aria-hidden="true">OK</span>
-            </button>
-        </div>
-    </div>
+        </div>*@
 </div>
 
     

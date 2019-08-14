@@ -68,6 +68,9 @@ function AdvancedSearchCoordinator(pathelementid, conditionelementid) {
     d3.select("#searchConditionSaveBtn").on("click", function () {
         me.onSearchConditionSaveClicked();
     });
+    d3.select("#searchAndOrSaveBtn").on("click", function () {
+        me.onSearchAndOrSaveClicked();
+    });
 
 
     me.UpdateNodeLabels();
@@ -422,8 +425,8 @@ AdvancedSearchCoordinator.prototype.UpdateNodeProps = function () {
     var type = document.getElementById("nodeType").value;
     var el = document.getElementById("nodeProp");
 
-    this.ClearOptions(el);
-    let topoption = this.AddOption(el, "", "");
+    domcrap.ClearOptions(el);
+    let topoption = domcrap.AddOption(el, "", "");
     topoption.setAttribute("disabled", "");
     topoption.setAttribute("hidden", "");
     topoption.setAttribute("selected", "");
@@ -435,11 +438,11 @@ AdvancedSearchCoordinator.prototype.UpdateNodeProps = function () {
         var typedeets = this.NodeDetails[type];
         if (typedeets) {
             typedeets.forEach(function (prop) {
-                this.AddOption(el, prop, prop);
+                domcrap.AddOption(el, prop, prop);
             });
         }
         else {
-            this.AddOption(el, "name", "name");
+            domcrap.AddOption(el, "name", "name");
         }
     }
 };
@@ -447,13 +450,13 @@ AdvancedSearchCoordinator.prototype.UpdateNodeProps = function () {
 AdvancedSearchCoordinator.prototype.UpdateNodeLabels = function () {
     var el = document.getElementById("nodeType");
     var me = this;
-    this.ClearOptions(el);
-    let topoption = this.AddOption(el, "*", "");
+    domcrap.ClearOptions(el);
+    let topoption = domcrap.AddOption(el, "*", "");
     topoption.setAttribute("selected", "");
 
     apiGetJson("/api/graph/node/labels", function (data) {
         data.forEach(function (label) {
-            me.AddOption(el, label, label);
+            domcrap.AddOption(el, label, label);
         });
     });
 };
@@ -461,33 +464,20 @@ AdvancedSearchCoordinator.prototype.UpdateNodeLabels = function () {
 AdvancedSearchCoordinator.prototype.UpdateEdgeLabels = function () {
     var el = document.getElementById("edgeType");
     var me = this;
-    this.ClearOptions(el);
-    let topoption = this.AddOption(el, "*", "");
+    domcrap.ClearOptions(el);
+    let topoption = domcrap.AddOption(el, "*", "");
     topoption.setAttribute("selected", "");
 
     apiGetJson("/api/graph/edges/labels", function (data) {
         for (var i = 0; i < data.length; ++i) {
-            me.AddOption(el, data[i], data[i]);
+            domcrap.AddOption(el, data[i], data[i]);
         }
     });
 };
 
-AdvancedSearchCoordinator.prototype.ClearOptions = function(selectboxEl) {
-    selectboxEl.options.length = 0;
-};
-
-//populate 
-AdvancedSearchCoordinator.prototype.AddOption = function (selectbox, text, value) {
-    var o = document.createElement("OPTION");
-    o.text = text;
-    o.value = value;
-    selectbox.options.add(o);
-    return o;
-};
-
 //function addLabelOptions(selectbox, labelList) {
 //    for (var i = 0; i < labelList.length; ++i) {
-//        this.AddOption(selectbox, labelList[i], labelList[i]);
+//        domcrap.AddOption(selectbox, labelList[i], labelList[i]);
 //    }
 //}
 
@@ -580,9 +570,19 @@ AdvancedSearchCoordinator.prototype.UpdateConditions = function () {
             }
         })
         .classed("searchcondition", true)
-        .attr("data-open", "searchConditionDetails")
-        .on("click", function () {
-            me.onSearchConditionClicked(this);
+        .attr("data-open", function (d) {
+            if (d.data.Item.Type === "AND" || d.data.Item.Type === "OR") {
+                return "searchAndOrDetails";
+            }
+            return "searchConditionDetails";
+        })
+        .on("click", function (d) {
+            if (d.data.Item.Type === "AND" || d.data.Item.Type === "OR") {
+                me.onSearchAndOrClicked(this);
+            }
+            else {
+                me.onSearchConditionClicked(this);
+            }
         });
         //.each(function (d) {
         //    console.log("each");
@@ -701,7 +701,11 @@ AdvancedSearchCoordinator.prototype.onSearchConditionClicked = function (calling
     var datum = this.UpdateItemDatum("searchConditionDetails", callingelement);
     if (datum) { datum = datum.data; }
     //console.log(datum);
-    
+
+    document.getElementById("searchProp").disabled = false;
+    document.getElementById("searchVal").disabled = false;
+    document.getElementById("searchConditionSaveBtn").disabled = false;
+
     this.UpdateConditionDetails(function () {
         me.ChangeSelectedValue(document.getElementById("searchItem"), datum.Item.Name, function () {
             me.ChangeSelectedValue(document.getElementById("searchProp"), datum.Item.Property);
@@ -719,25 +723,25 @@ AdvancedSearchCoordinator.prototype.UpdateConditionDetails = function (callback)
 
     var searchItem = document.getElementById("searchItem");
     //var searchProps = document.getElementById("searchProp");
-    this.ClearOptions(searchItem);
-    //this.ClearOptions(searchProps);
+    domcrap.ClearOptions(searchItem);
+    //domcrap.ClearOptions(searchProps);
 
     //set empty top option
-    var option = this.AddOption(searchItem, "", "");
+    var option = domcrap.AddOption(searchItem, "", "");
     option.setAttribute("disabled", "");
     option.setAttribute("hidden", "");
     option.setAttribute("selected", "");
 
-    option = this.AddOption(searchItem, "Nodes", "Nodes");
+    option = domcrap.AddOption(searchItem, "Nodes", "Nodes");
     option.setAttribute("disabled", "");
     this.SearchData.Nodes.forEach(function (item) {
-        me.AddOption(searchItem, item.Name, item.Name);
+        domcrap.AddOption(searchItem, item.Name, item.Name);
     });
 
-    option = this.AddOption(searchItem, "Relationships", "Relationships");
+    option = domcrap.AddOption(searchItem, "Relationships", "Relationships");
     option.setAttribute("disabled", "");
     this.SearchData.Edges.forEach(function (item) {
-        me.AddOption(searchItem, item.Name, item.Name);
+        domcrap.AddOption(searchItem, item.Name, item.Name);
     });
 
     if (typeof callback === "function") {
@@ -782,21 +786,21 @@ AdvancedSearchCoordinator.prototype.onSearchConditionItemChanged = function () {
     //console.log(this.EdgeDetails);
     console.log(selectedItem);
 
-    this.ClearOptions(searchProps);
+    domcrap.ClearOptions(searchProps);
     var props;
     if (selectedItem) {
         if (selectedItem.Label === "" || selectedItem.Label === "*") {
             console.log("node label not selected");
-            d3.select("#searchProp").attr("disabled", true);
-            d3.select("#searchVal").attr("disabled", true);
-            d3.select("#searchConditionSaveBtn").attr("disabled", true);
+            document.getElementById("searchProp").disabled = true;
+            document.getElementById("searchVal").disabled = true;
+            document.getElementById("searchConditionSaveBtn").disabled = true;
             this.SetAlert("The item you have selected (" + selectedItem.Name + ") does not have a type. You must set the type on the item before you can create a condition");
         }
         else {
             this.ClearAlert();
-            d3.select("#searchProp").attr("disabled", null);
-            d3.select("#searchVal").attr("disabled", null);
-            d3.select("#searchConditionSaveBtn").attr("disabled", null);
+            document.getElementById("searchProp").disabled = false;
+            document.getElementById("searchVal").disabled = false;
+            document.getElementById("searchConditionSaveBtn").disabled = false;
             if (typeSelected === "node") {
                 props = this.NodeDetails[selectedItem.Label];
             }
@@ -807,7 +811,7 @@ AdvancedSearchCoordinator.prototype.onSearchConditionItemChanged = function () {
             if (selectedItem.Label) {
                 if (props) {
                     props.forEach(function (item) {
-                        option = me.AddOption(searchProps, item, item);
+                        option = domcrap.AddOption(searchProps, item, item);
                     });
                 }
             }
@@ -849,9 +853,20 @@ AdvancedSearchCoordinator.prototype.onSearchConditionSaveClicked = function () {
     //console.log("AdvancedSearchCoordinator.prototype.onSearchConditionSaveClicked started");
     var datum = this.GetItemDatum("searchConditionDetails").data;
 
-    datum.Item.Name = document.getElementById("searchItem").value;
-    datum.Item.Property = document.getElementById("searchProp").value;
-    datum.Item.Value = document.getElementById("searchVal").value;
+    var newname = document.getElementById("searchItem").value;
+    var newprop = document.getElementById("searchProp").value;
+    var newval = document.getElementById("searchVal").value;
+
+    if (crap.isNullOrWhitespace(newname) || crap.isNullOrWhitespace(newprop) || crap.isNullOrWhitespace(newval)) {
+        this.SetAlert("Name, property, or value is empty. Please set a value");
+    }
+    else {
+        datum.Item.Name = newname;
+        datum.Item.Property = newprop;
+        datum.Item.Value = newval;
+        $('#searchConditionDetails').foundation('close');
+    }
+    
 };
 
 AdvancedSearchCoordinator.prototype.ChangeSelectedValue = function (selectEl, value, callback) {
@@ -872,12 +887,34 @@ AdvancedSearchCoordinator.prototype.ChangeSelectedValue = function (selectEl, va
     if (typeof callback === "function") { callback(); }
 };
 
+AdvancedSearchCoordinator.prototype.onSearchAndOrSaveClicked = function () {
+    //console.log("AdvancedSearchCoordinator.prototype.onSearchAndOrSaveClicked started");
+    var datum = this.GetItemDatum("searchAndOrDetails").data;
+
+    datum.Item.Type = document.getElementById("searchAndOr").value;
+};
+
+AdvancedSearchCoordinator.prototype.onSearchAndOrClicked = function (callingelement) {
+    //console.log("AdvancedSearchCoordinator.prototype.onSearchAndOrClicked started");
+    var me = this;
+    this.ClearAlert();
+    var datum = this.UpdateItemDatum("searchAndOrDetails", callingelement);
+    if (datum) { datum = datum.data; }
+    //console.log(datum);
+
+    document.getElementById("searchAndOr").value = datum.Item.Type;
+};
+
 AdvancedSearchCoordinator.prototype.ClearAlert = function () {
-    document.getElementById("alertMessage").innerHTML = "";
-    document.getElementById("alertIcon").hidden = true;
+    var alertEl = $("#alertIcon");
+    alertEl.hide();
 };
 
 AdvancedSearchCoordinator.prototype.SetAlert = function (message) {
-    document.getElementById("alertMessage").innerHTML = message;
-    document.getElementById("alertIcon").hidden = false;
+    var alertEl = $("#alertIcon");
+    new Foundation.Tooltip(alertEl, {
+        allowHtml: true,
+        tipText: message
+    });
+    alertEl.show();
 };
