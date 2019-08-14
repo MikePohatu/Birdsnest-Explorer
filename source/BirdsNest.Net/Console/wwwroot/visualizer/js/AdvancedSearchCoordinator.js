@@ -697,6 +697,7 @@ AdvancedSearchCoordinator.prototype.onSearchConditionClicked = function (calling
     //    .each(function (d) { datum = d.data; });
     //console.log(callingelement);
     var me = this;
+    this.ClearAlert();
     var datum = this.UpdateItemDatum("searchConditionDetails", callingelement);
     if (datum) { datum = datum.data; }
     //console.log(datum);
@@ -779,23 +780,36 @@ AdvancedSearchCoordinator.prototype.onSearchConditionItemChanged = function () {
 
     //console.log(this.NodeDetails);
     //console.log(this.EdgeDetails);
-    //console.log(selectedItem);
+    console.log(selectedItem);
 
     this.ClearOptions(searchProps);
     var props;
     if (selectedItem) {
-        if (typeSelected === "node") {
-            props = this.NodeDetails[selectedItem.Label];
+        if (selectedItem.Label === "" || selectedItem.Label === "*") {
+            console.log("node label not selected");
+            d3.select("#searchProp").attr("disabled", true);
+            d3.select("#searchVal").attr("disabled", true);
+            d3.select("#searchConditionSaveBtn").attr("disabled", true);
+            this.SetAlert("The item you have selected (" + selectedItem.Name + ") does not have a type. You must set the type on the item before you can create a condition");
         }
-        else if (typeSelected === "edge") {
-            props = this.EdgeDetails[selectedItem.Label];
-        }
+        else {
+            this.ClearAlert();
+            d3.select("#searchProp").attr("disabled", null);
+            d3.select("#searchVal").attr("disabled", null);
+            d3.select("#searchConditionSaveBtn").attr("disabled", null);
+            if (typeSelected === "node") {
+                props = this.NodeDetails[selectedItem.Label];
+            }
+            else if (typeSelected === "edge") {
+                props = this.EdgeDetails[selectedItem.Label];
+            }
 
-        if (selectedItem.Label) {
-            if (props) {
-                props.forEach(function (item) {
-                    option = me.AddOption(searchProps, item, item);
-                });
+            if (selectedItem.Label) {
+                if (props) {
+                    props.forEach(function (item) {
+                        option = me.AddOption(searchProps, item, item);
+                    });
+                }
             }
         }
     }
@@ -856,4 +870,14 @@ AdvancedSearchCoordinator.prototype.ChangeSelectedValue = function (selectEl, va
     }
 
     if (typeof callback === "function") { callback(); }
+};
+
+AdvancedSearchCoordinator.prototype.ClearAlert = function () {
+    document.getElementById("alertMessage").innerHTML = "";
+    document.getElementById("alertIcon").hidden = true;
+};
+
+AdvancedSearchCoordinator.prototype.SetAlert = function (message) {
+    document.getElementById("alertMessage").innerHTML = message;
+    document.getElementById("alertIcon").hidden = false;
 };
