@@ -31,18 +31,22 @@
 }
 
 .searchcondition rect {
-    stroke-width: 3px;
+    stroke-width: 2px;
     color: #474747;
     stroke: #474747;
     fill: white;
 }
 
 .searchcondition text {
-    stroke-width: 1px;
+    stroke-width: 0;
     font-size: 10px;
     color: #474747;
     stroke: #474747;
-    fill: white;
+    fill: #474747;
+}
+
+.searchconditiontype {
+    font-weight: bold;
 }
 
 .searchcontrol:hover {

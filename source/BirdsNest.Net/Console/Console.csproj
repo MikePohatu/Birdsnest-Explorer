@@ -22,6 +22,7 @@
     <Content Remove="wwwroot\script\crap.ts" />
     <Content Remove="wwwroot\script\datacrap.ts" />
     <Content Remove="wwwroot\script\domcrap.ts" />
+    <Content Remove="wwwroot\visualizer\script\ViewTreeNode.ts" />
   </ItemGroup>
 
   <ItemGroup>

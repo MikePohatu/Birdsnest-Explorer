@@ -545,10 +545,10 @@ AdvancedSearchCoordinator.prototype.UpdateConditions = function () {
     //var links = this.tree.links(nodes);
     var me = this;
 
-    var rectwidth = 100;
-    var rectheight = 70;
+    var rectwidth = 130;
+    var rectheight = 100;
     var xpadding = 5;
-    var xspacing = 50;
+    var xspacing = 70;
     var ypadding = 5;
     var strokewidth = 3;
     var pluswidth = 25;
@@ -566,7 +566,7 @@ AdvancedSearchCoordinator.prototype.UpdateConditions = function () {
                 return "conditiongroup";
             }
             else {
-                return "";
+                return "condition";
             }
         })
         .classed("searchcondition", true)
@@ -611,7 +611,12 @@ AdvancedSearchCoordinator.prototype.UpdateConditions = function () {
         .attr("y", strokewidth)
         .attr("rx", 5);
 
-    var condtext = enter.append("text")
+    //BUG HERE
+    //this will append even to items that already have a text node.  
+    //select is the same level as above so doesn't really work
+    var condtext = viewel.selectAll(".searchcondition.condition")
+        .data(nodes, function (d) { return d.data.ID; })
+        .append("text")
         .attr("y","5px")
         .attr("text-anchor", "left")
         .attr("dominant-baseline", "baseline");
@@ -619,56 +624,26 @@ AdvancedSearchCoordinator.prototype.UpdateConditions = function () {
     condtext.append("tspan")
         .attr("x", "10px")
         .attr("dy", "1.2em")
-        .classed("searchconditiontype",true);
-
-    viewel.selectAll(".searchconditiontype")
-        .text(function (d) {
-            if (!d.data.Item.Conditions) {
-                return "Type: " + d.data.Item.Type;
-            }
-            return "";
-        });
+        .classed("searchconditiontype", true);
 
     condtext.append("tspan")
         .attr("x", "10px")
         .attr("dy", "1.2em")
-        .classed("searchconditiondetails",true);
+        .classed("searchconditioneval", true);
 
-    viewel.selectAll(".searchconditiondetails")
-        .text(function (d) {
-            console.log(d);
-            if (!d.data.Item.Conditions) {
-                if (d.data.Item.Type !== "" && d.data.Item.Name !== "") {
-                    return d.data.Item.Name + "." + d.data.Item.Property + " " + d.data.Item.Operator + " " + d.data.Item.Value;
-                }
+    condtext.append("tspan")
+        .attr("x", "10px")
+        .attr("dy", "1.2em")
+        .classed("searchconditionopval", true);
 
-                return "Not configured";
-            }
-        });
-    //var enteredit = enter.append("g")
-    //    .attr("id", function (d) { return "searchconditionedit_" + d.data.ID; })
-    //    .classed("searchconditionedit", true)
-    //    .classed("searchcontrol", true)
-    //    .attr("data-open", "searchConditionDetails")
-    //    .on("click", function () {
-    //        me.onSearchConditionEditClicked(this);
-    //    });
+    viewel.selectAll(".condition .searchconditiontype")
+        .text(function (d) { return d.data.Item.Type; });
 
-    //enteredit.append("i")
-    //    .attr("class", "fas fa-edit")
-    //    .attr("width", editwidth)
-    //    .attr("height", editwidth)
-    //    .attr("x", function (d) { return d.rectwidth - editwidth - xpadding; })
-    //    .attr("y", ypadding);
+    viewel.selectAll(".condition .searchconditioneval")
+        .text(function (d) { return d.data.Item.Name + "." + d.data.Item.Property; });
 
-    //enteredit.append("rect")
-    //    .attr("width", editwidth)
-    //    .attr("height", editwidth)
-    //    .attr("fill", "white")
-    //    .attr("fill-opacity", "0.4")
-    //    .attr("stroke-width", "0")
-    //    .attr("x", function (d) { return d.rectwidth - editwidth - xpadding; })
-    //    .attr("y", ypadding);
+    viewel.selectAll(".condition .searchconditionopval")
+        .text(function (d) { return d.data.Item.Operator + " " + d.data.Item.Value; });
 
     //setup the + button for group nodes e.g. AND/OR
     var groupaddbtns = viewel.selectAll(".conditiongroup")
@@ -870,6 +845,8 @@ AdvancedSearchCoordinator.prototype.onSearchConditionDeleteClicked = function ()
         datum.parent.data.Rebuild();
         this.UpdateConditions();
     }
+
+    console.log(this.ConditionRoot);
 };
 
 
