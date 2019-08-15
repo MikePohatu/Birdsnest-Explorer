@@ -83,21 +83,3 @@
     fill: #dddddd;
 }
 
-
-/*search config*/
-.searchnode, .searchedge {
-    stroke: #474747;
-    color: #474747;
-    fill: #e5e5e5;
-    
-    font-size: 12px;
-    font-family: 'helvetica', arial, sans-serif;
-    -webkit-user-select: none;
-    -moz-user-select: none;
-    -ms-user-select: none;
-    user-select: none;
-}
-
-.searchnodecircle, .searchedgerect, .searcharrow {
-    stroke-width: 3px;
-}

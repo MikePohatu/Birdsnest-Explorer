@@ -611,13 +611,40 @@ AdvancedSearchCoordinator.prototype.UpdateConditions = function () {
         .attr("y", strokewidth)
         .attr("rx", 5);
 
-    enter.append("text")
-        .text(function (d) { return d.Type; })
-        .attr("text-anchor", "middle")
-        .attr("dominant-baseline", "middle")
-        .attr("x", rectwidth / 2)
-        .attr("y", rectheight / 2);
+    var condtext = enter.append("text")
+        .attr("y","5px")
+        .attr("text-anchor", "left")
+        .attr("dominant-baseline", "baseline");
 
+    condtext.append("tspan")
+        .attr("x", "10px")
+        .attr("dy", "1.2em")
+        .classed("searchconditiontype",true);
+
+    viewel.selectAll(".searchconditiontype")
+        .text(function (d) {
+            if (!d.data.Item.Conditions) {
+                return "Type: " + d.data.Item.Type;
+            }
+            return "";
+        });
+
+    condtext.append("tspan")
+        .attr("x", "10px")
+        .attr("dy", "1.2em")
+        .classed("searchconditiondetails",true);
+
+    viewel.selectAll(".searchconditiondetails")
+        .text(function (d) {
+            console.log(d);
+            if (!d.data.Item.Conditions) {
+                if (d.data.Item.Type !== "" && d.data.Item.Name !== "") {
+                    return d.data.Item.Name + "." + d.data.Item.Property + " " + d.data.Item.Operator + " " + d.data.Item.Value;
+                }
+
+                return "Not configured";
+            }
+        });
     //var enteredit = enter.append("g")
     //    .attr("id", function (d) { return "searchconditionedit_" + d.data.ID; })
     //    .classed("searchconditionedit", true)
@@ -664,9 +691,6 @@ AdvancedSearchCoordinator.prototype.UpdateConditions = function () {
     groupaddbtns.append("rect")
         .attr("width", pluswidth)
         .attr("height", pluswidth)
-        .attr("fill", "white")
-        .attr("fill-opacity", "0.4")
-        .attr("stroke-width", "0")
         .attr("x", function (d) { return d.rectwidth - pluswidth - xpadding; })
         .attr("y", function (d) { return d.rectheight - ypadding - pluswidth; });
 
@@ -865,6 +889,7 @@ AdvancedSearchCoordinator.prototype.onSearchConditionSaveClicked = function () {
         datum.Item.Property = newprop;
         datum.Item.Value = newval;
         $('#searchConditionDetails').foundation('close');
+        this.UpdateConditions();
     }
     
 };

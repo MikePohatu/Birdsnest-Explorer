@@ -133,7 +133,7 @@ function StringCondition() {
     this.Name = "";
     this.Property = "";
     this.Value = "";
-    this.Comparator = "=";
+    this.Operator = "=";
 }
 
 function RegExCondition() {
@@ -141,4 +141,5 @@ function RegExCondition() {
     this.Name = "";
     this.Property = "";
     this.Value = "";
+    this.Operator = "=";
 }
