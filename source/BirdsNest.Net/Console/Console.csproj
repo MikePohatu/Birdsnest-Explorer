@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk.Web">
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
     <TargetFramework>netcoreapp2.1</TargetFramework>
@@ -19,9 +19,12 @@
 
   <ItemGroup>
     <Content Remove="wwwroot\css\plugins.css" />
-    <Content Remove="wwwroot\script\crap.ts" />
+    <Content Remove="wwwroot\script\authcrap.ts" />
     <Content Remove="wwwroot\script\datacrap.ts" />
     <Content Remove="wwwroot\script\domcrap.ts" />
+    <Content Remove="wwwroot\script\webcrap.ts" />
+    <Content Remove="wwwroot\visualizer\script\AdvancedSearchCoordinator.ts" />
+    <Content Remove="wwwroot\visualizer\script\Search.ts" />
     <Content Remove="wwwroot\visualizer\script\ViewTreeNode.ts" />
   </ItemGroup>
 
@@ -92,6 +95,10 @@
     <None Update="Plugins\plugin-xenapp6.5.css">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="node_modules\" />
   </ItemGroup>
 
 </Project>

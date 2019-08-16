@@ -1446,10 +1446,6 @@ Search functionality
 
 var pendingResults;
 
-function showSearchSpinner() {
-    var el = document.getElementById("searchNotification").innerHTML = "<i class='fas fa-spinner spinner'></i>";
-}
-
 
 function search() {
     showSearchSpinner();
