@@ -383,3 +383,5 @@ venv.bak/
 source/Console/console/config.json
 /source/BirdsNest.Net/Tester
 /source/BirdsNest.Net/Console/wwwroot/css/plugins.css
+/source/BirdsNest.Net/Console/Script/*/*.js
+/source/BirdsNest.Net/Console/Script/*/*.map
