@@ -12,14 +12,9 @@
 
   <ItemGroup>
     <Compile Remove="ActiveDirectory\**" />
-    <Compile Remove="wwwroot\css\**" />
     <Content Remove="ActiveDirectory\**" />
-    <Content Remove="wwwroot\css\**" />
     <EmbeddedResource Remove="ActiveDirectory\**" />
-    <EmbeddedResource Remove="wwwroot\css\**" />
     <None Remove="ActiveDirectory\**" />
-    <None Remove="wwwroot\css\**" />
-    <TypeScriptCompile Remove="wwwroot\css\**" />
   </ItemGroup>
 
   <ItemGroup>
@@ -27,13 +22,11 @@
     <Content Remove="wwwroot\script\datacrap.ts" />
     <Content Remove="wwwroot\script\domcrap.ts" />
     <Content Remove="wwwroot\script\webcrap.ts" />
-    <Content Remove="wwwroot\visualizer\script\AdvancedSearchCoordinator.ts" />
-    <Content Remove="wwwroot\visualizer\script\Search.ts" />
-    <Content Remove="wwwroot\visualizer\script\ViewTreeNode.ts" />
   </ItemGroup>
 
   <ItemGroup>
     <None Remove="src\Shared\webcrap.ts" />
+    <None Remove="src\Visualizer\script\DataQueue.ts" />
   </ItemGroup>
 
   <ItemGroup>
@@ -114,8 +107,22 @@
 
   <ItemGroup>
     <Folder Include="node_modules\" />
+    <Folder Include="src\css\" />
     <Folder Include="src\script\" />
-    <Folder Include="wwwroot\" />
+    <Folder Include="src\Visualizer\css\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="wwwroot\css\app.css" />
+    <None Include="wwwroot\css\custom.css" />
+    <None Include="wwwroot\css\motion-ui.css" />
+    <None Include="wwwroot\css\overrides.css" />
+    <None Include="wwwroot\css\plugins.css" />
+    <None Include="wwwroot\css\site.css" />
+    <None Include="wwwroot\css\site.min.css" />
+    <None Include="wwwroot\visualizer\css\advancedsearch.css" />
+    <None Include="wwwroot\visualizer\css\main.css" />
+    <None Include="wwwroot\visualizer\css\visualization.css" />
   </ItemGroup>
 
 </Project>

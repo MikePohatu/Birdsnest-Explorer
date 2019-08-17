@@ -4,10 +4,15 @@ import './Mappings';
 import './DataQueue';
 import './DatumStore';
 import './AdvancedSearchCoordinator';
-import 'jquery';
+import { $ } from 'jquery';
 import 'jqueryui';
-import 'd3';
+import { drag } from 'd3-drag';
+import 'd3-transition';
+import 'd3-ease';
+import { zoom } from 'd3-zoom';
+import { select, selectAll } from 'd3-selection';
 import 'fontawesome';
+import { webcrap } from '../../Shared/webcrap/webcrap';
 
 var drawingPane;
 var zoomLayer;
@@ -48,7 +53,6 @@ var graphedges = new datumStore();
 var areaBox;
 var force;
 
-var selectMode = false;
 var playMode = false;
 var shiftKey = false;
 
@@ -61,14 +65,14 @@ var maxScaling = 3;
 var perfmode = false; //perfmode indicates high numbers of nodes, and minimises animation
 var maxAnimateNodes = 300;
 
-var zoom = d3.zoom()
+var zoomer = zoom()
     .scaleExtent([0.05, 5])
     .on("zoom", onZoom);
 
 
 //IconMappings object to asign the correct font awesome icon to the correct nodes
 var iconmappings;
-$.getJSON("/visualizer/icons", function (data) {
+webcrap.data.apiGetJson("/visualizer/icons", function (data) {
     //console.log(data);
     iconmappings = new Mappings(data, "fas fa-question");
     //console.log(iconmappings);
@@ -76,7 +80,7 @@ $.getJSON("/visualizer/icons", function (data) {
 
 //SubTypeMappings object to asign the correct font awesome icon to the correct nodes
 var subtypeproperties;
-$.getJSON("/visualizer/subtypeproperties", function (data) {
+webcrap.data.apiGetJson("/visualizer/subtypeproperties", function (data) {
     //console.log(data);
     subtypeproperties = new Mappings(data, "");
     //console.log(subtypeproperties);
@@ -102,7 +106,7 @@ function menuShowHide() {
 function drawGraph(selectid, loaddata) {
     
     //updateNodeLabels("target");
-    drawingPane = d3.select("#" + selectid);
+    drawingPane = select("#" + selectid);
 
     drawingsvg = drawingPane.append("svg")
         .attr("id", "drawingsvg");
@@ -173,7 +177,7 @@ function resetDrawingEvents() {
         .on('touchstart', null)
         .on('touchend', null)
         .on('mouseup', null)
-        .call(zoom);
+        .call(zoomer);
 }
 
 function resetView() {
@@ -201,28 +205,28 @@ function resetView() {
 
 
 function updateProgressBar(percent) {
-    d3.select("#progress").style("width", percent + "%");
+    select("#progress").style("width", percent + "%");
 }
 
-d3.selectAll("#restartLayoutBtn").attr('onclick', 'restartLayout()');
+selectAll("#restartLayoutBtn").attr('onclick', 'restartLayout()');
 function restartLayout() {
     //console.log('restartLayout');
-    d3.selectAll("#restartIcon").classed("spinner", true);
-    d3.selectAll("#restartLayoutBtn")
+    selectAll("#restartIcon").classed("spinner", true);
+    selectAll("#restartLayoutBtn")
         .attr('onclick', 'pauseLayout()')
         .attr('title', 'Updating layout');
 
     simController.RestartSimulation();
 }
 
-d3.selectAll("#pausePlayBtn").attr('onclick', "playLayout()");
+selectAll("#pausePlayBtn").attr('onclick', "playLayout()");
 function playLayout() {
     playMode = true;
 
-    d3.selectAll("#pausePlayIcon")
+    selectAll("#pausePlayIcon")
         .classed("fa-play", false)
         .classed("fa-pause", true);
-    d3.selectAll("#pausePlayBtn")
+    selectAll("#pausePlayBtn")
         .attr('onclick', "pauseLayout()");
 }
 
@@ -230,13 +234,13 @@ function pauseLayout() {
     playMode = false;
     simController.StopSimulations();
 
-    d3.selectAll("#pausePlayIcon")
+    selectAll("#pausePlayIcon")
         .classed("fa-pause", false)
         .classed("fa-play", true);
-    d3.selectAll("#pausePlayBtn")
+    selectAll("#pausePlayBtn")
         .attr('onclick', 'playLayout()');
-    d3.selectAll("#restartIcon").classed("spinner", false);
-    d3.selectAll("#restartLayoutBtn").attr('onclick', 'restartLayout()');
+    selectAll("#restartIcon").classed("spinner", false);
+    selectAll("#restartLayoutBtn").attr('onclick', 'restartLayout()');
 }
 
 function cleanAndUpdateLabelEyes() {
@@ -245,7 +249,7 @@ function cleanAndUpdateLabelEyes() {
     function cleanLabels(obj) {
         Object.keys(obj).forEach(function (d) {
             //console.log("checking label: " + d);
-            if (d3.select("." + d).size() === 0) {
+            if (select("." + d).size() === 0) {
                 //console.log("removing eye: " + d);
                 delete obj[d];
             }
@@ -259,7 +263,7 @@ function updateLabelEyes() {
     buildEyeTable(graphedgelabels, "eyeEdgeLabelList", "edges");
     function buildEyeTable(obj, id, classtype) {
         let arrList = Object.keys(obj).sort();
-        let rootEl = d3.select("#" + id).html("");
+        let rootEl = select("#" + id).html("");
         rootEl.attr("classtype", classtype);
 
         let htlabel = rootEl.append("li")
@@ -343,31 +347,31 @@ function onReportClicked(sametab) {
 
 function onEyeShowAllClicked(element) {
     //console.log("onEyeShowAllClicked: " + element);
-    d3.selectAll("#" + element + " .eyeListItem")
+    selectAll("#" + element + " .eyeListItem")
         .each(function (d) {
             //console.log(this);
             //console.log(d);
-            let label = d3.select(this).attr("label");
+            let label = select(this).attr("label");
             eyeShowHideLabel(label, true);
         });
 }
 
 function onEyeHideAllClicked(element) {
     //console.log("onEyeHideAllClicked: " + element);
-    d3.selectAll("#" + element + " .eyeListItem")
+    selectAll("#" + element + " .eyeListItem")
         .each(function () {
             //console.log(this);
             //console.log(d);
-            let label = d3.select(this).attr("label");
+            let label = select(this).attr("label");
             eyeShowHideLabel(label, false);
         });
 }
 
 function onEyeInvert(element) {
-    let el = d3.selectAll("#" + element);
+    let el = selectAll("#" + element);
     let type = el.attr("classtype");
-    let enabled = d3.selectAll(".enabled." + type);
-    let disabled = d3.selectAll(".disabled." + type);
+    let enabled = selectAll(".enabled." + type);
+    let disabled = selectAll(".disabled." + type);
     disabled.classed("disabled", false).classed("enabled", true);
     enabled.classed("enabled", false).classed("disabled", true);
         
@@ -375,13 +379,13 @@ function onEyeInvert(element) {
 
 function onEyeNodeDetailClicked(dbid) {
     //console.log("onEyeNodeDetailClicked: " + dbid);
-    let show = !d3.selectAll("#node_" + dbid).classed("enabled");
+    let show = !selectAll("#node_" + dbid).classed("enabled");
 
-    d3.select("#eyeIcon_" + dbid)
+    select("#eyeIcon_" + dbid)
         .classed("fa-eye", show)
         .classed("fa-eye-slash", !show);
 
-    d3.select("#node_" + dbid)
+    select("#node_" + dbid)
         .classed("enabled", show)
         .classed("disabled", !show);
 }
@@ -409,11 +413,11 @@ function eyeShowHideLabel(label, show) {
         graphedgelabels[label] = show;
     }
 
-    d3.selectAll("." + label)
+    selectAll("." + label)
         .classed("disabled", !show)
         .classed("enabled", show);
 
-    d3.selectAll("#eyeIcon_" + label)
+    selectAll("#eyeIcon_" + label)
         .classed("fa-eye", show)
         .classed("fa-eye-slash", !show);
 }
@@ -430,7 +434,7 @@ function updateSearchDetails(nodeid, elprefix) {
     //console.log("onSourceAddClicked: " + nodeid);
     var node = graphnodes.GetDatum(nodeid);
     //console.log(node);
-    d3.select("#" + elprefix + "Type").property('value', node.labels[0]);
+    select("#" + elprefix + "Type").property('value', node.labels[0]);
     updateNodeProps();
     var propname = 'name';
     var propval = node.name;
@@ -443,8 +447,8 @@ function updateSearchDetails(nodeid, elprefix) {
         propval = node.properties.path;
     }
 
-    d3.select("#" + elprefix + "Prop").property('value', propname);
-    d3.select("#" + elprefix + "Val").property('value', propval);
+    select("#" + elprefix + "Prop").property('value', propname);
+    select("#" + elprefix + "Val").property('value', propval);
 }
 
 function onLayoutFinished() {
@@ -452,9 +456,9 @@ function onLayoutFinished() {
     //simRunning = false;
     if (perfmode === false) { updateAllNodeLocations(true); }
     else { updateAllNodeLocations(false); }
-    d3.selectAll("#restartIcon").classed("spinner", false);
-    d3.select("#progress").style("width", "100%");
-    d3.selectAll("#restartLayoutBtn")
+    selectAll("#restartIcon").classed("spinner", false);
+    select("#progress").style("width", "100%");
+    selectAll("#restartLayoutBtn")
         .attr('onclick', 'restartLayout()')
         .attr('title', 'Refresh layout');
 }
@@ -480,8 +484,8 @@ function addSearchResults(results, callback) {
         }
     }
 
-    d3.selectAll("#restartIcon").classed("spinner", true);
-    d3.selectAll("#restartLayoutBtn")
+    selectAll("#restartIcon").classed("spinner", true);
+    selectAll("#restartLayoutBtn")
         .attr('title', 'Updating data');
 
     let newcount = addResultSet(results);
@@ -505,7 +509,7 @@ function addSearchResults(results, callback) {
         });
     }
     else {
-        d3.selectAll("#restartIcon").classed("spinner", false);
+        selectAll("#restartIcon").classed("spinner", false);
         if (callback !== undefined) {
             //console.log(callback);
             callback();
@@ -708,7 +712,7 @@ function addSvgNodes(nodes) {
         .on("mouseout", onNodeMouseOut)
         .on("dblclick", onNodeDblClicked)
         .call(
-            d3.drag().subject(this)
+            drag().subject(this)
             .on('start', onNodeDragStart)
             .on('drag', onNodeDragged)
             .on('end', onNodeDragFinished));
@@ -857,7 +861,7 @@ function removeNodes() {
     var nodeList = [];
     var nodeids = [];
 
-    d3.selectAll(".selected")
+    selectAll(".selected")
         .each(function (d) {
             nodeList.push(d);
         });
@@ -937,7 +941,7 @@ function pinNode(d) {
     d.fx = d.x;
     d.fy = d.y;
     if (!d.pinned) {
-        let ping = d3.selectAll("#node_" + d.db_id)
+        let ping = selectAll("#node_" + d.db_id)
             .append("g")
             .classed("pin", true)
             .on("click", unpinNode);
@@ -961,7 +965,7 @@ function unpinNode(d) {
     d3.event.stopPropagation();
     delete d.fx;
     delete d.fy;
-    d3.selectAll("#node_" + d.db_id).select(".pin").remove();
+    selectAll("#node_" + d.db_id).select(".pin").remove();
     d.pinned = false;
 }
 
@@ -971,13 +975,13 @@ function pageClicked() {
     unselectAllNodes();
 }
 
-d3.select("#selectBtn").on('click', startSelect);
+select("#selectBtn").on('click', startSelect);
 function startSelect() {
     //console.log("startSelect");
-    d3.select("#selectBtn")
+    select("#selectBtn")
         .on('click', stopSelect)
         .classed('viewcontrolActive', true);
-    d3.select("#cropBtn")
+    select("#cropBtn")
         .on('click', startCrop)
         .classed('viewcontrolActive', false);
     drawingsvg
@@ -991,7 +995,7 @@ function stopSelect() {
     //console.log("stopSelect");
     if (areaBox !== undefined) { areaBox.remove(); }
 
-    d3.select("#selectBtn")
+    select("#selectBtn")
         .on('click', startSelect)
         .classed('viewcontrolActive', false);
 
@@ -1029,9 +1033,9 @@ function onSelectMouseDown() {
             let areaBoxEl = areaBox.node().getBoundingClientRect();
 
             if (newMouseX !== oriMouseX && newMouseY !== oriMouseY) {
-                d3.selectAll(".nodes.enabled")
+                selectAll(".nodes.enabled")
                     .each(function (d) {
-                        let elem = d3.select("#node_" + d.db_id + "_icon").node().getBoundingClientRect();
+                        let elem = select("#node_" + d.db_id + "_icon").node().getBoundingClientRect();
 
                         if (areaBoxEl.top < elem.top && areaBoxEl.bottom > elem.bottom && areaBoxEl.left < elem.left && areaBoxEl.right > elem.right) {
                             updateNodeSelection(d, true, false);
@@ -1052,13 +1056,13 @@ function onSelectMouseDown() {
         });
 }
 
-d3.select("#cropBtn").on('click', startCrop);
+select("#cropBtn").on('click', startCrop);
 function startCrop() {
     //console.log("startSelect");
-    d3.select("#selectBtn")
+    select("#selectBtn")
         .on('click', startSelect)
         .classed('viewcontrolActive', false);
-    d3.select("#cropBtn")
+    select("#cropBtn")
         .on('click', stopCrop)
         .classed('viewcontrolActive', true);
     drawingsvg
@@ -1071,7 +1075,7 @@ function startCrop() {
 function stopCrop() {
     //console.log("stopSelect");
     if (areaBox !== undefined) { areaBox.remove(); }
-    d3.select("#cropBtn")
+    select("#cropBtn")
         .on('click', startCrop)
         .classed('viewcontrolActive', false);
 
@@ -1107,7 +1111,7 @@ function onCropMouseDown() {
             if (newMouseX !== oriMouseX && newMouseY !== oriMouseY) {
                 let box = drawingPane.node().getBoundingClientRect();
                 let areaBoxEl = areaBox.node().getBBox();
-                let currentk = d3.zoomTransform(drawingsvg.node()).k;
+                let currentk = zoomTransform(drawingsvg.node()).k;
                 let k = Math.min(box.width / areaBoxEl.width, box.height / areaBoxEl.height);
                 let areaBoxElCenterX = areaBoxEl.x + areaBoxEl.width / 2;
                 let areaBoxElCenterY = areaBoxEl.y + areaBoxEl.height / 2;
@@ -1118,13 +1122,13 @@ function onCropMouseDown() {
                     .transition()
                     .duration(500)
                     .ease(d3.easeCubicInOut)
-                    .call(zoom.translateBy, movex, movey)
+                    .call(zoomer.translateBy, movex, movey)
                     .on("end", function () {
                         drawingsvg
                             .transition()
                             .duration(500)
                             .ease(d3.easeCubicInOut)
-                            .call(zoom.scaleBy, k);
+                            .call(zoomer.scaleBy, k);
                     });
             }
             areaBox.remove();
@@ -1145,7 +1149,7 @@ function onZoom() {
     zoomLayer.attr("transform", d3.event.transform);
 }
 
-d3.selectAll("#centerBtn").attr('onclick', "updatePaneSize()");
+selectAll("#centerBtn").attr('onclick', "updatePaneSize()");
 function updatePaneSize() {
     //console.log("updatePaneSize");
     var box = drawingPane.node().getBoundingClientRect();
@@ -1158,7 +1162,7 @@ function updatePaneSize() {
         .transition()
         .duration(1000)
         .ease(d3.easeCubicInOut)
-        .call(zoom.translateBy, movex, movey);
+        .call(zoomer.translateBy, movex, movey);
 }
 
 function onNodeDblClicked(d) {
@@ -1191,7 +1195,7 @@ function updateNodeSelection(d, isselected, showdetails) {
 
     let enabled = node.classed("enabled");
     //console.log("enabled: " + enabled);
-    d3.select("#eyeIcon_" + d.db_id)
+    select("#eyeIcon_" + d.db_id)
         .classed("fa-eye", enabled)
         .classed("fa-eye-slash", !enabled);
 
@@ -1227,7 +1231,7 @@ function populateDetails(d, callback) {
 
 function unselectAllOtherNodes(keptdatum) {
     //console.log("unselectAllOtherNodes");
-    d3.selectAll(".selected")
+    selectAll(".selected")
         .classed("selected", function (d) {
             if (keptdatum.db_id !== d.db_id) {
                 nodeHideDetailsSelected(d);
@@ -1239,8 +1243,8 @@ function unselectAllOtherNodes(keptdatum) {
 
 function unselectAllNodes() {
     //console.log("unselectAllNodes");
-    d3.selectAll(".detailcard").remove();
-    d3.selectAll(".selected")
+    selectAll(".detailcard").remove();
+    selectAll(".selected")
         .classed("selected", function (d) {
             d.selected = false;
             return false;
@@ -1250,7 +1254,7 @@ function unselectAllNodes() {
 function nodeShowDetailsSelected(d) {
     //console.log("nodeShowDetailsSelected");
     //console.log(d.detailsHTML);
-    d3.select("#detailcardwrapper")
+    select("#detailcardwrapper")
         .append("div")
         .attr("id", "details_" + d.db_id)
         .attr("class", "detailcard pane")
@@ -1260,18 +1264,18 @@ function nodeShowDetailsSelected(d) {
 
 function nodeHideDetailsSelected(d) {
     //console.log("nodeHideDetailsSelected");
-    d3.selectAll("#details_" + d.db_id).remove();
+    selectAll("#details_" + d.db_id).remove();
 }
 
 function onNodeMouseOver(d) {
     //console.log("onNodeMouseOver: " + d.name);
-    d3.selectAll("#details_" + d.db_id)
+    selectAll("#details_" + d.db_id)
         .classed("currentActiveDetailCard", true);
 }
 
 function onNodeMouseOut(d) {
     //console.log("onNodeMouseOut: " + d.name);
-    d3.selectAll("#details_" + d.db_id)
+    selectAll("#details_" + d.db_id)
         .classed("currentActiveDetailCard", false);
 }
 
@@ -1284,7 +1288,7 @@ function onNodeDragged(d) {
     //if (playMode === true) { pauseLayout(); }
     //if the node is selected the move it and all other selected nodes
     if (d.selected) {
-        nodes = d3.selectAll(".selected")
+        nodes = selectAll(".selected")
             .each(function (seld) {
                 seld.x += d3.event.dx;
                 seld.y += d3.event.dy;
@@ -1294,7 +1298,7 @@ function onNodeDragged(d) {
             });
     }
     else {
-        nodes = d3.select("#node_" + d.db_id);
+        nodes = select("#node_" + d.db_id);
         d.x += d3.event.dx;
         d.y += d3.event.dy;
         d.startx = d.x;
@@ -1379,7 +1383,7 @@ function updateLocationsEdges() {
        let diagLine = new Slope(d.source.cx, d.source.cy, d.target.cx, d.target.cy);
 
         //move and rotate the edge line to the right spot
-       let edge = d3.select(this).attr("transform", function () {
+       let edge = select(this).attr("transform", function () {
                 return "rotate(" + diagLine.deg + " " + diagLine.x1 + " " + diagLine.y1 + ") " +
                     "translate(" + diagLine.x1 + " " + diagLine.y1 + ")";
             });
@@ -1555,8 +1559,4 @@ var typetimer = null;
 function timedKeyUp(timedfunction) {
     clearTimeout(typetimer);
     typetimer = setTimeout(timedfunction, 700);
-}
-
-function isNullOrEmpty(s) {
-    return s === null || s === "";
 }

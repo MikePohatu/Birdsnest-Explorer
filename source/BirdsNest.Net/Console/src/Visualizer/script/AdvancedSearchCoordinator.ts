@@ -1,5 +1,6 @@
 ﻿import 'foundation-sites';
-import * as d3 from 'd3';
+import { select, selectAll } from 'd3-selection';
+import { hierarchy } from  'd3-hierarchy';
 import { webcrap } from "../../Shared/webcrap/webcrap";
 import { Search, ICondition, ConditionBase, StringCondition, AndOrCondition, SearchNode, SearchEdge } from "./Search";
 import { ViewTreeNode } from "./ViewTreeNode";
@@ -47,46 +48,46 @@ class AdvancedSearchCoordinator {
             });
         }
 
-        //d3.select("#nodeType").on("change", this.UpdateNodeProps);
-        d3.select("#searchNodeSaveBtn").on("click", function () {
+        //select("#nodeType").on("change", this.UpdateNodeProps);
+        select("#searchNodeSaveBtn").on("click", function () {
             me.onSearchNodeSaveBtnClicked();
         });
-        d3.select("#searchNodeDeleteBtn").on("click", function () {
+        select("#searchNodeDeleteBtn").on("click", function () {
             me.onSearchNodeDelBtnClicked(this);
         });
-        d3.select("#searchEdgeSaveBtn").on("click", function () {
+        select("#searchEdgeSaveBtn").on("click", function () {
             me.onSearchEdgeSaveBtnClicked();
         });
-        d3.select("#dirIconClicker").on("click", function () {
+        select("#dirIconClicker").on("click", function () {
             me.ToggleDir();
         });
-        d3.select("#searchBtn").on("click", function () {
+        select("#searchBtn").on("click", function () {
             me.RunSearch();
         });
-        d3.select("#pathAddIcon").on("click", function () {
+        select("#pathAddIcon").on("click", function () {
             me.SearchData.AddNode();
             me.UpdateNodes();
             me.UpdateEdges();
         });
-        d3.select("#whereAddIcon").on("click", function () {
+        select("#whereAddIcon").on("click", function () {
             me.AddConditionRoot();
         });
-        d3.select("#advSearchClearIcon").on("click", function () {
+        select("#advSearchClearIcon").on("click", function () {
             me.Clear();
         });
-        d3.select("#hopsSwitch").on("change", function () {
+        select("#hopsSwitch").on("change", function () {
             me.onHopsSwitchChanged();
         });
-        d3.select("#searchConditionDeleteBtn").on("click", function () {
+        select("#searchConditionDeleteBtn").on("click", function () {
             me.onSearchConditionDeleteClicked();
         });
-        d3.select("#searchItem").on("change", function () {
+        select("#searchItem").on("change", function () {
             me.onSearchConditionItemChanged();
         });
-        d3.select("#searchConditionSaveBtn").on("click", function () {
+        select("#searchConditionSaveBtn").on("click", function () {
             me.onSearchConditionSaveClicked();
         });
-        d3.select("#searchAndOrSaveBtn").on("click", function () {
+        select("#searchAndOrSaveBtn").on("click", function () {
             me.onSearchAndOrSaveClicked();
         });
 
@@ -131,7 +132,7 @@ class AdvancedSearchCoordinator {
 
         if (confirm("Are you sure you want to clear this search?") === true) {
 
-            var viewel = d3.select("#" + this.PathElementID);
+            var viewel = select("#" + this.PathElementID);
             viewel.selectAll("*").remove();
             this.SearchData = new Search();
         }
@@ -144,7 +145,7 @@ class AdvancedSearchCoordinator {
         var me = this;
         var currslot = 0;
 
-        var viewel = d3.select("#" + this.PathElementID);
+        var viewel = select("#" + this.PathElementID);
         var newnodeg = viewel.selectAll(".searchnode")
             .data(this.SearchData.Nodes, function (d: SearchNode) { return d.Name; })
             .enter()
@@ -193,7 +194,7 @@ class AdvancedSearchCoordinator {
         //console.log("subspacingx: " + subspacingx);
         //console.log("subspacingy: " + subspacingy);
 
-        var viewel = d3.select("#" + this.PathElementID);
+        var viewel = select("#" + this.PathElementID);
         var newedgeg = viewel.selectAll(".searchedge")
             .data(this.SearchData.Edges, function (d: SearchEdge) { return d.Name; })
             .enter()
@@ -296,8 +297,8 @@ class AdvancedSearchCoordinator {
 
         this.onHopsSwitchChanged();
         //Foundation.reInit($('#hopsSlider'));
-        d3.select('#minSliderVal').dispatch('change');
-        d3.select('#maxSliderVal').dispatch('change');
+        select('#minSliderVal').dispatch('change');
+        select('#maxSliderVal').dispatch('change');
     }
 
     onHopsSwitchChanged = function () {
@@ -306,11 +307,11 @@ class AdvancedSearchCoordinator {
         //console.log(hopsswitch.checked);
 
         if (hopsswitch.checked) {
-            d3.selectAll(".hopscontrol")
+            selectAll(".hopscontrol")
                 .attr("disabled", null);
         }
         else {
-            d3.selectAll(".hopscontrol")
+            selectAll(".hopscontrol")
                 .attr("disabled", "disabled");
         }
 
@@ -320,8 +321,8 @@ class AdvancedSearchCoordinator {
         //console.log("SearchItemClicked started");
         //console.log(this);
         //console.log(elementid);
-        var el = d3.select("#" + elementid);
-        var datum = d3.select(callingitem).datum();
+        var el = select("#" + elementid);
+        var datum = select(callingitem).datum();
         //console.log(datum);
         el.datum(datum);
         return datum;
@@ -331,7 +332,7 @@ class AdvancedSearchCoordinator {
         //console.log("GetItemDatum started");
         //console.log(this);
         //console.log(elementid);
-        var el = d3.select("#" + elementid);
+        var el = select("#" + elementid);
         var datum = el.datum();
         //console.log(datum);
         return datum;
@@ -342,7 +343,7 @@ class AdvancedSearchCoordinator {
         //console.log("GetElementDatum started");
         //console.log(this);
         //console.log(elementid);
-        var el = d3.select(element);
+        var el = select(element);
         var datum = el.datum();
         //console.log(datum);
         return datum;
@@ -352,8 +353,8 @@ class AdvancedSearchCoordinator {
     onSearchNodeSaveBtnClicked = function () {
         //console.log("onSearchNodeSaveBtnClicked started");
         //console.log(this);
-        var node: SearchNode = d3.select("#searchNodeDetails").datum() as SearchNode;
-        var nodeEl = d3.select("#searchnode_" + node.Name);
+        var node: SearchNode = select("#searchNodeDetails").datum() as SearchNode;
+        var nodeEl = select("#searchnode_" + node.Name);
 
         //console.log(node);
 
@@ -376,7 +377,7 @@ class AdvancedSearchCoordinator {
         //console.log("onSearchNodeDelBtnClicked started: " + callingitem);
         //console.log(this);
 
-        var nodedatum = d3.select("#searchNodeDetails").datum();
+        var nodedatum = select("#searchNodeDetails").datum();
         //console.log(nodedatum);
         this.SearchData.RemoveNode(nodedatum);
 
@@ -403,7 +404,7 @@ class AdvancedSearchCoordinator {
             rightArr = false;
         }
 
-        d3.select("#dirIcon")
+        select("#dirIcon")
             .attr("data-dir", dir)
             .classed("fa-arrow-right", rightArr)
             .classed("fa-arrow-left", !rightArr);
@@ -415,8 +416,8 @@ class AdvancedSearchCoordinator {
         //console.log(this);
         var me = this;
 
-        var edge: SearchEdge = d3.select("#searchEdgeDetails").datum() as SearchEdge;
-        var edgeEl = d3.select("#searchedge_" + edge.Name);
+        var edge: SearchEdge = select("#searchEdgeDetails").datum() as SearchEdge;
+        var edgeEl = select("#searchedge_" + edge.Name);
 
         //console.log(edge);
         //console.log(edgeEl);
@@ -518,7 +519,7 @@ class AdvancedSearchCoordinator {
 
     AddConditionRoot = function () {
         //console.log("AddConditionRoot started");
-        //d3.select("#whereAddIcon").classed("hidden", true);
+        //select("#whereAddIcon").classed("hidden", true);
 
         var cond1 = new StringCondition();
         var cond2 = new StringCondition();
@@ -541,7 +542,7 @@ class AdvancedSearchCoordinator {
         //this.ConditionRoot.AddChildItem(cond1);
         //this.ConditionRoot.AddChildItem(cond2);
 
-        this.ConditionD3Root = d3.hierarchy(this.ConditionRoot, function (d) { return d.Children; });
+        this.ConditionD3Root = hierarchy(this.ConditionRoot, function (d) { return d.Children; });
         //console.log(this.ConditionD3Root);
         this.UpdateConditions();
     }
@@ -574,7 +575,7 @@ class AdvancedSearchCoordinator {
         var pluswidth = 25;
         var editwidth = 25;
 
-        var viewel = d3.select("#" + this.ConditionElementID);
+        var viewel = select("#" + this.ConditionElementID);
         //console.log(nodes);
         var enter = viewel.selectAll(".searchcondition")
             .data(nodes, function (d: d3.HierarchyPointNode<ViewTreeNode>) { return d.data.ID; })
@@ -710,7 +711,7 @@ class AdvancedSearchCoordinator {
     onSearchConditionClicked = function (callingelement) {
         //console.log("onSearchConditionClicked started");
         //var datum;
-        //d3.select(callingelement)
+        //select(callingelement)
         //    .each(function (d) { datum = d.data; });
         //console.log(callingelement);
         var me = this;
@@ -856,7 +857,7 @@ class AdvancedSearchCoordinator {
         if (this.ConditionRoot.ID === datum.data.ID) {
             this.ConditionRoot = null;
             this.ConditionD3Root = null;
-            d3.selectAll(".searchcondition").remove();
+            selectAll(".searchcondition").remove();
         }
         else {
             datum.parent.data.RemoveChild(datum.data);
@@ -900,7 +901,7 @@ class AdvancedSearchCoordinator {
             if (selectEl[i].value === value) {
                 selectEl.selectedIndex = i;
                 //console.log("found " + value + " at index: " + i);
-                d3.select(selectEl).dispatch('change');
+                select(selectEl).dispatch('change');
                 break;
             }
         }

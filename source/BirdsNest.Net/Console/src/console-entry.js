@@ -1,6 +1,6 @@
 ﻿import 'jquery';
-import 'foundation';
+import 'foundation-sites';
 import 'what-input';
-import './Shared/webcrap';
+import './Shared/webcrap/webcrap';
 
 
