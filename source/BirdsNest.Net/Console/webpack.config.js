@@ -1,6 +1,7 @@
 ﻿"use strict";
 const webpack = require('webpack');
 const path = require('path');
+const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 
 module.exports = {
     entry: {
@@ -26,5 +27,11 @@ module.exports = {
             '.ts',
             '.js'
         ]
-    }
+    },
+    plugins: [
+        new BundleAnalyzerPlugin({
+            analyzerMode: 'static',
+            reportFilename: '../../stats/report.html'
+        })
+    ]
 };
