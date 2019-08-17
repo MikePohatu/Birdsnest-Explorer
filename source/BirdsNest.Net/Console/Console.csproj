@@ -12,13 +12,17 @@
 
   <ItemGroup>
     <Compile Remove="ActiveDirectory\**" />
+    <Compile Remove="wwwroot\css\**" />
     <Content Remove="ActiveDirectory\**" />
+    <Content Remove="wwwroot\css\**" />
     <EmbeddedResource Remove="ActiveDirectory\**" />
+    <EmbeddedResource Remove="wwwroot\css\**" />
     <None Remove="ActiveDirectory\**" />
+    <None Remove="wwwroot\css\**" />
+    <TypeScriptCompile Remove="wwwroot\css\**" />
   </ItemGroup>
 
   <ItemGroup>
-    <Content Remove="wwwroot\css\plugins.css" />
     <Content Remove="wwwroot\script\authcrap.ts" />
     <Content Remove="wwwroot\script\datacrap.ts" />
     <Content Remove="wwwroot\script\domcrap.ts" />
@@ -29,26 +33,22 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Remove="Script\Shared\webcrap.ts" />
+    <None Remove="src\Shared\webcrap.ts" />
   </ItemGroup>
 
   <ItemGroup>
-    <Content Include="Script\Shared\authcrap.js" />
-    <Content Include="Script\Shared\authcrap.js.map" />
-    <Content Include="Script\Shared\datacrap.js" />
-    <Content Include="Script\Shared\datacrap.js.map" />
-    <Content Include="Script\Shared\domcrap.js" />
-    <Content Include="Script\Shared\domcrap.js.map" />
-    <Content Include="Script\Visualizer\AdvancedSearchCoordinator.js" />
-    <Content Include="Script\Visualizer\AdvancedSearchCoordinator.js.map" />
-    <Content Include="Script\Visualizer\search.js" />
-    <Content Include="Script\Visualizer\search.js.map" />
-    <Content Include="Script\Visualizer\ViewTreeNode.js" />
-    <Content Include="Script\Visualizer\ViewTreeNode.js.map" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <None Include="wwwroot\css\plugins.css" />
+    <Content Include="src\Shared\webcrap\authcrap.js" />
+    <Content Include="src\Shared\webcrap\authcrap.js.map" />
+    <Content Include="src\Shared\webcrap\datacrap.js" />
+    <Content Include="src\Shared\webcrap\datacrap.js.map" />
+    <Content Include="src\Shared\webcrap\domcrap.js" />
+    <Content Include="src\Shared\webcrap\domcrap.js.map" />
+    <Content Include="src\Visualizer\AdvancedSearchCoordinator.js" />
+    <Content Include="src\Visualizer\AdvancedSearchCoordinator.js.map" />
+    <Content Include="src\Visualizer\search.js" />
+    <Content Include="src\Visualizer\search.js.map" />
+    <Content Include="src\Visualizer\ViewTreeNode.js" />
+    <Content Include="src\Visualizer\ViewTreeNode.js.map" />
   </ItemGroup>
 
   <ItemGroup>
@@ -114,6 +114,8 @@
 
   <ItemGroup>
     <Folder Include="node_modules\" />
+    <Folder Include="src\script\" />
+    <Folder Include="wwwroot\" />
   </ItemGroup>
 
 </Project>

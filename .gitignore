@@ -385,3 +385,8 @@ source/Console/console/config.json
 /source/BirdsNest.Net/Console/wwwroot/css/plugins.css
 /source/BirdsNest.Net/Console/Script/*/*.js
 /source/BirdsNest.Net/Console/Script/*/*.map
+/source/BirdsNest.Net/Console/src/css/plugins.css
+/source/BirdsNest.Net/Console/src/Shared/*/*.map
+/source/BirdsNest.Net/Console/src/*/*.map
+/source/BirdsNest.Net/Console/src/Shared/webcrap/*.js
+/source/BirdsNest.Net/Console/src/Visualizer/*.js

@@ -1,21 +1,30 @@
 ﻿"use strict";
+const webpack = require('webpack');
+const path = require('path');
 
 module.exports = {
-    entry: "./src/file.js",
-    output: {
-        filename: "./dist/bundle.js"
+    entry: {
+        console: './src/console.js',
+        visualizer: './src/visualizer.js'
     },
-    devServer: {
-        contentBase: ".",
-        host: "localhost",
-        port: 9000
+    output: {
+        filename: '[name]-bundle.js',
+        path: __dirname + '/wwwroot'
     },
     module: {
-        loaders: [
+        rules: [
             {
-                test: /\.jsx?$/,
-                loader: "babel-loader"
+                test: /\.(ts|tsx)?$/,
+                loader: 'ts-loader',
+                exclude: /node_modules/
             }
+        ]
+    },
+    resolve: {
+        extensions: [
+            '.tsx',
+            '.ts',
+            '.js'
         ]
     }
 };
