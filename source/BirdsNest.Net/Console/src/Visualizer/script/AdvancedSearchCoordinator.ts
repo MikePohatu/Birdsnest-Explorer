@@ -1,6 +1,6 @@
-﻿/// <reference path="../../node_modules/foundation-sites/dist/js/foundation.d.ts" />
-import { d3 } from "d3/dist/d3";
-import { webcrap } from "../Shared/webcrap";
+﻿import 'foundation-sites';
+import * as d3 from 'd3';
+import { webcrap } from "../../Shared/webcrap/webcrap";
 import { Search, ICondition, ConditionBase, StringCondition, AndOrCondition, SearchNode, SearchEdge } from "./Search";
 import { ViewTreeNode } from "./ViewTreeNode";
 

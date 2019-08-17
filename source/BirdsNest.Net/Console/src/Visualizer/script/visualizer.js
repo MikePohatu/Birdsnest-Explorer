@@ -1,3 +1,14 @@
+import './Slope';
+import './SimulationController';
+import './Mappings';
+import './DataQueue';
+import './DatumStore';
+import './AdvancedSearchCoordinator';
+import 'jquery';
+import 'jqueryui';
+import 'd3';
+import 'fontawesome';
+
 var drawingPane;
 var zoomLayer;
 var drawingsvg;
@@ -13,7 +24,6 @@ simController.NodeTag = ".nodes";
 simController.onPercentUpdated = updateProgressBar;
 simController.onFinishSimulation = onLayoutFinished;
 
-var searchcontroller;
 
 //for recording the labels in teh graph and whether they are enabled e.g. AD_User,false
 var graphnodelabels = new Object();
@@ -137,8 +147,6 @@ function drawGraph(selectid, loaddata) {
         queue.QueueResults(results);
         menuShowHide();
     }
-
-    searchcontroller = new AdvancedSearchCoordinator("pathZoomLayer", "condZoomLayer");
 }
 
 //https://stackoverflow.com/questions/641857/javascript-window-resize-event

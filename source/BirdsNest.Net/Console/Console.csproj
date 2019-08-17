@@ -43,12 +43,12 @@
     <Content Include="src\Shared\webcrap\datacrap.js.map" />
     <Content Include="src\Shared\webcrap\domcrap.js" />
     <Content Include="src\Shared\webcrap\domcrap.js.map" />
-    <Content Include="src\Visualizer\AdvancedSearchCoordinator.js" />
-    <Content Include="src\Visualizer\AdvancedSearchCoordinator.js.map" />
-    <Content Include="src\Visualizer\search.js" />
-    <Content Include="src\Visualizer\search.js.map" />
-    <Content Include="src\Visualizer\ViewTreeNode.js" />
-    <Content Include="src\Visualizer\ViewTreeNode.js.map" />
+    <Content Include="src\Visualizer\script\AdvancedSearchCoordinator.js" />
+    <Content Include="src\Visualizer\script\AdvancedSearchCoordinator.js.map" />
+    <Content Include="src\Visualizer\script\search.js" />
+    <Content Include="src\Visualizer\script\search.js.map" />
+    <Content Include="src\Visualizer\script\ViewTreeNode.js" />
+    <Content Include="src\Visualizer\script\ViewTreeNode.js.map" />
   </ItemGroup>
 
   <ItemGroup>

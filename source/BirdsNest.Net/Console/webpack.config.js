@@ -4,12 +4,12 @@ const path = require('path');
 
 module.exports = {
     entry: {
-        console: './src/console.js',
-        visualizer: './src/visualizer.js'
+        console: './src/console-entry.js',
+        visualizer: './src/visualizer-entry.js'
     },
     output: {
         filename: '[name]-bundle.js',
-        path: __dirname + '/wwwroot'
+        path: __dirname + '/wwwroot/dist'
     },
     module: {
         rules: [

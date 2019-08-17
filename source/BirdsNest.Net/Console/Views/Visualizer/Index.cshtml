@@ -81,23 +81,11 @@
     </div>
 </div>
 
+<input type="text" hidden="hidden" id=viewdataLoadIDs value="@Html.Raw(JsonConvert.SerializeObject(ViewData["LoadIDs"]))">
+
 @section Scripts
     {
     <script defer src="~/script/fontawesome/all.js" type="text/javascript"></script>
-    <script src="~/script/jquery-ui/jquery-ui.js"></script>
-    <script src="~/visualizer/script/d3.min.js"></script>
-    <script src="~/visualizer/script/Slope.js" type="text/javascript"></script>
-    <script src="~/visualizer/script/DatumStore.js" type="text/javascript"></script>
-    <script src="~/visualizer/script/DataQueue.js" type="text/javascript"></script>
-    <script src="~/visualizer/script/Mappings.js" type="text/javascript"></script>
-    <script src="~/visualizer/script/SimulationController.js" type="text/javascript"></script>
-    <script src="~/visualizer/script/ViewTreeNode.js" type="text/javascript"></script>
 
-    <script src="~/visualizer/script/visualizer.js" type="text/javascript"></script>
-    <script src="~/visualizer/script/Search.js" type="text/javascript"></script>
-    <script src="~/visualizer/script/AdvancedSearchCoordinator.js" type="text/javascript"></script>
-    <script>
-        var paramdata = @Html.Raw(JsonConvert.SerializeObject(ViewData["LoadIDs"]));
-        drawGraph('drawingpane', paramdata);
-    </script>
+    <script src="/dist/visualizer-bundle.js" type="text/javascript"></script>
 }
