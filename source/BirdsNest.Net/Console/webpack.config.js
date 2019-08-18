@@ -38,11 +38,10 @@ module.exports = {
     externals: {
         jquery: 'jQuery',
         d3: 'd3',
-        foundation: 'foundation-sites',
         jqueryui: 'jQuery'
     },
     optimization: {
-        minimize: false, // <---- disables uglify.
+        minimize: true // <---- disables uglify.
         // minimizer: [new UglifyJsPlugin()] if you want to customize it.
     }
 };
