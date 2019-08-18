@@ -914,9 +914,8 @@ export default class AdvancedSearchCoordinator {
         datum.Item.Type = (document.getElementById("searchAndOr") as HTMLSelectElement).value;
     }
 
-    onSearchAndOrClicked = function (callingelement) {
+    onSearchAndOrClicked = function (callingelement: SVGElement) {
         //console.log("onSearchAndOrClicked started");
-        var me = this;
         this.ClearAlert();
         var datum = this.UpdateItemDatum("searchAndOrDetails", callingelement);
         if (datum) { datum = datum.data; }
@@ -930,12 +929,12 @@ export default class AdvancedSearchCoordinator {
         alertEl.hide();
     }
 
-    SetAlert = function (message) {
+    SetAlert = function (message: string) {
         console.log("SetAlert started: " + message);
         console.log(this.Tooltip);
         var alertEl = $("#alertIcon");
         if (this.Tooltip) {
-            this.Tooltip.parentNode.removeChild(this.Tooltip);
+            this.Tooltip.destroy();
             this.Tooltip = null;
         }
         this.Tooltip = new Foundation.Tooltip(alertEl, <FoundationSites.ITooltipOptions>{

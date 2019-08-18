@@ -5,8 +5,7 @@
     "removeComments": false,
     "sourceMap": true,
     "target": "es5",
-    "lib": [ "es6", "dom" ],
-    "allowSyntheticDefaultImports": true
+    "lib": [ "es6", "dom" ]
   },
   "exclude": [
     "node_modules",

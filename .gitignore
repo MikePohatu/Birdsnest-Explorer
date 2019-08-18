@@ -380,14 +380,17 @@ venv.bak/
 \.DS_Store
 
 #birdsnest stuff
-source/Console/console/config.json
-/source/BirdsNest.Net/Tester
 /source/BirdsNest.Net/Console/wwwroot/css/plugins.css
-/source/BirdsNest.Net/Console/Script/*/*.js
-/source/BirdsNest.Net/Console/Script/*/*.map
-/source/BirdsNest.Net/Console/src/css/plugins.css
-/source/BirdsNest.Net/Console/src/Shared/*/*.map
-/source/BirdsNest.Net/Console/src/*/*.map
-/source/BirdsNest.Net/Console/src/Shared/webcrap/*.js
-/source/BirdsNest.Net/Console/src/Visualizer/*.js
 /source/BirdsNest.Net/Console/stats
+/source/BirdsNest.Net/Console/src/Shared/webcrap/webcrap.js.map
+/source/BirdsNest.Net/Console/src/Shared/webcrap/webcrap.js
+/source/BirdsNest.Net/Console/src/Shared/webcrap/misccrap.js.map
+/source/BirdsNest.Net/Console/src/Shared/webcrap/misccrap.js
+/source/BirdsNest.Net/Console/src/Shared/webcrap/domcrap.js.map
+/source/BirdsNest.Net/Console/src/Shared/webcrap/domcrap.js
+/source/BirdsNest.Net/Console/src/Shared/webcrap/datacrap.js.map
+/source/BirdsNest.Net/Console/src/Shared/webcrap/datacrap.js
+/source/BirdsNest.Net/Console/src/Shared/webcrap/authcrap.js.map
+/source/BirdsNest.Net/Console/src/Shared/webcrap/authcrap.js
+/source/BirdsNest.Net/Console/src/Visualizer/script/*.js
+/source/BirdsNest.Net/Console/src/Visualizer/script/*.map

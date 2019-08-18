@@ -1,8 +1,8 @@
-import DataQueue from './DataQueue';
-import Slope from './Slope';
-import SimulationController from './SimulationController';
-import Mappings from './Mappings';
-import DatumStore from './DatumStore';
+import DataQueue from './script/DataQueue';
+import Slope from './script/Slope';
+import SimulationController from './script/SimulationController';
+import Mappings from './script/Mappings';
+import DatumStore from './script/DatumStore';
 
 import * as $ from 'jquery';
 import 'jqueryui';
@@ -13,7 +13,7 @@ import * as d3 from 'd3';
 //import { zoom } from 'd3-zoom';
 //import { select, selectAll } from 'd3-selection';
 //import 'fontawesome';
-import { webcrap } from '../../Shared/webcrap/webcrap';
+import { webcrap } from '../Shared/webcrap/webcrap';
 
 var drawingPane;
 var zoomLayer;

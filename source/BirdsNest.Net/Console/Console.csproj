@@ -30,6 +30,7 @@
     <None Remove="src\Visualizer\script\DatumStore.ts" />
     <None Remove="src\Visualizer\script\Mappings.ts" />
     <None Remove="src\Visualizer\script\SimulationController.ts" />
+    <None Remove="src\Visualizer\script\Slope.ts" />
   </ItemGroup>
 
   <ItemGroup>
@@ -39,12 +40,6 @@
     <Content Include="src\Shared\webcrap\datacrap.js.map" />
     <Content Include="src\Shared\webcrap\domcrap.js" />
     <Content Include="src\Shared\webcrap\domcrap.js.map" />
-    <Content Include="src\Visualizer\script\AdvancedSearchCoordinator.js" />
-    <Content Include="src\Visualizer\script\AdvancedSearchCoordinator.js.map" />
-    <Content Include="src\Visualizer\script\search.js" />
-    <Content Include="src\Visualizer\script\search.js.map" />
-    <Content Include="src\Visualizer\script\ViewTreeNode.js" />
-    <Content Include="src\Visualizer\script\ViewTreeNode.js.map" />
   </ItemGroup>
 
   <ItemGroup>

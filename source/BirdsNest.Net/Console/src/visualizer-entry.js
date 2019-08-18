@@ -1,6 +1,6 @@
 ﻿import * as $ from 'jquery';
 import 'foundation-sites';
-import { drawGraph } from './Visualizer/script/visualizer';
+import { drawGraph } from './Visualizer/visualizer';
 import AdvancedSearchCoordinator from './Visualizer/script/AdvancedSearchCoordinator';
 
 
