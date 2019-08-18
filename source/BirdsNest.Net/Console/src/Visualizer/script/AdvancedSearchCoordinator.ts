@@ -12,7 +12,7 @@ export default class AdvancedSearchCoordinator {
     Radius: number;
     XSpacing: number;
     YSpacing: number;
-    ConditionRoot: ViewTreeNode;
+    ConditionRoot: ViewTreeNode<ICondition>;
     NodeDetails: object;
     EdgeDetails: object;
     Tooltip: FoundationSites.Tooltip;
@@ -532,7 +532,7 @@ export default class AdvancedSearchCoordinator {
         var andcond = new AndOrCondition();
 
         this.SearchData.Condition = andcond;
-        this.ConditionRoot = new ViewTreeNode(andcond, "Conditions");
+        this.ConditionRoot = new ViewTreeNode(andcond, "Conditions", null);
         andcond.Conditions.push(cond1);
         andcond.Conditions.push(cond2);
         //andcond.Conditions.push(cond4);
@@ -563,7 +563,7 @@ export default class AdvancedSearchCoordinator {
         //console.log(this.SearchData.Edges);
 
 
-        var d3root = d3.hierarchy(this.ConditionRoot, function (d: ViewTreeNode) { return d.Children; });
+        var d3root = d3.hierarchy(this.ConditionRoot, function (d: ViewTreeNode<ICondition>) { return d.Children; });
         if (d3root === null) { return; }
         var nodes = d3root.count().descendants();
         
@@ -583,11 +583,11 @@ export default class AdvancedSearchCoordinator {
         console.log('nodes:');
         console.log(nodes);
         var enter = viewel.selectAll(".searchcondition")
-            .data(nodes, function (d: d3.HierarchyPointNode<ViewTreeNode>) { return d.data.ID; })
+            .data(nodes, function (d: d3.HierarchyPointNode<ViewTreeNode<ICondition>>) { return d.data.ID; })
             .enter()
             .append("g")
-            .attr("id", function (d: d3.HierarchyPointNode<ViewTreeNode>) { return "searchcondition_" + (d.data as ViewTreeNode).ID; })
-            .attr("class", function (d: d3.HierarchyPointNode<ViewTreeNode>) {
+            .attr("id", function (d: d3.HierarchyPointNode<ViewTreeNode<ICondition>>) { return "searchcondition_" + (d.data as ViewTreeNode<ICondition>).ID; })
+            .attr("class", function (d: d3.HierarchyPointNode<ViewTreeNode<ICondition>>) {
                 if (d.data.Item instanceof AndOrCondition) {
                     return "conditiongroup";
                 }
@@ -596,13 +596,13 @@ export default class AdvancedSearchCoordinator {
                 }
             })
             .classed("searchcondition", true)
-            .attr("data-open", function (d: d3.HierarchyPointNode<ViewTreeNode>) {
+            .attr("data-open", function (d: d3.HierarchyPointNode<ViewTreeNode<ICondition>>) {
                 if (d.data.Item.Type === "AND" || d.data.Item.Type === "OR") {
                     return "searchAndOrDetails";
                 }
                 return "searchConditionDetails";
             })
-            .on("click", function (d: d3.HierarchyPointNode<ViewTreeNode>) {
+            .on("click", function (d: d3.HierarchyPointNode<ViewTreeNode<ICondition>>) {
                 if (d.data.Item instanceof AndOrCondition) {
                     me.onSearchAndOrClicked(this);
                 }
@@ -616,25 +616,25 @@ export default class AdvancedSearchCoordinator {
         //    console.log(d);
         //});
         viewel.selectAll(".searchcondition")
-            .data(nodes, function (d: d3.HierarchyPointNode<ViewTreeNode>) { return d.data.ID; })
+            .data(nodes, function (d: d3.HierarchyPointNode<ViewTreeNode<ICondition>>) { return d.data.ID; })
             .exit()
             .remove();
 
         enter.append("rect")
-            .attr("id", function (d: d3.HierarchyPointNode<ViewTreeNode>) { return "searchconditionbg_" + d.data.ID; })
+            .attr("id", function (d: d3.HierarchyPointNode<ViewTreeNode<ICondition>>) { return "searchconditionbg_" + d.data.ID; })
             .classed("searchconditionrect", true)
             .attr("x", strokewidth)
             .attr("y", strokewidth)
             .attr("rx", 5);
 
         viewel.selectAll(".searchconditionrect")
-            .data(nodes, function (d: d3.HierarchyPointNode<ViewTreeNode>) { return d.data.ID; })
-            .attr("height", function (d: d3.HierarchyPointNode<ViewTreeNode>) {
+            .data(nodes, function (d: d3.HierarchyPointNode<ViewTreeNode<ICondition>>) { return d.data.ID; })
+            .attr("height", function (d: d3.HierarchyPointNode<ViewTreeNode<ICondition>>) {
                 //console.log(d.ancestors());
                 d.data.RectHeight = rectheight - d.depth * ypadding * 2;
                 return d.data.RectHeight;
             })
-            .attr("width", function (d: d3.HierarchyPointNode<ViewTreeNode>) {
+            .attr("width", function (d: d3.HierarchyPointNode<ViewTreeNode<ICondition>>) {
                 if (d.value > 1) {
                     d.data.RectWidth = d.value * rectwidth + (d.value - 1) * xspacing + (d.descendants().length - 1) * 2 + strokewidth * d.value + editwidth + xpadding * 2;
                 }
@@ -666,18 +666,18 @@ export default class AdvancedSearchCoordinator {
             .classed("searchconditionopval", true);
 
         viewel.selectAll(".condition .searchconditiontype")
-            .text(function (d: d3.HierarchyPointNode<ViewTreeNode>) { return d.data.Item.Type; });
+            .text(function (d: d3.HierarchyPointNode<ViewTreeNode<ICondition>>) { return d.data.Item.Type; });
 
         viewel.selectAll(".condition .searchconditioneval")
-            .text(function (d: d3.HierarchyPointNode<ViewTreeNode>) { return (d.data.Item as ConditionBase).Name + "." + (d.data.Item as ConditionBase).Property; });
+            .text(function (d: d3.HierarchyPointNode<ViewTreeNode<ICondition>>) { return (d.data.Item as ConditionBase).Name + "." + (d.data.Item as ConditionBase).Property; });
 
         viewel.selectAll(".condition .searchconditionopval")
-            .text(function (d: d3.HierarchyPointNode<ViewTreeNode>) { return (d.data.Item as ConditionBase).Operator + " " + (d.data.Item as ConditionBase).Value; });
+            .text(function (d: d3.HierarchyPointNode<ViewTreeNode<ICondition>>) { return (d.data.Item as ConditionBase).Operator + " " + (d.data.Item as ConditionBase).Value; });
 
         //setup the + button for group nodes e.g. AND/OR
         var groupaddbtns = viewel.selectAll(".conditiongroup")
             .append("g")
-            .attr("id", function (d: d3.HierarchyPointNode<ViewTreeNode>) { return "searchconditionplus_" + d.data.ID; })
+            .attr("id", function (d: d3.HierarchyPointNode<ViewTreeNode<ICondition>>) { return "searchconditionplus_" + d.data.ID; })
             .classed("searchconditionplus", true)
             .classed("searchcontrol", true)
             .on("click", function () {
@@ -688,19 +688,19 @@ export default class AdvancedSearchCoordinator {
             .attr("class", "fas fa-plus")
             .attr("width", pluswidth)
             .attr("height", pluswidth)
-            .attr("x", function (d: d3.HierarchyPointNode<ViewTreeNode>) { return d.data.RectWidth - pluswidth - xpadding; })
-            .attr("y", function (d: d3.HierarchyPointNode<ViewTreeNode>) { return d.data.RectHeight - ypadding - pluswidth; });
+            .attr("x", function (d: d3.HierarchyPointNode<ViewTreeNode<ICondition>>) { return d.data.RectWidth - pluswidth - xpadding; })
+            .attr("y", function (d: d3.HierarchyPointNode<ViewTreeNode<ICondition>>) { return d.data.RectHeight - ypadding - pluswidth; });
 
 
         groupaddbtns.append("rect")
             .attr("width", pluswidth)
             .attr("height", pluswidth)
-            .attr("x", function (d: d3.HierarchyPointNode<ViewTreeNode>) { return d.data.RectWidth - pluswidth - xpadding; })
-            .attr("y", function (d: d3.HierarchyPointNode<ViewTreeNode>) { return d.data.RectHeight - ypadding - pluswidth; });
+            .attr("x", function (d: d3.HierarchyPointNode<ViewTreeNode<ICondition>>) { return d.data.RectWidth - pluswidth - xpadding; })
+            .attr("y", function (d: d3.HierarchyPointNode<ViewTreeNode<ICondition>>) { return d.data.RectHeight - ypadding - pluswidth; });
 
         viewel.selectAll(".searchcondition")
-            .data(nodes, function (d: d3.HierarchyPointNode<ViewTreeNode>) { return d.data.ID; })
-            .attr("transform", function (d: d3.HierarchyPointNode<ViewTreeNode>) {
+            .data(nodes, function (d: d3.HierarchyPointNode<ViewTreeNode<ICondition>>) { return d.data.ID; })
+            .attr("transform", function (d: d3.HierarchyPointNode<ViewTreeNode<ICondition>>) {
                 //console.log(d);
                 var x = 0;
                 var y = 0;
@@ -723,7 +723,7 @@ export default class AdvancedSearchCoordinator {
         var me = this;
         var condition: ConditionBase;
         this.ClearAlert();
-        var datum = this.UpdateItemDatum("searchConditionDetails", callingelement) as d3.HierarchyNode<ViewTreeNode>;
+        var datum = this.UpdateItemDatum("searchConditionDetails", callingelement) as d3.HierarchyNode<ViewTreeNode<ICondition>>;
         if (datum) { condition = datum.data.Item as ConditionBase; }
         console.log(datum);
 
@@ -784,7 +784,7 @@ export default class AdvancedSearchCoordinator {
         var searchProps = document.getElementById("searchProp");
         var selectedName = searchItem.options[searchItem.selectedIndex].value;
         var selectedItem;
-        var datum = (this.GetItemDatum("searchConditionDetails") as d3.HierarchyNode<ViewTreeNode>).data;
+        var datum = (this.GetItemDatum("searchConditionDetails") as d3.HierarchyNode<ViewTreeNode<ICondition>>).data;
         //console.log(datum);
         var typeSelected = "";
 
@@ -867,7 +867,7 @@ export default class AdvancedSearchCoordinator {
         //searchConditionDetails
 
         //datum is the d3 tree datum. Use datum.data to get the ViewTreeNode datum
-        var datum = this.GetItemDatum(elementid) as d3.HierarchyNode<ViewTreeNode>;
+        var datum = this.GetItemDatum(elementid) as d3.HierarchyNode<ViewTreeNode<ICondition>>;
         var treenode = datum.data;
 
         console.log(datum);
@@ -889,7 +889,7 @@ export default class AdvancedSearchCoordinator {
 
     onSearchConditionSaveClicked () {
         //console.log("onSearchConditionSaveClicked started");
-        var datum = this.GetItemDatum("searchConditionDetails") as d3.HierarchyNode<ViewTreeNode>;
+        var datum = this.GetItemDatum("searchConditionDetails") as d3.HierarchyNode<ViewTreeNode<ICondition>>;
         var condition = datum.data.Item as ConditionBase;
 
         var newname = (document.getElementById("searchItem") as HTMLSelectElement).value;
@@ -929,7 +929,7 @@ export default class AdvancedSearchCoordinator {
 
     onSearchAndOrSaveClicked () {
         //console.log("onSearchAndOrSaveClicked started");
-        var datum = this.GetItemDatum("searchAndOrDetails") as d3.HierarchyNode<ViewTreeNode>;
+        var datum = this.GetItemDatum("searchAndOrDetails") as d3.HierarchyNode<ViewTreeNode<ICondition>>;
 
         datum.data.Item.Type = (document.getElementById("searchAndOr") as HTMLSelectElement).value;
     }
@@ -937,7 +937,7 @@ export default class AdvancedSearchCoordinator {
     onSearchAndOrClicked (callingelement: SVGElement) {
         console.log("onSearchAndOrClicked started");
         this.ClearAlert();
-        var datum = this.UpdateItemDatum("searchAndOrDetails", callingelement) as d3.HierarchyNode<ViewTreeNode>;
+        var datum = this.UpdateItemDatum("searchAndOrDetails", callingelement) as d3.HierarchyNode<ViewTreeNode<ICondition>>;
         console.log(datum);
         var cond: AndOrCondition = datum.data.Item as AndOrCondition;
 

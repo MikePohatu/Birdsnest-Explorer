@@ -3,21 +3,25 @@
 //can be posted or past to a backend unaltered. 
 import { ICondition, AndOrCondition } from "./Search"
 
-export default class ViewTreeNode {
-    Item: ICondition;
-    Children: ViewTreeNode[];
+export default class ViewTreeNode<T> {
+    Item: T;
+    Children: ViewTreeNode<T>[];
     ChildProperty: string;
     ID: string;
     Index: number;
     RectHeight: number;
     RectWidth: number;
+    Depth: number = 0;
+    Parent: ViewTreeNode<T>;
 
-    constructor(item, childProperty) {
+    constructor(item: any, childProperty: string, parent: ViewTreeNode<T>) {
         this.Item = item;
         this.Children = null;
         this.ChildProperty = childProperty;
         this.ID = this.GenerateUID();
         this.Index = 0;
+        this.Parent = parent;
+        if (parent !== null) { this.Depth = parent.Depth + 1; }
     }
 
     Build() {
@@ -45,33 +49,34 @@ export default class ViewTreeNode {
     }
 
     AddChildItem(item) {
-        if (!(this.Item instanceof AndOrCondition)) { console.log("Cannot add child to condition that is not an AND/OR"); }
-        else {
-            var child = new ViewTreeNode(item, this.ChildProperty);
-            if (this.Children === null) { this.Children = []; }
-            this.Children.push(child);
-            child.Build();
-            return child;
+        var child = new ViewTreeNode(item, this.ChildProperty, this);
+        if (this.Children === null) { this.Children = []; }
+        this.Children.push(child);
+        child.Build();
+        return child;
+    }
+
+    RemoveChild(treenode: ViewTreeNode<T>) {
+        console.log("ViewTreeNode.RemoveChild started: ");
+        console.log(this);
+        var item = this.Item;
+        var i;
+        for (i = 0; i < this.Children.length; i++) {
+            if (treenode.ID === this.Children[i].ID) {
+                console.log('removing child: ' + treenode.ID); 
+                var removeditem = item[this.ChildProperty].splice(i, 1);
+                var removednode = this.Children.splice(i, 1);
+                console.log(removeditem);
+                console.log(removednode);
+                break;
+            }
         }
     }
 
-    RemoveChild(treenode: ViewTreeNode) {
-        console.log("ViewTreeNode.RemoveChild started: ");
-        console.log(this);
-        if (!(this.Item instanceof AndOrCondition)) { console.log("Cannot remove child " + treenode.ID + " from condition that is not an AND/OR"); }
-        else {
-            var item = <AndOrCondition>this.Item;
-            var i;
-            for (i = 0; i < this.Children.length; i++) {
-                if (treenode.ID === this.Children[i].ID) {
-                    console.log('removing child: ' + treenode.ID); 
-                    var removeditem = item.Conditions.splice(i, 1);
-                    var removednode = this.Children.splice(i, 1);
-                    console.log(removeditem);
-                    console.log(removednode);
-                    break;
-                }
-            }
+    ChangeParent(newparent: ViewTreeNode<T>) {
+        this.Parent = newparent;
+        if (this.Parent !== null) {
+            this.Parent.Rebuild();
         }
     }
 
