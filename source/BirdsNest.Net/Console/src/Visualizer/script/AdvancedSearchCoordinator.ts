@@ -1,6 +1,5 @@
 ﻿import 'foundation-sites';
-import { select, selectAll } from 'd3-selection';
-import { hierarchy } from  'd3-hierarchy';
+import * as d3 from 'd3';
 import { webcrap } from "../../Shared/webcrap/webcrap";
 import { Search, ICondition, ConditionBase, StringCondition, AndOrCondition, SearchNode, SearchEdge } from "./Search";
 import ViewTreeNode from "./ViewTreeNode";
@@ -17,6 +16,7 @@ export default class AdvancedSearchCoordinator {
     ConditionD3Root = null;
     NodeDetails: object;
     EdgeDetails: object;
+    Tooltip: FoundationSites.Tooltip;
 
     constructor(pathelementid: string, conditionelementid: string) {
         //console.log("AdvancedSearchCoordinator started: " + elementid);
@@ -49,45 +49,45 @@ export default class AdvancedSearchCoordinator {
         }
 
         //select("#nodeType").on("change", this.UpdateNodeProps);
-        select("#searchNodeSaveBtn").on("click", function () {
+        d3.select("#searchNodeSaveBtn").on("click", function () {
             me.onSearchNodeSaveBtnClicked();
         });
-        select("#searchNodeDeleteBtn").on("click", function () {
+        d3.select("#searchNodeDeleteBtn").on("click", function () {
             me.onSearchNodeDelBtnClicked(this);
         });
-        select("#searchEdgeSaveBtn").on("click", function () {
+        d3.select("#searchEdgeSaveBtn").on("click", function () {
             me.onSearchEdgeSaveBtnClicked();
         });
-        select("#dirIconClicker").on("click", function () {
+        d3.select("#dirIconClicker").on("click", function () {
             me.ToggleDir();
         });
-        select("#searchBtn").on("click", function () {
+        d3.select("#searchBtn").on("click", function () {
             me.RunSearch();
         });
-        select("#pathAddIcon").on("click", function () {
+        d3.select("#pathAddIcon").on("click", function () {
             me.SearchData.AddNode();
             me.UpdateNodes();
             me.UpdateEdges();
         });
-        select("#whereAddIcon").on("click", function () {
+        d3.select("#whereAddIcon").on("click", function () {
             me.AddConditionRoot();
         });
-        select("#advSearchClearIcon").on("click", function () {
+        d3.select("#advSearchClearIcon").on("click", function () {
             me.Clear();
         });
-        select("#hopsSwitch").on("change", function () {
+        d3.select("#hopsSwitch").on("change", function () {
             me.onHopsSwitchChanged();
         });
-        select("#searchConditionDeleteBtn").on("click", function () {
+        d3.select("#searchConditionDeleteBtn").on("click", function () {
             me.onSearchConditionDeleteClicked();
         });
-        select("#searchItem").on("change", function () {
+        d3.select("#searchItem").on("change", function () {
             me.onSearchConditionItemChanged();
         });
-        select("#searchConditionSaveBtn").on("click", function () {
+        d3.select("#searchConditionSaveBtn").on("click", function () {
             me.onSearchConditionSaveClicked();
         });
-        select("#searchAndOrSaveBtn").on("click", function () {
+        d3.select("#searchAndOrSaveBtn").on("click", function () {
             me.onSearchAndOrSaveClicked();
         });
 
@@ -132,7 +132,7 @@ export default class AdvancedSearchCoordinator {
 
         if (confirm("Are you sure you want to clear this search?") === true) {
 
-            var viewel = select("#" + this.PathElementID);
+            var viewel = d3.select("#" + this.PathElementID);
             viewel.selectAll("*").remove();
             this.SearchData = new Search();
         }
@@ -145,7 +145,7 @@ export default class AdvancedSearchCoordinator {
         var me = this;
         var currslot = 0;
 
-        var viewel = select("#" + this.PathElementID);
+        var viewel = d3.select("#" + this.PathElementID);
         var newnodeg = viewel.selectAll(".searchnode")
             .data(this.SearchData.Nodes, function (d: SearchNode) { return d.Name; })
             .enter()
@@ -194,7 +194,7 @@ export default class AdvancedSearchCoordinator {
         //console.log("subspacingx: " + subspacingx);
         //console.log("subspacingy: " + subspacingy);
 
-        var viewel = select("#" + this.PathElementID);
+        var viewel = d3.select("#" + this.PathElementID);
         var newedgeg = viewel.selectAll(".searchedge")
             .data(this.SearchData.Edges, function (d: SearchEdge) { return d.Name; })
             .enter()
@@ -297,8 +297,8 @@ export default class AdvancedSearchCoordinator {
 
         this.onHopsSwitchChanged();
         //Foundation.reInit($('#hopsSlider'));
-        select('#minSliderVal').dispatch('change');
-        select('#maxSliderVal').dispatch('change');
+        d3.select('#minSliderVal').dispatch('change');
+        d3.select('#maxSliderVal').dispatch('change');
     }
 
     onHopsSwitchChanged = function () {
@@ -307,11 +307,11 @@ export default class AdvancedSearchCoordinator {
         //console.log(hopsswitch.checked);
 
         if (hopsswitch.checked) {
-            selectAll(".hopscontrol")
+            d3.selectAll(".hopscontrol")
                 .attr("disabled", null);
         }
         else {
-            selectAll(".hopscontrol")
+            d3.selectAll(".hopscontrol")
                 .attr("disabled", "disabled");
         }
 
@@ -321,8 +321,8 @@ export default class AdvancedSearchCoordinator {
         //console.log("SearchItemClicked started");
         //console.log(this);
         //console.log(elementid);
-        var el = select("#" + elementid);
-        var datum = select(callingitem).datum();
+        var el = d3.select("#" + elementid);
+        var datum = d3.select(callingitem).datum();
         //console.log(datum);
         el.datum(datum);
         return datum;
@@ -332,7 +332,7 @@ export default class AdvancedSearchCoordinator {
         //console.log("GetItemDatum started");
         //console.log(this);
         //console.log(elementid);
-        var el = select("#" + elementid);
+        var el = d3.select("#" + elementid);
         var datum = el.datum();
         //console.log(datum);
         return datum;
@@ -343,7 +343,7 @@ export default class AdvancedSearchCoordinator {
         //console.log("GetElementDatum started");
         //console.log(this);
         //console.log(elementid);
-        var el = select(element);
+        var el = d3.select(element);
         var datum = el.datum();
         //console.log(datum);
         return datum;
@@ -353,8 +353,8 @@ export default class AdvancedSearchCoordinator {
     onSearchNodeSaveBtnClicked = function () {
         //console.log("onSearchNodeSaveBtnClicked started");
         //console.log(this);
-        var node: SearchNode = select("#searchNodeDetails").datum() as SearchNode;
-        var nodeEl = select("#searchnode_" + node.Name);
+        var node: SearchNode = d3.select("#searchNodeDetails").datum() as SearchNode;
+        var nodeEl = d3.select("#searchnode_" + node.Name);
 
         //console.log(node);
 
@@ -377,7 +377,7 @@ export default class AdvancedSearchCoordinator {
         //console.log("onSearchNodeDelBtnClicked started: " + callingitem);
         //console.log(this);
 
-        var nodedatum = select("#searchNodeDetails").datum();
+        var nodedatum = d3.select("#searchNodeDetails").datum();
         //console.log(nodedatum);
         this.SearchData.RemoveNode(nodedatum);
 
@@ -404,7 +404,7 @@ export default class AdvancedSearchCoordinator {
             rightArr = false;
         }
 
-        select("#dirIcon")
+        d3.select("#dirIcon")
             .attr("data-dir", dir)
             .classed("fa-arrow-right", rightArr)
             .classed("fa-arrow-left", !rightArr);
@@ -416,8 +416,8 @@ export default class AdvancedSearchCoordinator {
         //console.log(this);
         var me = this;
 
-        var edge: SearchEdge = select("#searchEdgeDetails").datum() as SearchEdge;
-        var edgeEl = select("#searchedge_" + edge.Name);
+        var edge: SearchEdge = d3.select("#searchEdgeDetails").datum() as SearchEdge;
+        var edgeEl = d3.select("#searchedge_" + edge.Name);
 
         //console.log(edge);
         //console.log(edgeEl);
@@ -519,7 +519,7 @@ export default class AdvancedSearchCoordinator {
 
     AddConditionRoot = function () {
         //console.log("AddConditionRoot started");
-        //select("#whereAddIcon").classed("hidden", true);
+        //d3.select("#whereAddIcon").classed("hidden", true);
 
         var cond1 = new StringCondition();
         var cond2 = new StringCondition();
@@ -542,7 +542,7 @@ export default class AdvancedSearchCoordinator {
         //this.ConditionRoot.AddChildItem(cond1);
         //this.ConditionRoot.AddChildItem(cond2);
 
-        this.ConditionD3Root = hierarchy(this.ConditionRoot, function (d) { return d.Children; });
+        this.ConditionD3Root = d3.hierarchy(this.ConditionRoot, function (d) { return d.Children; });
         //console.log(this.ConditionD3Root);
         this.UpdateConditions();
     }
@@ -575,7 +575,7 @@ export default class AdvancedSearchCoordinator {
         var pluswidth = 25;
         var editwidth = 25;
 
-        var viewel = select("#" + this.ConditionElementID);
+        var viewel = d3.select("#" + this.ConditionElementID);
         //console.log(nodes);
         var enter = viewel.selectAll(".searchcondition")
             .data(nodes, function (d: d3.HierarchyPointNode<ViewTreeNode>) { return d.data.ID; })
@@ -709,16 +709,14 @@ export default class AdvancedSearchCoordinator {
     }
 
     onSearchConditionClicked = function (callingelement) {
-        //console.log("onSearchConditionClicked started");
+        console.log("onSearchConditionClicked started");
         //var datum;
-        //select(callingelement)
-        //    .each(function (d) { datum = d.data; });
         //console.log(callingelement);
         var me = this;
         this.ClearAlert();
         var datum = this.UpdateItemDatum("searchConditionDetails", callingelement);
         if (datum) { datum = datum.data; }
-        //console.log(datum);
+        console.log(datum);
 
         (document.getElementById("searchProp") as HTMLSelectElement).disabled = false;
         (document.getElementById("searchVal") as HTMLInputElement).disabled = false;
@@ -857,7 +855,7 @@ export default class AdvancedSearchCoordinator {
         if (this.ConditionRoot.ID === datum.data.ID) {
             this.ConditionRoot = null;
             this.ConditionD3Root = null;
-            selectAll(".searchcondition").remove();
+            d3.selectAll(".searchcondition").remove();
         }
         else {
             datum.parent.data.RemoveChild(datum.data);
@@ -901,7 +899,7 @@ export default class AdvancedSearchCoordinator {
             if (selectEl[i].value === value) {
                 selectEl.selectedIndex = i;
                 //console.log("found " + value + " at index: " + i);
-                select(selectEl).dispatch('change');
+                d3.select(selectEl).dispatch('change');
                 break;
             }
         }
@@ -933,8 +931,14 @@ export default class AdvancedSearchCoordinator {
     }
 
     SetAlert = function (message) {
+        console.log("SetAlert started: " + message);
+        console.log(this.Tooltip);
         var alertEl = $("#alertIcon");
-        new Foundation.Tooltip(alertEl, <FoundationSites.ITooltipOptions>{
+        if (this.Tooltip) {
+            this.Tooltip.parentNode.removeChild(this.Tooltip);
+            this.Tooltip = null;
+        }
+        this.Tooltip = new Foundation.Tooltip(alertEl, <FoundationSites.ITooltipOptions>{
             allowHtml: true,
             tipText: message
         });

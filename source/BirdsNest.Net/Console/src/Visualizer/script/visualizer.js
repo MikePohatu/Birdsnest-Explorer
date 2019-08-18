@@ -12,7 +12,7 @@ import 'jqueryui';
 import * as d3 from 'd3';
 //import { zoom } from 'd3-zoom';
 //import { select, selectAll } from 'd3-selection';
-import 'fontawesome';
+//import 'fontawesome';
 import { webcrap } from '../../Shared/webcrap/webcrap';
 
 var drawingPane;

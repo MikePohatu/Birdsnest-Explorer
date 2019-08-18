@@ -37,7 +37,9 @@ module.exports = {
     ],
     externals: {
         jquery: 'jQuery',
-        d3: 'd3'
+        d3: 'd3',
+        foundation: 'foundation-sites',
+        jqueryui: 'jQuery'
     },
     optimization: {
         minimize: false, // <---- disables uglify.
