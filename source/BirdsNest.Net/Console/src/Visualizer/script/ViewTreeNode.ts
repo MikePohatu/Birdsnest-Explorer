@@ -56,16 +56,19 @@ export default class ViewTreeNode {
     }
 
     RemoveChild(treenode: ViewTreeNode) {
-        //console.log("ViewTreeNode.RemoveChild started: ");
-        //console.log(treenode);
+        console.log("ViewTreeNode.RemoveChild started: ");
+        console.log(this);
         if (!(this.Item instanceof AndOrCondition)) { console.log("Cannot remove child " + treenode.ID + " from condition that is not an AND/OR"); }
         else {
             var item = <AndOrCondition>this.Item;
             var i;
             for (i = 0; i < this.Children.length; i++) {
                 if (treenode.ID === this.Children[i].ID) {
-                    item.Conditions.splice(i, 1);
-                    this.Children.splice(i, 1);
+                    console.log('removing child: ' + treenode.ID); 
+                    var removeditem = item.Conditions.splice(i, 1);
+                    var removednode = this.Children.splice(i, 1);
+                    console.log(removeditem);
+                    console.log(removednode);
                     break;
                 }
             }

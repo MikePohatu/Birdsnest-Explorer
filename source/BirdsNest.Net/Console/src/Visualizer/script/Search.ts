@@ -115,11 +115,10 @@ class SearchEdge {
 
 interface ICondition {
     Type: string;
-    Name: string;
 }
 
 class AndOrCondition implements ICondition {
-    Name: string = "";
+    Name: "";
     Conditions: ICondition[] = [];
 
     private _type: string = "AND";
