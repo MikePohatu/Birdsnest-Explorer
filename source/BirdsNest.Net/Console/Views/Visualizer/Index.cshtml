@@ -85,7 +85,15 @@
 
 @section Scripts
     {
-    <script defer src="~/script/fontawesome/all.js" type="text/javascript"></script>
-
-    <script src="/dist/visualizer-bundle.js" type="text/javascript"></script>
+    
+    <environment include="Development">
+        <script defer src="/script/fontawesome/all.js" type="text/javascript"></script>
+        <script src="/script/d3.js" type="text/javascript"></script>
+        <script src="/dist/visualizer-bundle.js" type="text/javascript"></script>
+    </environment>
+    <environment exclude="Development">
+        <script defer src="/script/fontawesome/all.js" type="text/javascript"></script>
+        <script src="/script/d3-min.js" type="text/javascript"></script>
+        <script src="/dist/visualizer-bundle.js" type="text/javascript"></script>
+    </environment>
 }

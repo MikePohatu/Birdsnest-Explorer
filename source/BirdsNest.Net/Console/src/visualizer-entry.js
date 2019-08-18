@@ -1,4 +1,8 @@
-﻿import * as vis from './Visualizer/script/visualizer';
+﻿import * as $ from 'jquery';
+import { drawGraph } from './Visualizer/script/visualizer';
+import AdvancedSearchCoordinator from './Visualizer/script/AdvancedSearchCoordinator';
 
 var paramdata = $("viewdataLoadIDs").value;
-vis.drawGraph('drawingpane', paramdata);
+drawGraph('drawingpane', paramdata);
+
+new AdvancedSearchCoordinator("searchPathSvg", "searchConditionSvg");

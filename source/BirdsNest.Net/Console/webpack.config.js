@@ -34,5 +34,13 @@ module.exports = {
             reportFilename: '../../stats/report.html',
             openAnalyzer: false
         })
-    ]
+    ],
+    externals: {
+        jquery: 'jQuery',
+        d3: 'd3'
+    },
+    optimization: {
+        minimize: false, // <---- disables uglify.
+        // minimizer: [new UglifyJsPlugin()] if you want to customize it.
+    }
 };
