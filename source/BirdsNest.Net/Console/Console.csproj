@@ -27,6 +27,9 @@
   <ItemGroup>
     <None Remove="src\Shared\webcrap.ts" />
     <None Remove="src\Visualizer\script\DataQueue.ts" />
+    <None Remove="src\Visualizer\script\DatumStore.ts" />
+    <None Remove="src\Visualizer\script\Mappings.ts" />
+    <None Remove="src\Visualizer\script\SimulationController.ts" />
   </ItemGroup>
 
   <ItemGroup>
@@ -124,5 +127,9 @@
     <None Include="wwwroot\visualizer\css\main.css" />
     <None Include="wwwroot\visualizer\css\visualization.css" />
   </ItemGroup>
+
+  <Target Name="PreBuild" BeforeTargets="PreBuildEvent">
+    <Exec Command="npm run build" />
+  </Target>
 
 </Project>

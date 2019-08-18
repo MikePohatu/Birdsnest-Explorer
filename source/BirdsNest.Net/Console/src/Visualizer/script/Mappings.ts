@@ -1,25 +1,31 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-var Mappings = /** @class */ (function () {
-    function Mappings(jsondata, defaultval) {
+﻿export default class Mappings {
+    mappings: object;
+    defaultvalue: object;
+
+    constructor(jsondata, defaultval) {
         this.mappings = jsondata;
         this.defaultvalue = defaultval;
     }
-    Mappings.prototype.getMappingFromValue = function (value) {
+
+    getMappingFromValue(value) {
         var me = this;
         var finalmapping = this.defaultvalue;
+
         if (me.mappings.hasOwnProperty(value)) {
             //console.log("found: " + me.mappings[value]);
             finalmapping = me.mappings[value];
         }
+
         return finalmapping;
-    };
-    Mappings.prototype.getMappingFromArray = function (array) {
+    }
+
+    getMappingFromArray(array) {
         //console.log("Mappings.prototype.getMappingFromArray start:");
         //console.log(array);
         //console.log(this.mappings);
         var me = this;
         var finalmapping = this.defaultvalue;
+
         var BreakException = {};
         try {
             //double loop because the order of this.mappings is the order that matters
@@ -31,16 +37,14 @@ var Mappings = /** @class */ (function () {
                         finalmapping = me.mappings[mapping];
                         throw BreakException;
                     }
+
                 });
             });
         }
         catch (e) {
-            if (e !== BreakException)
-                throw e;
+            if (e !== BreakException) throw e;
         }
+
         return finalmapping;
-    };
-    return Mappings;
-}());
-exports.default = Mappings;
-//# sourceMappingURL=Mappings.js.map
+    }
+}

@@ -1,14 +1,15 @@
-import './Slope';
-import './SimulationController';
-import './Mappings';
-import './DataQueue';
-import './DatumStore';
-import './AdvancedSearchCoordinator';
-import { $ } from 'jquery';
+import DataQueue from './DataQueue';
+import Slope from './Slope';
+import SimulationController from './SimulationController';
+import Mappings from './Mappings';
+import DatumStore from './DatumStore';
+import AdvancedSearchCoordinator from './AdvancedSearchCoordinator';
+var $ = require("jquery");
 import 'jqueryui';
-import { drag } from 'd3-drag';
-import 'd3-transition';
-import 'd3-ease';
+//import { drag } from 'd3-drag';
+//import 'd3-transition';
+//import 'd3-ease';
+import d3 from 'd3';
 import { zoom } from 'd3-zoom';
 import { select, selectAll } from 'd3-selection';
 import 'fontawesome';
@@ -35,20 +36,20 @@ var graphnodelabels = new Object();
 var graphedgelabels = new Object();
 
 //var meshsimulation;
-var meshnodes = new datumStore();
-var meshedges = new datumStore();
+var meshnodes = new DatumStore();
+var meshedges = new DatumStore();
 
 //var treesimulation;
-var treenodes = new datumStore();
-var treeedges = new datumStore();
+var treenodes = new DatumStore();
+var treeedges = new DatumStore();
 
 //var connectsimulation;
-var connectnodes = new datumStore();
-var connectedges = new datumStore();
+var connectnodes = new DatumStore();
+var connectedges = new DatumStore();
 
 //var graphsimulation;
-var graphnodes = new datumStore();
-var graphedges = new datumStore();
+var graphnodes = new DatumStore();
+var graphedges = new DatumStore();
 
 var areaBox;
 var force;
@@ -184,13 +185,13 @@ function resetView() {
     //console.log("resetView");
 
     if (confirm("Are you sure you want to clear the display?") === true) {
-        meshnodes = new datumStore();
-        meshedges = new datumStore();
-        treenodes = new datumStore();
-        treeedges = new datumStore();
-        graphnodes = new datumStore();
-        graphedges = new datumStore();
-        connectedges = new datumStore();
+        meshnodes = new DatumStore();
+        meshedges = new DatumStore();
+        treenodes = new DatumStore();
+        treeedges = new DatumStore();
+        graphnodes = new DatumStore();
+        graphedges = new DatumStore();
+        connectedges = new DatumStore();
         graphnodelabels = new Object();
         graphedgelabels = new Object();
 

@@ -2,27 +2,28 @@
   "name": "birdsnest_console",
   "version": "1.0.0",
   "private": true,
-  "dependencies": {
-    "d3": "^5.9.7",
-    "foundation-sites": "^6.5.3",
-    "jquery": "^3.4.1",
-    "jqueryui": "^1.11.1",
-    "fontawesome": "^5.6.3",
-    "what-input": "^5.2.3"
-  },
+  "dependencies": {},
   "devDependencies": {
     "@types/d3": "^5.7.2",
     "@types/jquery": "^3.3.31",
     "@types/jqueryui": "^1.12.7",
+    "@types/node": "^12.7.2",
     "css-loader": "^3.2.0",
+    "d3": "^5.9.7",
     "extract-loader": "^3.1.0",
     "file-loader": "^4.2.0",
+    "fontawesome": "^5.6.3",
+    "foundation-sites": "^6.5.3",
+    "jquery": "^3.4.1",
+    "jqueryui": "^1.11.1",
+    "mini-css-extract-plugin": "^0.8.0",
     "motion-ui": "^2.0.3",
     "ts-loader": "^6.0.4",
     "typescript": "^3.5.3",
     "webpack": "^4.39.2",
     "webpack-bundle-analyzer": "^3.4.1",
-    "webpack-cli": "^3.3.6"
+    "webpack-cli": "^3.3.6",
+    "what-input": "^5.2.3"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",

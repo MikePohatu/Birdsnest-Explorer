@@ -3,10 +3,10 @@ import { select, selectAll } from 'd3-selection';
 import { hierarchy } from  'd3-hierarchy';
 import { webcrap } from "../../Shared/webcrap/webcrap";
 import { Search, ICondition, ConditionBase, StringCondition, AndOrCondition, SearchNode, SearchEdge } from "./Search";
-import { ViewTreeNode } from "./ViewTreeNode";
+import ViewTreeNode from "./ViewTreeNode";
 
 //requires d3js
-class AdvancedSearchCoordinator {
+export default class AdvancedSearchCoordinator {
     SearchData: Search;
     PathElementID: string;
     ConditionElementID: string;
@@ -941,5 +941,3 @@ class AdvancedSearchCoordinator {
         alertEl.show();
     }
 }
-
-export { AdvancedSearchCoordinator }

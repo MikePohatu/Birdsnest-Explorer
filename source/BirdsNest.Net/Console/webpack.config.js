@@ -31,7 +31,8 @@ module.exports = {
     plugins: [
         new BundleAnalyzerPlugin({
             analyzerMode: 'static',
-            reportFilename: '../../stats/report.html'
+            reportFilename: '../../stats/report.html',
+            openAnalyzer: false
         })
     ]
 };

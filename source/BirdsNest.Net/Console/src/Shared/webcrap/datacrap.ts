@@ -1,4 +1,5 @@
 ﻿import { authcrap } from "./authcrap";
+var $ = require("jquery");
 
 class DataCrap {
     apiGetJson(url, callback) {

@@ -1,5 +1,5 @@
 ﻿
-export class DataQueue {
+export default class DataQueue {
     QueuedData: object;
     IsProcessing: boolean;
     AreResultsPending: boolean;

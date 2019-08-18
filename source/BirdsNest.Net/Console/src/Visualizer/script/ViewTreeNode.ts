@@ -3,7 +3,7 @@
 //can be posted or past to a backend unaltered. 
 import { ICondition, AndOrCondition } from "./Search"
 
-class ViewTreeNode {
+export default class ViewTreeNode {
     Item: ICondition;
     Children: ViewTreeNode[];
     ChildProperty: string;
@@ -81,5 +81,3 @@ class ViewTreeNode {
         return ("000" + firstPart.toString(36)).slice(-3) + ("000" + secondPart.toString(36)).slice(-3);
     }
 }
-
-export { ViewTreeNode}
