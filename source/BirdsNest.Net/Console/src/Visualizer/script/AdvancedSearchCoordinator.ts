@@ -1,4 +1,5 @@
-﻿import 'foundation-sites';
+﻿import * as $ from 'jquery';
+import 'foundation-sites';
 import * as d3 from 'd3';
 import { webcrap } from "../../Shared/webcrap/webcrap";
 import { Search, ICondition, ConditionBase, StringCondition, AndOrCondition, SearchNode, SearchEdge, GetCondition } from "./Search";
@@ -112,13 +113,13 @@ export default class AdvancedSearchCoordinator {
 
 
     RunSearch () {
-        //log.debug("RunSearch started");
+        log.trace("RunSearch started");
         //log.debug(this);
 
 
         var postdata = JSON.stringify(this.SearchData);
-        //log.debug("search post:");
-        //log.debug(postdata);
+        log.debug("search post:");
+        log.debug(postdata);
         this.ShowSearchSpinner();
         webcrap.data.apiPostJson("AdvancedSearch", postdata, function (data) {
             //log.debug(data);
@@ -1032,6 +1033,7 @@ export default class AdvancedSearchCoordinator {
         }
         else {
             this.ConditionRoot = this.AddingTemp;
+            this.SearchData.Condition = this.ConditionRoot.Item;
             this.ConditionRoot.Build();
         }
         $('#searchConditionTypeSelect').foundation('close');
@@ -1059,6 +1061,7 @@ export default class AdvancedSearchCoordinator {
         log.debug("RootID: " + this.ConditionRoot.ID);
         if (this.ConditionRoot.ID === treenode.ID) {
             this.ConditionRoot = null;
+            this.SearchData.Condition = undefined;
             d3.selectAll(".searchcondition").remove();
         }
         else {

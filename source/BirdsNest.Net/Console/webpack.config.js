@@ -5,8 +5,8 @@ const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPl
 
 module.exports = {
     entry: {
-        console: './src/console-entry.js',
-        visualizer: './src/visualizer-entry.js'
+        visualizer: './src/visualizer-entry.js',
+        console: './src/console-entry.js'
     },
     output: {
         filename: '[name]-bundle.js',
@@ -36,7 +36,6 @@ module.exports = {
         })
     ],
     externals: {
-        jquery: 'jQuery',
         d3: 'd3',
         jqueryui: 'jQuery'
     },

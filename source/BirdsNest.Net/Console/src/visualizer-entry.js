@@ -1,13 +1,18 @@
-﻿import * as $ from 'jquery';
-import Foundation from 'foundation-sites';
-import * as vis from './Visualizer/visualizer';
+﻿import $ from 'jquery';
+import 'foundation-sites';
 import AdvancedSearchCoordinator from './Visualizer/script/AdvancedSearchCoordinator';
 import * as log from 'loglevel';
+import * as vis from './Visualizer/visualizer';
+import '@fortawesome/fontawesome-free/js/fontawesome';
+import '@fortawesome/fontawesome-free/js/solid';
+import '@fortawesome/fontawesome-free/js/regular';
 
-log.setLevel('trace', false);
-
+log.setLevel('trace', false); 
 
 $(document).foundation();
+
+//temporary to dealing with legacy crap
+global.vis = vis;
 
 var paramdata = $("viewdataLoadIDs").value;
 vis.drawGraph('drawingpane', paramdata);

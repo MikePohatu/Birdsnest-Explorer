@@ -1,7 +1,7 @@
 ﻿
 
 class Search {
-    Condition;
+    Condition: ICondition;
     Nodes = [];
     Edges = [];
     AddedNodes = 0;

@@ -45,10 +45,10 @@
                     <span id="eyeBtn" class="cell viewcontrol has-tip" data-toggle="eyeLabelListWrapper" title="Hide/show items">
                         <i id="eyeIcon" class="far fa-eye"></i>
                     </span>
-                    <span id="reportBtn" class="cell viewcontrol has-tip" title="Export to report view" onclick="javascript:onReportClicked(false)">
+                    <span id="reportBtn" class="cell viewcontrol has-tip" title="Export to report view" onclick="javascript:vis.onReportClicked(false)">
                         <i id="reportIcon" class="fas fa-file-export"></i>
                     </span>
-                    <span id="clearViewBtn" class="cell viewcontrol has-tip" title="Clear current view" onclick="javascript:resetView()">
+                    <span id="clearViewBtn" class="cell viewcontrol has-tip" title="Clear current view" onclick="javascript:vis.resetView()">
                         <i id="reportIcon" class="fas fa-ban" style="color:red;"></i>
                     </span>
                     <span class="cell" style="width:24px;"> </span> <!-- spacer -->
@@ -87,15 +87,15 @@
     {
     
     <environment include="Development">
-        <script defer src="/script/fontawesome/all.js" type="text/javascript"></script>
+        @*<script defer src="/script/fontawesome/all.js" type="text/javascript"></script>*@
         <script src="/script/d3.js" type="text/javascript"></script>
-        <script src="/script/jquery-ui.js" type="text/javascript"></script>
+        @*<script src="/script/jquery-ui.js" type="text/javascript"></script>*@
         <script src="/dist/visualizer-bundle.js" type="text/javascript"></script>
     </environment>
     <environment exclude="Development">
-        <script defer src="/script/fontawesome/all.js" type="text/javascript"></script>
+        @*<script defer src="/script/fontawesome/all.js" type="text/javascript"></script>*@
         <script src="/script/d3-min.js" type="text/javascript"></script>
-        <script src="/script/jquery-ui.min.js" type="text/javascript"></script>
+        @*<script src="/script/jquery-ui.min.js" type="text/javascript"></script>*@
         <script src="/dist/visualizer-bundle.js" type="text/javascript"></script>
     </environment>
 }

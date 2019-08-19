@@ -1,19 +1,16 @@
+
 import DataQueue from './script/DataQueue';
 import Slope from './script/Slope';
 import SimulationController from './script/SimulationController';
 import Mappings from './script/Mappings';
 import DatumStore from './script/DatumStore';
+import * as log from 'loglevel';
 
-import * as $ from 'jquery';
+import $ from 'jquery';
 import 'jqueryui';
-//import { drag } from 'd3-drag';
-//import 'd3-transition';
-//import 'd3-ease';
 import * as d3 from 'd3';
-//import { zoom } from 'd3-zoom';
-//import { select, selectAll } from 'd3-selection';
-//import 'fontawesome';
 import { webcrap } from '../Shared/webcrap/webcrap';
+
 
 var drawingPane;
 var zoomLayer;
@@ -105,7 +102,7 @@ function menuShowHide() {
 }
 
 export function drawGraph(selectid, loaddata) {
-    
+    log.trace('drawGraph started');
     //updateNodeLabels("target");
     drawingPane = d3.select("#" + selectid);
 
@@ -153,7 +150,7 @@ export function drawGraph(selectid, loaddata) {
         menuShowHide();
     }
 
-    
+
 
 }
 
@@ -184,7 +181,7 @@ function resetDrawingEvents() {
         .call(zoomer);
 }
 
-function resetView() {
+export function resetView() {
     //console.log("resetView");
 
     if (confirm("Are you sure you want to clear the display?") === true) {
@@ -208,33 +205,33 @@ function resetView() {
 }
 
 
-function updateProgressBar(percent) {
+export function updateProgressBar(percent) {
     d3.select("#progress").style("width", percent + "%");
 }
 
-d3.selectAll("#restartLayoutBtn").attr('onclick', 'restartLayout()');
-function restartLayout() {
+d3.selectAll("#restartLayoutBtn").attr('onclick', 'vis.restartLayout()');
+export function restartLayout() {
     //console.log('restartLayout');
     d3.selectAll("#restartIcon").classed("spinner", true);
     d3.selectAll("#restartLayoutBtn")
-        .attr('onclick', 'pauseLayout()')
+        .attr('onclick', 'vis.pauseLayout()')
         .attr('title', 'Updating layout');
 
     simController.RestartSimulation();
 }
 
-d3.selectAll("#pausePlayBtn").attr('onclick', "playLayout()");
-function playLayout() {
+d3.selectAll("#pausePlayBtn").attr('onclick', "vis.playLayout()");
+export function playLayout() {
     playMode = true;
 
     d3.selectAll("#pausePlayIcon")
         .classed("fa-play", false)
         .classed("fa-pause", true);
     d3.selectAll("#pausePlayBtn")
-        .attr('onclick', "pauseLayout()");
+        .attr('onclick', "vis.pauseLayout()");
 }
 
-function pauseLayout() {
+export function pauseLayout() {
     playMode = false;
     simController.StopSimulations();
 
@@ -242,9 +239,9 @@ function pauseLayout() {
         .classed("fa-pause", false)
         .classed("fa-play", true);
     d3.selectAll("#pausePlayBtn")
-        .attr('onclick', 'playLayout()');
+        .attr('onclick', 'vis.playLayout()');
     d3.selectAll("#restartIcon").classed("spinner", false);
-    d3.selectAll("#restartLayoutBtn").attr('onclick', 'restartLayout()');
+    d3.selectAll("#restartLayoutBtn").attr('onclick', 'vis.restartLayout()');
 }
 
 function cleanAndUpdateLabelEyes() {
@@ -262,7 +259,7 @@ function cleanAndUpdateLabelEyes() {
     updateLabelEyes();
 }
 
-function updateLabelEyes() {  
+function updateLabelEyes() {
     buildEyeTable(graphnodelabels, "eyeNodeLabelList", "nodes");
     buildEyeTable(graphedgelabels, "eyeEdgeLabelList", "edges");
     function buildEyeTable(obj, id, classtype) {
@@ -275,25 +272,25 @@ function updateLabelEyes() {
             .classed("cell small-12", true);
 
         htlabel.append("a")
-            .attr("href", "javascript:onEyeShowAllClicked(\"" + id + "\");")
+            .attr("href", "javascript:vis.onEyeShowAllClicked(\"" + id + "\");")
             .html("Show all");
         htlabel.append("span")
             .html(" | ");
         htlabel.append("a")
-            .attr("href", "javascript:onEyeHideAllClicked(\"" + id + "\");")
+            .attr("href", "javascript:vis.onEyeHideAllClicked(\"" + id + "\");")
             .html("Hide all");
         htlabel.append("span")
             .html(" | ");
         htlabel.append("a")
-            .attr("href", "javascript:onEyeInvert(\"" + id + "\");")
+            .attr("href", "javascript:vis.onEyeInvert(\"" + id + "\");")
             .html("Invert");
 
         arrList.forEach(function (d) {
             htlabel = rootEl.append("li")
                 .classed("eyeListItem", true)
-                .attr("label",d)
+                .attr("label", d)
                 .append("a")
-                .attr("href", "javascript:onEyeLabelClicked(\"" + d + "\");");
+                .attr("href", "javascript:vis.onEyeLabelClicked(\"" + d + "\");");
 
             let htlabeltable = htlabel.append("div").classed("grid-x align-middle", true);
 
@@ -309,7 +306,7 @@ function updateLabelEyes() {
     }
 }
 
-function onReportClicked(sametab) {
+export function onReportClicked(sametab) {
     //console.log("onReportClicked started");
 
     if (typeof Storage !== "undefined") {
@@ -330,14 +327,14 @@ function onReportClicked(sametab) {
                     window.location.href = "/reports/nodesquery?" + querystring;
                 }
                 else {
-                    window.open("/reports/nodesquery?" + querystring,'_blank');
+                    window.open("/reports/nodesquery?" + querystring, '_blank');
                 }
-                
+
             }
             else {
                 console.log("Nothing to export");
             }
-            
+
         }
         catch (err) {
             updateStatus("There was an error opening report view. Your result set may be too large");
@@ -349,7 +346,7 @@ function onReportClicked(sametab) {
     }
 }
 
-function onEyeShowAllClicked(element) {
+export function onEyeShowAllClicked(element) {
     //console.log("onEyeShowAllClicked: " + element);
     d3.selectAll("#" + element + " .eyeListItem")
         .each(function (d) {
@@ -360,7 +357,7 @@ function onEyeShowAllClicked(element) {
         });
 }
 
-function onEyeHideAllClicked(element) {
+export function onEyeHideAllClicked(element) {
     //console.log("onEyeHideAllClicked: " + element);
     d3.selectAll("#" + element + " .eyeListItem")
         .each(function () {
@@ -371,17 +368,17 @@ function onEyeHideAllClicked(element) {
         });
 }
 
-function onEyeInvert(element) {
+export function onEyeInvert(element) {
     let el = d3.selectAll("#" + element);
     let type = el.attr("classtype");
     let enabled = d3.selectAll(".enabled." + type);
     let disabled = d3.selectAll(".disabled." + type);
     disabled.classed("disabled", false).classed("enabled", true);
     enabled.classed("enabled", false).classed("disabled", true);
-        
+
 }
 
-function onEyeNodeDetailClicked(dbid) {
+export function onEyeNodeDetailClicked(dbid) {
     //console.log("onEyeNodeDetailClicked: " + dbid);
     let show = !d3.selectAll("#node_" + dbid).classed("enabled");
 
@@ -395,7 +392,7 @@ function onEyeNodeDetailClicked(dbid) {
 }
 
 //<a href="javascript:getNode(@node.DbId);">(+)</a><br />
-function onEyeLabelClicked(label) {
+export function onEyeLabelClicked(label) {
     //console.log("onEyeLabelClicked: " + label);
     let currenabled;
     if (graphnodelabels[label] !== undefined) {
@@ -434,7 +431,7 @@ function onSourceAddClicked(nodeid) {
     //updateSearchDetails(nodeid, 'source');
 }
 
-function updateSearchDetails(nodeid, elprefix) {
+export function updateSearchDetails(nodeid, elprefix) {
     //console.log("onSourceAddClicked: " + nodeid);
     var node = graphnodes.GetDatum(nodeid);
     //console.log(node);
@@ -446,7 +443,7 @@ function updateSearchDetails(nodeid, elprefix) {
     if (node.properties.hasOwnProperty('id')) {
         propname = 'id';
         propval = node.properties.id;
-    } else if(node.properties.hasOwnProperty('path')) {
+    } else if (node.properties.hasOwnProperty('path')) {
         propname = 'path';
         propval = node.properties.path;
     }
@@ -463,7 +460,7 @@ function onLayoutFinished() {
     d3.selectAll("#restartIcon").classed("spinner", false);
     d3.select("#progress").style("width", "100%");
     d3.selectAll("#restartLayoutBtn")
-        .attr('onclick', 'restartLayout()')
+        .attr('onclick', 'vis.restartLayout()')
         .attr('title', 'Refresh layout');
 }
 
@@ -501,7 +498,7 @@ function addSearchResults(results, callback) {
         getEdgesForNodes(nodeids, function (data) {
             //console.log("getEdgesForNodes complete");
             //console.log(data);
-            
+
             addResultSet(data);
             addSvgNodes(graphnodes.GetArray());
             addSvgEdges(graphedges.GetArray());
@@ -521,7 +518,7 @@ function addSearchResults(results, callback) {
     }
 
     //console.log("addSearchResults end");
-    
+
 }
 
 function addResultSet(json) {
@@ -567,7 +564,7 @@ function addResultSet(json) {
     //console.log("addResultSet end: " );
 }
 
-function onAddToView() {
+export function onAddToView() {
     let results = $('#searchResultData').val();
     //console.log(results);
     addSearchResults(JSON.parse(results));
@@ -602,8 +599,8 @@ function resetScale() {
 }
 
 function loadNodeData(newnodedata) {
-	//console.log('loadNodeData');
-	//console.log(newnodedata);
+    //console.log('loadNodeData');
+    //console.log(newnodedata);
     let rangeUpdated = false;
     let newcount = 0;
     let newtograph = [];
@@ -706,7 +703,7 @@ function addSvgNodes(nodes) {
     let enternodesg = enternodes.append("g")
         .attr("id", function (d) { return "node_" + d.db_id; })
         .attr("class", function (d) { return d.classes; })
-        .attr("cursor","pointer")
+        .attr("cursor", "pointer")
         .classed("nodes", true)
         .classed("enabled", true)
         .classed("selected", function (d) { return d.selected; })
@@ -715,10 +712,10 @@ function addSvgNodes(nodes) {
         .on("mouseout", onNodeMouseOut)
         .on("dblclick", onNodeDblClicked)
         .call(
-            drag().subject(this)
-            .on('start', onNodeDragStart)
-            .on('drag', onNodeDragged)
-            .on('end', onNodeDragFinished));
+            d3.drag().subject(this)
+                .on('start', onNodeDragStart)
+                .on('drag', onNodeDragged)
+                .on('end', onNodeDragFinished));
 
     setTimeout(function () {
         //node layout
@@ -797,8 +794,8 @@ function updateNodeSizes() {
 
 function addSvgEdges(edges) {
     //setup the edges
-	//console.log("addSvgEdges");
- //   console.log(edges);
+    //console.log("addSvgEdges");
+    //   console.log(edges);
 
     //add the bg
     setTimeout(function () {
@@ -833,7 +830,7 @@ function addSvgEdges(edges) {
             return combined;
         })
         .classed("edges", true)
-        .classed("enabled",true);
+        .classed("enabled", true);
 
     setTimeout(function () {
         enteredgesg.append("path")
@@ -1005,7 +1002,7 @@ function stopSelect() {
     //delay the re-register so any mouseup doesn't trigger a pageClick when it gets re-registered
     setTimeout(function () {
         resetDrawingEvents();
-    },50);
+    }, 50);
 }
 
 function onDrawAreaBoxClick() {
@@ -1038,7 +1035,7 @@ function onSelectMouseDown() {
             if (newMouseX !== oriMouseX && newMouseY !== oriMouseY) {
                 d3.selectAll(".nodes.enabled")
                     .each(function (d) {
-                        let elem = select("#node_" + d.db_id + "_icon").node().getBoundingClientRect();
+                        let elem = d3.select("#node_" + d.db_id + "_icon").node().getBoundingClientRect();
 
                         if (areaBoxEl.top < elem.top && areaBoxEl.bottom > elem.bottom && areaBoxEl.left < elem.left && areaBoxEl.right > elem.right) {
                             updateNodeSelection(d, true, false);
@@ -1085,7 +1082,7 @@ function stopCrop() {
     //delay the re-register so any mouseup doesn't trigger a pageClick when it gets re-registered
     setTimeout(function () {
         resetDrawingEvents();
-    },50);
+    }, 50);
 }
 
 function onCropMouseDown() {
@@ -1093,7 +1090,7 @@ function onCropMouseDown() {
     if (areaBox !== undefined) { areaBox.remove(); }
 
     areaBox = drawingsvg.append("rect")
-        .attr("id","areaBox")
+        .attr("id", "areaBox")
         .attr("class", "cropBox");
 
     var oriMouseX = d3.mouse(this)[0];
@@ -1114,7 +1111,7 @@ function onCropMouseDown() {
             if (newMouseX !== oriMouseX && newMouseY !== oriMouseY) {
                 let box = drawingPane.node().getBoundingClientRect();
                 let areaBoxEl = areaBox.node().getBBox();
-                let currentk = zoomTransform(drawingsvg.node()).k;
+                let currentk = d3.zoomTransform(drawingsvg.node()).k;
                 let k = Math.min(box.width / areaBoxEl.width, box.height / areaBoxEl.height);
                 let areaBoxElCenterX = areaBoxEl.x + areaBoxEl.width / 2;
                 let areaBoxElCenterY = areaBoxEl.y + areaBoxEl.height / 2;
@@ -1152,8 +1149,8 @@ function onZoom() {
     zoomLayer.attr("transform", d3.event.transform);
 }
 
-d3.selectAll("#centerBtn").attr('onclick', "updatePaneSize()");
-function updatePaneSize() {
+d3.selectAll("#centerBtn").attr('onclick', "vis.updatePaneSize()");
+export function updatePaneSize() {
     //console.log("updatePaneSize");
     var box = drawingPane.node().getBoundingClientRect();
     var svgbox = drawingsvg.node().getBBox();
@@ -1225,7 +1222,7 @@ Build the details card for the node
 */
 function populateDetails(d, callback) {
     //console.log("populateDetails");
-    apiGet("/visualizer/details/" + d.db_id, "html", function (data) {
+    webcrap.data.apiGet("/visualizer/details/" + d.db_id, "html", function (data) {
         //console.log("populateDetails callback");
         d.detailsHTML = data;
         callback();
@@ -1322,7 +1319,7 @@ function onNodeDragStart(d) {
 function onNodeDragFinished(d) {
     //console.log("onNodeDragFinished");
     d3.event.sourceEvent.stopPropagation();
-    
+
     if (playMode === true && d.dragged === true) {
         restartLayout();
     }
@@ -1339,7 +1336,7 @@ function updateNodeLocations(nodes, animate) {
     //console.log("updateLocations");
     //console.log(nodes);
     let duration = 750;
-    
+
     if (animate === true) {
         let nodecount = nodes.size() - 1;
         nodes = nodes
@@ -1383,13 +1380,13 @@ function updateLocationsEdges() {
     let edgebgwidth = 13;
     alledges.each(function (d) {
         //console.log(d);
-       let diagLine = new Slope(d.source.cx, d.source.cy, d.target.cx, d.target.cy);
+        let diagLine = new Slope(d.source.cx, d.source.cy, d.target.cx, d.target.cy);
 
         //move and rotate the edge line to the right spot
-       let edge = d3.select(this).attr("transform", function () {
-                return "rotate(" + diagLine.deg + " " + diagLine.x1 + " " + diagLine.y1 + ") " +
-                    "translate(" + diagLine.x1 + " " + diagLine.y1 + ")";
-            });
+        let edge = d3.select(this).attr("transform", function () {
+            return "rotate(" + diagLine.deg + " " + diagLine.x1 + " " + diagLine.y1 + ") " +
+                "translate(" + diagLine.x1 + " " + diagLine.y1 + ")";
+        });
 
         //do the bg as well
         graphbglayer.select("#edgebg_" + d.db_id)
@@ -1417,7 +1414,7 @@ function updateLocationsEdges() {
             .attr("d", function (d) {
                 let lineend = Math.max(diagLine.length - d.target.radius - 8, 0);
                 let linepoint = Math.max(lineend + 5, lineend);
-                linestart = Math.min(d.source.radius + 5, lineend);
+                let linestart = Math.min(d.source.radius + 5, lineend);
 
                 let path = "M " + linestart + " -0.5 " +
                     "L " + lineend + " -0.5 " +
@@ -1493,24 +1490,24 @@ function search() {
         "&targetprop=" + tarprop +
         "&targetval=" + tarval;
 
-	/*console.log("sourcetype: " + sourcetype);
-	console.log("sourceprop: " + sourceprop);
-	console.log("sourceval: " + sourceval);
-	console.log("relationship: " + relationship);
-	console.log("tartype: " + tartype);
-	console.log("tarprop: " + tarprop);
-	console.log("tarval: " + tarval);
-	console.log(url);*/
-    apiGet("/visualizer/search" + urlquery, "html", function (data) {
+    /*console.log("sourcetype: " + sourcetype);
+    console.log("sourceprop: " + sourceprop);
+    console.log("sourceval: " + sourceval);
+    console.log("relationship: " + relationship);
+    console.log("tartype: " + tartype);
+    console.log("tarprop: " + tarprop);
+    console.log("tarval: " + tarval);
+    console.log(url);*/
+    webcrap.data.apiGet("/visualizer/search" + urlquery, "html", function (data) {
         document.getElementById("searchNotification").innerHTML = data;
         $('#searchNotification').foundation();
     });
 }
 
 
-function getNode(nodeid) {
+export function getNode(nodeid) {
     //console.log(nodeid);
-    apiGetJson("/api/graph/node/" + nodeid, function (data) {
+    webcrap.data.apiGetJson("/api/graph/node/" + nodeid, function (data) {
         //console.log(data);
         queue.QueueResults(data);
     });
@@ -1525,7 +1522,7 @@ function getNodes(nodeids) {
 
     var querystring = tempArr.join("&");
     //console.log(querystring);
-    apiGetJson("/api/graph/nodes?" + querystring, function (data) {
+    webcrap.data.apiGetJson("/api/graph/nodes?" + querystring, function (data) {
         //console.log(data);
         queue.QueueResults(data);
     });
@@ -1533,7 +1530,7 @@ function getNodes(nodeids) {
 
 function getRelated(nodeid) {
     //console.log("getRelated"+ nodeid);
-    apiGetJson("/api/graph/nodes/" + nodeid, function (data) {
+    webcrap.data.apiGetJson("/api/graph/nodes/" + nodeid, function (data) {
         //pendingResults = data;
         queue.QueueResults(data);
     });
@@ -1545,7 +1542,7 @@ function getEdgesForNodes(nodelist, callback) {
     //console.log(": json stringyfied");
     //console.log(nodeids);
 
-    apiPostJson('/api/graph/edges', postdata, callback);
+    webcrap.data.apiPostJson('/api/graph/edges', postdata, callback);
 }
 
 
@@ -1554,7 +1551,7 @@ function getDirectEdgesForNodeList(nodelist, callback) {
     //console.log(": json stringyfied");
     //console.log(nodeids);
 
-    apiPostJson('/api/graph/edges/direct', postdata, callback);
+    webcrap.data.apiPostJson('/api/graph/edges/direct', postdata, callback);
 }
 
 // Keystroke event handlers

@@ -7,13 +7,13 @@
         <div class="grid-x align-middle">
             <div class="cell small-3"><u><b>Details</b></u></div>
             <div class="cell small-1" title="Show/hide node">
-                <a href="javascript:onEyeNodeDetailClicked(@Model.Node.DbId);"><div id="eyeIcon_@Model.Node.DbId" class="cell far fa-eye small-2"></div></a>
+                <a href="javascript:vis.onEyeNodeDetailClicked(@Model.Node.DbId);"><div id="eyeIcon_@Model.Node.DbId" class="cell far fa-eye small-2"></div></a>
             </div>
             <div class="cell small-1" title="Set as search source">
-                <a href="javascript:onSourceAddClicked(@Model.Node.DbId);"><div id="sourceAddIcon_@Model.Node.DbId" class="cell far fa-hand-point-left small-2"></div></a>
+                <a href="javascript:vis.onSourceAddClicked(@Model.Node.DbId);"><div id="sourceAddIcon_@Model.Node.DbId" class="cell far fa-hand-point-left small-2"></div></a>
             </div>
             <div class="cell small-1" title="Set as search target">
-                <a href="javascript:onTargetAddClicked(@Model.Node.DbId);"><div id="targetAddIcon_@Model.Node.DbId" class="cell far fa-hand-point-right small-2"></div></a>
+                <a href="javascript:vis.onTargetAddClicked(@Model.Node.DbId);"><div id="targetAddIcon_@Model.Node.DbId" class="cell far fa-hand-point-right small-2"></div></a>
             </div>
         </div>
         <b>Name:</b> @Model.Node.Name<br />
@@ -48,7 +48,7 @@
                                 <a href="#" class="accordion-title">@key (@Model.LabeledNodeLists[key].Count)</a>
                                 <div class="accordion-content detaillist" data-tab-content>
                                     @foreach (BirdsNestNode node in Model.LabeledNodeLists[key])
-                                    {@node.Name <a href="javascript:getNode(@node.DbId);">(+)</a><br />}
+                                    {@node.Name <a href="javascript:vis.getNode(@node.DbId);">(+)</a><br />}
                                 </div>
                             </li>
                         }
@@ -58,7 +58,7 @@
                                 <a href="#" class="accordion-title">@key (@Model.LabelledEdgeNodes[key].Count)</a>
                                 <div class="accordion-content detaillist" data-tab-content>
                                     @foreach (BirdsNestNode node in Model.LabelledEdgeNodes[key])
-                                    {@node.Name <a href="javascript:getNode(@node.DbId);">(+)</a><br />}
+                                    {@node.Name <a href="javascript:vis.getNode(@node.DbId);">(+)</a><br />}
                                 </div>
                             </li>
                         }

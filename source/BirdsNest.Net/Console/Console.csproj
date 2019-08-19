@@ -40,6 +40,7 @@
     <Content Include="src\Shared\webcrap\datacrap.js.map" />
     <Content Include="src\Shared\webcrap\domcrap.js" />
     <Content Include="src\Shared\webcrap\domcrap.js.map" />
+    <Content Include="src\Visualizer\visualizer.js" />
   </ItemGroup>
 
   <ItemGroup>
