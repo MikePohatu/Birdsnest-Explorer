@@ -125,7 +125,7 @@ class AndOrCondition implements ICondition {
     get Type(): string {
         return this._type;
     }
-    set bar(value: string) {
+    set Type(value: string) {
         if (value === "AND" || value === "OR") {
             this._type = value;
         }
@@ -168,5 +168,31 @@ class StringCondition extends ConditionBase {
     }
 }
 
+function GetCondition(type: string): ICondition {
+    var cond: ICondition;
+    switch (type) {
+        case 'AND': {
+            cond = new AndOrCondition();
+            break;
+        }
+        case 'OR': {
+            cond = new AndOrCondition();
+            cond.Type = 'OR';
+            break;
+        }
+        case 'STRING': {
+            cond = new StringCondition();
+            break;
+        }
+        case 'MATH': {
+            cond = new MathCondition();
+            break;
+        }
+        default: {
+            break;
+        }
+    }
+    return cond;
+}
 
-export { StringCondition, MathCondition, ConditionBase, ICondition, AndOrCondition, Search, SearchNode, SearchEdge }
+export { StringCondition, MathCondition, ConditionBase, ICondition, AndOrCondition, Search, SearchNode, SearchEdge, GetCondition }

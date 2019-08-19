@@ -1,14 +1,16 @@
 ﻿import * as $ from 'jquery';
 import Foundation from 'foundation-sites';
-import { drawGraph } from './Visualizer/visualizer';
+import * as vis from './Visualizer/visualizer';
 import AdvancedSearchCoordinator from './Visualizer/script/AdvancedSearchCoordinator';
+import * as log from 'loglevel';
 
+log.setLevel('trace', false);
 
 
 $(document).foundation();
 
 var paramdata = $("viewdataLoadIDs").value;
-drawGraph('drawingpane', paramdata);
+vis.drawGraph('drawingpane', paramdata);
 
 new AdvancedSearchCoordinator("searchPathSvg", "searchConditionSvg");
 

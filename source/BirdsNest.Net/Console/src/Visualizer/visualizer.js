@@ -577,7 +577,6 @@ function onAddToView() {
 
 
 
-
 var currMaxScope = 20;
 var currMinScope = 1;
 function resetScale() {

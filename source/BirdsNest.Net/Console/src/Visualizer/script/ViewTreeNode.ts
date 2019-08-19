@@ -39,6 +39,8 @@ export default class ViewTreeNode<T> {
                 var item = childDataList[i];
                 var treenode = me.AddChildItem(item);
                 treenode.Index = i;
+                treenode.Build();
+
             }
         }
     }
@@ -48,11 +50,36 @@ export default class ViewTreeNode<T> {
         this.Build();
     }
 
-    AddChildItem(item) {
+    //traverse up the tree and rebuild from the root of tree
+    BuildFromRoot() {
+        if (this.Parent === null) {
+            this.Rebuild();
+        }
+        else {
+            this.Parent.BuildFromRoot();
+        }
+    }
+
+    AddChildItem(item: T) {
         var child = new ViewTreeNode(item, this.ChildProperty, this);
+        child.Depth = this.Depth + 1;
         if (this.Children === null) { this.Children = []; }
         this.Children.push(child);
-        child.Build();
+        return child;
+    }
+
+    AddChild(child: ViewTreeNode<T>) {
+        if (child.Item === null) {
+            console.error("Cant add TreeNode with empty Item");
+            return;
+        }
+
+        child.Depth = this.Depth + 1;
+        if (this.Children === null) { this.Children = []; }
+        if (this.Item[this.ChildProperty] === null) { this.Item[this.ChildProperty] = []; }
+
+        this.Children.push(child);
+        this.Item[this.ChildProperty].push(child.Item);
         return child;
     }
 
