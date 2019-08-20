@@ -84,21 +84,20 @@ webcrap.data.apiGetJson("/visualizer/subtypeproperties", function (data) {
     //console.log(subtypeproperties);
 });
 
-
-
-
 $("#menuShowHideButton").click(menuShowHide);
 function menuShowHide() {
     var icon = $("#menuIcon");
     if (icon.hasClass("fa-angle-up")) {
         icon.removeClass("fa-angle-up");
         icon.addClass("fa-angle-down");
+        $("#querybar").slideUp();
     }
     else {
         icon.removeClass("fa-angle-down");
         icon.addClass("fa-angle-up");
+        $("#querybar").slideDown();
     }
-    $("#querybar").slideToggle();
+    
 }
 
 export function drawGraph(selectid, loaddata) {
@@ -137,7 +136,9 @@ export function drawGraph(selectid, loaddata) {
     if (loaddata !== undefined && loaddata.length > 0) {
         //console.log(loaddata);
         getNodes(loaddata);
-        menuShowHide();
+        setTimeout(function () {
+            menuShowHide();
+        }, 100);
     }
 
     //look for a stored resultset. if found, load it and clear it
@@ -147,7 +148,9 @@ export function drawGraph(selectid, loaddata) {
     //console.log(results);
     if (results !== null) {
         queue.QueueResults(results);
-        menuShowHide();
+        setTimeout(function () {
+            menuShowHide();
+        }, 100);
     }
 
 

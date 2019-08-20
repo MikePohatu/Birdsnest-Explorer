@@ -121,7 +121,7 @@ export default class AdvancedSearchCoordinator {
         log.debug("search post:");
         log.debug(postdata);
         this.ShowSearchSpinner();
-        webcrap.data.apiPostJson("AdvancedSearch", postdata, function (data) {
+        webcrap.data.apiPostJson("/visualizer/AdvancedSearch", postdata, function (data) {
             //log.debug(data);
             document.getElementById("searchNotification").innerHTML = data;
             $('#searchNotification').foundation();
