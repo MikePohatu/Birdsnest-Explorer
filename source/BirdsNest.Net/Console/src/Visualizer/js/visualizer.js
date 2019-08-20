@@ -152,9 +152,6 @@ export function drawGraph(selectid, loaddata) {
             menuShowHide();
         }, 100);
     }
-
-
-
 }
 
 //https://stackoverflow.com/questions/641857/javascript-window-resize-event
