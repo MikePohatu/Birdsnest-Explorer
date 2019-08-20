@@ -4,7 +4,7 @@ import Slope from './ts/Slope';
 import SimulationController from './ts/SimulationController';
 import Mappings from './ts/Mappings';
 import DatumStore from './ts/DatumStore';
-import * as log from './ts/loglevel';
+import * as log from 'loglevel';
 
 import $ from 'jquery';
 import 'jqueryui';
