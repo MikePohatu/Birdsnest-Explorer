@@ -394,3 +394,5 @@ venv.bak/
 /source/BirdsNest.Net/Console/src/Shared/webcrap/authcrap.js
 /source/BirdsNest.Net/Console/src/Visualizer/script/*.js
 /source/BirdsNest.Net/Console/src/Visualizer/script/*.map
+/source/BirdsNest.Net/Console/src/Visualizer/ts/*.map
+/source/BirdsNest.Net/Console/src/Visualizer/ts/*.js

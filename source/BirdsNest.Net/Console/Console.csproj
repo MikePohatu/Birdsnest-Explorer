@@ -26,11 +26,11 @@
 
   <ItemGroup>
     <None Remove="src\Shared\webcrap.ts" />
-    <None Remove="src\Visualizer\script\DataQueue.ts" />
-    <None Remove="src\Visualizer\script\DatumStore.ts" />
-    <None Remove="src\Visualizer\script\Mappings.ts" />
-    <None Remove="src\Visualizer\script\SimulationController.ts" />
-    <None Remove="src\Visualizer\script\Slope.ts" />
+    <None Remove="src\Visualizer\ts\DataQueue.ts" />
+    <None Remove="src\Visualizer\ts\DatumStore.ts" />
+    <None Remove="src\Visualizer\ts\Mappings.ts" />
+    <None Remove="src\Visualizer\ts\SimulationController.ts" />
+    <None Remove="src\Visualizer\ts\Slope.ts" />
   </ItemGroup>
 
   <ItemGroup>

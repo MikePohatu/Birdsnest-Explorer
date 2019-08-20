@@ -1,14 +1,14 @@
 
-import DataQueue from './script/DataQueue';
-import Slope from './script/Slope';
-import SimulationController from './script/SimulationController';
-import Mappings from './script/Mappings';
-import DatumStore from './script/DatumStore';
-import * as log from 'loglevel';
+import DataQueue from './ts/DataQueue';
+import Slope from './ts/Slope';
+import SimulationController from './ts/SimulationController';
+import Mappings from './ts/Mappings';
+import DatumStore from './ts/DatumStore';
+import * as log from './ts/loglevel';
 
 import $ from 'jquery';
 import 'jqueryui';
-import * as d3 from 'd3';
+import * as d3 from 'd3'; 
 import { webcrap } from '../Shared/webcrap/webcrap';
 
 
@@ -1280,7 +1280,7 @@ function onNodeMouseOut(d) {
 }
 
 function onNodeDragged(d) {
-    //console.log("onNodeDragged");
+    console.log("onNodeDragged");
     if (d3.event.dx === 0 && 0 === d3.event.dy) { return; }
     d3.event.sourceEvent.stopPropagation();
     d.dragged = true;

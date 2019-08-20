@@ -35,12 +35,8 @@ module.exports = {
             openAnalyzer: false
         })
     ],
-    externals: {
-        d3: 'd3',
-        jqueryui: 'jQuery'
-    },
     optimization: {
-        minimize: false // <---- disables uglify.
+        minimize: true // <---- disables uglify.
         // minimizer: [new UglifyJsPlugin()] if you want to customize it.
     }
 };

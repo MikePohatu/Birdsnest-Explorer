@@ -1,8 +1,9 @@
 ﻿//import d3 from 'd3';
-import { forceSimulation, forceCollide, forceLink, SimulationNodeDatum, SimulationLinkDatum } from 'd3-force';
-import { selectAll } from 'd3-selection';
+//import { d3.forceSimulation, d3.forceCollide, d3.forceLink, SimulationNodeDatum, SimulationLinkDatum } from 'd3-force';
+//import { d3.selectAll } from 'd3-selection';
+import * as d3 from 'd3';
 
-interface ISimNode extends SimulationNodeDatum {
+interface ISimNode extends d3.SimulationNodeDatum {
     size: number;
     db_id: string;
     y: number;
@@ -13,7 +14,7 @@ interface ISimNode extends SimulationNodeDatum {
     srck: number;
 }
 
-interface ISimLink<SimulationNodeDatum> extends SimulationLinkDatum<SimulationNodeDatum> {
+interface ISimLink<SimulationNodeDatum> extends d3.SimulationLinkDatum<SimulationNodeDatum> {
     db_id: string;
 }
 
@@ -39,10 +40,10 @@ export default class SimulationController {
         this.simRunning = false;
         
 
-        this.graphsimulation = forceSimulation();
+        this.graphsimulation = d3.forceSimulation();
         this.graphsimulation.stop();
         this.graphsimulation
-            .force('collide', forceCollide()
+            .force('collide', d3.forceCollide()
                 .strength(0.7)
                 .radius(function (d: ISimNode) { return d.size * 1.5; }))
             .on('end', function () { me.onSimulationFinished(); })
@@ -50,29 +51,29 @@ export default class SimulationController {
             .velocityDecay(velocityDecay)
             .alphaDecay(alphaDecay);
 
-        this.connectsimulation = forceSimulation();
+        this.connectsimulation = d3.forceSimulation();
         this.connectsimulation.stop();
         this.connectsimulation
-            .force("link", forceLink()
+            .force("link", d3.forceLink()
                 .id(function (d: ISimLink<ISimNode>) { return d.db_id; })
                 .distance(200)
                 .strength(0.05))
             .velocityDecay(velocityDecay)
             .alphaDecay(alphaDecay);
 
-        this.meshsimulation = forceSimulation();
+        this.meshsimulation = d3.forceSimulation();
         this.meshsimulation.stop();
         this.meshsimulation
-            .force("link", forceLink()
+            .force("link", d3.forceLink()
                 .id(function (d: ISimLink<ISimNode>) { return d.db_id; })
                 .distance(150))
             .velocityDecay(velocityDecay)
             .alphaDecay(alphaDecay);
 
-        this.treesimulation = forceSimulation();
+        this.treesimulation = d3.forceSimulation();
         this.treesimulation.stop();
         this.treesimulation
-            .force("link", forceLink()
+            .force("link", d3.forceLink()
                 .id(function (d: ISimLink<ISimNode>) { return d.db_id; })
                 .distance(150))
             .velocityDecay(velocityDecay)
@@ -86,7 +87,7 @@ export default class SimulationController {
         var k = this.graphsimulation.alpha();
         this.onPercentUpdated(100 - k * 100);
 
-        selectAll(this.EdgeTag).each(function (d: ISimLink<ISimNode>) {
+        d3.selectAll(this.EdgeTag).each(function (d: ISimLink<ISimNode>) {
             var src = d.source as ISimNode;
             var tar = d.target as ISimNode;
             if ((tar as ISimNode).y < src.y + src.size / 4) {
@@ -117,7 +118,7 @@ export default class SimulationController {
     RestartSimulation () {
         var me = this;
         //console.log("RestartSimulation: " + this.NodeTag);
-        selectAll(this.NodeTag)
+        d3.selectAll(this.NodeTag)
             .each(function (d: ISimNode) {
                 if (me.simRunning === false) {
                     //console.log("set startx to x: ");
@@ -149,7 +150,7 @@ export default class SimulationController {
 
             //reset the datum values to before they started. this should match because the
             //layout hasn't updated yet
-            selectAll(this.NodeTag)
+            d3.selectAll(this.NodeTag)
                 .each(function (d: ISimNode) {
                     //console.log("set x to startx: ");
                     d.x = d.startx;
