@@ -712,7 +712,7 @@ function addSvgNodes(nodes) {
         .on("mouseout", onNodeMouseOut)
         .on("dblclick", onNodeDblClicked)
         .call(
-            d3.drag().subject(this)
+            d3.drag()
                 .on('start', onNodeDragStart)
                 .on('drag', onNodeDragged)
                 .on('end', onNodeDragFinished));
