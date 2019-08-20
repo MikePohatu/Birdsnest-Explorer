@@ -6,6 +6,7 @@ const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPl
 module.exports = {
     entry: {
         visualizer: './src/visualizer-entry.js',
+        reports: './src/reports-entry.js',
         console: './src/console-entry.js'
     },
     output: {

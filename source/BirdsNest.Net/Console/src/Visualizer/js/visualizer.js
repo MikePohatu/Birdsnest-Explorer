@@ -1,15 +1,15 @@
 
-import DataQueue from './ts/DataQueue';
-import Slope from './ts/Slope';
-import SimulationController from './ts/SimulationController';
-import Mappings from './ts/Mappings';
-import DatumStore from './ts/DatumStore';
+import DataQueue from '../ts/DataQueue';
+import Slope from '../ts/Slope';
+import SimulationController from '../ts/SimulationController';
+import Mappings from '../ts/Mappings';
+import DatumStore from '../ts/DatumStore';
 import * as log from 'loglevel';
 
 import $ from 'jquery';
 import 'jqueryui';
 import * as d3 from 'd3'; 
-import { webcrap } from '../Shared/webcrap/webcrap';
+import { webcrap } from '../../Shared/webcrap/webcrap';
 
 
 var drawingPane;

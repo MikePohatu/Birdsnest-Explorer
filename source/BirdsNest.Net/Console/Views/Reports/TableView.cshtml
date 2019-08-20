@@ -17,18 +17,18 @@
                         <a href="#">Columns</a>
                         <ul class="vertical menu nested" id="columnstoggles"></ul>
                     </li>
-                    <li id="downloadli"><a  href="#" onclick="javascript:onDownloadClicked()">Download</a></li>
-                    <li id="visualizerli"><a href="#" onclick="javascript:onVisualizerClicked()">Open in Visualizer</a></li>
-                    <li><a href="#" data-open="querydialog" onclick="javascript:onShowQueryClicked()">Show query</a></li>
+                    <li id="downloadli"><a  href="#" onclick="javascript:tableview.onDownloadClicked()">Download</a></li>
+                    <li id="visualizerli"><a href="#" onclick="javascript:tableview.onVisualizerClicked()">Open in Visualizer</a></li>
+                    <li><a href="#" data-open="querydialog" onclick="javascript:tableview.onShowQueryClicked()">Show query</a></li>
                 </ul>
         </ul>
     </div>
     <div class="cell auto" id="status"></div>
     <div class="cell shrink" id="pages">
         <div class="grid-x grid-margin-x">
-            <div style="margin:5px;"><a href="#" onclick="javascript: onPageDownClicked()"><i class="fas fa-caret-left" ></i></a></div>
+            <div style="margin:5px;"><a href="#" onclick="javascript: tableview.onPageDownClicked()"><i class="fas fa-caret-left" ></i></a></div>
             <div  style="margin:5px;" class="text-center" id="pagemessage"></div>
-            <div style="margin:5px;"><a href="#" onclick="javascript: onPageUpClicked()"><i class="fas fa-caret-right"></i></a></div>
+            <div style="margin:5px;"><a href="#" onclick="javascript: tableview.onPageUpClicked()"><i class="fas fa-caret-right"></i></a></div>
         </div>
     </div>
 </div>
@@ -50,6 +50,6 @@
 
 
 @section Scripts {
-    <script defer src="/js/fontawesome/all.js" type="text/javascript"></script>
-    <script defer src="/reports/js/tableview.js" type="text/javascript"></script>
+    @*<script defer src="/js/fontawesome/all.js" type="text/javascript"></script>*@
+    <script defer src="/dist/reports-bundle.js" type="text/javascript"></script>
 }

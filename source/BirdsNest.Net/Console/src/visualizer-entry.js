@@ -2,7 +2,7 @@
 import 'foundation-sites';
 import AdvancedSearchCoordinator from './Visualizer/ts/AdvancedSearchCoordinator';
 import * as log from 'loglevel';
-import * as vis from './Visualizer/visualizer';
+import * as vis from './Visualizer/js/visualizer';
 import '@fortawesome/fontawesome-free/js/fontawesome';
 import '@fortawesome/fontawesome-free/js/solid';
 import '@fortawesome/fontawesome-free/js/regular';

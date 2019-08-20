@@ -171,7 +171,7 @@ function addTH(key) {
     columnstoggles.appendChild(li);
 }
 
-function onPageUpClicked() {
+export function onPageUpClicked() {
     clearStatus();
     if (pagenum < maxpagenum) {
         pagenum++;
@@ -180,7 +180,7 @@ function onPageUpClicked() {
     }
 }
 
-function onPageDownClicked() {
+export function onPageDownClicked() {
     clearStatus();
     if (pagenum > 1) {
         pagenum--;
@@ -221,7 +221,7 @@ function clearStatus() {
     document.getElementById("status").innerHTML = "";
 }
 
-function onVisualizerClicked() {
+export function onVisualizerClicked() {
     clearStatus();
     if (typeof (Storage) !== "undefined") {
         try {
@@ -239,11 +239,11 @@ function onVisualizerClicked() {
     }
 }
 
-function onShowQueryClicked() {
+export function onShowQueryClicked() {
     clearStatus();
 }
 
-function onDownloadClicked() {
+export function onDownloadClicked() {
     //console.log("onDownloadClicked");
     clearStatus();
     var text = "";
