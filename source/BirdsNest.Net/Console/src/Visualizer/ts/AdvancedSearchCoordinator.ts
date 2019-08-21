@@ -13,7 +13,8 @@ import {
     MoveNodeRight,
     MoveNodeLeft,
     AddNode,
-    RemoveNode
+    RemoveNode,
+    IsConditionValid
 } from "./Search";
 import ViewTreeNode from "./ViewTreeNode";
 
@@ -152,9 +153,13 @@ export default class AdvancedSearchCoordinator {
 
     RunSearch () {
         console.log("RunSearch started");
-        //console.log(this);
+        console.log(this);
 
-
+        if (this.ConditionRoot !== null && IsConditionValid(this.ConditionRoot.Item) === false) {
+            alert("You have conditions with incomplete data. This search is cannnot continue");
+            console.log("Invalid condition found. Search cancelled");
+            return;
+        }
         var postdata = JSON.stringify(this.SearchData);
         console.log("search post:");
         console.log(postdata);
@@ -189,12 +194,16 @@ export default class AdvancedSearchCoordinator {
             alert("The search is empty. There is nothing to share.");
         }
         else {
+            if (this.ConditionRoot !== null && IsConditionValid(this.ConditionRoot.Item) === false) {
+                var conf = confirm("You have conditions with incomplete data. This search is not valid. Do you with to continue?");
+                if (!conf) { return;}
+            }
             var urlBase = [location.protocol, '//', location.host, location.pathname].join('');
             var encodedData = webcrap.misc.encodeUrlB64(JSON.stringify(this.SearchData));
             console.log(urlBase);
             console.log(encodedData);
             var url = urlBase + "?sharedsearch=" + encodedData;
-            this.ShowMessage("Copy and paste this url:","<a href='" + url + "' >" + url.substring(0,49) + ".....</a>");
+            this.ShowMessage("Copy and paste this url:","<a href='" + url + "' >" + url + "</a>");
         }
     }
 

@@ -1,4 +1,5 @@
-﻿
+﻿import { webcrap } from "../../Shared/webcrap/webcrap";
+
 //pojo to hold the search data
 class Search {
     Condition: ICondition;
@@ -110,6 +111,23 @@ interface ICondition {
     Type: string;
 }
 
+function IsConditionValid(condition: ICondition): boolean {
+    if (condition instanceof AndOrCondition) {
+
+        var i;
+        for (i = 0; i < condition.Conditions.length; i++) {
+            if (IsConditionValid(condition.Conditions[i]) === false) { return false; }
+        }
+    }
+    else if (condition instanceof ConditionBase) {
+        if (webcrap.misc.isNullOrWhitespace(condition.Type)) { return false; }
+        if (webcrap.misc.isNullOrWhitespace(condition.Name)) { return false; }
+        if (webcrap.misc.isNullOrWhitespace(condition.Property)) { return false; }
+        if (webcrap.misc.isNullOrWhitespace(condition.Operator)) { return false; }
+        return true;
+    }
+}
+
 class AndOrCondition implements ICondition {
     Type: string = "ANDOR";
     Conditions: ICondition[] = [];
@@ -196,5 +214,6 @@ export {
     AddNode,
     RemoveNode,
     MoveNodeRight,
-    MoveNodeLeft
+    MoveNodeLeft,
+    IsConditionValid
 }

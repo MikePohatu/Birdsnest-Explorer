@@ -831,13 +831,21 @@ namespace Console.neo4jProxy
         private List<string> ParseStringListResults(IStatementResult dbresult)
         {
             List<string> results = new List<string>();
-            foreach (IRecord record in dbresult)
+            try
             {
-                foreach (string key in record.Keys)
+                foreach (IRecord record in dbresult)
                 {
-                    results.Add(record[key].ToString());
+                    foreach (string key in record.Keys)
+                    {
+                        results.Add(record[key].ToString());
+                    }
                 }
             }
+            catch (Exception e)
+            {
+                this._logger.LogError("Error parsing list results: " + e.Message);
+            }
+
             return results;
         }
 
@@ -845,13 +853,21 @@ namespace Console.neo4jProxy
         {
             ResultSet results = new ResultSet();
 
-            foreach (IRecord record in neoresult)
+            try
             {
-                foreach (string key in record.Keys)
+                foreach (IRecord record in neoresult)
                 {
-                    AddToResultSet(record[key], results);
+                    foreach (string key in record.Keys)
+                    {
+                        AddToResultSet(record[key], results);
+                    }
                 }
             }
+            catch(Exception e)
+            {
+                this._logger.LogError("Error parsing results: " + e.Message);
+            }
+            
 
             return results;
         }
