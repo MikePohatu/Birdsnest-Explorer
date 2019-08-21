@@ -1,7 +1,6 @@
 ﻿//ViewTreeNode is a wrapper around raw tree data. This allows view frameworks such as D3
 //to make the changes it requires to the ViewTreeNode, leaving the raw data intact so it
 //can be posted or past to a backend unaltered. 
-import { ICondition, AndOrCondition } from "./Search"
 
 export default class ViewTreeNode<T> {
     Item: T;
