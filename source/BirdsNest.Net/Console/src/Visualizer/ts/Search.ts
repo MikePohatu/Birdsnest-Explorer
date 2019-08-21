@@ -1,104 +1,97 @@
 ﻿
-
+//pojo to hold the search data
 class Search {
     Condition: ICondition;
     Nodes = [];
     Edges = [];
     AddedNodes = 0;
-
-
-    AddNode() {
-        //console.log("AddNode start:");
-        //console.log(this);
-        var me = this;
-        me.AddedNodes++;
-        var newNode = new SearchNode;
-        this.Nodes.push(newNode);
-        newNode.Name = "node" + me.AddedNodes;
-
-        if (me.Nodes.length > 1) {
-            var newEdge = new SearchEdge;
-            this.Edges.push(newEdge);
-            newEdge.Name = "hop" + (me.AddedNodes - 1);
-        }
-
-        return newNode;
-        //console.log("AddNode end:");
-        //console.log(me);
-    }
-
-
-    //remove the node and return the index of the node that was removed
-    RemoveNode(node) {
-        var me = this;
-        var foundindex = -1;
-        var i;
-        for (i = 0; i < me.Nodes.length; i++) {
-            if (foundindex !== -1) { //if found already, start shifting nodes back on in the array
-                me.Nodes[i - 1] = me.Nodes[i];
-                if (i < me.Edges.length) { me.Edges[i - 1] = me.Edges[i]; }
-            }
-            else {
-                if (me.Nodes[i] === node) {
-                    foundindex = i;
-                    if (i === 0) {
-                        me.Nodes.shift; //remove the first node
-                        if (me.Edges.length > 0) { me.Edges.shift; } //if there is an edge, remove that too
-
-                        //we're done
-                        return foundindex;
-                    }
-                }
-            }
-        }
-
-        if (foundindex !== -1) {
-            // pop off the end if the node wasn't first i.e hasn't been removed with shift
-            me.Nodes.pop;
-            me.Edges.pop;
-        }
-
-        return foundindex;
-    }
-
-    MoveNodeRight(node) {
-        var me = this;
-        var i;
-        for (i = 0; i < me.Nodes.length; i++) {
-            if (me.Nodes[i] === node) {
-                if (i === me.Nodes.length - 1) {
-                    return false; //can't move any further
-                }
-                else {
-                    me.Nodes[i] = me.Nodes[i + 1];
-                    me.Nodes[i + 1] = node;
-                    return true;
-                }
-            }
-        }
-        return false;
-    }
-
-    MoveNodeLeft(node) {
-        var me = this;
-        var i;
-
-        for (i = 0; i < me.Nodes.length; i++) {
-            if (me.Nodes[i] === node) {
-                if (i === 0) {
-                    return false; //can't move any further
-                }
-                else {
-                    me.Nodes[i] = me.Nodes[i - 1];
-                    me.Nodes[i - 1] = node;
-                    return true;
-                }
-            }
-        }
-        return false;
-    }
 }
 
+function AddNode(search: Search) {
+    //console.log("AddNode start:");
+    //console.log(this);
+    search.AddedNodes++;
+    var newNode = new SearchNode;
+    search.Nodes.push(newNode);
+    newNode.Name = "node" + search.AddedNodes;
+
+    if (search.Nodes.length > 1) {
+        var newEdge = new SearchEdge;
+        search.Edges.push(newEdge);
+        newEdge.Name = "hop" + (search.AddedNodes - 1);
+    }
+
+    return newNode;
+    //console.log("AddNode end:");
+    //console.log(me);
+}
+
+//remove the node and return the index of the node that was removed
+function RemoveNode(node: SearchNode, search: Search) {
+    var foundindex = -1;
+    var i;
+    for (i = 0; i < search.Nodes.length; i++) {
+        if (foundindex !== -1) { //if found already, start shifting nodes back on in the array
+            search.Nodes[i - 1] = search.Nodes[i];
+            if (i < search.Edges.length) { search.Edges[i - 1] = search.Edges[i]; }
+        }
+        else {
+            if (search.Nodes[i] === node) {
+                foundindex = i;
+                if (i === 0) {
+                    search.Nodes.shift; //remove the first node
+                    if (search.Edges.length > 0) { search.Edges.shift; } //if there is an edge, remove that too
+
+                    //we're done
+                    return foundindex;
+                }
+            }
+        }
+    }
+
+    if (foundindex !== -1) {
+        // pop off the end if the node wasn't first i.e hasn't been removed with shift
+        search.Nodes.pop;
+        search.Edges.pop;
+    }
+
+    return foundindex;
+}
+
+function MoveNodeRight(node: SearchNode, search: Search) {
+    var i;
+    for (i = 0; i < search.Nodes.length; i++) {
+        if (search.Nodes[i] === node) {
+            if (i === search.Nodes.length - 1) {
+                return false; //can't move any further
+            }
+            else {
+                search.Nodes[i] = search.Nodes[i + 1];
+                search.Nodes[i + 1] = node;
+                return true;
+            }
+        }
+    }
+    return false;
+}
+
+function MoveNodeLeft(node: SearchNode, search: Search) {
+    var i;
+
+    for (i = 0; i < search.Nodes.length; i++) {
+        if (search.Nodes[i] === node) {
+            if (i === 0) {
+                return false; //can't move any further
+            }
+            else {
+                search.Nodes[i] = search.Nodes[i - 1];
+                search.Nodes[i - 1] = node;
+                return true;
+            }
+        }
+    }
+    return false;
+}
 
 class SearchNode {
     Name: string = "";
@@ -118,22 +111,16 @@ interface ICondition {
 }
 
 class AndOrCondition implements ICondition {
-    Name: "";
+    Type: string = "ANDOR";
     Conditions: ICondition[] = [];
+}
 
-    private _type: string = "AND";
-    get Type(): string {
-        return this._type;
-    }
-    set Type(value: string) {
-        if (value === "AND" || value === "OR") {
-            this._type = value;
-        }
-        else {
-            console.log("Cannot set type of AND/OR condition to " + value)
-        }
-    }
+class AndCondition extends AndOrCondition {
+    Type: string = "AND";
+}
 
+class OrCondition extends AndOrCondition {
+    Type: string = "OR";
 }
 
 class ConditionBase implements ICondition {
@@ -172,12 +159,11 @@ function GetCondition(type: string): ICondition {
     var cond: ICondition;
     switch (type) {
         case 'AND': {
-            cond = new AndOrCondition();
+            cond = new AndCondition();
             break;
         }
         case 'OR': {
-            cond = new AndOrCondition();
-            cond.Type = 'OR';
+            cond = new OrCondition();
             break;
         }
         case 'STRING': {
@@ -195,4 +181,20 @@ function GetCondition(type: string): ICondition {
     return cond;
 }
 
-export { StringCondition, MathCondition, ConditionBase, ICondition, AndOrCondition, Search, SearchNode, SearchEdge, GetCondition }
+export {
+    StringCondition,
+    MathCondition,
+    ConditionBase,
+    ICondition,
+    OrCondition,
+    AndCondition,
+    AndOrCondition,
+    Search,
+    SearchNode,
+    SearchEdge,
+    GetCondition,
+    AddNode,
+    RemoveNode,
+    MoveNodeRight,
+    MoveNodeLeft
+}

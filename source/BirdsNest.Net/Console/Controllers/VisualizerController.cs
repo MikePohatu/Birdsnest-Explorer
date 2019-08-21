@@ -25,10 +25,11 @@ namespace Console.Controllers
             this._plugingmanager = plugman;
         }
 
-        // GET visualizer/id=1&id=2&usestored=false
-        public IActionResult Index([FromQuery(Name = "id")]List<long> ids)
+        // GET visualizer/id=1&id=2&usestored=false&sharedsearch=b64_encoded_json
+        public IActionResult Index([FromQuery(Name = "id")]List<long> ids, [FromQuery]string sharedsearch)
         {
             ViewData["LoadIDs"] = ids;
+            ViewData["SharedSearchString"] = sharedsearch;
             return View();
         }
 
@@ -37,7 +38,6 @@ namespace Console.Controllers
         {
             return View("ASearchTest");
         }
-
 
         // GET visualizer/details
         public IActionResult Details(long id)

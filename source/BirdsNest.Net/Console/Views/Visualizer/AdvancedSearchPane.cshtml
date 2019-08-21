@@ -5,6 +5,9 @@
         <span id="advSearchClearIcon" class="cell viewcontrol has-tip" title="Clear search">
             <i class="fas fa-eraser"></i>
         </span>
+        <span id="advSearchShareIcon" class="cell viewcontrol has-tip" title="Share search">
+            <i class="fas fa-share-alt"></i>
+        </span>
     </div>
 
     <div id="searchNodeDetails" class="reveal" data-reveal data-animation-in="hinge-in-from-top fast" data-overlay="false">
@@ -225,9 +228,28 @@
             <div>
                 <span id="alertMessage"></span>
             </div>
-            <button class="button" data-close aria-label="Close alert dialog" type="button">
-                <span aria-hidden="true">OK</span>
-            </button>
+            <div id="alertMessageLink"></div>
+            <div>
+                <button class="button" data-close aria-label="Close alert dialog" type="button">
+                    <span aria-hidden="true">OK</span>
+                </button>
+            </div>
+
+        </div>
+    </div>
+
+    <div id="searchMessage" class="reveal" data-reveal data-animation-in="hinge-in-from-top fast" data-overlay="false">
+        <div class="grid-x align-middle">
+            <div class="cell">
+                <span id="message"></span>
+            </div>
+            <div id="messageLink" class="cell"></div>
+            <div class="cell">
+                <button class="button" data-close aria-label="Close alert dialog" type="button">
+                    <span aria-hidden="true">OK</span>
+                </button>
+            </div>
+
         </div>
     </div>
 </div>

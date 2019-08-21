@@ -82,6 +82,7 @@
 </div>
 
 <input type="text" hidden="hidden" id=viewdataLoadIDs value="@Html.Raw(JsonConvert.SerializeObject(ViewData["LoadIDs"]))">
+<input type="text" hidden="hidden" id=sharedSearchString value="@Html.Raw(ViewData["SharedSearchString"])">
 
 @section Scripts
     {

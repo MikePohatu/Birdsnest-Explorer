@@ -2,7 +2,19 @@
 import 'foundation-sites';
 import * as d3 from 'd3';
 import { webcrap } from "../../Shared/webcrap/webcrap";
-import { Search, ICondition, ConditionBase, StringCondition, AndOrCondition, SearchNode, SearchEdge, GetCondition } from "./Search";
+import {
+    Search,
+    ICondition,
+    ConditionBase,
+    AndOrCondition,
+    SearchNode,
+    SearchEdge,
+    GetCondition,
+    MoveNodeRight,
+    MoveNodeLeft,
+    AddNode,
+    RemoveNode
+} from "./Search";
 import ViewTreeNode from "./ViewTreeNode";
 import * as log from 'loglevel';
 
@@ -49,6 +61,26 @@ export default class AdvancedSearchCoordinator {
             });
         }
 
+        var sharedsearchstring = (document.getElementById("sharedSearchString") as HTMLInputElement).value;
+        log.debug("sharedsearchstring: " + sharedsearchstring);
+        if (webcrap.misc.isNullOrWhitespace(sharedsearchstring) === false) {
+            try {
+
+                this.SearchData = JSON.parse(webcrap.misc.decodeUrlB64(sharedsearchstring));
+                if (this.SearchData.Condition) {
+                    this.ConditionRoot = new ViewTreeNode(this.SearchData.Condition, 'Conditions', null);
+                    this.ConditionRoot.Build();
+                }
+                log.debug("this.SearchData");
+                log.debug(this.SearchData);
+            }
+            catch {
+                console.error("Unable to parse shared search string");
+            }
+            this.UpdateSearch();
+        }
+        
+
         //select("#nodeType").on("change", this.UpdateNodeProps);
         d3.select("#searchNodeSaveBtn").on("click", function () {
             me.onSearchNodeSaveBtnClicked();
@@ -66,7 +98,7 @@ export default class AdvancedSearchCoordinator {
             me.RunSearch();
         });
         d3.select("#pathAddIcon").on("click", function () {
-            me.SearchData.AddNode();
+            AddNode(me.SearchData);
             me.UpdateNodes();
             me.UpdateEdges();
         });
@@ -75,6 +107,9 @@ export default class AdvancedSearchCoordinator {
         });
         d3.select("#advSearchClearIcon").on("click", function () {
             me.Clear();
+        });
+        d3.select("#advSearchShareIcon").on("click", function () {
+            me.Share();
         });
         d3.select("#hopsSwitch").on("change", function () {
             me.onHopsSwitchChanged();
@@ -110,7 +145,11 @@ export default class AdvancedSearchCoordinator {
         });
     }
 
-
+    UpdateSearch() {
+        this.UpdateNodes();
+        this.UpdateEdges();
+        this.UpdateConditions();
+    }
 
     RunSearch () {
         log.trace("RunSearch started");
@@ -142,7 +181,28 @@ export default class AdvancedSearchCoordinator {
             viewel.selectAll("*").remove();
             this.SearchData = new Search();
         }
+    }
 
+    Share() {
+        log.trace("Share started");
+        //log.debug(this);
+        if (this.SearchData.Nodes === null || this.SearchData.Nodes.length === 0) {
+            alert("The search is empty. There is nothing to share.");
+        }
+        else {
+            var urlBase = [location.protocol, '//', location.host, location.pathname].join('');
+            var encodedData = webcrap.misc.encodeUrlB64(JSON.stringify(this.SearchData));
+            log.debug(urlBase);
+            log.debug(encodedData);
+            var url = urlBase + "?sharedsearch=" + encodedData;
+            this.ShowMessage("Copy and paste this url:","<a href='" + url + "' >" + url.substring(0,49) + ".....</a>");
+        }
+    }
+
+    ShowMessage(message: string, link?: string) {
+        document.getElementById('message').innerHTML = message;
+        document.getElementById('messageLink').innerHTML = link;
+        $('#searchMessage').foundation('open');
     }
 
     UpdateNodes() {
@@ -156,23 +216,14 @@ export default class AdvancedSearchCoordinator {
             .data(this.SearchData.Nodes, function (d: SearchNode) { return d.Name; })
             .enter()
             .append("g")
-            .attr("id", function (d: SearchNode) { return "searchnode_" + d.Name; })
-            .classed("searchnode", true)
+            .classed("searchnode",true)
+            //.attr("id", function (d: SearchNode) { return "searchnode_" + d.Name; })
             .attr("width", this.Radius)
             .attr("height", this.Radius)
             .attr("data-open", "searchNodeDetails")
             .on("click", function () {
                 me.onSearchNodeClicked(this);
             });
-
-        viewel.selectAll(".searchnode")
-            .data(this.SearchData.Nodes, function (d: SearchNode) { return d.Name; })
-            .attr("transform", function () {
-                currslot++;
-                return "translate(" + (me.XSpacing * currslot - me.XSpacing * 0.5) + "," + me.YSpacing + ")";
-            })
-            .exit()
-            .remove();
 
         newnodeg.append("circle")
             .attr("id", function (d: SearchNode) { return "searchnodebg_" + d.Name; })
@@ -183,6 +234,23 @@ export default class AdvancedSearchCoordinator {
             .text(function (d: SearchNode) { return d.Name; })
             .attr("text-anchor", "middle")
             .attr("dominant-baseline", "central");
+
+        viewel.selectAll(".searchnode")
+            .data(this.SearchData.Nodes, function (d: SearchNode) { return d.Name; })
+            .exit()
+            .remove();
+
+        viewel.selectAll(".searchnode")
+            .data(this.SearchData.Nodes, function (d: SearchNode) { return d.Name; })
+            .attr("transform", function () {
+                currslot++;
+                return "translate(" + (me.XSpacing * currslot - me.XSpacing * 0.5) + "," + me.YSpacing + ")";
+            })
+            .attr("id", function (d: SearchNode) { return "searchnode_" + d.Name; })
+            .attr("class", function (d: SearchNode) { return d.Label; })
+            .classed("searchnode", true)
+            .select("text")
+            .text(function (d: SearchNode) { return d.Name; });
         //.attr("transform", function (d) { return "translate(0," + (this.Radius + 10) + ")"; });
     }
 
@@ -373,21 +441,16 @@ export default class AdvancedSearchCoordinator {
         node.Name = (document.getElementById("nodeIdentifier") as HTMLInputElement).value;
         node.Label = (document.getElementById("nodeType") as HTMLSelectElement).value;
         //log.debug(node);
-
-        nodeEl
-            .attr("id", "searchnode_" + node.Name)
-            .classed(node.Label, true);
-        nodeEl.select("text")
-            .text(node.Name);
+        this.UpdateNodes();
     }
 
     onSearchNodeDelBtnClicked (callingitem) {
         //log.debug("onSearchNodeDelBtnClicked started: " + callingitem);
         //log.debug(this);
 
-        var nodedatum = d3.select("#searchNodeDetails").datum();
+        var nodedatum = d3.select("#searchNodeDetails").datum() as SearchNode;
         //log.debug(nodedatum);
-        this.SearchData.RemoveNode(nodedatum);
+        RemoveNode(nodedatum, this.SearchData);
 
         this.UpdateNodes();
         this.UpdateEdges();
@@ -525,45 +588,17 @@ export default class AdvancedSearchCoordinator {
         });
     }
 
-    AddConditionRoot () {
-        //log.debug("AddConditionRoot started");
-        //d3.select("#whereAddIcon").classed("hidden", true);
-
-        var cond1 = new StringCondition();
-        var cond2 = new StringCondition();
-        var cond3 = new AndOrCondition();
-        var cond4 = new StringCondition();
-        var cond5 = new StringCondition();
-
-        var andcond = new AndOrCondition();
-
-        this.SearchData.Condition = andcond;
-        this.ConditionRoot = new ViewTreeNode(andcond, "Conditions", null);
-        andcond.Conditions.push(cond1);
-        andcond.Conditions.push(cond2);
-        //andcond.Conditions.push(cond4);
-        andcond.Conditions.push(cond3);
-        cond3.Conditions.push(cond4);
-        cond3.Conditions.push(cond5);
-        this.ConditionRoot.Build();
-
-        //this.ConditionRoot.AddChildItem(cond1);
-        //this.ConditionRoot.AddChildItem(cond2);
-
-        //this.ConditionD3Root = d3.hierarchy(this.ConditionRoot, function (d: ViewTreeNode) { return d.Children; });
-        //log.debug(this.ConditionD3Root);
-        this.UpdateConditions();
-    }
-
-    NewCondition () {
-        return new StringCondition();
-    }
-
     UpdateConditions () {
         log.debug("UpdateConditions start:" + this.ConditionElementID);
         //log.debug(this);
         //log.debug(this.SearchData.Edges);
 
+        var viewel = d3.select("#" + this.ConditionElementID);
+
+        if (this.ConditionRoot === null) {
+            viewel.selectAll(".searchcondition").remove();
+            return;
+        }
 
         var d3root = d3.hierarchy(this.ConditionRoot, function (d: ViewTreeNode<ICondition>) { return d.Children; });
         if (d3root === null) { return; }
@@ -581,7 +616,7 @@ export default class AdvancedSearchCoordinator {
         var pluswidth = 25;
         var editwidth = 25;
 
-        var viewel = d3.select("#" + this.ConditionElementID);
+        
         log.debug('nodes:');
         log.debug(nodes);
         var enter = viewel.selectAll(".searchcondition")
