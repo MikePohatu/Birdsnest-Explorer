@@ -29,6 +29,8 @@ function AddNode(search: Search) {
 
 //remove the node and return the index of the node that was removed
 function RemoveNode(node: SearchNode, search: Search) {
+    console.log("RemoveNode started");
+    console.log(node);
     var foundindex = -1;
     var i;
     for (i = 0; i < search.Nodes.length; i++) {
@@ -38,10 +40,11 @@ function RemoveNode(node: SearchNode, search: Search) {
         }
         else {
             if (search.Nodes[i] === node) {
+                console.log("found node");
                 foundindex = i;
                 if (i === 0) {
-                    search.Nodes.shift; //remove the first node
-                    if (search.Edges.length > 0) { search.Edges.shift; } //if there is an edge, remove that too
+                    search.Nodes.shift(); //remove the first node
+                    if (search.Edges.length > 0) { search.Edges.shift(); } //if there is an edge, remove that too
 
                     //we're done
                     return foundindex;
@@ -51,9 +54,10 @@ function RemoveNode(node: SearchNode, search: Search) {
     }
 
     if (foundindex !== -1) {
+        console.log("popping node");
         // pop off the end if the node wasn't first i.e hasn't been removed with shift
-        search.Nodes.pop;
-        search.Edges.pop;
+        search.Nodes.pop();
+        search.Edges.pop();
     }
 
     return foundindex;

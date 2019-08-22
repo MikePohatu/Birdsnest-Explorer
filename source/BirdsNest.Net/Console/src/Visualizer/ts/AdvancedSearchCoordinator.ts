@@ -347,42 +347,21 @@ export default class AdvancedSearchCoordinator {
     }
 
     showNodeControls(searchnode: SearchNode) {
-        
-
-    }
-
-    showConditionControls(treenode: ViewTreeNode<ICondition>) {
-
-    }
-
-    onSearchNodeClicked(callingEl: SVGElement) {
-        console.log("onSearchNodeClicked started");
-        //console.log(this);
-
-        //update the datum on the callingEl
-        var datum = this.UpdateItemDatum("searchNodeDetails", callingEl) as SearchNode;
-        (document.getElementById("nodeType") as HTMLSelectElement).value = datum.Label;
-        (document.getElementById("nodeIdentifier") as HTMLInputElement).value = datum.Name;
-
-        console.log(datum);
-
-        //now remove and recreate the controls
-        d3.selectAll("#nodecontrols").remove();
-
         //var nodetransform = callingEl.getAttribute("transform");
         var controlIconDimension = 25;
         var controlsx = 0;
         var controlsy = 0;
+        var me = this;
 
         var controls = d3.select("#" + this.PathElementID)
             .append("g")
             .attr("id", "nodecontrols")
-            .attr("transform", "translate(" + (datum.x - controlIconDimension * 2) + "," + (datum.y - this.Diameter - controlIconDimension - 10) + ")");
-            //.attr("transform", nodetransform);
+            .attr("transform", "translate(" + (searchnode.x - controlIconDimension * 2) + "," + (searchnode.y - this.Diameter - controlIconDimension - 10) + ")");
+        //.attr("transform", nodetransform);
 
-        console.log("transform", "translate(" + (datum.x - controlIconDimension * 2) + "," + (datum.y - this.Diameter - controlIconDimension - 10) + ")");
+        console.log("transform", "translate(" + (searchnode.x - controlIconDimension * 2) + "," + (searchnode.y - this.Diameter - controlIconDimension - 10) + ")");
         //class="cell viewcontrol has-tip"
-        
+
         controls.append("g")
             .classed("viewcontrol", true)
             .classed("nodecontrol", true)
@@ -408,10 +387,14 @@ export default class AdvancedSearchCoordinator {
         controls.append("g")
             .classed("viewcontrol", true)
             .classed("nodecontrol", true)
-            .attr("transform", "translate(" + (controlsx + controlIconDimension*2) + "," + controlsy +")")
+            .attr("transform", "translate(" + (controlsx + controlIconDimension * 2) + "," + controlsy + ")")
             .on("click", function () {
-                console.log("trash");
-            }) 
+                if (confirm("Are you sure you want to delete " + searchnode.Name + "?")) {
+                    console.log("deleting: " + searchnode.Name);
+                    me.deleteSearchNode(searchnode);
+                    d3.selectAll("#nodecontrols").remove();
+                }
+            })
             .append("i")
             .attr("height", controlIconDimension)
             .attr("width", controlIconDimension)
@@ -432,9 +415,30 @@ export default class AdvancedSearchCoordinator {
             .append("rect")
             .attr("height", controlIconDimension)
             .attr("width", controlIconDimension);
-        //controls.attr("transform", function () {
-        //    return "translate(" + (boundingrect.x) + "," + (boundingrect.y - controlIconDimension - 5) + ")";
-        //});
+
+    }
+
+    hideNodeControls() {
+        d3.selectAll("#nodecontrols").remove();
+    }
+
+    showConditionControls(treenode: ViewTreeNode<ICondition>) {
+
+    }
+
+    onSearchNodeClicked(callingEl: SVGElement) {
+        var me = this;
+        console.log("onSearchNodeClicked started");
+        //console.log(this);
+
+        //update the datum on the callingEl
+        var datum = this.UpdateItemDatum("searchNodeDetails", callingEl) as SearchNode;
+        (document.getElementById("nodeType") as HTMLSelectElement).value = datum.Label;
+        (document.getElementById("nodeIdentifier") as HTMLInputElement).value = datum.Name;
+
+        console.log(datum);
+        this.hideNodeControls();
+        this.showNodeControls(datum);
     }
 
     onSearchEdgeClicked (callingEl) {
@@ -542,8 +546,16 @@ export default class AdvancedSearchCoordinator {
 
         var nodedatum = d3.select("#searchNodeDetails").datum() as SearchNode;
         //console.log(nodedatum);
-        RemoveNode(nodedatum, this.SearchData);
+        this.deleteSearchNode(nodedatum);
+    }
 
+    deleteSearchNode(datum: SearchNode) {
+        console.log("deleteSearchNode started");
+        console.log(datum);
+        console.log(this.SearchData);
+        RemoveNode(datum, this.SearchData);
+
+        console.log(this.SearchData);
         this.UpdateNodes();
         this.UpdateEdges();
     }
