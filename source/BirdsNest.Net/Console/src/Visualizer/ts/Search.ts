@@ -103,6 +103,7 @@ class SearchNode {
     Label: string = "";
     x: number = 0;
     y: number = 0;
+    index: number = 0;
 }
 
 class SearchEdge {

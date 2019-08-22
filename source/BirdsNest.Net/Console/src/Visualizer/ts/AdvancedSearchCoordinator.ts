@@ -252,6 +252,7 @@ export default class AdvancedSearchCoordinator {
             .data(this.SearchData.Nodes, function (d: SearchNode) { return d.Name; })
             .attr("transform", function (d) {
                 currslot++;
+                d.index = currslot;
                 d.x = me.XSpacing * currslot - me.XSpacing * 0.5;
                 d.y = me.YSpacing;
                 return "translate(" + d.x + "," + d.y + ")";
@@ -362,19 +363,23 @@ export default class AdvancedSearchCoordinator {
         console.log("transform", "translate(" + (searchnode.x - controlIconDimension * 2) + "," + (searchnode.y - this.Diameter - controlIconDimension - 10) + ")");
         //class="cell viewcontrol has-tip"
 
-        controls.append("g")
-            .classed("viewcontrol", true)
-            .classed("nodecontrol", true)
-            .attr("transform", "translate(" + controlsx + "," + controlsy + ")")
-            .on("click", function () {
-                MoveNodeLeft(searchnode, me.SearchData);
-                me.hideNodeControls();
-                me.UpdateNodes();
-            })
-            .append("i")
-            .attr("height", controlIconDimension)
-            .attr("width", controlIconDimension)
-            .attr("class", "fas fa-caret-left");
+        if (searchnode.index > 1) {
+            controls.append("g")
+                .classed("viewcontrol", true)
+                .classed("nodecontrol", true)
+                .attr("transform", "translate(" + controlsx + "," + controlsy + ")")
+                .on("click", function () {
+                    MoveNodeLeft(searchnode, me.SearchData);
+                    me.hideNodeControls();
+                    me.UpdateNodes();
+                    me.showNodeControls(searchnode);
+                })
+                .append("i")
+                .attr("height", controlIconDimension)
+                .attr("width", controlIconDimension)
+                .attr("class", "fas fa-caret-left");
+        }
+        
         controls.append("g")
             .classed("viewcontrol", true)
             .classed("nodecontrol", true)
@@ -402,6 +407,8 @@ export default class AdvancedSearchCoordinator {
             .attr("height", controlIconDimension)
             .attr("width", controlIconDimension)
             .attr("class", "far fa-trash-alt");
+
+        if (searchnode.index < this.SearchData.AddedNodes)
         controls.append("g")
             .classed("viewcontrol", true)
             .classed("nodecontrol", true)
@@ -410,6 +417,7 @@ export default class AdvancedSearchCoordinator {
                 MoveNodeRight(searchnode, me.SearchData);
                 me.hideNodeControls();
                 me.UpdateNodes();
+                me.showNodeControls(searchnode);
             })
             .append("i")
             .attr("height", controlIconDimension)
