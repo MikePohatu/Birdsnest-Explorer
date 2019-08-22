@@ -367,7 +367,9 @@ export default class AdvancedSearchCoordinator {
             .classed("nodecontrol", true)
             .attr("transform", "translate(" + controlsx + "," + controlsy + ")")
             .on("click", function () {
-                console.log("left");
+                MoveNodeLeft(searchnode, me.SearchData);
+                me.hideNodeControls();
+                me.UpdateNodes();
             })
             .append("i")
             .attr("height", controlIconDimension)
@@ -378,7 +380,8 @@ export default class AdvancedSearchCoordinator {
             .classed("nodecontrol", true)
             .attr("transform", "translate(" + (controlsx + controlIconDimension) + "," + controlsy + ")")
             .on("click", function () {
-                console.log("edit");
+                me.hideNodeControls();
+                me.showNodeEdit(searchnode);
             })
             .append("i")
             .attr("height", controlIconDimension)
@@ -390,9 +393,9 @@ export default class AdvancedSearchCoordinator {
             .attr("transform", "translate(" + (controlsx + controlIconDimension * 2) + "," + controlsy + ")")
             .on("click", function () {
                 if (confirm("Are you sure you want to delete " + searchnode.Name + "?")) {
-                    console.log("deleting: " + searchnode.Name);
+                    //console.log("deleting: " + searchnode.Name);
                     me.deleteSearchNode(searchnode);
-                    d3.selectAll("#nodecontrols").remove();
+                    me.hideNodeControls();
                 }
             })
             .append("i")
@@ -404,7 +407,9 @@ export default class AdvancedSearchCoordinator {
             .classed("nodecontrol", true)
             .attr("transform", "translate(" + (controlsx + controlIconDimension * 3) + "," + controlsy + ")")
             .on("click", function () {
-                console.log("right");
+                MoveNodeRight(searchnode, me.SearchData);
+                me.hideNodeControls();
+                me.UpdateNodes();
             })
             .append("i")
             .attr("height", controlIconDimension)
@@ -422,6 +427,12 @@ export default class AdvancedSearchCoordinator {
         d3.selectAll("#nodecontrols").remove();
     }
 
+    showNodeEdit(searchnode: SearchNode) {
+        (document.getElementById("nodeType") as HTMLSelectElement).value = searchnode.Label;
+        (document.getElementById("nodeIdentifier") as HTMLInputElement).value = searchnode.Name;
+        $('#searchNodeDetails').foundation('open');
+    }
+
     showConditionControls(treenode: ViewTreeNode<ICondition>) {
 
     }
@@ -433,8 +444,6 @@ export default class AdvancedSearchCoordinator {
 
         //update the datum on the callingEl
         var datum = this.UpdateItemDatum("searchNodeDetails", callingEl) as SearchNode;
-        (document.getElementById("nodeType") as HTMLSelectElement).value = datum.Label;
-        (document.getElementById("nodeIdentifier") as HTMLInputElement).value = datum.Name;
 
         console.log(datum);
         this.hideNodeControls();
