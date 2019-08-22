@@ -23,7 +23,7 @@ export default class AdvancedSearchCoordinator {
     SearchData: Search;
     PathElementID: string;
     ConditionElementID: string;
-    Radius: number;
+    Diameter: number;
     XSpacing: number;
     YSpacing: number;
     ConditionRoot: ViewTreeNode<ICondition>;
@@ -39,7 +39,7 @@ export default class AdvancedSearchCoordinator {
         this.SearchData = new Search();
         this.PathElementID = pathelementid;
         this.ConditionElementID = conditionelementid;
-        this.Radius = 30;
+        this.Diameter = 30;
         this.XSpacing = 170;
         this.YSpacing = 70;
         this.ConditionRoot = null;
@@ -226,8 +226,8 @@ export default class AdvancedSearchCoordinator {
             .append("g")
             .classed("searchnode",true)
             //.attr("id", function (d: SearchNode) { return "searchnode_" + d.Name; })
-            .attr("width", this.Radius)
-            .attr("height", this.Radius)
+            .attr("width", this.Diameter)
+            .attr("height", this.Diameter)
             //.attr("data-open", "searchNodeDetails")
             .on("click", function () {
                 me.onSearchNodeClicked(this);
@@ -236,7 +236,7 @@ export default class AdvancedSearchCoordinator {
         newnodeg.append("circle")
             .attr("id", function (d: SearchNode) { return "searchnodebg_" + d.Name; })
             .classed("searchnodecircle", true)
-            .attr("r", this.Radius);
+            .attr("r", this.Diameter);
 
         newnodeg.append("text")
             .text(function (d: SearchNode) { return d.Name; })
@@ -250,16 +250,18 @@ export default class AdvancedSearchCoordinator {
 
         viewel.selectAll(".searchnode")
             .data(this.SearchData.Nodes, function (d: SearchNode) { return d.Name; })
-            .attr("transform", function () {
+            .attr("transform", function (d) {
                 currslot++;
-                return "translate(" + (me.XSpacing * currslot - me.XSpacing * 0.5) + "," + me.YSpacing + ")";
+                d.x = me.XSpacing * currslot - me.XSpacing * 0.5;
+                d.y = me.YSpacing;
+                return "translate(" + d.x + "," + d.y + ")";
             })
             .attr("id", function (d: SearchNode) { return "searchnode_" + d.Name; })
             .attr("class", function (d: SearchNode) { return d.Label; })
             .classed("searchnode", true)
             .select("text")
             .text(function (d: SearchNode) { return d.Name; });
-        //.attr("transform", function (d) { return "translate(0," + (this.Radius + 10) + ")"; });
+        //.attr("transform", function (d) { return "translate(0," + (this.Diameter + 10) + ")"; });
     }
 
     UpdateEdges () {
@@ -268,8 +270,8 @@ export default class AdvancedSearchCoordinator {
         //console.log(this.AdvancedSearch.Edges);
         var me = this;
 
-        var rectwidth = this.Radius * 2;
-        var rectheight = this.Radius * 0.7;
+        var rectwidth = this.Diameter * 2;
+        var rectheight = this.Diameter * 0.7;
 
         var relarrowwidth = 20;
         var currslot = 0;
@@ -354,7 +356,7 @@ export default class AdvancedSearchCoordinator {
     }
 
     onSearchNodeClicked(callingEl: SVGElement) {
-        //console.log("onSearchNodeClicked started");
+        console.log("onSearchNodeClicked started");
         //console.log(this);
 
         //update the datum on the callingEl
@@ -362,10 +364,12 @@ export default class AdvancedSearchCoordinator {
         (document.getElementById("nodeType") as HTMLSelectElement).value = datum.Label;
         (document.getElementById("nodeIdentifier") as HTMLInputElement).value = datum.Name;
 
-        //now show the controls
+        console.log(datum);
+
+        //now remove and recreate the controls
         d3.selectAll("#nodecontrols").remove();
 
-        var nodetransform = callingEl.getAttribute("transform");
+        //var nodetransform = callingEl.getAttribute("transform");
         var controlIconDimension = 25;
         var controlsx = 0;
         var controlsy = 0;
@@ -373,8 +377,10 @@ export default class AdvancedSearchCoordinator {
         var controls = d3.select("#" + this.PathElementID)
             .append("g")
             .attr("id", "nodecontrols")
-            .attr("transform", nodetransform);
+            .attr("transform", "translate(" + (datum.x - controlIconDimension * 2) + "," + (datum.y - this.Diameter - controlIconDimension - 10) + ")");
+            //.attr("transform", nodetransform);
 
+        console.log("transform", "translate(" + (datum.x - controlIconDimension * 2) + "," + (datum.y - this.Diameter - controlIconDimension - 10) + ")");
         //class="cell viewcontrol has-tip"
         
         controls.append("g")
@@ -479,7 +485,7 @@ export default class AdvancedSearchCoordinator {
 
     }
 
-    UpdateItemDatum(elementid, callingitem) {
+    UpdateItemDatum(elementid: string, callingitem: Element) {
         //console.log("SearchItemClicked started");
         //console.log(this);
         //console.log(elementid);

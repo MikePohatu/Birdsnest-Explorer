@@ -97,6 +97,8 @@ function MoveNodeLeft(node: SearchNode, search: Search) {
 class SearchNode {
     Name: string = "";
     Label: string = "";
+    x: number = 0;
+    y: number = 0;
 }
 
 class SearchEdge {
