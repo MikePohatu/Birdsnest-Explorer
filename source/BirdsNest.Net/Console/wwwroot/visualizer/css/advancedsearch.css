@@ -19,9 +19,9 @@
     opacity: 0.3;
 }
 
-    .searchLabel.viewcontrol {
-        opacity: 0.6;
-    }
+.searchLabel.viewcontrol {
+    opacity: 0.6;
+}
 
 .searchSvgContainer {
     margin: 0;
@@ -61,4 +61,10 @@
 
 .searchconditionplus rect {
     stroke-width: 0px;
+}
+
+.nodecontrol {
+    stroke-width: 0px;
+    fill-opacity: 0.7;
+    fill: transparent;
 }

@@ -228,7 +228,7 @@ export default class AdvancedSearchCoordinator {
             //.attr("id", function (d: SearchNode) { return "searchnode_" + d.Name; })
             .attr("width", this.Radius)
             .attr("height", this.Radius)
-            .attr("data-open", "searchNodeDetails")
+            //.attr("data-open", "searchNodeDetails")
             .on("click", function () {
                 me.onSearchNodeClicked(this);
             });
@@ -344,13 +344,91 @@ export default class AdvancedSearchCoordinator {
             .remove();
     }
 
+    showNodeControls(searchnode: SearchNode) {
+        
 
-    onSearchNodeClicked (callingEl) {
+    }
+
+    showConditionControls(treenode: ViewTreeNode<ICondition>) {
+
+    }
+
+    onSearchNodeClicked(callingEl: SVGElement) {
         //console.log("onSearchNodeClicked started");
         //console.log(this);
+
+        //update the datum on the callingEl
         var datum = this.UpdateItemDatum("searchNodeDetails", callingEl) as SearchNode;
         (document.getElementById("nodeType") as HTMLSelectElement).value = datum.Label;
         (document.getElementById("nodeIdentifier") as HTMLInputElement).value = datum.Name;
+
+        //now show the controls
+        d3.selectAll("#nodecontrols").remove();
+
+        var nodetransform = callingEl.getAttribute("transform");
+        var controlIconDimension = 25;
+        var controlsx = 0;
+        var controlsy = 0;
+
+        var controls = d3.select("#" + this.PathElementID)
+            .append("g")
+            .attr("id", "nodecontrols")
+            .attr("transform", nodetransform);
+
+        //class="cell viewcontrol has-tip"
+        
+        controls.append("g")
+            .classed("viewcontrol", true)
+            .classed("nodecontrol", true)
+            .attr("transform", "translate(" + controlsx + "," + controlsy + ")")
+            .on("click", function () {
+                console.log("left");
+            })
+            .append("i")
+            .attr("height", controlIconDimension)
+            .attr("width", controlIconDimension)
+            .attr("class", "fas fa-caret-left");
+        controls.append("g")
+            .classed("viewcontrol", true)
+            .classed("nodecontrol", true)
+            .attr("transform", "translate(" + (controlsx + controlIconDimension) + "," + controlsy + ")")
+            .on("click", function () {
+                console.log("edit");
+            })
+            .append("i")
+            .attr("height", controlIconDimension)
+            .attr("width", controlIconDimension)
+            .attr("class", "fas fa-edit");
+        controls.append("g")
+            .classed("viewcontrol", true)
+            .classed("nodecontrol", true)
+            .attr("transform", "translate(" + (controlsx + controlIconDimension*2) + "," + controlsy +")")
+            .on("click", function () {
+                console.log("trash");
+            }) 
+            .append("i")
+            .attr("height", controlIconDimension)
+            .attr("width", controlIconDimension)
+            .attr("class", "far fa-trash-alt");
+        controls.append("g")
+            .classed("viewcontrol", true)
+            .classed("nodecontrol", true)
+            .attr("transform", "translate(" + (controlsx + controlIconDimension * 3) + "," + controlsy + ")")
+            .on("click", function () {
+                console.log("right");
+            })
+            .append("i")
+            .attr("height", controlIconDimension)
+            .attr("width", controlIconDimension)
+            .attr("class", "fas fa-caret-right");
+
+        controls.selectAll(".nodecontrol")
+            .append("rect")
+            .attr("height", controlIconDimension)
+            .attr("width", controlIconDimension);
+        //controls.attr("transform", function () {
+        //    return "translate(" + (boundingrect.x) + "," + (boundingrect.y - controlIconDimension - 5) + ")";
+        //});
     }
 
     onSearchEdgeClicked (callingEl) {

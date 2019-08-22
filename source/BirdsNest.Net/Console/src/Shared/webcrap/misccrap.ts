@@ -19,6 +19,16 @@
         var str = btoa(input);
         return encodeURIComponent(str);
     }
+
+    //https://stackoverflow.com/a/6248722
+    generateUID():string {
+        // I generate the UID from two parts here 
+        // to ensure the random number provide enough bits.
+        var firstPart: number = (Math.random() * 46656) | 0;
+        var secondPart: number = (Math.random() * 46656) | 0;
+        return ("000" + firstPart.toString(36)).slice(-3) + ("000" + secondPart.toString(36)).slice(-3);
+    }
+
 }
 
 var misccrap = new MiscCrap();

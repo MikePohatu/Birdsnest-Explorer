@@ -1,6 +1,7 @@
 ﻿//ViewTreeNode is a wrapper around raw tree data. This allows view frameworks such as D3
 //to make the changes it requires to the ViewTreeNode, leaving the raw data intact so it
 //can be posted or past to a backend unaltered. 
+import { webcrap } from "../../Shared/webcrap/webcrap";
 
 export default class ViewTreeNode<T> {
     Item: T;
@@ -17,7 +18,7 @@ export default class ViewTreeNode<T> {
         this.Item = item;
         this.Children = null;
         this.ChildProperty = childProperty;
-        this.ID = this.GenerateUID();
+        this.ID = webcrap.misc.generateUID();
         this.Index = 0;
         this.Parent = parent;
         if (parent !== null) { this.Depth = parent.Depth + 1; }
@@ -104,14 +105,5 @@ export default class ViewTreeNode<T> {
         if (this.Parent !== null) {
             this.Parent.Rebuild();
         }
-    }
-
-    //https://stackoverflow.com/a/6248722
-    GenerateUID() {
-        // I generate the UID from two parts here 
-        // to ensure the random number provide enough bits.
-        var firstPart: number = (Math.random() * 46656) | 0;
-        var secondPart: number = (Math.random() * 46656) | 0;
-        return ("000" + firstPart.toString(36)).slice(-3) + ("000" + secondPart.toString(36)).slice(-3);
     }
 }
