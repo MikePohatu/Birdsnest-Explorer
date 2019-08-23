@@ -1,4 +1,6 @@
-﻿class AuthCrap {
+﻿import * as $ from 'jquery';
+
+class AuthCrap {
     //getCookie function from django documentation
     getCookie(name) {
         var cookieValue = null;

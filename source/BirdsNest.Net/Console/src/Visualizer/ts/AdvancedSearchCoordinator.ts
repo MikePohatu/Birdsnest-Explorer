@@ -191,6 +191,8 @@ export default class AdvancedSearchCoordinator {
 
             var viewel = d3.select("#" + this.PathElementID);
             viewel.selectAll("*").remove();
+            viewel = d3.select("#" + this.ConditionElementID);
+            viewel.selectAll("*").remove();
             this.SearchData = new Search();
         }
     }
