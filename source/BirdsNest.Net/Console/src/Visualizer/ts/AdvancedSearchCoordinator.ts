@@ -1,5 +1,14 @@
 ﻿import * as $ from 'jquery';
 import 'jquery-ui/ui/widgets/autocomplete';
+import 'jquery-ui/themes/base/base.css';
+
+//import 'jquery-ui/themes/base/selectmenu.css';
+//import 'jquery-ui/themes/base/menu.css';
+//import 'jquery-ui/themes/base/autocomplete.css';
+import '../css/main.css';
+import '../css/visualization.css';
+import '../css/advancedsearch.css'; 
+
 import 'foundation-sites';
 import * as d3 from 'd3';
 import { webcrap } from "../../Shared/webcrap/webcrap";
