@@ -98,11 +98,21 @@ function MoveNodeLeft(node: SearchNode, search: Search) {
     return false;
 }
 
+function GetNode(name: string, search: Search): SearchNode {
+    var i = 0;
+    for (i = 0; i < search.Nodes.length; i++) {
+        if (search.Nodes[i].Name === name) {
+            return search.Nodes[i];
+        }
+    }
+    return null;
+}
+
 class SearchNode {
     Name: string = "";
     Label: string = "";
-    x: number = 0;
-    y: number = 0;
+    x: number = -100;
+    y: number = -100;
     index: number = 0;
 }
 
@@ -222,5 +232,6 @@ export {
     RemoveNode,
     MoveNodeRight,
     MoveNodeLeft,
-    IsConditionValid
+    IsConditionValid,
+    GetNode
 }

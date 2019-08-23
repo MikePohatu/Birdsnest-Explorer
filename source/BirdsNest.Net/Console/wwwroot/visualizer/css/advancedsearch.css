@@ -68,3 +68,7 @@
     fill-opacity: 0.7;
     fill: transparent;
 }
+
+.ui-autocomplete {
+    z-index: 4000 !important
+}

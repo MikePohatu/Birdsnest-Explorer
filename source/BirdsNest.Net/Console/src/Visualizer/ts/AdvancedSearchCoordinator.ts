@@ -1,4 +1,5 @@
 ﻿import * as $ from 'jquery';
+import 'jquery-ui/ui/widgets/autocomplete';
 import 'foundation-sites';
 import * as d3 from 'd3';
 import { webcrap } from "../../Shared/webcrap/webcrap";
@@ -14,7 +15,8 @@ import {
     MoveNodeLeft,
     AddNode,
     RemoveNode,
-    IsConditionValid
+    IsConditionValid,
+    GetNode
 } from "./Search";
 import ViewTreeNode from "./ViewTreeNode";
 
@@ -46,6 +48,7 @@ export default class AdvancedSearchCoordinator {
         this.NodeDetails = null;
         this.EdgeDetails = null;
 
+        this.BindAutoComplete();
         bindEnterToButton("searchEdgeDetails", "searchEdgeSaveBtn");
         bindEnterToButton("searchNodeDetails", "searchNodeSaveBtn");
 
@@ -73,7 +76,7 @@ export default class AdvancedSearchCoordinator {
                 }
                 console.log("this.SearchData");
                 console.log(this.SearchData);
-            }
+            } 
             catch {
                 console.error("Unable to parse shared search string");
             }
@@ -237,6 +240,9 @@ export default class AdvancedSearchCoordinator {
             .on("click", function () {
                 d3.event.stopPropagation();
                 me.onSearchNodeClicked(this);
+            })
+            .attr("transform", function (d) {
+                return "translate(" + d.x + "," + d.y + ")";
             });
 
         newnodeg.append("circle")
@@ -254,19 +260,23 @@ export default class AdvancedSearchCoordinator {
             .exit()
             .remove();
 
-        viewel.selectAll(".searchnode")
+        var allnodes = viewel.selectAll(".searchnode")
             .data(this.SearchData.Nodes, function (d: SearchNode) { return d.Name; })
+            .attr("id", function (d: SearchNode) { return "searchnode_" + d.Name; })
+            .attr("class", function (d: SearchNode) { return d.Label; })
+            .classed("searchnode", true);
+
+        allnodes.transition()
+            .duration(500)
             .attr("transform", function (d) {
                 currslot++;
                 d.index = currslot;
                 d.x = me.XSpacing * currslot - me.XSpacing * 0.5;
                 d.y = me.YSpacing;
                 return "translate(" + d.x + "," + d.y + ")";
-            })
-            .attr("id", function (d: SearchNode) { return "searchnode_" + d.Name; })
-            .attr("class", function (d: SearchNode) { return d.Label; })
-            .classed("searchnode", true)
-            .select("text")
+            });
+
+        allnodes.select("text")
             .text(function (d: SearchNode) { return d.Name; });
         //.attr("transform", function (d) { return "translate(0," + (this.Diameter + 10) + ")"; });
     }
@@ -709,14 +719,21 @@ export default class AdvancedSearchCoordinator {
     //    }
     //}
 
-    BindAutoComplete () {
-        $("#searchVal").autocomplete({
+    BindAutoComplete() {
+        var me = this;
+
+        $('#searchVal').autocomplete({
             source: function (request, response) {
-                //console.log("autoComplete: "+ request.term);
-                var type = (document.getElementById("searchType") as HTMLSelectElement).value;
+                
+                var itemname = (document.getElementById("searchItem") as HTMLSelectElement).value;
+                var datum: SearchNode = GetNode(itemname, me.SearchData);
                 var prop = (document.getElementById("searchProp") as HTMLSelectElement).value;
 
-                var url = "/api/graph/node/values?type=" + type + "&property=" + prop + "&searchterm=" + request.term;
+                var url = "/api/graph/node/values?type=" + datum.Label + "&property=" + prop + "&searchterm=" + request.term;
+                console.log(url);
+                console.log("autoComplete: " + request.term);
+                console.log(datum);
+
                 webcrap.data.apiGetJson(url, response);
             }
         });
