@@ -80,8 +80,9 @@ export default class AdvancedSearchCoordinator {
             this.UpdateSearch();
         }
         
-
-        //select("#nodeType").on("change", this.UpdateNodeProps);
+        d3.select("#searchPane").on("click", function () {
+            me.onSearchPaneClicked();
+        });
         d3.select("#searchNodeSaveBtn").on("click", function () {
             me.onSearchNodeSaveBtnClicked();
         });
@@ -143,6 +144,10 @@ export default class AdvancedSearchCoordinator {
             //console.log(data);
             me.EdgeDetails = data;
         });
+    }
+
+    onSearchPaneClicked() {
+        this.hideNodeControls();
     }
 
     UpdateSearch() {
@@ -230,6 +235,7 @@ export default class AdvancedSearchCoordinator {
             .attr("height", this.Diameter)
             //.attr("data-open", "searchNodeDetails")
             .on("click", function () {
+                d3.event.stopPropagation();
                 me.onSearchNodeClicked(this);
             });
 
@@ -369,6 +375,7 @@ export default class AdvancedSearchCoordinator {
                 .classed("nodecontrol", true)
                 .attr("transform", "translate(" + controlsx + "," + controlsy + ")")
                 .on("click", function () {
+                    d3.event.stopPropagation();
                     MoveNodeLeft(searchnode, me.SearchData);
                     me.hideNodeControls();
                     me.UpdateNodes();
@@ -379,12 +386,13 @@ export default class AdvancedSearchCoordinator {
                 .attr("width", controlIconDimension)
                 .attr("class", "fas fa-caret-left");
         }
-        
+
         controls.append("g")
             .classed("viewcontrol", true)
             .classed("nodecontrol", true)
             .attr("transform", "translate(" + (controlsx + controlIconDimension) + "," + controlsy + ")")
             .on("click", function () {
+                d3.event.stopPropagation();
                 me.hideNodeControls();
                 me.showNodeEdit(searchnode);
             })
@@ -397,6 +405,7 @@ export default class AdvancedSearchCoordinator {
             .classed("nodecontrol", true)
             .attr("transform", "translate(" + (controlsx + controlIconDimension * 2) + "," + controlsy + ")")
             .on("click", function () {
+                d3.event.stopPropagation();
                 if (confirm("Are you sure you want to delete " + searchnode.Name + "?")) {
                     //console.log("deleting: " + searchnode.Name);
                     me.deleteSearchNode(searchnode);
@@ -409,20 +418,21 @@ export default class AdvancedSearchCoordinator {
             .attr("class", "far fa-trash-alt");
 
         if (searchnode.index < this.SearchData.AddedNodes)
-        controls.append("g")
-            .classed("viewcontrol", true)
-            .classed("nodecontrol", true)
-            .attr("transform", "translate(" + (controlsx + controlIconDimension * 3) + "," + controlsy + ")")
-            .on("click", function () {
-                MoveNodeRight(searchnode, me.SearchData);
-                me.hideNodeControls();
-                me.UpdateNodes();
-                me.showNodeControls(searchnode);
-            })
-            .append("i")
-            .attr("height", controlIconDimension)
-            .attr("width", controlIconDimension)
-            .attr("class", "fas fa-caret-right");
+            controls.append("g")
+                .classed("viewcontrol", true)
+                .classed("nodecontrol", true)
+                .attr("transform", "translate(" + (controlsx + controlIconDimension * 3) + "," + controlsy + ")")
+                .on("click", function () {
+                    d3.event.stopPropagation();
+                    MoveNodeRight(searchnode, me.SearchData);
+                    me.hideNodeControls();
+                    me.UpdateNodes();
+                    me.showNodeControls(searchnode);
+                })
+                .append("i")
+                .attr("height", controlIconDimension)
+                .attr("width", controlIconDimension)
+                .attr("class", "fas fa-caret-right");
 
         controls.selectAll(".nodecontrol")
             .append("rect")
@@ -446,10 +456,8 @@ export default class AdvancedSearchCoordinator {
     }
 
     onSearchNodeClicked(callingEl: SVGElement) {
-        var me = this;
-        console.log("onSearchNodeClicked started");
+        //console.log("onSearchNodeClicked started");
         //console.log(this);
-
         //update the datum on the callingEl
         var datum = this.UpdateItemDatum("searchNodeDetails", callingEl) as SearchNode;
 
@@ -566,15 +574,20 @@ export default class AdvancedSearchCoordinator {
         this.deleteSearchNode(nodedatum);
     }
 
-    deleteSearchNode(datum: SearchNode) {
+    deleteSearchNode(searchnode: SearchNode) {
         console.log("deleteSearchNode started");
-        console.log(datum);
+        console.log(searchnode);
         console.log(this.SearchData);
-        RemoveNode(datum, this.SearchData);
+        if (confirm("Are you sure you want to delete " + searchnode.Name + "?")) {
+            //console.log("deleting: " + searchnode.Name);
+            RemoveNode(searchnode, this.SearchData);
 
-        console.log(this.SearchData);
-        this.UpdateNodes();
-        this.UpdateEdges();
+            console.log(this.SearchData);
+            this.hideNodeControls();
+            this.UpdateNodes();
+            this.UpdateEdges();
+        }
+        
     }
 
     ToggleDir () {
