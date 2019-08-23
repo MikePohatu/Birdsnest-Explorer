@@ -80,7 +80,7 @@ export default class AdvancedSearchCoordinator {
             catch {
                 console.error("Unable to parse shared search string");
             }
-            this.UpdateSearch();
+            this.UpdateSearch(false);
         }
         
         d3.select("#searchPane").on("click", function () {
@@ -103,8 +103,8 @@ export default class AdvancedSearchCoordinator {
         });
         d3.select("#pathAddIcon").on("click", function () {
             AddNode(me.SearchData);
-            me.UpdateNodes();
-            me.UpdateEdges();
+            me.UpdateNodes(false);
+            me.UpdateEdges(false);
         });
         d3.select("#whereAddIcon").on("click", function () {
             me.onSearchConditionAddClicked(this as HTMLElement, true);
@@ -153,9 +153,9 @@ export default class AdvancedSearchCoordinator {
         this.hideNodeControls();
     }
 
-    UpdateSearch() {
-        this.UpdateNodes();
-        this.UpdateEdges();
+    UpdateSearch(animate: boolean) {
+        this.UpdateNodes(animate);
+        this.UpdateEdges(animate);
         this.UpdateConditions();
     }
 
@@ -223,7 +223,7 @@ export default class AdvancedSearchCoordinator {
         $('#searchMessage').foundation('open');
     }
 
-    UpdateNodes() {
+    UpdateNodes(animate: boolean) {
         //console.log("UpdateNodes started");
         //console.log(this);
         var me = this;
@@ -242,9 +242,6 @@ export default class AdvancedSearchCoordinator {
             .on("click", function () {
                 d3.event.stopPropagation();
                 me.onSearchNodeClicked(this);
-            })
-            .attr("transform", function (d) {
-                return "translate(" + d.x + "," + d.y + ")";
             });
 
         newnodeg.append("circle")
@@ -255,7 +252,7 @@ export default class AdvancedSearchCoordinator {
         newnodeg.append("text")
             .text(function (d: SearchNode) { return d.Name; })
             .attr("text-anchor", "middle")
-            .attr("dominant-baseline", "central");
+            .attr("dominant-baseline", "central"); 
 
         viewel.selectAll(".searchnode")
             .data(this.SearchData.Nodes, function (d: SearchNode) { return d.Name; })
@@ -268,22 +265,31 @@ export default class AdvancedSearchCoordinator {
             .attr("class", function (d: SearchNode) { return d.Label; })
             .classed("searchnode", true);
 
-        allnodes.transition()
-            .duration(500)
-            .attr("transform", function (d) {
-                currslot++;
-                d.index = currslot;
-                d.x = me.XSpacing * currslot - me.XSpacing * 0.5;
-                d.y = me.YSpacing;
-                return "translate(" + d.x + "," + d.y + ")";
-            });
+        //tranform function to be used below
+        var transform = function (d) {
+            currslot++;
+            d.index = currslot;
+            d.x = me.XSpacing * currslot - me.XSpacing * 0.5;
+            d.y = me.YSpacing;
+            return "translate(" + d.x + "," + d.y + ")";
+        };
+
+        if (animate) {
+            allnodes.transition()
+                .duration(500)
+                .attr("transform", transform );
+        }
+        else {
+            allnodes.attr("transform", transform);
+        }
+        
 
         allnodes.select("text")
             .text(function (d: SearchNode) { return d.Name; });
         //.attr("transform", function (d) { return "translate(0," + (this.Diameter + 10) + ")"; });
     }
 
-    UpdateEdges () {
+    UpdateEdges (animate: boolean) {
         //console.log("UpdateEdges start");
         //console.log(this);
         //console.log(this.AdvancedSearch.Edges);
@@ -351,18 +357,32 @@ export default class AdvancedSearchCoordinator {
 
         viewel.selectAll(".searchedge")
             .data(this.SearchData.Edges, function (d: SearchEdge) { return d.Name; })
-            .attr("transform", function () {
-                //console.log(d);
-                currslot++;
-                var subspacingx = (currslot + 0.5) * me.XSpacing - rectwidth / 2 - me.XSpacing * 0.5;
-                var subspacingy = me.YSpacing - rectheight / 2;
-                //console.log(currslot + ": " + subspacingx + ": " + subspacingy);
-                //console.log("edge transforms");
-                //console.log(d);
-                return "translate(" + subspacingx + "," + subspacingy + ")";
-            })
             .exit()
             .remove();
+
+        var transform = function () {
+            //console.log(d);
+            currslot++;
+            var subspacingx = (currslot + 0.5) * me.XSpacing - rectwidth / 2 - me.XSpacing * 0.5;
+            var subspacingy = me.YSpacing - rectheight / 2;
+            //console.log(currslot + ": " + subspacingx + ": " + subspacingy);
+            //console.log("edge transforms");
+            //console.log(d);
+            return "translate(" + subspacingx + "," + subspacingy + ")";
+        };
+
+        if (animate) {
+            viewel.selectAll(".searchedge")
+                .data(this.SearchData.Edges, function (d: SearchEdge) { return d.Name; })
+                .transition()
+                .duration(500)
+                .attr("transform", transform);
+        }
+        else {
+            viewel.selectAll(".searchedge")
+                .data(this.SearchData.Edges, function (d: SearchEdge) { return d.Name; })
+                .attr("transform", transform);
+        }
     }
 
     showNodeControls(searchnode: SearchNode) {
@@ -390,7 +410,7 @@ export default class AdvancedSearchCoordinator {
                     d3.event.stopPropagation();
                     MoveNodeLeft(searchnode, me.SearchData);
                     me.hideNodeControls();
-                    me.UpdateNodes();
+                    me.UpdateNodes(true);
                     me.showNodeControls(searchnode);
                 })
                 .append("i")
@@ -418,11 +438,7 @@ export default class AdvancedSearchCoordinator {
             .attr("transform", "translate(" + (controlsx + controlIconDimension * 2) + "," + controlsy + ")")
             .on("click", function () {
                 d3.event.stopPropagation();
-                if (confirm("Are you sure you want to delete " + searchnode.Name + "?")) {
-                    //console.log("deleting: " + searchnode.Name);
-                    me.deleteSearchNode(searchnode);
-                    me.hideNodeControls();
-                }
+                me.deleteSearchNode(searchnode);
             })
             .append("i")
             .attr("height", controlIconDimension)
@@ -438,7 +454,7 @@ export default class AdvancedSearchCoordinator {
                     d3.event.stopPropagation();
                     MoveNodeRight(searchnode, me.SearchData);
                     me.hideNodeControls();
-                    me.UpdateNodes();
+                    me.UpdateNodes(true);
                     me.showNodeControls(searchnode);
                 })
                 .append("i")
@@ -574,7 +590,7 @@ export default class AdvancedSearchCoordinator {
         node.Name = (document.getElementById("nodeIdentifier") as HTMLInputElement).value;
         node.Label = (document.getElementById("nodeType") as HTMLSelectElement).value;
         //console.log(node);
-        this.UpdateNodes();
+        this.UpdateNodes(false);
     }
 
     onSearchNodeDelBtnClicked (callingitem) {
@@ -596,8 +612,8 @@ export default class AdvancedSearchCoordinator {
 
             console.log(this.SearchData);
             this.hideNodeControls();
-            this.UpdateNodes();
-            this.UpdateEdges();
+            this.UpdateNodes(true);
+            this.UpdateEdges(true);
         }
         
     }
@@ -656,7 +672,7 @@ export default class AdvancedSearchCoordinator {
         //remove the edge so it can be readded with new details    
         edgeEl.remove();
         setTimeout(function () {
-            me.UpdateEdges();
+            me.UpdateEdges(false);
         }, 10);
     }
 
