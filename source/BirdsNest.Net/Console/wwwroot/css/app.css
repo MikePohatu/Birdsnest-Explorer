@@ -8,6 +8,7 @@
     left: 0;
     z-index: 200;
     display: none;
+    z-index: 4999 !important
 }
 
 #curtainoverlay {
@@ -23,6 +24,7 @@
     padding-right: 15px;
     padding-top: 50px;
     padding-bottom: 20px;
+    z-index: 5000 !important
 }
 
 #modal {
