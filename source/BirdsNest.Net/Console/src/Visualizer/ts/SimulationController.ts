@@ -1,7 +1,4 @@
-﻿//import d3 from 'd3';
-//import { d3.forceSimulation, d3.forceCollide, d3.forceLink, SimulationNodeDatum, SimulationLinkDatum } from 'd3-force';
-//import { d3.selectAll } from 'd3-selection';
-import * as d3 from 'd3';
+﻿var d3 = Object.assign({}, require("d3-selection"), require("d3-force"));
 
 interface ISimNode extends d3.SimulationNodeDatum {
     size: number;

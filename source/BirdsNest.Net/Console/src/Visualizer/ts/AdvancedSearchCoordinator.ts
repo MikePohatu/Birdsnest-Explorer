@@ -1,16 +1,23 @@
-﻿import * as $ from 'jquery';
+﻿import 'jquery-ui/themes/base/core.css';
+
+import 'jquery-ui/themes/base/selectmenu.css';
+import 'jquery-ui/themes/base/menu.css';
+import 'jquery-ui/themes/base/autocomplete.css';
+import 'jquery-ui/themes/base/theme.css';
+import '../css/advancedsearch.css'; 
+
+import * as $ from 'jquery';
 import 'jquery-ui/ui/widgets/autocomplete';
-import 'jquery-ui/themes/base/base.css';
+
 
 //import 'jquery-ui/themes/base/selectmenu.css';
 //import 'jquery-ui/themes/base/menu.css';
 //import 'jquery-ui/themes/base/autocomplete.css';
-import '../css/main.css';
-import '../css/visualization.css';
-import '../css/advancedsearch.css'; 
+
 
 import 'foundation-sites';
 import * as d3 from 'd3';
+//var d3 = Object.assign({}, require("d3-selection"), require("d3-transition"), require("d3-hierarchy"));
 import { webcrap } from "../../Shared/webcrap/webcrap";
 import {
     Search,

@@ -1,3 +1,6 @@
+import '../css/main.css';
+import '../css/visualization.css';
+
 
 import DataQueue from '../ts/DataQueue';
 import Slope from '../ts/Slope';
@@ -6,7 +9,15 @@ import Mappings from '../ts/Mappings';
 import DatumStore from '../ts/DatumStore';
 import * as log from 'loglevel';
 
+//import { event as event } from 'd3-selection';
+
 import $ from 'jquery';
+//var d3 = Object.assign({},
+//    require("d3-selection"),
+//    require("d3-transition"),
+//    require("d3-zoom"),
+//    require("d3-force"),
+//    require("d3-ease"));
 import * as d3 from 'd3'; 
 import { webcrap } from '../../Shared/webcrap/webcrap';
 

@@ -18,7 +18,6 @@
     "loglevel": "^1.6.3",
     "mini-css-extract-plugin": "^0.8.0",
     "motion-ui": "^2.0.3",
-    "style-loader": "^1.0.0",
     "ts-loader": "^6.0.4",
     "typescript": "^3.5.3",
     "webpack": "^4.39.2",
