@@ -18,20 +18,25 @@ module.exports = {
         rules: [
             {
                 test: /\.(ts|tsx)?$/,
-                loader: 'ts-loader',
+                use: [
+                    {
+                        loader: 'ts-loader'
+                    }
+                ],
                 exclude: [/node_modules/, /wwwroot/]
             },
             {
                 test: /\.css$/i,
                 use: [
                     {
-                        loader: MiniCssExtractPlugin.loader
-                        //options: {
+                        loader: MiniCssExtractPlugin.loader,
+                        options: {
+                            outputPath: 'css'
                         //    // you can specify a publicPath here
                         //    // by default it uses publicPath in webpackOptions.output
                         //    //publicPath: '../',
                         //    hmr: process.env.NODE_ENV === 'development'
-                        //}
+                        }
                     },
                     {
                         loader: 'css-loader'
@@ -63,7 +68,7 @@ module.exports = {
         new MiniCssExtractPlugin({
             // Options similar to the same options in webpackOptions.output
             // all options are optional
-            filename: '[name]-bundle.css',
+            filename: 'css/[name]-bundle.css',
             chunkFilename: '[id].css',
             ignoreOrder: false // Enable to remove warnings about conflicting order
         }),
