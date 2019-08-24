@@ -414,7 +414,7 @@ export default class AdvancedSearchCoordinator {
             .attr("transform", "translate(" + (searchnode.x - controlIconDimension * 2) + "," + (searchnode.y - this.Diameter - controlIconDimension - 10) + ")");
         //.attr("transform", nodetransform);
 
-        console.log("transform", "translate(" + (searchnode.x - controlIconDimension * 2) + "," + (searchnode.y - this.Diameter - controlIconDimension - 10) + ")");
+        //console.log("transform", "translate(" + (searchnode.x - controlIconDimension * 2) + "," + (searchnode.y - this.Diameter - controlIconDimension - 10) + ")");
         //class="cell viewcontrol has-tip"
 
         if (searchnode.index > 1) {
@@ -687,9 +687,9 @@ export default class AdvancedSearchCoordinator {
 
         //remove the edge so it can be readded with new details    
         edgeEl.remove();
-        setTimeout(function () {
+        //setTimeout(function () {
             me.UpdateEdges(false);
-        }, 10);
+        //}, 10);
     }
 
     UpdateNodeProps () {
@@ -1093,7 +1093,7 @@ export default class AdvancedSearchCoordinator {
     //}
 
     onSearchConditionClicked (callingelement) {
-        console.log("onSearchConditionClicked started");
+        //console.log("onSearchConditionClicked started");
         //var datum;
         //console.log(callingelement);
         var me = this;

@@ -1,3 +1,4 @@
+import 'motion-ui/dist/motion-ui.css'; 
 import '../css/main.css';
 import '../css/visualization.css';
 
