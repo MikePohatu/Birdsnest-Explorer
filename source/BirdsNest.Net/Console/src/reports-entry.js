@@ -5,7 +5,7 @@ import * as tableview from './reports/js/tableview';
 
 log.setLevel('trace', false);
 
-$(document).foundation();
+//$(document).foundation();
 
 //temporary to dealing with legacy crap
 global.tableview = tableview;

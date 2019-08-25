@@ -1,21 +1,20 @@
-import 'motion-ui/dist/motion-ui.css'; 
 import '../css/main.css';
 import '../css/visualization.css';
 
+import '@fortawesome/fontawesome-free/js/fontawesome';
+import '@fortawesome/fontawesome-free/js/solid';
+import '@fortawesome/fontawesome-free/js/regular';
 
 import DataQueue from '../ts/DataQueue';
 import Slope from '../ts/Slope';
 import SimulationController from '../ts/SimulationController';
 import Mappings from '../ts/Mappings';
 import DatumStore from '../ts/DatumStore';
-import * as log from 'loglevel';
 
 import $ from 'jquery';
 
 import * as d3 from "./visualizerD3";
 import { webcrap } from '../../Shared/webcrap/webcrap';
-
-console.log(d3);
 
 var drawingPane;
 var zoomLayer;
@@ -106,7 +105,7 @@ function menuShowHide() {
 }
 
 export function drawGraph(selectid, loaddata) {
-    log.trace('drawGraph started');
+    console.log('drawGraph started');
     //updateNodeLabels("target");
     drawingPane = d3.select("#" + selectid);
 

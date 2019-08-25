@@ -1,10 +1,4 @@
-﻿import 'jquery-ui/themes/base/core.css';
-
-import 'jquery-ui/themes/base/selectmenu.css';
-import 'jquery-ui/themes/base/menu.css';
-import 'jquery-ui/themes/base/autocomplete.css';
-import 'jquery-ui/themes/base/theme.css';
-import '../css/advancedsearch.css'; 
+﻿import '../css/advancedsearch.css'; 
 
 import * as $ from 'jquery';
 import 'jquery-ui/ui/widgets/autocomplete';
@@ -601,6 +595,7 @@ export default class AdvancedSearchCoordinator {
         node.Label = (document.getElementById("nodeType") as HTMLSelectElement).value;
         //console.log(node);
         this.UpdateNodes(false);
+        $('#searchNodeDetails').foundation('close');
     }
 
     onSearchNodeDelBtnClicked (callingitem) {
@@ -609,23 +604,26 @@ export default class AdvancedSearchCoordinator {
 
         var nodedatum = d3.select("#searchNodeDetails").datum() as SearchNode;
         //console.log(nodedatum);
-        this.deleteSearchNode(nodedatum);
+        if (this.deleteSearchNode(nodedatum)) {
+            $('#searchNodeDetails').foundation('close');
+        }
     }
 
-    deleteSearchNode(searchnode: SearchNode) {
-        console.log("deleteSearchNode started");
-        console.log(searchnode);
-        console.log(this.SearchData);
+    deleteSearchNode(searchnode: SearchNode): boolean {
+        //console.log("deleteSearchNode started");
+        //console.log(searchnode);
+        //console.log(this.SearchData);
         if (confirm("Are you sure you want to delete " + searchnode.Name + "?")) {
             //console.log("deleting: " + searchnode.Name);
             RemoveNode(searchnode, this.SearchData);
 
-            console.log(this.SearchData);
+            //console.log(this.SearchData);
             this.hideNodeControls();
             this.UpdateNodes(true);
             this.UpdateEdges(true);
+            return true;
         }
-        
+        return false;
     }
 
     ToggleDir () {
@@ -684,6 +682,8 @@ export default class AdvancedSearchCoordinator {
         //setTimeout(function () {
             me.UpdateEdges(false);
         //}, 10);
+
+        $('#searchEdgeDetails').foundation('close');
     }
 
     UpdateNodeProps () {
@@ -758,9 +758,9 @@ export default class AdvancedSearchCoordinator {
                 var prop = (document.getElementById("searchProp") as HTMLSelectElement).value;
 
                 var url = "/api/graph/node/values?type=" + datum.Label + "&property=" + prop + "&searchterm=" + request.term;
-                console.log(url);
-                console.log("autoComplete: " + request.term);
-                console.log(datum);
+                //console.log(url);
+                //console.log("autoComplete: " + request.term);
+                //console.log(datum);
 
                 webcrap.data.apiGetJson(url, response);
             }
@@ -768,7 +768,7 @@ export default class AdvancedSearchCoordinator {
     }
 
     UpdateConditions () {
-        console.log("UpdateConditions start:" + this.ConditionElementID);
+        //console.log("UpdateConditions start:" + this.ConditionElementID);
         //console.log(this);
         //console.log(this.SearchData.Edges);
 
@@ -796,8 +796,8 @@ export default class AdvancedSearchCoordinator {
         var editwidth = 25;
 
         
-        console.log('nodes:');
-        console.log(nodes);
+        //console.log('nodes:');
+        //console.log(nodes);
         var enter = viewel.selectAll(".searchcondition")
             .data(nodes, function (d: d3.HierarchyPointNode<ViewTreeNode<ICondition>>) { return d.data.ID; })
             .enter()
@@ -941,150 +941,6 @@ export default class AdvancedSearchCoordinator {
             });
     }
 
-
-    //Might come back to this. HTML condition setup rather than SVG
-    //UpdateConditionsElement(element: HTMLElement) {
-    //    console.log("UpdateConditionsElement start:" + element);
-    //    //console.log(this);
-    //    //console.log(this.SearchData.Edges);
-
-        
-    //    //var links = this.tree.links(nodes);
-    //    var me = this;
-    //    var tree = this.GetElementDatum(element) as ViewTreeNode<ICondition>;
-    //    var viewel = d3.select(element);
-    //    viewel.selectAll("*").remove();
-
-    //    var newEl = viewel.append("div")
-    //        .attr("id", function (d: d3.HierarchyPointNode<ViewTreeNode<ICondition>>) { return "searchcondition_" + (d.data as ViewTreeNode<ICondition>).ID; })
-    //        .attr("class", function (d: d3.HierarchyPointNode<ViewTreeNode<ICondition>>) {
-    //            if (d.data.Item instanceof AndOrCondition) {
-    //                return "conditiongroup";
-    //            }
-    //            else {
-    //                return "condition";
-    //            }
-    //        })
-    //        .classed("searchcondition", true)
-    //        .attr("data-open", function (d: d3.HierarchyPointNode<ViewTreeNode<ICondition>>) {
-    //            if (d.data.Item.Type === "AND" || d.data.Item.Type === "OR") {
-    //                return "searchAndOrDetails";
-    //            }
-    //            return "searchConditionDetails";
-    //        })
-    //        .on("click", function (d: ViewTreeNode<ICondition>) {
-    //            if (d.Item instanceof AndOrCondition) {
-    //                me.onSearchAndOrClicked(this);
-    //            }
-    //            else {
-    //                me.onSearchConditionClicked(this);
-    //            }
-    //        });
-    //    //.each(function (d) {
-    //    //    console.log("each");
-    //    //    console.log(d.descendants().length);
-    //    //    console.log(d);
-    //    //});
-    //    viewel.selectAll(".searchcondition")
-    //        .data(nodes, function (d: d3.HierarchyPointNode<ViewTreeNode<ICondition>>) { return d.data.ID; })
-    //        .exit()
-    //        .remove();
-
-    //    enter.append("rect")
-    //        .attr("id", function (d: d3.HierarchyPointNode<ViewTreeNode<ICondition>>) { return "searchconditionbg_" + d.data.ID; })
-    //        .classed("searchconditionrect", true)
-    //        .attr("x", strokewidth)
-    //        .attr("y", strokewidth)
-    //        .attr("rx", 5);
-
-    //    viewel.selectAll(".searchconditionrect")
-    //        .data(nodes, function (d: d3.HierarchyPointNode<ViewTreeNode<ICondition>>) { return d.data.ID; })
-    //        .attr("height", function (d: d3.HierarchyPointNode<ViewTreeNode<ICondition>>) {
-    //            //console.log(d.ancestors());
-    //            d.data.RectHeight = rectheight - d.depth * ypadding * 2;
-    //            return d.data.RectHeight;
-    //        })
-    //        .attr("width", function (d: d3.HierarchyPointNode<ViewTreeNode<ICondition>>) {
-    //            if (d.value > 1) {
-    //                d.data.RectWidth = d.value * rectwidth + (d.value - 1) * xspacing + (d.descendants().length - 1) * 2 + strokewidth * d.value + editwidth + xpadding * 2;
-    //            }
-    //            else {
-    //                d.data.RectWidth = rectwidth;
-    //            }
-    //            return d.data.RectWidth;
-    //        });
-
-    //    var condtext = enter.filter(".searchcondition.condition")
-    //        .append("text")
-    //        .attr("y", "5px")
-    //        .attr("text-anchor", "left")
-    //        .attr("dominant-baseline", "baseline");
-
-    //    condtext.append("tspan")
-    //        .attr("x", "10px")
-    //        .attr("dy", "1.2em")
-    //        .classed("searchconditiontype", true);
-
-    //    condtext.append("tspan")
-    //        .attr("x", "10px")
-    //        .attr("dy", "1.2em")
-    //        .classed("searchconditioneval", true);
-
-    //    condtext.append("tspan")
-    //        .attr("x", "10px")
-    //        .attr("dy", "1.2em")
-    //        .classed("searchconditionopval", true);
-
-    //    viewel.selectAll(".condition .searchconditiontype")
-    //        .text(function (d: d3.HierarchyPointNode<ViewTreeNode<ICondition>>) { return d.data.Item.Type; });
-
-    //    viewel.selectAll(".condition .searchconditioneval")
-    //        .text(function (d: d3.HierarchyPointNode<ViewTreeNode<ICondition>>) { return (d.data.Item as ConditionBase).Name + "." + (d.data.Item as ConditionBase).Property; });
-
-    //    viewel.selectAll(".condition .searchconditionopval")
-    //        .text(function (d: d3.HierarchyPointNode<ViewTreeNode<ICondition>>) { return (d.data.Item as ConditionBase).Operator + " " + (d.data.Item as ConditionBase).Value; });
-
-    //    //setup the + button for group nodes e.g. AND/OR
-    //    var groupaddbtns = viewel.selectAll(".conditiongroup")
-    //        .append("g")
-    //        .attr("id", function (d: d3.HierarchyPointNode<ViewTreeNode<ICondition>>) { return "searchconditionplus_" + d.data.ID; })
-    //        .classed("searchconditionplus", true)
-    //        .classed("searchcontrol", true)
-    //        .on("click", function () {
-    //            me.onSearchConditionAddClicked(this, false);
-    //        });
-
-    //    groupaddbtns.append("i")
-    //        .attr("class", "fas fa-plus")
-    //        .attr("width", pluswidth)
-    //        .attr("height", pluswidth)
-    //        .attr("x", function (d: d3.HierarchyPointNode<ViewTreeNode<ICondition>>) { return d.data.RectWidth - pluswidth - xpadding; })
-    //        .attr("y", function (d: d3.HierarchyPointNode<ViewTreeNode<ICondition>>) { return d.data.RectHeight - ypadding - pluswidth; });
-
-
-    //    groupaddbtns.append("rect")
-    //        .attr("width", pluswidth)
-    //        .attr("height", pluswidth)
-    //        .attr("x", function (d: d3.HierarchyPointNode<ViewTreeNode<ICondition>>) { return d.data.RectWidth - pluswidth - xpadding; })
-    //        .attr("y", function (d: d3.HierarchyPointNode<ViewTreeNode<ICondition>>) { return d.data.RectHeight - ypadding - pluswidth; });
-
-    //    viewel.selectAll(".searchcondition")
-    //        .data(nodes, function (d: d3.HierarchyPointNode<ViewTreeNode<ICondition>>) { return d.data.ID; })
-    //        .attr("transform", function (d: d3.HierarchyPointNode<ViewTreeNode<ICondition>>) {
-    //            //console.log(d);
-    //            var x = 0;
-    //            var y = 0;
-    //            if (d.parent !== null) {
-    //                //console.log("parent");
-    //                //console.log(d.parent);
-    //                x = d.parent.x + xpadding + (xspacing * d.data.Index) + (d.data.Index * rectwidth);
-    //                y = ypadding * d.depth;
-    //            }
-    //            d.x = x;
-    //            d.y = y;
-    //            return "translate(" + x + "," + (y + me.YSpacing / 2) + ")";
-    //        });
-    //}
 
     onSearchConditionClicked (callingelement) {
         //console.log("onSearchConditionClicked started");
@@ -1257,15 +1113,22 @@ export default class AdvancedSearchCoordinator {
     }
 
     onSearchConditionDeleteClicked() {
-        this.DeleteSearchCondition('searchConditionDetails');
+        if (confirm('Are you sure you want to delete this condition?')) {
+            this.DeleteSearchCondition('searchConditionDetails');
+            $('#searchConditionDetails').foundation('close');
+        }
     }
 
     onSearchAndOrDeleteClicked() {
-        this.DeleteSearchCondition('searchAndOrDetails');
+        if (confirm('Are you sure you want to delete this group and all conditions inside?')) {
+            this.DeleteSearchCondition('searchAndOrDetails');
+            $('#searchAndOrDetails').foundation('close');
+        }
+        
     }
 
     DeleteSearchCondition (elementid: string) {
-        console.log("deleteSearchCondition started: " + elementid);
+        //console.log("deleteSearchCondition started: " + elementid);
         //searchConditionDetails
 
         //datum is the d3 tree datum. Use datum.data to get the ViewTreeNode datum
@@ -1285,8 +1148,8 @@ export default class AdvancedSearchCoordinator {
             this.UpdateConditions();
         }
 
-        console.log(this.ConditionRoot);
-        console.log("onSearchConditionDeleteClicked finished");
+        //console.log(this.ConditionRoot);
+        //console.log("onSearchConditionDeleteClicked finished");
     }
 
 

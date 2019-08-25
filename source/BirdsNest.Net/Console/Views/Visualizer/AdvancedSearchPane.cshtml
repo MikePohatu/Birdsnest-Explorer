@@ -1,6 +1,5 @@
 ﻿<div id="searchPane" class="small-12 medium-12 cell">
     <div>
-
         <span class="cell" style="width:12px;"> </span>
         <span id="advSearchClearIcon" class="cell viewcontrol has-tip" title="Clear search">
             <i class="fas fa-eraser"></i>
@@ -27,8 +26,8 @@
             <span aria-hidden="true">&times;</span>
         </button>
         <div>
-            <button id="searchNodeSaveBtn" class="button" data-close aria-label="Save this node" type="button">Save</button>
-            <button id="searchNodeDeleteBtn" class="alert button" data-close aria-label="Delete this node" type="button">Delete</button>
+            <button id="searchNodeSaveBtn" class="button" aria-label="Save this node" type="button">Save</button>
+            <button id="searchNodeDeleteBtn" class="alert button" aria-label="Delete this node" type="button">Delete</button>
         </div>
     </div>
 
@@ -79,8 +78,10 @@
                 </div>
             </div>
         </fieldset>
-        <button class="close-button" data-close aria-label="Close query dialog" type="button">&times;</button>
-        <button id="searchEdgeSaveBtn" class="button" data-close aria-label="Close relationship dialog" type="button">Save</button>
+        <button class="close-button" data-close aria-label="Close query dialog" type="button">
+            <span aria-hidden="true">&times;</span>
+        </button>
+        <button id="searchEdgeSaveBtn" class="button" aria-label="Save relationship dialog" type="button">Save</button>
     </div>
 
     <div id="searchConditionDetails" class="reveal" data-reveal data-animation-in="hinge-in-from-top fast" data-close-on-click="false">
@@ -110,7 +111,7 @@
                     <button id="searchConditionSaveBtn" class="button" aria-label="Save this condition" type="button">Save</button>
                 </div>
                 <div class="cell small-2 medium-2">
-                    <button id="searchConditionDeleteBtn" class="alert button" data-close aria-label="Delete this condition" type="button">Delete</button>
+                    <button id="searchConditionDeleteBtn" class="alert button" aria-label="Delete this condition" type="button">Delete</button>
                 </div>
                 <div class="cell small-7 medium-7"></div>
                 <div class="cell small-1 medium-1">
@@ -138,10 +139,10 @@
             </button>
             <div class="grid-x align-middle">
                 <div class="cell small-3 medium-3">
-                    <button id="searchAndOrSaveBtn" class="button" data-close aria-label="Save this condition" type="button">Save</button>
+                    <button id="searchAndOrSaveBtn" class="button" aria-label="Save this condition" type="button">Save</button>
                 </div>
                 <div class="cell small-3 medium-3">
-                    <button id="searchAndOrDeleteBtn" class="alert button" data-close aria-label="Delete this condition" type="button">Delete</button>
+                    <button id="searchAndOrDeleteBtn" class="alert button" aria-label="Delete this condition" type="button">Delete</button>
                 </div>
             </div>
         </fieldset>
@@ -166,7 +167,7 @@
             </button>
             <div class="grid-x align-middle">
                 <div class="cell small-3 medium-3">
-                    <button id="searchTypeSelectSaveBtn" class="button" data-close aria-label="Save" type="button">Save</button>
+                    <button id="searchTypeSelectSaveBtn" class="button" aria-label="Save" type="button">Save</button>
                 </div>
                 <div class="cell small-3 medium-3">
                     <button id="searchTypeSelectCancelBtn" class="alert button" data-close aria-label="Cancel this" type="button">Cancel</button>
