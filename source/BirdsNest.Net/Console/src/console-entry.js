@@ -14,10 +14,4 @@ import 'foundation-sites/dist/css/foundation.css';
 import './Shared/css/app.css';
 import './Shared/css/overrides.css';
 
-
-
-//window.onload = function () { $(document).foundation(); };
-
-//setTimeout(function () {
-    $(document).foundation();
-//}, 200);
+$(document).foundation();

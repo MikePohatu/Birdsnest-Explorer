@@ -69,7 +69,7 @@ export default class AdvancedSearchCoordinator {
         }
 
         var sharedsearchstring = (document.getElementById("sharedSearchString") as HTMLInputElement).value;
-        console.log("sharedsearchstring: " + sharedsearchstring);
+        //console.log("sharedsearchstring: " + sharedsearchstring);
         if (webcrap.misc.isNullOrWhitespace(sharedsearchstring) === false) {
             try {
 
@@ -78,8 +78,8 @@ export default class AdvancedSearchCoordinator {
                     this.ConditionRoot = new ViewTreeNode(this.SearchData.Condition, 'Conditions', null);
                     this.ConditionRoot.Build();
                 }
-                console.log("this.SearchData");
-                console.log(this.SearchData);
+                //console.log("this.SearchData");
+                //console.log(this.SearchData);
             } 
             catch {
                 console.error("Unable to parse shared search string");
@@ -164,8 +164,8 @@ export default class AdvancedSearchCoordinator {
     }
 
     RunSearch () {
-        console.log("RunSearch started");
-        console.log(this);
+        //console.log("RunSearch started");
+        //console.log(this);
 
         if (this.ConditionRoot !== null && IsConditionValid(this.ConditionRoot.Item) === false) {
             alert("You have conditions with incomplete data. This search is cannnot continue");
@@ -173,8 +173,8 @@ export default class AdvancedSearchCoordinator {
             return;
         }
         var postdata = JSON.stringify(this.SearchData);
-        console.log("search post:");
-        console.log(postdata);
+        //console.log("search post:");
+        //console.log(postdata);
         this.ShowSearchSpinner();
         webcrap.data.apiPostJson("/visualizer/AdvancedSearch", postdata, function (data) {
             //console.log(data);
@@ -202,7 +202,7 @@ export default class AdvancedSearchCoordinator {
     }
 
     Share() {
-        console.log("Share started");
+        //console.log("Share started");
         //console.log(this);
         if (this.SearchData.Nodes === null || this.SearchData.Nodes.length === 0) {
             alert("The search is empty. There is nothing to share.");
@@ -214,8 +214,8 @@ export default class AdvancedSearchCoordinator {
             }
             var urlBase = [location.protocol, '//', location.host, location.pathname].join('');
             var encodedData = webcrap.misc.encodeUrlB64(JSON.stringify(this.SearchData));
-            console.log(urlBase);
-            console.log(encodedData);
+            //console.log(urlBase);
+            //console.log(encodedData);
             var url = urlBase + "?sharedsearch=" + encodedData;
             this.ShowMessage("Copy and paste this url:","<a href='" + url + "' >" + url + "</a>");
         }
@@ -315,8 +315,8 @@ export default class AdvancedSearchCoordinator {
             .attr("id", function (d: SearchEdge) { return "searchedge_" + d.Name; })
             .attr("class", function (d: SearchEdge) { return d.Label; })
             .classed("searchedge", true)
-            .on("click", function () { me.onSearchEdgeClicked(this); })
-            .attr("data-open", "searchEdgeDetails");
+            .on("click", function () { me.onSearchEdgeClicked(this); });
+            //.attr("data-open", "searchEdgeDetails");
 
         newedgeg.append("rect")
             .attr("id", function (d: SearchEdge) { return "searchedgebg_" + d.Name; })
@@ -528,6 +528,7 @@ export default class AdvancedSearchCoordinator {
         //Foundation.reInit($('#hopsSlider'));
         d3.select('#minSliderVal').dispatch('change');
         d3.select('#maxSliderVal').dispatch('change');
+        $("#searchEdgeDetails").foundation("open");
     }
 
     onHopsSwitchChanged () {
@@ -812,12 +813,12 @@ export default class AdvancedSearchCoordinator {
                 }
             })
             .classed("searchcondition", true)
-            .attr("data-open", function (d: d3.HierarchyPointNode<ViewTreeNode<ICondition>>) {
-                if (d.data.Item.Type === "AND" || d.data.Item.Type === "OR") {
-                    return "searchAndOrDetails";
-                }
-                return "searchConditionDetails";
-            })
+            //.attr("data-open", function (d: d3.HierarchyPointNode<ViewTreeNode<ICondition>>) {
+            //    if (d.data.Item.Type === "AND" || d.data.Item.Type === "OR") {
+            //        return "searchAndOrDetails";
+            //    }
+            //    return "searchConditionDetails";
+            //})
             .on("click", function (d: d3.HierarchyPointNode<ViewTreeNode<ICondition>>) {
                 if (d.data.Item instanceof AndOrCondition) {
                     me.onSearchAndOrClicked(this);
@@ -964,6 +965,7 @@ export default class AdvancedSearchCoordinator {
         });
 
         (document.getElementById("searchVal") as HTMLInputElement).value = condition.Value;
+        $("#searchConditionDetails").foundation("open");
     }
 
     UpdateConditionDetails (callback) {
@@ -1198,6 +1200,7 @@ export default class AdvancedSearchCoordinator {
         var datum = this.GetItemDatum("searchAndOrDetails") as d3.HierarchyNode<ViewTreeNode<ICondition>>;
 
         datum.data.Item.Type = (document.getElementById("searchAndOr") as HTMLSelectElement).value;
+        $("#searchAndOrDetails").foundation("close");
     }
 
     onSearchAndOrClicked (callingelement) {
@@ -1208,6 +1211,7 @@ export default class AdvancedSearchCoordinator {
         var cond: AndOrCondition = datum.data.Item as AndOrCondition;
 
         (document.getElementById("searchAndOr") as HTMLInputElement).value = cond.Type;
+        $("#searchAndOrDetails").foundation("open");
     };
 
     ClearAlert () {
