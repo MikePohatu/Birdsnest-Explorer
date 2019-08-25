@@ -1,4 +1,4 @@
-﻿var d3 = Object.assign({}, require("d3-selection"), require("d3-force"));
+﻿import * as d3 from "../js/visualizerD3";
 
 interface ISimNode extends d3.SimulationNodeDatum {
     size: number;
@@ -13,6 +13,8 @@ interface ISimNode extends d3.SimulationNodeDatum {
 
 interface ISimLink<SimulationNodeDatum> extends d3.SimulationLinkDatum<SimulationNodeDatum> {
     db_id: string;
+    source: ISimNode;
+    target: ISimNode;
 }
 
 export default class SimulationController {

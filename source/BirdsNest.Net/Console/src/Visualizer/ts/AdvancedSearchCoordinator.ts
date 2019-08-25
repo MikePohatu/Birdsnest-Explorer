@@ -9,15 +9,9 @@ import '../css/advancedsearch.css';
 import * as $ from 'jquery';
 import 'jquery-ui/ui/widgets/autocomplete';
 
-
-//import 'jquery-ui/themes/base/selectmenu.css';
-//import 'jquery-ui/themes/base/menu.css';
-//import 'jquery-ui/themes/base/autocomplete.css';
-
-
 import 'foundation-sites';
-import * as d3 from 'd3';
-//var d3 = Object.assign({}, require("d3-selection"), require("d3-transition"), require("d3-hierarchy"));
+import * as d3 from "../js/visualizerD3";
+
 import { webcrap } from "../../Shared/webcrap/webcrap";
 import {
     Search,
