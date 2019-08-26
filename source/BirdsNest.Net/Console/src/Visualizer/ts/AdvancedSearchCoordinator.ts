@@ -77,6 +77,7 @@ export default class AdvancedSearchCoordinator {
         this.BindAutoComplete();
         bindEnterToButton("searchEdgeDetails", "searchEdgeSaveBtn");
         bindEnterToButton("searchNodeDetails", "searchNodeSaveBtn");
+        bindEnterToButton("searchAndOrDetails", "searchAndOrSaveBtn");
 
         //Bind the enter key for an element to click a button
         function bindEnterToButton(elementid, buttonid) {
@@ -158,7 +159,7 @@ export default class AdvancedSearchCoordinator {
 
     LoadSearchJson(json) {
         //console.log("LoadSearchJson: ");
-        ///console.log(json);
+        //console.log(json);
         this.SearchData = json;
         if (this.SearchData.Condition) {
             this.ConditionRoot = new ViewTreeNode(this.SearchData.Condition, 'Conditions', null);
@@ -183,7 +184,7 @@ export default class AdvancedSearchCoordinator {
 
         if (this.ConditionRoot !== null && IsConditionValid(this.ConditionRoot.Item) === false) {
             alert("You have conditions with incomplete data. This search is cannnot continue");
-            console.log("Invalid condition found. Search cancelled");
+            //console.log("Invalid condition found. Search cancelled");
             return;
         }
         var postdata = JSON.stringify(this.SearchData);
@@ -254,10 +255,8 @@ export default class AdvancedSearchCoordinator {
             .append("g")
             .attr("id", function (d: SearchNode) { return "searchnode_" + d.ID; })
             .classed("searchnode",true)
-            //.attr("id", function (d: SearchNode) { return "searchnode_" + d.Name; })
             .attr("width", this.Diameter)
             .attr("height", this.Diameter)
-            //.attr("data-open", "searchNodeDetails")
             .on("click", function () {
                 d3.event.stopPropagation();
                 me.onSearchNodeClicked(this);
@@ -303,7 +302,7 @@ export default class AdvancedSearchCoordinator {
         }
 
         newnodeg.each(function (d: SearchNode) {
-            console.log("newnode: " + d.ID);
+            //console.log("newnode: " + d.ID);
             $("#searchnode_" + d.ID).foundation();
         });
 
@@ -384,7 +383,7 @@ export default class AdvancedSearchCoordinator {
 
         //init foundation for things like reveal
         newedgeg.each(function (d: SearchEdge) {
-            console.log("newedge: " + d.ID);
+            //console.log("newedge: " + d.ID);
             $("#searchedge_" + d.ID).foundation();
         });
 
@@ -520,7 +519,7 @@ export default class AdvancedSearchCoordinator {
         //update the datum on the callingEl
         var datum = this.UpdateItemDatum("searchNodeDetails", callingEl) as SearchNode;
 
-        console.log(datum);
+        //console.log(datum);
         this.hideNodeControls();
         this.showNodeControls(datum);
     }
@@ -841,7 +840,7 @@ export default class AdvancedSearchCoordinator {
             })
             .classed("searchcondition", true)
             .on("click", function (d: d3.HierarchyPointNode<ViewTreeNode<ICondition>>) {
-                if (d.data.Item instanceof AndOrCondition) {
+                if (d.data.Item.Type == "OR" || d.data.Item.Type == "AND")  {
                     me.onSearchAndOrClicked(this);
                 }
                 else {
@@ -974,7 +973,7 @@ export default class AdvancedSearchCoordinator {
         this.ClearAlert();
         var datum = this.UpdateItemDatum("searchConditionDetails", callingelement) as d3.HierarchyNode<ViewTreeNode<ICondition>>;
         if (datum) { condition = datum.data.Item as ConditionBase; }
-        console.log(datum);
+        //console.log(datum);
 
         (document.getElementById("searchProp") as HTMLSelectElement).disabled = false;
         (document.getElementById("searchVal") as HTMLInputElement).disabled = false;
@@ -991,10 +990,10 @@ export default class AdvancedSearchCoordinator {
     }
 
     UpdateConditionDetails (callback) {
-        console.log("UpdateConditionDetails started");
+        //console.log("UpdateConditionDetails started");
         //console.log(this.SearchData.Nodes);
-        var me = this;
-        var datum = this.GetItemDatum("searchConditionDetails");
+        //var me = this;
+        //var datum = this.GetItemDatum("searchConditionDetails");
 
         var searchItem = document.getElementById("searchItem");
         //var searchProps = document.getElementById("searchProp");
@@ -1029,7 +1028,7 @@ export default class AdvancedSearchCoordinator {
         //console.log("onSearchConditionItemChanged started");
         //console.log(this);
 
-        var me = this;
+        //var me = this;
         var searchItem: HTMLSelectElement = document.getElementById("searchItem") as HTMLSelectElement;
         var searchProps = document.getElementById("searchProp");
         var selectedName = searchItem.options[searchItem.selectedIndex].value;
@@ -1092,14 +1091,10 @@ export default class AdvancedSearchCoordinator {
                 }
             }
         }
-
-
-        //console.log(datum);
-        //var label = datum.
     }
 
     onSearchConditionAddClicked(callingelement: Element, isroot?: boolean) {
-        console.log("onSearchConditionAddClicked started: " + isroot);
+        //console.log("onSearchConditionAddClicked started: " + isroot);
         //var datum;
         var tempnode: ViewTreeNode<ICondition>; 
         if (isroot === true) {
@@ -1110,14 +1105,14 @@ export default class AdvancedSearchCoordinator {
             console.log(addingparent);
             tempnode = new ViewTreeNode(null, 'Conditions', addingparent);
         }
-        console.log('tempnode:');
-        console.log(tempnode);
+        //console.log('tempnode:');
+        //console.log(tempnode);
         this.AddingTemp = tempnode;
         this.ConditionTypeModal.open();
     }
 
     onSearchTypeSaveClicked() {
-        console.log("onSearchTypeSaveClicked started");
+        //console.log("onSearchTypeSaveClicked started");
         var selectedType: string = (document.getElementById("searchConditionTypeList") as HTMLSelectElement).value;
         var cond: ICondition = GetCondition(selectedType);
         this.AddingTemp.Item = cond;
@@ -1159,8 +1154,8 @@ export default class AdvancedSearchCoordinator {
         var datum = this.GetItemDatum(elementid) as d3.HierarchyNode<ViewTreeNode<ICondition>>;
         var treenode = datum.data;
 
-        console.log(datum);
-        console.log("RootID: " + this.ConditionRoot.ID);
+        //console.log(datum);
+        //console.log("RootID: " + this.ConditionRoot.ID);
         if (this.ConditionRoot.ID === treenode.ID) {
             this.ConditionRoot = null;
             this.SearchData.Condition = undefined;
@@ -1227,10 +1222,10 @@ export default class AdvancedSearchCoordinator {
     }
 
     onSearchAndOrClicked (callingelement) {
-        console.log("onSearchAndOrClicked started");
+        //console.log("onSearchAndOrClicked started");
         this.ClearAlert();
         var datum = this.UpdateItemDatum("searchAndOrDetails", callingelement) as d3.HierarchyNode<ViewTreeNode<ICondition>>;
-        console.log(datum);
+        //console.log(datum);
         var cond: AndOrCondition = datum.data.Item as AndOrCondition;
 
         (document.getElementById("searchAndOr") as HTMLInputElement).value = cond.Type;
@@ -1243,8 +1238,8 @@ export default class AdvancedSearchCoordinator {
     }
 
     SetAlert (message: string) {
-        console.log("SetAlert started: " + message);
-        console.log(this.Tooltip);
+        //console.log("SetAlert started: " + message);
+        //console.log(this.Tooltip);
         var alertEl = $("#alertIcon");
         if (this.Tooltip) {
             this.Tooltip.destroy();

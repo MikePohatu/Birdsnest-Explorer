@@ -14,11 +14,11 @@ var searchcoordinator = new AdvancedSearchCoordinator("searchPathSvg", "searchCo
 
 
 var sharedsearchstring = document.getElementById("sharedSearchString").value;
-console.log("sharedsearchstring: " + sharedsearchstring);
+//console.log("sharedsearchstring: " + sharedsearchstring);
 if (webcrap.misc.isNullOrWhitespace(sharedsearchstring) === false) {
     try {
         var json = JSON.parse(webcrap.misc.decodeUrlB64(sharedsearchstring));
-        console.log(json);
+        //console.log(json);
         if (json) {
             searchcoordinator.LoadSearchJson(json);
         }

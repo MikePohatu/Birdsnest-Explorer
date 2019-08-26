@@ -102,7 +102,7 @@ function menuShowHide() {
 }
 
 export function drawGraph(selectid, loaddata) {
-    console.log('drawGraph started');
+    //console.log('drawGraph started');
     //updateNodeLabels("target");
     drawingPane = d3.select("#" + selectid);
 
@@ -1281,7 +1281,7 @@ function onNodeMouseOut(d) {
 }
 
 function onNodeDragged(d) {
-    console.log("onNodeDragged");
+    //console.log("onNodeDragged");
     if (d3.event.dx === 0 && 0 === d3.event.dy) { return; }
     d3.event.sourceEvent.stopPropagation();
     d.dragged = true;

@@ -26,7 +26,7 @@ export default class ViewTreeNode<T> {
 
     Build() {
         if (this.Item === null) {
-            console.log("Cannot build because ViewTreeNode Item is null");
+            console.error("Cannot build because ViewTreeNode Item is null");
             return;
         }
         var me = this;
@@ -40,7 +40,6 @@ export default class ViewTreeNode<T> {
                 var treenode = me.AddChildItem(item);
                 treenode.Index = i;
                 treenode.Build();
-
             }
         }
     }
@@ -84,17 +83,17 @@ export default class ViewTreeNode<T> {
     }
 
     RemoveChild(treenode: ViewTreeNode<T>) {
-        console.log("ViewTreeNode.RemoveChild started: ");
-        console.log(this);
+        //console.log("ViewTreeNode.RemoveChild started: ");
+        //console.log(this);
         var item = this.Item;
         var i;
         for (i = 0; i < this.Children.length; i++) {
             if (treenode.ID === this.Children[i].ID) {
-                console.log('removing child: ' + treenode.ID); 
+                //console.log('removing child: ' + treenode.ID); 
                 var removeditem = item[this.ChildProperty].splice(i, 1);
                 var removednode = this.Children.splice(i, 1);
-                console.log(removeditem);
-                console.log(removednode);
+                //console.log(removeditem);
+                //console.log(removednode);
                 break;
             }
         }
