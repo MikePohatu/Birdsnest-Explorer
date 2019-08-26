@@ -114,6 +114,11 @@ class SearchNode {
     x: number = -100;
     y: number = -100;
     index: number = 0;
+    ID: string = "";
+
+    constructor() {
+        this.ID = webcrap.misc.generateUID();
+    }
 }
 
 class SearchEdge {
@@ -122,6 +127,11 @@ class SearchEdge {
     Direction: string = ">";
     Min: string = "1";
     Max: string = "1";
+    ID: string = "";
+
+    constructor() {
+        this.ID = webcrap.misc.generateUID();
+    }
 }
 
 interface ICondition {

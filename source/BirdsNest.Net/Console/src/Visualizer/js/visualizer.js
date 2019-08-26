@@ -1,9 +1,6 @@
 import '../css/main.css';
 import '../css/visualization.css';
 
-import '@fortawesome/fontawesome-free/js/fontawesome';
-import '@fortawesome/fontawesome-free/js/solid';
-import '@fortawesome/fontawesome-free/js/regular';
 
 import DataQueue from '../ts/DataQueue';
 import Slope from '../ts/Slope';
