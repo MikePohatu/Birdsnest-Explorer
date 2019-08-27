@@ -20,7 +20,8 @@ import {
     AddNode,
     RemoveNode,
     IsConditionValid,
-    GetNode
+    GetNode,
+    ConditionOperators
 } from "./Search";
 import ViewTreeNode from "./ViewTreeNode";
 
@@ -1009,6 +1010,7 @@ export default class AdvancedSearchCoordinator {
         this.UpdateConditionDetails(function () {
             me.ChangeSelectedValue(document.getElementById("searchItem"), condition.Name, function () {
                 me.ChangeSelectedValue(document.getElementById("searchProp"), condition.Property, null);
+                me.ChangeSelectedValue(document.getElementById("searchOperator"), condition.Operator, null);
             });
         });
 
@@ -1020,12 +1022,12 @@ export default class AdvancedSearchCoordinator {
         //console.log("UpdateConditionDetails started");
         //console.log(this.SearchData.Nodes);
         //var me = this;
-        //var datum = this.GetItemDatum("searchConditionDetails");
+        var datum = this.GetItemDatum("searchConditionDetails") as d3.HierarchyNode<ViewTreeNode<ICondition>>;
+        //console.log(datum);
 
+        //*** setup the searchItem list
         var searchItem = document.getElementById("searchItem");
-        //var searchProps = document.getElementById("searchProp");
         webcrap.dom.ClearOptions(searchItem);
-        //webcrap.dom.ClearOptions(searchProps);
 
         //set empty top option
         var option = webcrap.dom.AddOption(searchItem, "", "");
@@ -1044,6 +1046,17 @@ export default class AdvancedSearchCoordinator {
         this.SearchData.Edges.forEach(function (item) {
             webcrap.dom.AddOption(searchItem, item.Name, item.Name);
         });
+
+        //*** setup the searchOperator list
+        var searchOperator = document.getElementById("searchOperator");
+        webcrap.dom.ClearOptions(searchOperator);
+
+        var cond: ICondition = datum.data.Item;
+        //console.log(ConditionOperators[cond.Type]);
+        ConditionOperators[cond.Type].forEach(function (operator) {
+            webcrap.dom.AddOption(searchOperator, operator, operator);
+        });
+
 
         if (typeof callback === "function") {
             callback();
@@ -1206,6 +1219,7 @@ export default class AdvancedSearchCoordinator {
         var newname = (document.getElementById("searchItem") as HTMLSelectElement).value;
         var newprop = (document.getElementById("searchProp") as HTMLSelectElement).value;
         var newval = (document.getElementById("searchVal") as HTMLInputElement).value;
+        var newop = (document.getElementById("searchOperator") as HTMLInputElement).value;
 
         if (webcrap.misc.isNullOrWhitespace(newname) || webcrap.misc.isNullOrWhitespace(newprop) || webcrap.misc.isNullOrWhitespace(newval)) {
             this.SetAlert("Name, property, or value is empty. Please set a value");
@@ -1214,6 +1228,7 @@ export default class AdvancedSearchCoordinator {
             condition.Name = newname;
             condition.Property = newprop;
             condition.Value = newval;
+            condition.Operator = newop;
             this.ConditionDetailsModal.close();
             this.UpdateConditions();
         }

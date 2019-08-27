@@ -170,6 +170,11 @@ class OrCondition extends AndOrCondition {
     Type: string = "OR";
 }
 
+var ConditionOperators = {
+    "MATH": ["=", ">", "<", "!="],
+    "STRING": ["=", "StartsWith", "EndsWith", "Contains"]
+}
+
 class ConditionBase implements ICondition {
     Type: string = "";
     Name: string = "";
@@ -245,5 +250,6 @@ export {
     MoveNodeRight,
     MoveNodeLeft,
     IsConditionValid,
-    GetNode
+    GetNode,
+    ConditionOperators
 }

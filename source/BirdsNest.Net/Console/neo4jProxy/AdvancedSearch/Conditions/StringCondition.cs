@@ -8,7 +8,7 @@ namespace Console.neo4jProxy.AdvancedSearch.Conditions
 {
     public class StringCondition: ICondition
     {
-        private string _comparator = "=";
+        private string _operator = "=";
 
         [JsonProperty("Type")]
         public string Type { get { return "STRING"; } }
@@ -22,16 +22,16 @@ namespace Console.neo4jProxy.AdvancedSearch.Conditions
         [JsonProperty("Value")]
         public string Value { get; set; }
 
-        [JsonProperty("Comparator")]
-        public string Comparator
+        [JsonProperty("Operator")]
+        public string Operator
         {
-            get { return this._comparator; }
+            get { return this._operator; }
             set { this.SetComparator(value); }
         }
 
         public string ToSearchString()
         {
-            return this.Name + "." + this.Property + " " + this.Comparator + " '" + this.Value + "'";
+            return this.Name + "." + this.Property + " " + this.Operator + " '" + this.Value + "'";
         }
 
         private void SetComparator(string s)
@@ -39,19 +39,19 @@ namespace Console.neo4jProxy.AdvancedSearch.Conditions
             switch (s.ToUpper())
             {
                 case "=":
-                    this._comparator = "=";
+                    this._operator = "=";
                     break;
                 case "EQUALS":
-                    this._comparator = "=";
+                    this._operator = "=";
                     break;
                 case "CONTAINS":
-                    this._comparator = "CONTAINS";
+                    this._operator = "CONTAINS";
                     break;
                 case "STARTSWITH":
-                    this._comparator = "STARTS WITH";
+                    this._operator = "STARTS WITH";
                     break;
                 case "ENDSWITH":
-                    this._comparator = "ENDS WITH";
+                    this._operator = "ENDS WITH";
                     break;
                 default:
                     break;
