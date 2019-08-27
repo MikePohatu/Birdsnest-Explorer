@@ -622,7 +622,7 @@ export default class AdvancedSearchCoordinator {
         node.Label = (document.getElementById("nodeType") as HTMLSelectElement).value;
         //console.log(node);
         this.UpdateNodes(false);
-        $('#searchNodeDetails').foundation('close');
+        this.NodeDetailsModal.close();
     }
 
     onSearchNodeDelBtnClicked (callingitem) {
@@ -632,7 +632,7 @@ export default class AdvancedSearchCoordinator {
         var nodedatum = d3.select("#searchNodeDetails").datum() as SearchNode;
         //console.log(nodedatum);
         if (this.deleteSearchNode(nodedatum)) {
-            $('#searchNodeDetails').foundation('close');
+            this.NodeDetailsModal.close();
         }
     }
 
@@ -680,13 +680,14 @@ export default class AdvancedSearchCoordinator {
     }
 
     onSearchEdgeSaveBtnClicked () {
-        //console.log("onSearchNodeSaveBtnClicked started");
+        //console.log("onSearchEdgeSaveBtnClicked started");
         //console.log(this);
         var me = this;
 
         var edge: SearchEdge = d3.select("#searchEdgeDetails").datum() as SearchEdge;
-        var edgeEl = d3.select("#searchedge_" + edge.Name);
+        var edgeEl = d3.select("#searchedge_" + edge.ID);
 
+        //console.log("#searchedge_" + edge.ID);
         //console.log(edge);
         //console.log(edgeEl);
 
@@ -706,11 +707,11 @@ export default class AdvancedSearchCoordinator {
 
         //remove the edge so it can be readded with new details    
         edgeEl.remove();
-        //setTimeout(function () {
+        setTimeout(function () {
             me.UpdateEdges(false);
-        //}, 10);
+        }, 10);
 
-        $('#searchEdgeDetails').foundation('close');
+        this.EdgeDetailsModal.close();
     }
 
     UpdateNodeProps () {
@@ -1159,14 +1160,14 @@ export default class AdvancedSearchCoordinator {
     onSearchConditionDeleteClicked() {
         if (confirm('Are you sure you want to delete this condition?')) {
             this.DeleteSearchCondition('searchConditionDetails');
-            $('#searchConditionDetails').foundation('close');
+            this.ConditionDetailsModal.close();
         }
     }
 
     onSearchAndOrDeleteClicked() {
         if (confirm('Are you sure you want to delete this group and all conditions inside?')) {
             this.DeleteSearchCondition('searchAndOrDetails');
-            $('#searchAndOrDetails').foundation('close');
+            this.SearchAndOrDetailsModal.close();
         }
         
     }
@@ -1213,7 +1214,6 @@ export default class AdvancedSearchCoordinator {
             condition.Name = newname;
             condition.Property = newprop;
             condition.Value = newval;
-            //$('#searchConditionDetails').foundation('close');
             this.ConditionDetailsModal.close();
             this.UpdateConditions();
         }

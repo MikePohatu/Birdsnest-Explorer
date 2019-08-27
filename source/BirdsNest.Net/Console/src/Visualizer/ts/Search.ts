@@ -29,8 +29,8 @@ function AddNode(search: Search) {
 
 //remove the node and return the index of the node that was removed
 function RemoveNode(node: SearchNode, search: Search) {
-    console.log("RemoveNode started");
-    console.log(node);
+    //console.log("RemoveNode started");
+    //console.log(node);
     var foundindex = -1;
     var i;
     for (i = 0; i < search.Nodes.length; i++) {
@@ -40,7 +40,7 @@ function RemoveNode(node: SearchNode, search: Search) {
         }
         else {
             if (search.Nodes[i] === node) {
-                console.log("found node");
+                //console.log("found node");
                 foundindex = i;
                 if (i === 0) {
                     search.Nodes.shift(); //remove the first node
