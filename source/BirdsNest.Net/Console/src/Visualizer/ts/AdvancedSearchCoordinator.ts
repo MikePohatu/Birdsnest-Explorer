@@ -476,7 +476,7 @@ export default class AdvancedSearchCoordinator {
             .attr("width", controlIconDimension)
             .attr("class", "far fa-trash-alt");
 
-        if (searchnode.index < this.SearchData.AddedNodes)
+        if (searchnode.index < this.SearchData.Nodes.length)
             controls.append("g")
                 .classed("viewcontrol", true)
                 .classed("nodecontrol", true)

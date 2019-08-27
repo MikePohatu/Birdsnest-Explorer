@@ -3,9 +3,9 @@
 //pojo to hold the search data
 class Search {
     Condition: ICondition;
-    Nodes = [];
-    Edges = [];
-    AddedNodes = 0;
+    Nodes: SearchNode[] = [];
+    Edges: SearchEdge[] = [];
+    AddedNodes: number = 0;
 }
 
 function AddNode(search: Search) {
@@ -31,6 +31,7 @@ function AddNode(search: Search) {
 function RemoveNode(node: SearchNode, search: Search) {
     //console.log("RemoveNode started");
     //console.log(node);
+    //console.log(search);
     var foundindex = -1;
     var i;
     for (i = 0; i < search.Nodes.length; i++) {
@@ -46,6 +47,7 @@ function RemoveNode(node: SearchNode, search: Search) {
                     search.Nodes.shift(); //remove the first node
                     if (search.Edges.length > 0) { search.Edges.shift(); } //if there is an edge, remove that too
 
+                    //console.log(search);
                     //we're done
                     return foundindex;
                 }
@@ -54,12 +56,12 @@ function RemoveNode(node: SearchNode, search: Search) {
     }
 
     if (foundindex !== -1) {
-        console.log("popping node");
+        //console.log("popping node");
         // pop off the end if the node wasn't first i.e hasn't been removed with shift
         search.Nodes.pop();
         search.Edges.pop();
     }
-
+    //console.log(search);
     return foundindex;
 }
 
