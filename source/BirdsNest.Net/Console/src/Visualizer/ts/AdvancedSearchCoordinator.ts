@@ -141,8 +141,8 @@ export default class AdvancedSearchCoordinator {
         d3.select("#searchAndOrDeleteBtn").on("click", function () {
             me.onSearchAndOrDeleteClicked();
         });
-        d3.select("#searchTypeSelectSaveBtn").on("click", function () {
-            me.onSearchTypeSaveClicked();
+        d3.select("#searchConditionTypeSelectSaveBtn").on("click", function () {
+            me.onSearchConditionTypeSaveClicked();
         });
 
         me.UpdateNodeLabels();
@@ -961,6 +961,32 @@ export default class AdvancedSearchCoordinator {
                 d.y = y;
                 return "translate(" + x + "," + (y + me.YSpacing / 2) + ")";
             });
+
+        var condgroups = viewel.selectAll(".conditiongroup")
+            .data(nodes, function (d: d3.HierarchyPointNode<ViewTreeNode<ICondition>>) { return d.data.ID; });
+
+        //remove the AND/OR labels and readd them
+        condgroups.selectAll(".and-or-label").remove();
+
+        condgroups.each(function (d: d3.HierarchyPointNode<ViewTreeNode<AndOrCondition>>, i: number) {
+            //console.log(this);
+            var treenode: ViewTreeNode<AndOrCondition> = d.data;
+            //console.log(treenode);
+            if (treenode.Children !== null && treenode.Children.length > 1) {
+                var j;
+                var labelx = treenode.Children[0].RectWidth;
+                for (j = 1; j < treenode.Children.length; j++) {
+
+                    d3.select(this).append("text")
+                        .text(treenode.Item.Type)
+                        .classed("and-or-label", true)
+                        .attr("y", rectheight / 2)
+                        .attr("x", labelx + xspacing / 2 - xpadding);
+
+                    labelx = labelx + xspacing + treenode.Children[j].RectWidth;
+                }
+            }
+        });
     }
 
 
@@ -1102,7 +1128,7 @@ export default class AdvancedSearchCoordinator {
         }
         else {
             var addingparent = (this.GetElementDatum(callingelement) as d3.HierarchyNode<ViewTreeNode<ICondition>>).data;
-            console.log(addingparent);
+            //console.log(addingparent);
             tempnode = new ViewTreeNode(null, 'Conditions', addingparent);
         }
         //console.log('tempnode:');
@@ -1111,8 +1137,8 @@ export default class AdvancedSearchCoordinator {
         this.ConditionTypeModal.open();
     }
 
-    onSearchTypeSaveClicked() {
-        //console.log("onSearchTypeSaveClicked started");
+    onSearchConditionTypeSaveClicked() {
+        //console.log("onSearchConditionTypeSaveClicked started");
         var selectedType: string = (document.getElementById("searchConditionTypeList") as HTMLSelectElement).value;
         var cond: ICondition = GetCondition(selectedType);
         this.AddingTemp.Item = cond;
@@ -1126,8 +1152,7 @@ export default class AdvancedSearchCoordinator {
             this.SearchData.Condition = this.ConditionRoot.Item;
             this.ConditionRoot.Build();
         }
-        $('#searchConditionTypeSelect').foundation('close');
-        
+        this.ConditionTypeModal.close();
         this.UpdateConditions();
     }
 
@@ -1219,6 +1244,7 @@ export default class AdvancedSearchCoordinator {
 
         datum.data.Item.Type = (document.getElementById("searchAndOr") as HTMLSelectElement).value;
         this.SearchAndOrDetailsModal.close();
+        this.UpdateConditions();
     }
 
     onSearchAndOrClicked (callingelement) {

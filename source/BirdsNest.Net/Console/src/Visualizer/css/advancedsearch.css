@@ -72,3 +72,12 @@
 .ui-autocomplete {
     z-index: 4000 !important
 }
+
+text.and-or-label {
+    stroke-width: 0;
+    font-weight: bold;
+    font-size: 14px;
+    color: #474747;
+    stroke: #474747;
+    fill: #474747;
+}
