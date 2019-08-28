@@ -1,5 +1,9 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.Web">
-
+  <Target Name="PrepublishScript" BeforeTargets="PrepareForPublish">
+    <Exec Command="npm install" />
+    <Exec Command="npm run prod" />
+  </Target>
+  
   <PropertyGroup>
     <TargetFramework>netcoreapp2.1</TargetFramework>
     <Company>20Road Limited</Company>
@@ -112,16 +116,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Include="wwwroot\css\app.css" />
     <None Include="wwwroot\css\custom.css" />
-    <None Include="wwwroot\css\motion-ui.css" />
-    <None Include="wwwroot\css\overrides.css" />
     <None Include="wwwroot\css\plugins.css" />
-    <None Include="wwwroot\css\site.css" />
-    <None Include="wwwroot\css\site.min.css" />
-    <None Include="wwwroot\visualizer\css\advancedsearch.css" />
-    <None Include="wwwroot\visualizer\css\main.css" />
-    <None Include="wwwroot\visualizer\css\visualization.css" />
   </ItemGroup>
 
 </Project>
