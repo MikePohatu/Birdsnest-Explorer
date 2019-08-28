@@ -27,8 +27,9 @@
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "webpack --progress --profile --mode=development --json > ./stats/stats.json",
     "build": "webpack --progress --profile --json > ./stats/stats.json",
-    "watch": "webpack --progress --profile --watch",
-    "production": "webpack --progress --profile --mode production"
+    "watch": "webpack --progress --profile --mode=development --watch",
+    "prod": "webpack --progress --profile --mode=production"
   }
 }

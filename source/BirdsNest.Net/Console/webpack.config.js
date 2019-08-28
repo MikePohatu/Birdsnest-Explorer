@@ -4,7 +4,7 @@ const path = require('path');
 const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 
-module.exports = {
+var config = {
     entry: {
         visualizer: './src/visualizer-entry.js',
         reports: './src/reports-entry.js',
@@ -72,9 +72,7 @@ module.exports = {
         })
     ],
     optimization: {
-        minimize: false, // <---- disables uglify.
-        // minimizer: [new UglifyJsPlugin()] if you want to customize it.
-        //splitChunks config **still needs to be figured out
+        //minimize: env.production, // only --env.production used
         splitChunks: {
             cacheGroups: {
                 d3: {
@@ -92,4 +90,26 @@ module.exports = {
             }
         }
     }
+};
+
+module.exports = (env, argv) => {
+    if (argv.mode === 'development') {
+        config.optimization.minimize = false;
+        config.plugins.push(
+            new webpack.DefinePlugin({
+                'PRODUCTION': JSON.stringify(false),
+                'ENV': JSON.stringify(argv.mode)
+            }));
+    }
+
+    if (argv.mode === 'production') {
+        config.optimization.minimize = true;
+        config.plugins.push(
+            new webpack.DefinePlugin({
+                'PRODUCTION': JSON.stringify(true),
+                'ENV': JSON.stringify(argv.mode)
+            }));
+    }
+
+    return config;
 };

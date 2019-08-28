@@ -19,3 +19,7 @@ import './Shared/css/app.css';
 import './Shared/css/overrides.css';
 
 $(document).foundation();
+
+if (!PRODUCTION) {
+    console.log("Birdsnest Console loaded. Mode: " + ENV);
+}
