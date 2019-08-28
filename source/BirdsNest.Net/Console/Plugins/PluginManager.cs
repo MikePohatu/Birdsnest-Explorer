@@ -46,22 +46,28 @@ namespace Console.Plugins
                     string json = File.ReadAllText(filename);
                     Plugin plug = JsonConvert.DeserializeObject<Plugin>(json);
                     plugins.Add(plug.Name, plug);
-                    nodelabels.AddRange(plug.NodeLabels);
-                    edgelabels.AddRange(plug.EdgeLabels);
+                    if (plug.NodeLabels != null) { nodelabels.AddRange(plug.NodeLabels); }
+                    if (plug.EdgeLabels != null) { edgelabels.AddRange(plug.EdgeLabels); }
 
-                    foreach (string key in plug.Icons.Keys)
+                    if (plug.Icons != null)
                     {
-                        if (!icons.TryAdd(key, plug.Icons[key]))
+                        foreach (string key in plug.Icons.Keys)
                         {
-                            this._logger.LogError("Error loading icon: " + key);
+                            if (!icons.TryAdd(key, plug.Icons[key]))
+                            {
+                                this._logger.LogError("Error loading icon: " + key);
+                            }
                         }
                     }
 
-                    foreach (string key in plug.SubTypeProperties.Keys)
+                    if (plug.SubTypeProperties != null)
                     {
-                        if (!subtypes.TryAdd(key, plug.SubTypeProperties[key]))
+                        foreach (string key in plug.SubTypeProperties.Keys)
                         {
-                            this._logger.LogError("Error loading subtype: " + key);
+                            if (!subtypes.TryAdd(key, plug.SubTypeProperties[key]))
+                            {
+                                this._logger.LogError("Error loading subtype: " + key);
+                            }
                         }
                     }
                 }
