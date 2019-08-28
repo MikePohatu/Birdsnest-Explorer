@@ -27,4 +27,4 @@ if (webcrap.misc.isNullOrWhitespace(sharedsearchstring) === false) {
         console.error("Unable to parse shared search string");
     }
 }
-//$(document).foundation();
+
