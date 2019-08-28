@@ -45,6 +45,10 @@ namespace Console.Plugins
                     this._logger.LogInformation("Loading " + filename);
                     string json = File.ReadAllText(filename);
                     Plugin plug = JsonConvert.DeserializeObject<Plugin>(json);
+                    if (string.IsNullOrWhiteSpace(plug.Name))
+                    {
+                        throw new ArgumentException("Plugin name is not set. Name is required");
+                    }
                     plugins.Add(plug.Name, plug);
                     if (plug.NodeLabels != null) { nodelabels.AddRange(plug.NodeLabels); }
                     if (plug.EdgeLabels != null) { edgelabels.AddRange(plug.EdgeLabels); }
