@@ -11,7 +11,7 @@ import DatumStore from '../ts/DatumStore';
 import $ from 'jquery';
 
 import * as d3 from "./visualizerD3";
-import { webcrap } from '../../Shared/webcrap/webcrap';
+import { webcrap } from '../../shared/webcrap/webcrap';
 
 var drawingPane;
 var zoomLayer;

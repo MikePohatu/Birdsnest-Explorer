@@ -1,8 +1,8 @@
-﻿import * as vis from './Visualizer/js/visualizer';
-import AdvancedSearchCoordinator from './Visualizer/ts/AdvancedSearchCoordinator';
+﻿import * as vis from './visualizer/js/visualizer';
+import AdvancedSearchCoordinator from './visualizer/ts/AdvancedSearchCoordinator';
 
 import $ from 'jquery';
-import { webcrap } from "./Shared/webcrap/webcrap";
+import { webcrap } from "./shared/webcrap/webcrap";
 
 //temporary to dealing with legacy crap
 global.vis = vis;

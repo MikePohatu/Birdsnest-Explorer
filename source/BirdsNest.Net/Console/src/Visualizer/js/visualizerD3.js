@@ -4,7 +4,7 @@
 //this helps reduce the size of d3
 
 import { event, select, selectAll, mouse } from "d3-selection";
-import { hierarchy, tree, HierarchyPointNode } from "d3-hierarchy";
+import { hierarchy, tree, HierarchyPointNode, HierarchyNode } from "d3-hierarchy";
 import { zoom, zoomTransform } from "d3-zoom";
 import { drag } from "d3-drag";
 import { forceLink, forceSimulation, forceCollide, SimulationNodeDatum } from "d3-force";
@@ -14,7 +14,7 @@ import { interpolateNumber } from "d3-interpolate";
 
 export {
     event, select, selectAll, mouse,
-    hierarchy, tree, HierarchyPointNode,
+    hierarchy, tree, HierarchyPointNode, HierarchyNode,
     zoom, zoomTransform,
     drag,
     forceLink, forceSimulation, forceCollide, SimulationNodeDatum,

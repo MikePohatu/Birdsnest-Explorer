@@ -6,7 +6,7 @@ import 'jquery-ui/ui/widgets/autocomplete';
 import 'foundation-sites';
 import * as d3 from "../js/visualizerD3";
 
-import { webcrap } from "../../Shared/webcrap/webcrap";
+import { webcrap } from "../../shared/webcrap/webcrap";
 import {
     Search,
     ICondition,
@@ -240,7 +240,7 @@ export default class AdvancedSearchCoordinator {
     ShowMessage(message: string, link?: string) {
         document.getElementById('message').innerHTML = message;
         document.getElementById('messageLink').innerHTML = link;
-        $('#searchMessage').foundation('open');
+        this.SearchMessageModal.open();
     }
 
     UpdateNodes(animate: boolean) {
@@ -1270,7 +1270,7 @@ export default class AdvancedSearchCoordinator {
         var cond: AndOrCondition = datum.data.Item as AndOrCondition;
 
         (document.getElementById("searchAndOr") as HTMLInputElement).value = cond.Type;
-        $("#searchAndOrDetails").foundation("open");
+        this.SearchAndOrDetailsModal.open();
     };
 
     ClearAlert () {

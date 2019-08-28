@@ -8,7 +8,8 @@ var config = {
     entry: {
         visualizer: './src/visualizer-entry.js',
         reports: './src/reports-entry.js',
-        console: './src/console-entry.js'
+        console: './src/console-entry.js',
+        admin: './src/admin-entry.js'
     },
     output: {
         filename: '[name]-bundle.js',

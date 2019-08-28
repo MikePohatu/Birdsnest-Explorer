@@ -15,8 +15,8 @@ import 'jquery-ui/themes/base/theme.css';
 import 'motion-ui/dist/motion-ui.css';
 import 'foundation-sites/dist/css/foundation.css';
 
-import './Shared/css/app.css';
-import './Shared/css/overrides.css';
+import './shared/css/app.css';
+import './shared/css/overrides.css';
 
 $(document).foundation();
 

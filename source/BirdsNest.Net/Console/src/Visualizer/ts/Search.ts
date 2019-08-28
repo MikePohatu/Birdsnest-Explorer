@@ -1,4 +1,4 @@
-﻿import { webcrap } from "../../Shared/webcrap/webcrap";
+﻿import { webcrap } from "../../shared/webcrap/webcrap";
 
 //pojo to hold the search data
 class Search {
