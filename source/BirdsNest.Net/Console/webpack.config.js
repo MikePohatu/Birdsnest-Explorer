@@ -29,14 +29,7 @@ module.exports = {
                 test: /\.css$/i,
                 use: [
                     {
-                        loader: MiniCssExtractPlugin.loader,
-                        options: {
-                            outputPath: 'css'
-                        //    // you can specify a publicPath here
-                        //    // by default it uses publicPath in webpackOptions.output
-                        //    //publicPath: '../',
-                        //    hmr: process.env.NODE_ENV === 'development'
-                        }
+                        loader: MiniCssExtractPlugin.loader
                     },
                     {
                         loader: 'css-loader'
@@ -69,7 +62,7 @@ module.exports = {
             // Options similar to the same options in webpackOptions.output
             // all options are optional
             filename: 'css/[name]-bundle.css',
-            chunkFilename: '[id].css',
+            chunkFilename: 'css/[name]-bundle.css',
             ignoreOrder: false // Enable to remove warnings about conflicting order
         }),
         new BundleAnalyzerPlugin({
@@ -79,7 +72,24 @@ module.exports = {
         })
     ],
     optimization: {
-        minimize: false // <---- disables uglify.
+        minimize: false, // <---- disables uglify.
         // minimizer: [new UglifyJsPlugin()] if you want to customize it.
+        //splitChunks config **still needs to be figured out
+        splitChunks: {
+            cacheGroups: {
+                d3: {
+                    test: /[\\/]node_modules[\\/]((d3).*)[\\/]/,
+                    name: "d3",
+                    chunks: "all",
+                    priority: -10
+                },
+                vendors: {
+                    test: /[\\/]node_modules[\\/]/,
+                    name: "common-vendor",
+                    chunks: "all",
+                    priority: -20
+                }
+            }
+        }
     }
 };
