@@ -8,7 +8,7 @@ namespace Console.neo4jProxy.AdvancedSearch
         private int _valuecount = 0;
         private Dictionary<string, string> _valuetokens = new Dictionary<string, string>();
 
-        public string FieldName { get; set; } = "props";
+        //public string FieldName { get; set; } = "props";
         public Dictionary<string, string> NameTokens { get; private set; } = new Dictionary<string, string>();
         public Dictionary<string, object> Properties { get; private set; } = new Dictionary<string, object>();
 
@@ -49,7 +49,7 @@ namespace Console.neo4jProxy.AdvancedSearch
                 this.Properties.Add(token, currentvalue);
             }
 
-            return "$"+this.FieldName + "." + token;
+            return "$" + token;
         }
     }
 }
