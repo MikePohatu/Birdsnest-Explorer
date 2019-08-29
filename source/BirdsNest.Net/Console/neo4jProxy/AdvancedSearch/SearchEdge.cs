@@ -23,13 +23,31 @@ namespace Console.neo4jProxy.AdvancedSearch
         [JsonProperty("Max")]
         public int Max { get; set; } = -1;
 
+        public string TokenizedName { get; set; }
+
         public string ToSearchString()
         {
+            return this.BuildSearchString(false);
+        }
+
+        public string ToTokenizedSearchString()
+        {
+            return this.BuildSearchString(true);
+        }
+
+        private string BuildSearchString(bool tokenized)
+        {
+            if (tokenized && string.IsNullOrWhiteSpace(this.TokenizedName))
+            {
+                throw new ArgumentException("Cannot build Edge tokenized search string. Edge has not been tokenized");
+            }
+
+            string name = tokenized ? this.TokenizedName : this.Name;
+
             string left = string.Empty;
             string right = string.Empty;
             string pathlength = string.Empty;
-            string label = string.IsNullOrWhiteSpace(this.Label) ? string.Empty : ":" + this.Label;
-
+            string label = string.IsNullOrWhiteSpace(this.Label) ? string.Empty : ":" + this.Label;           
             string min = "";
             string max = "";
                 
@@ -53,7 +71,12 @@ namespace Console.neo4jProxy.AdvancedSearch
             else
             { left = "<"; }
 
-            return left + "-[" + this.Name + label + pathlength + "]-" + right;
+            return left + "-[" + name + label + pathlength + "]-" + right;
+        }
+
+        public void Tokenize(SearchTokens tokens)
+        {
+            this.TokenizedName = tokens.GetNameToken(this.Name);
         }
     }
 }

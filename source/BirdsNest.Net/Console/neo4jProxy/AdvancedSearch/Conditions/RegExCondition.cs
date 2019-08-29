@@ -20,9 +20,23 @@ namespace Console.neo4jProxy.AdvancedSearch.Conditions
         [JsonProperty("Value")]
         public string Value { get; set; }
 
+        public string TokenizedName { get; set; }
+        public string TokenizedValue { get; set; }
+
         public string ToSearchString()
         {
             return string.Empty;
+        }
+
+        public string ToTokenizedSearchString()
+        {
+            return string.Empty;
+        }
+
+        public void Tokenize(SearchTokens tokens)
+        {
+            this.TokenizedName = tokens.GetNameToken(this.Name);
+            //this.TokenizedValue = tokens.GetValueToken(this.Value);
         }
     }
 }

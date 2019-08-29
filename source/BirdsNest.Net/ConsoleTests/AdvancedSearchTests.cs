@@ -21,7 +21,7 @@ namespace ConsoleTests
                 ""Name"": ""n1"",
                 ""Property"": ""tpropn1"",
                 ""Value"": ""testn1"",
-                ""Comparator"": ""EQUALS""
+                ""Operator"": ""EQUALS""
             },
             {
                 ""Type"": ""OR"",
@@ -31,14 +31,14 @@ namespace ConsoleTests
                         ""Name"": ""n2"",
                         ""Property"": ""tpropn2"",
                         ""Value"": ""testn2"",
-                        ""Comparator"": ""STARTSWITH""
+                        ""Operator"": ""STARTSWITH""
                     },
                     {
                         ""Type"": ""STRING"",
                         ""Name"": ""r1"",
                         ""Property"": ""tpropr1"",
                         ""Value"": ""testr1"",
-                        ""Comparator"": ""EQUALS""
+                        ""Operator"": ""EQUALS""
                     }
                 ]
             }
@@ -63,14 +63,14 @@ namespace ConsoleTests
                 ""Name"": ""n2"",
                 ""Property"": ""tpropn2"",
                 ""Value"": ""testn2"",
-                ""Comparator"": ""STARTSWITH""
+                ""Operator"": ""STARTSWITH""
             },
             {
                 ""Type"": ""STRING"",
                 ""Name"": ""r1"",
                 ""Property"": ""tpropr1"",
                 ""Value"": ""testr1"",
-                ""Comparator"": ""EQUALS""
+                ""Operator"": ""EQUALS""
             }]
         }]
     }
@@ -93,14 +93,14 @@ namespace ConsoleTests
                 ""Name"": ""n2"",
                 ""Property"": ""tpropn2"",
                 ""Value"": ""testn2"",
-                ""Comparator"": ""STARTSWITH""
+                ""Operator"": ""STARTSWITH""
             },
             {
                 ""Type"": ""STRING"",
                 ""Name"": ""r1"",
                 ""Property"": ""tpropr1"",
                 ""Value"": ""testr1"",
-                ""Comparator"": ""EQUALS""
+                ""Operator"": ""EQUALS""
             }]
         }]
     }
@@ -123,21 +123,21 @@ namespace ConsoleTests
                 ""Name"": ""n2"",
                 ""Property"": ""tpropn2"",
                 ""Value"": ""testn2"",
-                ""Comparator"": ""STARTSWITH""
+                ""Operator"": ""STARTSWITH""
             },
             {
                 ""Type"": ""STRING"",
                 ""Name"": ""r1"",
                 ""Property"": ""tpropr1"",
                 ""Value"": ""testr1"",
-                ""Comparator"": ""EQUALS""
+                ""Operator"": ""EQUALS""
             },
             {
                 ""Type"": ""STRING"",
                 ""Name"": ""r2"",
                 ""Property"": ""tpropr2"",
                 ""Value"": ""testr2"",
-                ""Comparator"": ""EQUALS""
+                ""Operator"": ""EQUALS""
             }]
         }]
     }

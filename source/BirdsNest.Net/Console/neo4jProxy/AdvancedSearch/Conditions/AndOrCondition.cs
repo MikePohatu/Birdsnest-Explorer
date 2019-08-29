@@ -21,5 +21,21 @@ namespace Console.neo4jProxy.AdvancedSearch.Conditions
             if (searchStrings.Count > 0) { s = "(" + string.Join(" " + this.Type + " ", searchStrings) + ")"; }
             return s;
         }
+
+        public string ToTokenizedSearchString()
+        {
+            string s = string.Empty;
+            List<string> searchStrings = this.Conditions.Select(o => o.ToTokenizedSearchString()).ToList();
+            if (searchStrings.Count > 0) { s = "(" + string.Join(" " + this.Type + " ", searchStrings) + ")"; }
+            return s;
+        }
+
+        public void Tokenize(SearchTokens tokens)
+        {
+            foreach (ICondition cond in this.Conditions)
+            {
+                cond.Tokenize(tokens);
+            }
+        }
     }
 }

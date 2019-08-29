@@ -29,9 +29,23 @@ namespace Console.neo4jProxy.AdvancedSearch.Conditions
             set { this.SetComparator(value); }
         }
 
+        public string TokenizedName { get; set; }
+        public string TokenizedValue { get; set; }
+
         public string ToSearchString()
         {
             return this.Name + "." + this.Property + " " + this.Operator + " '" + this.Value + "'";
+        }
+
+        public string ToTokenizedSearchString()
+        {
+            return this.TokenizedName + "." + this.Property + " " + this.Operator + " " + this.TokenizedValue + "";
+        }
+
+        public void Tokenize(SearchTokens tokens)
+        {
+            this.TokenizedName = tokens.GetNameToken(this.Name);
+            this.TokenizedValue = tokens.GetValueToken(this.Value);
         }
 
         private void SetComparator(string s)
@@ -54,7 +68,7 @@ namespace Console.neo4jProxy.AdvancedSearch.Conditions
                     this._operator = "ENDS WITH";
                     break;
                 default:
-                    break;
+                    throw new ArgumentException("Invalid operator: " + s);
             }
         }
     }

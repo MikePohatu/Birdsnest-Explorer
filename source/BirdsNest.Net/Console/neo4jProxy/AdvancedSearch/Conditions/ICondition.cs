@@ -12,5 +12,7 @@ namespace Console.neo4jProxy.AdvancedSearch.Conditions
         string Type { get; }
 
         string ToSearchString();
+        string ToTokenizedSearchString();
+        void Tokenize(SearchTokens tokens);
     }
 }

@@ -496,7 +496,7 @@ namespace Console.neo4jProxy
             }
         }
 
-        public ResultSet AdvancedSearch(neo4jProxy.AdvancedSearch.Search search)
+        public ResultSet AdvancedSearch(AdvancedSearch.Search search)
         {
             //validate the types/labels 
             List<string> edgetypes = GetEdgeLabels();
@@ -507,18 +507,11 @@ namespace Console.neo4jProxy
                 ResultSet returnedresults = new ResultSet();
                 try
                 {
-                    string query = search.ToSearchString();
-                    //var props = new
-                    //{
-                    //    sourceprop = sourceprop == null ? string.Empty : sourceprop,
-                    //    sourceval = sourceval == null ? string.Empty : sourceval,
-                    //    tarprop = tarprop == null ? string.Empty : tarprop,
-                    //    tarval = tarval == null ? string.Empty : tarval
-                    //};
+                    string query = search.ToTokenizedSearchString();
 
                     session.ReadTransaction(tx =>
                     {
-                        IStatementResult dbresult = tx.Run(query);
+                        IStatementResult dbresult = tx.Run(query, search.Tokens.Properties);
                         returnedresults.Append(ParseResults(dbresult));
                     });
                 }
