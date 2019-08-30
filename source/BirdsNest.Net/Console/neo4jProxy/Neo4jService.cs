@@ -6,7 +6,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using common;
 using Neo4j.Driver.V1;
-using Newtonsoft.Json;
+using System.Text.RegularExpressions;
 using Microsoft.Extensions.Logging;
 using Console.Plugins;
 
@@ -599,7 +599,7 @@ namespace Console.neo4jProxy
 
         public IEnumerable<string> SearchNodeNames(string term, int searchlimit)
         {
-            string regexterm = "(?i)" + term + ".*";
+            string regexterm = "(?i)" + Regex.Escape(term) + ".*";
             
             IStatementResult dbresult = null;
             using (ISession session = this._driver.Session())
@@ -680,7 +680,7 @@ namespace Console.neo4jProxy
             if (string.IsNullOrEmpty(type) || string.IsNullOrEmpty(property) || string.IsNullOrEmpty(searchterm)) { return new List<string>(); }
             
             //replace the slashes so it picks up fs paths
-            string regexterm = "(?i).*" + searchterm.Replace(@"\", @"\\") + ".*";
+            string regexterm = "(?i).*" + Regex.Escape(searchterm) + ".*";
 
             IStatementResult dbresult = null;
             using (ISession session = this._driver.Session())
