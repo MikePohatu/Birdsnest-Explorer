@@ -678,7 +678,9 @@ namespace Console.neo4jProxy
         public IEnumerable<string> SearchNodePropertyValues (string type, string property, string searchterm)
         {
             if (string.IsNullOrEmpty(type) || string.IsNullOrEmpty(property) || string.IsNullOrEmpty(searchterm)) { return new List<string>(); }
-            string regexterm = "(?i).*" + searchterm + ".*";
+            
+            //replace the slashes so it picks up fs paths
+            string regexterm = "(?i).*" + searchterm.Replace(@"\", @"\\") + ".*";
 
             IStatementResult dbresult = null;
             using (ISession session = this._driver.Session())

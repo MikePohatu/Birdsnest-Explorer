@@ -770,12 +770,6 @@ export default class AdvancedSearchCoordinator {
         });
     }
 
-    //function addLabelOptions(selectbox, labelList) {
-    //    for (var i = 0; i < labelList.length; ++i) {
-    //        webcrap.dom.AddOption(selectbox, labelList[i], labelList[i]);
-    //    }
-    //}
-
     BindAutoComplete() {
         var me = this;
 
