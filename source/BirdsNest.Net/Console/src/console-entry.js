@@ -1,8 +1,12 @@
 ﻿import $ from 'jquery';
 
-import '@fortawesome/fontawesome-free/js/fontawesome';
-import '@fortawesome/fontawesome-free/js/solid';
-import '@fortawesome/fontawesome-free/js/regular';
+import '@fortawesome/fontawesome-pro/js/fontawesome';
+import '@fortawesome/fontawesome-pro/js/solid';
+import '@fortawesome/fontawesome-pro/js/regular';
+import '@fortawesome/fontawesome-pro/js/light';
+//import '@fortawesome/fontawesome-free/js/fontawesome';
+//import '@fortawesome/fontawesome-free/js/solid';
+//import '@fortawesome/fontawesome-free/js/regular';
 
 import 'foundation-sites';
 

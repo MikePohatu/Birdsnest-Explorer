@@ -207,10 +207,9 @@ export default class AdvancedSearchCoordinator {
         //console.log(this);
 
         if (confirm("Are you sure you want to clear this search?") === true) {
-
+            this.ResetRootTreeNode();
+            this.UpdateConditions();
             var viewel = d3.select("#" + this.PathElementID);
-            viewel.selectAll("*").remove();
-            viewel = d3.select("#" + this.ConditionElementID);
             viewel.selectAll("*").remove();
             this.SearchData = new Search();
         }
@@ -807,15 +806,16 @@ export default class AdvancedSearchCoordinator {
         
         //var links = this.tree.links(nodes);
         var me = this;
-
-        var rectwidth = 130;
+        var gridwidth = 30;
+        var bracewidth = gridwidth;
+        var rectwidth = gridwidth * 4;
         var rectheight = 100;
         var xpadding = 5;
-        var xspacing = 70;
+        var xspacing = gridwidth * 3;
         var ypadding = 5;
         var strokewidth = 3;
-        var pluswidth = 25;
-        var editwidth = 25;
+        var pluswidth = gridwidth;
+        //var editwidth = 25;
 
         
         //console.log('nodes:');
@@ -850,27 +850,30 @@ export default class AdvancedSearchCoordinator {
 
         enter.append("rect")
             .attr("id", function (d: d3.HierarchyPointNode<ViewTreeNode<ICondition>>) { return "searchconditionbg_" + d.data.ID; })
-            .classed("searchconditionrect", true)
+            .classed("searchconditionrect",true)
             .attr("x", strokewidth)
             .attr("y", strokewidth)
-            .attr("rx", 5);
+            .attr("rx", 5)
+            .attr("height", rectheight);
+
+       
 
         viewel.selectAll(".searchconditionrect")
             .data(nodes, function (d: d3.HierarchyPointNode<ViewTreeNode<ICondition>>) { return d.data.ID; })
-            .attr("height", function (d: d3.HierarchyPointNode<ViewTreeNode<ICondition>>) {
-                //console.log(d.ancestors());
-                d.data.RectHeight = rectheight - d.depth * ypadding * 2;
-                return d.data.RectHeight;
-            })
+            //.attr("height", function (d: d3.HierarchyPointNode<ViewTreeNode<ICondition>>) {
+            //    //console.log(d.ancestors());
+            //    d.data.RectHeight = rectheight - d.depth * ypadding * 2;
+            //    return d.data.RectHeight;
+            //})
             .attr("width", function (d: d3.HierarchyPointNode<ViewTreeNode<ICondition>>) {
                 //console.log("width d: ");
                 //console.log(d); 
                 if (d.descendants().length > 1) { 
                     var groupcount: number = d.descendants().length - d.value;
                     var descendentcount: number = d.descendants().length;
-                    var leafcount: number = d.descendants().length - groupcount;
+                    var leafcount: number = d.value;
 
-                    d.data.RectWidth = leafcount * rectwidth + (d.value - 1) * xspacing + strokewidth * descendentcount * 2 + (editwidth * groupcount) + xpadding * 2;
+                    d.data.RectWidth = bracewidth * d.height * 2 + leafcount * rectwidth + (leafcount - 1) * xspacing + strokewidth * descendentcount * 2 + (pluswidth * groupcount); 
                 }
                 else {
                     d.data.RectWidth = rectwidth;
@@ -909,7 +912,9 @@ export default class AdvancedSearchCoordinator {
             .text(function (d: d3.HierarchyPointNode<ViewTreeNode<ICondition>>) { return (d.data.Item as ConditionBase).Operator + " " + (d.data.Item as ConditionBase).Value; });
 
         //setup the + button for group nodes e.g. AND/OR
-        var groupaddbtns = enter.filter(".conditiongroup").append("g")
+        var condgroupenters = enter.filter(".conditiongroup");
+
+        var groupaddbtns = condgroupenters.append("g")
             .attr("id", function (d: d3.HierarchyPointNode<ViewTreeNode<ICondition>>) { return "searchconditionplus_" + d.data.ID; })
             .classed("searchconditionplus", true)
             .classed("searchcontrol", true)
@@ -922,8 +927,12 @@ export default class AdvancedSearchCoordinator {
         viewel.selectAll(".searchconditionplus")
             .data(nodes, function (d: d3.HierarchyPointNode<ViewTreeNode<ICondition>>) { return d.data.ID; })
             .attr("transform", function (d: d3.HierarchyPointNode<ViewTreeNode<ICondition>>) {
-                return "translate(" + (d.data.RectWidth - pluswidth - xpadding) + "," + (d.data.RectHeight - ypadding - pluswidth) + ")";
+                return "translate(" + (d.data.RectWidth - pluswidth - bracewidth /2) + "," + (rectheight /1.5) + ")";
             });
+
+        //groupaddbtns.append("text")
+        //    .text("+")
+        //    .attr("font-size", pluswidth + "px");
 
         groupaddbtns.append("i")
             .attr("class", "fas fa-plus")
@@ -940,25 +949,33 @@ export default class AdvancedSearchCoordinator {
             $("searchcondition_" + (d.data as ViewTreeNode<ICondition>).ID).foundation();
         });
 
-        viewel.selectAll(".searchcondition")
-            .data(nodes, function (d: d3.HierarchyPointNode<ViewTreeNode<ICondition>>) { return d.data.ID; })
-            .attr("transform", function (d: d3.HierarchyPointNode<ViewTreeNode<ICondition>>) {
-                //console.log(d);
-                var x = 0;
-                var y = 0;
-                if (d.parent !== null) {
-                    //console.log("parent");
-                    //console.log(d.parent);
-                    x = d.parent.x + xpadding + (xspacing * d.data.Index) + (d.data.Index * rectwidth);
-                    y = ypadding * d.depth;
-                }
-                d.x = x;
-                d.y = y;
-                return "translate(" + x + "," + (y + me.YSpacing / 2) + ")";
-            });
-
         var condgroups = viewel.selectAll(".conditiongroup")
             .data(nodes, function (d: d3.HierarchyPointNode<ViewTreeNode<ICondition>>) { return d.data.ID; });
+
+        condgroupenters.append("g")
+            .classed("conditionbrace leftbrace", true)
+            .append("text")
+            .text("{")
+            .attr("alignment-baseline", "hanging")
+            .attr("font-size", rectheight + "px");
+
+        condgroupenters.append("g")
+            .classed("conditionbrace rightbrace", true)
+            .append("text")
+            .text("}")
+            .attr("alignment-baseline", "hanging")
+            .attr("font-size", rectheight + "px");
+
+        condgroups.selectAll(".leftbrace")
+            .attr("transform", function (d: d3.HierarchyPointNode<ViewTreeNode<ICondition>>) {
+                return "translate(0 " + ypadding + ")";
+            });
+
+        condgroups.selectAll(".rightbrace")
+            .attr("transform", function (d: d3.HierarchyPointNode<ViewTreeNode<ICondition>>) {
+                //console.log(d.height);
+                return "translate(" + (d.data.RectWidth - bracewidth + xpadding) + " " + ypadding + ")";
+            });
 
         //remove the AND/OR labels and readd them
         condgroups.selectAll(".and-or-label").remove();
@@ -969,7 +986,8 @@ export default class AdvancedSearchCoordinator {
             //console.log(treenode);
             if (treenode.Children !== null && treenode.Children.length > 1) {
                 var j;
-                var labelx = treenode.Children[0].RectWidth;
+                var labelx = bracewidth + treenode.Children[0].RectWidth;
+
                 for (j = 1; j < treenode.Children.length; j++) {
 
                     d3.select(this).append("text")
@@ -978,12 +996,39 @@ export default class AdvancedSearchCoordinator {
                         .attr("y", rectheight / 2)
                         .attr("x", labelx + xspacing / 2 - xpadding);
 
-                    labelx = labelx + xspacing + treenode.Children[j].RectWidth;
+                    labelx = labelx + xspacing + xpadding + treenode.Children[j].RectWidth;
                 }
             }
         });
-    }
 
+
+        //finally move everything into place
+        //console.log("translating conditions");
+        viewel.selectAll(".searchcondition")
+            .data(nodes, function (d: d3.HierarchyPointNode<ViewTreeNode<ICondition>>) { return d.data.ID; })
+            .attr("transform", function (d: d3.HierarchyPointNode<ViewTreeNode<ICondition>>) {
+                //console.log(d);
+                var x = 0;
+                var y = 0;
+                if (d.parent !== null) {
+                    if (d.data.Index >= 1) {
+                        //console.log("Sub child");
+                        var prev: d3.HierarchyPointNode<ViewTreeNode<ICondition>> = d.parent.children[d.data.Index - 1];
+                        //console.log(prev);
+                        x = prev.x + prev.data.RectWidth + xspacing + xpadding;
+                    }
+                    else {
+                        //console.log("First child");
+                        x = d.parent.x + bracewidth + xpadding;
+                        
+                    }
+                }
+                d.x = x;
+                d.y = y;
+                return "translate(" + x + "," + (y + me.YSpacing / 2) + ")";
+            });
+    }
+     
 
     onSearchConditionClicked (callingelement) {
         //console.log("onSearchConditionClicked started");

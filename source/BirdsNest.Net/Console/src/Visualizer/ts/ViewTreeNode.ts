@@ -60,8 +60,7 @@ export default class ViewTreeNode<T> {
     }
 
     AddChildItem(item: T) {
-        var child = new ViewTreeNode(item, this.ChildProperty, this);
-        child.Depth = this.Depth + 1;
+        var child = new ViewTreeNode<T>(item, this.ChildProperty, this);
         if (this.Children === null) { this.Children = []; }
         this.Children.push(child);
         return child;
@@ -73,7 +72,6 @@ export default class ViewTreeNode<T> {
             return;
         }
 
-        child.Depth = this.Depth + 1;
         if (this.Children === null) { this.Children = []; }
         if (this.Item[this.ChildProperty] === null) { this.Item[this.ChildProperty] = []; }
 
