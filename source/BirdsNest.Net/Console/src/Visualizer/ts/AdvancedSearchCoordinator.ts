@@ -207,11 +207,11 @@ export default class AdvancedSearchCoordinator {
         //console.log(this);
 
         if (confirm("Are you sure you want to clear this search?") === true) {
-            this.ResetRootTreeNode();
-            this.UpdateConditions();
             var viewel = d3.select("#" + this.PathElementID);
             viewel.selectAll("*").remove();
             this.SearchData = new Search();
+            this.ResetRootTreeNode();
+            this.UpdateConditions();
         }
     }
 
