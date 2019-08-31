@@ -115,9 +115,6 @@ export default class AdvancedSearchCoordinator {
             me.UpdateNodes(false);
             me.UpdateEdges(false);
         });
-        d3.select("#whereAddIcon").on("click", function () {
-            me.onSearchConditionAddClicked(this as HTMLElement, true);
-        });
         d3.select("#advSearchClearIcon").on("click", function () {
             me.Clear();
         });
@@ -148,6 +145,8 @@ export default class AdvancedSearchCoordinator {
 
         me.UpdateNodeLabels();
         me.UpdateEdgeLabels();
+        me.ResetRootTreeNode();
+        me.UpdateConditions();
         webcrap.data.apiGetJson("/api/graph/node/properties", function (data) {
             //console.log(data);
             me.NodeDetails = data;
@@ -916,7 +915,7 @@ export default class AdvancedSearchCoordinator {
             .classed("searchcontrol", true)
             .on("click", function () {
                 event.stopPropagation();
-                me.onSearchConditionAddClicked(this as Element, false);
+                me.onSearchConditionAddClicked(this as Element);
             });
 
         //transform translate + button
@@ -1127,18 +1126,13 @@ export default class AdvancedSearchCoordinator {
         }
     }
 
-    onSearchConditionAddClicked(callingelement: Element, isroot?: boolean) {
+    onSearchConditionAddClicked(callingelement: Element) {
         //console.log("onSearchConditionAddClicked started: " + isroot);
         //var datum;
         var tempnode: ViewTreeNode<ICondition>; 
-        if (isroot === true) {
-            tempnode = new ViewTreeNode(null, 'Conditions', null);
-        }
-        else {
-            var addingparent = (this.GetElementDatum(callingelement) as d3.HierarchyNode<ViewTreeNode<ICondition>>).data;
-            //console.log(addingparent);
-            tempnode = new ViewTreeNode(null, 'Conditions', addingparent);
-        }
+        var addingparent = (this.GetElementDatum(callingelement) as d3.HierarchyNode<ViewTreeNode<ICondition>>).data;
+        //console.log(addingparent);
+        tempnode = new ViewTreeNode(null, 'Conditions', addingparent);
         //console.log('tempnode:');
         //console.log(tempnode);
         this.AddingTemp = tempnode;
@@ -1148,20 +1142,36 @@ export default class AdvancedSearchCoordinator {
     onSearchConditionTypeSaveClicked() {
         //console.log("onSearchConditionTypeSaveClicked started");
         var selectedType: string = (document.getElementById("searchConditionTypeList") as HTMLSelectElement).value;
+        
         var cond: ICondition = GetCondition(selectedType);
         this.AddingTemp.Item = cond;
+        this.InsertTreeNode(this.AddingTemp);
 
-        if (this.AddingTemp.Parent !== null) {
-            this.AddingTemp.Parent.AddChild(this.AddingTemp);
+        this.ConditionTypeModal.close();
+        this.UpdateConditions();
+    }
+
+    //Properly add a new treenode in the conditions tree e.g. from this.AddingTemp
+    InsertTreeNode(treenode: ViewTreeNode<ICondition>) {
+        if (treenode.Parent !== null) {
+            treenode.Parent.AddChild(treenode);
             this.ConditionRoot.Rebuild();
         }
         else {
-            this.ConditionRoot = this.AddingTemp;
-            this.SearchData.Condition = this.ConditionRoot.Item;
+            this.ConditionRoot = treenode;
+            this.SearchData.Condition = treenode.Item;
             this.ConditionRoot.Build();
         }
-        this.ConditionTypeModal.close();
-        this.UpdateConditions();
+    }
+
+    ResetRootTreeNode() {
+        //console.log("ResetRootTreeNode started");
+        this.ConditionRoot = null;
+        this.SearchData.Condition = undefined;
+
+        var cond: ICondition = GetCondition("AND");
+        var treenode = new ViewTreeNode<ICondition>(cond, "Conditions", null);
+        this.InsertTreeNode(treenode);
     }
 
     onSearchConditionDeleteClicked() {
@@ -1190,16 +1200,16 @@ export default class AdvancedSearchCoordinator {
         //console.log(datum);
         //console.log("RootID: " + this.ConditionRoot.ID);
         if (this.ConditionRoot.ID === treenode.ID) {
-            this.ConditionRoot = null;
-            this.SearchData.Condition = undefined;
-            d3.selectAll(".searchcondition").remove();
+            //delete the conditions and readd an AND condition 
+            this.ResetRootTreeNode();
+            //d3.selectAll(".searchcondition").remove();
         }
         else {
             datum.parent.data.RemoveChild(treenode);
             datum.parent.data.Rebuild();
-            this.UpdateConditions();
+            //this.UpdateConditions();
         }
-
+        this.UpdateConditions();
         //console.log(this.ConditionRoot);
         //console.log("onSearchConditionDeleteClicked finished");
     }
