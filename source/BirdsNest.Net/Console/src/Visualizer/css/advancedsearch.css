@@ -90,7 +90,7 @@ text.and-or-label {
     fill: gray;
 }
 
-.conditionbrace:hover {
+.conditiongroup:hover .conditionbrace {
     stroke: darkgray;
     fill: darkgray;
 }
