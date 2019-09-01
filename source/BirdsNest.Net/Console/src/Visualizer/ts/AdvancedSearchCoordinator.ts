@@ -33,9 +33,11 @@ export default class AdvancedSearchCoordinator {
     Diameter: number;
     XSpacing: number;
     YSpacing: number;
+    PlusSize: number;
     ConditionRoot: ViewTreeNode<ICondition>;
     NodeDetails: object;
     EdgeDetails: object;
+
     Tooltip: FoundationSites.Tooltip;
     AddingTemp: ViewTreeNode<ICondition>;
 
@@ -56,7 +58,8 @@ export default class AdvancedSearchCoordinator {
         this.ConditionElementID = conditionelementid;
         this.Diameter = 30;
         this.XSpacing = 170;
-        this.YSpacing = 70;
+        this.YSpacing = 0;
+        this.PlusSize = 30;
         this.ConditionRoot = null;
         this.NodeDetails = null;
         this.EdgeDetails = null;
@@ -246,6 +249,7 @@ export default class AdvancedSearchCoordinator {
         //console.log(this);
         var me = this;
         var currslot = 0;
+        var strokewidth = 3;
 
         var viewel = d3.select("#" + this.PathElementID);
         var newnodeg = viewel.selectAll(".searchnode")
@@ -289,7 +293,7 @@ export default class AdvancedSearchCoordinator {
             currslot++;
             d.index = currslot;
             d.x = me.XSpacing * currslot - me.XSpacing * 0.5;
-            d.y = me.YSpacing;
+            d.y = me.YSpacing + me.Diameter + strokewidth + me.PlusSize;
             return "translate(" + d.x + "," + d.y + ")";
         };
 
@@ -392,7 +396,7 @@ export default class AdvancedSearchCoordinator {
             //console.log(d);
             currslot++;
             var subspacingx = (currslot + 0.5) * me.XSpacing - rectwidth / 2 - me.XSpacing * 0.5;
-            var subspacingy = me.YSpacing - rectheight / 2;
+            var subspacingy = me.YSpacing + me.Diameter - rectheight / 2 ;
             //console.log(currslot + ": " + subspacingx + ": " + subspacingy);
             //console.log("edge transforms");
             //console.log(d);
@@ -810,15 +814,14 @@ export default class AdvancedSearchCoordinator {
         
         //var links = this.tree.links(nodes);
         var me = this;
-        var gridwidth = 30;
+        var gridwidth = 20;
         var bracewidth = gridwidth;
         var rectwidth = gridwidth * 4;
-        var rectheight = 100;
+        var rectheight = 70;
         var xpadding = 5;
         var xspacing = gridwidth * 3;
         var ypadding = 5;
         var strokewidth = 3;
-        var pluswidth = gridwidth;
         //var editwidth = 25;
 
         
@@ -877,7 +880,7 @@ export default class AdvancedSearchCoordinator {
                     var descendentcount: number = d.descendants().length;
                     var leafcount: number = d.value;
 
-                    d.data.RectWidth = bracewidth * d.height * 2 + leafcount * rectwidth + (leafcount - 1) * xspacing + strokewidth * descendentcount * 2 + (pluswidth * groupcount); 
+                    d.data.RectWidth = bracewidth * d.height * 2 + leafcount * rectwidth + (leafcount - 1) * xspacing + strokewidth * descendentcount * 2 + (me.PlusSize * groupcount); 
                 }
                 else {
                     d.data.RectWidth = rectwidth;
@@ -932,12 +935,12 @@ export default class AdvancedSearchCoordinator {
         viewel.selectAll(".searchconditionplus")
             .data(nodes, function (d: d3.HierarchyPointNode<ViewTreeNode<ICondition>>) { return d.data.ID; })
             .attr("transform", function (d: d3.HierarchyPointNode<ViewTreeNode<ICondition>>) {
-                var y = (rectheight / 2 - pluswidth / 2 + strokewidth);
+                var y = (rectheight / 2 - me.PlusSize / 2 + strokewidth);
                 if (d.data.Children === null) {
-                    return "translate(" + (d.data.RectWidth / 2 - pluswidth / 2 + xpadding) + "," + y + ")";
+                    return "translate(" + (d.data.RectWidth / 2 - me.PlusSize / 2 + xpadding) + "," + y + ")";
                 }
                 else {
-                    return "translate(" + (d.data.RectWidth - pluswidth - bracewidth / 2) + "," + y + ")";
+                    return "translate(" + (d.data.RectWidth - me.PlusSize - bracewidth / 2) + "," + y + ")";
                 }
                 
             });
@@ -948,13 +951,13 @@ export default class AdvancedSearchCoordinator {
 
         groupaddbtns.append("i")
             .attr("class", "fas fa-plus")
-            .attr("width", pluswidth)
-            .attr("height", pluswidth);
+            .attr("width", me.PlusSize)
+            .attr("height", me.PlusSize);
 
 
         groupaddbtns.append("rect")
-            .attr("width", pluswidth)
-            .attr("height", pluswidth);
+            .attr("width", me.PlusSize)
+            .attr("height", me.PlusSize);
 
         //init foundation for things like reveal
         enter.each(function (d: d3.HierarchyPointNode<ViewTreeNode<ICondition>>) {

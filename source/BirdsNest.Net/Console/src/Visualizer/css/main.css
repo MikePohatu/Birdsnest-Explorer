@@ -16,15 +16,16 @@ body {
 	left: 0;
 }
 
+
 #drawingpane {
-	overflow: hidden;
-	position: relative;
-	bottom:0;
-	height: 100%;
-	background-color:#e8e8e8;
-	/*background-color: silver;*/
-	font-family: 'helvetica', arial, sans-serif;
-	/*font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;*/
+    overflow: hidden;
+    position: relative;
+    bottom: 0;
+    height: 100%;
+    background-color: #e8e8e8;
+    /*background-color: silver;*/
+    font-family: 'helvetica', arial, sans-serif;
+    /*font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;*/
 }
 
 #detailcardwrapper {
@@ -72,8 +73,8 @@ body {
 }
 
 #viewcontrols {
-    position: absolute;
-    top: 0;
+    position: fixed;
+    bottom: 0;
     left: 0;
     height: 40px;
     width: 270px;

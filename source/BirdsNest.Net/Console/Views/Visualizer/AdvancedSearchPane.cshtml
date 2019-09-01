@@ -1,14 +1,83 @@
-﻿<div id="searchPane" class="small-12 medium-12 cell">
-    <div>
-        <span class="cell" style="width:12px;"> </span>
-        <span id="advSearchClearIcon" class="cell viewcontrol has-tip" title="Clear search">
-            <i class="fas fa-eraser"></i>
-        </span>
-        <span id="advSearchShareIcon" class="cell viewcontrol has-tip" title="Share search">
-            <i class="fas fa-share-alt"></i>
-        </span>
+﻿<div id="searchPane">
+    <div >
+        <div id="advSearchView">
+            <div class="searchContainer">
+                <div id="pathLabel"  class="searchLabel">
+                    <h2>
+                        <b>Search:</b>
+                        <span id="pathAddIcon" class="viewcontrol has-tip clickable" title="Add node to search path">
+                            <i class="fas fa-plus-circle"></i>
+                        </span>
+                    </h2>
+                </div>
+                <div style="display:inline-block">
+                    <svg id="searchPathSvg" class="searchSvgContainer">
+                    </svg>
+                </div>
+            </div>
+
+            <div class="searchContainer">
+                <div id="conditionsLabel" class="searchLabel">
+                    <h2>
+                        <b>Conditions:</b>
+                    </h2>
+                </div>
+                <div style="display:inline-block">
+                    <svg id="searchConditionSvg" class="searchSvgContainer">
+                        <g id="condZoomLayer">
+
+                        </g>
+                    </svg>
+                </div>
+            </div>
+
+            <div>
+                    <span id="advSearchClearIcon" class="viewcontrol has-tip" title="Clear search">
+                        <i class="fas fa-eraser"></i>
+                    </span>
+                    <span id="advSearchShareIcon" class="viewcontrol has-tip" title="Share search">
+                        <i class="fas fa-share-alt"></i>
+                    </span>
+                <span>
+                    <button id="searchBtn" class="button" aria-label="Submit search" type="button">Search</button>
+                </span>
+                <div>
+                    <p><div id="searchNotification"></div><div id="searchExpand"></div></p>
+                </div>
+            </div>
+        </div>
+
+        <div id="searchAlert" class="reveal">
+            <div class=" align-middle">
+                <div>
+                    <span id="alertMessage"></span>
+                </div>
+                <div id="alertMessageLink"></div>
+                <div>
+                    <button class="button" data-close aria-label="Close alert dialog" type="button">
+                        <span aria-hidden="true">OK</span>
+                    </button>
+                </div>
+
+            </div>
+        </div>
+
+        <div id="searchMessage" class="reveal">
+            <div class=" align-middle">
+                <div class="cell">
+                    <span id="message"></span>
+                </div>
+                <div id="messageLink" class="cell"></div>
+                <div class="cell">
+                    <button class="button" data-close aria-label="Close alert dialog" type="button">
+                        <span aria-hidden="true">OK</span>
+                    </button>
+                </div>
+            </div>
+        </div>
     </div>
 
+    <!-- Reveals start -->
     <div id="searchNodeDetails" class="reveal">
         <fieldset class="fieldset small-4 cell">
             <legend>Node</legend>
@@ -46,7 +115,7 @@
                 <input id="edgeIdentifier" type="search" autocomplete="off" placeholder="*" class="small-8 input-group-field">
             </div>
 
-            <span class="">Limit Hops</span>
+            <span >Limit Hops</span>
 
             <div class="switch tiny">
                 <input class="switch-input" id="hopsSwitch" type="checkbox" name="hopsSwitch" checked>
@@ -54,26 +123,26 @@
             </div>
 
             <div class="input-group" id="hopsPane">
-                <div class="grid-x input-group-field">
-                    <div class="cell small-2">
+                <div class=" input-group-field">
+                    <div class="small-2">
                         <input type="text" id="minSliderVal" class="hopscontrol">
                     </div>
-                    <div class="cell small-8">
+                    <div class="small-8">
                         <div id="hopsSlider" class="slider hopscontrol" data-slider data-initial-start="1" data-initial-end="1" data-start="0" data-end="20">
                             <span id="minSlider" class="slider-handle" data-slider-handle role="slider" title="Minimum hop count" aria-controls="minSliderVal"></span>
                             <span id="sliderFill" class="slider-fill" data-slider-fill></span>
                             <span id="maxSlider" class="slider-handle" data-slider-handle role="slider" title="Maximum hop count" aria-controls="maxSliderVal"></span>
                         </div>
                     </div>
-                    <div class="cell small-2">
+                    <div class="small-2">
                         <input type="text" id="maxSliderVal" class="hopscontrol">
                     </div>
                 </div>
             </div>
 
-            <div class="grid-x cell align-top">
-                <span class="cell small-3 align-middle">Direction</span>
-                <div id='dirIconClicker' class="cell small-1 text-left">
+            <div class=" align-top">
+                <span class="small-3 align-middle">Direction</span>
+                <div id='dirIconClicker' class="small-1 text-left">
                     <i id='dirIcon' class="fas fa-arrow-right" data-dir=">"></i>
                 </div>
             </div>
@@ -108,15 +177,15 @@
             <button class="close-button" data-close aria-label="Close condition dialog" type="button">
                 <span aria-hidden="true">&times;</span>
             </button>
-            <div class="grid-x align-middle">
-                <div class="cell small-2 medium-2">
+            <div class=" align-middle">
+                <div class="small-2 medium-2">
                     <button id="searchConditionSaveBtn" class="button" aria-label="Save this condition" type="button">Save</button>
                 </div>
-                <div class="cell small-2 medium-2">
+                <div class="small-2 medium-2">
                     <button id="searchConditionDeleteBtn" class="alert button" aria-label="Delete this condition" type="button">Delete</button>
                 </div>
-                <div class="cell small-7 medium-7"></div>
-                <div class="cell small-1 medium-1">
+                <div class="small-7 medium-7"></div>
+                <div class="small-1 medium-1">
                     <div id="alertIcon">
                         <i class="fas fa-exclamation-triangle" style="margin: 0 0 1rem 0; color:orange;"></i>
                     </div>
@@ -139,11 +208,11 @@
             <button class="close-button" data-close aria-label="Close condition dialog" type="button">
                 <span aria-hidden="true">&times;</span>
             </button>
-            <div class="grid-x align-middle">
-                <div class="cell small-3 medium-3">
+            <div class=" align-middle">
+                <div class="small-3 medium-3">
                     <button id="searchAndOrSaveBtn" class="button" aria-label="Save this condition" type="button">Save</button>
                 </div>
-                <div class="cell small-3 medium-3">
+                <div class="small-3 medium-3">
                     <button id="searchAndOrDeleteBtn" class="alert button" aria-label="Delete this condition" type="button">Delete</button>
                 </div>
             </div>
@@ -167,86 +236,15 @@
             <button class="close-button" data-close aria-label="Close dialog" type="button">
                 <span aria-hidden="true">&times;</span>
             </button>
-            <div class="grid-x align-middle">
-                <div class="cell small-3 medium-3">
+            <div class=" align-middle">
+                <div class="small-3 medium-3">
                     <button id="searchConditionTypeSelectSaveBtn" class="button" aria-label="Save" type="button">Save</button>
                 </div>
-                <div class="cell small-3 medium-3">
+                <div class="small-3 medium-3">
                     <button id="searchConditionTypeSelectCancelBtn" class="alert button" data-close aria-label="Cancel this" type="button">Cancel</button>
                 </div>
             </div>
         </fieldset>
-    </div>
-
-    <div id="advSearchView">
-        <div class="grid-x align-middle">
-            <div id="pathLabel" class="cell small-3 medium-3 searchLabel">
-                <h2>
-                    <b>Search:</b>
-                    <span id="pathAddIcon" class="cell viewcontrol has-tip clickable" title="Add node to search path">
-                        <i class="fas fa-plus-circle"></i>
-                    </span>
-                </h2>
-            </div>
-            <div class="cell small-9 medium-9">
-                <svg id="searchPathSvg" class="searchSvgContainer">
-                </svg>
-            </div>
-        </div>
-
-        <div class="grid-x align-middle">
-            <div id="conditionsLabel" class="cell small-3 medium-3 searchLabel">
-                <h2>
-                    <b>Conditions:</b>
-                </h2>
-
-            </div>
-            <div class="cell small-9 medium-9">
-                <svg id="searchConditionSvg" class="searchSvgContainer">
-                    <g id="condZoomLayer">
-
-                    </g>
-                </svg>
-            </div>
-        </div>
-
-        <div class="grid-x cell align-middle">
-            <div class="cell small-3 medium-1">
-                <button id="searchBtn" class="button" aria-label="Submit search" type="button">Search</button>
-            </div>
-            <div class="cell small-9 medium-auto">
-                <p><div id="searchNotification"></div><div id="searchExpand"></div></p>
-            </div>
-        </div>
-    </div>
-
-    <div id="searchAlert" class="reveal">
-        <div class="grid-x align-middle">
-            <div>
-                <span id="alertMessage"></span>
-            </div>
-            <div id="alertMessageLink"></div>
-            <div>
-                <button class="button" data-close aria-label="Close alert dialog" type="button">
-                    <span aria-hidden="true">OK</span>
-                </button>
-            </div>
-
-        </div>
-    </div>
-
-    <div id="searchMessage" class="reveal">
-        <div class="grid-x align-middle">
-            <div class="cell">
-                <span id="message"></span>
-            </div>
-            <div id="messageLink" class="cell"></div>
-            <div class="cell">
-                <button class="button" data-close aria-label="Close alert dialog" type="button">
-                    <span aria-hidden="true">OK</span>
-                </button>
-            </div>
-        </div>
     </div>
 </div>
 

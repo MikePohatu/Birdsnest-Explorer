@@ -1,4 +1,17 @@
 ﻿/*search config*/
+
+#querybar {
+    position: fixed;
+    display: block;
+    top: 1.5em;
+    left: 0;
+    z-index: 50;
+}
+
+#searchPane {
+    position: relative;
+}
+
 .searchnode, .searchedge {
     stroke: #474747;
     color: #474747;
@@ -17,17 +30,22 @@
 
 .searchLabel {
     opacity: 0.3;
+    display: inline-block;
 }
 
 .searchLabel.viewcontrol {
     opacity: 0.6;
 }
 
+.searchContainer {
+    align-items: center;
+}
+
 .searchSvgContainer {
+    height: 80px;
+    width: auto;
     margin: 0;
     padding: 0;
-    height: 100%;
-    width: 100%;
 }
 
 .searchcondition rect {

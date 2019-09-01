@@ -91,12 +91,12 @@ function menuShowHide() {
     if (icon.hasClass("fa-angle-up")) {
         icon.removeClass("fa-angle-up");
         icon.addClass("fa-angle-down");
-        $("#querybar").slideUp();
+        $("#querybar").slideToggle();
     }
     else {
         icon.removeClass("fa-angle-down");
         icon.addClass("fa-angle-up");
-        $("#querybar").slideDown();
+        $("#querybar").slideToggle();
     }
     
 }
@@ -432,26 +432,26 @@ function onSourceAddClicked(nodeid) {
     //updateSearchDetails(nodeid, 'source');
 }
 
-export function updateSearchDetails(nodeid, elprefix) {
-    //console.log("onSourceAddClicked: " + nodeid);
-    var node = graphnodes.GetDatum(nodeid);
-    //console.log(node);
-    d3.select("#" + elprefix + "Type").property('value', node.labels[0]);
-    updateNodeProps();
-    var propname = 'name';
-    var propval = node.name;
+//export function updateSearchDetails(nodeid, elprefix) {
+//    //console.log("onSourceAddClicked: " + nodeid);
+//    var node = graphnodes.GetDatum(nodeid);
+//    //console.log(node);
+//    d3.select("#" + elprefix + "Type").property('value', node.labels[0]);
+//    updateNodeProps();
+//    var propname = 'name';
+//    var propval = node.name;
 
-    if (node.properties.hasOwnProperty('id')) {
-        propname = 'id';
-        propval = node.properties.id;
-    } else if (node.properties.hasOwnProperty('path')) {
-        propname = 'path';
-        propval = node.properties.path;
-    }
+//    if (node.properties.hasOwnProperty('id')) {
+//        propname = 'id';
+//        propval = node.properties.id;
+//    } else if (node.properties.hasOwnProperty('path')) {
+//        propname = 'path';
+//        propval = node.properties.path;
+//    }
 
-    d3.select("#" + elprefix + "Prop").property('value', propname);
-    d3.select("#" + elprefix + "Val").property('value', propval);
-}
+//    d3.select("#" + elprefix + "Prop").property('value', propname);
+//    d3.select("#" + elprefix + "Val").property('value', propval);
+//}
 
 function onLayoutFinished() {
     //console.log("onLayoutFinished");
