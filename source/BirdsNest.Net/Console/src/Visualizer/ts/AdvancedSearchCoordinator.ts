@@ -927,7 +927,14 @@ export default class AdvancedSearchCoordinator {
         viewel.selectAll(".searchconditionplus")
             .data(nodes, function (d: d3.HierarchyPointNode<ViewTreeNode<ICondition>>) { return d.data.ID; })
             .attr("transform", function (d: d3.HierarchyPointNode<ViewTreeNode<ICondition>>) {
-                return "translate(" + (d.data.RectWidth - pluswidth - bracewidth /2) + "," + (rectheight /1.5) + ")";
+                var y = (rectheight / 2 - pluswidth / 2 + strokewidth);
+                if (d.data.Children === null) {
+                    return "translate(" + (d.data.RectWidth / 2 - pluswidth / 2 + xpadding) + "," + y + ")";
+                }
+                else {
+                    return "translate(" + (d.data.RectWidth - pluswidth - bracewidth / 2) + "," + y + ")";
+                }
+                
             });
 
         //groupaddbtns.append("text")

@@ -86,11 +86,11 @@ text.and-or-label {
 }
 
 .conditionbrace {
-    stroke: #474747;
-    fill: #474747;
+    stroke: gray;
+    fill: gray;
 }
 
 .conditionbrace:hover {
-    stroke: gray;
-    fill: gray;
+    stroke: darkgray;
+    fill: darkgray;
 }
