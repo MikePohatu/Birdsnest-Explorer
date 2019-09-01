@@ -253,7 +253,8 @@ export default class AdvancedSearchCoordinator {
             .enter()
             .append("g")
             .attr("id", function (d: SearchNode) { return "searchnode_" + d.ID; })
-            .classed("searchnode",true)
+            .classed("searchnode", true)
+            .classed("clickable", true)
             .attr("width", this.Diameter)
             .attr("height", this.Diameter)
             .on("click", function () {
@@ -280,7 +281,8 @@ export default class AdvancedSearchCoordinator {
             .data(this.SearchData.Nodes, function (d: SearchNode) { return d.ID; })
             .attr("id", function (d: SearchNode) { return "searchnode_" + d.ID; })
             .attr("class", function (d: SearchNode) { return d.Label; })
-            .classed("searchnode", true);
+            .classed("searchnode", true)
+            .classed("clickable", true);
 
         //tranform function to be used below
         var transform = function (d) {
@@ -402,6 +404,7 @@ export default class AdvancedSearchCoordinator {
                 .data(this.SearchData.Edges, function (d: SearchEdge) { return d.ID; })
                 .attr("class", function (d: SearchEdge) { return d.Label; })
                 .classed("searchedge", true)
+                .classed("clickable", true)
                 .transition()
                 .duration(500)
                 .attr("transform", transform);
@@ -411,6 +414,7 @@ export default class AdvancedSearchCoordinator {
                 .data(this.SearchData.Edges, function (d: SearchEdge) { return d.ID; })
                 .attr("class", function (d: SearchEdge) { return d.Label; })
                 .classed("searchedge", true)
+                .classed("clickable", true)
                 .attr("transform", transform);
         }
     }
@@ -830,7 +834,7 @@ export default class AdvancedSearchCoordinator {
                     return "conditiongroup";
                 }
                 else {
-                    return "condition";
+                    return "condition clickable";
                 }
             })
             .classed("searchcondition", true)
@@ -918,6 +922,7 @@ export default class AdvancedSearchCoordinator {
             .attr("id", function (d: d3.HierarchyPointNode<ViewTreeNode<ICondition>>) { return "searchconditionplus_" + d.data.ID; })
             .classed("searchconditionplus", true)
             .classed("searchcontrol", true)
+            .classed("clickable",true)
             .on("click", function () {
                 event.stopPropagation();
                 me.onSearchConditionAddClicked(this as Element);
@@ -1000,6 +1005,7 @@ export default class AdvancedSearchCoordinator {
                     d3.select(this).append("text")
                         .text(treenode.Item.Type)
                         .classed("and-or-label", true)
+                        .classed("clickable", true)
                         .attr("y", rectheight / 2)
                         .attr("x", labelx + xspacing / 2 - xpadding);
 

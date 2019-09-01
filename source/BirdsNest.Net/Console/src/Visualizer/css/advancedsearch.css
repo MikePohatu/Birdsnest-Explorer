@@ -86,11 +86,15 @@ text.and-or-label {
 }
 
 .conditionbrace {
-    stroke: gray;
-    fill: gray;
+    stroke: dimgray;
+    fill: dimgray;
 }
 
 .conditiongroup:hover .conditionbrace {
-    stroke: darkgray;
-    fill: darkgray;
+    stroke: lightskyblue;
+    fill: lightskyblue;
+}
+
+.clickable:hover {
+    cursor: pointer;
 }
