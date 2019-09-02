@@ -49,3 +49,7 @@
     margin-right: 10px;
     vertical-align: text-bottom;
 }
+
+.menu {
+    z-index: 500;
+}

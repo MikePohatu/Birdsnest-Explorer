@@ -76,7 +76,7 @@ body {
     position: fixed;
     bottom: 0;
     left: 0;
-    height: 40px;
+    height: 35px;
     width: 240px;
     padding: 0;
     background: white;
@@ -123,6 +123,15 @@ body {
 
 .viewcontrol:hover {
     color: gray;
+    transform: scale(1.2);
+}
+
+#clearViewIcon {
+    color: red;
+}
+
+#clearViewIcon:hover {
+    color:hotpink;
 }
 
 .viewcontrolActive {
@@ -150,11 +159,12 @@ body {
 	margin-bottom:5px;
 }
 
-.detailcard {	
-	font-size: 10px;
-	width: 250px;
-	word-wrap: break-word;
-	font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+.detailcard {
+    border: 2px solid black;
+    font-size: 10px;
+    width: 250px;
+    word-wrap: break-word;
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
 
 .detailcard .accordion-title {
@@ -186,7 +196,7 @@ body {
 }
 
 .currentActiveDetailCard {
-    border: 2px solid black;
+    border-color:orange;
 }
 
 .inputbox {

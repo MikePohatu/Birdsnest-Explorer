@@ -21,9 +21,9 @@
     "motion-ui": "2.0.3",
     "ts-loader": "6.0.4",
     "typescript": "3.5.3",
-    "webpack": "4.39.2",
+    "webpack": "4.39.3",
     "webpack-bundle-analyzer": "3.4.1",
-    "webpack-cli": "3.3.6",
+    "webpack-cli": "3.3.7",
     "what-input": "5.2.3"
   },
   "scripts": {

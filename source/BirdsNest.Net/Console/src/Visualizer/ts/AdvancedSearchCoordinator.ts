@@ -35,6 +35,8 @@ export default class AdvancedSearchCoordinator {
     YSpacing: number;
     PlusSize: number;
     PaneHeight: number;
+    Margin: number;
+    SvgContainerHeight: number;
     ConditionRoot: ViewTreeNode<ICondition>;
     NodeDetails: object;
     EdgeDetails: object;
@@ -57,14 +59,16 @@ export default class AdvancedSearchCoordinator {
         this.SearchData = new Search();
         this.PathElementID = pathelementid;
         this.ConditionElementID = conditionelementid;
-        this.Diameter = 30;
-        this.XSpacing = 170;
+        this.Diameter = 25;
+        this.XSpacing = 150;
         this.YSpacing = 0;
-        this.PlusSize = 30;
+        this.PlusSize = 25;
+        this.Margin = 5;
+        this.SvgContainerHeight = 90;
         this.ConditionRoot = null;
         this.NodeDetails = null;
         this.EdgeDetails = null;
-        this.PaneHeight = 85;
+        this.PaneHeight = 65;
 
         var modalOptions: FoundationSites.IRevealOptions = {
             animationIn: "hinge-in-from-top fast",
@@ -96,8 +100,10 @@ export default class AdvancedSearchCoordinator {
                 }
             });
         }
-        
-        d3.select("#searchPane").on("click", function () {
+
+        d3.selectAll(".searchSvgContainer").attr("height", this.SvgContainerHeight + "px");
+
+        d3.select("#advSearchView").on("click", function () {
             me.onSearchPaneClicked();
         });
         d3.select("#searchNodeSaveBtn").on("click", function () {
@@ -307,7 +313,7 @@ export default class AdvancedSearchCoordinator {
             currslot++;
             d.index = currslot;
             d.x = me.XSpacing * currslot - me.XSpacing * 0.5;
-            d.y = me.YSpacing + me.Diameter + strokewidth + me.PlusSize;
+            d.y = me.SvgContainerHeight / 2 + me.Margin;
             return "translate(" + d.x + "," + d.y + ")";
         };
 
@@ -410,7 +416,7 @@ export default class AdvancedSearchCoordinator {
             //console.log(d);
             currslot++;
             var subspacingx = (currslot + 0.5) * me.XSpacing - rectwidth / 2 - me.XSpacing * 0.5;
-            var subspacingy = me.YSpacing + me.Diameter - rectheight / 2 ;
+            var subspacingy = me.SvgContainerHeight /2 - rectheight / 2 + me.Margin;
             //console.log(currslot + ": " + subspacingx + ": " + subspacingy);
             //console.log("edge transforms");
             //console.log(d);
@@ -439,9 +445,9 @@ export default class AdvancedSearchCoordinator {
 
     showNodeControls(searchnode: SearchNode) {
         //var nodetransform = callingEl.getAttribute("transform");
-        var controlIconDimension = 25;
+        var controlIconDimension = 20;
         var controlsx = 0;
-        var controlsy = 0;
+        var controlsy = 5;
         var me = this;
 
         var controls = d3.select("#" + this.PathElementID)
@@ -455,7 +461,6 @@ export default class AdvancedSearchCoordinator {
 
         if (searchnode.index > 1) {
             controls.append("g")
-                .classed("viewcontrol", true)
                 .classed("nodecontrol", true)
                 .attr("transform", "translate(" + controlsx + "," + controlsy + ")")
                 .on("click", function () {
@@ -472,7 +477,6 @@ export default class AdvancedSearchCoordinator {
         }
 
         controls.append("g")
-            .classed("viewcontrol", true)
             .classed("nodecontrol", true)
             .attr("transform", "translate(" + (controlsx + controlIconDimension) + "," + controlsy + ")")
             .on("click", function () {
@@ -485,7 +489,6 @@ export default class AdvancedSearchCoordinator {
             .attr("width", controlIconDimension)
             .attr("class", "fas fa-edit");
         controls.append("g")
-            .classed("viewcontrol", true)
             .classed("nodecontrol", true)
             .attr("transform", "translate(" + (controlsx + controlIconDimension * 2) + "," + controlsy + ")")
             .on("click", function () {
@@ -499,7 +502,6 @@ export default class AdvancedSearchCoordinator {
 
         if (searchnode.index < this.SearchData.Nodes.length)
             controls.append("g")
-                .classed("viewcontrol", true)
                 .classed("nodecontrol", true)
                 .attr("transform", "translate(" + (controlsx + controlIconDimension * 3) + "," + controlsy + ")")
                 .on("click", function () {
@@ -836,8 +838,6 @@ export default class AdvancedSearchCoordinator {
         var xspacing = gridwidth * 3;
         var ypadding = 5;
         var strokewidth = 3;
-        //var editwidth = 25;
-
         
         //console.log('nodes:');
         //console.log(nodes);
@@ -876,8 +876,6 @@ export default class AdvancedSearchCoordinator {
             .attr("y", strokewidth)
             .attr("rx", 5)
             .attr("height", rectheight);
-
-       
 
         viewel.selectAll(".searchconditionrect")
             .data(nodes, function (d: d3.HierarchyPointNode<ViewTreeNode<ICondition>>) { return d.data.ID; })
@@ -1039,7 +1037,7 @@ export default class AdvancedSearchCoordinator {
             .attr("transform", function (d: d3.HierarchyPointNode<ViewTreeNode<ICondition>>) {
                 //console.log(d);
                 var x = 0;
-                var y = 0;
+                var y = me.SvgContainerHeight / 2 - rectheight / 2 + me.Margin;
                 if (d.parent !== null) {
                     if (d.data.Index >= 1) {
                         //console.log("Sub child");
