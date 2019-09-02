@@ -1,251 +1,244 @@
-﻿<div id="searchPane">
-    <div >
-        <div id="advSearchView">
-            <div class="searchContainer">
-                <div id="pathLabel"  class="searchLabel">
-                    <h2>
-                        <b>Search:</b>
-                        <span id="pathAddIcon" class="viewcontrol has-tip clickable" title="Add node to search path">
-                            <i class="fas fa-plus-circle"></i>
-                        </span>
-                    </h2>
-                </div>
-                <div style="display:inline-block">
-                    <svg id="searchPathSvg" class="searchSvgContainer">
-                    </svg>
-                </div>
+﻿
+<button id="advSearchMaximise" class="button searchbutton has-tip" aria-label="Show search" type="button" title="Search">
+    <i class="fas fa-search"></i>
+</button>
+
+@* query bar is hidden by default. Click button above to open it *@
+<div id="querybar" style="display: none" >
+    <div id="advSearchView" class="grid-container fluid grid-margin-y">
+        <div class="searchContainer cell grid-x">
+            <div id="pathLabel" class="searchLabel cell shrink">
+                <b>Search:</b>
+                <i id="pathAddIcon" class="fas fa-plus-circle has-tip clickable" title="Add node to search path"></i>
             </div>
-
-            <div class="searchContainer">
-                <div id="conditionsLabel" class="searchLabel">
-                    <h2>
-                        <b>Conditions:</b>
-                    </h2>
-                </div>
-                <div style="display:inline-block">
-                    <svg id="searchConditionSvg" class="searchSvgContainer">
-                        <g id="condZoomLayer">
-
-                        </g>
-                    </svg>
-                </div>
+            <div class="cell auto">
+                <svg id="searchPathSvg" class="searchSvgContainer">
+                </svg>
             </div>
+        </div>
 
+        <div class="searchContainer cell grid-x">
+            <div id="conditionsLabel" class="searchLabel cell shrink">
+                <b>Conditions:</b>
+            </div>
+            <div class="cell auto">
+                <svg id="searchConditionSvg" class="searchSvgContainer">
+                </svg>
+            </div>
+        </div>
+
+        <div class="searchContainer">
+            <button id="advSearchMinimise" class="button searchbutton has-tip" aria-label="Minimise search" type="button" title="Minimise search">
+                <i class="fas fa-angle-up"></i>
+            </button>
+            <button id="advSearchClearBtn" class="button searchbutton has-tip" aria-label="Clear search" type="button" title="Clear search">
+                <i class="fas fa-eraser"></i>
+            </button>
+            <button id="advSearchShareBtn" class="button searchbutton has-tip" aria-label="Share search" type="button" title="Share search">
+                <i class="fas fa-share-alt"></i>
+            </button>
+            <button id="searchBtn" class="button searchbutton" aria-label="Submit search" type="button">Search</button>
+            <div id="searchNotification"></div>@*<div id="searchExpand"></div>*@
+        </div>
+    </div>
+
+    <div id="searchAlert" class="reveal">
+        <div class=" align-middle">
             <div>
-                    <span id="advSearchClearIcon" class="viewcontrol has-tip" title="Clear search">
-                        <i class="fas fa-eraser"></i>
-                    </span>
-                    <span id="advSearchShareIcon" class="viewcontrol has-tip" title="Share search">
-                        <i class="fas fa-share-alt"></i>
-                    </span>
-                <span>
-                    <button id="searchBtn" class="button" aria-label="Submit search" type="button">Search</button>
-                </span>
-                <div>
-                    <p><div id="searchNotification"></div><div id="searchExpand"></div></p>
-                </div>
+                <span id="alertMessage"></span>
             </div>
-        </div>
-
-        <div id="searchAlert" class="reveal">
-            <div class=" align-middle">
-                <div>
-                    <span id="alertMessage"></span>
-                </div>
-                <div id="alertMessageLink"></div>
-                <div>
-                    <button class="button" data-close aria-label="Close alert dialog" type="button">
-                        <span aria-hidden="true">OK</span>
-                    </button>
-                </div>
-
+            <div id="alertMessageLink"></div>
+            <div>
+                <button class="button" data-close aria-label="Close alert dialog" type="button">
+                    <span aria-hidden="true">OK</span>
+                </button>
             </div>
-        </div>
 
-        <div id="searchMessage" class="reveal">
-            <div class=" align-middle">
-                <div class="cell">
-                    <span id="message"></span>
-                </div>
-                <div id="messageLink" class="cell"></div>
-                <div class="cell">
-                    <button class="button" data-close aria-label="Close alert dialog" type="button">
-                        <span aria-hidden="true">OK</span>
-                    </button>
-                </div>
-            </div>
         </div>
     </div>
 
-    <!-- Reveals start -->
-    <div id="searchNodeDetails" class="reveal">
-        <fieldset class="fieldset small-4 cell">
-            <legend>Node</legend>
-
-            <div class="input-group">
-                <span class="input-group-label small-4">Type</span>
-                <select id="nodeType" class="small-8 input-group-field" autofocus></select>
+    <div id="searchMessage" class="reveal">
+        <div class=" align-middle">
+            <div class="cell">
+                <span id="message"></span>
             </div>
-            <div class="input-group">
-                <span class="input-group-label small-4">Identifier</span>
-                <input id="nodeIdentifier" type="search" autocomplete="off" placeholder="*" class="small-8 input-group-field">
+            <div id="messageLink" class="cell"></div>
+            <div class="cell">
+                <button class="button" data-close aria-label="Close alert dialog" type="button">
+                    <span aria-hidden="true">OK</span>
+                </button>
             </div>
-        </fieldset>
-        <button class="close-button" data-close aria-label="Close query dialog" type="button">
-            <span aria-hidden="true">&times;</span>
-        </button>
-        <div>
-            <button id="searchNodeSaveBtn" class="button" aria-label="Save this node" type="button">Save</button>
-            <button id="searchNodeDeleteBtn" class="alert button" aria-label="Delete this node" type="button">Delete</button>
         </div>
-    </div>
-
-
-    <div id="searchEdgeDetails" class="reveal">
-        <fieldset class="fieldset small-4 cell">
-            <legend>Relationship</legend>
-
-            <div class="input-group">
-                <span class="input-group-label small-3">Type</span>
-                <select id="edgeType" class="small-9 input-group-field"></select>
-            </div>
-
-            <div class="input-group">
-                <span class="input-group-label small-4">Identifier</span>
-                <input id="edgeIdentifier" type="search" autocomplete="off" placeholder="*" class="small-8 input-group-field">
-            </div>
-
-            <span >Limit Hops</span>
-
-            <div class="switch tiny">
-                <input class="switch-input" id="hopsSwitch" type="checkbox" name="hopsSwitch" checked>
-                <label class="switch-paddle" for="hopsSwitch"></label>
-            </div>
-
-            <div class="input-group" id="hopsPane">
-                <div class=" input-group-field">
-                    <div class="small-2">
-                        <input type="text" id="minSliderVal" class="hopscontrol">
-                    </div>
-                    <div class="small-8">
-                        <div id="hopsSlider" class="slider hopscontrol" data-slider data-initial-start="1" data-initial-end="1" data-start="0" data-end="20">
-                            <span id="minSlider" class="slider-handle" data-slider-handle role="slider" title="Minimum hop count" aria-controls="minSliderVal"></span>
-                            <span id="sliderFill" class="slider-fill" data-slider-fill></span>
-                            <span id="maxSlider" class="slider-handle" data-slider-handle role="slider" title="Maximum hop count" aria-controls="maxSliderVal"></span>
-                        </div>
-                    </div>
-                    <div class="small-2">
-                        <input type="text" id="maxSliderVal" class="hopscontrol">
-                    </div>
-                </div>
-            </div>
-
-            <div class=" align-top">
-                <span class="small-3 align-middle">Direction</span>
-                <div id='dirIconClicker' class="small-1 text-left">
-                    <i id='dirIcon' class="fas fa-arrow-right" data-dir=">"></i>
-                </div>
-            </div>
-        </fieldset>
-        <button class="close-button" data-close aria-label="Close query dialog" type="button">
-            <span aria-hidden="true">&times;</span>
-        </button>
-        <button id="searchEdgeSaveBtn" class="button" aria-label="Save relationship dialog" type="button">Save</button>
-    </div>
-
-    <div id="searchConditionDetails" class="reveal">
-        <fieldset class="fieldset small-4 cell">
-            <legend>Condition</legend>
-            <div class="input-group">
-                <span class="input-group-label small-4">Referenced Item</span>
-                <select id="searchItem" class="small-8 input-group-field" autofocus></select>
-            </div>
-
-            <div id="searchOptions">
-                <div class="input-group">
-                    <span class="input-group-label small-4">Property</span>
-                    <select id="searchProp" class="small-8 input-group-field"></select>
-                </div>
-                <div class="input-group">
-                    <div class="input-group-button">
-                        <select id="searchOperator" class="input-group-field"></select>
-                    </div>
-                    <input id="searchVal" type="search" autocomplete="off" placeholder="*" class="small-8 input-group-field">
-                </div>
-            </div>
-
-            <button class="close-button" data-close aria-label="Close condition dialog" type="button">
-                <span aria-hidden="true">&times;</span>
-            </button>
-            <div class=" align-middle">
-                <div class="small-2 medium-2">
-                    <button id="searchConditionSaveBtn" class="button" aria-label="Save this condition" type="button">Save</button>
-                </div>
-                <div class="small-2 medium-2">
-                    <button id="searchConditionDeleteBtn" class="alert button" aria-label="Delete this condition" type="button">Delete</button>
-                </div>
-                <div class="small-7 medium-7"></div>
-                <div class="small-1 medium-1">
-                    <div id="alertIcon">
-                        <i class="fas fa-exclamation-triangle" style="margin: 0 0 1rem 0; color:orange;"></i>
-                    </div>
-                </div>
-            </div>
-        </fieldset>
-    </div>
-
-    <div id="searchAndOrDetails" class="reveal">
-        <fieldset class="fieldset small-4 cell">
-            <legend>And/Or</legend>
-            <div class="input-group">
-                <span class="input-group-label small-4">Type</span>
-                <select id="searchAndOr" class="small-8 input-group-field" autofocus>
-                    <option value="AND">AND</option>
-                    <option value="OR">OR</option>
-                </select>
-            </div>
-
-            <button class="close-button" data-close aria-label="Close condition dialog" type="button">
-                <span aria-hidden="true">&times;</span>
-            </button>
-            <div class=" align-middle">
-                <div class="small-3 medium-3">
-                    <button id="searchAndOrSaveBtn" class="button" aria-label="Save this condition" type="button">Save</button>
-                </div>
-                <div class="small-3 medium-3">
-                    <button id="searchAndOrDeleteBtn" class="alert button" aria-label="Delete this condition" type="button">Delete</button>
-                </div>
-            </div>
-        </fieldset>
-    </div>
-
-    <div id="searchConditionTypeSelect" class="reveal">
-        <fieldset class="fieldset small-4 cell">
-            <legend>Type</legend>
-            <div class="input-group">
-                <span class="input-group-label small-4">Type</span>
-                <select id="searchConditionTypeList" class="small-8 input-group-field" autofocus>
-                    <option value="STRING">STRING</option>
-                    <option value="AND">AND</option>
-                    <option value="OR">OR</option>
-                    @*<option value="NUMBER">NUMBER</option>*@
-
-                </select>
-            </div>
-
-            <button class="close-button" data-close aria-label="Close dialog" type="button">
-                <span aria-hidden="true">&times;</span>
-            </button>
-            <div class=" align-middle">
-                <div class="small-3 medium-3">
-                    <button id="searchConditionTypeSelectSaveBtn" class="button" aria-label="Save" type="button">Save</button>
-                </div>
-                <div class="small-3 medium-3">
-                    <button id="searchConditionTypeSelectCancelBtn" class="alert button" data-close aria-label="Cancel this" type="button">Cancel</button>
-                </div>
-            </div>
-        </fieldset>
     </div>
 </div>
 
+<!-- Reveals start -->
+<div id="searchNodeDetails" class="reveal">
+    <fieldset class="fieldset small-4 cell">
+        <legend>Node</legend>
+
+        <div class="input-group">
+            <span class="input-group-label small-4">Type</span>
+            <select id="nodeType" class="small-8 input-group-field" autofocus></select>
+        </div>
+        <div class="input-group">
+            <span class="input-group-label small-4">Identifier</span>
+            <input id="nodeIdentifier" type="search" autocomplete="off" placeholder="*" class="small-8 input-group-field">
+        </div>
+    </fieldset>
+    <button class="close-button" data-close aria-label="Close query dialog" type="button">
+        <span aria-hidden="true">&times;</span>
+    </button>
+    <div>
+        <button id="searchNodeSaveBtn" class="button" aria-label="Save this node" type="button">Save</button>
+        <button id="searchNodeDeleteBtn" class="alert button" aria-label="Delete this node" type="button">Delete</button>
+    </div>
+</div>
+
+
+<div id="searchEdgeDetails" class="reveal">
+    <fieldset class="fieldset small-4 cell">
+        <legend>Relationship</legend>
+
+        <div class="input-group">
+            <span class="input-group-label small-3">Type</span>
+            <select id="edgeType" class="small-9 input-group-field"></select>
+        </div>
+
+        <div class="input-group">
+            <span class="input-group-label small-4">Identifier</span>
+            <input id="edgeIdentifier" type="search" autocomplete="off" placeholder="*" class="small-8 input-group-field">
+        </div>
+
+        <span>Limit Hops</span>
+
+        <div class="switch tiny">
+            <input class="switch-input" id="hopsSwitch" type="checkbox" name="hopsSwitch" checked>
+            <label class="switch-paddle" for="hopsSwitch"></label>
+        </div>
+
+        <div class="input-group" id="hopsPane">
+            <div class=" input-group-field">
+                <div class="small-2">
+                    <input type="text" id="minSliderVal" class="hopscontrol">
+                </div>
+                <div class="small-8">
+                    <div id="hopsSlider" class="slider hopscontrol" data-slider data-initial-start="1" data-initial-end="1" data-start="0" data-end="20">
+                        <span id="minSlider" class="slider-handle" data-slider-handle role="slider" title="Minimum hop count" aria-controls="minSliderVal"></span>
+                        <span id="sliderFill" class="slider-fill" data-slider-fill></span>
+                        <span id="maxSlider" class="slider-handle" data-slider-handle role="slider" title="Maximum hop count" aria-controls="maxSliderVal"></span>
+                    </div>
+                </div>
+                <div class="small-2">
+                    <input type="text" id="maxSliderVal" class="hopscontrol">
+                </div>
+            </div>
+        </div>
+
+        <div class=" align-top">
+            <span class="small-3 align-middle">Direction</span>
+            <div id='dirIconClicker' class="small-1 text-left">
+                <i id='dirIcon' class="fas fa-arrow-right" data-dir=">"></i>
+            </div>
+        </div>
+    </fieldset>
+    <button class="close-button" data-close aria-label="Close query dialog" type="button">
+        <span aria-hidden="true">&times;</span>
+    </button>
+    <button id="searchEdgeSaveBtn" class="button" aria-label="Save relationship dialog" type="button">Save</button>
+</div>
+
+<div id="searchConditionDetails" class="reveal">
+    <fieldset class="fieldset small-4 cell">
+        <legend>Condition</legend>
+        <div class="input-group">
+            <span class="input-group-label small-4">Referenced Item</span>
+            <select id="searchItem" class="small-8 input-group-field" autofocus></select>
+        </div>
+
+        <div id="searchOptions">
+            <div class="input-group">
+                <span class="input-group-label small-4">Property</span>
+                <select id="searchProp" class="small-8 input-group-field"></select>
+            </div>
+            <div class="input-group">
+                <div class="input-group-button">
+                    <select id="searchOperator" class="input-group-field"></select>
+                </div>
+                <input id="searchVal" type="search" autocomplete="off" placeholder="*" class="small-8 input-group-field">
+            </div>
+        </div>
+
+        <button class="close-button" data-close aria-label="Close condition dialog" type="button">
+            <span aria-hidden="true">&times;</span>
+        </button>
+        <div class=" align-middle">
+            <div class="small-2 medium-2">
+                <button id="searchConditionSaveBtn" class="button" aria-label="Save this condition" type="button">Save</button>
+            </div>
+            <div class="small-2 medium-2">
+                <button id="searchConditionDeleteBtn" class="alert button" aria-label="Delete this condition" type="button">Delete</button>
+            </div>
+            <div class="small-7 medium-7"></div>
+            <div class="small-1 medium-1">
+                <div id="alertIcon">
+                    <i class="fas fa-exclamation-triangle" style="margin: 0 0 1rem 0; color:orange;"></i>
+                </div>
+            </div>
+        </div>
+    </fieldset>
+</div>
+
+<div id="searchAndOrDetails" class="reveal">
+    <fieldset class="fieldset small-4 cell">
+        <legend>And/Or</legend>
+        <div class="input-group">
+            <span class="input-group-label small-4">Type</span>
+            <select id="searchAndOr" class="small-8 input-group-field" autofocus>
+                <option value="AND">AND</option>
+                <option value="OR">OR</option>
+            </select>
+        </div>
+
+        <button class="close-button" data-close aria-label="Close condition dialog" type="button">
+            <span aria-hidden="true">&times;</span>
+        </button>
+        <div class=" align-middle">
+            <div class="small-3 medium-3">
+                <button id="searchAndOrSaveBtn" class="button" aria-label="Save this condition" type="button">Save</button>
+            </div>
+            <div class="small-3 medium-3">
+                <button id="searchAndOrDeleteBtn" class="alert button" aria-label="Delete this condition" type="button">Delete</button>
+            </div>
+        </div>
+    </fieldset>
+</div>
+
+<div id="searchConditionTypeSelect" class="reveal">
+    <fieldset class="fieldset small-4 cell">
+        <legend>Type</legend>
+        <div class="input-group">
+            <span class="input-group-label small-4">Type</span>
+            <select id="searchConditionTypeList" class="small-8 input-group-field" autofocus>
+                <option value="STRING">STRING</option>
+                <option value="AND">AND</option>
+                <option value="OR">OR</option>
+                @*<option value="NUMBER">NUMBER</option>*@
+
+            </select>
+        </div>
+
+        <button class="close-button" data-close aria-label="Close dialog" type="button">
+            <span aria-hidden="true">&times;</span>
+        </button>
+        <div class=" align-middle">
+            <div class="small-3 medium-3">
+                <button id="searchConditionTypeSelectSaveBtn" class="button" aria-label="Save" type="button">Save</button>
+            </div>
+            <div class="small-3 medium-3">
+                <button id="searchConditionTypeSelectCancelBtn" class="alert button" data-close aria-label="Cancel this" type="button">Cancel</button>
+            </div>
+        </div>
+    </fieldset>
+</div>
     

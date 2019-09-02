@@ -34,6 +34,7 @@ export default class AdvancedSearchCoordinator {
     XSpacing: number;
     YSpacing: number;
     PlusSize: number;
+    PaneHeight: number;
     ConditionRoot: ViewTreeNode<ICondition>;
     NodeDetails: object;
     EdgeDetails: object;
@@ -63,6 +64,7 @@ export default class AdvancedSearchCoordinator {
         this.ConditionRoot = null;
         this.NodeDetails = null;
         this.EdgeDetails = null;
+        this.PaneHeight = 85;
 
         var modalOptions: FoundationSites.IRevealOptions = {
             animationIn: "hinge-in-from-top fast",
@@ -118,10 +120,10 @@ export default class AdvancedSearchCoordinator {
             me.UpdateNodes(false);
             me.UpdateEdges(false);
         });
-        d3.select("#advSearchClearIcon").on("click", function () {
+        d3.select("#advSearchClearBtn").on("click", function () {
             me.Clear();
         });
-        d3.select("#advSearchShareIcon").on("click", function () {
+        d3.select("#advSearchShareBtn").on("click", function () {
             me.Share();
         });
         d3.select("#hopsSwitch").on("change", function () {
@@ -144,6 +146,12 @@ export default class AdvancedSearchCoordinator {
         });
         d3.select("#searchConditionTypeSelectSaveBtn").on("click", function () {
             me.onSearchConditionTypeSaveClicked();
+        });
+        d3.select("#advSearchMinimise").on("click", function () {
+            me.ShowHide();
+        });
+        d3.select("#advSearchMaximise").on("click", function () {
+            me.ShowHide();
         });
 
         me.UpdateNodeLabels();
@@ -169,10 +177,16 @@ export default class AdvancedSearchCoordinator {
             this.ConditionRoot.Build();
         }
         this.UpdateSearch(false);
+        this.ShowHide();
     }
 
     onSearchPaneClicked() {
         this.hideNodeControls();
+    }
+
+    ShowHide() {
+        $("#querybar").slideToggle();
+        $("#advSearchMaximise").slideToggle();
     }
 
     UpdateSearch(animate: boolean) {

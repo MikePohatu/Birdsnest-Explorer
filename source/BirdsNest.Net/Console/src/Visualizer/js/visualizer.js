@@ -85,22 +85,6 @@ webcrap.data.apiGetJson("/visualizer/subtypeproperties", function (data) {
     //console.log(subtypeproperties);
 });
 
-$("#menuShowHideButton").click(menuShowHide);
-function menuShowHide() {
-    var icon = $("#menuIcon");
-    if (icon.hasClass("fa-angle-up")) {
-        icon.removeClass("fa-angle-up");
-        icon.addClass("fa-angle-down");
-        $("#querybar").slideToggle();
-    }
-    else {
-        icon.removeClass("fa-angle-down");
-        icon.addClass("fa-angle-up");
-        $("#querybar").slideToggle();
-    }
-    
-}
-
 export function drawGraph(selectid, loaddata) {
     //console.log('drawGraph started');
     //updateNodeLabels("target");
@@ -137,9 +121,9 @@ export function drawGraph(selectid, loaddata) {
     if (loaddata !== undefined && loaddata.length > 0) {
         //console.log(loaddata);
         getNodes(loaddata);
-        setTimeout(function () {
-            menuShowHide();
-        }, 100);
+        //setTimeout(function () {
+        //    menuShowHide();
+        //}, 100);
     }
 
     //look for a stored resultset. if found, load it and clear it
@@ -149,9 +133,9 @@ export function drawGraph(selectid, loaddata) {
     //console.log(results);
     if (results !== null) {
         queue.QueueResults(results);
-        setTimeout(function () {
-            menuShowHide();
-        }, 100);
+        //setTimeout(function () {
+        //    menuShowHide();
+        //}, 100);
     }
 }
 
@@ -570,7 +554,6 @@ export function onAddToView() {
     //console.log(results);
     addSearchResults(JSON.parse(results));
     document.getElementById("searchNotification").innerHTML = '';
-    document.getElementById("searchExpand").innerHTML = '';
 }
 
 

@@ -3,13 +3,25 @@
 #querybar {
     position: fixed;
     display: block;
-    top: 1.5em;
+    top: 2em;
     left: 0;
+    right: 0;
     z-index: 50;
 }
 
 #searchPane {
     position: relative;
+}
+
+#advSearchMaximise {
+    position: absolute;
+    top: 0;
+    left: 0;
+}
+
+#searchNotification {
+    display: inline-block;
+    height: 1.2em;
 }
 
 .searchnode, .searchedge {
@@ -28,28 +40,36 @@
     stroke-width: 3px;
 }
 
+.searchContainer {
+    background-color: rgba(255, 255, 255, 0.43);
+    margin: 5px,0,5px,0;
+    padding: 5px;
+}
+
 .searchLabel {
-    opacity: 0.3;
-    display: inline-block;
+    /*opacity: 0.3;*/
+    font-size: 2.5rem;
+    /*display: inline-block;*/
+    /*vertical-align: middle;*/
 }
 
 .searchLabel.viewcontrol {
     opacity: 0.6;
 }
 
-.searchContainer {
-    align-items: center;
+.searchbutton {
+    /*margin:5px;*/
 }
 
 .searchSvgContainer {
-    height: 80px;
-    width: auto;
+    height: 90px;
+    width: 100%;
     margin: 0;
     padding: 0;
 }
 
 .searchcondition rect {
-    fill: white;
+    fill: transparent;
 }
 
 .searchcondition.condition rect {

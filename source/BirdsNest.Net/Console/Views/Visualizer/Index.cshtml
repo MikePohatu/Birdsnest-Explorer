@@ -13,11 +13,10 @@
 
 <div id="pagewrapper">
     <div id="main">
-        <div id="querybar">
-            <partial name="AdvancedSearchPane" />
-        </div>
+        
 
         <div id="drawingpane">
+            <partial name="AdvancedSearchPane" />
             <div id="viewcontrols">
                 <div id="viewcontrolbtns" class="grid-x">
                     <span id="restartLayoutBtn" class="cell viewcontrol has-tip" title="Refresh layout">
@@ -46,10 +45,6 @@
                     </span>
                     <span id="clearViewBtn" class="cell viewcontrol has-tip" title="Clear current view" onclick="javascript:vis.resetView()">
                         <i id="reportIcon" class="fas fa-ban" style="color:red;"></i>
-                    </span>
-                    <span class="cell" style="width:24px;"> </span> <!-- spacer -->
-                    <span id="menuShowHideButton" class="cell viewcontrol has-tip" title="Hide the search bar">
-                        <i id="menuIcon" class="fas fa-angle-up"></i>
                     </span>
 
                     <div id="eyeLabelListWrapper" class="scrollable dropdown-pane" data-dropdown data-auto-focus="true" data-close-on-click="true">
