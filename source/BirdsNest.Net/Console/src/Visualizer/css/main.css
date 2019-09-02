@@ -74,7 +74,7 @@ body {
 
 #viewcontrols {
     position: fixed;
-    bottom: 0;
+    bottom: 3px;
     left: 0;
     height: 35px;
     width: 240px;
