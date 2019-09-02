@@ -851,7 +851,7 @@ export default class AdvancedSearchCoordinator {
         var me = this;
         var gridwidth = 20;
         var bracewidth = gridwidth;
-        var rectwidth = gridwidth * 4;
+        var rectwidth = gridwidth * 6;
         var rectheight = 70;
         var xpadding = 5;
         var xspacing = gridwidth * 3;
@@ -944,10 +944,18 @@ export default class AdvancedSearchCoordinator {
             .text(function (d: d3.HierarchyPointNode<ViewTreeNode<ICondition>>) { return d.data.Item.Type; });
 
         viewel.selectAll(".condition .searchconditioneval")
-            .text(function (d: d3.HierarchyPointNode<ViewTreeNode<ICondition>>) { return (d.data.Item as ConditionBase).Name + "." + (d.data.Item as ConditionBase).Property; });
+            .text(function (d: d3.HierarchyPointNode<ViewTreeNode<ICondition>>) {
+                var s: string = (d.data.Item as ConditionBase).Name + "." + (d.data.Item as ConditionBase).Property;
+                if (s.length < 20) { return s; }
+                return s.substring(0, 18) + "...";
+            });
 
         viewel.selectAll(".condition .searchconditionopval")
-            .text(function (d: d3.HierarchyPointNode<ViewTreeNode<ICondition>>) { return (d.data.Item as ConditionBase).Operator + " " + (d.data.Item as ConditionBase).Value; });
+            .text(function (d: d3.HierarchyPointNode<ViewTreeNode<ICondition>>) {
+                var s: string = (d.data.Item as ConditionBase).Operator + " " + (d.data.Item as ConditionBase).Value;
+                if (s.length < 20) { return s;}
+                return s.substring(0, 18)+ "...";
+            });
 
         //setup the + button for group nodes e.g. AND/OR
         var condgroupenters = enter.filter(".conditiongroup");
