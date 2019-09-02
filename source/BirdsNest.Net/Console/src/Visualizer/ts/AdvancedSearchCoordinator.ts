@@ -60,7 +60,7 @@ export default class AdvancedSearchCoordinator {
         this.PathElementID = pathelementid;
         this.ConditionElementID = conditionelementid;
         this.Diameter = 25;
-        this.XSpacing = 150;
+        this.XSpacing = 170;
         this.YSpacing = 0;
         this.PlusSize = 25;
         this.Margin = 5;
@@ -343,9 +343,10 @@ export default class AdvancedSearchCoordinator {
         var me = this;
 
         var rectwidth = this.Diameter * 2;
-        var rectheight = this.Diameter * 0.7;
+        var rectheight = this.Diameter *1.5;
 
-        var relarrowwidth = 20;
+        var relarrowwidth = rectheight * 0.7;
+        var relarrowy = (rectheight - relarrowwidth)/2;
         var currslot = 0;
         //console.log("subspacingx: " + subspacingx);
         //console.log("subspacingy: " + subspacingy);
@@ -358,7 +359,6 @@ export default class AdvancedSearchCoordinator {
             .attr("id", function (d: SearchEdge) { return "searchedge_" + d.ID; })
             .classed("searchedge", true)
             .on("click", function () { me.onSearchEdgeClicked(this); });
-            //.attr("data-open", "searchEdgeDetails");
 
         newedgeg.append("rect")
             .attr("id", function (d: SearchEdge) { return "searchedgebg_" + d.ID; })
@@ -366,12 +366,31 @@ export default class AdvancedSearchCoordinator {
             .attr("width", rectwidth)
             .attr("height", rectheight);
 
-        newedgeg.append("text")
-            .text(function (d: SearchEdge) { return d.Name; })
-            .attr("text-anchor", "middle")
-            .attr("dominant-baseline", "middle")
-            .attr("x", rectwidth / 2)
-            .attr("y", rectheight / 2);
+        var newedgetext = newedgeg.append("text")
+            .attr("text-anchor", "top")
+            .attr("dominant-baseline", "baseline");
+
+        //newedgetext.append("tspan")
+        //    .attr("x", "5px")
+        //    .attr("dy", "1.1em")
+        //    .text(function (d: SearchEdge) { return d.Label; });
+
+        newedgetext.append("tspan")
+            .attr("x", "5px")
+            .attr("dy", "1.1em")
+            .text(function (d: SearchEdge) { return d.Name; });
+
+        newedgetext.append("tspan")
+            .attr("x", "5px")
+            .attr("dy", "1.1em")
+            .text(function (d: SearchEdge) {
+                if (d.Max === "-1") {
+                    return "*";
+                }
+                else {
+                    return d.Min + ".." + d.Max;
+                }
+            });
 
         newedgeg.append("i")
             .attr("id", function (d: SearchEdge) { return "searchleftarr_" + d.ID; })
@@ -382,7 +401,7 @@ export default class AdvancedSearchCoordinator {
             .classed("searchleftarrow", true)
             .classed("searcharrow", true)
             .attr("x", 0 - relarrowwidth)
-            .attr("y", 0)
+            .attr("y", relarrowy)
             .attr("width", relarrowwidth)
             .attr("height", relarrowwidth);
 
@@ -395,7 +414,7 @@ export default class AdvancedSearchCoordinator {
             .classed("searchrightarrow", true)
             .classed("searcharrow", true)
             .attr("x", rectwidth)
-            .attr("y", 0)
+            .attr("y", relarrowy)
             .attr("width", relarrowwidth)
             .attr("height", relarrowwidth);
 
@@ -903,7 +922,7 @@ export default class AdvancedSearchCoordinator {
         var condtext = enter.filter(".searchcondition.condition")
             .append("text")
             .attr("y", "5px")
-            .attr("text-anchor", "left")
+            .attr("text-anchor", "top")
             .attr("dominant-baseline", "baseline");
 
         condtext.append("tspan")
