@@ -31,6 +31,10 @@
     z-index: 10;
 }
 
+.clickable:hover {
+    cursor: pointer;
+}
+
 .loginform {
     background-color: white;
     padding-left: 15px;

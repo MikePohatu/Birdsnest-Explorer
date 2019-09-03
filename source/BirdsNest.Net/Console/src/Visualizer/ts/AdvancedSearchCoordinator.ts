@@ -480,7 +480,7 @@ export default class AdvancedSearchCoordinator {
 
         if (searchnode.index > 1) {
             controls.append("g")
-                .classed("nodecontrol", true)
+                .classed("nodecontrol clickable", true)
                 .attr("transform", "translate(" + controlsx + "," + controlsy + ")")
                 .on("click", function () {
                     d3.event.stopPropagation();
@@ -496,7 +496,7 @@ export default class AdvancedSearchCoordinator {
         }
 
         controls.append("g")
-            .classed("nodecontrol", true)
+            .classed("nodecontrol clickable", true)
             .attr("transform", "translate(" + (controlsx + controlIconDimension) + "," + controlsy + ")")
             .on("click", function () {
                 d3.event.stopPropagation();
@@ -508,7 +508,7 @@ export default class AdvancedSearchCoordinator {
             .attr("width", controlIconDimension)
             .attr("class", "fas fa-edit");
         controls.append("g")
-            .classed("nodecontrol", true)
+            .classed("nodecontrol clickable", true)
             .attr("transform", "translate(" + (controlsx + controlIconDimension * 2) + "," + controlsy + ")")
             .on("click", function () {
                 d3.event.stopPropagation();
@@ -521,7 +521,7 @@ export default class AdvancedSearchCoordinator {
 
         if (searchnode.index < this.SearchData.Nodes.length)
             controls.append("g")
-                .classed("nodecontrol", true)
+                .classed("nodecontrol clickable", true)
                 .attr("transform", "translate(" + (controlsx + controlIconDimension * 3) + "," + controlsy + ")")
                 .on("click", function () {
                     d3.event.stopPropagation();

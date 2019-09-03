@@ -41,7 +41,7 @@
 }
 
 .searchContainer {
-    background-color: rgba(255, 255, 255, 0.43);
+    background-color: rgba(255, 255, 255, 0.95);
     margin: 5px 0 5px 0;
     padding: 5px;
 }
@@ -143,8 +143,4 @@ text.and-or-label {
 .conditiongroup:hover .conditionbrace {
     stroke: lightskyblue;
     fill: lightskyblue;
-}
-
-.clickable:hover {
-    cursor: pointer;
 }
