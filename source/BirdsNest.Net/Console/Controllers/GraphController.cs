@@ -121,17 +121,5 @@ namespace Console.Controllers
         {
             return this._service.SearchEdgePropertyValues(type, property, searchterm);
         }
-
-
-        //search stuff
-        //*******************
-        // GET: api/graph/search/path
-        [HttpGet("search/path")]
-        public ResultSet GetNodeValues([FromQuery]string sourcetype, [FromQuery]string sourceprop, [FromQuery]string sourceval,
-            [FromQuery]string relationship, [FromQuery]int relmin, [FromQuery]int relmax, [FromQuery]char dir,
-            [FromQuery]string targettype, [FromQuery]string targetprop, [FromQuery]string targetval)
-        {
-            return this._service.SearchPath(sourcetype, sourceprop, sourceval, relationship, relmin, relmax, dir, targettype, targetprop, targetval);
-        }
     }
 }

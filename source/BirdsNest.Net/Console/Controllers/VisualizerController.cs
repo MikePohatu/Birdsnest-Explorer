@@ -51,24 +51,6 @@ namespace Console.Controllers
             return PartialView("RelatedDetail",model);
         }
 
-        // GET visualizer/search
-        public IActionResult Search([FromQuery]string sourcetype, [FromQuery]string sourceprop, [FromQuery]string sourceval,
-            [FromQuery]string relationship, [FromQuery]int relmin, [FromQuery]int relmax, [FromQuery]char dir,
-            [FromQuery]string targettype, [FromQuery]string targetprop, [FromQuery]string targetval)
-        {
-            ResultSet results = this._service.SearchPath(sourcetype, sourceprop, sourceval, relationship, relmin, relmax, dir, targettype, targetprop, targetval);
-            return PartialView("SearchResultsDetail", results);
-        }
-
-        // GET visualizer/friendlysearch
-        public IActionResult FriendlySearch([FromQuery]string sourcetype, [FromQuery]string sourceprop, [FromQuery]string sourceval,
-            [FromQuery]string relationship, [FromQuery]int relmin, [FromQuery]int relmax, [FromQuery]char dir,
-            [FromQuery]string targettype, [FromQuery]string targetprop, [FromQuery]string targetval)
-        {
-            ResultSet results = this._service.SearchPath(sourcetype, sourceprop, sourceval, relationship, relmin, relmax, dir, targettype, targetprop, targetval);
-            return PartialView("SearchResultsDetail", results);
-        }
-
         public object Icons()
         {
             return this._plugingmanager.Icons;

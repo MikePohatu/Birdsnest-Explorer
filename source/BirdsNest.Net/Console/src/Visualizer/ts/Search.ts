@@ -197,6 +197,7 @@ class MathCondition extends ConditionBase {
 
 class StringCondition extends ConditionBase {
     Value: string = "";
+    CaseSensitive: boolean = true;
 
     constructor() {
         super();

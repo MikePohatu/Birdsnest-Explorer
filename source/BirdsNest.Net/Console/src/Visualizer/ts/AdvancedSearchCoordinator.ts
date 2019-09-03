@@ -21,7 +21,8 @@ import {
     RemoveNode,
     IsConditionValid,
     GetNode,
-    ConditionOperators
+    ConditionOperators,
+    StringCondition
 } from "./Search";
 import ViewTreeNode from "./ViewTreeNode";
 
@@ -77,7 +78,7 @@ export default class AdvancedSearchCoordinator {
         };
 
         this.ConditionTypeModal = new Foundation.Reveal($("#searchConditionTypeSelect"), modalOptions);
-        this.ConditionDetailsModal = new Foundation.Reveal($("#searchConditionDetails"), modalOptions);
+        this.ConditionDetailsModal = new Foundation.Reveal($("#searchStringConditionDetails"), modalOptions);
         this.NodeDetailsModal = new Foundation.Reveal($("#searchNodeDetails"), modalOptions);
         this.EdgeDetailsModal = new Foundation.Reveal($("#searchEdgeDetails"), modalOptions);
         this.SearchAndOrDetailsModal = new Foundation.Reveal($("#searchAndOrDetails"), modalOptions);
@@ -1092,7 +1093,7 @@ export default class AdvancedSearchCoordinator {
         var me = this;
         var condition: ConditionBase;
         this.ClearAlert();
-        var datum = this.UpdateItemDatum("searchConditionDetails", callingelement) as d3.HierarchyNode<ViewTreeNode<ICondition>>;
+        var datum = this.UpdateItemDatum("searchStringConditionDetails", callingelement) as d3.HierarchyNode<ViewTreeNode<ICondition>>;
         if (datum) { condition = datum.data.Item as ConditionBase; }
         //console.log(datum);
 
@@ -1108,6 +1109,14 @@ export default class AdvancedSearchCoordinator {
         });
 
         (document.getElementById("searchVal") as HTMLInputElement).value = condition.Value;
+        if (condition.Type === "STRING") {
+            (document.getElementById("searchCaseOptions") as HTMLDivElement).hidden = false;
+            (document.getElementById("searchCase") as HTMLInputElement).checked = (condition as StringCondition).CaseSensitive;
+        }
+        else {
+            (document.getElementById("searchCaseOptions") as HTMLDivElement).hidden = true;
+        }
+        
         this.ConditionDetailsModal.open();
     }
 
@@ -1115,7 +1124,7 @@ export default class AdvancedSearchCoordinator {
         //console.log("UpdateConditionDetails started");
         //console.log(this.SearchData.Nodes);
         //var me = this;
-        var datum = this.GetItemDatum("searchConditionDetails") as d3.HierarchyNode<ViewTreeNode<ICondition>>;
+        var datum = this.GetItemDatum("searchStringConditionDetails") as d3.HierarchyNode<ViewTreeNode<ICondition>>;
         //console.log(datum);
 
         //*** setup the searchItem list
@@ -1166,7 +1175,7 @@ export default class AdvancedSearchCoordinator {
         var searchProps = document.getElementById("searchProp");
         var selectedName = searchItem.options[searchItem.selectedIndex].value;
         var selectedItem;
-        var datum = (this.GetItemDatum("searchConditionDetails") as d3.HierarchyNode<ViewTreeNode<ICondition>>).data;
+        var datum = (this.GetItemDatum("searchStringConditionDetails") as d3.HierarchyNode<ViewTreeNode<ICondition>>).data;
         //console.log(datum);
         var typeSelected = "";
 
@@ -1276,7 +1285,7 @@ export default class AdvancedSearchCoordinator {
 
     onSearchConditionDeleteClicked() {
         if (confirm('Are you sure you want to delete this condition?')) {
-            this.DeleteSearchCondition('searchConditionDetails');
+            this.DeleteSearchCondition('searchStringConditionDetails');
             this.ConditionDetailsModal.close();
         }
     }
@@ -1291,7 +1300,7 @@ export default class AdvancedSearchCoordinator {
 
     DeleteSearchCondition (elementid: string) {
         //console.log("deleteSearchCondition started: " + elementid);
-        //searchConditionDetails
+        //searchStringConditionDetails
 
         //datum is the d3 tree datum. Use datum.data to get the ViewTreeNode datum
         var datum = this.GetItemDatum(elementid) as d3.HierarchyNode<ViewTreeNode<ICondition>>;
@@ -1317,13 +1326,18 @@ export default class AdvancedSearchCoordinator {
 
     onSearchConditionSaveClicked () {
         //console.log("onSearchConditionSaveClicked started");
-        var datum = this.GetItemDatum("searchConditionDetails") as d3.HierarchyNode<ViewTreeNode<ICondition>>;
+        var datum = this.GetItemDatum("searchStringConditionDetails") as d3.HierarchyNode<ViewTreeNode<ICondition>>;
         var condition = datum.data.Item as ConditionBase;
 
         var newname = (document.getElementById("searchItem") as HTMLSelectElement).value;
         var newprop = (document.getElementById("searchProp") as HTMLSelectElement).value;
         var newval = (document.getElementById("searchVal") as HTMLInputElement).value;
         var newop = (document.getElementById("searchOperator") as HTMLInputElement).value;
+
+        if (condition.Type === "STRING") {
+            //console.log("saving case state");
+            (condition as StringCondition).CaseSensitive = (document.getElementById("searchCase") as HTMLInputElement).checked;
+        }
 
         if (webcrap.misc.isNullOrWhitespace(newname) || webcrap.misc.isNullOrWhitespace(newprop) || webcrap.misc.isNullOrWhitespace(newval)) {
             this.SetAlert("Name, property, or value is empty. Please set a value");
