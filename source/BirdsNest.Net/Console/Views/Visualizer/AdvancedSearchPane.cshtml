@@ -1,5 +1,5 @@
 ﻿
-<button id="advSearchMaximise" class="button searchbutton has-tip clickable" aria-label="Show search" type="button" title="Search">
+<button id="advSearchMaximise" class="button searchbutton " aria-label="Show search" type="button" title="Search">
     <i class="fas fa-search"></i>
 </button>
 
@@ -9,7 +9,7 @@
         <div class="searchContainer cell grid-x align-middle">
             <div id="pathLabel" class="searchLabel cell shrink">
                 <b>Search:</b>
-                <i id="pathAddIcon" class="fas fa-plus-circle has-tip clickable" title="Add node to search path"></i>
+                <i id="pathAddIcon" class="fas fa-plus-circle clickable searchcontrol" title="Add node to search path"></i>
             </div>
             <div class="cell auto">
                 <svg id="searchPathSvg" class="searchSvgContainer">
@@ -28,13 +28,13 @@
         </div>
 
         <div class="searchContainer">
-            <button id="advSearchMinimise" class="button searchbutton has-tip clickable" aria-label="Minimise search" type="button" title="Minimise search">
+            <button id="advSearchMinimise" class="button searchbutton " aria-label="Minimise search" type="button" title="Minimise search">
                 <i class="fas fa-angle-up"></i>
             </button>
-            <button id="advSearchClearBtn" class="button searchbutton has-tip clickable" aria-label="Clear search" type="button" title="Clear search">
+            <button id="advSearchClearBtn" class="button searchbutton " aria-label="Clear search" type="button" title="Clear search">
                 <i class="fas fa-eraser"></i>
             </button>
-            <button id="advSearchShareBtn" class="button searchbutton has-tip clickable" aria-label="Share search" type="button" title="Share search">
+            <button id="advSearchShareBtn" class="button searchbutton " aria-label="Share search" type="button" title="Share search">
                 <i class="fas fa-share-alt"></i>
             </button>
             <button id="searchBtn" class="button searchbutton" aria-label="Submit search" type="button">Search</button>
@@ -168,7 +168,7 @@
                 <input id="searchVal" type="search" autocomplete="off" placeholder="*" class="small-8 input-group-field">
             </div>
 
-            <div id="searchCaseOptions" class="grid-x grid-margin-x align-top">
+            <div id="searchCaseOptions" class="grid-x grid-margin-x align-top" title="*Case sensitive search is faster">
                 <div class="cell shrink">Case Sensitive:</div>
                 <div class="cell auto">
                     <div class="switch tiny" style="display: inline;">

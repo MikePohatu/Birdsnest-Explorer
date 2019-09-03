@@ -192,8 +192,8 @@ export default class AdvancedSearchCoordinator {
     }
 
     ShowHide() {
-        $("#querybar").slideToggle();
-        $("#advSearchMaximise").slideToggle();
+        $("#querybar").slideToggle(400);
+        $("#advSearchMaximise").slideToggle(200);
     }
 
     UpdateSearch(animate: boolean) {
@@ -889,21 +889,21 @@ export default class AdvancedSearchCoordinator {
             .exit()
             .remove();
 
-        enter.append("rect")
+        var enterbg = enter.append("g")
+            .classed("conditionbg", true);
+
+        //add the background rect 
+        enterbg.append("rect")
             .attr("id", function (d: d3.HierarchyPointNode<ViewTreeNode<ICondition>>) { return "searchconditionbg_" + d.data.ID; })
-            .classed("searchconditionrect",true)
+            .classed("searchconditionrect", true)
             .attr("x", strokewidth)
             .attr("y", strokewidth)
             .attr("rx", 5)
             .attr("height", rectheight);
 
+
         viewel.selectAll(".searchconditionrect")
             .data(nodes, function (d: d3.HierarchyPointNode<ViewTreeNode<ICondition>>) { return d.data.ID; })
-            //.attr("height", function (d: d3.HierarchyPointNode<ViewTreeNode<ICondition>>) {
-            //    //console.log(d.ancestors());
-            //    d.data.RectHeight = rectheight - d.depth * ypadding * 2;
-            //    return d.data.RectHeight;
-            //})
             .attr("width", function (d: d3.HierarchyPointNode<ViewTreeNode<ICondition>>) {
                 //console.log("width d: ");
                 //console.log(d); 
@@ -971,7 +971,17 @@ export default class AdvancedSearchCoordinator {
                 me.onSearchConditionAddClicked(this as Element);
             });
 
-        //transform translate + button
+        groupaddbtns.append("i")
+            .attr("class", "fas fa-plus")
+            .attr("width", me.PlusSize)
+            .attr("height", me.PlusSize);
+
+
+        groupaddbtns.append("rect")
+            .attr("width", me.PlusSize)
+            .attr("height", me.PlusSize);
+
+        //transform translate all + button
         viewel.selectAll(".searchconditionplus")
             .data(nodes, function (d: d3.HierarchyPointNode<ViewTreeNode<ICondition>>) { return d.data.ID; })
             .attr("transform", function (d: d3.HierarchyPointNode<ViewTreeNode<ICondition>>) {
@@ -985,50 +995,39 @@ export default class AdvancedSearchCoordinator {
                 
             });
 
-        //groupaddbtns.append("text")
-        //    .text("+")
-        //    .attr("font-size", pluswidth + "px");
-
-        groupaddbtns.append("i")
-            .attr("class", "fas fa-plus")
-            .attr("width", me.PlusSize)
-            .attr("height", me.PlusSize);
-
-
-        groupaddbtns.append("rect")
-            .attr("width", me.PlusSize)
-            .attr("height", me.PlusSize);
-
         //init foundation for things like reveal
         enter.each(function (d: d3.HierarchyPointNode<ViewTreeNode<ICondition>>) {
             $("searchcondition_" + (d.data as ViewTreeNode<ICondition>).ID).foundation();
         });
 
-        var condgroups = viewel.selectAll(".conditiongroup")
-            .data(nodes, function (d: d3.HierarchyPointNode<ViewTreeNode<ICondition>>) { return d.data.ID; });
+        //add the braces to the bg of the condition groups
+        var condgroupentersbg = condgroupenters.selectAll(".conditionbg");
 
-        condgroupenters.append("g")
+        condgroupentersbg.append("g")
             .classed("conditionbrace leftbrace", true)
             .append("text")
             .text("{")
             .attr("alignment-baseline", "hanging")
             .attr("font-size", rectheight + "px");
 
-        condgroupenters.append("g")
+        condgroupentersbg.append("g")
             .classed("conditionbrace rightbrace", true)
             .append("text")
             .text("}")
             .attr("alignment-baseline", "hanging")
             .attr("font-size", rectheight + "px");
 
+        var condgroups = viewel.selectAll(".conditiongroup")
+            .data(nodes, function (d: d3.HierarchyPointNode<ViewTreeNode<ICondition>>) { return d.data.ID; });
+
         condgroups.selectAll(".leftbrace")
-            .attr("transform", function (d: d3.HierarchyPointNode<ViewTreeNode<ICondition>>) {
+            .attr("transform", function () {
                 return "translate(0 " + ypadding + ")";
             });
 
         condgroups.selectAll(".rightbrace")
             .attr("transform", function (d: d3.HierarchyPointNode<ViewTreeNode<ICondition>>) {
-                //console.log(d.height);
+                console.log(d);
                 return "translate(" + (d.data.RectWidth - bracewidth + xpadding) + " " + ypadding + ")";
             });
 
