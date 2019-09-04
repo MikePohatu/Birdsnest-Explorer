@@ -4,18 +4,21 @@
 
 <div id="detaillist_@Model.Node.DbId">
     <div class="detaillist">
-        <div class="grid-x align-middle">
-            <div class="cell small-3"><u><b>Details</b></u></div>
-            <div class="cell small-1" title="Show/hide node">
-                <a href="javascript:vis.onEyeNodeDetailClicked(@Model.Node.DbId);"><div id="eyeIcon_@Model.Node.DbId" class="cell far fa-eye small-2"></div></a>
-            </div>
-            <div class="cell small-1" title="Set as search source">
-                <a href="javascript:vis.onSourceAddClicked(@Model.Node.DbId);"><div id="sourceAddIcon_@Model.Node.DbId" class="cell far fa-hand-point-left small-2"></div></a>
-            </div>
-            <div class="cell small-1" title="Set as search target">
-                <a href="javascript:vis.onTargetAddClicked(@Model.Node.DbId);"><div id="targetAddIcon_@Model.Node.DbId" class="cell far fa-hand-point-right small-2"></div></a>
-            </div>
-        </div>
+		<div class="grid-x align-middle">
+			<div class="cell small-3"><u><b>Details</b></u></div>
+			<div class="cell small-1" title="Show/hide node">
+				<a href="javascript:vis.onEyeNodeDetailClicked(@Model.Node.DbId);"><div id="eyeIcon_@Model.Node.DbId" class="cell far fa-eye small-2"></div></a>
+			</div>
+			<div class="cell small-1" title="Add related nodes">
+				<a href="javascript:vis.getRelated(@Model.Node.DbId);"><div id="expandIcon_@Model.Node.DbId" class="cell fas fa-expand-arrows-alt small-2"></div></a>
+			</div>
+			@*<div class="cell small-1" title="Set as search source">
+			<a href="javascript:vis.onSourceAddClicked(@Model.Node.DbId);"><div id="sourceAddIcon_@Model.Node.DbId" class="cell far fa-hand-point-left small-2"></div></a>
+		</div>
+		<div class="cell small-1" title="Set as search target">
+			<a href="javascript:vis.onTargetAddClicked(@Model.Node.DbId);"><div id="targetAddIcon_@Model.Node.DbId" class="cell far fa-hand-point-right small-2"></div></a>
+		</div>*@
+		</div>
         <b>Name:</b> @Model.Node.Name<br />
         <b>db_id:</b> @Model.Node.DbId<br />
         <b>Types:</b> @string.Join(", ", Model.Node.Labels)<br />

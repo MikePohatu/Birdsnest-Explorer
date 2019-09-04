@@ -1455,7 +1455,7 @@ function getNodes(nodeids) {
     });
 }
 
-function getRelated(nodeid) {
+export function getRelated(nodeid) {
     //console.log("getRelated"+ nodeid);
     webcrap.data.apiGetJson("/api/graph/nodes/" + nodeid, function (data) {
         //pendingResults = data;
