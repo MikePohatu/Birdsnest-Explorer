@@ -161,8 +161,8 @@ body {
 
 .detailcard {
     border: 2px solid black;
-    font-size: 10px;
-    width: 250px;
+    font-size: 12px;
+    width: 270px;
     word-wrap: break-word;
     font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
