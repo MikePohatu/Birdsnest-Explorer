@@ -233,7 +233,7 @@ export default class AdvancedSearchCoordinator {
 		var searchterm = encodeURI((document.getElementById("simpleSearchTerm") as HTMLInputElement).value);
 		//console.log("RunSimpleSearch" + searchterm);
 		//console.log("/visualizer/SimpleSearch?searchterm=" + searchterm);
-
+		this.ShowSearchSpinner("simpleSearchNotification");
 		webcrap.data.apiGet("/visualizer/SimpleSearch?searchterm=" + searchterm, "html", function (data) {
 			//console.log(data);
 			document.getElementById("simpleSearchNotification").innerHTML = data;
@@ -253,7 +253,7 @@ export default class AdvancedSearchCoordinator {
 		var postdata = JSON.stringify(this.SearchData);
 		//console.log("search post:");
 		//console.log(postdata);
-		this.ShowSearchSpinner();
+		this.ShowSearchSpinner("searchNotification");
 		webcrap.data.apiPostJson("/visualizer/AdvancedSearch", postdata, function (data) {
 			//console.log(data);
 			document.getElementById("searchNotification").innerHTML = data;
@@ -261,8 +261,8 @@ export default class AdvancedSearchCoordinator {
 		});
 	}
 
-	ShowSearchSpinner() {
-		document.getElementById("searchNotification").innerHTML = "<i class='fas fa-spinner spinner'></i>";
+	ShowSearchSpinner(elementid: string) {
+		document.getElementById(elementid).innerHTML = "<i class='fas fa-spinner spinner'></i>";
 	}
 
 	Clear() {

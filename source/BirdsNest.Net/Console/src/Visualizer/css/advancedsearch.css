@@ -17,7 +17,7 @@
     position: relative;
 }
 
-#advSearchMaximise {
+#searchMaximise {
     position: absolute;
     top: 0;
     left: 0;
@@ -28,7 +28,7 @@
 	min-width: 250px;
 }
 
-#searchNotification {
+#searchNotification, #simpleSearchNotification {
 	display: inline-block;
 	height: 1.2em;
 	min-width: 250px;

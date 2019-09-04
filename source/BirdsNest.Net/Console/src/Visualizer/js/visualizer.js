@@ -1432,64 +1432,6 @@ function updateLocationsEdges() {
 
 
 
-
-
-/* 
-****************************
-Search functionality
-****************************
-*/
-
-
-var pendingResults;
-
-
-function search() {
-    showSearchSpinner();
-    //console.log('search');
-    var sourcetype = document.getElementById("sourceType").value;
-    var sourceprop = document.getElementById("sourceProp").value;
-    var sourceval = document.getElementById("sourceVal").value;
-
-    var relationship = document.getElementById("edgeType").value;
-    var relmin = document.getElementById("sliderMin").value;
-    var relmax = document.getElementById("sliderMax").value;
-
-    var tartype = document.getElementById("targetType").value;
-    var tarprop = document.getElementById("targetProp").value;
-    var tarval = document.getElementById("targetVal").value;
-
-    var dir = $('#dirIcon').attr('data-dir');
-
-    let urlquery = "?" +
-        "sourcetype=" + sourcetype +
-        "&sourceprop=" + sourceprop +
-        "&sourceval=" + sourceval +
-
-        "&relationship=" + relationship +
-        "&relmin=" + relmin +
-        "&relmax=" + relmax +
-        "&dir=" + dir +
-
-        "&targettype=" + tartype +
-        "&targetprop=" + tarprop +
-        "&targetval=" + tarval;
-
-    /*console.log("sourcetype: " + sourcetype);
-    console.log("sourceprop: " + sourceprop);
-    console.log("sourceval: " + sourceval);
-    console.log("relationship: " + relationship);
-    console.log("tartype: " + tartype);
-    console.log("tarprop: " + tarprop);
-    console.log("tarval: " + tarval);
-    console.log(url);*/
-    webcrap.data.apiGet("/visualizer/search" + urlquery, "html", function (data) {
-        document.getElementById("searchNotification").innerHTML = data;
-        $('#searchNotification').foundation();
-    });
-}
-
-
 export function getNode(nodeid) {
     //console.log(nodeid);
     webcrap.data.apiGetJson("/api/graph/node/" + nodeid, function (data) {
