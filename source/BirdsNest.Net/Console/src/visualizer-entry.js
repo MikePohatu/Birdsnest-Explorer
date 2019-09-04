@@ -20,7 +20,7 @@ if (webcrap.misc.isNullOrWhitespace(sharedsearchstring) === false) {
         var json = JSON.parse(webcrap.misc.decodeUrlB64(sharedsearchstring));
         //console.log(json);
         if (json) {
-            searchcoordinator.LoadSearchJson(json);
+			searchcoordinator.LoadSearchJson(json);
         }
     }
     catch {

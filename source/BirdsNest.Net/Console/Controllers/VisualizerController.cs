@@ -67,5 +67,11 @@ namespace Console.Controllers
             ResultSet results = this._service.AdvancedSearch(search);
             return PartialView("SearchResultsDetail", results);
         }
-    }
+
+		public IActionResult SimpleSearch(string searchterm)
+		{
+			ResultSet results = this._service.SimpleSearch(searchterm);
+			return PartialView("SearchResultsDetail", results);
+		}
+	}
 }

@@ -74,11 +74,18 @@ namespace Console.Controllers
             return this._service.SearchNodePropertyValues(type, property, searchterm);
         }
 
+		// GET: api/graph/node/values
+		[HttpGet("node/namevalues")]
+		public IEnumerable<string> GetNodeNameValues([FromQuery]string searchterm)
+		{
+			return this._service.SearchNodePropertyValues(null, "name", searchterm);
+		}
 
-        //edges stuff
-        //****************
-        // POST: api/graph/edges
-        [HttpGet("edges")]
+
+		//edges stuff
+		//****************
+		// POST: api/graph/edges
+		[HttpGet("edges")]
         public object GetEdgesForNode([FromQuery] long nodeid)
         {
             List<long> idlist = new List<long>();

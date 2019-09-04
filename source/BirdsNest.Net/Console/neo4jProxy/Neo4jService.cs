@@ -274,227 +274,29 @@ namespace Console.neo4jProxy
         // Search functions
         //*************************
 
-        //public ResultSet FriendlySearch(string sourcetype, string sourceprop, string sourceval, string reltype, int relmin, int relmax, char dir, string tartype, string tarprop, string tarval)
-        //{
-        //    //validate the types/labels 
-        //    List<string> edgetypes = GetEdgeLabels();
-        //    List<string> nodetypes = GetNodeLabels();
+		public ResultSet SimpleSearch(string searchterm)
+		{
+			using (ISession session = this._driver.Session())
+			{
+				ResultSet returnedresults = new ResultSet();
+				try
+				{
+					string regexterm = "(?i).*" + Regex.Escape(searchterm) + ".*";
+					string query = "MATCH (n) WHERE n.name =~ $regex RETURN n";
+					session.ReadTransaction(tx =>
+					{
+						IStatementResult dbresult = tx.Run(query, new { regex = regexterm });
+						returnedresults.Append(ParseResults(dbresult));
+					});
+				}
+				catch
+				{
+					//logging to add
+				}
 
-        //    string rellabel = string.Empty;
-        //    string sourcelabel = string.Empty;
-        //    string targetlabel = string.Empty;
-        //    string relright = string.Empty;
-        //    string relleft = string.Empty;
-
-        //    //relationship type
-        //    if (string.IsNullOrWhiteSpace(reltype))
-        //    { rellabel = string.Empty; }
-        //    else if (edgetypes.Exists(x => string.Equals(x, reltype)))
-        //    { rellabel = ":" + reltype; }
-        //    else
-        //    { throw new ArgumentException("Invalid relationship type: " + reltype); }
-
-        //    //relationship direction
-        //    if ((dir == 'B') || (dir == 'b')) { /*do nothing*/ }
-        //    else if ((dir == 'L') || (dir == 'l')) { relleft = "<"; }
-        //    else if ((dir == 'R') || (dir == 'r')) { relright = ">"; }
-        //    else
-        //    { throw new ArgumentException("Invalid relationship direction: " + dir); }
-
-        //    //source
-        //    if (string.IsNullOrWhiteSpace(sourcetype) || sourcetype == "*")
-        //    { sourcelabel = string.Empty; }
-        //    else if (nodetypes.Exists(x => string.Equals(x, sourcetype)))
-        //    { sourcelabel = ":" + sourcetype; }
-        //    else
-        //    { throw new ArgumentException("Invalid source type: " + sourcetype); }
-
-        //    //target
-        //    if (string.IsNullOrWhiteSpace(tartype) || tartype == "*")
-        //    { targetlabel = string.Empty; }
-        //    else if (nodetypes.Exists(x => string.Equals(x, tartype)))
-        //    { targetlabel = ":" + tartype; }
-        //    else
-        //    { throw new ArgumentException("Invalid target type: " + tartype); }
-
-        //    using (ISession session = this._driver.Session())
-        //    {
-        //        ResultSet returnedresults = new ResultSet();
-        //        try
-        //        {
-        //            var props = new
-        //            {
-        //                sourceprop = sourceprop == null ? string.Empty : sourceprop,
-        //                sourceval = sourceval == null ? string.Empty : sourceval,
-        //                tarprop = tarprop == null ? string.Empty : tarprop,
-        //                tarval = tarval == null ? string.Empty : tarval
-        //            };
-
-        //            StringBuilder builder = new StringBuilder();
-        //            bool whereset = false;
-
-        //            if (relmax > 0)
-        //            {
-        //                builder.Append("MATCH path=(s" + sourcelabel + ")" + relleft + "-[" + rellabel + "*" + relmin + ".." + relmax + "]-" + relright + "(t" + targetlabel + ") ");
-        //            }
-        //            else
-        //            {
-        //                builder.Append("MATCH (s" + sourcelabel + ") ");
-        //            }
-
-        //            if (!string.IsNullOrEmpty(sourceval))
-        //            {
-        //                builder.Append("WHERE s[{sourceprop}] = $sourceval ");
-        //                whereset = true;
-        //            }
-
-        //            if (relmax > 0)
-        //            {
-        //                if (!string.IsNullOrEmpty(tarval))
-        //                {
-        //                    if (whereset) { builder.Append("AND "); }
-        //                    else { builder.Append("WHERE "); }
-        //                    builder.Append("t[{tarprop}] = $tarval ");
-        //                }
-
-        //                builder.Append("UNWIND nodes(path) as n RETURN DISTINCT n ORDER BY LOWER(n.name)");
-        //            }
-        //            else
-        //            {
-        //                builder.Append("RETURN s ORDER BY LOWER(s.name)");
-        //            }
-
-        //            //"MATCH (n) WHERE $type IN labels(n) AND n[{prop}]  =~ $regex RETURN DISTINCT n[{prop}] ORDER BY n[{prop}] LIMIT 20"
-        //            //if (string.IsNullOrEmpty(type) || string.IsNullOrEmpty(property) || string.IsNullOrEmpty(searchterm)) { return new List<string>(); }
-        //            //string regexterm = "(?i).*" + searchterm + ".*";
-
-        //            string query = builder.ToString();
-        //            Debug.WriteLine("Search query: " + query);
-
-        //            session.ReadTransaction(tx =>
-        //            {
-        //                IStatementResult dbresult = tx.Run(query, props);
-        //                returnedresults.Append(ParseResults(dbresult));
-        //            });
-        //        }
-        //        catch
-        //        {
-        //            //logging to add
-        //        }
-
-        //        return returnedresults;
-        //    }
-        //}
-
-        //public ResultSet SearchPath(string sourcetype, string sourceprop, string sourceval, string reltype, int relmin, int relmax, char dir, string tartype, string tarprop, string tarval)
-        //{
-        //    //validate the types/labels 
-        //    List<string> edgetypes = GetEdgeLabels();
-        //    List<string> nodetypes = GetNodeLabels();
-
-        //    string rellabel = string.Empty;
-        //    string sourcelabel = string.Empty;
-        //    string targetlabel = string.Empty;
-        //    string relright = string.Empty;
-        //    string relleft = string.Empty;
-
-        //    //relationship type
-        //    if (string.IsNullOrWhiteSpace(reltype))
-        //    { rellabel = string.Empty; }
-        //    else if (edgetypes.Exists(x => string.Equals(x, reltype)))
-        //    { rellabel = ":" + reltype;  }
-        //    else
-        //    { throw new ArgumentException("Invalid relationship type: " + reltype); }
-
-        //    //relationship direction
-        //    if ((dir == 'B') || (dir == 'b')) { /*do nothing*/ }
-        //    else if ((dir == 'L') || (dir == 'l')) { relleft = "<"; }
-        //    else if ((dir == 'R') || (dir == 'r')) { relright = ">"; }
-        //    else
-        //    { throw new ArgumentException("Invalid relationship direction: " + dir); }
-
-        //    //source
-        //    if (string.IsNullOrWhiteSpace(sourcetype) || sourcetype=="*")
-        //    { sourcelabel = string.Empty; }
-        //    else if (nodetypes.Exists(x => string.Equals(x, sourcetype)))
-        //    { sourcelabel = ":" + sourcetype; }
-        //    else
-        //    { throw new ArgumentException("Invalid source type: " + sourcetype); }
-
-        //    //target
-        //    if (string.IsNullOrWhiteSpace(tartype) || tartype == "*")
-        //    { targetlabel = string.Empty; }
-        //    else if (nodetypes.Exists(x => string.Equals(x, tartype)))
-        //    { targetlabel = ":" + tartype; }
-        //    else
-        //    { throw new ArgumentException("Invalid target type: " + tartype); }
-
-        //    using (ISession session = this._driver.Session())
-        //    {
-        //        ResultSet returnedresults = new ResultSet();
-        //        try
-        //        {
-        //            var props = new
-        //            {
-        //                sourceprop = sourceprop == null ? string.Empty : sourceprop,
-        //                sourceval = sourceval == null ? string.Empty : sourceval,
-        //                tarprop = tarprop == null ? string.Empty : tarprop,
-        //                tarval = tarval == null ? string.Empty : tarval
-        //            };
-
-        //            session.ReadTransaction(tx =>
-        //            {
-        //                StringBuilder builder = new StringBuilder();
-        //                bool whereset = false;
-
-        //                if (relmax > 0)
-        //                {
-        //                    builder.Append("MATCH path=(s" + sourcelabel+ ")"+ relleft+"-[" + rellabel + "*" + relmin + ".." + relmax + "]-"+relright+"(t" + targetlabel + ") ");
-        //                }
-        //                else
-        //                {
-        //                    builder.Append("MATCH (s" + sourcelabel + ") ");
-        //                }
-
-        //                if (!string.IsNullOrEmpty(sourceval)) {
-        //                    builder.Append("WHERE s[{sourceprop}] = $sourceval ");
-        //                    whereset = true;
-        //                }
-
-        //                if (relmax > 0)
-        //                { 
-        //                    if (!string.IsNullOrEmpty(tarval))
-        //                    {
-        //                        if (whereset) { builder.Append("AND "); }
-        //                        else { builder.Append("WHERE "); }
-        //                        builder.Append("t[{tarprop}] = $tarval ");
-        //                    }
-
-        //                    builder.Append("UNWIND nodes(path) as n RETURN DISTINCT n ORDER BY LOWER(n.name)");
-        //                }
-        //                else
-        //                {
-        //                    builder.Append("RETURN s ORDER BY LOWER(s.name)");
-        //                }
-                        
-                        
-
-        //                string query = builder.ToString();
-        //                Debug.WriteLine("Search query: " + query);
-
-
-        //                IStatementResult dbresult = tx.Run(query,props);
-        //                returnedresults.Append(ParseResults(dbresult));
-        //            });
-        //        }
-        //        catch
-        //        {
-        //            //logging to add
-        //        }
-
-        //        return returnedresults;
-        //    }
-        //}
+				return returnedresults;
+			}
+		}
 
         public ResultSet AdvancedSearch(AdvancedSearch.Search search)
         {
@@ -677,19 +479,21 @@ namespace Console.neo4jProxy
 
         public IEnumerable<string> SearchNodePropertyValues (string type, string property, string searchterm)
         {
-            if (string.IsNullOrEmpty(type) || string.IsNullOrEmpty(property) || string.IsNullOrEmpty(searchterm)) { return new List<string>(); }
+            if (string.IsNullOrEmpty(property) || string.IsNullOrEmpty(searchterm)) { return new List<string>(); }
             
             //replace the slashes so it picks up fs paths
             string regexterm = "(?i).*" + Regex.Escape(searchterm) + ".*";
+			string typequery = string.Empty;
+			if (string.IsNullOrWhiteSpace(type) == false) { typequery = "$type IN labels(n) AND "; }
 
-            IStatementResult dbresult = null;
+			IStatementResult dbresult = null;
             using (ISession session = this._driver.Session())
             {
                 try
                 {
                     session.ReadTransaction(tx =>
                     {
-                        string query = "MATCH (n) WHERE $type IN labels(n) AND n[{prop}]  =~ $regex RETURN DISTINCT n[{prop}] ORDER BY n[{prop}] LIMIT 20";
+                        string query = "MATCH (n) WHERE "+ typequery + "n[{prop}]  =~ $regex RETURN DISTINCT n[{prop}] ORDER BY n[{prop}] LIMIT 20";
                         dbresult = tx.Run(query, new { type = type, prop = property, regex= regexterm });
                     });
                 }

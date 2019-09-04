@@ -1,12 +1,36 @@
 ﻿
-<button id="advSearchMaximise" class="button searchbutton " aria-label="Show search" type="button" title="Search">
+<button id="searchMaximise" class="button searchbutton " aria-label="Show search" type="button" title="Search">
     <i class="fas fa-search"></i>
 </button>
 
+<div id="simplequery" style="display: none">
+	<div class="searchContainer">
+		<div class="input-group shrink margin-zero">
+
+			<input id="simpleSearchTerm" type="search" class="input-group-field" placeholder="Search" autofocus>
+			<div class="input-group-button">
+				<button id="simpleSearchBtn" class="button searchbutton" aria-label="Search" type="submit" title="Search">
+					<i class="fas fa-search"></i>
+				</button>
+			</div>
+		</div>
+	</div>
+	<div class="searchContainer">
+		<button id="simpleSearchMinimise" class="button searchbutton" aria-label="Minimise search" type="button" title="Minimise search">
+			<i class="fas fa-angle-up"></i>
+		</button>
+		<button id="simpleToAdvanced" class="button searchbutton" aria-label="Advanced mode" type="button" title="Advanced mode">
+			<i class="far fa-window-maximize"></i>
+		</button>
+		<div id="simpleSearchNotification"></div>
+	</div>
+	
+</div>
+
 @* query bar is hidden by default. Click button above to open it *@
 <div id="querybar" style="display: none" >
-    <div id="advSearchView" class="grid-container fluid grid-margin-y">
-        <div class="searchContainer cell grid-x align-middle">
+    <div id="advSearchView" class="">
+        <div class="cell grid-x align-middle searchContainer">
             <div id="pathLabel" class="searchLabel cell shrink">
                 <b>Search:</b>
                 <i id="pathAddIcon" class="fas fa-plus-circle clickable searchcontrol" title="Add node to search path"></i>
@@ -17,7 +41,7 @@
             </div>
         </div>
 
-        <div class="searchContainer cell grid-x align-middle">
+        <div class="cell grid-x align-middle searchContainer">
             <div id="conditionsLabel" class="searchLabel cell shrink">
                 <b>Conditions:</b>
             </div>
@@ -27,19 +51,22 @@
             </div>
         </div>
 
-        <div class="searchContainer">
-            <button id="advSearchMinimise" class="button searchbutton " aria-label="Minimise search" type="button" title="Minimise search">
-                <i class="fas fa-angle-up"></i>
-            </button>
-            <button id="advSearchClearBtn" class="button searchbutton " aria-label="Clear search" type="button" title="Clear search">
-                <i class="fas fa-eraser"></i>
-            </button>
-            <button id="advSearchShareBtn" class="button searchbutton " aria-label="Share search" type="button" title="Share search">
-                <i class="fas fa-share-alt"></i>
-            </button>
-            <button id="searchBtn" class="button searchbutton" aria-label="Submit search" type="button">Search</button>
-            <div id="searchNotification"></div>@*<div id="searchExpand"></div>*@
-        </div>
+		<div id="advSearchcButtons" class="searchContainer">
+			<button id="advSearchMinimise" class="button searchbutton" aria-label="Minimise search" type="button" title="Minimise search">
+				<i class="fas fa-angle-up"></i>
+			</button>
+			<button id="advanceToSimple" class="button searchbutton" aria-label="Simple mode" type="button" title="Simple search mode">
+				<i class="fas fa-window-minimize"></i>
+			</button>
+			<button id="advSearchClearBtn" class="button searchbutton" aria-label="Clear search" type="button" title="Clear search">
+				<i class="fas fa-ban"></i>
+			</button>
+			<button id="advSearchShareBtn" class="button searchbutton" aria-label="Share search" type="button" title="Share search">
+				<i class="fas fa-share-alt"></i>
+			</button>
+			<button id="searchBtn" class="button searchbutton" aria-label="Submit search" type="button">Search</button>
+			<div id="searchNotification"></div>@*<div id="searchExpand"></div>*@
+		</div>
     </div>
 
     <div id="searchAlert" class="reveal">

@@ -1,12 +1,16 @@
 ﻿/*search config*/
 
+#querybar, #simplequery {
+	position: fixed;
+	display: block;
+	top: 1.5em;
+	left: 0;
+	z-index: 50;
+	margin: 5px;
+}
+
 #querybar {
-    position: fixed;
-    display: block;
-    top: 2em;
-    left: 0;
-    right: 0;
-    z-index: 50;
+	right: 0;
 }
 
 #searchPane {
@@ -19,9 +23,15 @@
     left: 0;
 }
 
+#simpleSearchTerm {
+	width: 250px;
+	min-width: 250px;
+}
+
 #searchNotification {
-    display: inline-block;
-    height: 1.2em;
+	display: inline-block;
+	height: 1.2em;
+	min-width: 250px;
 }
 
 .searchnode, .searchedge {
@@ -41,9 +51,11 @@
 }
 
 .searchContainer {
-    background-color: rgba(255, 255, 255, 0.95);
-    margin: 5px 0 5px 0;
-    padding: 5px;
+	background-color: rgba(255, 255, 255, 0.95);
+	margin: 0;
+	margin-top: 0 !important;
+	margin-bottom: 0 !important;
+	padding: 5px;
 }
 
 .searchLabel {
@@ -59,7 +71,11 @@
 }
 
 .searchbutton {
-    margin:0;
+	margin: 0 2px 0 0;
+}
+
+.margin-zero {
+	margin: 0;
 }
 
 .searchSvgContainer {

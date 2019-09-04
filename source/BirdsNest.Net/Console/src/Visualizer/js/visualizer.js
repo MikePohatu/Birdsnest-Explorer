@@ -553,7 +553,8 @@ export function onAddToView() {
     let results = $('#searchResultData').val();
     //console.log(results);
     addSearchResults(JSON.parse(results));
-    document.getElementById("searchNotification").innerHTML = '';
+	document.getElementById("searchNotification").innerHTML = '';
+	document.getElementById("simpleSearchNotification").innerHTML = '';
 }
 
 
