@@ -840,68 +840,74 @@ function addSvgEdges(edges) {
     }, 1);
 }
 
-document.getElementById('removeBtn').addEventListener('click', removeNodes, false);
-function removeNodes() {
-    //console.log("removeNodes: " );
-    var nodeList = [];
-    var nodeids = [];
+function removeNodes(nodeList) {
+	//console.log("removeNodes: " );
+	//var nodeList = [];
+	var nodeids = [];
 
-    d3.selectAll(".selected")
-        .each(function (d) {
-            nodeList.push(d);
-        });
+	if (nodeList.length === 0) { return; }
 
-    if (nodeList.length === 0) { return; }
+	if (confirm("Removing " + nodeList.length + " nodes. Are you sure?") !== true) {
+		return;
+	}
 
-    if (confirm("This will remove " + nodeList.length + " nodes. Are you sure?") !== true) {
-        return;
-    }
+	stopSelect(); //disable select function if used
+	nodeList.forEach(function (d) {
+		updateNodeSelection(d, false, false);
+		nodeids.push(d.db_id);
+		graphnodes.Remove(d);
+	});
 
-    stopSelect(); //disable select function if used
-    nodeList.forEach(function (d) {
-        updateNodeSelection(d, false, false);
-        nodeids.push(d.db_id);
-        graphnodes.Remove(d);
-    });
+	getDirectEdgesForNodeList(nodeids, function (data) {
+		//console.log(data);
+		//console.log(nodeids);
+		data.Edges.forEach(function (d) { graphedges.Remove(d); });
+		checkPerfMode();
 
-    getDirectEdgesForNodeList(nodeids, function (data) {
-        //console.log(data);
-        //console.log(nodeids);
-        data.Edges.forEach(function (d) { graphedges.Remove(d); });
-        checkPerfMode();
+		graphbglayer.selectAll('.edgebg')
+			.data(graphedges.GetArray(), function (d) { return d.db_id; })
+			.exit().remove();
 
-        graphbglayer.selectAll('.edgebg')
-            .data(graphedges.GetArray(), function (d) { return d.db_id; })
-            .exit().remove();
+		graphbglayer.selectAll('.nodebg')
+			.data(graphnodes.GetArray(), function (d) { return d.db_id; })
+			.exit().remove();
 
-        graphbglayer.selectAll('.nodebg')
-            .data(graphnodes.GetArray(), function (d) { return d.db_id; })
-            .exit().remove();
+		edgeslayer.selectAll(".edges")
+			.data(graphedges.GetArray(), function (d) { return d.db_id; })
+			.exit().remove();
 
-        edgeslayer.selectAll(".edges")
-            .data(graphedges.GetArray(), function (d) { return d.db_id; })
-            .exit().remove();
+		nodeslayer.selectAll(".nodes")
+			.data(graphnodes.GetArray(), function (d) { return d.db_id; })
+			.exit().remove();
 
-        nodeslayer.selectAll(".nodes")
-            .data(graphnodes.GetArray(), function (d) { return d.db_id; })
-            .exit().remove();
-
-        resetScale();
-        //updateAllNodeLocations();
-        cleanAndUpdateLabelEyes();
-    });
+		resetScale();
+		//updateAllNodeLocations();
+		cleanAndUpdateLabelEyes();
+	});
 }
 
-//function getAllNodeIds() {
-//    var nodeids = [];
-//    zoomLayer.selectAll(".nodes")
-//        .each(function (d) {
-//            nodeids.push(d.db_id);
-//        }
-//    );
+document.getElementById('removeBtn').addEventListener('click', removeSelected, false);
+function removeSelected() {
+	var nodeList = [];
 
-//    return nodeids;
-//}
+	d3.selectAll(".selected")
+		.each(function (d) {
+			nodeList.push(d);
+		});
+
+	removeNodes(nodeList);
+}
+
+export function removeNode(nodeID) {
+	var nodeList = [];
+
+	d3.selectAll("#node_" + nodeID)
+		.each(function (d) {
+			nodeList.push(d);
+		});
+
+	removeNodes(nodeList);
+}
 
 
 //check the number of nodes in the view, and enable perfmode if required
