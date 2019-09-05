@@ -916,6 +916,27 @@ function checkPerfMode() {
     else { perfmode = false; }
 }
 
+
+d3.select("#searchGraphBtn").on("click", onSearchNodesClicked);
+webcrap.dom.BindEnterToButton("searchGraphTerm", "searchGraphBtn");
+function onSearchNodesClicked() {
+	//console.log("onSearchNodesClicked");
+	var term = document.getElementById("searchGraphTerm").value;
+	if (webcrap.misc.isNullOrWhitespace(term) === false) {
+		d3.selectAll(".selected").classed("selected", false);
+
+		d3.selectAll(".nodes").filter(function (d) {
+			//console.log(d);
+			if (d.name.toLowerCase().indexOf(term) !== -1) {
+				return this;
+			}
+			return null;
+		}).classed("selected", true);
+	}
+	
+}
+
+
 function findFromDbId(arraydata, id) {
     for (var i = 0; i < arraydata.length; i++) {
         if (arraydata[i].db_id === id) {

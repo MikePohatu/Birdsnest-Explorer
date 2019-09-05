@@ -78,27 +78,14 @@ export default class AdvancedSearchCoordinator {
 
 		this.BindAdvAutoComplete();
 		this.BindSimpleAutoComplete();
-		bindEnterToButton("searchEdgeDetails", "searchEdgeSaveBtn", null);
-		bindEnterToButton("searchNodeDetails", "searchNodeSaveBtn", null);
-		bindEnterToButton("searchAndOrDetails", "searchAndOrSaveBtn", null);
-		bindEnterToButton("simplequery", "simpleSearchBtn", function () {
+		webcrap.dom.BindEnterToButton("searchEdgeDetails", "searchEdgeSaveBtn");
+		webcrap.dom.BindEnterToButton("searchNodeDetails", "searchNodeSaveBtn");
+		webcrap.dom.BindEnterToButton("searchAndOrDetails", "searchAndOrSaveBtn");
+		webcrap.dom.BindEnterToButton("simplequery", "simpleSearchBtn", function () {
 			$("#simpleSearchTerm").autocomplete("close");
 		});
 
-		//Bind the enter key for an element to click a button
-		function bindEnterToButton(elementid, buttonid, callback) {
-			document.getElementById(elementid).addEventListener("keydown", function (event) {
-				//console.log("keydown listener fired: " + elementid);
-				// Number 13 is the "Enter" key on the keyboard
-				if (event.keyCode === 13) {
-					event.preventDefault();
-					document.getElementById(buttonid).click();
-					if (typeof callback === "function") {
-						callback();
-					}
-				}
-			});
-		}
+		
 
 		d3.selectAll(".searchSvgContainer").attr("height", this.SvgContainerHeight + "px");
 

@@ -19,45 +19,59 @@
             <partial name="AdvancedSearchPane" />
             <div id="viewcontrols">
 
-                <div id="viewcontrolbtns" class="grid-x">
-                    <span id="restartLayoutBtn" class="cell viewcontrol has-tip clickable" title="Refresh layout">
-                        <i id="restartIcon" class="fas fa-sync-alt"></i>
-                    </span>
-                    <span id="pausePlayBtn" class="cell viewcontrol has-tip clickable" title="Play/pause layout">
-                        <i id="pausePlayIcon" class="fas fa-play"></i>
-                    </span>
-                    <span id="selectBtn" class="cell viewcontrol has-tip clickable" title="Select tool">
-                        <i id="selectIcon" class="fas fa-expand"></i>
-                    </span>
-                    <span id="cropBtn" class="cell viewcontrol has-tip clickable" title="Crop zoom tool">
-                        <i id="cropIcon" class="fas fa-crop-alt"></i>
-                    </span>
-                    <span id="removeBtn" class="cell viewcontrol has-tip clickable" title="Remove node from layout">
-                        <i id="removeIcon" class="fas fa-trash-alt"></i>
-                    </span>
-                    <span id="centerBtn" class="cell viewcontrol has-tip clickable" title="Center layout">
-                        <i id="centerIcon" class="fas fa-crosshairs"></i>
-                    </span>
-                    <span id="eyeBtn" class="cell viewcontrol has-tip clickable" data-toggle="eyeLabelListWrapper" title="Hide/show items">
-                        <i id="eyeIcon" class="far fa-eye"></i>
-                    </span>
-                    <span id="reportBtn" class="cell viewcontrol has-tip clickable" title="Export to report view" onclick="javascript:vis.onReportClicked(false)">
-                        <i id="reportIcon" class="fas fa-file-export"></i>
-                    </span>
-                    <span id="clearViewBtn" class="cell viewcontrol has-tip clickable" title="Clear current view" onclick="javascript:vis.resetView()">
-                        <i id="clearViewIcon" class="fas fa-ban"></i>
-                    </span>
+				<div id="viewcontrolbtns" class="grid-x">
+					<span id="restartLayoutBtn" class="cell viewcontrol has-tip clickable" title="Refresh layout">
+						<i id="restartIcon" class="fas fa-sync-alt"></i>
+					</span>
+					<span id="pausePlayBtn" class="cell viewcontrol has-tip clickable" title="Play/pause layout">
+						<i id="pausePlayIcon" class="fas fa-play"></i>
+					</span>
+					<span id="selectBtn" class="cell viewcontrol has-tip clickable" title="Select tool">
+						<i id="selectIcon" class="fas fa-expand"></i>
+					</span>
+					<span id="cropBtn" class="cell viewcontrol has-tip clickable" title="Crop zoom tool">
+						<i id="cropIcon" class="fas fa-crop-alt"></i>
+					</span>
+					<span id="removeBtn" class="cell viewcontrol has-tip clickable" title="Remove node from layout">
+						<i id="removeIcon" class="fas fa-trash-alt"></i>
+					</span>
+					<span id="centerBtn" class="cell viewcontrol has-tip clickable" title="Center layout">
+						<i id="centerIcon" class="fas fa-crosshairs"></i>
+					</span>
+					<span id="eyeBtn" class="cell viewcontrol has-tip clickable" data-toggle="eyeLabelListWrapper" title="Hide/show items">
+						<i id="eyeIcon" class="far fa-eye"></i>
+					</span>
+					<span id="reportBtn" class="cell viewcontrol has-tip clickable" title="Export to report view" onclick="javascript:vis.onReportClicked(false)">
+						<i id="reportIcon" class="fas fa-file-export"></i>
+					</span>
+					<span class="cell viewcontrol has-tip clickable" data-toggle="searchGraphBoxWrapper" title="Search in current view">
+						<i id="searchGraphIcon" class="fas fa-search"></i>
+					</span>
+					<span id="clearViewBtn" class="cell viewcontrol has-tip clickable" title="Clear current view" onclick="javascript:vis.resetView()">
+						<i id="clearViewIcon" class="fas fa-ban"></i>
+					</span>
 
-                    <div id="eyeLabelListWrapper" class="scrollable dropdown-pane top" data-dropdown data-auto-focus="true" data-close-on-click="true">
-                        <div class="eyelist">
-                            <div><b>Nodes</b></div>
-                            <ol id="eyeNodeLabelList" class="no-bullet"></ol>
-                            <div><b>Relationships</b></div>
-                            <ol id="eyeEdgeLabelList" class="no-bullet"></ol>
-                        </div>
-                    </div>
+					<div id="searchGraphBoxWrapper" class="dropdown-pane top" data-dropdown data-auto-focus="true" data-close-on-click="true">
+						<div class="input-group shrink margin-zero">
+							<input id="searchGraphTerm" type="search" class="input-group-field" placeholder="Search" autofocus>
+							<div class="input-group-button">
+								<button id="searchGraphBtn" class="button searchbutton" aria-label="Search" type="submit" title="Search">
+									<i class="fas fa-search"></i>
+								</button>
+							</div>
+						</div>
+					</div>
 
-                </div>
+					<div id="eyeLabelListWrapper" class="scrollable dropdown-pane top" data-dropdown data-auto-focus="true" data-close-on-click="true">
+						<div class="eyelist">
+							<div><b>Nodes</b></div>
+							<ol id="eyeNodeLabelList" class="no-bullet"></ol>
+							<div><b>Relationships</b></div>
+							<ol id="eyeEdgeLabelList" class="no-bullet"></ol>
+						</div>
+					</div>
+
+				</div>
                 <div id="progress" style="width: 0;"></div>
             </div>
         </div>
