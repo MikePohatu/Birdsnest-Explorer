@@ -1246,7 +1246,7 @@ export default class AdvancedSearchCoordinator {
 		var props;
 		if (selectedItem) {
 			if (selectedItem.Label === "" || selectedItem.Label === "*") {
-				console.log("node label not selected");
+				//console.log("node label not selected");
 				(document.getElementById("searchProp") as HTMLSelectElement).disabled = true;
 				(document.getElementById("searchVal") as HTMLInputElement).disabled = true;
 				(document.getElementById("searchConditionSaveBtn") as HTMLInputElement).disabled = true;
