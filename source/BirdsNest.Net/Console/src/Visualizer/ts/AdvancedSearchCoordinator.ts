@@ -1336,6 +1336,11 @@ export default class AdvancedSearchCoordinator {
 		//console.log(tempnode);
 		this.NewCondition = tempnode;
 		this.ConditionTypeModal.open();
+		var typelistel = (document.getElementById("searchConditionTypeList") as HTMLSelectElement);
+		var firstval = (typelistel[0] as HTMLOptionElement).value;
+		typelistel.value = firstval;
+		d3.select(firstval).dispatch("change");
+
 	}
 
 	onSearchConditionTypeSaveClicked() {
