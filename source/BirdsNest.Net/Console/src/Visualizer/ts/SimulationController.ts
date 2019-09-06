@@ -11,7 +11,7 @@ interface ISimNode extends d3.SimulationNodeDatum {
     srck: number;
 }
 
-interface ISimLink<SimulationNodeDatum> extends d3.SimulationLinkDatum<SimulationNodeDatum> {
+interface ISimLink<ISimNode> extends d3.SimulationLinkDatum<ISimNode> {
     db_id: string;
     source: ISimNode;
     target: ISimNode;
