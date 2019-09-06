@@ -23,7 +23,6 @@ export default class SimulationController {
     onFinishSimulation: CallableFunction;
     ProgressBarTag: string;
     TreeEdgeTag: string;
-    EdgeTag: string;
     NodeTag: string;
     onPercentUpdated: CallableFunction;
     graphsimulation: any;
@@ -86,7 +85,7 @@ export default class SimulationController {
         var k = this.graphsimulation.alpha();
         this.onPercentUpdated(100 - k * 100);
 
-        d3.selectAll(this.EdgeTag).each(function (d: ISimLink<ISimNode>) {
+		d3.selectAll(this.TreeEdgeTag).each(function (d: ISimLink<ISimNode>) {
             var src = d.source as ISimNode;
             var tar = d.target as ISimNode;
             if ((tar as ISimNode).y < src.y + src.size / 4) {

@@ -50,7 +50,6 @@ var graphnodes = new DatumStore();
 var graphedges = new DatumStore();
 
 var areaBox;
-var force;
 
 var playMode = false;
 var shiftKey = false;
