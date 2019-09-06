@@ -28,6 +28,7 @@ import ViewTreeNode from "./ViewTreeNode";
 
 //requires d3js
 export default class AdvancedSearchCoordinator {
+	
 	SearchData: Search;
 	PathElementID: string;
 	ConditionElementID: string;
@@ -43,8 +44,11 @@ export default class AdvancedSearchCoordinator {
 	EdgeDetails: object = null;
 	SimpleMode: boolean = true;
 
+	ViewTreeNodeConditionsProp = 'Conditions';
+
 	Tooltip: FoundationSites.Tooltip;
-	AddingTemp: ViewTreeNode<ICondition>;
+	NewCondition: ViewTreeNode<ICondition>;
+	EditingCondition: ViewTreeNode<ICondition>;
 
 	ConditionTypeModal: FoundationSites.Reveal;
 	ConditionDetailsModal: FoundationSites.Reveal;
@@ -110,12 +114,17 @@ export default class AdvancedSearchCoordinator {
 			me.ShowHide();
 		});
 
+		//node details dialogs
 		d3.select("#searchNodeSaveBtn").on("click", function () {
 			me.onSearchNodeSaveBtnClicked();
+		});
+		d3.select("#searchNodeSaveAndCondBtn").on("click", function () {
+			me.onSearchNodeSaveAndCondClicked();
 		});
 		d3.select("#searchNodeDeleteBtn").on("click", function () {
 			me.onSearchNodeDelBtnClicked(this);
 		});
+
 		d3.select("#searchEdgeSaveBtn").on("click", function () {
 			me.onSearchEdgeSaveBtnClicked();
 		});
@@ -145,6 +154,9 @@ export default class AdvancedSearchCoordinator {
 		});
 		d3.select("#searchConditionDeleteBtn").on("click", function () {
 			me.onSearchConditionDeleteClicked();
+		});
+		d3.select("#searchConditionCancelBtn").on("click", function () {
+			me.onSearchConditionCancelClicked();
 		});
 		d3.select("#searchItem").on("change", function () {
 			me.onSearchConditionItemChanged();
@@ -181,7 +193,7 @@ export default class AdvancedSearchCoordinator {
 		//console.log(json);
 		this.SearchData = json;
 		if (this.SearchData.Condition) {
-			this.ConditionRoot = new ViewTreeNode(this.SearchData.Condition, 'Conditions', null);
+			this.ConditionRoot = new ViewTreeNode(this.SearchData.Condition, this.ViewTreeNodeConditionsProp, null);
 			this.ConditionRoot.Build();
 		}
 		this.UpdateSearch(false);
@@ -674,6 +686,15 @@ export default class AdvancedSearchCoordinator {
 		return datum;
 	}
 
+	onSearchNodeSaveAndCondClicked() {
+		var node = this.onSearchNodeSaveBtnClicked();
+		var cond: ICondition = GetCondition("STRING");
+
+		this.NewCondition = new ViewTreeNode(cond, this.ViewTreeNodeConditionsProp, this.ConditionRoot);
+		this.OpenSearchConditionDetails(this.NewCondition);
+		(document.getElementById("searchItem") as HTMLSelectElement).value = node.Name;
+		d3.select("#searchItem").dispatch('change');
+	}
 
 	onSearchNodeSaveBtnClicked () {
 		//console.log("onSearchNodeSaveBtnClicked started");
@@ -692,6 +713,7 @@ export default class AdvancedSearchCoordinator {
 		//console.log(node);
 		this.UpdateNodes(false);
 		this.NodeDetailsModal.close();
+		return node;
 	}
 
 	onSearchNodeDelBtnClicked (callingitem) {
@@ -1124,24 +1146,43 @@ export default class AdvancedSearchCoordinator {
 				return "translate(" + x + "," + (y + me.YSpacing / 2) + ")";
 			});
 	}
-	 
 
-	onSearchConditionClicked (callingelement) {
+
+
+	onSearchConditionClicked(callingelement: HTMLElement) {
+		//console.log("onSearchConditionClicked");
+		var datum = this.GetItemDatum(callingelement.id) as d3.HierarchyNode<ViewTreeNode<ICondition>>;
+
+		//console.log(datum);
+		if (datum) {
+			this.OpenSearchConditionDetails(datum.data);
+		}
+	}
+
+	onSearchConditionCancelClicked() {
+		this.NewCondition = null;
+		this.EditingCondition = null;
+		this.ConditionDetailsModal.close();
+	}
+
+	OpenSearchConditionDetails(treenode: ViewTreeNode<ICondition>) {
 		//console.log("onSearchConditionClicked started");
 		//var datum;
 		//console.log(callingelement);
 		var me = this;
-		var condition: ConditionBase;
+	
 		this.ClearAlert();
-		var datum = this.UpdateItemDatum("searchStringConditionDetails", callingelement) as d3.HierarchyNode<ViewTreeNode<ICondition>>;
-		if (datum) { condition = datum.data.Item as ConditionBase; }
+		this.EditingCondition = treenode;
+		var condition: ConditionBase = treenode.Item as ConditionBase;
+		//var datum = this.UpdateItemDatum("searchStringConditionDetails", callingelement) as d3.HierarchyNode<ViewTreeNode<ICondition>>;
+		//if (datum) { condition = datum.data.Item as ConditionBase; }
 		//console.log(datum);
 
 		(document.getElementById("searchProp") as HTMLSelectElement).disabled = false;
 		(document.getElementById("searchVal") as HTMLInputElement).disabled = false;
 		(document.getElementById("searchConditionSaveBtn") as HTMLInputElement).disabled = false;
 
-		this.UpdateConditionDetails(function () {
+		this.UpdateConditionDetails(condition, function () {
 			me.ChangeSelectedValue(document.getElementById("searchItem"), condition.Name, function () {
 				me.ChangeSelectedValue(document.getElementById("searchProp"), condition.Property, null);
 				me.ChangeSelectedValue(document.getElementById("searchOperator"), condition.Operator, null);
@@ -1156,16 +1197,24 @@ export default class AdvancedSearchCoordinator {
 		else {
 			(document.getElementById("searchCaseOptions") as HTMLDivElement).hidden = true;
 		}
-		
+
+		if (this.EditingCondition === this.NewCondition) {
+			d3.select("#searchConditionDeleteBtn").classed("hidden", true);
+			d3.select("#searchConditionCancelBtn").classed("hidden", false);
+			//(document.getElementById("searchConditionDeleteBtn") as HTMLButtonElement).hidden = true;
+			//(document.getElementById("searchConditionCancelBtn") as HTMLButtonElement).hidden = false;
+		}
+		else {
+			d3.select("#searchConditionDeleteBtn").classed("hidden", false);
+			d3.select("#searchConditionCancelBtn").classed("hidden", true);
+		}
+
 		this.ConditionDetailsModal.open();
 	}
 
-	UpdateConditionDetails (callback) {
+	UpdateConditionDetails(condition: ICondition, callback) {
 		//console.log("UpdateConditionDetails started");
 		//console.log(this.SearchData.Nodes);
-		//var me = this;
-		var datum = this.GetItemDatum("searchStringConditionDetails") as d3.HierarchyNode<ViewTreeNode<ICondition>>;
-		//console.log(datum);
 
 		//*** setup the searchItem list
 		var searchItem = document.getElementById("searchItem");
@@ -1193,9 +1242,9 @@ export default class AdvancedSearchCoordinator {
 		var searchOperator = document.getElementById("searchOperator");
 		webcrap.dom.ClearOptions(searchOperator);
 
-		var cond: ICondition = datum.data.Item;
+		//var cond: ICondition = datum.data.Item;
 		//console.log(ConditionOperators[cond.Type]);
-		ConditionOperators[cond.Type].forEach(function (operator) {
+		ConditionOperators[condition.Type].forEach(function (operator) {
 			webcrap.dom.AddOption(searchOperator, operator, operator);
 		});
 
@@ -1215,7 +1264,7 @@ export default class AdvancedSearchCoordinator {
 		var searchProps = document.getElementById("searchProp");
 		var selectedName = searchItem.options[searchItem.selectedIndex].value;
 		var selectedItem;
-		var datum = (this.GetItemDatum("searchStringConditionDetails") as d3.HierarchyNode<ViewTreeNode<ICondition>>).data;
+		//var datum = (this.GetItemDatum("searchStringConditionDetails") as d3.HierarchyNode<ViewTreeNode<ICondition>>).data;
 		//console.log(datum);
 		var typeSelected = "";
 
@@ -1280,11 +1329,12 @@ export default class AdvancedSearchCoordinator {
 		//var datum;
 		var tempnode: ViewTreeNode<ICondition>; 
 		var addingparent = (this.GetElementDatum(callingelement) as d3.HierarchyNode<ViewTreeNode<ICondition>>).data;
+		
 		//console.log(addingparent);
-		tempnode = new ViewTreeNode(null, 'Conditions', addingparent);
+		tempnode = new ViewTreeNode(null, this.ViewTreeNodeConditionsProp, addingparent);
 		//console.log('tempnode:');
 		//console.log(tempnode);
-		this.AddingTemp = tempnode;
+		this.NewCondition = tempnode;
 		this.ConditionTypeModal.open();
 	}
 
@@ -1293,11 +1343,22 @@ export default class AdvancedSearchCoordinator {
 		var selectedType: string = (document.getElementById("searchConditionTypeList") as HTMLSelectElement).value;
 		
 		var cond: ICondition = GetCondition(selectedType);
-		this.AddingTemp.Item = cond;
-		this.InsertTreeNode(this.AddingTemp);
+		this.NewCondition.Item = cond;
+		if (selectedType === "AND" || selectedType === "OR") {
+			this.ApplyNewCondition();
+			this.UpdateConditions();
+		}
+		else {
+			this.OpenSearchConditionDetails(this.NewCondition);
+		}
 
 		this.ConditionTypeModal.close();
-		this.UpdateConditions();
+		
+	}
+
+	ApplyNewCondition() {
+		this.InsertTreeNode(this.NewCondition);
+		this.NewCondition = null;
 	}
 
 	//Properly add a new treenode in the conditions tree e.g. from this.AddingTemp
@@ -1319,32 +1380,32 @@ export default class AdvancedSearchCoordinator {
 		this.SearchData.Condition = undefined;
 
 		var cond: ICondition = GetCondition("AND");
-		var treenode = new ViewTreeNode<ICondition>(cond, "Conditions", null);
+		var treenode = new ViewTreeNode<ICondition>(cond, this.ViewTreeNodeConditionsProp, null);
 		this.InsertTreeNode(treenode);
 	}
 
 	onSearchConditionDeleteClicked() {
 		if (confirm('Are you sure you want to delete this condition?')) {
-			this.DeleteSearchCondition('searchStringConditionDetails');
+			this.DeleteSearchCondition();
 			this.ConditionDetailsModal.close();
 		}
 	}
 
 	onSearchAndOrDeleteClicked() {
 		if (confirm('Are you sure you want to delete this group and all conditions inside?')) {
-			this.DeleteSearchCondition('searchAndOrDetails');
+			this.DeleteSearchCondition();
 			this.SearchAndOrDetailsModal.close();
 		}
 		
 	}
 
-	DeleteSearchCondition (elementid: string) {
+	DeleteSearchCondition () {
 		//console.log("deleteSearchCondition started: " + elementid);
 		//searchStringConditionDetails
 
 		//datum is the d3 tree datum. Use datum.data to get the ViewTreeNode datum
-		var datum = this.GetItemDatum(elementid) as d3.HierarchyNode<ViewTreeNode<ICondition>>;
-		var treenode = datum.data;
+		//var datum = this.GetItemDatum(elementid) as d3.HierarchyNode<ViewTreeNode<ICondition>>;
+		var treenode = this.EditingCondition;
 
 		//console.log(datum);
 		//console.log("RootID: " + this.ConditionRoot.ID);
@@ -1354,10 +1415,11 @@ export default class AdvancedSearchCoordinator {
 			//d3.selectAll(".searchcondition").remove();
 		}
 		else {
-			datum.parent.data.RemoveChild(treenode);
-			datum.parent.data.Rebuild();
+			treenode.Parent.RemoveChild(treenode);
+			treenode.Parent.Rebuild();
 			//this.UpdateConditions();
 		}
+		this.EditingCondition = null;
 		this.UpdateConditions();
 		//console.log(this.ConditionRoot);
 		//console.log("onSearchConditionDeleteClicked finished");
@@ -1366,27 +1428,30 @@ export default class AdvancedSearchCoordinator {
 
 	onSearchConditionSaveClicked () {
 		//console.log("onSearchConditionSaveClicked started");
-		var datum = this.GetItemDatum("searchStringConditionDetails") as d3.HierarchyNode<ViewTreeNode<ICondition>>;
-		var condition = datum.data.Item as ConditionBase;
-
+		//var datum = this.GetItemDatum("searchStringConditionDetails") as d3.HierarchyNode<ViewTreeNode<ICondition>>;
+		//var condition = datum.data.Item as ConditionBase;
 		var newname = (document.getElementById("searchItem") as HTMLSelectElement).value;
 		var newprop = (document.getElementById("searchProp") as HTMLSelectElement).value;
 		var newval = (document.getElementById("searchVal") as HTMLInputElement).value;
 		var newop = (document.getElementById("searchOperator") as HTMLInputElement).value;
 
-		if (condition.Type === "STRING") {
-			//console.log("saving case state");
-			(condition as StringCondition).CaseSensitive = (document.getElementById("searchCase") as HTMLInputElement).checked;
-		}
-
 		if (webcrap.misc.isNullOrWhitespace(newname) || webcrap.misc.isNullOrWhitespace(newprop) || webcrap.misc.isNullOrWhitespace(newval)) {
 			this.SetAlert("Name, property, or value is empty. Please set a value");
 		}
 		else {
+			var condition = this.EditingCondition.Item as ConditionBase;
+			if (condition.Type === "STRING") {
+				//console.log("saving case state");
+				(condition as StringCondition).CaseSensitive = (document.getElementById("searchCase") as HTMLInputElement).checked;
+			}
+
 			condition.Name = newname;
 			condition.Property = newprop;
 			condition.Value = newval;
 			condition.Operator = newop;
+			if (this.NewCondition !== null) {
+				this.ApplyNewCondition();
+			}
 			this.ConditionDetailsModal.close();
 			this.UpdateConditions();
 		}
