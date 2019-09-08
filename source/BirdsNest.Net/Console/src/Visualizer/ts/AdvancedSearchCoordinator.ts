@@ -1336,6 +1336,8 @@ export default class AdvancedSearchCoordinator {
 		//console.log(tempnode);
 		this.NewCondition = tempnode;
 		this.ConditionTypeModal.open();
+
+		//change the select list back to the default (first) value
 		var typelistel = (document.getElementById("searchConditionTypeList") as HTMLSelectElement);
 		var firstval = (typelistel[0] as HTMLOptionElement).value;
 		typelistel.value = firstval;
