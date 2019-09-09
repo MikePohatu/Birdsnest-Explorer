@@ -55,7 +55,7 @@ export default class SimulationController {
             .force("link", d3.forceLink()
                 .id(function (d: ISimLink<ISimNode>) { return d.db_id; })
                 .distance(200)
-                .strength(0.05))
+                .strength(0.1))
             .velocityDecay(velocityDecay)
             .alphaDecay(alphaDecay);
 

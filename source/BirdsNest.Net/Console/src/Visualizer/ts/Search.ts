@@ -110,6 +110,16 @@ function GetNode(name: string, search: Search): SearchNode {
     return null;
 }
 
+function GetEdge(name: string, search: Search): SearchEdge {
+	var i = 0;
+	for (i = 0; i < search.Edges.length; i++) {
+		if (search.Edges[i].Name === name) {
+			return search.Edges[i];
+		}
+	}
+	return null;
+}
+
 class SearchNode {
     Name: string = "";
     Label: string = "";
@@ -251,6 +261,7 @@ export {
     MoveNodeRight,
     MoveNodeLeft,
     IsConditionValid,
-    GetNode,
+	GetNode,
+	GetEdge,
     ConditionOperators
 }

@@ -314,7 +314,7 @@ namespace Console.neo4jProxy
                     session.ReadTransaction(tx =>
                     {
                         IStatementResult dbresult = tx.Run(query, search.Tokens.Properties);
-                        returnedresults.Append(ParseResults(dbresult));
+                        returnedresults.Append(this.ParseResults(dbresult));
                     });
                 }
                 catch
@@ -553,30 +553,35 @@ namespace Console.neo4jProxy
             return result;
         }
 
-        public IEnumerable<string> SearchEdgePropertyValues(string type, string property, string searchterm)
-        {
-            if (string.IsNullOrEmpty(type) || string.IsNullOrEmpty(property) || string.IsNullOrEmpty(searchterm)) { return new List<string>(); }
-            string regexterm = "(?i).*" + searchterm + ".*";
+		public IEnumerable<string> SearchEdgePropertyValues(string type, string property, string searchterm)
+		{
+			IStatementResult dbresult = null;
+			if (string.IsNullOrWhiteSpace(type)) { throw new ArgumentException("Type is required"); }
+			if (string.IsNullOrWhiteSpace(property)) { throw new ArgumentException("Property is required"); }
+			if (this._pluginmanager.EdgeLabels.Contains(type) == false) { throw new ArgumentException("Type not valid: " + type); }
 
-            IStatementResult dbresult = null;
-            using (ISession session = this._driver.Session())
-            {
-                try
-                {
-                    session.ReadTransaction(tx =>
-                    {
-                        string query = "MATCH ()-[r]->() WHERE $type IN labels(r) AND r[{prop}]  =~ $regex RETURN DISTINCT r[{prop}] ORDER BY r[{prop}] LIMIT 20";
-                        dbresult = tx.Run(query, new { type = type, prop = property, regex = regexterm });
-                    });
-                }
-                catch
-                {
-                    //logging to add
-                }
-            }
+			if (string.IsNullOrEmpty(type) || string.IsNullOrEmpty(property) || string.IsNullOrEmpty(searchterm)) { return new List<string>(); }
 
-            return ParseStringListResults(dbresult);
-        }
+			string regexterm = "(?i).*" + searchterm + ".*";
+
+			using (ISession session = this._driver.Session())
+			{
+				try
+				{
+					session.ReadTransaction(tx =>
+					{
+						string query = "MATCH ()-[r:"+type+"]->() WHERE r[{prop}] =~ $regex RETURN DISTINCT r[{prop}] ORDER BY r[{prop}] LIMIT 20";
+						dbresult = tx.Run(query, new { prop = property, regex = regexterm });
+					});
+				}
+				catch(Exception e)
+				{
+					this._logger.LogError("Unable to run SearchEdgePropertyValues query: " + e.Message);
+				}
+			}
+
+			return ParseStringListResults(dbresult);
+		}
 
         public async Task<bool> UpdateMetadataAsync(string label)
         {

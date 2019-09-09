@@ -123,9 +123,9 @@ namespace FSScanner
         public int SendPermissions(List<Permission> permissions, IDriver driver)
         {
             string query = "UNWIND $perms as p " +
-            "MERGE(folder {path:p.Path}) " +
+            "MERGE(folder:"+ Types.Folder +" {path:p.Path}) " +
             "WITH folder,p " +
-            "MERGE(n {id:p.ID})  " +
+            "MERGE(n {id:p.ID})  " + // generic because could be ad_object or builtin
             "ON CREATE SET n:" + Types.Orphaned + ",n.lastscan = p.ScanId " +
             "MERGE (n) -[r:" + Types.GivesAccessTo + "]->(folder) " +
             "SET r.right=p.Right " +
@@ -221,11 +221,12 @@ namespace FSScanner
 
         public static void UpdateMetadata(IDriver driver)
         {
-            List<string> types = new List<string>() { Types.Folder, Types.Datastore };
+			string query;
 
-            foreach (string type in types)
+			List<string> types = new List<string>() { Types.Folder, Types.Datastore };
+			foreach (string type in types)
             {
-                string query =
+                query =
                 "MATCH (n:" + type + ") " +
                 "WITH DISTINCT keys(n) as props " +
                 "UNWIND props as p " +
@@ -239,6 +240,20 @@ namespace FSScanner
                     session.WriteTransaction(tx => tx.Run(query));
                 }
             }
-        }
+
+			query =
+				"MATCH ()-[r:"+ Types.GivesAccessTo +"]->(n:" + Types.Folder + ") " +
+				"WITH DISTINCT keys(r) as props " +
+				"UNWIND props as p " +
+				"WITH DISTINCT p as disprops " +
+				"WITH collect(disprops) as allprops " +
+				"MERGE(i: _Metadata { name: 'EdgeProperties'}) " +
+				"SET i." + Types.GivesAccessTo + " = allprops " +
+				"RETURN i";
+			using (ISession session = driver.Session())
+			{
+				session.WriteTransaction(tx => tx.Run(query));
+			}
+		}
     }
 }

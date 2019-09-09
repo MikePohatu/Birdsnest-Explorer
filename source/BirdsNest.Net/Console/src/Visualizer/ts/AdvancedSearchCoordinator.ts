@@ -22,7 +22,8 @@ import {
 	IsConditionValid,
 	GetNode,
 	ConditionOperators,
-	StringCondition
+	StringCondition,
+    GetEdge
 } from "./Search";
 import ViewTreeNode from "./ViewTreeNode";
 
@@ -865,17 +866,36 @@ export default class AdvancedSearchCoordinator {
 
 		$('#searchVal').autocomplete({
 			source: function (request, response) {
-				
+				//console.log("advAutoComplete");
 				var itemname = (document.getElementById("searchItem") as HTMLSelectElement).value;
-				var datum: SearchNode = GetNode(itemname, me.SearchData);
-				var prop = (document.getElementById("searchProp") as HTMLSelectElement).value;
+				var isnodedautm: boolean = true;
+				var datum: any = GetNode(itemname, me.SearchData);
+				
+				if (datum === null) {
+					datum = GetEdge(itemname, me.SearchData);
+					isnodedautm = false;
+				}
 
-				var url = "/api/graph/node/values?type=" + datum.Label + "&property=" + prop + "&searchterm=" + request.term;
-				//console.log(url);
-				//console.log("autoComplete: " + request.term);
-				//console.log(datum);
+				if (datum !== null) {
+					var prop = (document.getElementById("searchProp") as HTMLSelectElement).value;
 
-				webcrap.data.apiGetJson(url, response);
+					var url;
+
+					if (isnodedautm === true) {
+						url = "/api/graph/node/values?type=" + datum.Label + "&property=" + prop + "&searchterm=" + request.term;
+					}
+					else {
+						url = "/api/graph/edge/values?type=" + datum.Label + "&property=" + prop + "&searchterm=" + request.term;
+					}
+					//console.log(url);
+					//console.log("autoComplete: " + request.term);
+					//console.log(datum);
+
+					webcrap.data.apiGetJson(url, response);
+				}
+				else {
+					console.error("Item could not be found: " + itemname);
+				}
 			}
 		});
 	}
@@ -1265,7 +1285,7 @@ export default class AdvancedSearchCoordinator {
 		var selectedName = searchItem.options[searchItem.selectedIndex].value;
 		var selectedItem;
 		//var datum = (this.GetItemDatum("searchStringConditionDetails") as d3.HierarchyNode<ViewTreeNode<ICondition>>).data;
-		//console.log(datum);
+		
 		var typeSelected = "";
 
 		var i;
