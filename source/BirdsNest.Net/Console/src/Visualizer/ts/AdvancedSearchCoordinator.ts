@@ -1288,7 +1288,9 @@ export default class AdvancedSearchCoordinator {
 		option = webcrap.dom.AddOption(searchItem, "Relationships", "Relationships");
 		option.setAttribute("disabled", "");
 		this.SearchData.Edges.forEach(function (item) {
-			webcrap.dom.AddOption(searchItem, item.Name, item.Name);
+            option = webcrap.dom.AddOption(searchItem, item.Name, item.Name);
+            //if ((item.Max === "1" && item.Min === "1") === false) { option.setAttribute("disabled", ""); }
+            //if (webcrap.misc.isNullOrWhitespace(item.Label)) { option.setAttribute("disabled", ""); }
 		});
 
 		//*** setup the searchOperator list
@@ -1353,7 +1355,13 @@ export default class AdvancedSearchCoordinator {
 				(document.getElementById("searchVal") as HTMLInputElement).disabled = true;
 				(document.getElementById("searchConditionSaveBtn") as HTMLInputElement).disabled = true;
 				this.SetAlert("The item you have selected (" + selectedItem.Name + ") does not have a type. You must set the type on the item before you can create a condition");
-			}
+            }
+            else if (typeSelected === "edge" && !(selectedItem.Min === "1" && selectedItem.Max === "1")) {
+                (document.getElementById("searchProp") as HTMLSelectElement).disabled = true;
+                (document.getElementById("searchVal") as HTMLInputElement).disabled = true;
+                (document.getElementById("searchConditionSaveBtn") as HTMLInputElement).disabled = true;
+                this.SetAlert("The item you have selected (" + selectedItem.Name + ") contains a multi-hop path. This is currently not supported. Set min and max to 1 on this item");
+            }
 			else {
 				this.ClearAlert();
 				(document.getElementById("searchProp") as HTMLSelectElement).disabled = false;
