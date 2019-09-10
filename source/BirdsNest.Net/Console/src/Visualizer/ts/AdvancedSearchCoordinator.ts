@@ -48,8 +48,8 @@ export default class AdvancedSearchCoordinator {
 	ViewTreeNodeConditionsProp = 'Conditions';
 
 	Tooltip: FoundationSites.Tooltip;
-	NewCondition: ViewTreeNode<ICondition>;
-	EditingCondition: ViewTreeNode<ICondition>;
+	NewCondition: ViewTreeNode<ICondition> = null;
+	EditingCondition: ViewTreeNode<ICondition> = null;
 
 	ConditionTypeModal: FoundationSites.Reveal;
 	ConditionDetailsModal: FoundationSites.Reveal;
@@ -113,6 +113,16 @@ export default class AdvancedSearchCoordinator {
 		});
 		d3.select("#searchMaximise").on("click", function () {
 			me.ShowHide();
+		});
+
+		//sliders
+        $("#minHopsSlider").foundation();
+        $("#maxHopsSlider").foundation();
+        $("#minHopsSlider").on("changed.zf.slider", function () {
+			me.onMinSliderChanged();
+		});
+        $("#maxHopsSlider").on("changed.zf.slider", function() {
+			me.onMaxSliderChanged();
 		});
 
 		//node details dialogs
@@ -204,6 +214,30 @@ export default class AdvancedSearchCoordinator {
 
 	onSearchPaneClicked() {
 		this.hideNodeControls();
+	}
+
+	onMinSliderChanged() {
+		//console.log("onMinSliderChanged");
+		var maxel = (document.getElementById("maxSliderVal") as HTMLInputElement);
+		var max = maxel.valueAsNumber;
+		var min = (document.getElementById("minSliderVal") as HTMLInputElement).valueAsNumber;
+
+        if (max < min) {
+            maxel.valueAsNumber = min;
+            d3.select('#maxSliderVal').dispatch('change');
+        }
+	}
+
+	onMaxSliderChanged() {
+		//console.log("onMaxSliderChanged");
+		var minel = (document.getElementById("minSliderVal") as HTMLInputElement);
+		var min = minel.valueAsNumber;
+		var max = (document.getElementById("maxSliderVal") as HTMLInputElement).valueAsNumber;
+
+        if (max < min) {
+            minel.valueAsNumber = max;
+            d3.select('#minSliderVal').dispatch('change');
+        }
 	}
 
 	ShowHide() {
@@ -1170,8 +1204,8 @@ export default class AdvancedSearchCoordinator {
 
 
 	onSearchConditionClicked(callingelement: HTMLElement) {
-		//console.log("onSearchConditionClicked");
-		var datum = this.GetItemDatum(callingelement.id) as d3.HierarchyNode<ViewTreeNode<ICondition>>;
+        //console.log("onSearchConditionClicked");
+        var datum = this.GetElementDatum(callingelement) as d3.HierarchyNode<ViewTreeNode<ICondition>>;
 
 		//console.log(datum);
 		if (datum) {
@@ -1186,9 +1220,8 @@ export default class AdvancedSearchCoordinator {
 	}
 
 	OpenSearchConditionDetails(treenode: ViewTreeNode<ICondition>) {
-		//console.log("onSearchConditionClicked started");
-		//var datum;
-		//console.log(callingelement);
+        //console.log("OpenSearchConditionDetails started");
+		//console.log(treenode);
 		var me = this;
 	
 		this.ClearAlert();
@@ -1218,7 +1251,7 @@ export default class AdvancedSearchCoordinator {
 			(document.getElementById("searchCaseOptions") as HTMLDivElement).hidden = true;
 		}
 
-		if (this.EditingCondition === this.NewCondition) {
+        if (this.EditingCondition === this.NewCondition) {
 			d3.select("#searchConditionDeleteBtn").classed("hidden", true);
 			d3.select("#searchConditionCancelBtn").classed("hidden", false);
 			//(document.getElementById("searchConditionDeleteBtn") as HTMLButtonElement).hidden = true;

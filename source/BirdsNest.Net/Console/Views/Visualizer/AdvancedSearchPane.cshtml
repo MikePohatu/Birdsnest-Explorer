@@ -127,51 +127,66 @@
 
 
 <div id="searchEdgeDetails" class="reveal">
-    <fieldset class="fieldset small-4 cell">
-        <legend>Relationship</legend>
+	<fieldset class="fieldset small-4 cell">
+		<legend>Relationship</legend>
 
-        <div class="input-group">
-            <span class="input-group-label small-3">Type</span>
-            <select id="edgeType" class="small-9 input-group-field"></select>
-        </div>
+		<div class="input-group">
+			<span class="input-group-label small-3">Type</span>
+			<select id="edgeType" class="small-9 input-group-field"></select>
+		</div>
 
-        <div class="input-group">
-            <span class="input-group-label small-4">Identifier</span>
-            <input id="edgeIdentifier" type="search" autocomplete="off" placeholder="*" class="small-8 input-group-field">
-        </div>
+		<div class="input-group">
+			<span class="input-group-label small-4">Identifier</span>
+			<input id="edgeIdentifier" type="search" autocomplete="off" placeholder="*" class="small-8 input-group-field">
+		</div>
 
-        <span>Limit Hops</span>
+		<span>Limit Hops</span>
 
-        <div class="switch tiny">
-            <input class="switch-input" id="hopsSwitch" type="checkbox" name="hopsSwitch" checked>
-            <label class="switch-paddle" for="hopsSwitch"></label>
-        </div>
+		<div class="switch tiny">
+			<input class="switch-input" id="hopsSwitch" type="checkbox" name="hopsSwitch" checked>
+			<label class="switch-paddle" for="hopsSwitch"></label>
+		</div>
 
-		<div class="input-group" id="hopsPane">
-			<div class="grid-x">
-				<div class="cell small-1">
-					<input type="text" id="minSliderVal" class="hopscontrol">
+		<div class="grid-x align-self-middle">
+			<div class="cell small-2 hopscontrol">
+				<div>Min</div>				
+			</div>
+			<div class="cell small-9">
+				<div id="minHopsSlider" class="slider hopscontrol" data-slider data-initial-start="1" data-initial-end="1" data-start="0" data-end="20" data-step="1">
+					<span id="minSlider" class="slider-handle" data-slider-handle role="slider" title="Minimum hop count" aria-controls="minSliderVal"></span>
+					<span id="sliderFill" class="slider-fill" data-slider-fill></span>
 				</div>
-				<div class="cell small-10">
-					<div id="hopsSlider" class="slider hopscontrol" data-slider data-initial-start="1" data-initial-end="1" data-start="0" data-end="20">
-						<span id="minSlider" class="slider-handle" data-slider-handle role="slider" title="Minimum hop count" aria-controls="minSliderVal"></span>
-						<span id="sliderFill" class="slider-fill" data-slider-fill></span>
-						<span id="maxSlider" class="slider-handle" data-slider-handle role="slider" title="Maximum hop count" aria-controls="maxSliderVal"></span>
-					</div>
-				</div>
-				<div class="cell small-1">
-					<input type="text" id="maxSliderVal" class="hopscontrol">
-				</div>
+			</div>
+			<div class="cell small-1">
+				<input type="number" id="minSliderVal" class="hopscontrol">
 			</div>
 		</div>
 
-        <div class=" align-top">
-            <span class="small-3 align-middle">Direction</span>
-            <div id='dirIconClicker' class="small-1 text-left">
-                <i id='dirIcon' class="fas fa-arrow-right" data-dir=">"></i>
-            </div>
-        </div>
-    </fieldset>
+		<div class="grid-x">
+			<div class="cell small-2 hopscontrol">
+				<span>Max</span>
+			</div>
+			<div class="cell small-9">
+				<div id="maxHopsSlider" class="slider hopscontrol" data-slider data-initial-start="1" data-initial-end="1" data-start="0" data-end="20" data-step="1">
+					<span id="maxSlider" class="slider-handle" data-slider-handle role="slider" title="Maximum hop count" aria-controls="maxSliderVal"></span>
+					<span id="sliderFill" class="slider-fill" data-slider-fill></span>
+				</div>
+			</div>
+			<div class="cell small-1">
+				<input type="number" id="maxSliderVal" class="hopscontrol">
+			</div>
+		</div>
+
+		<div class="grid-x align-top">
+			<div class="cell small-2">
+				<span class="small-3 align-middle">Direction</span>
+			</div>
+			
+			<div id='dirIconClicker' class="cell small-1 text-left">
+				<i id='dirIcon' class="fas fa-arrow-right" data-dir=">"></i>
+			</div>
+		</div>
+</fieldset>
     <button class="close-button" data-close aria-label="Close query dialog" type="button">
         <span aria-hidden="true">&times;</span>
     </button>
