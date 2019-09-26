@@ -939,15 +939,16 @@ function onSearchNodesClicked() {
 	if (webcrap.misc.isNullOrWhitespace(term) === false) {
 		d3.selectAll(".selected").classed("selected", false);
 
+        var lowerterm = term.toLowerCase();
+
 		d3.selectAll(".nodes").filter(function (d) {
 			//console.log(d);
-			if (d.name.toLowerCase().indexOf(term) !== -1) {
+            if (d.name.toLowerCase().indexOf(lowerterm) !== -1) {
 				return this;
 			}
 			return null;
 		}).classed("selected", true);
 	}
-	
 }
 
 
