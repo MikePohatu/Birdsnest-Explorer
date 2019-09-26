@@ -30,20 +30,34 @@ namespace FSScanner
 
             ConsoleWriter.InitLine(1);
             totaltimer.Start();
-            foreach (string arg in args)
+            try
             {
-                string[] param = arg.Split(new[] { ":" }, 2, StringSplitOptions.None);
-                switch (param[0].ToUpper())
+                foreach (string arg in args)
                 {
-                    case "/CONFIG":
-                        configfile = param[1];
-                        break;
-                    case "/BATCH":
-                        batchmode = true;
-                        break;
-                    default:
-                        break;
+                    string[] param = arg.Split(new[] { ":" }, 2, StringSplitOptions.None);
+                    switch (param[0].ToUpper())
+                    {
+                        case "/?":
+                            ShowUsage();
+                            Environment.Exit(0);
+                            break;
+                        case "/CONFIG":
+                            configfile = param[1];
+                            break;
+                        case "/BATCH":
+                            batchmode = true;
+                            break;
+                        default:
+                            break;
+                    }
                 }
+            }
+            catch
+            {
+                Console.WriteLine("There is a problem with arguments: " + string.Join(" ", args));
+                Console.WriteLine("");
+                ShowUsage();
+                Environment.Exit(1);
             }
 
             try
@@ -139,6 +153,13 @@ namespace FSScanner
                 ConsoleWriter.WriteLine("Press any key to exit");
                 Console.ReadLine();
             }
+        }
+
+        private static void ShowUsage()
+        {
+            ConsoleWriter.WriteLine();
+            ConsoleWriter.WriteLine("Usage: FSScanner.exe /config:<configfile> /batch");
+            ConsoleWriter.WriteLine("/batch makes scanner run in batch mode and does not wait before exit");
         }
     }
 }
