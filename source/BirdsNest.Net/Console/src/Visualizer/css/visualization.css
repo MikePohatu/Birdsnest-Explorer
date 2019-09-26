@@ -12,11 +12,7 @@
 
 .selected .nodecircle {
     stroke-width: 5px;
-    fill: #FEFE73;
-}
-
-.selected.disabled .nodecircle {
-    fill: #FEFEC5;
+    fill: lightyellow;
 }
 
 .nodes text {
