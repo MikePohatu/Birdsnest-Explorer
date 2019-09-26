@@ -129,13 +129,14 @@ namespace FSScanner
             "ON CREATE SET n:" + Types.Orphaned + ",n.lastscan = p.ScanId " +
             "MERGE (n) -[r:" + Types.GivesAccessTo + "]->(folder) " +
             "SET r.right=p.Right " +
-            "SET r.lastscan=p.ScanId " +
+            "SET r.lastscan=$scanid " +
+            "SET r.fsid=$fsid " +
             "RETURN folder.path ";
 
             int relcreated = 0;
             using (ISession session = driver.Session())
             {
-                IStatementResult result = session.WriteTransaction(tx => tx.Run(query, new { perms = permissions }));
+                IStatementResult result = session.WriteTransaction(tx => tx.Run(query, new { fsid = this.FsID, scanid = this.ScanID, perms = permissions }));
                 relcreated = result.Summary.Counters.RelationshipsCreated;
             }
             return relcreated;
@@ -203,7 +204,7 @@ namespace FSScanner
             string query = "MATCH (f:" + Types.Folder +") "+
                 "WHERE f.fsid = $fsid " +
                 "WITH f " +
-                "MATCH(f) -[r]->() WHERE r.lastscan <> $scanid " +
+                "MATCH(f)-[r]->() WHERE r.lastscan <> $scanid " +
                 "DELETE r ";
 
             int nodesdeleted = 0;

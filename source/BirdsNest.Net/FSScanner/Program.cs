@@ -22,6 +22,7 @@ namespace FSScanner
             string _appdir = AppDomain.CurrentDomain.BaseDirectory;
             string neoconfigfile = _appdir + @"\neoconfig.json";
             string configfile = _appdir + @"\fsconfig.json";
+
             //int relcounter = 0;
             bool batchmode = false;
             string scanid = ShortGuid.NewGuid().ToString();

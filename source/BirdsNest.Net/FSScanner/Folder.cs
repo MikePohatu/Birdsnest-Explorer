@@ -17,9 +17,6 @@ namespace FSScanner
         [JsonProperty("name")]
         public string Name { get; set; } = string.Empty;
 
-        //[JsonProperty("scanid")]
-        //public string ScanId { get; set; }
-
         public virtual string Type { get { return Types.Folder; } }
         private string _permparent = string.Empty;
         public string PermParent
