@@ -40,16 +40,28 @@ namespace Console.Controllers
         }
 
         // GET visualizer/details
-        public IActionResult Details(long id)
+        public IActionResult NodeDetails(long id)
         {
             ResultSet set = this._service.GetNode(id);
             BirdsNestNode node = set.Nodes.First();
             ResultSet resultset = this._service.GetAllRelated(id);
-            RelatedDetailViewModel model = new RelatedDetailViewModel(node, resultset);
+            NodeRelatedDetailViewModel model = new NodeRelatedDetailViewModel(node, resultset);
 
             ViewBag.ID = id;
-            return PartialView("RelatedDetail",model);
+            return PartialView("NodeRelatedDetail",model);
         }
+
+
+        // GET visualizer/edgedetails
+        public IActionResult EdgeDetails(long id)
+        {
+            ResultSet set = this._service.GetEdge(id);
+            BirdsNestRelationship edge = set.Edges.First();
+
+            ViewBag.ID = id;
+            return PartialView("EdgeDetail", edge);
+        }
+
 
         public object Icons()
         {

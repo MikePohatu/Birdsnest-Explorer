@@ -116,6 +116,31 @@ namespace Console.neo4jProxy
             }
         }
 
+        public ResultSet GetEdge(long edgeid)
+        {
+            using (ISession session = this._driver.Session())
+            {
+                ResultSet returnedresults = new ResultSet();
+                try
+                {
+                    session.ReadTransaction(tx =>
+                    {
+                        string query = "MATCH ()-[r]->() " +
+                            "WHERE ID(r)=$edgeid " +
+                            "RETURN r";
+                        IStatementResult dbresult = tx.Run(query, new { edgeid = edgeid });
+                        returnedresults.Append(ParseResults(dbresult));
+                    });
+                }
+                catch
+                {
+                    //logging to add
+                }
+
+                return returnedresults;
+            }
+        }
+
         public async Task<object> GetRelationshipsAsync(List<long> nodeids)
         {
             object o = null;

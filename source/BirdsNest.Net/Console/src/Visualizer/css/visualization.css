@@ -65,6 +65,10 @@
     fill: inherit;
 }
 
+.edgebg.selected {
+    fill: lightyellow;
+}
+
 .edges.disabled {
     fill: #dddddd;
 }

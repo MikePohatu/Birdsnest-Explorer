@@ -4,14 +4,14 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Console.ViewModels
 {
-    public class RelatedDetailViewModel
+    public class NodeRelatedDetailViewModel
     {
         public BirdsNestNode Node { get; private set; }
         public Dictionary<string, List<BirdsNestNode>> LabelledEdgeNodes { get; private set; } = new Dictionary<string, List<BirdsNestNode>>();
         public Dictionary<string, List<BirdsNestNode>> LabeledNodeLists { get; private set; } = new Dictionary<string, List<BirdsNestNode>>();
         public Dictionary<long, BirdsNestNode> RelatedNodes { get; private set; } = new Dictionary<long, BirdsNestNode>();
 
-        public RelatedDetailViewModel(BirdsNestNode node, ResultSet set)
+        public NodeRelatedDetailViewModel(BirdsNestNode node, ResultSet set)
         {
             this.Node = node;
 

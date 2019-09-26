@@ -179,7 +179,7 @@ export function resetView() {
         graphnodelabels = new Object();
         graphedgelabels = new Object();
 
-        unselectAllNodes();
+        UnselectAll();
         graphbglayer.selectAll("*").remove();
         edgeslayer.selectAll("*").remove();
         nodeslayer.selectAll("*").remove();
@@ -371,6 +371,19 @@ export function onEyeNodeDetailClicked(dbid) {
         .classed("fa-eye-slash", !show);
 
     d3.select("#node_" + dbid)
+        .classed("enabled", show)
+        .classed("disabled", !show);
+}
+
+export function onEyeEdgeDetailClicked(dbid) {
+    //console.log("onEyeNodeDetailClicked: " + dbid);
+    let show = !d3.selectAll("#edge_" + dbid).classed("enabled");
+
+    d3.select("#eyeIcon_" + dbid)
+        .classed("fa-eye", show)
+        .classed("fa-eye-slash", !show);
+
+    d3.select("#edge_" + dbid)
         .classed("enabled", show)
         .classed("disabled", !show);
 }
@@ -648,7 +661,7 @@ function loadNodeData(newnodedata) {
         //console.log(d.cx); 
         d.size = defaultsize * d.scaling;
         d.selected = false;
-        //populateDetails(d);
+        //populateNodeDetails(d);
         graphnodes.Add(d);
         if (d.properties.layout === "mesh") { meshnodes.Add(d); }
         else if (d.properties.layout === "tree") { treenodes.Add(d); }
@@ -789,7 +802,8 @@ function addSvgEdges(edges) {
             .append("path")
             .attr("id", function (d) { return "edgebg_" + d.db_id; })
             .classed("graphbg", true)
-            .classed("edgebg", true);
+            .classed("edgebg", true)
+            .on("click", onEdgeClicked);
     }, 1);
 
     let enteredges = edgeslayer.selectAll(".edges")
@@ -814,7 +828,8 @@ function addSvgEdges(edges) {
             return combined;
         })
         .classed("edges", true)
-        .classed("enabled", true);
+        .classed("enabled", true)
+        .on("click", onEdgeClicked);
 
     setTimeout(function () {
         enteredgesg.append("path")
@@ -983,7 +998,7 @@ function unpinNode(d) {
 function pageClicked() {
     //console.log("pageClicked");
     if (d3.event.defaultPrevented) { return; } // dragged
-    unselectAllNodes();
+    UnselectAll();
 }
 
 d3.select("#selectBtn").on('click', startSelect);
@@ -1194,8 +1209,24 @@ function onNodeClicked(d) {
     }
     else {
         //if the ctrl key isn't down, unselect everything and select the node
-        unselectAllOtherNodes(d);
+        UnselectAllOther(d);
         updateNodeSelection(d, true, true);
+    }
+}
+
+function onEdgeClicked(d) {
+    //console.log("onEdgeClicked");
+    if (d3.event.defaultPrevented) { return; } // dragged
+    d3.event.stopPropagation();
+
+    if (d3.event.ctrlKey) {
+        //if ctrl key is down, just toggle the node		
+        updateEdgeSelection(d, !d.selected, !d.selected);
+    }
+    else {
+        //if the ctrl key isn't down, unselect everything and select the node
+        UnselectAllOther(d);
+        updateEdgeSelection(d, true, true);
     }
 }
 
@@ -1216,44 +1247,87 @@ function updateNodeSelection(d, isselected, showdetails) {
             if (showdetails === true) {
                 if (!d.hasOwnProperty('detailsHTML')) {
                     //console.log("populate");
-                    populateDetails(d, function () {
+                    populateNodeDetails(d, function () {
                         //console.log("populate callback");
-                        nodeShowDetailsSelected(d);
+                        ShowDetailsSelected(d);
                     });
                 }
-                else { nodeShowDetailsSelected(d); }
+                else { ShowDetailsSelected(d); }
             }
         }
-        else { nodeHideDetailsSelected(d); }
+        else { HideDetailsSelected(d); }
     }
 }
+
+
+function updateEdgeSelection(d, isselected, showdetails) {
+    //console.log("updateNodeSelection : " + d.name + " : " + d.selected + ":" + isselected);     
+    let edge = edgeslayer.select("#edge_" + d.db_id)
+        .classed("selected", isselected);
+
+    graphbglayer.select("#edgebg_" + d.db_id)
+        .classed("selected", isselected);
+
+    let enabled = edge.classed("enabled");
+    //console.log("enabled: " + enabled);
+    d3.select("#eyeIcon_" + d.db_id)
+        .classed("fa-eye", enabled)
+        .classed("fa-eye-slash", !enabled);
+
+    if (d.selected !== isselected) {
+        d.selected = isselected;
+        if (isselected) {
+            if (showdetails === true) {
+                if (!d.hasOwnProperty('detailsHTML')) {
+                    //console.log("populate");
+                    populateEdgeDetails(d, function () {
+                        //console.log("populate callback");
+                        ShowDetailsSelected(d);
+                    });
+                }
+                else { ShowDetailsSelected(d); }
+            }
+        }
+        else { HideDetailsSelected(d); }
+    }
+}
+
 
 /*
 Build the details card for the node
 */
-function populateDetails(d, callback) {
-    //console.log("populateDetails");
-    webcrap.data.apiGet("/visualizer/details/" + d.db_id, "html", function (data) {
-        //console.log("populateDetails callback");
+function populateNodeDetails(d, callback) {
+    //console.log("populateNodeDetails");
+    webcrap.data.apiGet("/visualizer/nodedetails/" + d.db_id, "html", function (data) {
+        //console.log("populateNodeDetails callback");
         d.detailsHTML = data;
         callback();
     });
 }
 
-function unselectAllOtherNodes(keptdatum) {
-    //console.log("unselectAllOtherNodes");
+function populateEdgeDetails(d, callback) {
+    //console.log("populateNodeDetails");
+    webcrap.data.apiGet("/visualizer/edgedetails/" + d.db_id, "html", function (data) {
+        //console.log("populateNodeDetails callback");
+        d.detailsHTML = data;
+        callback();
+    });
+}
+
+function UnselectAllOther(keptdatum) {
+    //console.log("UnselectAllOther");
     d3.selectAll(".selected")
         .classed("selected", function (d) {
             if (keptdatum.db_id !== d.db_id) {
-                nodeHideDetailsSelected(d);
+                HideDetailsSelected(d);
                 d.selected = false;
                 return false;
             }
         });
 }
 
-function unselectAllNodes() {
-    //console.log("unselectAllNodes");
+function UnselectAll() {
+    //console.log("UnselectAll");
     d3.selectAll(".detailcard").remove();
     d3.selectAll(".selected")
         .classed("selected", function (d) {
@@ -1262,8 +1336,8 @@ function unselectAllNodes() {
         });
 }
 
-function nodeShowDetailsSelected(d) {
-    //console.log("nodeShowDetailsSelected");
+function ShowDetailsSelected(d) {
+    //console.log("ShowDetailsSelected");
     //console.log(d.detailsHTML);
     d3.select("#detailcardwrapper")
         .append("div")
@@ -1273,8 +1347,8 @@ function nodeShowDetailsSelected(d) {
     $('#details_' + d.db_id).foundation();
 }
 
-function nodeHideDetailsSelected(d) {
-    //console.log("nodeHideDetailsSelected");
+function HideDetailsSelected(d) {
+    //console.log("HideDetailsSelected");
     d3.selectAll("#details_" + d.db_id).remove();
 }
 

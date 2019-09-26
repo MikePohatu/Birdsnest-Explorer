@@ -1,0 +1,33 @@
+﻿@using Console.ViewModels
+@using Console.neo4jProxy
+@model BirdsNestRelationship
+
+
+
+<div id="detaillist_@Model.DbId">
+    <div class="detaillist">
+        <div class="grid-x align-middle">
+            <div class="cell small-3"><u><b>Details</b></u></div>
+            <div class="cell small-1" title="Show/hide node">
+                <a href="javascript:vis.onEyeEdgeDetailClicked(@Model.DbId);"><div id="eyeIcon_@Model.DbId" class="cell far fa-eye small-2"></div></a>
+            </div>
+        </div>
+        <b>db_id:</b> @Model.DbId<br />
+        <b>Types:</b> @Model.Label<br />
+    </div>
+
+    @if (@Model.Properties.Count > 0)
+    {
+        <div>
+            <ul class="accordion" data-accordion data-allow-all-closed="true" data-multi-expand="true">
+                <li class="accordion-item" data-accordion-item>
+                    <a href="#" class="accordion-title">Properties (@Model.Properties.Count):</a>
+                    <div class="accordion-content detaillist" data-tab-content>
+                        @foreach (var key in Model.Properties.Keys)
+                        {<b>@key:</b> @Model.Properties[key]<br />}
+                    </div>
+                </li>
+            </ul>
+        </div>
+    }
+</div>
