@@ -92,6 +92,7 @@ namespace ADScanner.Neo4j
             "SET n.displayname = u.displayname " +
             "SET n.state = u.state " +
             "SET n.layout = 'mesh' " +
+            "SET n.userprincipalname = u.userprincipalname " +
             "RETURN n.name";
 
             using (ISession session = driver.Session())

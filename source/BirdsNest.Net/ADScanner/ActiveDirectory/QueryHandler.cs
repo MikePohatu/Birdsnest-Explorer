@@ -67,6 +67,7 @@ namespace ADScanner.ActiveDirectory
                     searcher.PropertiesToLoad.Add("primaryGroupID");
                     searcher.PropertiesToLoad.Add("userAccountControl");
                     searcher.PropertiesToLoad.Add("description");
+                    searcher.PropertiesToLoad.Add("userPrincipalName");
                     searcher.PropertiesToLoad.Add("info");
 
                     searcher.PageSize = 1000;
