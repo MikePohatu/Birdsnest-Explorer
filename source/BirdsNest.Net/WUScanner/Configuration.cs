@@ -15,8 +15,8 @@ namespace WUScanner
         [JsonProperty("domain")]
         public string Domain { get; set; } = string.Empty;
 
-        [JsonProperty("hostname")]
-        public string HostName { get; set; } = string.Empty;
+        [JsonProperty("servername")]
+        public string ServerName { get; set; } = string.Empty;
 
         [JsonProperty("port")]
         public int Port { get; set; } = 8530;
