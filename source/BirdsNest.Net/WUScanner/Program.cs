@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using Microsoft.UpdateServices.Administration;
 using common;
 using Neo4j.Driver.V1;
+using WUScanner.Neo4j;
 
 namespace WUScanner
 {
@@ -22,7 +23,7 @@ namespace WUScanner
             string _appdir = AppDomain.CurrentDomain.BaseDirectory;
             string neoconfigfile = _appdir + @"\neoconfig.json";
             string configfile = _appdir + @"\wuconfig.json";
-            int relcounter = 0;
+            //int relcounter = 0;
             bool batchmode = false;
             string scanid = ShortGuid.NewGuid().ToString();
             IUpdateServer _updateserver = null;
@@ -69,20 +70,6 @@ namespace WUScanner
                 {
                     throw new ArgumentException("Configuration is invalid");
                 }
-
-                //Writer.DomainID = wuconfig.ID;
-                //if (string.IsNullOrEmpty(Writer.DomainID))
-                //{
-                //    Console.WriteLine("Your configuration does not have a scanner ID. A random ID will be generated for you below:");
-                //    Console.WriteLine(ShortGuid.NewGuid().ToString());
-                //    Console.WriteLine();
-                //    if (batchmode == false)
-                //    {
-                //        Console.WriteLine("Press any key to exit");
-                //        Console.ReadLine();
-                //    }
-                //    Environment.Exit(2);
-                //}
             }
             catch (Exception e)
             {
@@ -136,27 +123,36 @@ namespace WUScanner
 
             try
             {
+                //The main bit 
                 Console.WriteLine("Reading update information. This may take several minutes. Please wait...");
-                UpdateCollection declinedupdates = _updateserver.GetUpdates(ApprovedStates.Declined, DateTime.MinValue, DateTime.MaxValue, null, null);
-                Console.WriteLine("Found " + declinedupdates.Count + " declined updates");
+                UpdateResults updateinfo = new UpdateResults();
+                WUQueryHandler.PopulateUpdateResults(_updateserver, updateinfo);
+                Console.WriteLine("Found " + updateinfo.Updates.Count + " updates");
+                Console.WriteLine("Found " + updateinfo.SupersededUpdates.Count + " superseded updates");
 
-                UpdateCollection notapprovedupdates = _updateserver.GetUpdates(ApprovedStates.NotApproved, DateTime.MinValue, DateTime.MaxValue, null, null);
-                Console.WriteLine("Found " + notapprovedupdates.Count + " not approved updates");
+                IEnumerable<object> sublist;
 
-                UpdateCollection approvedupdates = _updateserver.GetUpdates(ApprovedStates.LatestRevisionApproved, DateTime.MinValue, DateTime.MaxValue, null, null);
-                Console.WriteLine("Found " + approvedupdates.Count + " approved updates");
-
-                UpdateCollection staleapprovalupdates = _updateserver.GetUpdates(ApprovedStates.HasStaleUpdateApprovals, DateTime.MinValue, DateTime.MaxValue, null, null);
-                Console.WriteLine("Found " + staleapprovalupdates.Count + " stale approval updates");
-
-                foreach (IUpdate update in notapprovedupdates)
+                Console.Write("Writing updates to database.");
+                while (updateinfo.Updates.Count > 1000)
                 {
-                    if (update.HasSupersededUpdates)
-                    {
-                        UpdateCollection related = update.GetRelatedUpdates(UpdateRelationship.UpdatesSupersededByThisUpdate);
-                        break;
-                    }
+                    Console.Write(".");
+                    sublist = ListExtensions.ListPop(updateinfo.Updates, 1000);
+                    Writer.MergeUpdates(sublist, driver, scanid);
                 }
+                if (updateinfo.Updates.Count > 0) 
+                {
+                    sublist = updateinfo.Updates;
+                    Writer.MergeUpdates(sublist, driver, scanid); 
+                }
+                
+
+                Console.WriteLine("Writing supersedence to database.");
+                while (updateinfo.Updates.Count > 1000)
+                {
+                    Console.Write(".");
+                    Writer.MergeSupersedence(ListExtensions.ListPop(updateinfo.SupersededUpdates, 1000), driver, scanid);
+                }
+                if (updateinfo.SupersededUpdates.Count > 0) { Writer.MergeSupersedence(updateinfo.SupersededUpdates, driver, scanid); }
             }
             catch (Exception e)
             {
@@ -172,7 +168,7 @@ namespace WUScanner
         private static void ShowUsage()
         {
             Console.WriteLine();
-            Console.WriteLine("Usage: ADScanner.exe /config:<configfile> /batch");
+            Console.WriteLine("Usage: WUScanner.exe /config:<configfile> /batch");
             Console.WriteLine("/batch makes scanner run in batch mode and does not wait before exit");
         }
     }
