@@ -16,29 +16,30 @@ namespace WUScanner
             UpdateCollection approved = server.GetUpdates(ApprovedStates.LatestRevisionApproved, DateTime.MinValue, DateTime.MaxValue, null, null);
             UpdateCollection staleapproval = server.GetUpdates(ApprovedStates.HasStaleUpdateApprovals, DateTime.MinValue, DateTime.MaxValue, null, null);
 
-            //foreach (UpdateCollection col in new List<UpdateCollection> { declined, notapproved, approved, staleapproval })
-            foreach (UpdateCollection col in new List<UpdateCollection> { declined})
+            foreach (UpdateCollection col in new List<UpdateCollection> { declined, notapproved, approved, staleapproval })
+            //foreach (UpdateCollection col in new List<UpdateCollection> { declined})
             {
                 foreach (IUpdate update in col)
                 {
-                    resultobject.Updates.Add(new Update(update) as object);
+                    resultobject.Updates.Add(Update.GetUpdateObject(update));
                     if (update.IsSuperseded)
                     {
-                        //update.Id.UpdateId.
-                        resultobject.SupersededUpdates.AddRange(GetRelatedUpdates(update, UpdateRelationship.UpdatesThatSupersedeThisUpdate));
+                        List<object> supersededmappings = GetRelatedUpdates(update, UpdateRelationship.UpdatesThatSupersedeThisUpdate);
+                        resultobject.SupersededUpdates.AddRange(supersededmappings);
                     }
                 }
             }
         }
 
 
-        public static List<KeyValuePair<string, string>> GetRelatedUpdates(IUpdate update, UpdateRelationship type)
+        public static List<object> GetRelatedUpdates(IUpdate update, UpdateRelationship type)
         {
-            List<KeyValuePair<string, string>> ret = new List<KeyValuePair<string, string>>();
-            foreach (IUpdate relupdate in update.GetRelatedUpdates(type))
+            List<object> ret = new List<object>();
+            UpdateCollection related = update.GetRelatedUpdates(type);
+            foreach (IUpdate relupdate in related)
             {
-                var kvpair = new KeyValuePair<string, string>(update.Id.UpdateId.ToString(), relupdate.Id.UpdateId.ToString());
-                ret.Add(kvpair);
+                object o = Update.GetRelatedUpdateObject(update, relupdate);
+                ret.Add(o);
             }
 
             return ret;

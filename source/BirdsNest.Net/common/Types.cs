@@ -55,6 +55,10 @@ namespace common
         public static string CMSoftwareUpdateGroup { get { return "CM_SoftwareUpdateGroup"; } }
         public static string CMClientSettings { get { return "CM_ClientSettings"; } }
 
+        //WUScanner
+        public static string WUUpdate { get { return "WU_Update"; } }
+        public static string Supersedes { get { return "SUPERSEDES"; } }
+
         //CustomAppScanner nodes
         public static string Application { get { return "Application"; } }
     }

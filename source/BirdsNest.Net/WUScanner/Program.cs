@@ -144,15 +144,18 @@ namespace WUScanner
                     sublist = updateinfo.Updates;
                     Writer.MergeUpdates(sublist, driver, scanid); 
                 }
+                Console.WriteLine();
                 
 
-                Console.WriteLine("Writing supersedence to database.");
-                while (updateinfo.Updates.Count > 1000)
+                Console.Write("Writing supersedence to database.");
+                while (updateinfo.SupersededUpdates.Count > 1000)
                 {
                     Console.Write(".");
-                    Writer.MergeSupersedence(ListExtensions.ListPop(updateinfo.SupersededUpdates, 1000), driver, scanid);
+                    sublist = ListExtensions.ListPop(updateinfo.SupersededUpdates, 1000);
+                    Writer.MergeSupersedence(sublist, driver, scanid);
                 }
                 if (updateinfo.SupersededUpdates.Count > 0) { Writer.MergeSupersedence(updateinfo.SupersededUpdates, driver, scanid); }
+                Console.WriteLine();
             }
             catch (Exception e)
             {

@@ -7,33 +7,31 @@ using Microsoft.UpdateServices.Administration;
 
 namespace WUScanner
 {
-    public class Update
+    public static class Update
     {
-        public bool IsSuperseded { get; private set; }
-        public bool HasSupersededUpdates { get; private set; }
-        public bool IsBundle { get; private set; }
-        public bool IsPartOfBundle { get; private set; }
-        public bool IsDeclined { get; private set; }
-        public string KB { get; private set; }
-        public string Bulletin { get; private set; }
-        public string Description { get; private set; }
-        public string Title { get; private set; }
-        public string ID { get; private set; }
-        public string AdditionalInformationUrls { get; private set; }
-        public string CreationDate { get; private set; }
-
-
-        public Update (IUpdate wsusupdate)
+        public static object GetUpdateObject (IUpdate wsusupdate)
         {
-            this.IsSuperseded = wsusupdate.IsSuperseded;
-            this.HasSupersededUpdates = wsusupdate.HasSupersededUpdates;
-            this.IsDeclined = wsusupdate.IsDeclined;
-            this.Title = wsusupdate.Title;
-            this.Description = wsusupdate.Description;
-            this.ID = wsusupdate.Id.UpdateId.ToString();
-            this.AdditionalInformationUrls = string.Join(", ", wsusupdate.AdditionalInformationUrls);
-            this.CreationDate = wsusupdate.CreationDate.ToString();
+            Dictionary<string, object> properties = new Dictionary<string, object>();
+            properties.Add("IsSuperseded", wsusupdate.IsSuperseded);
+            properties.Add("HasSupersededUpdates", wsusupdate.HasSupersededUpdates);
+            properties.Add("IsDeclined", wsusupdate.IsDeclined);
+            properties.Add("Title", wsusupdate.Title);
+            properties.Add("Description", wsusupdate.Description);
+            properties.Add("ID", wsusupdate.Id.UpdateId.ToString());
+            properties.Add("AdditionalInformationUrls", string.Join(", ", wsusupdate.AdditionalInformationUrls));
+            properties.Add("CreationDate", wsusupdate.CreationDate.ToString());
+            properties.Add("UpdateType", wsusupdate.UpdateType.ToString());
 
+
+            return properties;
+        }
+
+        public static object GetRelatedUpdateObject(IUpdate update, IUpdate relatedupdate)
+        {
+            Dictionary<string, object> properties = new Dictionary<string, object>();
+            properties.Add("updateid", update.Id.UpdateId.ToString());
+            properties.Add("relatedid", relatedupdate.Id.UpdateId.ToString());
+            return properties;
         }
     }
 }

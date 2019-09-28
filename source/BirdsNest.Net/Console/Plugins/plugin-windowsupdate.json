@@ -2,13 +2,13 @@
   "name": "windowsupdate",
   "displayname": "Windows Update",
   "icons": {
-    "WU_Bulletin": "fas fa-wrench"
+    "WU_Update":"fas fa-wrench"
   },
   "nodelabels": [
-    "WU_Bulletin"
+    "WU_Update"
   ],
   "edgelabels": [
-    "WU_SUPERSEDES"
+    "SUPERSEDES"
   ],
   "reports": {
   }

@@ -14,7 +14,7 @@ namespace WUScanner
         /// <summary>
         /// Mappings of superseded updates. Key Value pairs in format update_id,superseding_update_id
         /// </summary>
-        public List<KeyValuePair<string, string>> SupersededUpdates { get; private set; } = new List<KeyValuePair<string, string>>();
-        public List<KeyValuePair<string, string>> BundledUpdates { get; private set; } = new List<KeyValuePair<string, string>>();
+        public List<object> SupersededUpdates { get; private set; } = new List<object>();
+        public List<object> BundledUpdates { get; private set; } = new List<object>();
     }
 }

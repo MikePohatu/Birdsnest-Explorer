@@ -14,8 +14,8 @@ namespace WUScanner.Neo4j
             scanprops.Add("scanid", scanid);
             scanprops.Add("updates", updates);
 
-            string query = "UNWIND $updates as update" +
-                "MERGE (n:WU_Update { id: update.ID }) " +
+            string query = "UNWIND $updates as update " +
+                "MERGE (n:" + Types.WUUpdate + " { id: update.ID }) " +
                 "SET n.IsDeclined = update.IsDeclined " +
                 "SET n.IsSuperseded = update.IsSuperseded " +
                 "SET n.Title = update.Title " +
@@ -34,16 +34,19 @@ namespace WUScanner.Neo4j
             }
         }
 
-        public static int MergeSupersedence(List<KeyValuePair<string, string>> mappings, IDriver driver, string scanid)
+        public static int MergeSupersedence(IEnumerable<object> mappings, IDriver driver, string scanid)
         {
             Dictionary<string, object> scanprops = new Dictionary<string, object>();
             scanprops.Add("scanid", scanid);
-            scanprops.Add("updates", mappings);
+            scanprops.Add("mappings", mappings);
 
             //KeyValuePair<string, string> test;
 
-            string query = "UNWIND $mappings as mapping" +
-                "MERGE p=(new:WU_Update { id: mapping.Value })-[r:SUPERSEDES]->(old:WU_Update { id: mapping.Key } " +
+            string query = "UNWIND $mappings as mapping " +
+                "MATCH (new:" + Types.WUUpdate + " { id: mapping.relatedid }) " +
+                "MATCH (old:" + Types.WUUpdate + " { id: mapping.updateid }) " +
+                "WITH new, old, mapping " +
+                "MERGE p=(new)-[r:" + Types.Supersedes + "]->(old) " +
                 "SET r.lastscan = $scanid " +
                 "RETURN p ";
 

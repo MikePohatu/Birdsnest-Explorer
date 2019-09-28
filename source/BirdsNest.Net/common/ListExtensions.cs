@@ -16,14 +16,5 @@ namespace common
             list.RemoveRange(0, count);
             return newlist;
         }
-
-        public static List<object> ListPopObject<T>(List<T> list, int count)
-        {
-            if (count > list.Count) { count = list.Count; }
-            List<object> newlist = new List<object>();
-            newlist.AddRange(list.Take(count).Cast<object>());
-            list.RemoveRange(0, count);
-            return newlist;
-        }
     }
 }
