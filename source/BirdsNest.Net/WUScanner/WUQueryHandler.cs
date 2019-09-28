@@ -11,13 +11,29 @@ namespace WUScanner
     { 
         public static void PopulateUpdateResults(IUpdateServer server, UpdateResults resultobject)
         {
-            UpdateCollection declined = server.GetUpdates(ApprovedStates.Declined, DateTime.MinValue, DateTime.MaxValue, null, null);
-            UpdateCollection notapproved = server.GetUpdates(ApprovedStates.NotApproved, DateTime.MinValue, DateTime.MaxValue, null, null);
-            UpdateCollection approved = server.GetUpdates(ApprovedStates.LatestRevisionApproved, DateTime.MinValue, DateTime.MaxValue, null, null);
-            UpdateCollection staleapproval = server.GetUpdates(ApprovedStates.HasStaleUpdateApprovals, DateTime.MinValue, DateTime.MaxValue, null, null);
+            Console.WriteLine("Reading update information. This may take several minutes. Please wait...");
+            List<UpdateCollection> collections = new List<UpdateCollection>();
+            var approvedstates = Enum.GetValues(typeof(ApprovedStates));
 
-            foreach (UpdateCollection col in new List<UpdateCollection> { declined, notapproved, approved, staleapproval })
-            //foreach (UpdateCollection col in new List<UpdateCollection> { declined})
+            //This breaks the query up. If we use a straight GetUpdates() it is likely to timeout. This 
+            //allows the query to be filtered to give more control.
+            foreach (IUpdateClassification classification in server.GetUpdateClassifications())
+            {
+                //Drivers cause timeouts so we skip them
+                if (classification.Title == "Drivers") { continue; }
+                Console.Write("Processing " + classification.Title);
+                UpdateClassificationCollection classcol = new UpdateClassificationCollection();
+                classcol.Add(classification);
+                foreach (ApprovedStates state in approvedstates)
+                {
+                    //Console.WriteLine(state);
+                    Console.Write(".");
+                    collections.Add(server.GetUpdates(state, DateTime.MinValue, DateTime.MaxValue, null, classcol));
+                }
+                Console.WriteLine();
+            }
+            
+            foreach (UpdateCollection col in collections)
             {
                 foreach (IUpdate update in col)
                 {

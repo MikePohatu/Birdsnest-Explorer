@@ -124,7 +124,6 @@ namespace WUScanner
             try
             {
                 //The main bit 
-                Console.WriteLine("Reading update information. This may take several minutes. Please wait...");
                 UpdateResults updateinfo = new UpdateResults();
                 WUQueryHandler.PopulateUpdateResults(_updateserver, updateinfo);
                 Console.WriteLine("Found " + updateinfo.Updates.Count + " updates");
@@ -156,6 +155,8 @@ namespace WUScanner
                 }
                 if (updateinfo.SupersededUpdates.Count > 0) { Writer.MergeSupersedence(updateinfo.SupersededUpdates, driver, scanid); }
                 Console.WriteLine();
+
+                Writer.UpdateMetadata(driver);
             }
             catch (Exception e)
             {

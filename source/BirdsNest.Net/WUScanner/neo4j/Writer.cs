@@ -16,14 +16,18 @@ namespace WUScanner.Neo4j
 
             string query = "UNWIND $updates as update " +
                 "MERGE (n:" + Types.WUUpdate + " { id: update.ID }) " +
+                "SET n.name = update.Name " +
                 "SET n.IsDeclined = update.IsDeclined " +
                 "SET n.IsSuperseded = update.IsSuperseded " +
-                "SET n.Title = update.Title " +
                 "SET n.UpdateType = update.UpdateType " +
                 "SET n.Description = update.Description " +
                 "SET n.IsDeclined = update.IsDeclined " +
                 "SET n.AdditionalInformation = update.AdditionalInformationUrls " +
                 "SET n.CreationDate = update.CreationDate " +
+                "SET n.KB = update.KB " +
+                "SET n.Classification = update.Classification " +
+                "SET n.Products = update.Products " +
+                "SET n.layout = 'tree' " +
                 "SET n.lastscan = $scanid " +
                 "RETURN n ";
 
@@ -59,7 +63,7 @@ namespace WUScanner.Neo4j
 
         public static void UpdateMetadata(IDriver driver)
         {
-            List<string> types = new List<string>() { Types.ADObject, Types.Computer, Types.User, Types.Group };
+            List<string> types = new List<string>() { Types.WUUpdate };
 
             foreach (string type in types)
             {
