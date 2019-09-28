@@ -156,7 +156,9 @@ namespace WUScanner
                 if (updateinfo.SupersededUpdates.Count > 0) { Writer.MergeSupersedence(updateinfo.SupersededUpdates, driver, scanid); }
                 Console.WriteLine();
 
+                Console.WriteLine("Updating metadata");
                 Writer.UpdateMetadata(driver);
+                Console.WriteLine("Finished");
             }
             catch (Exception e)
             {
@@ -165,8 +167,9 @@ namespace WUScanner
             }
 
             if (batchmode == false) {
-                Console.WriteLine("Finished. Press Enter to continue");
-                Console.ReadLine(); }
+                Console.WriteLine("Press Enter to continue");
+                Console.ReadLine(); 
+            }
         }
 
         private static void ShowUsage()
