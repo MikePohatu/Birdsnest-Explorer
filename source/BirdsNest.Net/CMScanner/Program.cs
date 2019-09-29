@@ -29,20 +29,34 @@ namespace CMScanner
             IDriver driver = null;
 
             totaltimer.Start();
-            foreach (string arg in args)
+            try
             {
-                string[] param = arg.Split(new[] { ":" }, 2, StringSplitOptions.None);
-                switch (param[0].ToUpper())
+                foreach (string arg in args)
                 {
-                    case "/CONFIG":
-                        configfile = param[1];
-                        break;
-                    case "/BATCH":
-                        batchmode = true;
-                        break;
-                    default:
-                        break;
+                    string[] param = arg.Split(new[] { ":" }, 2, StringSplitOptions.None);
+                    switch (param[0].ToUpper())
+                    {
+                        case "/?":
+                            ShowUsage();
+                            Environment.Exit(0);
+                            break;
+                        case "/CONFIG":
+                            configfile = param[1];
+                            break;
+                        case "/BATCH":
+                            batchmode = true;
+                            break;
+                        default:
+                            break;
+                    }
                 }
+            }
+            catch
+            {
+                Console.WriteLine("There is a problem with arguments: " + string.Join(" ", args));
+                Console.WriteLine("");
+                ShowUsage();
+                Environment.Exit(1);
             }
 
             //load the config
@@ -110,6 +124,22 @@ namespace CMScanner
             count = Writer.MergePackageProgramDeployments(_connector.GetPackageProgramDeployments(), driver.Session());
             Console.WriteLine("Created " + count + " package program deployment relationships");
 
+            //devices
+            count = Writer.MergeDevices(_connector.GetAllDevices(), driver.Session());
+            Console.WriteLine("Created " + count + " devices");
+
+            //users
+            count = Writer.MergeUsers(_connector.GetAllUsers(), driver.Session());
+            Console.WriteLine("Created " + count + " users");
+
+            //collection members
+            count = Writer.MergeCollectionMembers(_connector.GetCollectionMemberships(), driver.Session());
+            Console.WriteLine("Created " + count + " collection memberships");
+
+            //ad mappings
+            count = Writer.ConnectCmToAdObjects(driver.Session());
+            Console.WriteLine("Created " + count + " AD to CM mappings");
+
             if (batchmode == true)
             {
                 Console.Write("Exiting.");
@@ -124,6 +154,13 @@ namespace CMScanner
                 Console.WriteLine("Press any key to exit");
                 Console.ReadLine();
             }
+        }
+
+        private static void ShowUsage()
+        {
+            Console.WriteLine();
+            Console.WriteLine("Usage: CMScanner.exe /config:<configfile> /batch");
+            Console.WriteLine("/batch makes scanner run in batch mode and does not wait before exit");
         }
     }
 }

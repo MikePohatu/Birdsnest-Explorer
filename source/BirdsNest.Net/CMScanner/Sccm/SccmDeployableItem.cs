@@ -1,4 +1,5 @@
 ﻿using Microsoft.ConfigurationManagement.ManagementProvider;
+using System.Collections.Generic;
 
 namespace CMScanner.Sccm
 {
@@ -14,6 +15,15 @@ namespace CMScanner.Sccm
         {
             this.ID = ResultObjectHandler.GetString(resource, "CI_ID");
             this.Name = ResultObjectHandler.GetString(resource, "LocalizedDisplayName");
+        }
+
+        public virtual object GetObject()
+        {
+            Dictionary<string, object> props = new Dictionary<string, object>();
+            props.Add("ID", this.ID);
+            props.Add("Name", this.Name);
+
+            return props;
         }
     }
 }

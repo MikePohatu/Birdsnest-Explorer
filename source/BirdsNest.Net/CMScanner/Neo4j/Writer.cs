@@ -225,6 +225,73 @@ namespace CMScanner.Neo4j
             return result.Summary.Counters.NodesCreated;
         }
 
+        public static int MergeDevices(List<SccmDevice> items, ISession session)
+        {
+            List<object> propertylist = new List<object>();
+
+            foreach (SccmDevice i in items)
+            {
+                propertylist.Add(i.GetObject());
+            }
+
+            string query = "UNWIND $propertylist AS prop " +
+                "MERGE (n:" + Types.CMDevice + "{id:prop.ID}) " +
+                "SET n:" + Types.CMConfigurationItem + " " +
+                "SET n.name = prop.Name " +
+                "SET n.sid = prop.SID " +
+                "SET n.dn = prop.DN " +
+                "RETURN n.name";
+
+            var result = session.WriteTransaction(tx => tx.Run(query, new { propertylist }));
+            return result.Summary.Counters.NodesCreated;
+        }
+
+        public static int MergeUsers(List<SccmUser> items, ISession session)
+        {
+            List<object> propertylist = new List<object>();
+
+            foreach (SccmUser i in items)
+            {
+                propertylist.Add(i.GetObject());
+            }
+
+            string query = "UNWIND $propertylist AS prop " +
+                "MERGE (n:" + Types.CMUser + "{id:prop.ID}) " +
+                "SET n:" + Types.CMConfigurationItem + " " +
+                "SET n.name = prop.Name " +
+                "SET n.sid = prop.SID " +
+                "SET n.dn = prop.DN " +
+                "RETURN n.name";
+
+            var result = session.WriteTransaction(tx => tx.Run(query, new { propertylist }));
+            return result.Summary.Counters.NodesCreated;
+        }
+
+        public static int MergeCollectionMembers(List<object> propertylist, ISession session)
+        {
+            string query = "UNWIND $propertylist AS prop " +
+                "MATCH (n:" + Types.CMConfigurationItem + " {id: prop.resourceid}) " +
+                "MATCH (c:" + Types.CMCollection + " {id: prop.collectionid}) " +
+                "MERGE p=(n)-[r:" + Types.CMMemberOf + "]->(c) " +
+                //"SET r.scanid=$scanid " +
+                "RETURN p";
+
+            var result = session.WriteTransaction(tx => tx.Run(query, new { propertylist }));
+            return result.Summary.Counters.RelationshipsCreated;
+        }
+
+        public static int ConnectCmToAdObjects(ISession session)
+        {
+            string query = "MATCH (dev:" + Types.CMDevice + ") " +
+                "MATCH (addev:" + Types.Computer + " {id: dev.sid }) " +
+                "MERGE p=(dev)-[r:" + Types.CMObjectFor + "]->(addev) " +
+                //"SET r.scanid=$scanid " +
+                "RETURN p";
+
+            var result = session.WriteTransaction(tx => tx.Run(query));
+            return result.Summary.Counters.RelationshipsCreated;
+        }
+
         private static void SetScanId(IBirdsNestNode node, string scanid)
         {
             object lastscancurrent;

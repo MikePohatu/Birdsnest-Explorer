@@ -47,6 +47,8 @@ namespace common
 
         //CMScanner nodes 
         public static string CMCollection { get { return "CM_Collection"; } }
+        public static string CMDevice { get { return "CM_Device"; } }
+        public static string CMUser { get { return "CM_User"; } }
         public static string CMConfigurationItem { get { return "CM_ConfigurationItem"; } }
         public static string CMApplication { get { return "CM_Application"; } }
         public static string CMPackage { get { return "CM_Package"; } }
@@ -54,6 +56,9 @@ namespace common
         public static string CMTaskSequence { get { return "CM_TaskSequence"; } }
         public static string CMSoftwareUpdateGroup { get { return "CM_SoftwareUpdateGroup"; } }
         public static string CMClientSettings { get { return "CM_ClientSettings"; } }
+
+        public static string CMMemberOf { get { return "CM_MEMBER_OF"; } }
+        public static string CMObjectFor { get { return "CM_OBJECT_FOR"; } }
 
         //WUScanner
         public static string WUUpdate { get { return "WU_Update"; } }

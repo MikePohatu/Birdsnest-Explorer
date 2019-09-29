@@ -1,4 +1,5 @@
 ﻿using System.Linq;
+using System.Text;
 using System.Collections.Generic;
 using Microsoft.ConfigurationManagement.ManagementProvider;
 using Microsoft.ConfigurationManagement.ManagementProvider.WqlQueryEngine;
@@ -233,6 +234,48 @@ namespace CMScanner.Sccm
             return null;
         }
 
+        public List<SccmDevice> GetAllDevices()
+        {
+            List<SccmDevice> devices = new List<SccmDevice>();
+            try
+            {
+                string query = "select * from SMS_R_System";
+                // Run query
+                using (IResultObject results = this._connection.QueryProcessor.ExecuteQuery(query))
+                {
+                    // Enumerate through the collection of objects returned by the query.
+                    foreach (IResultObject resource in results)
+                    {
+                        devices.Add(SccmDevice.GetSccmDevice(resource));
+                    }
+                }
+            }
+            catch
+            { }
+            return devices;
+        }
+
+        public List<SccmUser> GetAllUsers()
+        {
+            List<SccmUser> users = new List<SccmUser>();
+            try
+            {
+                string query = "select * from SMS_R_User";
+                // Run query
+                using (IResultObject results = this._connection.QueryProcessor.ExecuteQuery(query))
+                {
+                    // Enumerate through the collection of objects returned by the query.
+                    foreach (IResultObject resource in results)
+                    {
+                        users.Add(SccmUser.GetSccmUser(resource));
+                    }
+                }
+            }
+            catch
+            { }
+            return users;
+        }
+
         public SccmUser GetUser(string name)
         {
             try
@@ -261,6 +304,35 @@ namespace CMScanner.Sccm
             { }
             return null;
         }
+
+
+        public List<object> GetCollectionMemberships()
+        {
+            List<object> retlist = new List<object>();
+            try
+            {
+                string query = "select * from SMS_FullCollectionMembership";
+                // Run query
+                using (IResultObject results = this._connection.QueryProcessor.ExecuteQuery(query))
+                {
+                    // Enumerate through the collection of objects returned by the query.
+                    foreach (IResultObject resource in results)
+                    {
+                        string colids = resource["CollectionID"].StringValue;
+                        string resourceid = resource["ResourceID"].StringValue;
+
+                        foreach (string collectionid in colids.Split(','))
+                        {
+                            retlist.Add(new { resourceid, collectionid });
+                        }
+                    }
+                }
+            }
+            catch
+            { }
+            return retlist;
+        }
+
 
         public List<SccmPackage> GetPackages()
         {
