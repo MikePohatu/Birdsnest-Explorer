@@ -2,17 +2,24 @@
   "name": "sccm",
   "displayname": "SCCM",
   "icons": {
+    "CM_Device": "fas fa-desktop",
+    "CM_User": "fas fa-user",
     "CM_Collection": "fas fa-layer-group",
     "CM_Application": "fas fa-cogs"
   },
   "nodelabels": [
+    "CM_Device",
+    "CM_User",
     "CM_Collection",
     "CM_Application"
   ],
   "edgelabels": [
     "CM_LIMITING_COLLECTION",
     "CM_INCLUDES_COLLECTION",
-    "CM_EXCLUDES_COLLECTION"
+    "CM_EXCLUDES_COLLECTION",
+    "CM_OBJECT_FOR",
+    "CM_MEMBER_OF",
+    "DEPLOYED_TO"
   ],
   "reports": {
 

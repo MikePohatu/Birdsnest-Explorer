@@ -7,17 +7,7 @@ namespace CMScanner.Neo4j
 {
     public static class Writer
     {
-        public static void SetGroupScope(ISession session)
-        {
-            string query = "MATCH (o) " +
-                "WHERE o:" + Types.User + " OR o:" + Types.Computer + " " +
-                "MATCH (o)-[:AD_MEMBER_OF *]->(g:" + Types.Group + ") " +
-                "WITH collect(DISTINCT o) as nodes, g " +
-                "SET g.scope = size(nodes) " +
-                "RETURN g";
-
-            session.WriteTransaction(tx => tx.Run(query));
-        }
+        public static string ScanID { get; set; }
 
         public static int MergeCollections(List<SccmCollection> collections, ISession session)
         {
@@ -39,9 +29,10 @@ namespace CMScanner.Neo4j
                 "SET n.comment = prop.Comment " +
                 "SET n.name = prop.Name " +
                 "SET n.type = prop.CollectionType " +
+                "SET n.lastscan=$scanid " +
                 "RETURN n.name";
 
-            var result = session.WriteTransaction(tx => tx.Run(query, new { propertylist = propertylist }));
+            var result = session.WriteTransaction(tx => tx.Run(query, new { propertylist = propertylist, scanid = Writer.ScanID }));
             return result.Summary.Counters.NodesCreated;
         }
 
@@ -62,9 +53,10 @@ namespace CMScanner.Neo4j
                 "MERGE (n:" + Types.CMApplication + "{id:prop.ID}) " +
                 "SET n:" + Types.CMConfigurationItem + " " +
                 "SET n.name = prop.Name " +
+                "SET n.lastscan=$scanid " +
                 "RETURN n.name";
 
-            var result = session.WriteTransaction(tx => tx.Run(query, new { propertylist = propertylist }));
+            var result = session.WriteTransaction(tx => tx.Run(query, new { propertylist = propertylist, scanid = Writer.ScanID }));
             return result.Summary.Counters.NodesCreated;
         }
 
@@ -85,9 +77,10 @@ namespace CMScanner.Neo4j
                 "MERGE (n:" + Types.CMPackage + "{id:prop.ID}) " +
                 "SET n:" + Types.CMConfigurationItem + " " +
                 "SET n.name = prop.Name " +
+                "SET n.lastscan=$scanid " +
                 "RETURN n.name";
 
-            var result = session.WriteTransaction(tx => tx.Run(query, new { propertylist = propertylist }));
+            var result = session.WriteTransaction(tx => tx.Run(query, new { propertylist = propertylist, scanid = Writer.ScanID }));
             return result.Summary.Counters.NodesCreated;
         }
 
@@ -114,11 +107,13 @@ namespace CMScanner.Neo4j
                 "SET n.packageid = prop.PackageID " +
                 "SET n.dependantid = prop.DependantID " +
                 "SET n.commandline = prop.CommandLine " +
-                "MERGE (parent:"+ Types.CMPackage +" {id:prop.PackageID}) " +
-                "MERGE (parent)-[:CONTAINS]->(n) " +
+                "SET n.lastscan=$scanid " +
+                "MERGE (parent:" + Types.CMPackage +" {id:prop.PackageID}) " +
+                "MERGE (parent)-[r:CONTAINS]->(n) " +
+                "SET r.lastscan=$scanid " +
                 "RETURN n.name";
 
-            var result = session.WriteTransaction(tx => tx.Run(query, new { propertylist = propertylist }));
+            var result = session.WriteTransaction(tx => tx.Run(query, new { propertylist = propertylist, scanid = Writer.ScanID }));
             return result.Summary.Counters.NodesCreated;
         }
 
@@ -139,9 +134,10 @@ namespace CMScanner.Neo4j
                 "MERGE (n:" + Types.CMTaskSequence + "{id:prop.ID}) " +
                 "SET n:" + Types.CMConfigurationItem + " " +
                 "SET n.name = prop.Name " +
+                "SET n.lastscan=$scanid " +
                 "RETURN n.name";
 
-            var result = session.WriteTransaction(tx => tx.Run(query, new { propertylist = propertylist }));
+            var result = session.WriteTransaction(tx => tx.Run(query, new { propertylist = propertylist, scanid = Writer.ScanID }));
             return result.Summary.Counters.NodesCreated;
         }
 
@@ -162,9 +158,10 @@ namespace CMScanner.Neo4j
                 "MERGE (n:" + Types.CMSoftwareUpdateGroup + "{id:prop.ID}) " +
                 "SET n:" + Types.CMConfigurationItem + " " +
                 "SET n.name = prop.Name " +
+                "SET n.lastscan=$scanid " +
                 "RETURN n.name";
 
-            var result = session.WriteTransaction(tx => tx.Run(query, new { propertylist = propertylist }));
+            var result = session.WriteTransaction(tx => tx.Run(query, new { propertylist = propertylist, scanid = Writer.ScanID }));
             return result.Summary.Counters.NodesCreated;
         }
 
@@ -185,9 +182,10 @@ namespace CMScanner.Neo4j
                 "MATCH (n:" + Types.CMConfigurationItem + "{id:dep.itemid}) " +
                 "MATCH (c:" + Types.CMCollection + "{id:dep.collectionid}) " +
                 "MERGE (n)-[r:DEPLOYED_TO]->(c) " +
+                "SET r.lastscan=$scanid " +
                 "RETURN r";
 
-            var result = session.WriteTransaction(tx => tx.Run(query, new { deploymentlist = deploymentlist }));
+            var result = session.WriteTransaction(tx => tx.Run(query, new { deploymentlist = deploymentlist, scanid = Writer.ScanID }));
             return result.Summary.Counters.RelationshipsCreated;
         }
 
@@ -208,9 +206,10 @@ namespace CMScanner.Neo4j
                 "MATCH (n:" + Types.CMConfigurationItem + "{id:dep.itemid}) " +
                 "MATCH (c:" + Types.CMCollection + "{id:dep.collectionid}) " +
                 "MERGE (n)-[r:DEPLOYED_TO]->(c) " +
+                "SET r.lastscan=$scanid " +
                 "RETURN r";
 
-            var result = session.WriteTransaction(tx => tx.Run(query, new { deploymentlist = deploymentlist }));
+            var result = session.WriteTransaction(tx => tx.Run(query, new { deploymentlist = deploymentlist, scanid = Writer.ScanID }));
             return result.Summary.Counters.RelationshipsCreated;
         }
 
@@ -218,10 +217,11 @@ namespace CMScanner.Neo4j
         {
             string query = "MATCH (n:" + Types.CMCollection + ")" +
                 "MATCH (l:" + Types.CMCollection + " {id:n.limitingcollection}) " +
-                "MERGE (l)-[:LIMITING_COLLECTION_FOR]->(n) " +
+                "MERGE (l)-[r:" +Types.CMLimitingCollection+ "]->(n) " +
+                "SET r.lastscan=$scanid " +
                 "RETURN n.name";
 
-            var result = session.WriteTransaction(tx => tx.Run(query));
+            var result = session.WriteTransaction(tx => tx.Run(query, new { scanid = Writer.ScanID}));
             return result.Summary.Counters.NodesCreated;
         }
 
@@ -240,9 +240,10 @@ namespace CMScanner.Neo4j
                 "SET n.name = prop.Name " +
                 "SET n.sid = prop.SID " +
                 "SET n.dn = prop.DN " +
+                "SET n.lastscan=$scanid " +
                 "RETURN n.name";
 
-            var result = session.WriteTransaction(tx => tx.Run(query, new { propertylist }));
+            var result = session.WriteTransaction(tx => tx.Run(query, new { propertylist, scanid = Writer.ScanID }));
             return result.Summary.Counters.NodesCreated;
         }
 
@@ -261,9 +262,10 @@ namespace CMScanner.Neo4j
                 "SET n.name = prop.Name " +
                 "SET n.sid = prop.SID " +
                 "SET n.dn = prop.DN " +
+                "SET n.lastscan=$scanid " +
                 "RETURN n.name";
 
-            var result = session.WriteTransaction(tx => tx.Run(query, new { propertylist }));
+            var result = session.WriteTransaction(tx => tx.Run(query, new { propertylist, scanid = Writer.ScanID }));
             return result.Summary.Counters.NodesCreated;
         }
 
@@ -273,31 +275,65 @@ namespace CMScanner.Neo4j
                 "MATCH (n:" + Types.CMConfigurationItem + " {id: prop.resourceid}) " +
                 "MATCH (c:" + Types.CMCollection + " {id: prop.collectionid}) " +
                 "MERGE p=(n)-[r:" + Types.CMMemberOf + "]->(c) " +
-                //"SET r.scanid=$scanid " +
+                "SET r.lastscan=$scanid " +
                 "RETURN p";
 
-            var result = session.WriteTransaction(tx => tx.Run(query, new { propertylist }));
+            var result = session.WriteTransaction(tx => tx.Run(query, new { propertylist, scanid = Writer.ScanID }));
             return result.Summary.Counters.RelationshipsCreated;
         }
 
         public static int ConnectCmToAdObjects(ISession session)
         {
+            int count = 0;
+            //devices first
             string query = "MATCH (dev:" + Types.CMDevice + ") " +
                 "MATCH (addev:" + Types.Computer + " {id: dev.sid }) " +
                 "MERGE p=(dev)-[r:" + Types.CMObjectFor + "]->(addev) " +
-                //"SET r.scanid=$scanid " +
+                "SET r.lastscan=$scanid " +
                 "RETURN p";
 
-            var result = session.WriteTransaction(tx => tx.Run(query));
-            return result.Summary.Counters.RelationshipsCreated;
+            var result = session.WriteTransaction(tx => tx.Run(query, new { scanid = Writer.ScanID }));
+            count = result.Summary.Counters.RelationshipsCreated;
+
+            //now users
+            query = "MATCH (user:" + Types.CMUser + ") " +
+                "MATCH (aduser:" + Types.User + " {id: user.sid }) " +
+                "MERGE p=(user)-[r:" + Types.CMObjectFor + "]->(aduser) " +
+                "SET r.lastscan=$scanid " +
+                "RETURN p";
+
+            result = session.WriteTransaction(tx => tx.Run(query, new {scanid = Writer.ScanID }));
+            return count + result.Summary.Counters.RelationshipsCreated;
         }
 
-        private static void SetScanId(IBirdsNestNode node, string scanid)
+        public static int CleanupCmObjects(ISession session)
         {
-            object lastscancurrent;
-            if (node.Properties.TryGetValue("scanid", out lastscancurrent))
-            { node.Properties["scanid"] = scanid; }
-            else { node.Properties.Add("scanid", scanid); }
+            int count = 0;
+            //nodes first
+            string query = "MATCH (n:" + Types.CMConfigurationItem + ") " +
+                "WHERE n.lastscan<>$scanid " +
+                "DETACH DELETE n " +
+                "RETURN n";
+
+            var result = session.WriteTransaction(tx => tx.Run(query, new { scanid = Writer.ScanID }));
+            count = result.Summary.Counters.NodesDeleted;
+
+            //any remaining edges
+            query = "MATCH ()-[r:" + Types.CMObjectFor + "]->() " +
+                "WHERE r.lastscan<>$scanid " +
+                "DELETE r " +
+                "RETURN r";
+
+            result = session.WriteTransaction(tx => tx.Run(query, new { scanid = Writer.ScanID }));
+            count = count + result.Summary.Counters.RelationshipsDeleted;
+
+            query = "MATCH ()-[r:" + Types.CMLimitingCollection + "]->() " +
+                "WHERE r.lastscan<>$scanid " +
+                "DELETE r " +
+                "RETURN r";
+
+            result = session.WriteTransaction(tx => tx.Run(query, new { scanid = Writer.ScanID }));
+            return count + result.Summary.Counters.RelationshipsDeleted;
         }
     }
 }

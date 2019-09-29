@@ -116,7 +116,7 @@ namespace CMScanner.Sccm
             try
             {
                 // This query selects all relationships of the specified app ID
-                string query = "select * from SMS_DeploymentSummary WHERE FeatureType='"+ SccmItemType.Application + "'";
+                string query = "select * from SMS_DeploymentSummary WHERE FeatureType=" + (int)SccmItemType.Application;
 
                 // Run query
                 using (IResultObject results = this._connection.QueryProcessor.ExecuteQuery(query))
@@ -205,35 +205,6 @@ namespace CMScanner.Sccm
             return items;
         }
 
-        public SccmDevice GetDevice(string name)
-        {
-            try
-            {
-                string query = "select * from SMS_FullCollectionMembership WHERE Name='" +  name + "'";
-                SccmDevice cmresource = new SccmDevice();
-                int count = 0;
-                // Run query
-                using (IResultObject results = this._connection.QueryProcessor.ExecuteQuery(query))
-                {
-                    // Enumerate through the collection of objects returned by the query.
-                    foreach (IResultObject resource in results)
-                    {
-                        if (count == 0)
-                        {
-                            cmresource.ID = ResultObjectHandler.GetString(resource,"ResourceID");
-                            cmresource.Name = ResultObjectHandler.GetString(resource, "Name");
-                            count++;
-                        }
-                        cmresource.CollectionIDs.Add(resource["CollectionID"].StringValue);
-                    }
-                }
-                if (count != 0) { return cmresource; }
-            }
-            catch
-            { }
-            return null;
-        }
-
         public List<SccmDevice> GetAllDevices()
         {
             List<SccmDevice> devices = new List<SccmDevice>();
@@ -275,36 +246,6 @@ namespace CMScanner.Sccm
             { }
             return users;
         }
-
-        public SccmUser GetUser(string name)
-        {
-            try
-            {
-                string query = "select * from SMS_FullCollectionMembership WHERE SMSID LIKE '" + name.Replace(@"\",@"\\") + "'";
-                SccmUser cmresource = new SccmUser();
-                int count = 0;
-                // Run query
-                using (IResultObject results = this._connection.QueryProcessor.ExecuteQuery(query))
-                {
-                    // Enumerate through the collection of objects returned by the query.
-                    foreach (IResultObject resource in results)
-                    {
-                        if (count == 0)
-                        {
-                            cmresource.ID = resource["ResourceID"].StringValue;
-                            cmresource.Name = resource["SMSID"].StringValue;
-                            count++;
-                        }
-                        cmresource.CollectionIDs.Add(resource["CollectionID"].StringValue);
-                    }
-                }
-                if (count != 0) { return cmresource; }
-            }
-            catch
-            { }
-            return null;
-        }
-
 
         public List<object> GetCollectionMemberships()
         {

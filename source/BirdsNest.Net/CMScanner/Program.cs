@@ -24,7 +24,7 @@ namespace CMScanner
             string neoconfigfile = _appdir + @"\neoconfig.json";
             string configfile = _appdir + @"\cmconfig.json";
             bool batchmode = false;
-            string scanid = ShortGuid.NewGuid().ToString();
+            Writer.ScanID = ShortGuid.NewGuid().ToString();
 
             IDriver driver = null;
 
@@ -139,6 +139,10 @@ namespace CMScanner
             //ad mappings
             count = Writer.ConnectCmToAdObjects(driver.Session());
             Console.WriteLine("Created " + count + " AD to CM mappings");
+
+            //cleanup
+            count = Writer.CleanupCmObjects(driver.Session());
+            Console.WriteLine("Cleaned up " + count + " items");
 
             if (batchmode == true)
             {
