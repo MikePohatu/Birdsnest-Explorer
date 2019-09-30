@@ -5,13 +5,16 @@
     "CM_Device": "fas fa-desktop",
     "CM_User": "fas fa-user",
     "CM_Collection": "fas fa-layer-group",
-    "CM_Application": "fas fa-cogs"
+    "CM_Application": "fas fa-cogs",
+    "CM_ConfigurationItem": "far fa-object-upgroup"
   },
   "nodelabels": [
     "CM_Device",
     "CM_User",
     "CM_Collection",
-    "CM_Application"
+    "CM_Application",
+    "CM_ConfigurationItem"
+
   ],
   "edgelabels": [
     "CM_LIMITING_COLLECTION",

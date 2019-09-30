@@ -65,7 +65,7 @@ namespace CMScanner
                 using (Configuration config = Configuration.LoadConfiguration(configfile))
                 {
                     if (string.IsNullOrEmpty(config.Username)) { _connector.Connect(config.SiteServer); }
-                    else { _connector.Connect(config.Username,config.Password,config.Domain, config.SiteServer); }
+                    else { _connector.Connect(config.Username, config.Password, config.Domain, config.SiteServer); }
                 }
             }
             catch (Exception e)
@@ -125,24 +125,56 @@ namespace CMScanner
             Console.WriteLine("Created " + count + " package program deployment relationships");
 
             //devices
-            count = Writer.MergeDevices(_connector.GetAllDevices(), driver.Session());
+            Console.Write("Creating devices");
+            List<SccmDevice> devs = _connector.GetAllDevices();
+            count = 0;
+            while (devs.Count > 1000)
+            {
+                Console.Write(".");
+                count = count + Writer.MergeDevices(ListExtensions.ListPop(devs, 1000), driver.Session());
+            }
+            Console.WriteLine(".");
+            count = count + Writer.MergeDevices(devs, driver.Session());
             Console.WriteLine("Created " + count + " devices");
 
             //users
-            count = Writer.MergeUsers(_connector.GetAllUsers(), driver.Session());
+            Console.Write("Creating users");
+            List<SccmUser> users = _connector.GetAllUsers();
+            count = 0;
+            while (users.Count > 1000)
+            {
+                Console.Write(".");
+                count = count + Writer.MergeUsers(ListExtensions.ListPop(users, 1000), driver.Session());
+            }
+            Console.WriteLine(".");
+            count = count + Writer.MergeUsers(users, driver.Session());
             Console.WriteLine("Created " + count + " users");
-
-            //collection members
-            count = Writer.MergeCollectionMembers(_connector.GetCollectionMemberships(), driver.Session());
-            Console.WriteLine("Created " + count + " collection memberships");
 
             //ad mappings
             count = Writer.ConnectCmToAdObjects(driver.Session());
             Console.WriteLine("Created " + count + " AD to CM mappings");
 
+            //collection members
+            Console.Write("Creating collection memberships");
+            List<object> memberships = _connector.GetCollectionMemberships();
+            count = 0;
+            while (memberships.Count > 1000)
+            {
+                Console.Write(".");
+                count = count + Writer.MergeCollectionMembers(ListExtensions.ListPop(memberships, 1000), driver.Session());
+
+            }
+            Console.WriteLine(".");
+            count = count + Writer.MergeCollectionMembers(memberships, driver.Session());
+            Console.WriteLine("Created " + count + " collection memberships");
+
             //cleanup
             count = Writer.CleanupCmObjects(driver.Session());
             Console.WriteLine("Cleaned up " + count + " items");
+
+            //Metadata
+            Writer.UpdateMetadata(driver);
+            Console.WriteLine("Updated metadata");
 
             if (batchmode == true)
             {

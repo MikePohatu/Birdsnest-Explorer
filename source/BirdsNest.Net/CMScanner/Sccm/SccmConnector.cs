@@ -252,7 +252,7 @@ namespace CMScanner.Sccm
             List<object> retlist = new List<object>();
             try
             {
-                string query = "select * from SMS_FullCollectionMembership";
+                string query = "select CollectionID,ResourceID from SMS_FullCollectionMembership";
                 // Run query
                 using (IResultObject results = this._connection.QueryProcessor.ExecuteQuery(query))
                 {

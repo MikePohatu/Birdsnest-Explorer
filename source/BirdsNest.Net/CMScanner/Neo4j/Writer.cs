@@ -223,7 +223,7 @@ namespace CMScanner.Neo4j
         {
             string query = "MATCH (n:" + Types.CMCollection + ")" +
                 "MATCH (l:" + Types.CMCollection + " {id:n.limitingcollection}) " +
-                "MERGE (l)-[r:" +Types.CMLimitingCollection+ "]->(n) " +
+                "MERGE (n)-[r:" +Types.CMLimitingCollection+ "]->(l) " +
                 "SET r.lastscan=$scanid " +
                 "RETURN n.name";
 
@@ -342,6 +342,48 @@ namespace CMScanner.Neo4j
 
             result = session.WriteTransaction(tx => tx.Run(query, new { scanid = Writer.ScanID }));
             return count + result.Summary.Counters.RelationshipsDeleted;
+        }
+
+        public static void UpdateMetadata(IDriver driver)
+        {
+            List<string> types = new List<string>() { Types.CMDevice, Types.CMUser, Types.CMConfigurationItem, Types.CMCollection, Types.CMApplication,
+            Types.CMPackage, Types.CMPackageProgram, Types.CMSoftwareUpdateGroup, Types.CMTaskSequence};
+
+            foreach (string type in types)
+            {
+                string query =
+                "MATCH (n:" + type + ") " +
+                "WITH DISTINCT keys(n) as props " +
+                "UNWIND props as p " +
+                "WITH DISTINCT p as disprops " +
+                "WITH collect(disprops) as allprops " +
+                "MERGE(i: _Metadata { name: 'NodeProperties'}) " +
+                "SET i." + type + " = allprops " +
+                "RETURN i";
+                using (ISession session = driver.Session())
+                {
+                    session.WriteTransaction(tx => tx.Run(query));
+                }
+            }
+
+            types = new List<string>() { Types.CMHasObject, Types.CMLimitingCollection, Types.CMMemberOf};
+
+            foreach (string type in types)
+            {
+                string query =
+                "MATCH ()-[r:" + type + "]->() " +
+                "WITH DISTINCT keys(r) as props " +
+                "UNWIND props as p " +
+                "WITH DISTINCT p as disprops " +
+                "WITH collect(disprops) as allprops " +
+                "MERGE(i: _Metadata { name: 'EdgeProperties'}) " +
+                "SET i." + type + " = allprops " +
+                "RETURN i";
+                using (ISession session = driver.Session())
+                {
+                    session.WriteTransaction(tx => tx.Run(query));
+                }
+            }
         }
     }
 }
