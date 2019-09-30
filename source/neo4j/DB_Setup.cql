@@ -17,6 +17,11 @@ CREATE INDEX ON :AD_Object(dn);
 CREATE INDEX ON :AD_Object(scannerid);
 CREATE INDEX ON :AD_User(dn);
 CREATE INDEX ON :AD_Computer(dn);
+CREATE INDEX ON :CM_Collection(id);
+CREATE INDEX ON :CM_Device(id);
+CREATE INDEX ON :CM_User(id);
+CREATE INDEX ON :WU_Update(KB);
+CREATE INDEX ON :WU_Update(id);
 
 commit
 
