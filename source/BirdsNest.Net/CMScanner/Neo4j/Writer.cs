@@ -181,7 +181,7 @@ namespace CMScanner.Neo4j
             string query = "UNWIND $deploymentlist AS dep " +
                 "MATCH (n:" + Types.CMConfigurationItem + "{id:dep.itemid}) " +
                 "MATCH (c:" + Types.CMCollection + "{id:dep.collectionid}) " +
-                "MERGE (n)-[r:DEPLOYED_TO]->(c) " +
+                "MERGE (n)-[r:"+Types.CMDeployedTo + "]->(c) " +
                 "SET r.lastscan=$scanid " +
                 "RETURN r";
 

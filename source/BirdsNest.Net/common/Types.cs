@@ -60,7 +60,7 @@ namespace common
         public static string CMMemberOf { get { return "CM_MEMBER_OF"; } }
         public static string CMObjectFor { get { return "CM_OBJECT_FOR"; } }
         public static string CMLimitingCollection { get { return "LIMITING_COLLECTION_FOR"; } }
-
+        public static string CMDeployedTo { get { return "CM_DEPLOYED_TO"; } }
         //WUScanner
         public static string WUUpdate { get { return "WU_Update"; } }
         public static string Supersedes { get { return "SUPERSEDES"; } }
