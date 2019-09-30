@@ -20,8 +20,10 @@ CREATE INDEX ON :AD_Computer(dn);
 CREATE INDEX ON :CM_Collection(id);
 CREATE INDEX ON :CM_Device(id);
 CREATE INDEX ON :CM_User(id);
+CREATE INDEX ON :CM_ConfigurationItem(id);
 CREATE INDEX ON :WU_Update(KB);
 CREATE INDEX ON :WU_Update(id);
+
 
 commit
 
