@@ -58,9 +58,9 @@ namespace common
         public static string CMClientSettings { get { return "CM_ClientSettings"; } }
 
         public static string CMMemberOf { get { return "CM_MEMBER_OF"; } }
-        public static string CMObjectFor { get { return "CM_OBJECT_FOR"; } }
+        public static string CMHasObject { get { return "CM_HAS_OBJECT"; } }
         public static string CMLimitingCollection { get { return "LIMITING_COLLECTION_FOR"; } }
-        public static string CMDeployedTo { get { return "CM_DEPLOYED_TO"; } }
+        public static string CMHasDeployment { get { return "CM_HAS_DEPLOYMENT"; } }
         //WUScanner
         public static string WUUpdate { get { return "WU_Update"; } }
         public static string Supersedes { get { return "SUPERSEDES"; } }

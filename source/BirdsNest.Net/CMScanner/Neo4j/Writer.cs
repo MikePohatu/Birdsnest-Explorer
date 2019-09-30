@@ -30,6 +30,7 @@ namespace CMScanner.Neo4j
                 "SET n.name = prop.Name " +
                 "SET n.type = prop.CollectionType " +
                 "SET n.lastscan=$scanid " +
+                "SET n.layout='mesh' " +
                 "RETURN n.name";
 
             var result = session.WriteTransaction(tx => tx.Run(query, new { propertylist = propertylist, scanid = Writer.ScanID }));
@@ -54,6 +55,7 @@ namespace CMScanner.Neo4j
                 "SET n:" + Types.CMConfigurationItem + " " +
                 "SET n.name = prop.Name " +
                 "SET n.lastscan=$scanid " +
+                "SET n.layout='mesh' " +
                 "RETURN n.name";
 
             var result = session.WriteTransaction(tx => tx.Run(query, new { propertylist = propertylist, scanid = Writer.ScanID }));
@@ -78,6 +80,7 @@ namespace CMScanner.Neo4j
                 "SET n:" + Types.CMConfigurationItem + " " +
                 "SET n.name = prop.Name " +
                 "SET n.lastscan=$scanid " +
+                "SET n.layout='mesh' " +
                 "RETURN n.name";
 
             var result = session.WriteTransaction(tx => tx.Run(query, new { propertylist = propertylist, scanid = Writer.ScanID }));
@@ -107,6 +110,7 @@ namespace CMScanner.Neo4j
                 "SET n.packageid = prop.PackageID " +
                 "SET n.dependantid = prop.DependantID " +
                 "SET n.commandline = prop.CommandLine " +
+                "SET n.layout='mesh' " +
                 "SET n.lastscan=$scanid " +
                 "MERGE (parent:" + Types.CMPackage +" {id:prop.PackageID}) " +
                 "MERGE (parent)-[r:CONTAINS]->(n) " +
@@ -134,6 +138,7 @@ namespace CMScanner.Neo4j
                 "MERGE (n:" + Types.CMTaskSequence + "{id:prop.ID}) " +
                 "SET n:" + Types.CMConfigurationItem + " " +
                 "SET n.name = prop.Name " +
+                "SET n.layout='mesh' " +
                 "SET n.lastscan=$scanid " +
                 "RETURN n.name";
 
@@ -158,6 +163,7 @@ namespace CMScanner.Neo4j
                 "MERGE (n:" + Types.CMSoftwareUpdateGroup + "{id:prop.ID}) " +
                 "SET n:" + Types.CMConfigurationItem + " " +
                 "SET n.name = prop.Name " +
+                "SET n.layout='mesh' " +
                 "SET n.lastscan=$scanid " +
                 "RETURN n.name";
 
@@ -181,7 +187,7 @@ namespace CMScanner.Neo4j
             string query = "UNWIND $deploymentlist AS dep " +
                 "MATCH (n:" + Types.CMConfigurationItem + "{id:dep.itemid}) " +
                 "MATCH (c:" + Types.CMCollection + "{id:dep.collectionid}) " +
-                "MERGE (n)-[r:"+Types.CMDeployedTo + "]->(c) " +
+                "MERGE (c)-[r:"+Types.CMHasDeployment + "]->(n) " +
                 "SET r.lastscan=$scanid " +
                 "RETURN r";
 
@@ -241,6 +247,7 @@ namespace CMScanner.Neo4j
                 "SET n.sid = prop.SID " +
                 "SET n.dn = prop.DN " +
                 "SET n.lastscan=$scanid " +
+                "SET n.layout='mesh' " +
                 "RETURN n.name";
 
             var result = session.WriteTransaction(tx => tx.Run(query, new { propertylist, scanid = Writer.ScanID }));
@@ -263,6 +270,7 @@ namespace CMScanner.Neo4j
                 "SET n.sid = prop.SID " +
                 "SET n.dn = prop.DN " +
                 "SET n.lastscan=$scanid " +
+                "SET n.layout='mesh' " +
                 "RETURN n.name";
 
             var result = session.WriteTransaction(tx => tx.Run(query, new { propertylist, scanid = Writer.ScanID }));
@@ -288,7 +296,7 @@ namespace CMScanner.Neo4j
             //devices first
             string query = "MATCH (dev:" + Types.CMDevice + ") " +
                 "MATCH (addev:" + Types.Computer + " {id: dev.sid }) " +
-                "MERGE p=(dev)-[r:" + Types.CMObjectFor + "]->(addev) " +
+                "MERGE p=(addev)-[r:" + Types.CMHasObject + "]->(dev) " +
                 "SET r.lastscan=$scanid " +
                 "RETURN p";
 
@@ -298,7 +306,7 @@ namespace CMScanner.Neo4j
             //now users
             query = "MATCH (user:" + Types.CMUser + ") " +
                 "MATCH (aduser:" + Types.User + " {id: user.sid }) " +
-                "MERGE p=(user)-[r:" + Types.CMObjectFor + "]->(aduser) " +
+                "MERGE p=(aduser)-[r:" + Types.CMHasObject + "]->(user) " +
                 "SET r.lastscan=$scanid " +
                 "RETURN p";
 
@@ -319,7 +327,7 @@ namespace CMScanner.Neo4j
             count = result.Summary.Counters.NodesDeleted;
 
             //any remaining edges
-            query = "MATCH ()-[r:" + Types.CMObjectFor + "]->() " +
+            query = "MATCH ()-[r:" + Types.CMHasObject + "]->() " +
                 "WHERE r.lastscan<>$scanid " +
                 "DELETE r " +
                 "RETURN r";
