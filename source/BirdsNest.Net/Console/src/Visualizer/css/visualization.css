@@ -12,7 +12,7 @@
 
 .selected .nodecircle {
     stroke-width: 5px;
-    fill: lightyellow;
+    fill: #ffff99;
 }
 
 .nodes text {

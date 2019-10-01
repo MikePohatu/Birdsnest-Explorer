@@ -13,7 +13,7 @@
             @foreach (BirdsNestNode node in Model.Nodes)
             {
                 string labels = string.Join(", ", node.Labels);
-                <b>@node.Name</b> <i>@labels</i> <a href="javascript:vis.getNode(@node.DbId);">(+)</a><br />
+                <span title="@labels">@node.Name </span><a href="javascript:vis.getNode(@node.DbId);">(+)</a><br />
             }
         </div>
     </div>

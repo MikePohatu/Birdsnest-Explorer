@@ -92,24 +92,38 @@ namespace CMScanner
             }
 
             //collections
-            int count = Writer.MergeCollections(_connector.GetCollections(), driver.Session());
+            int count = 0;
+            Console.Write("Creating collection nodes");
+            List<SccmCollection> collections = _connector.GetCollections();
+            count = MergeList(collections, Writer.MergeCollections, driver);
             Console.WriteLine("Created " + count + " collection nodes");
-            Writer.ConnectLimitingCollections(driver.Session());
+
+            Console.WriteLine("Creating limiting collection connections");
+            count = Writer.ConnectLimitingCollections(driver.Session());
+            Console.WriteLine("Created " + count + " limiting collection connections");
 
             //applications
-            count = Writer.MergeApplications(_connector.GetApplications(), driver.Session());
+            Console.Write("Creaing application nodes");
+            List<SccmApplication> applications = _connector.GetApplications();
+            count = MergeList(applications, Writer.MergeApplications, driver);
             Console.WriteLine("Created " + count + " application nodes");
 
             //packages
-            count = Writer.MergePackages(_connector.GetPackages(), driver.Session());
+            Console.Write("Creating package nodes");
+            List<SccmPackage> packages = _connector.GetPackages();
+            count = MergeList(packages, Writer.MergePackages, driver);
             Console.WriteLine("Created " + count + " package nodes");
 
             //package programs
-            count = Writer.MergePackagePrograms(_connector.GetPackagePrograms(), driver.Session());
+            Console.Write("Creating  package program nodes");
+            List<SccmPackageProgram> packageprograms = _connector.GetPackagePrograms();
+            count = MergeList(packageprograms, Writer.MergePackagePrograms, driver);
             Console.WriteLine("Created " + count + " package program nodes");
 
             //task sequences
-            count = Writer.MergeTaskSequences(_connector.GetTaskSequences(), driver.Session());
+            Console.Write("Creating task sequence nodes");
+            List<SccmTaskSequence> tasksequences = _connector.GetTaskSequences();
+            count = MergeList(tasksequences, Writer.MergeTaskSequences, driver);
             Console.WriteLine("Created " + count + " task sequence nodes");
 
             //SUGs
@@ -117,37 +131,27 @@ namespace CMScanner
             //Console.WriteLine("Created " + count + " package nodes");
 
             //deployments - applications
-            count = Writer.MergeApplicationDeployments(_connector.GetApplicationDeployments(), driver.Session());
+            Console.Write("Creating application deployment relationships");
+            List<SMS_DeploymentSummary> summarys = _connector.GetApplicationDeployments();
+            count = MergeList(summarys, Writer.MergeApplicationDeployments, driver);
             Console.WriteLine("Created " + count + " application deployment relationships");
 
             //deployments - Package programs
-            count = Writer.MergePackageProgramDeployments(_connector.GetPackageProgramDeployments(), driver.Session());
+            Console.Write("Creating package program deployment relationships");
+            summarys = _connector.GetPackageProgramDeployments();
+            count = MergeList(summarys, Writer.MergePackageProgramDeployments, driver);
             Console.WriteLine("Created " + count + " package program deployment relationships");
 
             //devices
             Console.Write("Creating devices");
             List<SccmDevice> devs = _connector.GetAllDevices();
-            count = 0;
-            while (devs.Count > 1000)
-            {
-                Console.Write(".");
-                count = count + Writer.MergeDevices(ListExtensions.ListPop(devs, 1000), driver.Session());
-            }
-            Console.WriteLine(".");
-            count = count + Writer.MergeDevices(devs, driver.Session());
+            count = MergeList(devs, Writer.MergeDevices, driver);
             Console.WriteLine("Created " + count + " devices");
 
             //users
             Console.Write("Creating users");
             List<SccmUser> users = _connector.GetAllUsers();
-            count = 0;
-            while (users.Count > 1000)
-            {
-                Console.Write(".");
-                count = count + Writer.MergeUsers(ListExtensions.ListPop(users, 1000), driver.Session());
-            }
-            Console.WriteLine(".");
-            count = count + Writer.MergeUsers(users, driver.Session());
+            count = MergeList(users, Writer.MergeUsers, driver);
             Console.WriteLine("Created " + count + " users");
 
             //ad mappings
@@ -157,15 +161,7 @@ namespace CMScanner
             //collection members
             Console.Write("Creating collection memberships");
             List<object> memberships = _connector.GetCollectionMemberships();
-            count = 0;
-            while (memberships.Count > 1000)
-            {
-                Console.Write(".");
-                count = count + Writer.MergeCollectionMembers(ListExtensions.ListPop(memberships, 1000), driver.Session());
-
-            }
-            Console.WriteLine(".");
-            count = count + Writer.MergeCollectionMembers(memberships, driver.Session());
+            count = MergeList(memberships, Writer.MergeCollectionMembers, driver);
             Console.WriteLine("Created " + count + " collection memberships");
 
             //cleanup
@@ -187,6 +183,7 @@ namespace CMScanner
             }
             else
             {
+                Console.WriteLine();
                 Console.WriteLine("Press any key to exit");
                 Console.ReadLine();
             }
@@ -197,6 +194,20 @@ namespace CMScanner
             Console.WriteLine();
             Console.WriteLine("Usage: CMScanner.exe /config:<configfile> /batch");
             Console.WriteLine("/batch makes scanner run in batch mode and does not wait before exit");
+        }
+
+        private delegate int MergeDelegate<T>(List<T> itemlist, ISession session);
+        private static int MergeList<T>(List<T> itemlist, MergeDelegate<T> method, IDriver driver)
+        {
+            int count = 0;
+            while (itemlist.Count > 1000)
+            {
+                count = count + method(ListExtensions.ListPop(itemlist, 1000), driver.Session());
+                Console.Write(".");
+            }
+            count = count + method(itemlist, driver.Session());
+            Console.WriteLine(".");
+            return count;
         }
     }
 }
