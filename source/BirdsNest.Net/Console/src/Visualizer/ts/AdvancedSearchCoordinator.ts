@@ -57,7 +57,7 @@ export default class AdvancedSearchCoordinator {
 	EdgeDetailsModal: FoundationSites.Reveal;
 	SearchAndOrDetailsModal: FoundationSites.Reveal;
 	SearchAlertModal: FoundationSites.Reveal;
-	SearchMessageModal: FoundationSites.Reveal;
+	ShareModal: FoundationSites.Reveal;
 
 	constructor(pathelementid: string, conditionelementid: string) {
 		//console.log("AdvancedSearchCoordinator started: " + elementid);
@@ -79,7 +79,7 @@ export default class AdvancedSearchCoordinator {
 		this.EdgeDetailsModal = new Foundation.Reveal($("#searchEdgeDetails"), modalOptions);
 		this.SearchAndOrDetailsModal = new Foundation.Reveal($("#searchAndOrDetails"), modalOptions);
 		this.SearchAlertModal = new Foundation.Reveal($("#searchAlert"), modalOptions);
-		this.SearchMessageModal = new Foundation.Reveal($("#searchMessage"), modalOptions);
+        this.ShareModal = new Foundation.Reveal($("#shareReveal"), modalOptions);
 
 		this.BindAdvAutoComplete();
 		this.BindSimpleAutoComplete();
@@ -315,6 +315,7 @@ export default class AdvancedSearchCoordinator {
 	Share() {
 		//console.log("Share started");
 		//console.log(this);
+        var me = this;
 		if (this.SearchData.Nodes === null || this.SearchData.Nodes.length === 0) {
 			alert("The search is empty. There is nothing to share.");
 		}
@@ -322,20 +323,23 @@ export default class AdvancedSearchCoordinator {
 			if (this.ConditionRoot !== null && IsConditionValid(this.ConditionRoot.Item) === false) {
 				var conf = confirm("You have conditions with incomplete data. This search is not valid. Do you with to continue?");
 				if (!conf) { return;}
-			}
-			var urlBase = [location.protocol, '//', location.host, location.pathname].join('');
-			var encodedData = webcrap.misc.encodeUrlB64(JSON.stringify(this.SearchData));
-			//console.log(urlBase);
-			//console.log(encodedData);
-			var url = urlBase + "?sharedsearch=" + encodedData;
-			this.ShowMessage("Copy and paste this url:","<a href='" + url + "' >" + url + "</a>");
-		}
-	}
+            }
 
-	ShowMessage(message: string, link?: string) {
-		document.getElementById('message').innerHTML = message;
-		document.getElementById('messageLink').innerHTML = link;
-		this.SearchMessageModal.open();
+            var urlBase = [location.protocol, '//', location.host, location.pathname].join('');
+            var encodedData = webcrap.misc.encodeUrlB64(JSON.stringify(this.SearchData));
+            //console.log(urlBase);
+            //console.log(encodedData);
+            var url = urlBase + "?sharedsearch=" + encodedData;
+            document.getElementById('messageLink').innerHTML = "<a href='" + url + "' >" + url + "</a>";
+
+            var postdata = JSON.stringify(this.SearchData);
+            webcrap.data.apiPostJson("/visualizer/AdvancedSearchCypher", postdata, function (data) {
+                //console.log(data);
+                document.getElementById("cypherquery").innerHTML = data;
+            });
+
+            this.ShareModal.open();
+		}
 	}
 
 	UpdateNodes(animate: boolean) {

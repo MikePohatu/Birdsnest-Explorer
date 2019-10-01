@@ -34,6 +34,10 @@
 	min-width: 250px;
 }
 
+#shareReveal > div {
+    margin: 0.5rem 0.5rem 1.3rem 0.5rem;
+}
+
 .searchnode, .searchedge {
     stroke: #474747;
     color: #474747;

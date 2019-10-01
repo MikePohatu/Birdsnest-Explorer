@@ -80,7 +80,13 @@ namespace Console.Controllers
             return PartialView("SearchResultsDetail", results);
         }
 
-		public IActionResult SimpleSearch(string searchterm)
+        [HttpPost]
+        public object AdvancedSearchCypher([FromBody] neo4jProxy.AdvancedSearch.Search search)
+        {
+            return search.ToSharableSearchString();
+        }
+
+        public IActionResult SimpleSearch(string searchterm)
 		{
 			ResultSet results = this._service.SimpleSearch(searchterm);
 			return PartialView("SearchResultsDetail", results);

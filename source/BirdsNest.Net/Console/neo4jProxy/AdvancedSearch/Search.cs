@@ -22,7 +22,14 @@ namespace Console.neo4jProxy.AdvancedSearch
 
         public SearchTokens Tokens { get; private set; } = new SearchTokens();
 
-        public string ToSearchString()
+        public string ToSharableSearchString()
+        {
+            StringBuilder builder = this.BuildBaseSearchString();
+            builder.Append(" RETURN p");
+            return builder.ToString();
+        }
+
+        private StringBuilder BuildBaseSearchString()
         {
             StringBuilder builder = new StringBuilder();
 
@@ -50,13 +57,18 @@ namespace Console.neo4jProxy.AdvancedSearch
                 string cond = this.Condition?.ToSearchString();
                 if (string.IsNullOrWhiteSpace(cond) == false) { cond = " WHERE " + cond; }
                 builder.Append(cond);
-                builder.Append(" UNWIND nodes(p) as bnest_nodes RETURN DISTINCT bnest_nodes ORDER BY LOWER(bnest_nodes.name)");
             }
             catch (Exception e)
             {
-                return "There was an error building the query string: " + e.Message;
+                throw new InvalidOperationException( "There was an error building the query string: " + e.Message);
             }
+            return builder;
+        }
 
+        public string ToSearchString()
+        {
+            StringBuilder builder = this.BuildBaseSearchString();
+            builder.Append(" UNWIND nodes(p) as bnest_nodes RETURN DISTINCT bnest_nodes ORDER BY LOWER(bnest_nodes.name)");
             return builder.ToString();
         }
 
