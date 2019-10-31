@@ -954,7 +954,8 @@ export default class AdvancedSearchCoordinator {
 	}
 
 	UpdateConditions () {
-		//console.log("UpdateConditions start:" + this.ConditionElementID);
+        //console.log("UpdateConditions start:" + this.ConditionElementID);
+        //console.log(this.ConditionRoot);
 		//console.log(this);
 		//console.log(this.SearchData.Edges);
 
@@ -1472,17 +1473,17 @@ export default class AdvancedSearchCoordinator {
 	}
 
 	DeleteSearchCondition () {
-		//console.log("deleteSearchCondition started: " + elementid);
+		//console.log("deleteSearchCondition started");
 		//searchStringConditionDetails
 
 		//datum is the d3 tree datum. Use datum.data to get the ViewTreeNode datum
 		//var datum = this.GetItemDatum(elementid) as d3.HierarchyNode<ViewTreeNode<ICondition>>;
 		var treenode = this.EditingCondition;
 
-		//console.log(datum);
+        //console.log(treenode);
 		//console.log("RootID: " + this.ConditionRoot.ID);
 		if (this.ConditionRoot.ID === treenode.ID) {
-			//delete the conditions and readd an AND condition 
+			//delete the conditions and re-add an AND condition 
 			this.ResetRootTreeNode();
 			//d3.selectAll(".searchcondition").remove();
 		}
@@ -1559,8 +1560,10 @@ export default class AdvancedSearchCoordinator {
 
 	onSearchAndOrClicked (callingelement) {
 		//console.log("onSearchAndOrClicked started");
-		this.ClearAlert();
-		var datum = this.UpdateItemDatum("searchAndOrDetails", callingelement) as d3.HierarchyNode<ViewTreeNode<ICondition>>;
+        this.ClearAlert();
+
+        var datum = this.GetElementDatum(callingelement) as d3.HierarchyNode<ViewTreeNode<ICondition>>;
+        this.EditingCondition = datum.data;
 		//console.log(datum);
 		var cond: AndOrCondition = datum.data.Item as AndOrCondition;
 
