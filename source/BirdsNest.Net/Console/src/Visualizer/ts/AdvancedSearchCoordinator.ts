@@ -1251,6 +1251,7 @@ export default class AdvancedSearchCoordinator {
 		if (condition.Type === "STRING") {
 			(document.getElementById("searchCaseOptions") as HTMLDivElement).hidden = false;
 			(document.getElementById("searchCase") as HTMLInputElement).checked = (condition as StringCondition).CaseSensitive;
+			(document.getElementById("searchNot") as HTMLInputElement).checked = (condition as StringCondition).Not;
 		}
 		else {
 			(document.getElementById("searchCaseOptions") as HTMLDivElement).hidden = true;
@@ -1518,17 +1519,20 @@ export default class AdvancedSearchCoordinator {
 				(condition as StringCondition).CaseSensitive = (document.getElementById("searchCase") as HTMLInputElement).checked;
 			}
 
+			condition.Not = (document.getElementById("searchNot") as HTMLInputElement).checked;
 			condition.Name = newname;
 			condition.Property = newprop;
 			condition.Value = newval;
 			condition.Operator = newop;
+
+			//console.log(condition);
+
 			if (this.NewCondition !== null) {
 				this.ApplyNewCondition();
 			}
 			this.ConditionDetailsModal.close();
 			this.UpdateConditions();
 		}
-
 	}
 
 	ChangeSelectedValue (selectEl, value, callback) {

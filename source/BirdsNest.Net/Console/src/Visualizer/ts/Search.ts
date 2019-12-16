@@ -181,14 +181,16 @@ class OrCondition extends AndOrCondition {
 }
 
 var ConditionOperators = {
-    "MATH": ["=", ">", "<", "!="],
-    "STRING": ["=", "StartsWith", "EndsWith", "Contains"]
+    "MATH": ["=", ">", "<"],
+    "STRING": ["=", "StartsWith", "EndsWith", "Contains"],
+    "BOOLEAN": ["="]
 }
 
 class ConditionBase implements ICondition {
     Type: string = "";
     Name: string = "";
     Property: string = "";
+    Not: boolean = false;
     Value: any;
     Operator: string;
 }
@@ -202,9 +204,22 @@ class MathCondition extends ConditionBase {
         this.Name = "";
         this.Property = "";
         this.Operator = "=";
+        this.Not = false;
     }
 }
 
+class BooleanCondition extends ConditionBase {
+    Value: boolean = true;
+
+    constructor() {
+        super();
+        this.Type = "BOOLEAN";
+        this.Name = "";
+        this.Property = "";
+        this.Operator = "=";
+        this.Not = false;
+    }
+}
 class StringCondition extends ConditionBase {
     Value: string = "";
     CaseSensitive: boolean = true;
@@ -215,6 +230,7 @@ class StringCondition extends ConditionBase {
         this.Name = "";
         this.Property = "";
         this.Operator = "=";
+        this.Not = false;
     }
 }
 
@@ -237,6 +253,10 @@ function GetCondition(type: string): ICondition {
             cond = new MathCondition();
             break;
         }
+        case 'BOOLEAN': {
+            cond = new BooleanCondition();
+            break;
+        }
         default: {
             break;
         }
@@ -247,6 +267,7 @@ function GetCondition(type: string): ICondition {
 export {
     StringCondition,
     MathCondition,
+    BooleanCondition,
     ConditionBase,
     ICondition,
     OrCondition,

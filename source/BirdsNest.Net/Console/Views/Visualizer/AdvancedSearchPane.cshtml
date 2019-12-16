@@ -214,6 +214,19 @@
                     <select id="searchOperator" class="input-group-field"></select>
                 </div>
                 <input id="searchVal" type="search" autocomplete="off" placeholder="*" class="small-8 input-group-field">
+
+            </div>
+
+            <div id="searchNotOptions" class="grid-x grid-margin-x align-top" title="Invert search (not equal, not startswith)">
+                <div class="cell shrink">NOT:</div>
+                <div class="cell auto">
+                    <div class="switch tiny" style="display: inline;">
+                        <input class="switch-input" id="searchNot" type="checkbox" name="searchNot">
+                        <label class="switch-paddle" for="searchNot">
+                            <span class="show-for-sr">Case Sensitive</span>
+                        </label>
+                    </div>
+                </div>
             </div>
 
             <div id="searchCaseOptions" class="grid-x grid-margin-x align-top" title="*Case sensitive search is faster">
@@ -227,7 +240,7 @@
                     </div>
                 </div>
             </div>
-            
+
         </div>
 
         <button class="close-button" data-close aria-label="Close condition dialog" type="button">
@@ -241,7 +254,7 @@
 				<i class="fas fa-exclamation-triangle" style="margin: 0 0 1rem 1rem; color:orange;"></i>
 			</div>
 		</div>
-</fieldset>
+    </fieldset>
 </div>
 
 <div id="searchAndOrDetails" class="reveal">

@@ -12,6 +12,7 @@ namespace Console.neo4jProxy.AdvancedSearch.Conditions
         private string _operator = "=";
         private string _regexprefix = string.Empty;
         private string _regexsuffix = string.Empty;
+        
 
         [JsonProperty("Type")]
         public string Type { get { return "STRING"; } }
@@ -21,6 +22,18 @@ namespace Console.neo4jProxy.AdvancedSearch.Conditions
 
         [JsonProperty("Property")]
         public string Property { get; set; }
+
+        private string _not = string.Empty;  //this will equal " NOT " in a negation situation
+        [JsonProperty("Not")]
+        public bool Not { 
+            get { return this._not == string.Empty ? false : true; }
+            set { 
+                if (value == true) 
+                { this._not = "NOT "; }
+                else 
+                { this._not = string.Empty; } 
+            } 
+        }
 
         [JsonProperty("Value")]
         public string Value { get; set; }
@@ -41,16 +54,16 @@ namespace Console.neo4jProxy.AdvancedSearch.Conditions
         public string ToSearchString()
         {
             string s = string.Empty;
-            if (this.CaseSensitive == true) { s = this.Name + "." + this.Property + " " + this.Operator + " '" + this.Value + "'"; }
-            else { s = this.Name + "." + this.Property + " =~ (?i)" + this._regexprefix + Regex.Escape(this.Value) + this._regexsuffix; }
+            if (this.CaseSensitive == true) { s = this._not + this.Name + "." + this.Property + " " + this.Operator + " '" + this.Value + "'"; }
+            else { s = this._not + this.Name + "." + this.Property + " =~ (?i)" + this._regexprefix + Regex.Escape(this.Value) + this._regexsuffix; }
             return s;
         }
 
         public string ToTokenizedSearchString()
         {
             string s = string.Empty;
-            if (this.CaseSensitive == true) { s = this.TokenizedName + "." + this.Property + " " + this.Operator + " " + this.TokenizedValue; }
-            else { s = this.TokenizedName + "." + this.Property + " =~ " + this.TokenizedValue; }
+            if (this.CaseSensitive == true) { s = this._not + this.TokenizedName + "." + this.Property + " " + this.Operator + " " + this.TokenizedValue; }
+            else { s = this._not + this.TokenizedName + "." + this.Property + " =~ " + this.TokenizedValue; }
             return s;
         }
 
