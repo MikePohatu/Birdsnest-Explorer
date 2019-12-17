@@ -16,12 +16,6 @@
     "FS_BLOCKED_INHERITANCE",
     "FS_HOSTS"
   ],
-  "propertytypes": {
-    "FS_Folder": {
-      "inheritancedisabled": "boolean",
-      "blocked": "boolean"
-    }
-  },
   "reports": {
     "fs-orphanedperms": {
       "displayname": "FS Orphaned Permissions",
@@ -36,7 +30,15 @@
       "propertyfilters": [ "path" ]
     }
   },
-  "propertydetails": {
+  "edgepropertydetails": {
+    "GIVES_ACCESS_TO": {
+      "properties": [
+        { "name": "fsid" },
+        { "name": "right" }
+      ]
+    }
+  },
+  "nodepropertydetails": {
     "FS_Datastore": {
       "properties": [
         { "name": "comment" },

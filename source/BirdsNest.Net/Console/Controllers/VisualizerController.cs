@@ -73,9 +73,9 @@ namespace Console.Controllers
             return this._plugingmanager.SubTypeProperties;
         }
 
-        public object PropertyDetails()
+        public object NodePropertyDetails()
         {
-            return this._plugingmanager.PropertyDetails;
+            return this._plugingmanager.NodePropertyDetails;
         }
 
         [HttpPost]

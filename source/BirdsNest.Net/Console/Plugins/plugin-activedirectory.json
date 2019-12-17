@@ -41,65 +41,65 @@
       "propertyfilters": [ "name", "dn", "description", "scope" ]
     }
   },
-  "propertydetails": {
-    "AD_Computer": {
-      "properties": [
-        { "name": "description" },
-        { "name": "dn" },
-        { "name": "domainid" },
-        { "name": "id" },
-        { "name": "info" },
-        { "name": "lastscan" },
-        { "name": "name" },
-        { "name": "operatingsystem" },
-        { "name": "operatingsystemversion" },
-        { "name": "path" },
-        { "name": "primarygroupid" },
-        { "name": "samaccountname" },
-        { "name": "state" }
-      ],
-      "default": "samaccountname"
-    },
-    "AD_Group": {
-      "properties": [
-        { "name": "description" },
-        { "name": "dn" },
-        { "name": "domainid" },
-        { "name": "grouptype" },
-        { "name": "id" },
-        { "name": "info" },
-        { "name": "lastscan" },
-        { "name": "member_count" },
-        { "name": "name" },
-        { "name": "path" },
-        { "name": "rid" },
-        { "name": "samaccountname" }
-      ],
-      "default": "samaccountname"
-    },
-    "AD_Object": {
-      "properties": [
-        { "name": "description" },
-        { "name": "displayname" },
-        { "name": "dn" },
-        { "name": "domainid" },
-        { "name": "grouptype" },
-        { "name": "id" },
-        { "name": "info" },
-        { "name": "lastscan" },
-        { "name": "member_count" },
-        { "name": "name" },
-        { "name": "operatingsystem" },
-        { "name": "operatingsystemversion" },
-        { "name": "path" },
-        { "name": "primarygroupid" },
-        { "name": "rid" },
-        { "name": "samaccountname" },
-        { "name": "state" },
-        { "name": "userprincipalname" }
-      ],
-      "default": "samaccountname"
-    },
+  "nodepropertydetails": {
+      "AD_Computer": {
+        "properties": [
+          { "name": "description" },
+          { "name": "dn" },
+          { "name": "domainid" },
+          { "name": "id" },
+          { "name": "info" },
+          { "name": "lastscan" },
+          { "name": "name" },
+          { "name": "operatingsystem" },
+          { "name": "operatingsystemversion" },
+          { "name": "path" },
+          { "name": "primarygroupid" },
+          { "name": "samaccountname" },
+          { "name": "state" }
+        ],
+        "default": "samaccountname"
+      },
+      "AD_Group": {
+        "properties": [
+          { "name": "description" },
+          { "name": "dn" },
+          { "name": "domainid" },
+          { "name": "grouptype" },
+          { "name": "id" },
+          { "name": "info" },
+          { "name": "lastscan" },
+          { "name": "member_count" },
+          { "name": "name" },
+          { "name": "path" },
+          { "name": "rid" },
+          { "name": "samaccountname" }
+        ],
+        "default": "samaccountname"
+      },
+      "AD_Object": {
+        "properties": [
+          { "name": "description" },
+          { "name": "displayname" },
+          { "name": "dn" },
+          { "name": "domainid" },
+          { "name": "grouptype" },
+          { "name": "id" },
+          { "name": "info" },
+          { "name": "lastscan" },
+          { "name": "member_count" },
+          { "name": "name" },
+          { "name": "operatingsystem" },
+          { "name": "operatingsystemversion" },
+          { "name": "path" },
+          { "name": "primarygroupid" },
+          { "name": "rid" },
+          { "name": "samaccountname" },
+          { "name": "state" },
+          { "name": "userprincipalname" }
+        ],
+        "default": "samaccountname"
+      },
     "AD_User": {
       "properties": [
         { "name": "description" },

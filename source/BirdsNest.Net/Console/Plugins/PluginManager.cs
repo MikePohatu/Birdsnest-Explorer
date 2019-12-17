@@ -20,7 +20,10 @@ namespace Console.Plugins
         public List<string> EdgeLabels { get; private set; } = new List<string>();
         public Dictionary<string, string> SubTypeProperties { get; private set; } = new Dictionary<string, string>();
         public Dictionary<string, string> Icons { get; private set; } = new Dictionary<string, string>();
-        public Dictionary<string, PropertyListing> PropertyDetails { get; private set; } = new Dictionary<string, PropertyListing>();
+        public Dictionary<string, PropertyListing> NodePropertyDetails { get; private set; } = new Dictionary<string, PropertyListing>();
+        public SortedDictionary<string, List<string>> NodeProperties { get; private set; } = new SortedDictionary<string, List<string>>();
+        public Dictionary<string, PropertyListing> EdgePropertyDetails { get; private set; } = new Dictionary<string, PropertyListing>();
+        public SortedDictionary<string, List<string>> EdgeProperties { get; private set; } = new SortedDictionary<string, List<string>>();
 
         public PluginManager(ILogger logger)
         {
@@ -34,9 +37,12 @@ namespace Console.Plugins
             Dictionary<string, Plugin> plugins = new Dictionary<string, Plugin>();
             List<string> nodelabels = new List<string>();
             List<string> edgelabels = new List<string>();
-            Dictionary<string, string> icons = new Dictionary<string, string>();
-            Dictionary<string, string> subtypes = new Dictionary<string, string>();
-            Dictionary<string, PropertyListing> propdetails = new Dictionary<string, PropertyListing>();
+            var icons = new Dictionary<string, string>();
+            var subtypes = new Dictionary<string, string>();
+            var nodepropdetails = new Dictionary<string, PropertyListing>();
+            var nodeprops = new SortedDictionary<string, List<string>>();
+            var edgepropdetails = new Dictionary<string, PropertyListing>();
+            var edgeprops = new SortedDictionary<string, List<string>>();
 
             try
             {
@@ -78,13 +84,36 @@ namespace Console.Plugins
                         }
                     }
 
-                    if (plug.PropertyDetails != null)
+                    if (plug.NodePropertyDetails != null)
                     {
-                        foreach (string key in plug.PropertyDetails.Keys)
+                        foreach (string key in plug.NodePropertyDetails.Keys)
                         {
-                            if (!propdetails.TryAdd(key, plug.PropertyDetails[key]))
+                            var propdeets = plug.NodePropertyDetails[key];
+                            if (!nodepropdetails.TryAdd(key, propdeets))
                             {
                                 this._logger.LogError("Error loading property types for label: " + key);
+                            }
+
+                            if (!nodeprops.TryAdd(key, propdeets.Properties.Select(x => x.Name).OrderBy(name => name).ToList()))
+                            {
+                                this._logger.LogError("Error loading properties for label: " + key);
+                            }
+                        }
+                    }
+
+                    if (plug.EdgePropertyDetails != null)
+                    {
+                        foreach (string key in plug.EdgePropertyDetails.Keys)
+                        {
+                            var propdeets = plug.EdgePropertyDetails[key];
+                            if (!edgepropdetails.TryAdd(key, propdeets))
+                            {
+                                this._logger.LogError("Error loading property types for label: " + key);
+                            }
+
+                            if (!edgeprops.TryAdd(key, propdeets.Properties.Select(x => x.Name).OrderBy(name => name).ToList()))
+                            {
+                                this._logger.LogError("Error loading properties for label: " + key);
                             }
                         }
                     }
@@ -117,7 +146,10 @@ namespace Console.Plugins
             NodeLabels = nodelabels;
             EdgeLabels = edgelabels;
             SubTypeProperties = subtypes;
-            PropertyDetails = propdetails;
+            NodePropertyDetails = nodepropdetails;
+            NodeProperties = nodeprops;
+            EdgePropertyDetails = edgepropdetails;
+            EdgeProperties = edgeprops;
             return true;
         }
     }

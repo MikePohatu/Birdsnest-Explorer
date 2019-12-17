@@ -64,7 +64,8 @@ namespace Console.Controllers
         [HttpGet("node/properties")]
         public SortedDictionary<string, List<string>> GetNodeProperties()
         {
-            return this._service.GetNodeProperties();
+            //return this._service.GetNodeProperties();
+            return this._pluginmanager.NodeProperties;
         }
 
         // GET: api/graph/node/values
@@ -119,7 +120,8 @@ namespace Console.Controllers
         [HttpGet("edge/properties")]
         public SortedDictionary<string, List<string>> GetEdgeProperties()
         {
-            return this._service.GetEdgeProperties();
+            return this._pluginmanager.EdgeProperties;
+            //return this._service.GetEdgeProperties();
         }
 
         // GET: api/graph/edge/values
