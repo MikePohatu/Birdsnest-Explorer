@@ -60,12 +60,19 @@ namespace Console.Controllers
             return this._pluginmanager.NodeLabels;
         }
 
-        // GET: api/graph/node/properties
-        [HttpGet("node/properties")]
-        public SortedDictionary<string, List<string>> GetNodeProperties()
+        //// GET: api/graph/node/properties
+        //[HttpGet("node/properties")]
+        //public SortedDictionary<string, List<string>> GetNodeProperties()
+        //{
+        //    //return this._service.GetNodeProperties();
+        //    return this._pluginmanager.NodeProperties;
+        //}
+
+        // GET: api/graph/edge/datatypes
+        [HttpGet("node/datatypes")]
+        public object GetNodeDataTypes()
         {
-            //return this._service.GetNodeProperties();
-            return this._pluginmanager.NodeProperties;
+            return this._pluginmanager.NodeDataTypes;
         }
 
         // GET: api/graph/node/values
@@ -116,11 +123,19 @@ namespace Console.Controllers
             return this._pluginmanager.EdgeLabels;
         }
 
-        // GET: api/graph/edge/properties
-        [HttpGet("edge/properties")]
-        public SortedDictionary<string, List<string>> GetEdgeProperties()
+        //// GET: api/graph/edge/properties
+        //[HttpGet("edge/properties")]
+        //public SortedDictionary<string, List<string>> GetEdgeProperties()
+        //{
+        //    return this._pluginmanager.EdgeProperties;
+        //    //return this._service.GetEdgeProperties();
+        //}
+
+        // GET: api/graph/edge/datatypes
+        [HttpGet("edge/datatypes")]
+        public object GetEdgeDataTypes()
         {
-            return this._pluginmanager.EdgeProperties;
+            return this._pluginmanager.EdgeDataTypes;
             //return this._service.GetEdgeProperties();
         }
 

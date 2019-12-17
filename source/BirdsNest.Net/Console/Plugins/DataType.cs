@@ -9,6 +9,20 @@ namespace Console.Plugins
 {
     public class DataType
     {
+        private List<string> _propertynames;
+        [JsonProperty("propertynames")]
+        public List<string> PropertyNames 
+        { 
+            get 
+            { 
+                if (this._propertynames == null)
+                {
+                    this._propertynames = this.Properties.Select(x => x.Name).OrderBy(name => name).ToList();
+                }
+                return this._propertynames; 
+            } 
+        }
+
         [JsonProperty("properties")]
         public List<Property> Properties { get; private set; } = new List<Property>();
 

@@ -20,9 +20,9 @@ namespace Console.Plugins
         public List<string> EdgeLabels { get; private set; } = new List<string>();
         public Dictionary<string, string> SubTypeProperties { get; private set; } = new Dictionary<string, string>();
         public Dictionary<string, string> Icons { get; private set; } = new Dictionary<string, string>();
-        public Dictionary<string, DataType> NodePropertyDetails { get; private set; } = new Dictionary<string, DataType>();
+        public Dictionary<string, DataType> NodeDataTypes { get; private set; } = new Dictionary<string, DataType>();
         public SortedDictionary<string, List<string>> NodeProperties { get; private set; } = new SortedDictionary<string, List<string>>();
-        public Dictionary<string, DataType> EdgePropertyDetails { get; private set; } = new Dictionary<string, DataType>();
+        public Dictionary<string, DataType> EdgeDataTypes { get; private set; } = new Dictionary<string, DataType>();
         public SortedDictionary<string, List<string>> EdgeProperties { get; private set; } = new SortedDictionary<string, List<string>>();
 
         public PluginManager(ILogger logger)
@@ -39,9 +39,9 @@ namespace Console.Plugins
             List<string> edgelabels = new List<string>();
             var icons = new Dictionary<string, string>();
             var subtypes = new Dictionary<string, string>();
-            var nodepropdetails = new Dictionary<string, DataType>();
+            var nodedatatypes = new Dictionary<string, DataType>();
             var nodeprops = new SortedDictionary<string, List<string>>();
-            var edgepropdetails = new Dictionary<string, DataType>();
+            var edgedatatypes = new Dictionary<string, DataType>();
             var edgeprops = new SortedDictionary<string, List<string>>();
 
             try
@@ -69,7 +69,7 @@ namespace Console.Plugins
 
                             if (propdeets != null)
                             {
-                                if (!nodepropdetails.TryAdd(key, propdeets))
+                                if (!nodedatatypes.TryAdd(key, propdeets))
                                 {
                                     this._logger.LogError("Error loading property types for label: " + key);
                                 }
@@ -103,7 +103,7 @@ namespace Console.Plugins
                             var propdeets = plug.EdgeDataTypes[key];
                             if (propdeets != null)
                             {
-                                if (!edgepropdetails.TryAdd(key, propdeets))
+                                if (!edgedatatypes.TryAdd(key, propdeets))
                                 {
                                     this._logger.LogError("Error loading property types for label: " + key);
                                 }
@@ -152,9 +152,9 @@ namespace Console.Plugins
             NodeLabels = nodelabels;
             EdgeLabels = edgelabels;
             SubTypeProperties = subtypes;
-            NodePropertyDetails = nodepropdetails;
+            NodeDataTypes = nodedatatypes;
             NodeProperties = nodeprops;
-            EdgePropertyDetails = edgepropdetails;
+            EdgeDataTypes = edgedatatypes;
             EdgeProperties = edgeprops;
             return true;
         }

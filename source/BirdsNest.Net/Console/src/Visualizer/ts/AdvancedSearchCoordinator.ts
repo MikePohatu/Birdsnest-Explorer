@@ -41,8 +41,8 @@ export default class AdvancedSearchCoordinator {
 	Margin: number = 5;
 	SvgContainerHeight: number = 90;
 	ConditionRoot: ViewTreeNode<ICondition> = null;
-	NodeDetails: object = null;
-	EdgeDetails: object = null;
+	NodeDataTypes: object = null;
+	EdgeDataTypes: object = null;
 	SimpleMode: boolean = true;
 
 	ViewTreeNodeConditionsProp = 'Conditions';
@@ -192,13 +192,13 @@ export default class AdvancedSearchCoordinator {
 		me.UpdateEdgeLabels();
 		me.ResetRootTreeNode();
 		me.UpdateConditions();
-		webcrap.data.apiGetJson("/api/graph/node/properties", function (data) {
+		webcrap.data.apiGetJson("/api/graph/node/datatypes", function (data) {
 			//console.log(data);
-			me.NodeDetails = data;
+			me.NodeDataTypes = data;
 		});
-		webcrap.data.apiGetJson("/api/graph/edge/properties", function (data) {
+		webcrap.data.apiGetJson("/api/graph/edge/datatypes", function (data) {
 			//console.log(data);
-			me.EdgeDetails = data;
+			me.EdgeDataTypes = data;
 		});
 	}
 
@@ -874,7 +874,7 @@ export default class AdvancedSearchCoordinator {
 		//console.log(type);
 
 		if (type || type === "*") {
-			var typedeets = this.NodeDetails[type];
+			var typedeets = this.NodeDataTypes[type].propertynames;
 			if (typedeets) {
 				typedeets.forEach(function (prop) {
 					webcrap.dom.AddOption(el, prop, prop);
@@ -1389,10 +1389,10 @@ export default class AdvancedSearchCoordinator {
 				(document.getElementById("searchVal") as HTMLInputElement).disabled = false;
 				(document.getElementById("searchConditionSaveBtn") as HTMLInputElement).disabled = false;
 				if (typeSelected === "node") {
-					props = this.NodeDetails[selectedItem.Label];
+					props = this.NodeDataTypes[selectedItem.Label].propertynames;
 				}
 				else if (typeSelected === "edge") {
-					props = this.EdgeDetails[selectedItem.Label];
+					props = this.EdgeDataTypes[selectedItem.Label].propertynames;
 				}
 
 				if (selectedItem.Label) {
