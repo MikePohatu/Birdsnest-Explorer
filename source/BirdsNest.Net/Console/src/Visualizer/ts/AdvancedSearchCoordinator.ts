@@ -132,6 +132,9 @@ export default class AdvancedSearchCoordinator {
 		d3.select("#searchNodeSaveAndCondBtn").on("click", function () {
 			me.onSearchNodeSaveAndCondClicked();
 		});
+		d3.select("#searchProp").on("change", function () {
+			me.onSearchPropChanged();
+		});
 		d3.select("#searchNodeDeleteBtn").on("click", function () {
 			me.onSearchNodeDelBtnClicked(this);
 		});
@@ -735,6 +738,18 @@ export default class AdvancedSearchCoordinator {
 		d3.select("#searchItem").dispatch('change');
 	}
 
+	onSearchPropChanged() {
+		console.log("onSearchPropChanged started");
+		var itemname = (document.getElementById("searchItem") as HTMLSelectElement).value;
+		var property = (document.getElementById("searchProp") as HTMLSelectElement).value;
+
+		var datum: any = GetNode(itemname, this.SearchData);
+
+		console.log("label: " + itemname);
+		console.log("property: " + property);
+		console.log(datum);
+	}
+
 	onSearchNodeSaveBtnClicked () {
 		//console.log("onSearchNodeSaveBtnClicked started");
 		//console.log(this);
@@ -1304,7 +1319,7 @@ export default class AdvancedSearchCoordinator {
 		webcrap.dom.ClearOptions(searchOperator);
 
 		//var cond: ICondition = datum.data.Item;
-		//console.log(ConditionOperators[cond.Type]);
+		//console.log(ConditionOperators[condition.Type]);
 		ConditionOperators[condition.Type].forEach(function (operator) {
 			webcrap.dom.AddOption(searchOperator, operator, operator);
 		});

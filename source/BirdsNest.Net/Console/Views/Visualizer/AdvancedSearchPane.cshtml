@@ -189,7 +189,7 @@
 				<i id='dirIcon' class="fas fa-arrow-right" data-dir=">"></i>
 			</div>
 		</div>
-</fieldset>
+    </fieldset>
     <button class="close-button" data-close aria-label="Close query dialog" type="button">
         <span aria-hidden="true">&times;</span>
     </button>
@@ -209,7 +209,16 @@
                 <span class="input-group-label small-4">Property</span>
                 <select id="searchProp" class="small-8 input-group-field"></select>
             </div>
-            <div class="input-group">
+            <div class="input-group hidden" id="searchBoolInput">
+                <span class="input-group-label small-4">=</span>
+                <div class="input-group-button">
+                    <select id="searchBoolVal" class="input-group-field">
+                        <option value="TRUE">true</option>
+                        <option value="FALSE">false</option>
+                    </select>
+                </div>
+            </div>
+            <div class="input-group" id="searchValInput">
                 <div class="input-group-button">
                     <select id="searchOperator" class="input-group-field"></select>
                 </div>
@@ -286,7 +295,7 @@
         <div class="input-group">
             <span class="input-group-label small-4">Type</span>
             <select id="searchConditionTypeList" class="small-8 input-group-field" autofocus>
-                <option value="STRING">STRING</option>
+                <option value="STRING">Value</option>
                 <option value="AND">AND</option>
                 <option value="OR">OR</option>
                 @*<option value="NUMBER">NUMBER</option>*@
