@@ -188,18 +188,19 @@ export default class AdvancedSearchCoordinator {
 			me.onSearchConditionTypeSaveClicked();
 		});
 
-		me.UpdateNodeLabels();
-		me.UpdateEdgeLabels();
-		me.ResetRootTreeNode();
-		me.UpdateConditions();
 		webcrap.data.apiGetJson("/api/graph/node/datatypes", function (data) {
 			//console.log(data);
 			me.NodeDataTypes = data;
+			me.UpdateNodeLabels();
 		});
 		webcrap.data.apiGetJson("/api/graph/edge/datatypes", function (data) {
 			//console.log(data);
 			me.EdgeDataTypes = data;
+			me.UpdateEdgeLabels();
 		});
+
+		me.ResetRootTreeNode();
+		me.UpdateConditions();
 	}
 
 	LoadSearchJson(json) {
@@ -893,10 +894,8 @@ export default class AdvancedSearchCoordinator {
 		let topoption = webcrap.dom.AddOption(el, "*", "");
 		topoption.setAttribute("selected", "");
 
-		webcrap.data.apiGetJson("/api/graph/node/labels", function (data) {
-			data.forEach(function (label) {
-				webcrap.dom.AddOption(el, label, label);
-			});
+		Object.keys(me.NodeDataTypes).forEach(function (label) {
+			webcrap.dom.AddOption(el, label, label);
 		});
 	}
 
@@ -907,10 +906,8 @@ export default class AdvancedSearchCoordinator {
 		let topoption = webcrap.dom.AddOption(el, "*", "");
 		topoption.setAttribute("selected", "");
 
-		webcrap.data.apiGetJson("/api/graph/edges/labels", function (data) {
-			for (var i = 0; i < data.length; ++i) {
-				webcrap.dom.AddOption(el, data[i], data[i]);
-			}
+		Object.keys(me.EdgeDataTypes).forEach(function (label) {
+			webcrap.dom.AddOption(el, label, label);
 		});
 	}
 
@@ -1337,9 +1334,10 @@ export default class AdvancedSearchCoordinator {
 
 		//var me = this;
 		var searchItem: HTMLSelectElement = document.getElementById("searchItem") as HTMLSelectElement;
-		var searchProps = document.getElementById("searchProp");
+		var searchProps: HTMLSelectElement = document.getElementById("searchProp") as HTMLSelectElement;
 		var selectedName = searchItem.options[searchItem.selectedIndex].value;
 		var selectedItem;
+		var selectedProp;
 		//var datum = (this.GetItemDatum("searchStringConditionDetails") as d3.HierarchyNode<ViewTreeNode<ICondition>>).data;
 		
 		var typeSelected = "";
@@ -1390,9 +1388,11 @@ export default class AdvancedSearchCoordinator {
 				(document.getElementById("searchConditionSaveBtn") as HTMLInputElement).disabled = false;
 				if (typeSelected === "node") {
 					props = this.NodeDataTypes[selectedItem.Label].propertynames;
+					selectedProp = this.NodeDataTypes[selectedItem.Label].default;
 				}
 				else if (typeSelected === "edge") {
 					props = this.EdgeDataTypes[selectedItem.Label].propertynames;
+					selectedProp = this.EdgeDataTypes[selectedItem.Label].default;
 				}
 
 				if (selectedItem.Label) {
@@ -1400,6 +1400,10 @@ export default class AdvancedSearchCoordinator {
 						props.forEach(function (item) {
 							webcrap.dom.AddOption(searchProps, item, item);
 						});
+
+						if (selectedProp) {
+							searchProps.value = selectedProp
+						}
 					}
 				}
 			}
