@@ -20,9 +20,9 @@ namespace Console.Plugins
         public List<string> EdgeLabels { get; private set; } = new List<string>();
         public Dictionary<string, string> SubTypeProperties { get; private set; } = new Dictionary<string, string>();
         public Dictionary<string, string> Icons { get; private set; } = new Dictionary<string, string>();
-        public Dictionary<string, PropertyListing> NodePropertyDetails { get; private set; } = new Dictionary<string, PropertyListing>();
+        public Dictionary<string, DataType> NodePropertyDetails { get; private set; } = new Dictionary<string, DataType>();
         public SortedDictionary<string, List<string>> NodeProperties { get; private set; } = new SortedDictionary<string, List<string>>();
-        public Dictionary<string, PropertyListing> EdgePropertyDetails { get; private set; } = new Dictionary<string, PropertyListing>();
+        public Dictionary<string, DataType> EdgePropertyDetails { get; private set; } = new Dictionary<string, DataType>();
         public SortedDictionary<string, List<string>> EdgeProperties { get; private set; } = new SortedDictionary<string, List<string>>();
 
         public PluginManager(ILogger logger)
@@ -39,9 +39,9 @@ namespace Console.Plugins
             List<string> edgelabels = new List<string>();
             var icons = new Dictionary<string, string>();
             var subtypes = new Dictionary<string, string>();
-            var nodepropdetails = new Dictionary<string, PropertyListing>();
+            var nodepropdetails = new Dictionary<string, DataType>();
             var nodeprops = new SortedDictionary<string, List<string>>();
-            var edgepropdetails = new Dictionary<string, PropertyListing>();
+            var edgepropdetails = new Dictionary<string, DataType>();
             var edgeprops = new SortedDictionary<string, List<string>>();
 
             try
@@ -59,61 +59,67 @@ namespace Console.Plugins
                         throw new ArgumentException("Plugin name is not set. Name is required");
                     }
                     plugins.Add(plug.Name, plug);
-                    if (plug.NodeLabels != null) { nodelabels.AddRange(plug.NodeLabels); }
-                    if (plug.EdgeLabels != null) { edgelabels.AddRange(plug.EdgeLabels); }
 
-                    if (plug.Icons != null)
+                    if (plug.NodeDataTypes != null)
                     {
-                        foreach (string key in plug.Icons.Keys)
+                        foreach (string key in plug.NodeDataTypes.Keys)
                         {
-                            if (!icons.TryAdd(key, plug.Icons[key]))
+                            nodelabels.Add(key);
+                            var propdeets = plug.NodeDataTypes[key];
+
+                            if (propdeets != null)
                             {
-                                this._logger.LogError("Error loading icon: " + key);
+                                if (!nodepropdetails.TryAdd(key, propdeets))
+                                {
+                                    this._logger.LogError("Error loading property types for label: " + key);
+                                }
+
+                                if (!nodeprops.TryAdd(key, propdeets.Properties.Select(x => x.Name).OrderBy(name => name).ToList()))
+                                {
+                                    this._logger.LogError("Error loading properties for label: " + key);
+                                }
+
+                                if (string.IsNullOrWhiteSpace(propdeets.SubType) == false)
+                                {
+                                    if (!subtypes.TryAdd(key, propdeets.SubType))
+                                    {
+                                        this._logger.LogError("Error loading subtype: " + key);
+                                    }
+                                }
+
+                                if (!icons.TryAdd(key, propdeets.Icon))
+                                {
+                                    this._logger.LogError("Error loading icon: " + key);
+                                }
                             }
                         }
                     }
 
-                    if (plug.SubTypeProperties != null)
+                    if (plug.EdgeDataTypes != null)
                     {
-                        foreach (string key in plug.SubTypeProperties.Keys)
+                        foreach (string key in plug.EdgeDataTypes.Keys)
                         {
-                            if (!subtypes.TryAdd(key, plug.SubTypeProperties[key]))
+                            edgelabels.Add(key);
+                            var propdeets = plug.EdgeDataTypes[key];
+                            if (propdeets != null)
                             {
-                                this._logger.LogError("Error loading subtype: " + key);
-                            }
-                        }
-                    }
+                                if (!edgepropdetails.TryAdd(key, propdeets))
+                                {
+                                    this._logger.LogError("Error loading property types for label: " + key);
+                                }
 
-                    if (plug.NodePropertyDetails != null)
-                    {
-                        foreach (string key in plug.NodePropertyDetails.Keys)
-                        {
-                            var propdeets = plug.NodePropertyDetails[key];
-                            if (!nodepropdetails.TryAdd(key, propdeets))
-                            {
-                                this._logger.LogError("Error loading property types for label: " + key);
-                            }
+                                if (!edgeprops.TryAdd(key, propdeets.Properties.Select(x => x.Name).OrderBy(name => name).ToList()))
+                                {
+                                    this._logger.LogError("Error loading properties for label: " + key);
+                                }
 
-                            if (!nodeprops.TryAdd(key, propdeets.Properties.Select(x => x.Name).OrderBy(name => name).ToList()))
-                            {
-                                this._logger.LogError("Error loading properties for label: " + key);
-                            }
-                        }
-                    }
-
-                    if (plug.EdgePropertyDetails != null)
-                    {
-                        foreach (string key in plug.EdgePropertyDetails.Keys)
-                        {
-                            var propdeets = plug.EdgePropertyDetails[key];
-                            if (!edgepropdetails.TryAdd(key, propdeets))
-                            {
-                                this._logger.LogError("Error loading property types for label: " + key);
-                            }
-
-                            if (!edgeprops.TryAdd(key, propdeets.Properties.Select(x => x.Name).OrderBy(name => name).ToList()))
-                            {
-                                this._logger.LogError("Error loading properties for label: " + key);
+                                if (string.IsNullOrWhiteSpace(propdeets.SubType) == false)
+                                {
+                                    if (!subtypes.TryAdd(key, propdeets.SubType))
+                                    {
+                                        this._logger.LogError("Error loading subtype: " + key);
+                                    }
+                                }
                             }
                         }
                     }

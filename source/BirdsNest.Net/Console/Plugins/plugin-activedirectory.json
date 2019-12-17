@@ -1,26 +1,6 @@
 {
   "name": "active-directory",
   "displayname": "Active Directory",
-  "icons": {
-    "AD_User": "fas fa-user",
-    "AD_Computer": "fas fa-desktop",
-    "AD_Group": "fas fa-user-friends",
-    "AD_Deleted": "far fa-trash-alt"
-  },
-  "nodelabels": [
-    "AD_User",
-    "AD_Group",
-    "AD_Computer",
-    "AD_Object",
-    "AD_Deleted"
-  ],
-  "edgelabels": [
-    "AD_MEMBER_OF"
-  ],
-  "subtypeproperties": {
-    "AD_Group": "grouptype"
-  },
-
   "reports": {
     "ad-deeppaths": {
       "displayname": "AD Deep Paths",
@@ -41,65 +21,48 @@
       "propertyfilters": [ "name", "dn", "description", "scope" ]
     }
   },
-  "nodepropertydetails": {
-      "AD_Computer": {
-        "properties": [
-          { "name": "description" },
-          { "name": "dn" },
-          { "name": "domainid" },
-          { "name": "id" },
-          { "name": "info" },
-          { "name": "lastscan" },
-          { "name": "name" },
-          { "name": "operatingsystem" },
-          { "name": "operatingsystemversion" },
-          { "name": "path" },
-          { "name": "primarygroupid" },
-          { "name": "samaccountname" },
-          { "name": "state" }
-        ],
-        "default": "samaccountname"
-      },
-      "AD_Group": {
-        "properties": [
-          { "name": "description" },
-          { "name": "dn" },
-          { "name": "domainid" },
-          { "name": "grouptype" },
-          { "name": "id" },
-          { "name": "info" },
-          { "name": "lastscan" },
-          { "name": "member_count" },
-          { "name": "name" },
-          { "name": "path" },
-          { "name": "rid" },
-          { "name": "samaccountname" }
-        ],
-        "default": "samaccountname"
-      },
-      "AD_Object": {
-        "properties": [
-          { "name": "description" },
-          { "name": "displayname" },
-          { "name": "dn" },
-          { "name": "domainid" },
-          { "name": "grouptype" },
-          { "name": "id" },
-          { "name": "info" },
-          { "name": "lastscan" },
-          { "name": "member_count" },
-          { "name": "name" },
-          { "name": "operatingsystem" },
-          { "name": "operatingsystemversion" },
-          { "name": "path" },
-          { "name": "primarygroupid" },
-          { "name": "rid" },
-          { "name": "samaccountname" },
-          { "name": "state" },
-          { "name": "userprincipalname" }
-        ],
-        "default": "samaccountname"
-      },
+  "edgedatatypes": {
+    "AD_MEMBER_OF": {}
+  },
+  "nodedatatypes": {
+    "AD_Computer": {
+      "properties": [
+        { "name": "description" },
+        { "name": "dn" },
+        { "name": "domainid" },
+        { "name": "id" },
+        { "name": "info" },
+        { "name": "lastscan" },
+        { "name": "name" },
+        { "name": "operatingsystem" },
+        { "name": "operatingsystemversion" },
+        { "name": "path" },
+        { "name": "primarygroupid" },
+        { "name": "samaccountname" },
+        { "name": "state" }
+      ],
+      "default": "samaccountname",
+      "icon": "fas fa-desktop"
+    },
+    "AD_Group": {
+      "properties": [
+        { "name": "description" },
+        { "name": "dn" },
+        { "name": "domainid" },
+        { "name": "grouptype" },
+        { "name": "id" },
+        { "name": "info" },
+        { "name": "lastscan" },
+        { "name": "member_count" },
+        { "name": "name" },
+        { "name": "path" },
+        { "name": "rid" },
+        { "name": "samaccountname" }
+      ],
+      "default": "samaccountname",
+      "subtype": "grouptype",
+      "icon": "fas fa-user-friends"
+    },
     "AD_User": {
       "properties": [
         { "name": "description" },
@@ -116,7 +79,35 @@
         { "name": "state" },
         { "name": "userprincipalname" }
       ],
+      "default": "samaccountname",
+      "icon": "fas fa-user"
+    },
+    "AD_Object": {
+      "properties": [
+        { "name": "description" },
+        { "name": "displayname" },
+        { "name": "dn" },
+        { "name": "domainid" },
+        { "name": "grouptype" },
+        { "name": "id" },
+        { "name": "info" },
+        { "name": "lastscan" },
+        { "name": "member_count" },
+        { "name": "name" },
+        { "name": "operatingsystem" },
+        { "name": "operatingsystemversion" },
+        { "name": "path" },
+        { "name": "primarygroupid" },
+        { "name": "rid" },
+        { "name": "samaccountname" },
+        { "name": "state" },
+        { "name": "userprincipalname" }
+      ],
       "default": "samaccountname"
+    },
+    "AD_Deleted": {
+      "description": "Objects that have been deleted from AD",
+      "icon": "far fa-trash-alt"
     }
   }
 }

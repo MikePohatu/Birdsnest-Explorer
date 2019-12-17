@@ -1,22 +1,6 @@
 {
   "name": "xenapp6.5",
   "displayname": "XenApp 6.5",
-  "icons": {
-    "CTX_Farm": "fas fa-server",
-    "CTX_Application": "fas fa-clone"
-  },
-  "nodelabels": [
-    "CTX_Farm",
-    "CTX_Application"
-  ],
-  "edgelabels": [
-    "PUBLISHED_FROM",
-    "GIVES_ACCESS_TO"
-  ],
-  "subtypeproperties": {
-    "CTX_Farm": "farm",
-    "CTX_Application":  "farm"
-  },
   "reports": {
     "ctx-deleteditemaccess": {
       "displayname": "CTX Deleted Item Access",
@@ -29,6 +13,20 @@
       "description": "Lists applications with permissions for orphaned objects",
       "query": "MATCH p=(d:Orphaned)-[]->(a:CTX_Application) WITH nodes(p) AS items UNWIND items as item RETURN DISTINCT item",
       "propertyfilters": [ "name", "farm", "dn", "type", "folderpath", "samaccountname", "enabled" ]
+    }
+  },
+  "edgedatatypes": {
+    "PUBLISHED_FROM": {},
+    "GIVES_ACCESS_TO_CTX": {}
+  },
+  "nodedatatypes": {
+    "CTX_Farm": {
+      "icon": "fas fa-server",
+      "subtype": "farm"
+    },
+    "CTX_Application": {
+      "icon": "fas fa-clone",
+      "subtype": "farm"
     }
   }
 }

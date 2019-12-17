@@ -22,7 +22,7 @@
     getMappingFromArray(array) {
         //console.log("Mappings.prototype.getMappingFromArray start:");
         //console.log(array);
-        //console.log(this.mappings);
+        //console.log(this);
         var me = this;
         var finalmapping = this.defaultvalue;
 
@@ -44,7 +44,7 @@
         catch (e) {
             if (e !== BreakException) throw e;
         }
-
+        //console.log("finalmapping" + finalmapping);
         return finalmapping;
     }
 }

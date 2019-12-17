@@ -1,21 +1,6 @@
 {
   "name": "filesystem",
   "displayname": "File System",
-  "icons": {
-    "FS_Folder": "fas fa-folder-open",
-    "FS_Datastore": "fas fa-hdd"
-  },
-  "nodelabels": [
-    "FS_Folder",
-    "FS_Datastore",
-    "FS_BlockedFolder",
-    "FS_DfsRoot"
-  ],
-  "edgelabels": [
-    "FS_APPLIES_INHERITANCE_TO",
-    "FS_BLOCKED_INHERITANCE",
-    "FS_HOSTS"
-  ],
   "reports": {
     "fs-orphanedperms": {
       "displayname": "FS Orphaned Permissions",
@@ -30,22 +15,26 @@
       "propertyfilters": [ "path" ]
     }
   },
-  "edgepropertydetails": {
+  "edgedatatypes": {
     "GIVES_ACCESS_TO": {
       "properties": [
         { "name": "fsid" },
         { "name": "right" }
       ]
-    }
+    },
+    "FS_APPLIES_INHERITANCE_TO": null,
+    "FS_BLOCKED_INHERITANCE": null,
+    "FS_HOSTS": {}
   },
-  "nodepropertydetails": {
+  "nodedatatypes": {
     "FS_Datastore": {
       "properties": [
         { "name": "comment" },
         { "name": "host" },
         { "name": "name" }
       ],
-      "default": "name"
+      "default": "name",
+      "icon": "fas fa-hdd"
     },
     "FS_Folder": {
       "properties": [
@@ -65,7 +54,10 @@
           "type": "boolean"
         }
       ],
-      "default": "path"
-    }
+      "default": "path",
+      "icon": "fas fa-folder-open"
+    },
+    "FS_BlockedFolder":null,
+    "FS_DfsRoot": null
   }
 }

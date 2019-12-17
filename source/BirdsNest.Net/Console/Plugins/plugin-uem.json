@@ -1,15 +1,6 @@
 {
   "name": "uem",
   "displayname": "VMware UEM",
-  "icons": {
-    "UEM_Setting": "fas fa-rocket"
-  },
-  "nodelabels": [
-    "UEM_Setting"
-  ],
-  "edgelabels": [
-    "ACTIVATES"
-  ],
   "reports": {
     "uem-deleteditemaccess": {
       "displayname": "UEM Deleted Items Configured",
@@ -22,6 +13,14 @@
       "description": "Lists UEM settings configured with orphaned objects",
       "query": "MATCH p=(d:Orphaned)-[]->(a:UEM_Setting) WITH nodes(p) AS items UNWIND items as item RETURN DISTINCT item",
       "propertyfilters": []
+    }
+  },
+  "edgedatatypes": {
+    "ACTIVATES": {}
+  },
+  "nodedatatypes": {
+    "UEM_Setting": {
+      "icon": "fas fa-rocket"
     }
   }
 }

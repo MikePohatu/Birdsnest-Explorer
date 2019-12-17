@@ -1,90 +1,81 @@
 {
   "name": "sccm",
   "displayname": "SCCM",
-  "icons": {
-    "CM_Device": "fas fa-desktop",
-    "CM_User": "fas fa-user",
-    "CM_Collection": "fas fa-layer-group",
-    "CM_Application": "fas fa-cogs",
-    "CM_ConfigurationItem": "far fa-object-upgroup"
-  },
-  "nodelabels": [
-    "CM_Device",
-    "CM_User",
-    "CM_Collection",
-    "CM_Application",
-    "CM_ConfigurationItem"
-
-  ],
-  "edgelabels": [
-    "CM_LIMITING_COLLECTION",
-    "CM_INCLUDES_COLLECTION",
-    "CM_EXCLUDES_COLLECTION",
-    "CM_OBJECT_FOR",
-    "CM_MEMBER_OF",
-    "CM_DEPLOYED_TO"
-  ],
   "reports": {
 
   },
-  "propertydetails": {
+  "edgedatatypes": {
+    "CM_LIMITING_COLLECTION": {},
+    "CM_INCLUDES_COLLECTION": {},
+    "CM_EXCLUDES_COLLECTION": {},
+    "CM_OBJECT_FOR": {},
+    "CM_MEMBER_OF": {},
+    "CM_DEPLOYED_TO": {}
+  },
+  "nodedatatypes": {
     "CM_Application": {
       "properties": [
         { "name": "id" },
-        { "name": "lastscan"},
-        { "name": "name"}
-      ]
-    },
-    "CM_Collection": {
-      "properties": [
-        { "name": "comment"},
-        { "name": "id"},
-        { "name": "lastscan"},
-        { "name": "limitingcollection"},
-        { "name": "name"}
-      ]
-    },
-    "CM_ConfigurationItem": {
-      "properties": [
-        { "name": "dn"},
-        { "name": "id"},
-        { "name": "lastscan"},
-        { "name": "name"},
-        { "name": "sid"}
-      ]
-    },
-    "CM_Device": {
-      "properties": [
-        { "name": "dn"},
-        { "name": "id"},
-        { "name": "lastscan"},
-        { "name": "name"},
-        { "name": "sid"}
-      ]
-    },
-    "CM_Package": {
-      "properties": [
-        { "name": "id"},
-        { "name": "lastscan"},
-        { "name": "name"}
-      ]
-    },
-    "CM_PackageProgram": [],
-    "CM_SoftwareUpdateGroup": [],
-    "CM_TaskSequence": {
-      "properties": [
-        { "name": "id"},
-        { "name": "lastscan"},
-        { "name": "name"}
-      ]
+        { "name": "lastscan" },
+        { "name": "name" }
+      ],
+      "icon": "fas fa-cogs"
     },
     "CM_User": {
       "properties": [
         { "name": "dn" },
         { "name": "id" },
-        { "name": "lastscan"},
-        { "name": "name"},
-        { "name": "sid"}
+        { "name": "lastscan" },
+        { "name": "name" },
+        { "name": "sid" }
+      ],
+      "icon": "fas fa-user"
+    },
+    "CM_Collection": {
+      "properties": [
+        { "name": "comment" },
+        { "name": "id" },
+        { "name": "lastscan" },
+        { "name": "limitingcollection" },
+        { "name": "name" }
+      ],
+      "icon": "fas fa-layer-group"
+    },
+    "CM_ConfigurationItem": {
+      "properties": [
+        { "name": "dn" },
+        { "name": "id" },
+        { "name": "lastscan" },
+        { "name": "name" },
+        { "name": "sid" }
+      ],
+      "icon": "far fa-object-upgroup"
+    },
+    "CM_Device": {
+      "properties": [
+        { "name": "dn" },
+        { "name": "id" },
+        { "name": "lastscan" },
+        { "name": "name" },
+        { "name": "sid" }
+      ],
+      "icon": "fas fa-desktop"
+    },
+    "CM_Package": {
+      "properties": [
+        { "name": "id" },
+        { "name": "lastscan" },
+        { "name": "name" }
+      ],
+      "icon": "fas fa-server"
+    },
+    "CM_PackageProgram": {},
+    "CM_SoftwareUpdateGroup": {},
+    "CM_TaskSequence": {
+      "properties": [
+        { "name": "id" },
+        { "name": "lastscan" },
+        { "name": "name" }
       ]
     }
   }
