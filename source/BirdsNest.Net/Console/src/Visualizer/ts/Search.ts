@@ -195,12 +195,12 @@ class ConditionBase implements ICondition {
     Operator: string;
 }
 
-class MathCondition extends ConditionBase {
+class NumberCondition extends ConditionBase {
     Value: number = 0;
 
     constructor() {
         super();
-        this.Type = "MATH";
+        this.Type = "NUMBER";
         this.Name = "";
         this.Property = "";
         this.Operator = "=";
@@ -249,8 +249,8 @@ function GetCondition(type: string): ICondition {
             cond = new StringCondition();
             break;
         }
-        case 'MATH': {
-            cond = new MathCondition();
+        case 'NUMBER': {
+            cond = new NumberCondition();
             break;
         }
         case 'BOOLEAN': {
@@ -266,7 +266,7 @@ function GetCondition(type: string): ICondition {
 
 export {
     StringCondition,
-    MathCondition,
+    NumberCondition,
     BooleanCondition,
     ConditionBase,
     ICondition,

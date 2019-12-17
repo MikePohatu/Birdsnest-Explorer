@@ -73,6 +73,11 @@ namespace Console.Controllers
             return this._plugingmanager.SubTypeProperties;
         }
 
+        public object PropertyDetails()
+        {
+            return this._plugingmanager.PropertyDetails;
+        }
+
         [HttpPost]
         public IActionResult AdvancedSearch([FromBody] neo4jProxy.AdvancedSearch.Search search)
         {

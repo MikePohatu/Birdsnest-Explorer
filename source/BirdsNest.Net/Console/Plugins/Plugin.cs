@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -12,6 +13,9 @@ namespace Console.Plugins
         public Dictionary<string, string> Icons { get; private set; } = new Dictionary<string, string>();
         public List<string> NodeLabels { get; private set; } = new List<string>();
         public List<string> EdgeLabels { get; private set; } = new List<string>();
+
+        [JsonProperty("propertydetails")]
+        public Dictionary<string, PropertyListing> PropertyDetails { get; private set; } = new Dictionary<string, PropertyListing>();
 
         /// <summary>
         /// SubTypeProperties sets the property on the node that specifies a sub-type. This is used to create another css

@@ -16,6 +16,12 @@
     "FS_BLOCKED_INHERITANCE",
     "FS_HOSTS"
   ],
+  "propertytypes": {
+    "FS_Folder": {
+      "inheritancedisabled": "boolean",
+      "blocked": "boolean"
+    }
+  },
   "reports": {
     "fs-orphanedperms": {
       "displayname": "FS Orphaned Permissions",
@@ -27,7 +33,37 @@
       "displayname": "FS Inheritance Disabled",
       "description": "Lists folders with inherited permissions disabled",
       "query": "MATCH (n:FS_Folder) WHERE n.inheritancedisabled=True return n ORDER BY n.path",
-      "propertyfilters": ["path"]
+      "propertyfilters": [ "path" ]
+    }
+  },
+  "propertydetails": {
+    "FS_Datastore": {
+      "properties": [
+        { "name": "comment" },
+        { "name": "host" },
+        { "name": "name" }
+      ],
+      "default": "name"
+    },
+    "FS_Folder": {
+      "properties": [
+        { "name": "fsid" },
+        { "name": "lastpermission" },
+        { "name": "lastscan" },
+        { "name": "name" },
+        { "name": "path" },
+        {
+          "name": "blocked",
+          "description": "Scanner was unable to interogate this folder and further scanning was blocked",
+          "type": "boolean"
+        },
+        {
+          "name": "inheritancedisabled",
+          "description": "",
+          "type": "boolean"
+        }
+      ],
+      "default": "path"
     }
   }
 }

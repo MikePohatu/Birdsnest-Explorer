@@ -20,6 +20,7 @@ namespace Console.Plugins
         public List<string> EdgeLabels { get; private set; } = new List<string>();
         public Dictionary<string, string> SubTypeProperties { get; private set; } = new Dictionary<string, string>();
         public Dictionary<string, string> Icons { get; private set; } = new Dictionary<string, string>();
+        public Dictionary<string, PropertyListing> PropertyDetails { get; private set; } = new Dictionary<string, PropertyListing>();
 
         public PluginManager(ILogger logger)
         {
@@ -35,6 +36,7 @@ namespace Console.Plugins
             List<string> edgelabels = new List<string>();
             Dictionary<string, string> icons = new Dictionary<string, string>();
             Dictionary<string, string> subtypes = new Dictionary<string, string>();
+            Dictionary<string, PropertyListing> propdetails = new Dictionary<string, PropertyListing>();
 
             try
             {
@@ -44,6 +46,7 @@ namespace Console.Plugins
                 {
                     this._logger.LogInformation("Loading " + filename);
                     string json = File.ReadAllText(filename);
+                    JsonSerializerSettings settings = new JsonSerializerSettings();
                     Plugin plug = JsonConvert.DeserializeObject<Plugin>(json);
                     if (string.IsNullOrWhiteSpace(plug.Name))
                     {
@@ -71,6 +74,17 @@ namespace Console.Plugins
                             if (!subtypes.TryAdd(key, plug.SubTypeProperties[key]))
                             {
                                 this._logger.LogError("Error loading subtype: " + key);
+                            }
+                        }
+                    }
+
+                    if (plug.PropertyDetails != null)
+                    {
+                        foreach (string key in plug.PropertyDetails.Keys)
+                        {
+                            if (!propdetails.TryAdd(key, plug.PropertyDetails[key]))
+                            {
+                                this._logger.LogError("Error loading property types for label: " + key);
                             }
                         }
                     }
@@ -103,6 +117,7 @@ namespace Console.Plugins
             NodeLabels = nodelabels;
             EdgeLabels = edgelabels;
             SubTypeProperties = subtypes;
+            PropertyDetails = propdetails;
             return true;
         }
     }
