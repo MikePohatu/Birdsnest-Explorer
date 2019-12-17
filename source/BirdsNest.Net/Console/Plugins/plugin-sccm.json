@@ -14,69 +14,69 @@
   },
   "nodedatatypes": {
     "CM_Application": {
-      "properties": [
-        { "name": "id" },
-        { "name": "lastscan" },
-        { "name": "name" }
-      ],
+      "properties": {
+        "id": {},
+        "lastscan": {},
+        "name": {}
+      },
       "icon": "fas fa-cogs"
     },
     "CM_User": {
-      "properties": [
-        { "name": "dn" },
-        { "name": "id" },
-        { "name": "lastscan" },
-        { "name": "name" },
-        { "name": "sid" }
-      ],
+      "properties": {
+        "dn": {},
+        "id": {},
+        "lastscan": {},
+        "name": {},
+        "sid": {}
+      },
       "icon": "fas fa-user"
     },
     "CM_Collection": {
-      "properties": [
-        { "name": "comment" },
-        { "name": "id" },
-        { "name": "lastscan" },
-        { "name": "limitingcollection" },
-        { "name": "name" }
-      ],
+      "properties": {
+        "comment": {},
+        "id": {},
+        "lastscan": {},
+        "limitingcollection": {},
+        "name": {}
+      },
       "icon": "fas fa-layer-group"
     },
     "CM_ConfigurationItem": {
-      "properties": [
-        { "name": "dn" },
-        { "name": "id" },
-        { "name": "lastscan" },
-        { "name": "name" },
-        { "name": "sid" }
-      ],
+      "properties": {
+        "dn": {},
+        "id": {},
+        "lastscan": {},
+        "name": {},
+        "sid": {}
+      },
       "icon": "far fa-object-upgroup"
     },
     "CM_Device": {
-      "properties": [
-        { "name": "dn" },
-        { "name": "id" },
-        { "name": "lastscan" },
-        { "name": "name" },
-        { "name": "sid" }
-      ],
+      "properties": {
+        "dn": {},
+        "id": {},
+        "lastscan": {},
+        "name": {},
+        "sid": {}
+      },
       "icon": "fas fa-desktop"
     },
     "CM_Package": {
-      "properties": [
-        { "name": "id" },
-        { "name": "lastscan" },
-        { "name": "name" }
-      ],
+      "properties": {
+        "id": {},
+        "lastscan": {},
+        "name": {}
+      },
       "icon": "fas fa-server"
     },
     "CM_PackageProgram": {},
     "CM_SoftwareUpdateGroup": {},
     "CM_TaskSequence": {
-      "properties": [
-        { "name": "id" },
-        { "name": "lastscan" },
-        { "name": "name" }
-      ]
+      "properties": {
+        "id": {},
+        "lastscan": {},
+        "name": {}
+      }
     }
   }
 }

@@ -749,6 +749,18 @@ export default class AdvancedSearchCoordinator {
 		console.log("label: " + itemname);
 		console.log("property: " + property);
 		console.log(datum);
+
+		var proptype;
+		if (datum instanceof SearchNode) {
+			console.log(this.NodeDataTypes[datum.Label]);
+			proptype = this.NodeDataTypes[datum.Label].properties[property].Type;
+		}
+		else {
+			console.log(this.EdgeDataTypes[datum.Label]);
+			proptype = this.EdgeDataTypes[datum.Label].properties[property].Type;
+		}
+
+		console.log("proptype: " + proptype);
 	}
 
 	onSearchNodeSaveBtnClicked () {
@@ -1407,7 +1419,12 @@ export default class AdvancedSearchCoordinator {
 					}
 				}
 			}
-		}
+
+			//dispatch a change event to the searchProp select so it can update type
+			setTimeout(function () {
+				d3.select('#searchProp').dispatch('change');
+			}, 1);
+		}	
 	}
 
 	onSearchConditionAddClicked(callingelement: Element) {

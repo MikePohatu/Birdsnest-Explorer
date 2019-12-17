@@ -17,14 +17,14 @@ namespace Console.Plugins
             { 
                 if (this._propertynames == null)
                 {
-                    this._propertynames = this.Properties.Select(x => x.Name).OrderBy(name => name).ToList();
+                    this._propertynames = this.Properties.Keys.ToList();
                 }
                 return this._propertynames; 
             } 
         }
 
         [JsonProperty("properties")]
-        public List<Property> Properties { get; private set; } = new List<Property>();
+        public Dictionary<string,Property> Properties { get; private set; } = new Dictionary<string, Property>();
 
         [JsonProperty("default")]
         public string Default { get; private set; } = string.Empty;

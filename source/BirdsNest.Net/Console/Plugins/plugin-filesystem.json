@@ -17,10 +17,10 @@
   },
   "edgedatatypes": {
     "GIVES_ACCESS_TO": {
-      "properties": [
-        { "name": "fsid" },
-        { "name": "right" }
-      ]
+      "properties": {
+        "fsid": {},
+        "right": {}
+      }
     },
     "FS_APPLIES_INHERITANCE_TO": null,
     "FS_BLOCKED_INHERITANCE": null,
@@ -28,32 +28,30 @@
   },
   "nodedatatypes": {
     "FS_Datastore": {
-      "properties": [
-        { "name": "comment" },
-        { "name": "host" },
-        { "name": "name" }
-      ],
+      "properties": {
+        "comment": {},
+        "host": {},
+        "name": {}
+      },
       "default": "name",
       "icon": "fas fa-hdd"
     },
     "FS_Folder": {
-      "properties": [
-        { "name": "fsid" },
-        { "name": "lastpermission" },
-        { "name": "lastscan" },
-        { "name": "name" },
-        { "name": "path" },
-        {
-          "name": "blocked",
+      "properties": {
+        "fsid": {},
+        "lastpermission": {},
+        "lastscan": {},
+        "name": {},
+        "path": {},
+        "blocked": {
           "description": "Scanner was unable to interogate this folder and further scanning was blocked",
           "type": "boolean"
         },
-        {
-          "name": "inheritancedisabled",
+        "inheritancedisabled": {
           "description": "",
           "type": "boolean"
         }
-      ],
+      },
       "default": "path",
       "icon": "fas fa-folder-open"
     },
