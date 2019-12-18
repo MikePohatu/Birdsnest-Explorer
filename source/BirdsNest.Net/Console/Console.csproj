@@ -31,7 +31,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Remove="logs\stub.txt" />
     <None Remove="src\Shared\webcrap.ts" />
     <None Remove="src\Visualizer\ts\DataQueue.ts" />
     <None Remove="src\Visualizer\ts\DatumStore.ts" />
@@ -41,9 +40,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Content Include="logs\stub.txt">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
     <Content Include="src\Shared\webcrap\authcrap.js" />
     <Content Include="src\Shared\webcrap\authcrap.js.map" />
     <Content Include="src\Shared\webcrap\datacrap.js" />
@@ -94,6 +90,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Update="logs\stub.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Update="Plugins\plugin-activedirectory.css">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
@@ -110,6 +109,9 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Update="Plugins\plugin-xenapp6.5.css">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="reset_perms.cmd">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
   </ItemGroup>
