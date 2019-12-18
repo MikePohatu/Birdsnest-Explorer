@@ -1237,7 +1237,7 @@ export default class AdvancedSearchCoordinator {
 		let datum: any = GetNode(itemname, this.SearchData);
 
 		//console.log("label: " + itemname);
-		console.log("property: " + property);
+		//console.log("property: " + property);
 		//console.log("datum: " );
 		//console.log(datum);
 		//console.log(this.NodeDataTypes);
@@ -1259,7 +1259,7 @@ export default class AdvancedSearchCoordinator {
 			proptype = "STRING";
 		}
 
-		console.log("proptype: " + proptype);
+		//console.log("proptype: " + proptype);
 		//console.log(this.EditingTreeNode);
 
 		//update view
@@ -1382,14 +1382,14 @@ export default class AdvancedSearchCoordinator {
 	}
 
 	UpdateSearchOperators(condition: ICondition) {
-		console.log("UpdateSearchOperators started");
-		console.log(condition);
+		//console.log("UpdateSearchOperators started");
+		//console.log(condition);
 		//*** setup the searchOperator list
 		var searchOperator = document.getElementById("searchOperator");
 		webcrap.dom.ClearOptions(searchOperator);
 
 		//var cond: ICondition = datum.data.Item;
-		console.log(ConditionOperators);
+		//console.log(ConditionOperators);
 		ConditionOperators[condition.Type].forEach(function (operator) {
 			webcrap.dom.AddOption(searchOperator, operator, operator);
 		});

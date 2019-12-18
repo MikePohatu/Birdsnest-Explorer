@@ -236,17 +236,15 @@ class StringCondition extends ConditionBase {
     }
 }
 
-class SearchTypes {
-    static SearchEdge: string = "SearchEdge";
-    static SearchNode: string = "SearchNode";
-    static StringCondition: string = "StringCondition";
-    static NumberCondition: string = "NumberCondition";
-    static BooleanCondition: string = "BooleanCondition";
-    static OrCondition: string = "OrCondition";
-    static AndCondition: string = "AndCondition";
-    static Search: string = "Search";
-
-    private constructor() { }
+var SearchTypes = {
+    "SearchEdge": "SearchEdge",
+    "SearchNode": "SearchNode",
+    "StringCondition": "StringCondition",
+    "NumberCondition": "NumberCondition",
+    "BooleanCondition": "BooleanCondition",
+    "OrCondition": "OrCondition",
+    "AndCondition": "AndCondition",
+    "Search": "Search"
 }
 
 function GetCondition(type: string): ICondition {
