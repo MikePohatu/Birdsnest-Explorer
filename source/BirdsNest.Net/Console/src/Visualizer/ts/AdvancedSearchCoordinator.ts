@@ -1667,9 +1667,8 @@ export default class AdvancedSearchCoordinator {
 
 	onSearchAndOrSaveClicked () {
 		//console.log("onSearchAndOrSaveClicked started");
-		var datum = this.GetItemDatum("searchAndOrDetails") as d3.HierarchyNode<ViewTreeNode<ICondition>>;
+		this.EditingTreeNode.Item.Type = (document.getElementById("searchAndOr") as HTMLSelectElement).value;
 
-		datum.data.Item.Type = (document.getElementById("searchAndOr") as HTMLSelectElement).value;
 		this.SearchAndOrDetailsModal.close();
 		this.UpdateConditions();
 	}
