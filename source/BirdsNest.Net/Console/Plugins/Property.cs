@@ -8,7 +8,6 @@ namespace Console.Plugins
 {
     public class Property
     {
-        public string Name { get; set; } = string.Empty;
         public string Description { get; set; } = string.Empty;
 
         private string _type = "string";
@@ -23,7 +22,7 @@ namespace Console.Plugins
                 }
                 else
                 {
-                    throw new ArgumentException("Invalid property type for " + this.Name + ": " + value);
+                    throw new ArgumentException("Invalid property type: " + value);
                 }
             }
         }

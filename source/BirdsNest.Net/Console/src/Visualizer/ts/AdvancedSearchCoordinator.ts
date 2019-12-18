@@ -22,10 +22,11 @@ import {
 	IsConditionValid,
 	GetNode,
 	ConditionOperators,
-	StringCondition,
+	StringCondition,
     GetEdge,
     NumberCondition,
-    BooleanCondition
+    BooleanCondition,
+    SearchTypes
 } from "./Search";
 import ViewTreeNode from "./ViewTreeNode";
 import { misccrap } from '../../shared/webcrap/misccrap';
@@ -332,6 +333,7 @@ export default class AdvancedSearchCoordinator {
 				if (!conf) { return;}
             }
 
+			console.log(this.SearchData);
             var urlBase = [location.protocol, '//', location.host, location.pathname].join('');
             var encodedData = webcrap.misc.encodeUrlB64(JSON.stringify(this.SearchData));
             //console.log(urlBase);
@@ -1228,69 +1230,69 @@ export default class AdvancedSearchCoordinator {
 	}
 
 	onSearchPropChanged() {
-		console.log("onSearchPropChanged started");
+		//console.log("onSearchPropChanged started");
 		let itemname = (document.getElementById("searchItem") as HTMLSelectElement).value;
 		let property = (document.getElementById("searchProp") as HTMLSelectElement).value;
 
 		let datum: any = GetNode(itemname, this.SearchData);
 
-		console.log("label: " + itemname);
-		console.log("property: " + property);
-		console.log(datum);
+		//console.log("label: " + itemname);
+		//console.log("property: " + property);
+		//console.log("datum: " );
+		//console.log(datum);
+		//console.log(this.NodeDataTypes);
 
 		let proptype;
-		if (datum instanceof SearchNode) {
+		//console.log("conversion test: ");
+		//var testdatum = datum as SearchEdge;
+		//console.log(testdatum);
+		if (datum.Type === SearchTypes.SearchNode) {
 			//console.log(this.NodeDataTypes[datum.Label]);
-			proptype = this.NodeDataTypes[datum.Label].properties[property].Type;
+			proptype = this.NodeDataTypes[datum.Label].properties[property].Type.toUpperCase();
+		}
+		else if (datum.Type === SearchTypes.SearchEdge) {
+			//console.log(this.EdgeDataTypes[datum.Label]);
+			proptype = this.EdgeDataTypes[datum.Label].properties[property].Type.toUpperCase();
 		}
 		else {
-			//console.log(this.EdgeDataTypes[datum.Label]);
-			proptype = this.EdgeDataTypes[datum.Label].properties[property].Type;
+			console.error("Invalid type found when querying search condition");
+			proptype = "STRING";
 		}
 
-		console.log("proptype: " + proptype);
-		console.log(this.EditingTreeNode);
+		//console.log("proptype: " + proptype);
+		//console.log(this.EditingTreeNode);
 
 		//update view
-		if (proptype === "string") {
+		if (proptype === "STRING") {
 			d3.select("#searchNotOptions").classed("hidden", false);
 			d3.select("#searchCaseOptions").classed("hidden", false);
 			d3.select("#searchValInput").classed("hidden", false);
-			d3.select("#searchBoolInput").classed("hidden", true);
+			d3.select("#searchBoolInput").classed("hidden", true);			
 		}
-		else if (proptype === "number") {
+		else if (proptype === "NUMBER") {
 			d3.select("#searchNotOptions").classed("hidden", false);
 			d3.select("#searchCaseOptions").classed("hidden", true);
 			d3.select("#searchValInput").classed("hidden", false);
 			d3.select("#searchBoolInput").classed("hidden", true);
 		}
-		else {
+		else if (proptype === "BOOLEAN") {
 			d3.select("#searchNotOptions").classed("hidden", true);
 			d3.select("#searchCaseOptions").classed("hidden", true);
 			d3.select("#searchValInput").classed("hidden", true);
 			d3.select("#searchBoolInput").classed("hidden", false);
 		}
 
-
 		//check if the property type has actually changed
-		if (this.EditingTreeNode.Item instanceof StringCondition) {
-			if (proptype === "string") { return; }
-		}
-		if (this.EditingTreeNode.Item instanceof NumberCondition) {
-			if (proptype === "number") { return; }
-		}
-		if (this.EditingTreeNode.Item instanceof BooleanCondition) {
-			if (proptype === "boolean") { return; }
-		}
+		if (this.EditingTreeNode.Item.Type === proptype) { return; }
 
-		let cond = GetCondition(proptype.toUpperCase());
+		let cond = GetCondition(proptype);
 		this.EditingTreeNode.Item = cond;
 		this.EditingTreeNode.Parent.Rebuild();
 	}
 
 	OpenSearchConditionDetails(treenode: ViewTreeNode<ICondition>) {
-        console.log("OpenSearchConditionDetails started");
-		console.log(treenode);
+		//console.log("OpenSearchConditionDetails started");
+		//console.log(treenode);
 		var me = this;
 	
 		this.ClearAlert();
@@ -1314,26 +1316,20 @@ export default class AdvancedSearchCoordinator {
 		
 		if (condition.Type === "STRING") {
 			(document.getElementById("searchVal") as HTMLInputElement).value = condition.Value;
-			//(document.getElementById("searchCaseOptions") as HTMLDivElement).hidden = false;
 			(document.getElementById("searchCase") as HTMLInputElement).checked = (condition as StringCondition).CaseSensitive;
 			(document.getElementById("searchNot") as HTMLInputElement).checked = (condition as StringCondition).Not;
 		}
 		else if (condition.Type === "NUMBER") {
 			(document.getElementById("searchVal") as HTMLInputElement).value = condition.Value;
-			//(document.getElementById("searchCaseOptions") as HTMLDivElement).hidden = true;
-			//(document.getElementById("searchCase") as HTMLInputElement).hidden = true;
 			(document.getElementById("searchNot") as HTMLInputElement).checked = (condition as NumberCondition).Not;
 		}
 		else {
 			(document.getElementById("searchBoolVal") as HTMLInputElement).value = condition.Value;
-			//(document.getElementById("searchCaseOptions") as HTMLDivElement).hidden = true;
 		}
 
         if (this.EditingTreeNode === this.NewTreeNode) {
 			d3.select("#searchConditionDeleteBtn").classed("hidden", true);
 			d3.select("#searchConditionCancelBtn").classed("hidden", false);
-			//(document.getElementById("searchConditionDeleteBtn") as HTMLButtonElement).hidden = true;
-			//(document.getElementById("searchConditionCancelBtn") as HTMLButtonElement).hidden = false;
 		}
 		else {
 			d3.select("#searchConditionDeleteBtn").classed("hidden", false);
@@ -1394,7 +1390,7 @@ export default class AdvancedSearchCoordinator {
 	}
 
 	onSearchConditionItemChanged () {
-		console.log("onSearchConditionItemChanged started");
+		//console.log("onSearchConditionItemChanged started");
 		//console.log(this);
 
 		//var me = this;
@@ -1428,7 +1424,7 @@ export default class AdvancedSearchCoordinator {
 
 		//console.log(this.NodeDetails);
 		//console.log(this.EdgeDetails);
-		console.log(selectedItem);
+		//console.log(selectedItem);
 
 		webcrap.dom.ClearOptions(searchProps);
 		var props;
@@ -1590,7 +1586,7 @@ export default class AdvancedSearchCoordinator {
 
 
 	onSearchConditionSaveClicked () {
-		console.log("onSearchConditionSaveClicked started");
+		//console.log("onSearchConditionSaveClicked started");
 		//var datum = this.GetItemDatum("searchStringConditionDetails") as d3.HierarchyNode<ViewTreeNode<ICondition>>;
 		//var condition = datum.data.Item as ConditionBase;
 		let newname = (document.getElementById("searchItem") as HTMLSelectElement).value;
@@ -1599,7 +1595,7 @@ export default class AdvancedSearchCoordinator {
 		let newop = (document.getElementById("searchOperator") as HTMLInputElement).value;
 
 		let condition = this.EditingTreeNode.Item as ConditionBase;
-		console.log(condition);
+		//console.log(condition);
 
 		if (condition.Type === "BOOLEAN") {
 			newval = (document.getElementById("searchBoolVal") as HTMLInputElement).value;
@@ -1641,7 +1637,7 @@ export default class AdvancedSearchCoordinator {
 			condition.Property = newprop;
 			condition.Operator = newop;
 
-			console.log(condition);
+			//console.log(condition);
 
 			if (this.NewTreeNode !== null) {
 				this.ApplyNewCondition();

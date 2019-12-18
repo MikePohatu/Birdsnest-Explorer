@@ -121,6 +121,7 @@ function GetEdge(name: string, search: Search): SearchEdge {
 }
 
 class SearchNode {
+    Type: string = "SearchNode";
     Name: string = "";
     Label: string = "";
     x: number = -100;
@@ -134,6 +135,7 @@ class SearchNode {
 }
 
 class SearchEdge {
+    Type: string = "SearchEdge";
     Name: string = "";
     Label: string = "";
     Direction: string = ">";
@@ -234,6 +236,19 @@ class StringCondition extends ConditionBase {
     }
 }
 
+class SearchTypes {
+    static SearchEdge: string = "SearchEdge";
+    static SearchNode: string = "SearchNode";
+    static StringCondition: string = "StringCondition";
+    static NumberCondition: string = "NumberCondition";
+    static BooleanCondition: string = "BooleanCondition";
+    static OrCondition: string = "OrCondition";
+    static AndCondition: string = "AndCondition";
+    static Search: string = "Search";
+
+    private constructor() { }
+}
+
 function GetCondition(type: string): ICondition {
     var cond: ICondition;
     switch (type) {
@@ -276,6 +291,7 @@ export {
     Search,
     SearchNode,
     SearchEdge,
+    SearchTypes,
     GetCondition,
     AddNode,
     RemoveNode,
