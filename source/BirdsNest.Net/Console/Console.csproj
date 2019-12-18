@@ -12,6 +12,7 @@
     <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
     <PackageProjectUrl>https://github.com/MikePohatu/BirdsNest</PackageProjectUrl>
     <PackageLicenseUrl>https://github.com/MikePohatu/BirdsNest/blob/master/LICENSE</PackageLicenseUrl>
+    <Copyright />
   </PropertyGroup>
 
   <ItemGroup>
@@ -23,7 +24,6 @@
 
   <ItemGroup>
     <Content Remove="appsettings.Development.json" />
-    <Content Remove="wwwroot\css\plugins.css" />
     <Content Remove="wwwroot\script\authcrap.ts" />
     <Content Remove="wwwroot\script\datacrap.ts" />
     <Content Remove="wwwroot\script\domcrap.ts" />
@@ -31,6 +31,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Remove="logs\stub.txt" />
     <None Remove="src\Shared\webcrap.ts" />
     <None Remove="src\Visualizer\ts\DataQueue.ts" />
     <None Remove="src\Visualizer\ts\DatumStore.ts" />
@@ -40,6 +41,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Content Include="logs\stub.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="src\Shared\webcrap\authcrap.js" />
     <Content Include="src\Shared\webcrap\authcrap.js.map" />
     <Content Include="src\Shared\webcrap\datacrap.js" />
@@ -115,12 +119,12 @@
     <Folder Include="src\css\" />
     <Folder Include="src\script\" />
     <Folder Include="src\Visualizer\css\" />
+    <Folder Include="wwwroot\dynamic\" />
   </ItemGroup>
 
   <ItemGroup>
     <None Include="appsettings.Development.json" />
     <None Include="wwwroot\css\custom.css" />
-    <None Include="wwwroot\css\plugins.css" />
   </ItemGroup>
 
 </Project>

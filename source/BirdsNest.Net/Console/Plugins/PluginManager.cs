@@ -11,7 +11,7 @@ namespace Console.Plugins
     public class PluginManager
     {
         private string _pluginspath = "Plugins";
-        private string _csspath = "wwwroot/css";
+        private string _csspath = "wwwroot/dynamic";
         private ILogger _logger;
 
 
