@@ -43,8 +43,11 @@ namespace Console.neo4jProxy.AdvancedSearch.Conditions
                 case "STRING":
                     retcond = new StringCondition();
                     break;
-                case "MATH":
+                case "NUMBER":
                     retcond = new MathCondition();
+                    break;
+                case "BOOLEAN":
+                    retcond = new BooleanCondition();
                     break;
                 case "REGEX":
                     retcond = new RegExCondition();
