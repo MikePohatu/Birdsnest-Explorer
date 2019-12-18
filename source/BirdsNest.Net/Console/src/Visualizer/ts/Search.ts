@@ -183,7 +183,7 @@ class OrCondition extends AndOrCondition {
 }
 
 var ConditionOperators = {
-    "MATH": ["=", ">", "<"],
+    "NUMBER": ["=", ">", "<", "<=", ">="],
     "STRING": ["=", "StartsWith", "EndsWith", "Contains"],
     "BOOLEAN": ["="]
 }

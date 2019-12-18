@@ -5,9 +5,9 @@ using System.Linq;
 
 namespace Console.neo4jProxy.AdvancedSearch.Conditions
 {
-    public class MathCondition: ICondition
+    public class NumberCondition: ICondition
     {
-        private string[] _validoperators = new string[] { "=", ">", "<" };
+        private string[] _validoperators = new string[] { "=", ">", "<", "<=", ">=" };
         private string _operator = "=";
 
         [JsonProperty("Type")]
@@ -49,7 +49,7 @@ namespace Console.neo4jProxy.AdvancedSearch.Conditions
 
         public string ToTokenizedSearchString()
         {
-            return this.TokenizedName + "." + this.Property + " " + this.Operator + " $" + this.TokenizedValue + "";
+            return this.TokenizedName + "." + this.Property + " " + this.Operator + " " + this.TokenizedValue + "";
         }
 
         public void Tokenize(SearchTokens tokens)

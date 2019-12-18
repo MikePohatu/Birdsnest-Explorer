@@ -333,7 +333,7 @@ export default class AdvancedSearchCoordinator {
 				if (!conf) { return;}
             }
 
-			console.log(this.SearchData);
+			//console.log(this.SearchData);
             var urlBase = [location.protocol, '//', location.host, location.pathname].join('');
             var encodedData = webcrap.misc.encodeUrlB64(JSON.stringify(this.SearchData));
             //console.log(urlBase);
@@ -1237,7 +1237,7 @@ export default class AdvancedSearchCoordinator {
 		let datum: any = GetNode(itemname, this.SearchData);
 
 		//console.log("label: " + itemname);
-		//console.log("property: " + property);
+		console.log("property: " + property);
 		//console.log("datum: " );
 		//console.log(datum);
 		//console.log(this.NodeDataTypes);
@@ -1259,7 +1259,7 @@ export default class AdvancedSearchCoordinator {
 			proptype = "STRING";
 		}
 
-		//console.log("proptype: " + proptype);
+		console.log("proptype: " + proptype);
 		//console.log(this.EditingTreeNode);
 
 		//update view
@@ -1267,7 +1267,7 @@ export default class AdvancedSearchCoordinator {
 			d3.select("#searchNotOptions").classed("hidden", false);
 			d3.select("#searchCaseOptions").classed("hidden", false);
 			d3.select("#searchValInput").classed("hidden", false);
-			d3.select("#searchBoolInput").classed("hidden", true);			
+			d3.select("#searchBoolInput").classed("hidden", true);	
 		}
 		else if (proptype === "NUMBER") {
 			d3.select("#searchNotOptions").classed("hidden", false);
@@ -1285,9 +1285,10 @@ export default class AdvancedSearchCoordinator {
 		//check if the property type has actually changed
 		if (this.EditingTreeNode.Item.Type === proptype) { return; }
 
-		let cond = GetCondition(proptype);
+		let cond: ICondition = GetCondition(proptype);		
 		this.EditingTreeNode.Item = cond;
 		this.EditingTreeNode.Parent.Rebuild();
+		this.UpdateSearchOperators(cond);
 	}
 
 	OpenSearchConditionDetails(treenode: ViewTreeNode<ICondition>) {
@@ -1372,21 +1373,26 @@ export default class AdvancedSearchCoordinator {
             //if (webcrap.misc.isNullOrWhitespace(item.Label)) { option.setAttribute("disabled", ""); }
 		});
 
-		//*** setup the searchOperator list
-		var searchOperator = document.getElementById("searchOperator");
-		webcrap.dom.ClearOptions(searchOperator);
-
-		//var cond: ICondition = datum.data.Item;
-		//console.log(ConditionOperators[condition.Type]);
-		ConditionOperators[condition.Type].forEach(function (operator) {
-			webcrap.dom.AddOption(searchOperator, operator, operator);
-		});
-
+		this.UpdateSearchOperators(condition);
 
 		if (typeof callback === "function") {
 			callback();
 			//setTimeout(callback, 5);
 		}
+	}
+
+	UpdateSearchOperators(condition: ICondition) {
+		console.log("UpdateSearchOperators started");
+		console.log(condition);
+		//*** setup the searchOperator list
+		var searchOperator = document.getElementById("searchOperator");
+		webcrap.dom.ClearOptions(searchOperator);
+
+		//var cond: ICondition = datum.data.Item;
+		console.log(ConditionOperators);
+		ConditionOperators[condition.Type].forEach(function (operator) {
+			webcrap.dom.AddOption(searchOperator, operator, operator);
+		});
 	}
 
 	onSearchConditionItemChanged () {

@@ -44,7 +44,7 @@ namespace Console.neo4jProxy.AdvancedSearch.Conditions
                     retcond = new StringCondition();
                     break;
                 case "NUMBER":
-                    retcond = new MathCondition();
+                    retcond = new NumberCondition();
                     break;
                 case "BOOLEAN":
                     retcond = new BooleanCondition();

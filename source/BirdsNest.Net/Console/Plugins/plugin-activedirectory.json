@@ -57,7 +57,10 @@
         "name": {},
         "path": {},
         "rid": {},
-        "samaccountname": {}
+        "samaccountname": {},
+        "scope": {
+          "type": "number"
+        }
       },
       "default": "samaccountname",
       "subtype": "grouptype",
@@ -100,6 +103,9 @@
         "primarygroupid": {},
         "rid": {},
         "samaccountname": {},
+        "scope": {
+          "type": "number"
+        },
         "state": {},
         "userprincipalname": {}
       },
