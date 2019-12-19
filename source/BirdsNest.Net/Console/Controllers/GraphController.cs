@@ -104,15 +104,16 @@ namespace Console.Controllers
         [HttpPost("edges")]
         public async Task<object> GetEdgesForNodes([FromBody]List<long> value)
         {
-            var d = await this._service.GetRelationshipsAsync(value);
-            return d;
+            var rset = await this._service.GetRelationshipsAsync(value);
+
+            return rset;
         }
 
         // POST api/graph/directloops
         [HttpPost("directloops")]
-        public object GetLoopsForNodes([FromBody]List<long> value)
+        public async Task<object> GetDirectLoopsForNodes([FromBody]List<long> value)
         {
-            var d = this._service.GetDirectLoops(value);
+            var d = await this._service.GetDirectLoopsAsync(value);
             return d;
         }
 

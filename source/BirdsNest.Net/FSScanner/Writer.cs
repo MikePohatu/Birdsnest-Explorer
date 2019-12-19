@@ -72,7 +72,7 @@ namespace FSScanner
                     path = folder.Path,
                     lastfolder = folder.PermParent,
                     inheritancedisabled = folder.InheritanceDisabled,
-                    blocked = folder.Blocked.ToString(),
+                    blocked = folder.Blocked,
                     name = folder.Name,
                     scanid = this.ScanID,
                     fsid = this.FsID

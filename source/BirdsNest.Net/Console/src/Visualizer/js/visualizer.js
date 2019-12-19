@@ -476,6 +476,25 @@ function addSearchResults(results, callback) {
             //console.log(data);
 
             addResultSet(data);
+
+            //find direct loops between nodes e.g. node1<-[]->node2. The edges will need altering in the graph 
+            //so they don't overlap
+            getDirectLoopsForNodes(nodeids, function (loops) {
+                //console.log("loops");
+                //console.log(loops);
+
+                if (loops.Edges.length > 0) {
+                    loops.Edges.forEach(function (edge) {
+                        let loopEdge = graphedges.GetDatum(edge.db_id);
+                        loopEdge.shift = true;
+                        //console.log("loopEdge");
+                        //console.log(loopEdge);
+                    });
+
+                    if (simController.simRunning === false) { updateLocationsEdges(); }
+                }
+            });
+
             addSvgNodes(graphnodes.GetArray());
             addSvgEdges(graphedges.GetArray());
             restartLayout();
@@ -1443,21 +1462,27 @@ function updateLocationsEdges() {
     //console.log("updateLocationsEdges");
     let alledges = edgeslayer.selectAll(".edges").data(graphedges.GetArray());
     let edgebgwidth = 13;
+    let defaultshift = defaultsize / 2.5;
     alledges.each(function (d) {
         //console.log(d);
         let diagLine = new Slope(d.source.cx, d.source.cy, d.target.cx, d.target.cy);
+        let lineshift = 0;
+
+        if (d.shift === true) {
+            lineshift = defaultshift;
+        }
 
         //move and rotate the edge line to the right spot
         let edge = d3.select(this).attr("transform", function () {
             return "rotate(" + diagLine.deg + " " + diagLine.x1 + " " + diagLine.y1 + ") " +
-                "translate(" + diagLine.x1 + " " + diagLine.y1 + ")";
+                "translate(" + diagLine.x1 + " " + (diagLine.y1 + lineshift) + ")";
         });
 
         //do the bg as well
         graphbglayer.select("#edgebg_" + d.db_id)
             .attr("transform", function () {
                 return "rotate(" + diagLine.deg + " " + diagLine.x1 + " " + diagLine.y1 + ") " +
-                    "translate(" + diagLine.x1 + " " + diagLine.y1 + ")";
+                    "translate(" + diagLine.x1 + " " + (diagLine.y1 + lineshift) + ")";
             })
             .attr("d", function () {
                 return "M 0 -" + edgebgwidth + " " +
@@ -1493,7 +1518,7 @@ function updateLocationsEdges() {
             });
 
         edge.selectAll(".edgelabel")
-            .attr("transform-origin", "30,0")
+            .attr("transform-origin", "30," + lineshift)
             .attr("transform", function (d) {
                 //let translation;
                 if (diagLine.x2 > diagLine.x1) {
@@ -1553,6 +1578,7 @@ function getEdgesForNodes(nodelist, callback) {
 }
 
 function getDirectLoopsForNodes(nodelist, callback) {
+    var postdata = JSON.stringify(nodelist);
     webcrap.data.apiPostJson('/api/graph/directloops', postdata, callback);
 }
 

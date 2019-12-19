@@ -141,9 +141,9 @@ namespace Console.neo4jProxy
             }
         }
 
-        public async Task<object> GetRelationshipsAsync(List<long> nodeids)
+        public async Task<ResultSet> GetRelationshipsAsync(List<long> nodeids)
         {
-            object o = null;
+            ResultSet o = null;
             await Task.Run(() => o = GetRelationships(nodeids));
 
             return o;
@@ -173,6 +173,15 @@ namespace Console.neo4jProxy
 
                 return returnedresults;
             }
+        }
+
+
+        public async Task<ResultSet> GetDirectLoopsAsync(List<long> nodeids)
+        {
+            ResultSet o = null;
+            await Task.Run(() => o = GetDirectLoops(nodeids));
+
+            return o;
         }
 
         public ResultSet GetDirectLoops(List<long> nodeids)

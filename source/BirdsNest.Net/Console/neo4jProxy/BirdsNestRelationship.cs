@@ -18,8 +18,11 @@ namespace Console.neo4jProxy
         [JsonProperty("target")]
         public long Target { get; private set; } = 0;
 
-        [JsonProperty("bidir")]
-        public bool Bidirectional { get; private set; } = false;
+        /// <summary>
+        /// Does the edge need to be shifted in the visualizer to avoid overlap
+        /// </summary>
+        [JsonProperty("shift")]
+        public bool Shift { get; private set; } = false;
 
         [JsonProperty("label")]
         public string Label { get; private set; } = string.Empty;
