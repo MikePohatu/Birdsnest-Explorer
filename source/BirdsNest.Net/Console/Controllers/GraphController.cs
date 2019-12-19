@@ -108,6 +108,14 @@ namespace Console.Controllers
             return d;
         }
 
+        // POST api/graph/directloops
+        [HttpPost("directloops")]
+        public object GetLoopsForNodes([FromBody]List<long> value)
+        {
+            var d = this._service.GetDirectLoops(value);
+            return d;
+        }
+
         // POST api/graph/edges/direct
         [HttpPost("edges/direct")]
         public async Task<object> GetDirectEdgesForNodes([FromBody]List<long> value)

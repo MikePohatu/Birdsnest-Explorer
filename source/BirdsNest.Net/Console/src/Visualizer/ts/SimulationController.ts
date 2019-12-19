@@ -55,7 +55,7 @@ export default class SimulationController {
             .force("link", d3.forceLink()
                 .id(function (d: ISimLink<ISimNode>) { return d.db_id; })
                 .distance(200)
-                .strength(0.1))
+                .strength(0.3))
             .velocityDecay(velocityDecay)
             .alphaDecay(alphaDecay);
 
@@ -74,7 +74,8 @@ export default class SimulationController {
         this.treesimulation
             .force("link", d3.forceLink()
                 .id(function (d: ISimLink<ISimNode>) { return d.db_id; })
-                .distance(150))
+                .distance(150)
+                .strength(0.8))
             .velocityDecay(velocityDecay)
             .alphaDecay(alphaDecay);
     }

@@ -175,6 +175,34 @@ namespace Console.neo4jProxy
             }
         }
 
+        public ResultSet GetDirectLoops(List<long> nodeids)
+        {
+            using (ISession session = this._driver.Session())
+            {
+                ResultSet returnedresults = new ResultSet();
+                try
+                {
+                    session.ReadTransaction(tx =>
+                    {
+                        string query = "UNWIND $ids AS nodeid "+
+                            "MATCH p = ((s) -[r1]->(t) -[r2]->(s)) "+
+                            "WHERE ID(s)= nodeid AND ID(t) IN $ids "+
+                            "WITH collect(r1) + collect(r2) as rels "+
+                            "UNWIND rels as r "+
+                            "RETURN DISTINCT r";
+                        IStatementResult dbresult = tx.Run(query, new { ids = nodeids });
+                        returnedresults.Append(ParseResults(dbresult));
+                    });
+                }
+                catch
+                {
+                    //logging to add
+                }
+
+                return returnedresults;
+            }
+        }
+
         public async Task<object> GetDirectRelationshipsAsync(List<long> nodeids)
         {
             object o = null;

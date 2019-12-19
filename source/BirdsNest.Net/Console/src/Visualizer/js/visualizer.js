@@ -428,27 +428,6 @@ function onSourceAddClicked(nodeid) {
     //updateSearchDetails(nodeid, 'source');
 }
 
-//export function updateSearchDetails(nodeid, elprefix) {
-//    //console.log("onSourceAddClicked: " + nodeid);
-//    var node = graphnodes.GetDatum(nodeid);
-//    //console.log(node);
-//    d3.select("#" + elprefix + "Type").property('value', node.labels[0]);
-//    updateNodeProps();
-//    var propname = 'name';
-//    var propval = node.name;
-
-//    if (node.properties.hasOwnProperty('id')) {
-//        propname = 'id';
-//        propval = node.properties.id;
-//    } else if (node.properties.hasOwnProperty('path')) {
-//        propname = 'path';
-//        propval = node.properties.path;
-//    }
-
-//    d3.select("#" + elprefix + "Prop").property('value', propname);
-//    d3.select("#" + elprefix + "Val").property('value', propval);
-//}
-
 function onLayoutFinished() {
     //console.log("onLayoutFinished");
     //simRunning = false;
@@ -1573,6 +1552,9 @@ function getEdgesForNodes(nodelist, callback) {
     webcrap.data.apiPostJson('/api/graph/edges', postdata, callback);
 }
 
+function getDirectLoopsForNodes(nodelist, callback) {
+    webcrap.data.apiPostJson('/api/graph/directloops', postdata, callback);
+}
 
 function getDirectEdgesForNodeList(nodelist, callback) {
     var postdata = JSON.stringify(nodelist);
