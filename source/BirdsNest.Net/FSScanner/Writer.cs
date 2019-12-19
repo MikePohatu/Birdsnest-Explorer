@@ -204,7 +204,7 @@ namespace FSScanner
             string query = "MATCH (f:" + Types.Folder +") "+
                 "WHERE f.fsid = $fsid " +
                 "WITH f " +
-                "MATCH(f)-[r]->() WHERE r.lastscan <> $scanid " +
+                "MATCH (f)-[r]->() WHERE r.lastscan <> $scanid " +
                 "DELETE r ";
 
             int nodesdeleted = 0;
