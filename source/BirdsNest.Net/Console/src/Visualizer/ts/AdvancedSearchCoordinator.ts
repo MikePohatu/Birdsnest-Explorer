@@ -137,7 +137,7 @@ export default class AdvancedSearchCoordinator {
 			me.onSearchNodeSaveAndCondClicked();
 		});
 		d3.select("#searchProp").on("change", function () {
-			me.onSearchPropChanged();
+			me.onSearchConditionPropChanged();
 		});
 		d3.select("#searchNodeDeleteBtn").on("click", function () {
 			me.onSearchNodeDelBtnClicked(this);
@@ -1229,12 +1229,17 @@ export default class AdvancedSearchCoordinator {
 		this.ConditionDetailsModal.close();
 	}
 
-	onSearchPropChanged() {
-		//console.log("onSearchPropChanged started");
+	onSearchConditionPropChanged() {
+		//console.log("onSearchConditionPropChanged started");
 		let itemname = (document.getElementById("searchItem") as HTMLSelectElement).value;
+		if (misccrap.isNullOrWhitespace(itemname)) { return; }
+
+		//if (this.EditingTreeNode.Item.Type)
 		let property = (document.getElementById("searchProp") as HTMLSelectElement).value;
 
 		let datum: any = GetNode(itemname, this.SearchData);
+		if (misccrap.isNullOrWhitespace(datum.Label)) { return; } //label hasn't been set yet. onSearchConditionPropChanged will show the user an error
+
 
 		//console.log("label: " + itemname);
 		//console.log("property: " + property);
