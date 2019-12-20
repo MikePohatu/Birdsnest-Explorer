@@ -1244,6 +1244,11 @@ export default class AdvancedSearchCoordinator {
 			if (Number(typeddatum.Min) < 0 || Number(typeddatum.Max) < 0) { return; } //variable length path. not supported. onSearchConditionItemChanged will show the user an error
 		}
 
+		//final check
+		if (datum === null) {
+			console.error("Unable to find search datum for item: " + itemname);
+			return;
+		}
 		if (misccrap.isNullOrWhitespace(datum.Label)) { return; } //label hasn't been set yet. onSearchConditionItemChanged will show the user an error
 
 
