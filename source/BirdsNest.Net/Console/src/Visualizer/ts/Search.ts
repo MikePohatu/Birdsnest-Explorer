@@ -120,7 +120,14 @@ function GetEdge(name: string, search: Search): SearchEdge {
 	return null;
 }
 
-class SearchNode {
+
+interface ISearchItem {
+    Type: string;
+    Name: string;
+    Label: string;
+}
+
+class SearchNode implements ISearchItem {
     Type: string = "SearchNode";
     Name: string = "";
     Label: string = "";
@@ -131,10 +138,10 @@ class SearchNode {
 
     constructor() {
         this.ID = webcrap.misc.generateUID();
-    }
+    }  
 }
 
-class SearchEdge {
+class SearchEdge implements ISearchItem {
     Type: string = "SearchEdge";
     Name: string = "";
     Label: string = "";
@@ -147,6 +154,24 @@ class SearchEdge {
         this.ID = webcrap.misc.generateUID();
     }
 }
+
+function CopySearchNode(node: SearchNode): SearchNode {
+    let newnode = new SearchNode();
+    newnode.Name = node.Name;
+    newnode.Label = node.Label;
+    return newnode;
+}
+
+function CopySearchEdge(edge: SearchEdge): SearchEdge {
+    let newedge = new SearchEdge();
+    newedge.Name = edge.Name;
+    newedge.Label = edge.Label;
+    newedge.Direction = edge.Direction;
+    newedge.Min = edge.Min;
+    newedge.Max = edge.Max;
+    return newedge;
+}
+
 
 interface ICondition {
     Type: string;
@@ -172,6 +197,71 @@ function IsConditionValid(condition: ICondition): boolean {
 class AndOrCondition implements ICondition {
     Type: string = "ANDOR";
     Conditions: ICondition[] = [];
+}
+
+function FindItemNamed(root: AndOrCondition, name: string): ConditionBase[] {
+    //console.log("FindItemNamed");
+    //console.log(root);
+
+    let matches: ConditionBase[] = [];
+
+    root.Conditions.forEach(function (cond: ICondition) {
+        let condbase = cond as ConditionBase;
+        if (condbase) {
+            if (condbase.Name === name) {
+                //console.log("Condition name match");
+                //console.log(condbase);
+                matches.push(condbase);
+            }
+        }
+        else {
+            let submatches: ConditionBase[] = FindItemNamed((cond as AndOrCondition), name);
+            if (submatches.length > 0) {
+                matches.concat(submatches);
+            }
+        }
+    });
+    return matches;
+}
+
+function ItemNamedExists(root: AndOrCondition, name: string): boolean {
+    let i;
+    for (i = 0; i < root.Conditions.length; i++) {
+        let cond = root.Conditions[i];
+        let condbase = cond as ConditionBase;
+        if (condbase) {
+            if (condbase.Name === name) {
+                return true;
+            }
+        }
+        else {
+            if (ItemNamedExists((cond as AndOrCondition), name)) { return true; }
+        }
+    }
+
+    return false;
+}
+
+function RemoveConditionsForName(root: AndOrCondition, name: string): void {
+    //console.log("RemoveConditionsForName");
+
+    var i;
+    for (i = 0; i < root.Conditions.length; i++) {
+        let cond = root.Conditions[i];
+        let condbase = cond as ConditionBase;
+        //console.log(cond);
+
+        if (condbase) {
+            if (condbase.Name === name) {
+                //console.log("trying to splice");
+                //console.log(condbase);
+                root.Conditions.splice(i, 1);
+            }
+        }
+        else {
+            RemoveConditionsForName((cond as AndOrCondition), name);
+        }
+    }
 }
 
 class AndCondition extends AndOrCondition {
@@ -283,12 +373,18 @@ export {
     BooleanCondition,
     ConditionBase,
     ICondition,
+    ISearchItem,
     OrCondition,
     AndCondition,
     AndOrCondition,
     Search,
     SearchNode,
     SearchEdge,
+    CopySearchNode,
+    CopySearchEdge,
+    RemoveConditionsForName,
+    FindItemNamed,
+    ItemNamedExists,
     SearchTypes,
     GetCondition,
     AddNode,

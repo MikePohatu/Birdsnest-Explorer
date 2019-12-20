@@ -22,7 +22,12 @@
     }
   },
   "edgedatatypes": {
-    "AD_MEMBER_OF": {}
+    "AD_MEMBER_OF": {
+      "properties": {
+        "domainid": {},
+        "lastscan": {}
+      }
+    }
   },
   "nodedatatypes": {
     "AD_Computer": {

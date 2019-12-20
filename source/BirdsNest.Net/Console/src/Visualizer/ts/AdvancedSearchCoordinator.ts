@@ -10,10 +10,16 @@ import { webcrap } from "../../shared/webcrap/webcrap";
 import {
 	Search,
 	ICondition,
+	ISearchItem,
 	ConditionBase,
 	AndOrCondition,
 	SearchNode,
 	SearchEdge,
+	CopySearchNode,
+	CopySearchEdge,
+	FindItemNamed,
+	ItemNamedExists,
+	RemoveConditionsForName,
 	GetCondition,
 	MoveNodeRight,
 	MoveNodeLeft,
@@ -44,7 +50,7 @@ export default class AdvancedSearchCoordinator {
 	PaneHeight: number = 65;
 	Margin: number = 5;
 	SvgContainerHeight: number = 90;
-	TreeNodeRoot: ViewTreeNode<ICondition> = null;
+	ConditionTreeRoot: ViewTreeNode<ICondition> = null;
 	NodeDataTypes: object = null;
 	EdgeDataTypes: object = null;
 	SimpleMode: boolean = true;
@@ -212,8 +218,8 @@ export default class AdvancedSearchCoordinator {
 		//console.log(json);
 		this.SearchData = json;
 		if (this.SearchData.Condition) {
-			this.TreeNodeRoot = new ViewTreeNode(this.SearchData.Condition, this.ViewTreeNodeConditionsProp, null);
-			this.TreeNodeRoot.Build();
+			this.ConditionTreeRoot = new ViewTreeNode(this.SearchData.Condition, this.ViewTreeNodeConditionsProp, null);
+			this.ConditionTreeRoot.Build();
 		}
 		this.UpdateSearch(false);
 		this.SimpleMode = false;
@@ -287,7 +293,7 @@ export default class AdvancedSearchCoordinator {
 		//console.log("RunSearch started");
 		//console.log(this);
 
-		if (this.TreeNodeRoot !== null && IsConditionValid(this.TreeNodeRoot.Item) === false) {
+		if (this.ConditionTreeRoot !== null && IsConditionValid(this.ConditionTreeRoot.Item) === false) {
 			alert("You have conditions with incomplete data. This search is cannnot continue");
 			//console.log("Invalid condition found. Search cancelled");
 			return;
@@ -328,7 +334,7 @@ export default class AdvancedSearchCoordinator {
 			alert("The search is empty. There is nothing to share.");
 		}
 		else {
-			if (this.TreeNodeRoot !== null && IsConditionValid(this.TreeNodeRoot.Item) === false) {
+			if (this.ConditionTreeRoot !== null && IsConditionValid(this.ConditionTreeRoot.Item) === false) {
 				var conf = confirm("You have conditions with incomplete data. This search is not valid. Do you with to continue?");
 				if (!conf) { return;}
             }
@@ -738,7 +744,7 @@ export default class AdvancedSearchCoordinator {
 		var node = this.onSearchNodeSaveBtnClicked();
 		var cond: ICondition = GetCondition("STRING");
 
-		this.NewTreeNode = new ViewTreeNode(cond, this.ViewTreeNodeConditionsProp, this.TreeNodeRoot);
+		this.NewTreeNode = new ViewTreeNode(cond, this.ViewTreeNodeConditionsProp, this.ConditionTreeRoot);
 		this.OpenSearchConditionDetails(this.NewTreeNode);
 		(document.getElementById("searchItem") as HTMLSelectElement).value = node.Name;
 		d3.select("#searchItem").dispatch('change');
@@ -749,15 +755,28 @@ export default class AdvancedSearchCoordinator {
 		//console.log(this);
 		var node: SearchNode = d3.select("#searchNodeDetails").datum() as SearchNode;
 		var nodeEl = d3.select("#searchnode_" + node.Name);
+		let newlabel = (document.getElementById("nodeType") as HTMLSelectElement).value;
+		let newname = (document.getElementById("nodeIdentifier") as HTMLInputElement).value;
 
-		//console.log(node);
+		//now run checks for conditions
+		if (node.Label !== newlabel || node.Name !== newname) {
+			//console.log("existingconds");
+			//console.log(existingconds);
+			if (ItemNamedExists(this.ConditionTreeRoot.Item as AndOrCondition, node.Name)) {
+				var conf = confirm("You have changed the type of item " + node.Name + ". There are existing conditions that may no longer valid. Saving this item will cause those conditions to be removed.\n\nDo you with to continue?");
+				if (!conf) { return; }
+				RemoveConditionsForName(this.ConditionTreeRoot.Item as AndOrCondition, node.Name);
+				this.ConditionTreeRoot.Rebuild();
+				this.UpdateConditions();
+			}
+		}
 
 		if (node.Label !== "") {
 			nodeEl.classed(node.Label, false);
 		}
 
-		node.Name = (document.getElementById("nodeIdentifier") as HTMLInputElement).value;
-		node.Label = (document.getElementById("nodeType") as HTMLSelectElement).value;
+		node.Name = newname;
+		node.Label = newlabel;
 		//console.log(node);
 		this.UpdateNodes(false);
 		this.NodeDetailsModal.close();
@@ -818,23 +837,64 @@ export default class AdvancedSearchCoordinator {
 		//console.log("newdir: " + dir);
 	}
 
+	//onHopsSwitchChanged() {
+	//	let edge: SearchEdge = d3.select("#searchEdgeDetails").datum() as SearchEdge;
+	//	var hopsswitch: HTMLInputElement = document.getElementById("hopsSwitch") as HTMLInputElement;
+	//	if (hopsswitch.checked) {
+	//		edge.Min = (document.getElementById("minSliderVal") as HTMLInputElement).value;
+	//		edge.Max = (document.getElementById("maxSliderVal") as HTMLInputElement).value;
+	//	}
+	//	else {
+	//		edge.Min = "-1";
+	//		edge.Max = "-1";
+	//	}
+	//}
+
 	onSearchEdgeSaveBtnClicked () {
 		//console.log("onSearchEdgeSaveBtnClicked started");
 		//console.log(this);
 		var me = this;
 
-		var edge: SearchEdge = d3.select("#searchEdgeDetails").datum() as SearchEdge;
-		var edgeEl = d3.select("#searchedge_" + edge.ID);
+		let edge: SearchEdge = d3.select("#searchEdgeDetails").datum() as SearchEdge;
+		let edgeEl = d3.select("#searchedge_" + edge.ID);
 
+		let newlabel: string = (document.getElementById("edgeType") as HTMLSelectElement).value;
+		let newname: string = (document.getElementById("edgeIdentifier") as HTMLInputElement).value;
 		//console.log("#searchedge_" + edge.ID);
 		//console.log(edge);
 		//console.log(edgeEl);
-
-		edge.Name = (document.getElementById("edgeIdentifier") as HTMLInputElement).value;
-		edge.Label = (document.getElementById("edgeType") as HTMLSelectElement).value;
-		edge.Direction = (document.getElementById('dirIcon').getAttribute("data-dir"));
+		//console.log(newlabel);
+		
+		//now run checks for conditions
+		if (edge.Label !== newlabel || edge.Name !== newname) {
+			//console.log("existingconds");
+			//console.log(existingconds);
+			if (ItemNamedExists(this.ConditionTreeRoot.Item as AndOrCondition, edge.Name)) {
+				var conf = confirm("You have changed the type of item " + edge.Name + ". There are existing conditions that are no longer valid. Saving this item will cause those conditions to be removed.\n\nDo you with to continue?");
+				if (!conf) { return; }
+				RemoveConditionsForName(this.ConditionTreeRoot.Item as AndOrCondition, edge.Name);
+				this.ConditionTreeRoot.Rebuild();
+				this.UpdateConditions();
+			}
+		}
 
 		var hopsswitch: HTMLInputElement = document.getElementById("hopsSwitch") as HTMLInputElement;
+		if (Number(edge.Max) >= 0 || Number(edge.Max) >= 0 && hopsswitch.checked === false) {
+			if (ItemNamedExists(this.ConditionTreeRoot.Item as AndOrCondition, edge.Name)) {
+				var conf = confirm("Conditions are not supported if hops are unlimited. Saving this item will cause existing conditions for item " + edge.Name + " to be removed.\n\nDo you with to continue?");
+				if (!conf) { return; }
+				RemoveConditionsForName(this.ConditionTreeRoot.Item as AndOrCondition, edge.Name);
+				this.ConditionTreeRoot.Rebuild();
+				this.UpdateConditions();
+			}
+		}
+
+		//update everything
+		edge.Name = newname;
+		edge.Label = newlabel;
+		edge.Direction = (document.getElementById('dirIcon').getAttribute("data-dir"));
+
+		
 		if (hopsswitch.checked) {
 			edge.Min = (document.getElementById("minSliderVal") as HTMLInputElement).value;
 			edge.Max = (document.getElementById("maxSliderVal") as HTMLInputElement).value;
@@ -851,6 +911,19 @@ export default class AdvancedSearchCoordinator {
 		}, 10);
 
 		this.EdgeDetailsModal.close();
+	}
+
+	CheckForConditions(olditem: ISearchItem): ConditionBase[] {
+		let matchedconds: ConditionBase[] = []; 
+
+		//check the edge label has changed. If so, we will need to also remove any conditions based on this edge as they will invalid
+		if (misccrap.isNullOrWhitespace(olditem.Label) === false) {
+			let rootcond = this.ConditionTreeRoot.Item as AndOrCondition;
+
+			matchedconds = FindItemNamed(rootcond, olditem.Name);
+		}
+
+		return matchedconds;
 	}
 
 	UpdateNodeProps () {
@@ -960,18 +1033,18 @@ export default class AdvancedSearchCoordinator {
 
 	UpdateConditions () {
         //console.log("UpdateConditions start:" + this.ConditionElementID);
-        //console.log(this.TreeNodeRoot);
+        //console.log(this.ConditionTreeRoot);
 		//console.log(this);
 		//console.log(this.SearchData.Edges);
 
 		var viewel = d3.select("#" + this.ConditionElementID);
 
-		if (this.TreeNodeRoot === null) {
+		if (this.ConditionTreeRoot === null) {
 			viewel.selectAll(".searchcondition").remove();
 			return;
 		}
 
-		var d3root = d3.hierarchy(this.TreeNodeRoot, function (d: ViewTreeNode<ICondition>) { return d.Children; });
+		var d3root = d3.hierarchy(this.ConditionTreeRoot, function (d: ViewTreeNode<ICondition>) { return d.Children; });
 		if (d3root === null) { return; }
 		var nodes = d3root.count().descendants();
 		
@@ -1161,9 +1234,9 @@ export default class AdvancedSearchCoordinator {
 		//remove the AND/OR labels and readd them
 		condgroups.selectAll(".and-or-label").remove();
 
-		condgroups.each(function (d: d3.HierarchyPointNode<ViewTreeNode<AndOrCondition>>, i: number) {
+		condgroups.each(function (d: d3.HierarchyPointNode<ViewTreeNode<ICondition>>, i: number) {
 			//console.log(this);
-			var treenode: ViewTreeNode<AndOrCondition> = d.data;
+			var treenode: ViewTreeNode<ICondition> = d.data;
 			//console.log(treenode);
 			if (treenode.Children !== null && treenode.Children.length > 1) {
 				var j;
@@ -1234,10 +1307,8 @@ export default class AdvancedSearchCoordinator {
 		let itemname = (document.getElementById("searchItem") as HTMLSelectElement).value;
 		if (misccrap.isNullOrWhitespace(itemname)) { return; }
 
-		//if (this.EditingTreeNode.Item.Type)
-		let property = (document.getElementById("searchProp") as HTMLSelectElement).value;
-
-		let datum: any = GetNode(itemname, this.SearchData);
+		let datum: any;
+		datum = GetNode(itemname, this.SearchData);
 		if (datum === null) {
 			datum = GetEdge(itemname, this.SearchData);
 			let typeddatum = datum as SearchEdge;
@@ -1257,35 +1328,31 @@ export default class AdvancedSearchCoordinator {
 		//console.log("datum: " );
 		//console.log(datum);
 		//console.log(this.NodeDataTypes);
-
-		let proptype;
+		let property = (document.getElementById("searchProp") as HTMLSelectElement).value;
+		let proptype = "STRING";
 		//console.log("conversion test: ");
 		//var testdatum = datum as SearchEdge;
 		//console.log(testdatum);
-		if (datum.Type === SearchTypes.SearchNode) {
-			//console.log(this.NodeDataTypes[datum.Label]);
-			proptype = this.NodeDataTypes[datum.Label].properties[property].Type.toUpperCase();
-		}
-		else if (datum.Type === SearchTypes.SearchEdge) {
-			//console.log(this.EdgeDataTypes[datum.Label]);
-			proptype = this.EdgeDataTypes[datum.Label].properties[property].Type.toUpperCase();
-		}
-		else {
-			console.error("Invalid type found when querying search condition");
-			proptype = "STRING";
+
+		if (misccrap.isNullOrWhitespace(property) === false) {
+			if (datum.Type === SearchTypes.SearchNode) {
+				//console.log(this.NodeDataTypes);
+				proptype = this.NodeDataTypes[datum.Label].properties[property].Type.toUpperCase();
+			}
+			else if (datum.Type === SearchTypes.SearchEdge) {
+				//console.log(this.EdgeDataTypes);
+				proptype = this.EdgeDataTypes[datum.Label].properties[property].Type.toUpperCase();
+			}
+			else {
+				console.error("Invalid type found when querying search condition");
+			}
 		}
 
 		//console.log("proptype: " + proptype);
 		//console.log(this.EditingTreeNode);
 
 		//update view
-		if (proptype === "STRING") {
-			d3.select("#searchNotOptions").classed("hidden", false);
-			d3.select("#searchCaseOptions").classed("hidden", false);
-			d3.select("#searchValInput").classed("hidden", false);
-			d3.select("#searchBoolInput").classed("hidden", true);	
-		}
-		else if (proptype === "NUMBER") {
+		if (proptype === "NUMBER") {
 			d3.select("#searchNotOptions").classed("hidden", false);
 			d3.select("#searchCaseOptions").classed("hidden", true);
 			d3.select("#searchValInput").classed("hidden", false);
@@ -1296,6 +1363,12 @@ export default class AdvancedSearchCoordinator {
 			d3.select("#searchCaseOptions").classed("hidden", true);
 			d3.select("#searchValInput").classed("hidden", true);
 			d3.select("#searchBoolInput").classed("hidden", false);
+		}
+		else {
+			d3.select("#searchNotOptions").classed("hidden", false);
+			d3.select("#searchCaseOptions").classed("hidden", false);
+			d3.select("#searchValInput").classed("hidden", false);
+			d3.select("#searchBoolInput").classed("hidden", true);	
 		}
 
 		//check if the property type has actually changed
@@ -1546,18 +1619,18 @@ export default class AdvancedSearchCoordinator {
 	InsertTreeNode(treenode: ViewTreeNode<ICondition>) {
 		if (treenode.Parent !== null) {
 			treenode.Parent.AddChild(treenode);
-			this.TreeNodeRoot.Rebuild();
+			this.ConditionTreeRoot.Rebuild();
 		}
 		else {
-			this.TreeNodeRoot = treenode;
+			this.ConditionTreeRoot = treenode;
 			this.SearchData.Condition = treenode.Item;
-			this.TreeNodeRoot.Build();
+			this.ConditionTreeRoot.Build();
 		}
 	}
 
 	ResetRootTreeNode() {
 		//console.log("ResetRootTreeNode started");
-		this.TreeNodeRoot = null;
+		this.ConditionTreeRoot = null;
 		this.SearchData.Condition = undefined;
 
 		var cond: ICondition = GetCondition("AND");
@@ -1589,8 +1662,8 @@ export default class AdvancedSearchCoordinator {
 		var treenode = this.EditingTreeNode;
 
         //console.log(treenode);
-		//console.log("RootID: " + this.TreeNodeRoot.ID);
-		if (this.TreeNodeRoot.ID === treenode.ID) {
+		//console.log("RootID: " + this.ConditionTreeRoot.ID);
+		if (this.ConditionTreeRoot.ID === treenode.ID) {
 			//delete the conditions and re-add an AND condition 
 			this.ResetRootTreeNode();
 			//d3.selectAll(".searchcondition").remove();
@@ -1602,7 +1675,7 @@ export default class AdvancedSearchCoordinator {
 		}
 		this.EditingTreeNode = null;
 		this.UpdateConditions();
-		//console.log(this.TreeNodeRoot);
+		//console.log(this.ConditionTreeRoot);
 		//console.log("onSearchConditionDeleteClicked finished");
 	}
 
