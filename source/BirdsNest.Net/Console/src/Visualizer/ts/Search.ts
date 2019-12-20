@@ -224,6 +224,29 @@ function RemoveConditionsForName(root: AndOrCondition, name: string): void {
     //console.log("finished");
 }
 
+function ReplaceCondition(root: AndOrCondition, oldcondition: ICondition, newcondition: ICondition): void {
+    //console.log("RemoveConditionsForName");
+    //console.log(root);
+    var i;
+    for (i = 0; i < root.Conditions.length; i++) {
+        let cond: ICondition = root.Conditions[i];
+        //let condbase = cond as ConditionBase;
+        //console.log(condbase);
+
+        if (cond.Type === "OR" || cond.Type === "AND") {
+            //console.log("recursive remove");
+            ReplaceCondition((cond as AndOrCondition), oldcondition, newcondition);
+        }
+        else {
+            if (cond === oldcondition) {
+                //console.log("recursive remove");
+                root.Conditions[i] = newcondition;
+            }
+        } 
+    }
+    //console.log("finished");
+}
+
 class AndCondition extends AndOrCondition {
     Type: string = "AND";
 }
@@ -294,7 +317,12 @@ var SearchTypes = {
     "BooleanCondition": "BooleanCondition",
     "OrCondition": "OrCondition",
     "AndCondition": "AndCondition",
-    "Search": "Search"
+    "Search": "Search",
+    "Number": "NUMBER",
+    "String": "STRING",
+    "Boolean": "BOOLEAN",
+    "And": "AND",
+    "Or": "OR"
 }
 
 function GetCondition(type: string): ICondition {
@@ -341,6 +369,7 @@ export {
     SearchNode,
     SearchEdge,
     RemoveConditionsForName,
+    ReplaceCondition,
     ItemNamedExists,
     SearchTypes,
     GetCondition,
