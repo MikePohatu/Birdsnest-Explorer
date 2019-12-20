@@ -799,9 +799,17 @@ export default class AdvancedSearchCoordinator {
 		//console.log("deleteSearchNode started");
 		//console.log(searchnode);
 		//console.log(this.SearchData);
-		if (confirm("Are you sure you want to delete " + searchnode.Name + "?")) {
+		if (confirm("Are you sure you want to delete " + searchnode.Name + " and any associated conditions?")) {
 			//console.log("deleting: " + searchnode.Name);
+
 			RemoveNode(searchnode, this.SearchData);
+
+			if (ItemNamedExists(this.ConditionTreeRoot.Item as AndOrCondition, searchnode.Name)) {
+				RemoveConditionsForName(this.ConditionTreeRoot.Item as AndOrCondition, searchnode.Name);
+				this.ConditionTreeRoot.Rebuild();
+				this.UpdateConditions();
+			}
+			
 
 			//console.log(this.SearchData);
 			this.hideNodeControls();
@@ -1297,17 +1305,8 @@ export default class AdvancedSearchCoordinator {
 		}
 		if (misccrap.isNullOrWhitespace(datum.Label)) { return; } //label hasn't been set yet. onSearchConditionItemChanged will show the user an error
 
-
-		//console.log("label: " + itemname);
-		//console.log("property: " + property);
-		//console.log("datum: " );
-		//console.log(datum);
-		//console.log(this.NodeDataTypes);
 		let property = (document.getElementById("searchProp") as HTMLSelectElement).value;
 		let proptype = SearchTypes.String;
-		//console.log("conversion test: ");
-		//var testdatum = datum as SearchEdge;
-		//console.log(testdatum);
 
 		if (misccrap.isNullOrWhitespace(property) === false) {
 			if (datum.Type === SearchTypes.SearchNode) {
@@ -1322,9 +1321,6 @@ export default class AdvancedSearchCoordinator {
 				console.error("Invalid type found when querying search condition");
 			}
 		}
-
-		//console.log("proptype: " + proptype);
-		//console.log(this.EditingTreeNode);
 
 		//update view
 		if (proptype === SearchTypes.String) {
