@@ -15,9 +15,6 @@ import {
 	AndOrCondition,
 	SearchNode,
 	SearchEdge,
-	CopySearchNode,
-	CopySearchEdge,
-	FindItemNamed,
 	ItemNamedExists,
 	RemoveConditionsForName,
 	GetCondition,
@@ -752,6 +749,7 @@ export default class AdvancedSearchCoordinator {
 
 	onSearchNodeSaveBtnClicked () {
 		//console.log("onSearchNodeSaveBtnClicked started");
+		//console.log(this.ConditionTreeRoot.Item);
 		//console.log(this);
 		var node: SearchNode = d3.select("#searchNodeDetails").datum() as SearchNode;
 		var nodeEl = d3.select("#searchnode_" + node.Name);
@@ -765,6 +763,7 @@ export default class AdvancedSearchCoordinator {
 			if (ItemNamedExists(this.ConditionTreeRoot.Item as AndOrCondition, node.Name)) {
 				var conf = confirm("You have changed the type of item " + node.Name + ". There are existing conditions that may no longer valid. Saving this item will cause those conditions to be removed.\n\nDo you with to continue?");
 				if (!conf) { return; }
+				
 				RemoveConditionsForName(this.ConditionTreeRoot.Item as AndOrCondition, node.Name);
 				this.ConditionTreeRoot.Rebuild();
 				this.UpdateConditions();
@@ -837,19 +836,6 @@ export default class AdvancedSearchCoordinator {
 		//console.log("newdir: " + dir);
 	}
 
-	//onHopsSwitchChanged() {
-	//	let edge: SearchEdge = d3.select("#searchEdgeDetails").datum() as SearchEdge;
-	//	var hopsswitch: HTMLInputElement = document.getElementById("hopsSwitch") as HTMLInputElement;
-	//	if (hopsswitch.checked) {
-	//		edge.Min = (document.getElementById("minSliderVal") as HTMLInputElement).value;
-	//		edge.Max = (document.getElementById("maxSliderVal") as HTMLInputElement).value;
-	//	}
-	//	else {
-	//		edge.Min = "-1";
-	//		edge.Max = "-1";
-	//	}
-	//}
-
 	onSearchEdgeSaveBtnClicked () {
 		//console.log("onSearchEdgeSaveBtnClicked started");
 		//console.log(this);
@@ -911,19 +897,6 @@ export default class AdvancedSearchCoordinator {
 		}, 10);
 
 		this.EdgeDetailsModal.close();
-	}
-
-	CheckForConditions(olditem: ISearchItem): ConditionBase[] {
-		let matchedconds: ConditionBase[] = []; 
-
-		//check the edge label has changed. If so, we will need to also remove any conditions based on this edge as they will invalid
-		if (misccrap.isNullOrWhitespace(olditem.Label) === false) {
-			let rootcond = this.ConditionTreeRoot.Item as AndOrCondition;
-
-			matchedconds = FindItemNamed(rootcond, olditem.Name);
-		}
-
-		return matchedconds;
 	}
 
 	UpdateNodeProps () {
