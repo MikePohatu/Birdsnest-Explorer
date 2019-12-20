@@ -51,7 +51,13 @@ namespace Console.neo4jProxy.AdvancedSearch
             string min = "";
             string max = "";
 
-			if (this.Min == 1 && this.Max == 1)
+            //labels are not supported on variable length relationships
+            if (this.Min < 0 || this.Max < 0)
+            {
+                name = string.Empty;
+            }
+
+            if (this.Min == 1 && this.Max == 1)
 			{
 				pathlength = string.Empty;
 			}

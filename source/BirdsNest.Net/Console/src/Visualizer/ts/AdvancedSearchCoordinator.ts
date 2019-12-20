@@ -1238,7 +1238,13 @@ export default class AdvancedSearchCoordinator {
 		let property = (document.getElementById("searchProp") as HTMLSelectElement).value;
 
 		let datum: any = GetNode(itemname, this.SearchData);
-		if (misccrap.isNullOrWhitespace(datum.Label)) { return; } //label hasn't been set yet. onSearchConditionPropChanged will show the user an error
+		if (datum === null) {
+			datum = GetEdge(itemname, this.SearchData);
+			let typeddatum = datum as SearchEdge;
+			if (Number(typeddatum.Min) < 0 || Number(typeddatum.Max) < 0) { return; } //variable length path. not supported. onSearchConditionItemChanged will show the user an error
+		}
+
+		if (misccrap.isNullOrWhitespace(datum.Label)) { return; } //label hasn't been set yet. onSearchConditionItemChanged will show the user an error
 
 
 		//console.log("label: " + itemname);
