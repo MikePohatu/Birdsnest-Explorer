@@ -18,13 +18,14 @@ var config = {
     module: {
         rules: [
             {
-                test: /\.(ts|tsx)?$/,
-                use: [
-                    {
-                        loader: 'ts-loader'
-                    }
-                ],
+                test: /\.(ts|tsx)$/,
+                use: [ 'babel-loader', 'ts-loader'],
                 exclude: [/node_modules/, /wwwroot/]
+            },
+            {
+                test: /\.js$/,
+                use: ['babel-loader', "source-map-loader"],
+                enforce: "pre"
             },
             {
                 test: /\.css$/i,
@@ -55,7 +56,8 @@ var config = {
         extensions: [
             '.tsx',
             '.ts',
-            '.js'
+            '.js',
+            '.jsx'
         ]
     },
     plugins: [
