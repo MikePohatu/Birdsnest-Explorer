@@ -6,6 +6,7 @@ const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 
 var config = {
     entry: {
+        polyfill: './src/polyfill-entry.js',
         visualizer: './src/visualizer-entry.js',
         reports: './src/reports-entry.js',
         console: './src/console-entry.js',
@@ -25,7 +26,7 @@ var config = {
             {
                 test: /\.js$/,
                 use: ['babel-loader', "source-map-loader"],
-                enforce: "pre"
+                exclude: [/node_modules/, /wwwroot/]
             },
             {
                 test: /\.css$/i,

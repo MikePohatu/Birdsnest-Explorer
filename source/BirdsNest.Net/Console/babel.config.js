@@ -6,14 +6,14 @@
             "@babel/preset-env",            
             {
                 "debug": true,
+                "useBuiltIns": "entry",
                 "targets": {
                     "chrome": "68",
                     "firefox": "66",
                     "ie": "11"
                 }
             }
-        ],
-        "@babel/preset-typescript"
+        ]
     ];
     //const plugins = [... ];
 
