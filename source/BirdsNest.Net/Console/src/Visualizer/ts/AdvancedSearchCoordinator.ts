@@ -232,11 +232,12 @@ export default class AdvancedSearchCoordinator {
 	onMinSliderChanged() {
 		//console.log("onMinSliderChanged");
 		var maxel = (document.getElementById("maxSliderVal") as HTMLInputElement);
-		var max = maxel.valueAsNumber;
-		var min = (document.getElementById("minSliderVal") as HTMLInputElement).valueAsNumber;
+		var max = Number(maxel.value);
+		var min = Number((document.getElementById("minSliderVal") as HTMLInputElement).value);
 
-        if (max < min) {
-            maxel.valueAsNumber = min;
+		if (max < min) {
+			//console.log("min over max");
+            maxel.value = String(min);
             d3.select('#maxSliderVal').dispatch('change');
         }
 	}
@@ -244,11 +245,12 @@ export default class AdvancedSearchCoordinator {
 	onMaxSliderChanged() {
 		//console.log("onMaxSliderChanged");
 		var minel = (document.getElementById("minSliderVal") as HTMLInputElement);
-		var min = minel.valueAsNumber;
-		var max = (document.getElementById("maxSliderVal") as HTMLInputElement).valueAsNumber;
+		var min = Number(minel.value);
+		var max = Number((document.getElementById("maxSliderVal") as HTMLInputElement).value);
 
-        if (max < min) {
-            minel.valueAsNumber = max;
+		if (max < min) {
+			//console.log("min over max");
+            minel.value = String(max);
             d3.select('#minSliderVal').dispatch('change');
         }
 	}
