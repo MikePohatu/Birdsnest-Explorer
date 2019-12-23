@@ -6,7 +6,6 @@
             "@babel/preset-env",            
             {
                 "debug": true,
-                "useBuiltIns": "entry",
                 "targets": {
                     "chrome": "68",
                     "firefox": "66",
