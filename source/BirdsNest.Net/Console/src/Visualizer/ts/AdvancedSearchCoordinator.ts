@@ -1185,19 +1185,19 @@ export default class AdvancedSearchCoordinator {
 
 		//add the braces to the bg of the condition groups
 		var condgroupentersbg = condgroupenters.selectAll(".conditionbg");
-
+		var ybraceshift = me.SvgContainerHeight / 2 + ypadding + me.YSpacing;
 		condgroupentersbg.append("g")
 			.classed("conditionbrace leftbrace", true)
 			.append("text")
 			.text("{")
-			.attr("alignment-baseline", "hanging")
+			.attr("transform", "translate(0 " + ybraceshift + ")")
 			.attr("font-size", rectheight + "px");
 
 		condgroupentersbg.append("g")
 			.classed("conditionbrace rightbrace", true)
 			.append("text")
 			.text("}")
-			.attr("alignment-baseline", "hanging")
+			.attr("transform", "translate(0 " + ybraceshift + ")")
 			.attr("font-size", rectheight + "px");
 
 		var condgroups = viewel.selectAll(".conditiongroup")
@@ -1453,6 +1453,8 @@ export default class AdvancedSearchCoordinator {
 		ConditionOperators[type].forEach(function (operator) {
 			webcrap.dom.AddOption(searchOperator, operator, operator);
 		});
+
+		//$("#searchOperator").foundation();
 	}
 
 	onSearchConditionItemChanged () {
