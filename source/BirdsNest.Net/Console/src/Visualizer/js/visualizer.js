@@ -438,6 +438,10 @@ function onLayoutFinished() {
     d3.selectAll("#restartLayoutBtn")
         .attr('onclick', 'vis.restartLayout()')
         .attr('title', 'Refresh layout');
+
+    if (isScreenEmpty() === true) {
+        updatePaneSize();
+    }
 }
 
 
@@ -1188,6 +1192,22 @@ export function updatePaneSize() {
         .duration(1000)
         .ease(d3.easeCubicInOut)
         .call(zoomer.translateBy, movex, movey);
+}
+
+function isScreenEmpty() {
+    //console.log("isScreenEmpty");
+    var box = drawingPane.node().getBoundingClientRect();
+    var svgbox = drawingsvg.node().getBBox();
+    //console.log(box);
+    //console.log(svgbox);
+
+    if ((svgbox.x > (box.x + box.width)) || (svgbox.y > (box.y + box.height))
+        || ((svgbox.x + svgbox.width) < box.x) || ((svgbox.y + svgbox.height) < box.y)) {
+        //console.log("true");
+        return true;
+    }
+    //console.log("false");
+    return false;
 }
 
 function onNodeDblClicked(d) {
