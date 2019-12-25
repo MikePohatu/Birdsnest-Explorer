@@ -16,15 +16,25 @@
     }
   },
   "edgedatatypes": {
-    "PUBLISHED_FROM": {},
-    "GIVES_ACCESS_TO_CTX": {}
+    "PUBLISHED_FROM": {
+      "displayname": "Citrix - PUBLISHED_FROM",
+      "description": "Application is published from farm"
+    },
+    "GIVES_ACCESS_TO_CTX": {
+      "displayname": "Citrix - GIVES_ACCESS_TO_CTX",
+      "description": "Item (e.g. AD group) gives access to/enables Citrix item"
+    }
   },
   "nodedatatypes": {
     "CTX_Farm": {
+      "displayname": "Citrix - CTX_Farm",
+      "description": "Citrix farm",
       "icon": "fas fa-server",
       "subtype": "farm"
     },
     "CTX_Application": {
+      "displayname": "Citrix - CTX_Application",
+      "description": "Citrix application",
       "icon": "fas fa-clone",
       "subtype": "farm"
     }

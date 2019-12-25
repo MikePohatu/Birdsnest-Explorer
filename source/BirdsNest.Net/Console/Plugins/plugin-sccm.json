@@ -5,15 +5,35 @@
 
   },
   "edgedatatypes": {
-    "CM_LIMITING_COLLECTION": {},
-    "CM_INCLUDES_COLLECTION": {},
-    "CM_EXCLUDES_COLLECTION": {},
-    "CM_OBJECT_FOR": {},
-    "CM_MEMBER_OF": {},
-    "CM_DEPLOYED_TO": {}
+    "CM_LIMITING_FOR": {
+      "displayname": "SCCM - CM_LIMITING_FOR",
+      "description": "Limiting collection for an SCCM collection"
+    },
+    "CM_INCLUDES_COLLECTION": {
+      "displayname": "SCCM - CM_INCLUDES_COLLECTION",
+      "description": "SCCM collection includes another collection"
+    },
+    "CM_EXCLUDES_COLLECTION": {
+      "displayname": "SCCM - CM_EXCLUDES_COLLECTION",
+      "description": "SCCM collection excludes another collection"
+    },
+    "CM_OBJECT_FOR": {
+      "displayname": "SCCM - CM_OBJECT_FOR",
+      "description": "SCCM object represents an object in Active Directory"
+    },
+    "CM_MEMBER_OF": {
+      "displayname": "SCCM - CM_MEMBER_OF",
+      "description": "SCCM object is a member of SCCM collection"
+    },
+    "CM_DEPLOYED_TO": {
+      "displayname": "SCCM - CM_DEPLOYED_TO",
+      "description": "SCCM item is deployed to collection"
+    }
   },
   "nodedatatypes": {
     "CM_Application": {
+      "displayname": "SCCM - CM_Application",
+      "description": "SCCM application item",
       "properties": {
         "id": {},
         "lastscan": {},
@@ -22,6 +42,8 @@
       "icon": "fas fa-cogs"
     },
     "CM_User": {
+      "displayname": "SCCM - CM_User",
+      "description": "SCCM user object",
       "properties": {
         "dn": {},
         "id": {},
@@ -32,6 +54,8 @@
       "icon": "fas fa-user"
     },
     "CM_Collection": {
+      "displayname": "SCCM - CM_Collection",
+      "description": "SCCM collection",
       "properties": {
         "comment": {},
         "id": {},
@@ -42,6 +66,8 @@
       "icon": "fas fa-layer-group"
     },
     "CM_ConfigurationItem": {
+      "displayname": "SCCM - CM_ConfigurationItem",
+      "description": "SCCM configuration item e.g. application, package, task sequence",
       "properties": {
         "dn": {},
         "id": {},
@@ -52,6 +78,8 @@
       "icon": "far fa-object-upgroup"
     },
     "CM_Device": {
+      "displayname": "SCCM - CM_Device",
+      "description": "SCCM device object",
       "properties": {
         "dn": {},
         "id": {},
@@ -62,6 +90,8 @@
       "icon": "fas fa-desktop"
     },
     "CM_Package": {
+      "displayname": "SCCM - CM_Package",
+      "description": "SCCM package item",
       "properties": {
         "id": {},
         "lastscan": {},
@@ -69,9 +99,17 @@
       },
       "icon": "fas fa-server"
     },
-    "CM_PackageProgram": {},
-    "CM_SoftwareUpdateGroup": {},
+    "CM_PackageProgram": {
+      "displayname": "SCCM - CM_PackageProgram",
+      "description": "SCCM program for Package item"
+    },
+    "CM_SoftwareUpdateGroup": {
+      "displayname": "SCCM - CM_SoftwareUpdateGroup",
+      "description": "SCCM Software Update Group (SUG)"
+    },
     "CM_TaskSequence": {
+      "displayname": "SCCM - CM_TaskSequence",
+      "description": "SCCM task sequence",
       "properties": {
         "id": {},
         "lastscan": {},

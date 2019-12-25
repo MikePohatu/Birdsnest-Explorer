@@ -20,9 +20,9 @@ namespace Console.Plugins
         public List<string> EdgeLabels { get; private set; } = new List<string>();
         public Dictionary<string, string> SubTypeProperties { get; private set; } = new Dictionary<string, string>();
         public Dictionary<string, string> Icons { get; private set; } = new Dictionary<string, string>();
-        public Dictionary<string, DataType> NodeDataTypes { get; private set; } = new Dictionary<string, DataType>();
+        public SortedDictionary<string, DataType> NodeDataTypes { get; private set; } = new SortedDictionary<string, DataType>();
         public SortedDictionary<string, List<string>> NodeProperties { get; private set; } = new SortedDictionary<string, List<string>>();
-        public Dictionary<string, DataType> EdgeDataTypes { get; private set; } = new Dictionary<string, DataType>();
+        public SortedDictionary<string, DataType> EdgeDataTypes { get; private set; } = new SortedDictionary<string, DataType>();
         public SortedDictionary<string, List<string>> EdgeProperties { get; private set; } = new SortedDictionary<string, List<string>>();
 
         public PluginManager(ILogger logger)
@@ -39,9 +39,9 @@ namespace Console.Plugins
             List<string> edgelabels = new List<string>();
             var icons = new Dictionary<string, string>();
             var subtypes = new Dictionary<string, string>();
-            var nodedatatypes = new Dictionary<string, DataType>();
+            var nodedatatypes = new SortedDictionary<string, DataType>();
             var nodeprops = new SortedDictionary<string, List<string>>();
-            var edgedatatypes = new Dictionary<string, DataType>();
+            var edgedatatypes = new SortedDictionary<string, DataType>();
             var edgeprops = new SortedDictionary<string, List<string>>();
 
             try

@@ -13,6 +13,8 @@
   },
   "nodedatatypes": {
     "Orphaned": {
+      "displayname": "Orphaned",
+      "description": "Orphaned object i.e. object has been deleted but is configured in another system",
       "icon": "fas fa-question"
     },
     "BuiltinUser": {

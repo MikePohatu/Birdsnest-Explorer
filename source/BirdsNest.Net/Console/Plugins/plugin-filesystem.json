@@ -17,20 +17,27 @@
   },
   "edgedatatypes": {
     "GIVES_ACCESS_TO": {
-      "displayname": "Gives Access To - Filesystem",
+      "displayname": "File System - GIVES_ACCESS_TO",
       "description": "Applies permission to an object in the filesystem",
       "properties": {
         "fsid": {},
         "right": {}
       }
     },
-    "FS_APPLIES_INHERITANCE_TO": null,
-    "FS_BLOCKED_INHERITANCE": null,
-    "FS_HOSTS": {}
+    "FS_APPLIES_INHERITANCE_TO": {
+      "displayname": "File System - FS_APPLIES_INHERITANCE_TO"
+    },
+    "FS_BLOCKED_INHERITANCE": {
+      "displayname": "File System - FS_BLOCKED_INHERITANCE"
+    },
+    "FS_HOSTS": {
+      "displayname": "File System - FS_HOSTS",
+      "description": "Datastore is hosted on system"
+    }
   },
   "nodedatatypes": {
     "FS_Datastore": {
-      "displayname": "File System Datastore",
+      "displayname": "File System - FS_Datastore",
       "description": "Datastore that contains one or more file systems",
       "properties": {
         "comment": {},
@@ -41,7 +48,7 @@
       "icon": "fas fa-hdd"
     },
     "FS_Folder": {
-      "displayname": "Folder",
+      "displayname": "File System - FS_Folder",
       "description": "A folder in a file system",
       "properties": {
         "fsid": {},
@@ -62,11 +69,11 @@
       "icon": "fas fa-folder-open"
     },
     "FS_BlockedFolder": {
-      "displayname": "Blocked Folder",
+      "displayname": "File System - FS_BlockedFolder",
       "description": "Folder that couldn't be scanned"
     },
     "FS_DfsRoot": {
-      "displayname": "DFS Root"
+      "displayname": "File System - FS_DfsRoot"
     }
   }
 }

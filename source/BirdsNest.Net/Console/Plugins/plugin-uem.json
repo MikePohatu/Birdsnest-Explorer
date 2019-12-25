@@ -16,10 +16,15 @@
     }
   },
   "edgedatatypes": {
-    "ACTIVATES": {}
+    "ACTIVATES": {
+      "displayname": "UEM - ACTIVATES",
+      "description": "UEM item is activate/enabled by item e.g. AD group"
+    }
   },
   "nodedatatypes": {
     "UEM_Setting": {
+      "displayname": "UEM - UEM_Setting",
+      "description": "Setting within the UEM configuration",
       "icon": "fas fa-rocket"
     }
   }

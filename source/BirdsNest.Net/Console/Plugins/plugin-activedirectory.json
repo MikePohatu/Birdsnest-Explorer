@@ -23,7 +23,7 @@
   },
   "edgedatatypes": {
     "AD_MEMBER_OF": {
-      "displayname": "AD Member Of",
+      "displayname": "AD - AD_MEMBER_OF",
       "properties": {
         "domainid": {},
         "lastscan": {}

@@ -35,6 +35,13 @@ import {
 import ViewTreeNode from "./ViewTreeNode";
 import { misccrap } from '../../shared/webcrap/misccrap';
 
+
+class DataTypeOptionDetails {
+	Value: string;
+	Text: string;
+	Title: string;
+}
+
 //requires d3js
 export default class AdvancedSearchCoordinator {
 	
@@ -938,45 +945,63 @@ export default class AdvancedSearchCoordinator {
 		}
 	}
 
-	UpdateNodeLabels () {
-		var el = document.getElementById("nodeType");
-		var me = this;
+	UpdateNodeLabels() {
+		this.UpdateDataTypeLabels("nodeType", this.NodeDataTypes);
+	}
+
+	UpdateEdgeLabels() {
+		this.UpdateDataTypeLabels("edgeType", this.EdgeDataTypes);
+	}
+
+	UpdateDataTypeLabels(elementName: string, datatypes: object) {
+		var el = document.getElementById(elementName);
 		webcrap.dom.ClearOptions(el);
 		let topoption = webcrap.dom.AddOption(el, "*", "");
 		topoption.setAttribute("selected", "");
 
-		Object.keys(me.NodeDataTypes).forEach(function (label) {
-			var displayname = me.NodeDataTypes[label].displayname;
+		//transform the data so it can be sorted by the displayname
+		let itemdeets = {};
+		Object.keys(datatypes).forEach(function (label) {
+			var displayname = datatypes[label].displayname;
 			if (misccrap.isNullOrWhitespace(displayname)) {
 				displayname = label;
 			}
-			let option: HTMLOptionElement = webcrap.dom.AddOption(el, displayname, label);
-			let description = me.NodeDataTypes[label].description;
-			if (misccrap.isNullOrWhitespace(description) === false) {
-				option.title = description;
-			}
+			let description = datatypes[label].description;
+
+			let newdeet = new DataTypeOptionDetails();
+			newdeet.Text = displayname;
+			newdeet.Value = label;
+			newdeet.Title = description;
+			itemdeets[displayname] = newdeet;
+		});
+
+
+		Object.keys(itemdeets).sort().forEach(function (displayname) {
+			let deet: DataTypeOptionDetails = itemdeets[displayname];
+			let option: HTMLOptionElement = webcrap.dom.AddOption(el, deet.Text, deet.Value);
+			if (misccrap.isNullOrWhitespace(deet.Title) === false) { option.title = deet.Title; }
 		});
 	}
 
-	UpdateEdgeLabels () {
-		var el = document.getElementById("edgeType");
-		var me = this;
-		webcrap.dom.ClearOptions(el);
-		let topoption = webcrap.dom.AddOption(el, "*", "");
-		topoption.setAttribute("selected", "");
+	//UpdateEdgeLabels () {
+	//	var el = document.getElementById("edgeType");
+	//	var me = this;
+	//	webcrap.dom.ClearOptions(el);
+	//	let topoption = webcrap.dom.AddOption(el, "*", "");
+	//	topoption.setAttribute("selected", "");
 
-		Object.keys(me.EdgeDataTypes).forEach(function (label) {
-			var displayname = me.EdgeDataTypes[label].displayname;
-			if (misccrap.isNullOrWhitespace(displayname)) {
-				displayname = label;
-			}
-			let option: HTMLOptionElement = webcrap.dom.AddOption(el, displayname, label);
-			let description = me.EdgeDataTypes[label].description;
-			if (misccrap.isNullOrWhitespace(description) === false) {
-				option.title = description;
-			}
-		});
-	}
+	//	Object.keys(me.EdgeDataTypes).forEach(function (label) {
+	//		var displayname = me.EdgeDataTypes[label].displayname;
+	//		if (misccrap.isNullOrWhitespace(displayname)) {
+	//			displayname = label;
+	//		}
+	//		let option: HTMLOptionElement = webcrap.dom.AddOption(el, displayname, label);
+	//		let description = me.EdgeDataTypes[label].description;
+	//		if (misccrap.isNullOrWhitespace(description) === false) {
+	//			option.title = description;
+	//		}
+	//	});
+	//}
 
 	BindAdvAutoComplete() {
 		var me = this;

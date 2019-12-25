@@ -4,10 +4,15 @@
   "reports": {
   },
   "edgedatatypes": {
-    "SUPERSEDES": {}
+    "SUPERSEDES": {
+      "displayname": "Windows Update - SUPERSEDES",
+      "description": "Update has been superseded by another update"
+    }
   },
   "nodedatatypes": {
     "WU_Update": {
+      "displayname": "Windows Update - WU_Update",
+      "description": "Windows update item. There may be multiple update items for each KB e.g. for each architecture",
       "icon": "fas fa-wrench"
     }
   }
