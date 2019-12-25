@@ -115,8 +115,8 @@ export function drawGraph(selectid, loaddata) {
     //    .attr("cy", 0)
     //    .style("fill","black");
 
-    window.addEventListener('resize', debounce(updatePaneSize, 500, false), false);
-    updatePaneSize();
+    window.addEventListener('resize', debounce(centerView, 500, false), false);
+    centerView();
     if (loaddata !== undefined && loaddata.length > 0) {
         //console.log(loaddata);
         getNodes(loaddata);
@@ -440,7 +440,7 @@ function onLayoutFinished() {
         .attr('title', 'Refresh layout');
 
     if (isScreenEmpty() === true) {
-        updatePaneSize();
+        centerView();
     }
 }
 
@@ -1178,9 +1178,9 @@ function onZoom() {
     zoomLayer.attr("transform", d3.event.transform);
 }
 
-d3.selectAll("#centerBtn").attr('onclick', "vis.updatePaneSize()");
-export function updatePaneSize() {
-    //console.log("updatePaneSize");
+d3.selectAll("#centerBtn").attr('onclick', "vis.centerView()");
+export function centerView() {
+    //console.log("centerView");
     var box = drawingPane.node().getBoundingClientRect();
     var svgbox = drawingsvg.node().getBBox();
     var k = d3.zoomTransform(drawingsvg.node()).k;
