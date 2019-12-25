@@ -23,6 +23,7 @@
   },
   "edgedatatypes": {
     "AD_MEMBER_OF": {
+      "displayname": "AD Member Of",
       "properties": {
         "domainid": {},
         "lastscan": {}
@@ -31,6 +32,8 @@
   },
   "nodedatatypes": {
     "AD_Computer": {
+      "displayname": "AD Computer",
+      "description": "Active Directory domain joined computer object",
       "properties": {
         "description": {},
         "dn": {},
@@ -50,6 +53,8 @@
       "icon": "fas fa-desktop"
     },
     "AD_Group": {
+      "displayname": "AD Group",
+      "description": "Active Directory group",
       "properties": {
         "description": {},
         "dn": {},
@@ -72,6 +77,8 @@
       "icon": "fas fa-user-friends"
     },
     "AD_User": {
+      "displayname": "AD User",
+      "description": "Active Directory user account",
       "properties": {
         "description": {},
         "displayname": {},
@@ -91,6 +98,8 @@
       "icon": "fas fa-user"
     },
     "AD_Object": {
+      "displayname": "AD Object",
+      "description": "Active Directory object, which could be a user, group, or computer",
       "properties": {
         "description": {},
         "displayname": {},
@@ -117,7 +126,8 @@
       "default": "samaccountname"
     },
     "AD_Deleted": {
-      "description": "Objects that have been deleted from AD",
+      "displayname": "AD Deleted",
+      "description": "AD objects that have been deleted.",
       "icon": "far fa-trash-alt"
     }
   }

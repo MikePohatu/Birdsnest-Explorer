@@ -32,6 +32,9 @@ namespace Console.Plugins
         [JsonProperty("subtype")]
         public string SubType { get; private set; } = string.Empty;
 
+        [JsonProperty("displayname")]
+        public string DisplayName { get; private set; } = string.Empty;
+
         [JsonProperty("description")]
         public string Description { get; private set; } = string.Empty;
 

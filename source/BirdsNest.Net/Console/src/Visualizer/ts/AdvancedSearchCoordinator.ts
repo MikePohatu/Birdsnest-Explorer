@@ -946,7 +946,15 @@ export default class AdvancedSearchCoordinator {
 		topoption.setAttribute("selected", "");
 
 		Object.keys(me.NodeDataTypes).forEach(function (label) {
-			webcrap.dom.AddOption(el, label, label);
+			var displayname = me.NodeDataTypes[label].displayname;
+			if (misccrap.isNullOrWhitespace(displayname)) {
+				displayname = label;
+			}
+			let option: HTMLOptionElement = webcrap.dom.AddOption(el, displayname, label);
+			let description = me.NodeDataTypes[label].description;
+			if (misccrap.isNullOrWhitespace(description) === false) {
+				option.title = description;
+			}
 		});
 	}
 
@@ -958,7 +966,15 @@ export default class AdvancedSearchCoordinator {
 		topoption.setAttribute("selected", "");
 
 		Object.keys(me.EdgeDataTypes).forEach(function (label) {
-			webcrap.dom.AddOption(el, label, label);
+			var displayname = me.EdgeDataTypes[label].displayname;
+			if (misccrap.isNullOrWhitespace(displayname)) {
+				displayname = label;
+			}
+			let option: HTMLOptionElement = webcrap.dom.AddOption(el, displayname, label);
+			let description = me.EdgeDataTypes[label].description;
+			if (misccrap.isNullOrWhitespace(description) === false) {
+				option.title = description;
+			}
 		});
 	}
 

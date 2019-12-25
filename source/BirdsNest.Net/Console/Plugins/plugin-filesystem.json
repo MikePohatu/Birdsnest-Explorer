@@ -17,6 +17,8 @@
   },
   "edgedatatypes": {
     "GIVES_ACCESS_TO": {
+      "displayname": "Gives Access To - Filesystem",
+      "description": "Applies permission to an object in the filesystem",
       "properties": {
         "fsid": {},
         "right": {}
@@ -28,6 +30,8 @@
   },
   "nodedatatypes": {
     "FS_Datastore": {
+      "displayname": "File System Datastore",
+      "description": "Datastore that contains one or more file systems",
       "properties": {
         "comment": {},
         "host": {},
@@ -37,6 +41,8 @@
       "icon": "fas fa-hdd"
     },
     "FS_Folder": {
+      "displayname": "Folder",
+      "description": "A folder in a file system",
       "properties": {
         "fsid": {},
         "lastpermission": {},
@@ -55,7 +61,12 @@
       "default": "path",
       "icon": "fas fa-folder-open"
     },
-    "FS_BlockedFolder":null,
-    "FS_DfsRoot": null
+    "FS_BlockedFolder": {
+      "displayname": "Blocked Folder",
+      "description": "Folder that couldn't be scanned"
+    },
+    "FS_DfsRoot": {
+      "displayname": "DFS Root"
+    }
   }
 }
