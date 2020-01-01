@@ -75,6 +75,9 @@
     <Content Update="Plugins\plugin-builtin.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Update="Plugins\plugin-testing.json">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Content>
     <Content Update="Plugins\plugin-filesystem.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>

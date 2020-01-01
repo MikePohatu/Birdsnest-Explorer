@@ -387,4 +387,3 @@ venv.bak/
 /source/BirdsNest.Net/Console/src/Visualizer/ts/*.map
 /source/BirdsNest.Net/Console/src/Visualizer/ts/*.js
 /source/BirdsNest.Net/Console/wwwroot/dynamic/plugins.css
-/source/BirdsNest.Net/Console/Plugins/plugin-custom.json
