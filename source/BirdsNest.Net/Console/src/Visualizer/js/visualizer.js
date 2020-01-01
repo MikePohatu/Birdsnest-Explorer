@@ -458,9 +458,16 @@ function addSearchResults(results, callback) {
     //console.log(results);
 
     if (results.Nodes.length > maxAnimateNodes) {
-        if (confirm("You are adding " + results.Nodes.length + " nodes to the view. This is a " +
-            "large number of nodes. Layout animation will be disabled for performance reasons. " +
-            " Are you sure?") !== true) {
+        let message = "You are adding " + results.Nodes.length + " nodes to the view. This is a " +
+            "large number of nodes. Layout animation will be disabled for performance reasons.\n\n";
+
+        if (results.Nodes.length > 750) {
+            message = message + "The interface may become slow or unresponsive with more than 750 nodes.\n\n";
+        }
+        message = message + "Are you sure you want to continue?";
+
+
+        if (confirm(message) !== true) {
             return;
         }
     }
@@ -470,6 +477,8 @@ function addSearchResults(results, callback) {
         .attr('title', 'Updating data');
 
     let newcount = addResultSet(results);
+    checkPerfMode();
+
     if (newcount > 0) {
         //let nodeids = getAllNodeIds();
         let nodeids = graphnodes.GetIDs();
@@ -480,6 +489,11 @@ function addSearchResults(results, callback) {
             //console.log(data);
 
             addResultSet(data);
+
+            
+            addSvgNodes(graphnodes.GetArray());           
+            addSvgEdges(graphedges.GetArray());
+            resetScale();
 
             //find direct loops between nodes e.g. node1<-[]->node2. The edges will need altering in the graph 
             //so they don't overlap
@@ -499,8 +513,6 @@ function addSearchResults(results, callback) {
                 }
             });
 
-            addSvgNodes(graphnodes.GetArray());
-            addSvgEdges(graphedges.GetArray());
             restartLayout();
             if (callback !== undefined) {
                 //console.log(callback);
@@ -520,6 +532,7 @@ function addSearchResults(results, callback) {
 
 }
 
+//add a result set returned from the server
 function addResultSet(json) {
     //console.log("addResultSet start: " + json);
     let edges = json.Edges;
@@ -528,7 +541,6 @@ function addResultSet(json) {
     //console.log(nodes);
     //populate necessary additional data for the view
     let newitemcount = loadNodeData(nodes);
-    checkPerfMode();
 
     edges.forEach(function (d) {
         if (graphedges.DatumExists(d) === false) {
@@ -554,13 +566,18 @@ function addResultSet(json) {
     });
 
     if (newitemcount > 0) {
-        simController.SetNodes(graphnodes.GetArray(), meshnodes.GetArray(), treenodes.GetArray(), connectnodes.GetArray());
-        simController.SetEdges(meshedges.GetArray(), treeedges.GetArray(), connectedges.GetArray());
+        refreshSimController();
     }
     updateLabelEyes();
 
     return newitemcount;
     //console.log("addResultSet end: " );
+}
+
+
+function refreshSimController() {
+    simController.SetNodes(graphnodes.GetArray(), meshnodes.GetArray(), treenodes.GetArray(), connectnodes.GetArray());
+    simController.SetEdges(meshedges.GetArray(), treeedges.GetArray(), connectedges.GetArray());
 }
 
 export function onAddToView() {
@@ -576,6 +593,7 @@ export function onAddToView() {
 var currMaxScope = 20;
 var currMinScope = 1;
 function resetScale() {
+    //console.log("resetScale");
     currMaxScope = 20;
     graphnodes.GetArray().forEach(function (d) {
         if (d.properties.scope > currMaxScope) {
@@ -586,17 +604,26 @@ function resetScale() {
     let scalingRange = new Slope(currMinScope, minScaling, currMaxScope, maxScaling);
 
     graphnodes.GetArray().forEach(function (d) {
-        //console.log(d);
+        let oldscaling = d.scaling;
         d.scaling = scalingRange.getYFromX(d.scope);
-        d.radius = defaultsize * d.scaling / 2;
-        d.cx = d.x + d.radius;
-        d.cy = d.y + d.radius;
-        d.size = defaultsize * d.scaling;
+
+        if (oldscaling !== d.scaling) {
+            //console.log("updating");
+            d.radius = defaultsize * d.scaling / 2;
+            d.cx = d.x + d.radius;
+            d.cy = d.y + d.radius;
+            d.size = defaultsize * d.scaling;
+            
+        } 
+        updateNodeSize(d);
     });
 
-    updateNodeSizes();
+    refreshSimController();
+    updateLocationsEdges();
 }
 
+
+//load new nodes into the graph, apply default fields and figure out where they need to go i.e. mesh vs tree etc.
 function loadNodeData(newnodedata) {
     //console.log('loadNodeData');
     //console.log(newnodedata);
@@ -635,34 +662,35 @@ function loadNodeData(newnodedata) {
         }
     });
 
-    let scalingRange = new Slope(currMinScope, minScaling, currMaxScope, maxScaling);
+    //let scalingRange = new Slope(currMinScope, minScaling, currMaxScope, maxScaling);
 
-    if (rangeUpdated) {
-        //update the scaling range and update all existing nodes
-        graphnodes.GetArray().forEach(function (d) {
-            //console.log(d);
-            d.scaling = scalingRange.getYFromX(d.scope);
-            d.radius = defaultsize * d.scaling / 2;
-            d.cx = d.x + d.radius;
-            d.cy = d.y + d.radius;
-            d.size = defaultsize * d.scaling;
-        });
+    //if (rangeUpdated) {
+    //    //update the scaling range and update all existing nodes
+    //    graphnodes.GetArray().forEach(function (d) {
+    //        //console.log(d);
+    //        d.scaling = scalingRange.getYFromX(d.scope);
+    //        d.radius = defaultsize * d.scaling / 2;
+    //        d.cx = d.x + d.radius;
+    //        d.cy = d.y + d.radius;
+    //        d.size = defaultsize * d.scaling;
+    //    });
 
-        updateNodeSizes();
-    }
+    //}
 
     //load the data and pre-calculate/set the values for each new node 	
     newtograph.forEach(function (d) {
         //console.log("New node: " + d.db_id);
-        d.scaling = scalingRange.getYFromX(d.scope);
+        d.scaling = 1;
 
         d.radius = defaultsize * d.scaling / 2;
         d.cx = d.x + d.radius;
         d.cy = d.y + d.radius;
-        //console.log(d.x); 
-        //console.log(d.cx); 
         d.size = defaultsize * d.scaling;
         d.selected = false;
+
+        //console.log(d.x); 
+        //console.log(d.cx); 
+        
         //populateNodeDetails(d);
         graphnodes.Add(d);
         if (d.properties.layout === "mesh") { meshnodes.Add(d); }
@@ -727,6 +755,14 @@ function addSvgNodes(nodes) {
     }, 1);
 
     setTimeout(function () {
+        enternodesg.append("text")
+            .text(function (d) { return d.name; })
+            .attr("text-anchor", "middle")
+            .attr("dominant-baseline", "central")
+            .attr("transform", function (d) { return "translate(" + (d.size / 2) + "," + (d.size + 10) + ")"; });
+    }, 1);
+
+    setTimeout(function () {
         enternodesg.append("i")
             .attr("height", function (d) { return d.size * 0.6; })
             .attr("width", function (d) { return d.size * 0.6; })
@@ -734,61 +770,173 @@ function addSvgNodes(nodes) {
             .attr("y", function (d) { return d.size * 0.2; })
             .attr("class", function (d) { return d.icon; });
     }, 1);
-
-    setTimeout(function () {
-        enternodesg.append("text")
-            .text(function (d) { return d.name; })
-            .attr("text-anchor", "middle")
-            .attr("dominant-baseline", "central")
-            .attr("transform", function (d) { return "translate(" + (d.size / 2) + "," + (d.size + 10) + ")"; });
-    }, 1);
 }
 
 function updateNodeSizes() {
     //console.log("updateNodeSizes");
     //add the bg
-    graphbglayer.selectAll('.nodebg')
-        .data(graphnodes.GetArray(), function (d) { return d.db_id; })
-        .attr("r", function (d) { return d.radius + 10; })
-        .attr("cx", function (d) { return d.radius; })
-        .attr("cy", function (d) { return d.radius; });
+    let nodebgs = graphbglayer.selectAll('.nodebg')
+        .data(graphnodes.GetArray(), function (d) { return d.db_id; });
 
     //build the nodes
     let allnodes = nodeslayer.selectAll(".nodes")
         .data(graphnodes.GetArray(), function (d) { return d.db_id; });
 
+
+    let posttransition = function () {
+        console.log("posttransition");
+        //remove all the icons so they can be regenerated the correct size
+        nodeslayer.selectAll(".nodeicon").remove();
+
+        //setTimeout is required here so it goes onto the queue. If you don't do this the icons won't appear
+        //Presumably this is because the dom hasn't updated the nodes yet
+        setTimeout(function () {
+            allnodes.append("i")
+                .attr("height", function (d) { return d.size * 0.6; })
+                .attr("width", function (d) { return d.size * 0.6; })
+                .attr("x", function (d) { return d.size * 0.2; })
+                .attr("y", function (d) { return d.size * 0.2; })
+                .attr("class", function (d) { return d.icon; });
+        }, 1);
+
+
+        allnodes.selectAll("text")
+            .attr("transform", function (d) { return "translate(" + (d.size / 2) + "," + (d.size + 10) + ")"; });
+
+        let pins = allnodes.selectAll(".pin");
+        pins.selectAll("circle")
+            .attr("r", function (d) { return 8 * d.scaling; })
+            .attr("cx", function (d) { return 5 * d.scaling; })
+            .attr("cy", function (d) { return 5 * d.scaling; });
+
+        //remove all the icons so they can be regenerated the correct size
+        pins.selectAll(".pinicon").remove();
+        setTimeout(function () {
+            pins.append("i")
+                .classed("fas fa-thumbtack", true)
+                .classed("pinicon", true)
+                .attr("x", 0)
+                .attr("y", 1)
+                .attr("height", function (d) { return 10 * d.scaling; })
+                .attr("width", function (d) { return 10 * d.scaling; });
+        }, 1);
+    };
+
     //node layout
-    allnodes.selectAll("circle")
-        .attr("r", function (d) { return d.radius; })
-        .attr("cx", function (d) { return d.radius; })
-        .attr("cy", function (d) { return d.radius; });
+    if (perfmode) {
+        nodebgs.attr("r", function (d) { return d.radius + 10; })
+            .attr("cx", function (d) { return d.radius; })
+            .attr("cy", function (d) { return d.radius; });
 
-    //remove all the icons so they can be regenerated the correct size
-    nodeslayer.selectAll(".nodeicon").remove();
-    allnodes.append("i")
-        .attr("height", function (d) { return d.size * 0.6; })
-        .attr("width", function (d) { return d.size * 0.6; })
-        .attr("x", function (d) { return d.size * 0.2; })
-        .attr("y", function (d) { return d.size * 0.2; })
-        .attr("class", function (d) { return d.icon; });
+        allnodes.selectAll("circle")
+            .attr("r", function (d) { return d.radius; })
+            .attr("cx", function (d) { return d.radius; })
+            .attr("cy", function (d) { return d.radius; });
 
-    allnodes.selectAll("text")
-        .attr("transform", function (d) { return "translate(" + (d.size / 2) + "," + (d.size + 10) + ")"; });
+        posttransition();
+    }
+    else {
+        nodebgs.transition()
+            .duration(500)
+            .attr("r", function (d) { return d.radius + 10; })
+            .attr("cx", function (d) { return d.radius; })
+            .attr("cy", function (d) { return d.radius; });
 
-    let pins = allnodes.selectAll(".pin");
-    pins.selectAll("circle")
-        .attr("r", function (d) { return 8 * d.scaling; })
-        .attr("cx", function (d) { return 5 * d.scaling; })
-        .attr("cy", function (d) { return 5 * d.scaling; });
+        allnodes.selectAll(".nodecircle")
+            .transition()
+            .duration(500)
+            .on('end', posttransition)
+            .attr("r", function (d) { return d.radius; })
+            .attr("cx", function (d) { return d.radius; })
+            .attr("cy", function (d) { return d.radius; });
+    }
 
-    //remove all the icons so they can be regenerated the correct size
-    nodeslayer.selectAll(".pinicon").remove();
-    pins.append("i")
-        .classed("fas fa-thumbtack", true)
-        .attr("x", 0)
-        .attr("y", 1)
-        .attr("height", function (d) { return 10 * d.scaling; })
-        .attr("width", function (d) { return 10 * d.scaling; });
+    
+}
+
+
+function updateNodeSize(node) {
+    //console.log("updateNodeSize");
+    //console.log(node);
+    let nodeel = nodeslayer.select("#node_" + node.db_id).data(graphnodes.GetArray(), function (d) { return d.db_id; });
+    let nodepin = nodeel.select(".pin");
+    let nodebgel = graphbglayer.select("#nodebg_" + node.db_id).data(graphnodes.GetArray(), function (d) { return d.db_id; });
+
+    //remove all the fontawesome icons so they can be regenerated the correct size
+    //nodeel.select(".nodeicon").remove();
+    //nodepin.selectAll(".pinicon").remove();
+
+    if (perfmode) {
+        nodebgel.attr("r", function (d) { return d.radius + 10; })
+            .attr("cx", function (d) { return d.radius; })
+            .attr("cy", function (d) { return d.radius; });
+
+        nodeel.select(".nodecircle")
+            .attr("r", function (d) { return d.radius; })
+            .attr("cx", function (d) { return d.radius; })
+            .attr("cy", function (d) { return d.radius; });
+
+        nodeel.select(".nodeicon")
+            .attr("height", function (d) { return d.size * 0.6; })
+            .attr("width", function (d) { return d.size * 0.6; })
+            .attr("x", function (d) { return d.size * 0.2; })
+            .attr("y", function (d) { return d.size * 0.2; });
+
+        nodepin.select("circle")
+            .attr("r", function (d) { return 8 * d.scaling; })
+            .attr("cx", function (d) { return 5 * d.scaling; })
+            .attr("cy", function (d) { return 5 * d.scaling; });
+
+        nodepin.select(".pinicon")
+            .attr("height", function (d) { return 10 * d.scaling; })
+            .attr("width", function (d) { return 10 * d.scaling; });
+
+        nodeel.selectAll("text")
+            .attr("transform", function (d) { return "translate(" + (d.size / 2) + "," + (d.size + 10) + ")"; });
+
+    }
+    else {
+        let duration = 500;
+        nodebgel.transition()
+            .duration(duration)
+            .attr("r", function (d) { return d.radius + 10; })
+            .attr("cx", function (d) { return d.radius; })
+            .attr("cy", function (d) { return d.radius; });
+
+        nodepin.select("circle")
+            .transition()
+            .duration(duration)
+            .attr("r", function (d) { return 8 * d.scaling; })
+            .attr("cx", function (d) { return 5 * d.scaling; })
+            .attr("cy", function (d) { return 5 * d.scaling; });
+
+        nodepin.select(".pinicon")
+            .transition()
+            .duration(duration)
+            .attr("height", function (d) { return 10 * d.scaling; })
+            .attr("width", function (d) { return 10 * d.scaling; });
+
+        nodeel.select(".nodeicon")
+            .transition()
+            .duration(duration)
+            .attr("height", function (d) { return d.size * 0.6; })
+            .attr("width", function (d) { return d.size * 0.6; })
+            .attr("x", function (d) { return d.size * 0.2; })
+            .attr("y", function (d) { return d.size * 0.2; });
+
+        nodeel.selectAll("text")
+            .transition()
+            .duration(duration)
+            .attr("transform", function (d) { return "translate(" + (d.size / 2) + "," + (d.size + 10) + ")"; });
+
+        nodeel.select(".nodecircle")
+            .transition()
+            .duration(duration)
+            .attr("r", function (d) { return d.radius; })
+            .attr("cx", function (d) { return d.radius; })
+            .attr("cy", function (d) { return d.radius; });
+
+    }
 }
 
 function addSvgEdges(edges) {
@@ -954,14 +1102,14 @@ function onSearchNodesClicked() {
 }
 
 
-function findFromDbId(arraydata, id) {
-    for (var i = 0; i < arraydata.length; i++) {
-        if (arraydata[i].db_id === id) {
-            return arraydata[i];
-        }
-    }
-    return null;
-}
+//function findFromDbId(arraydata, id) {
+//    for (var i = 0; i < arraydata.length; i++) {
+//        if (arraydata[i].db_id === id) {
+//            return arraydata[i];
+//        }
+//    }
+//    return null;
+//}
 
 
 

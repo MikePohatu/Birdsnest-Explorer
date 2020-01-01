@@ -65,18 +65,6 @@
       },
       "icon": "fas fa-layer-group"
     },
-    "CM_ConfigurationItem": {
-      "displayname": "SCCM - CM_ConfigurationItem",
-      "description": "SCCM configuration item e.g. application, package, task sequence",
-      "properties": {
-        "dn": {},
-        "id": {},
-        "lastscan": {},
-        "name": {},
-        "sid": {}
-      },
-      "icon": "far fa-object-upgroup"
-    },
     "CM_Device": {
       "displayname": "SCCM - CM_Device",
       "description": "SCCM device object",
@@ -115,6 +103,18 @@
         "lastscan": {},
         "name": {}
       }
+    },
+    "CM_ConfigurationItem": {
+      "displayname": "SCCM - CM_ConfigurationItem",
+      "description": "SCCM configuration item e.g. application, package, task sequence",
+      "properties": {
+        "dn": {},
+        "id": {},
+        "lastscan": {},
+        "name": {},
+        "sid": {}
+      },
+      "icon": "far fa-object-upgroup"
     }
   }
 }

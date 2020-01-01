@@ -46,7 +46,8 @@ namespace Console.Plugins
 
             try
             {
-                IEnumerable<string> pluginfilenames = Directory.EnumerateFiles(_pluginspath, "plugin-*.json");
+                string pluginsdirpath = Directory.GetCurrentDirectory() + "\\" + _pluginspath;
+                IEnumerable<string> pluginfilenames = Directory.EnumerateFiles(pluginsdirpath, "plugin-*.json");
 
                 foreach (string filename in pluginfilenames)
                 {

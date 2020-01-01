@@ -32,9 +32,6 @@ export default class SimulationController {
 
     constructor() {
         var me = this;
-        var velocityDecay = 0.5;
-        var alphaDecay = 0.1;
-
         this.simRunning = false;
         
 
@@ -45,9 +42,7 @@ export default class SimulationController {
                 .strength(0.7)
                 .radius(function (d: ISimNode) { return d.size * 1.5; }))
             .on('end', function () { me.onSimulationFinished(); })
-            .on('tick', function () { me.onGraphTick(); })
-            .velocityDecay(velocityDecay)
-            .alphaDecay(alphaDecay);
+            .on('tick', function () { me.onGraphTick(); });
 
         this.connectsimulation = d3.forceSimulation();
         this.connectsimulation.stop();
@@ -55,9 +50,7 @@ export default class SimulationController {
             .force("link", d3.forceLink()
                 .id(function (d: ISimLink<ISimNode>) { return d.db_id; })
                 .distance(200)
-                .strength(0.3))
-            .velocityDecay(velocityDecay)
-            .alphaDecay(alphaDecay);
+                .strength(0.3));
 
         this.meshsimulation = d3.forceSimulation();
         this.meshsimulation.stop();
@@ -65,9 +58,7 @@ export default class SimulationController {
             .force("link", d3.forceLink()
                 .id(function (d: ISimLink<ISimNode>) { return d.db_id; })
                 .distance(150)
-                .strength(0.8))
-            .velocityDecay(velocityDecay)
-            .alphaDecay(alphaDecay);
+                .strength(0.8));
 
         this.treesimulation = d3.forceSimulation();
         this.treesimulation.stop();
@@ -75,16 +66,13 @@ export default class SimulationController {
             .force("link", d3.forceLink()
                 .id(function (d: ISimLink<ISimNode>) { return d.db_id; })
                 .distance(150)
-                .strength(0.8))
-            .velocityDecay(velocityDecay)
-            .alphaDecay(alphaDecay);
+                .strength(0.8));
     }
 
     onGraphTick () {
-        //console.log("SimulationController.onGraphTick");
-        //console.log(meshsimulation.alpha());
-        //var me = this;
+        //console.log("SimulationController.onGraphTick");       
         var k = this.graphsimulation.alpha();
+        //console.log(k);
         this.onPercentUpdated(100 - k * 100);
 
 		d3.selectAll(this.TreeEdgeTag).each(function (d: ISimLink<ISimNode>) {
@@ -104,7 +92,6 @@ export default class SimulationController {
                 }
             }
         });
-        //if (!perfmode) { updateLocations(); }
     }
 
 
@@ -135,10 +122,11 @@ export default class SimulationController {
 
 
         this.simRunning = true;
+        //console.log("restarting simulation now");
+        this.graphsimulation.alpha(1).restart();
         this.meshsimulation.alpha(1).restart();
         this.treesimulation.alpha(1).restart();
-        this.connectsimulation.alpha(1).restart();
-        this.graphsimulation.alpha(1).restart();
+        this.connectsimulation.alpha(1).restart();       
     }
 
     StopSimulations () {
@@ -169,6 +157,38 @@ export default class SimulationController {
         this.treesimulation.nodes(trees);
         this.connectsimulation.nodes(connects);
         this.graphsimulation.nodes(graphs);
+
+        let velocityDecay = 0.5;
+        let alphaDecay = 0.1;
+        
+
+        if (this.graphsimulation.nodes().length > 3000) {
+            velocityDecay = 0.2;
+            alphaDecay = 0.5;
+        }
+        else if (this.graphsimulation.nodes().length > 1000) {
+            velocityDecay = 0.35;
+            alphaDecay = 0.3;
+        }
+
+        //console.log("velocityDecay: " + velocityDecay);
+        //console.log("alphaDecay: " + alphaDecay);
+
+        this.graphsimulation
+            .velocityDecay(velocityDecay)
+            .alphaDecay(alphaDecay);
+
+        this.connectsimulation
+            .velocityDecay(velocityDecay)
+            .alphaDecay(alphaDecay);
+
+        this.meshsimulation
+            .velocityDecay(velocityDecay)
+            .alphaDecay(alphaDecay);
+
+        this.treesimulation
+            .velocityDecay(velocityDecay)
+            .alphaDecay(alphaDecay);
     }
 
     SetEdges (meshes, trees, connects) {
