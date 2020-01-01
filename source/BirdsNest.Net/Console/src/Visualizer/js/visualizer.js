@@ -627,7 +627,6 @@ function resetScale() {
 function loadNodeData(newnodedata) {
     //console.log('loadNodeData');
     //console.log(newnodedata);
-    let rangeUpdated = false;
     let newcount = 0;
     let newtograph = [];
 
@@ -644,7 +643,6 @@ function loadNodeData(newnodedata) {
             });
 
             if (d.properties.scope > currMaxScope) {
-                rangeUpdated = true;
                 currMaxScope = d.properties.scope;
             }
 
@@ -662,20 +660,6 @@ function loadNodeData(newnodedata) {
         }
     });
 
-    //let scalingRange = new Slope(currMinScope, minScaling, currMaxScope, maxScaling);
-
-    //if (rangeUpdated) {
-    //    //update the scaling range and update all existing nodes
-    //    graphnodes.GetArray().forEach(function (d) {
-    //        //console.log(d);
-    //        d.scaling = scalingRange.getYFromX(d.scope);
-    //        d.radius = defaultsize * d.scaling / 2;
-    //        d.cx = d.x + d.radius;
-    //        d.cy = d.y + d.radius;
-    //        d.size = defaultsize * d.scaling;
-    //    });
-
-    //}
 
     //load the data and pre-calculate/set the values for each new node 	
     newtograph.forEach(function (d) {
@@ -697,12 +681,6 @@ function loadNodeData(newnodedata) {
         else if (d.properties.layout === "tree") { treenodes.Add(d); }
         newcount++;
     });
-    //console.log("graphnodes");
-    //console.log(graphnodes);
-    //console.log("meshnodes");
-    //console.log(meshnodes);
-    //console.log("treenodes");
-    //console.log(treenodes);
 
     return newcount;
 }
@@ -772,89 +750,6 @@ function addSvgNodes(nodes) {
     }, 1);
 }
 
-function updateNodeSizes() {
-    //console.log("updateNodeSizes");
-    //add the bg
-    let nodebgs = graphbglayer.selectAll('.nodebg')
-        .data(graphnodes.GetArray(), function (d) { return d.db_id; });
-
-    //build the nodes
-    let allnodes = nodeslayer.selectAll(".nodes")
-        .data(graphnodes.GetArray(), function (d) { return d.db_id; });
-
-
-    let posttransition = function () {
-        console.log("posttransition");
-        //remove all the icons so they can be regenerated the correct size
-        nodeslayer.selectAll(".nodeicon").remove();
-
-        //setTimeout is required here so it goes onto the queue. If you don't do this the icons won't appear
-        //Presumably this is because the dom hasn't updated the nodes yet
-        setTimeout(function () {
-            allnodes.append("i")
-                .attr("height", function (d) { return d.size * 0.6; })
-                .attr("width", function (d) { return d.size * 0.6; })
-                .attr("x", function (d) { return d.size * 0.2; })
-                .attr("y", function (d) { return d.size * 0.2; })
-                .attr("class", function (d) { return d.icon; });
-        }, 1);
-
-
-        allnodes.selectAll("text")
-            .attr("transform", function (d) { return "translate(" + (d.size / 2) + "," + (d.size + 10) + ")"; });
-
-        let pins = allnodes.selectAll(".pin");
-        pins.selectAll("circle")
-            .attr("r", function (d) { return 8 * d.scaling; })
-            .attr("cx", function (d) { return 5 * d.scaling; })
-            .attr("cy", function (d) { return 5 * d.scaling; });
-
-        //remove all the icons so they can be regenerated the correct size
-        pins.selectAll(".pinicon").remove();
-        setTimeout(function () {
-            pins.append("i")
-                .classed("fas fa-thumbtack", true)
-                .classed("pinicon", true)
-                .attr("x", 0)
-                .attr("y", 1)
-                .attr("height", function (d) { return 10 * d.scaling; })
-                .attr("width", function (d) { return 10 * d.scaling; });
-        }, 1);
-    };
-
-    //node layout
-    if (perfmode) {
-        nodebgs.attr("r", function (d) { return d.radius + 10; })
-            .attr("cx", function (d) { return d.radius; })
-            .attr("cy", function (d) { return d.radius; });
-
-        allnodes.selectAll("circle")
-            .attr("r", function (d) { return d.radius; })
-            .attr("cx", function (d) { return d.radius; })
-            .attr("cy", function (d) { return d.radius; });
-
-        posttransition();
-    }
-    else {
-        nodebgs.transition()
-            .duration(500)
-            .attr("r", function (d) { return d.radius + 10; })
-            .attr("cx", function (d) { return d.radius; })
-            .attr("cy", function (d) { return d.radius; });
-
-        allnodes.selectAll(".nodecircle")
-            .transition()
-            .duration(500)
-            .on('end', posttransition)
-            .attr("r", function (d) { return d.radius; })
-            .attr("cx", function (d) { return d.radius; })
-            .attr("cy", function (d) { return d.radius; });
-    }
-
-    
-}
-
-
 function updateNodeSize(node) {
     //console.log("updateNodeSize");
     //console.log(node);
@@ -862,9 +757,6 @@ function updateNodeSize(node) {
     let nodepin = nodeel.select(".pin");
     let nodebgel = graphbglayer.select("#nodebg_" + node.db_id).data(graphnodes.GetArray(), function (d) { return d.db_id; });
 
-    //remove all the fontawesome icons so they can be regenerated the correct size
-    //nodeel.select(".nodeicon").remove();
-    //nodepin.selectAll(".pinicon").remove();
 
     if (perfmode) {
         nodebgel.attr("r", function (d) { return d.radius + 10; })
