@@ -1,4 +1,5 @@
-﻿#region license
+﻿extensions: .cs 
+#region license
 // Copyright (c) 2019-2020 "20Road"
 // 20Road Limited [https://20road.com]
 //
@@ -17,20 +18,3 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 #endregion
-using System.Collections.Generic;
-
-namespace Console.Auth.Local
-{
-    public class LocalAuthConfiguration : IAuthConfiguration
-    {
-        public string Name { get; set; }
-        public List<string> AdminUsers { get; set; } = new List<string>();
-        public List<string> Users { get; set; } = new List<string>();
-        public int TimeoutSeconds { get; set; } = 900;
-
-        public ILogin GetLogin(string username, string password)
-        {
-            return new LocalLogin(this, username, password);
-        }
-    }
-}
