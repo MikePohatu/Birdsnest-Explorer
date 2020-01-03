@@ -104,7 +104,7 @@ namespace CMScanner
             collectors.Add(new CmPackages());
             collectors.Add(new CmPackagePrograms());
             collectors.Add(new CmTaskSequences());
-            collectors.Add(new CmCIDeployments());
+            collectors.Add(new CmDeployments());
             collectors.Add(new CmUsers());
             collectors.Add(new CmDevices());
             collectors.Add(new CmDeviceAdConnections());

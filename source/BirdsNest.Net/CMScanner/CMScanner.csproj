@@ -71,8 +71,7 @@
     <Compile Include="CmConverter\CmDevices.cs" />
     <Compile Include="CmConverter\CmCollectionMemberships.cs" />
     <Compile Include="CmConverter\CmUsers.cs" />
-    <Compile Include="CmConverter\CmCIDeployments.cs" />
-    <Compile Include="CmConverter\CmApplicationDeployments.cs" />
+    <Compile Include="CmConverter\CmDeployments.cs" />
     <Compile Include="CmConverter\CmPackagePrograms.cs" />
     <Compile Include="CmConverter\CmTaskSequences.cs" />
     <Compile Include="CmConverter\CmPackages.cs" />

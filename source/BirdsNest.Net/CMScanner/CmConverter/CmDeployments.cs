@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 namespace CMScanner.CmConverter
 {
-    public class CmCIDeployments: ICmCollector
+    public class CmDeployments: ICmCollector
     {
         public string ProgressMessage { get { return "Creating deployment relationships: "; } }
         public string Query
@@ -42,7 +42,7 @@ namespace CMScanner.CmConverter
                     foreach (IResultObject resource in results)
                     {
                         string ciid = ResultObjectHandler.GetString(resource, "CI_ID");
-                        if (string.IsNullOrEmpty(ciid))
+                        if (string.IsNullOrWhiteSpace(ciid))
                         {
                             ciid = ResultObjectHandler.GetString(resource, "PackageID");
                         }
