@@ -13,6 +13,10 @@ namespace CMScanner
         [JsonProperty("SiteServer")]
         public string SiteServer { get; set; }
 
+        [JsonProperty("ScannerID")]
+        public string ScannerID { get; set; }
+
+
         [JsonProperty("Domain")]
         public string Domain { get; set; }
 

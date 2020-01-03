@@ -5,6 +5,10 @@
 
   },
   "edgedatatypes": {
+    "CM_HAS_DEPLOYMENT": {
+      "displayname": "SCCM - CM_HAS_DEPLOYMENT",
+      "description": "SCCM collection has deployment for item"
+    },
     "CM_LIMITING_FOR": {
       "displayname": "SCCM - CM_LIMITING_FOR",
       "description": "Limiting collection for an SCCM collection"
@@ -24,10 +28,6 @@
     "CM_MEMBER_OF": {
       "displayname": "SCCM - CM_MEMBER_OF",
       "description": "SCCM object is a member of SCCM collection"
-    },
-    "CM_DEPLOYED_TO": {
-      "displayname": "SCCM - CM_DEPLOYED_TO",
-      "description": "SCCM item is deployed to collection"
     }
   },
   "nodedatatypes": {

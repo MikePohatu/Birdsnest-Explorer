@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using CMScanner.Sccm;
+using CMScanner.CmConverter;
 using CMScanner.Neo4j;
 
 namespace CMScanner
@@ -24,7 +25,9 @@ namespace CMScanner
             string neoconfigfile = _appdir + @"\neoconfig.json";
             string configfile = _appdir + @"\cmconfig.json";
             bool batchmode = false;
-            Writer.ScanID = ShortGuid.NewGuid().ToString();
+            string scanid = ShortGuid.NewGuid().ToString();
+            string scannerid = string.Empty;
+            Writer.ScanID = scanid;
 
             IDriver driver = null;
 
@@ -64,8 +67,15 @@ namespace CMScanner
             {
                 using (Configuration config = Configuration.LoadConfiguration(configfile))
                 {
-                    if (string.IsNullOrEmpty(config.Username)) { _connector.Connect(config.SiteServer); }
-                    else { _connector.Connect(config.Username, config.Password, config.Domain, config.SiteServer); }
+                    scannerid = config.ScannerID;
+                    if (string.IsNullOrEmpty(config.Username)) { 
+                        _connector.Connect(config.SiteServer);
+                        Connector.Instance.Connect(config.SiteServer);
+                    }
+                    else { 
+                        _connector.Connect(config.Username, config.Password, config.Domain, config.SiteServer);
+                        Connector.Instance.Connect(config.Username, config.Password, config.Domain, config.SiteServer);
+                    }
                 }
             }
             catch (Exception e)
@@ -91,56 +101,34 @@ namespace CMScanner
                 Environment.Exit(2);
             }
 
-            //collections
+            
             int count = 0;
-            Console.Write("Creating collection nodes");
-            List<SccmCollection> collections = _connector.GetCollections();
-            count = MergeList(collections, Writer.MergeCollections, driver);
-            Console.WriteLine("Created " + count + " collection nodes");
+            NeoWriter.ScanID = Writer.ScanID;
 
-            Console.WriteLine("Creating limiting collection connections");
-            count = Writer.ConnectLimitingCollections(driver.Session());
-            Console.WriteLine("Created " + count + " limiting collection connections");
+            List<ICmCollector> collectors = new List<ICmCollector>();
+            collectors.Add(new CmCollections());
+            collectors.Add(new CmLimitingCollections());
+            collectors.Add(new CmApplications());
+            //collectors.Add(new CmApplicationDeployments());
+            collectors.Add(new CmPackages());
+            collectors.Add(new CmPackagePrograms());
+            collectors.Add(new CmTaskSequences());
+            collectors.Add(new CmCIDeployments());
 
-            //applications
-            Console.Write("Creaing application nodes");
-            List<SccmApplication> applications = _connector.GetApplications();
-            count = MergeList(applications, Writer.MergeApplications, driver);
-            Console.WriteLine("Created " + count + " application nodes");
 
-            //packages
-            Console.Write("Creating package nodes");
-            List<SccmPackage> packages = _connector.GetPackages();
-            count = MergeList(packages, Writer.MergePackages, driver);
-            Console.WriteLine("Created " + count + " package nodes");
-
-            //package programs
-            Console.Write("Creating  package program nodes");
-            List<SccmPackageProgram> packageprograms = _connector.GetPackagePrograms();
-            count = MergeList(packageprograms, Writer.MergePackagePrograms, driver);
-            Console.WriteLine("Created " + count + " package program nodes");
-
-            //task sequences
-            Console.Write("Creating task sequence nodes");
-            List<SccmTaskSequence> tasksequences = _connector.GetTaskSequences();
-            count = MergeList(tasksequences, Writer.MergeTaskSequences, driver);
-            Console.WriteLine("Created " + count + " task sequence nodes");
+            foreach (ICmCollector collector in collectors)
+            {
+                Console.Write(collector.ProgressMessage);
+                NeoQueryData collectionsdata = collector.CollectData();
+                collectionsdata.ScanID = scanid;
+                collectionsdata.ScannerID = scannerid;
+                var summary = NeoWriter.RunQuery(collector.Query, collectionsdata, driver.Session());
+                Console.WriteLine(collector.GetSummaryString(summary));
+            }
 
             //SUGs
             //count = Writer.MergeSoftwareUpdateGroups(_connector.getso(), driver.Session());
             //Console.WriteLine("Created " + count + " package nodes");
-
-            //deployments - applications
-            Console.Write("Creating application deployment relationships");
-            List<SMS_DeploymentSummary> summarys = _connector.GetApplicationDeployments();
-            count = MergeList(summarys, Writer.MergeApplicationDeployments, driver);
-            Console.WriteLine("Created " + count + " application deployment relationships");
-
-            //deployments - Package programs
-            Console.Write("Creating package program deployment relationships");
-            summarys = _connector.GetPackageProgramDeployments();
-            count = MergeList(summarys, Writer.MergePackageProgramDeployments, driver);
-            Console.WriteLine("Created " + count + " package program deployment relationships");
 
             //devices
             Console.Write("Creating devices");
@@ -167,10 +155,6 @@ namespace CMScanner
             //cleanup
             count = Writer.CleanupCmObjects(driver.Session());
             Console.WriteLine("Cleaned up " + count + " items");
-
-            //Metadata
-            Writer.UpdateMetadata(driver);
-            Console.WriteLine("Updated metadata");
 
             if (batchmode == true)
             {

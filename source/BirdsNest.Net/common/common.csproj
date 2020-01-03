@@ -52,6 +52,8 @@
     <Compile Include="NeoConfiguration.cs" />
     <Compile Include="ListExtensions.cs" />
     <Compile Include="Neo4jConnector.cs" />
+    <Compile Include="NeoQueryData.cs" />
+    <Compile Include="NeoWriter.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="IBirdsNestNode.cs" />
     <Compile Include="ShortGuid.cs" />

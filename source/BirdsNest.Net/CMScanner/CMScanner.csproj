@@ -64,6 +64,19 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CmConverter\CmApplicationDependencies.cs" />
+    <Compile Include="CmConverter\CmCIDeployments.cs" />
+    <Compile Include="CmConverter\CmApplicationDeployments.cs" />
+    <Compile Include="CmConverter\CmPackagePrograms.cs" />
+    <Compile Include="CmConverter\CmTaskSequences.cs" />
+    <Compile Include="CmConverter\CmPackages.cs" />
+    <Compile Include="CmConverter\CmApplications.cs" />
+    <Compile Include="CmConverter\CmCollections.cs" />
+    <Compile Include="CmConverter\CmLimitingCollections.cs" />
+    <Compile Include="CmConverter\Connector.cs" />
+    <Compile Include="CmConverter\Enums.cs" />
+    <Compile Include="CmConverter\ICmCollector.cs" />
+    <Compile Include="CmConverter\ResultObjectHandler.cs" />
     <Compile Include="Configuration.cs" />
     <Compile Include="Neo4j\Writer.cs" />
     <Compile Include="Sccm\Enums.cs" />
