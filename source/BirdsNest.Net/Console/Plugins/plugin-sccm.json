@@ -108,7 +108,7 @@
         "lastscan": {},
         "name": {}
       },
-      "icon": "fas fa-shoe-prints"
+      "icon": "fas fa-tasks"
     },
     "CM_ConfigurationItem": {
       "displayname": "SCCM - CM_ConfigurationItem",
