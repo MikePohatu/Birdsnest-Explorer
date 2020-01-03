@@ -13,6 +13,11 @@ namespace common
 
         public static IResultSummary RunQuery(string query, NeoQueryData data, ISession session)
         {
+            if (string.IsNullOrWhiteSpace(data.ScanID))
+            {
+                data.ScanID = NeoWriter.ScanID;
+            }
+
             var result = session.WriteTransaction(tx => tx.Run(query, data));
             return result.Summary;
         }

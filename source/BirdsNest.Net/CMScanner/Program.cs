@@ -6,9 +6,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using CMScanner.Sccm;
 using CMScanner.CmConverter;
-using CMScanner.Neo4j;
 
 namespace CMScanner
 {
@@ -18,16 +16,12 @@ namespace CMScanner
         {
             Stopwatch steptimer = new Stopwatch();
             Stopwatch totaltimer = new Stopwatch();
-
-            SccmConnector _connector = new SccmConnector();
-
             string _appdir = AppDomain.CurrentDomain.BaseDirectory;
             string neoconfigfile = _appdir + @"\neoconfig.json";
             string configfile = _appdir + @"\cmconfig.json";
             bool batchmode = false;
             string scanid = ShortGuid.NewGuid().ToString();
             string scannerid = string.Empty;
-            Writer.ScanID = scanid;
 
             IDriver driver = null;
 
@@ -69,11 +63,9 @@ namespace CMScanner
                 {
                     scannerid = config.ScannerID;
                     if (string.IsNullOrEmpty(config.Username)) { 
-                        _connector.Connect(config.SiteServer);
                         Connector.Instance.Connect(config.SiteServer);
                     }
                     else { 
-                        _connector.Connect(config.Username, config.Password, config.Domain, config.SiteServer);
                         Connector.Instance.Connect(config.Username, config.Password, config.Domain, config.SiteServer);
                     }
                 }
@@ -103,7 +95,7 @@ namespace CMScanner
 
             
             int count = 0;
-            NeoWriter.ScanID = Writer.ScanID;
+            NeoWriter.ScanID = scanid;
 
             List<ICmCollector> collectors = new List<ICmCollector>();
             collectors.Add(new CmCollections());
@@ -114,7 +106,11 @@ namespace CMScanner
             collectors.Add(new CmPackagePrograms());
             collectors.Add(new CmTaskSequences());
             collectors.Add(new CmCIDeployments());
-
+            collectors.Add(new CmUsers());
+            collectors.Add(new CmDevices());
+            collectors.Add(new CmDeviceAdConnections());
+            collectors.Add(new CmUserAdConnections());
+            collectors.Add(new CmCollectionMemberships());
 
             foreach (ICmCollector collector in collectors)
             {
@@ -126,34 +122,8 @@ namespace CMScanner
                 Console.WriteLine(collector.GetSummaryString(summary));
             }
 
-            //SUGs
-            //count = Writer.MergeSoftwareUpdateGroups(_connector.getso(), driver.Session());
-            //Console.WriteLine("Created " + count + " package nodes");
-
-            //devices
-            Console.Write("Creating devices");
-            List<SccmDevice> devs = _connector.GetAllDevices();
-            count = MergeList(devs, Writer.MergeDevices, driver);
-            Console.WriteLine("Created " + count + " devices");
-
-            //users
-            Console.Write("Creating users");
-            List<SccmUser> users = _connector.GetAllUsers();
-            count = MergeList(users, Writer.MergeUsers, driver);
-            Console.WriteLine("Created " + count + " users");
-
-            //ad mappings
-            count = Writer.ConnectCmToAdObjects(driver.Session());
-            Console.WriteLine("Created " + count + " AD to CM mappings");
-
-            //collection members
-            Console.Write("Creating collection memberships");
-            List<object> memberships = _connector.GetCollectionMemberships();
-            count = MergeList(memberships, Writer.MergeCollectionMembers, driver);
-            Console.WriteLine("Created " + count + " collection memberships");
-
             //cleanup
-            count = Writer.CleanupCmObjects(driver.Session());
+            count = Cleanup.CleanupCmObjects(driver, scanid, scannerid);
             Console.WriteLine("Cleaned up " + count + " items");
 
             if (batchmode == true)

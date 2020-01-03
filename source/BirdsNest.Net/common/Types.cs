@@ -58,6 +58,7 @@ namespace common
         public static string CMClientSettings { get { return "CM_ClientSettings"; } }
 
         public static string CMMemberOf { get { return "CM_MEMBER_OF"; } }
+        public static string CMHasProgram { get { return "CM_HAS_PROGRAM"; } }
         public static string CMHasObject { get { return "CM_HAS_OBJECT"; } }
         public static string CMLimitingCollection { get { return "CM_LIMITING_FOR"; } }
         public static string CMHasDeployment { get { return "CM_HAS_DEPLOYMENT"; } }

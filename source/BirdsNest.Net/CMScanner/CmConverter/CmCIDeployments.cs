@@ -7,8 +7,7 @@ namespace CMScanner.CmConverter
 {
     public class CmCIDeployments: ICmCollector
     {
-        public string ProgressMessage { get { return "Creating deployment relationships" +
-                    ": "; } }
+        public string ProgressMessage { get { return "Creating deployment relationships: "; } }
         public string Query
         {
             get
@@ -34,7 +33,7 @@ namespace CMScanner.CmConverter
             try
             {
                 // This query selects all collections
-                string cmquery = "select * from SMS_DeploymentSummary WHERE FeatureType='" + SccmItemType.PackageProgram + "'";
+                string cmquery = "select * from SMS_DeploymentSummary";
 
                 // Run query
                 using (IResultObject results = Connector.Instance.Connection.QueryProcessor.ExecuteQuery(cmquery))
@@ -42,6 +41,12 @@ namespace CMScanner.CmConverter
                     // Enumerate through the collection of objects returned by the query.
                     foreach (IResultObject resource in results)
                     {
+                        string ciid = ResultObjectHandler.GetString(resource, "CI_ID");
+                        if (string.IsNullOrEmpty(ciid))
+                        {
+                            ciid = ResultObjectHandler.GetString(resource, "PackageID");
+                        }
+
                         propertylist.Add(new
                         {
                             CollectionID = ResultObjectHandler.GetString(resource, "CollectionID"),
@@ -49,9 +54,9 @@ namespace CMScanner.CmConverter
                             DeploymentID = ResultObjectHandler.GetString(resource, "DeploymentID"),
                             DeploymentIntent = ResultObjectHandler.GetInt(resource, "DeploymentIntent"),
                             SoftwareName = ResultObjectHandler.GetString(resource, "SoftwareName"),
-                            PackageID = ResultObjectHandler.GetString(resource, "PackageID"),
+                            //PackageID = ResultObjectHandler.GetString(resource, "PackageID"),
                             //ProgramName = ResultObjectHandler.GetString(resource, "ProgramName"),
-                            CIID = ResultObjectHandler.GetString(resource, "CI_ID"),
+                            CIID = ciid
                             //FeatureType = ((SccmItemType)ResultObjectHandler.GetInt(resource, "FeatureType")).ToString()
                         });
                     }

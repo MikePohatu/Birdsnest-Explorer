@@ -27,7 +27,7 @@ namespace CMScanner.CmConverter
                 "SET n.lastscan=$ScanID " +
                 "SET n.scannerid=$ScannerID " +
                 "MERGE (parent:" + Types.CMPackage + " {id:prop.PackageID}) " +
-                "MERGE (parent)-[r:CONTAINS]->(n) " +
+                "MERGE (parent)-[r:" + Types.CMHasProgram + "]->(n) " +
                 "SET r.lastscan=$ScanID " +
                 "SET r.scannerid=$ScannerID " +
                 "RETURN n.name";

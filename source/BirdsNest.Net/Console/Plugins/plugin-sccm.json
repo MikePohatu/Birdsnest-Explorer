@@ -9,6 +9,10 @@
       "displayname": "SCCM - CM_HAS_DEPLOYMENT",
       "description": "SCCM collection has deployment for item"
     },
+    "CM_HAS_PROGRAM": {
+      "displayname": "SCCM - CM_HAS_PROGRAM",
+      "description": "SCCM package program"
+    },
     "CM_LIMITING_FOR": {
       "displayname": "SCCM - CM_LIMITING_FOR",
       "description": "Limiting collection for an SCCM collection"
@@ -89,7 +93,8 @@
     },
     "CM_PackageProgram": {
       "displayname": "SCCM - CM_PackageProgram",
-      "description": "SCCM program for Package item"
+      "description": "SCCM program for Package item",
+      "icon": "fas fa-cogs"
     },
     "CM_SoftwareUpdateGroup": {
       "displayname": "SCCM - CM_SoftwareUpdateGroup",
@@ -102,7 +107,8 @@
         "id": {},
         "lastscan": {},
         "name": {}
-      }
+      },
+      "icon": "fas fa-shoe-prints"
     },
     "CM_ConfigurationItem": {
       "displayname": "SCCM - CM_ConfigurationItem",
