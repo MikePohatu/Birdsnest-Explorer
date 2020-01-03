@@ -129,6 +129,7 @@ namespace CMScanner
             collectors.Add(new CmDeviceAdConnections());
             collectors.Add(new CmUserAdConnections());
             collectors.Add(new CmCollectionMemberships());
+            collectors.Add(new CmApplicationsInTaskSequences());
 
             foreach (ICmCollector collector in collectors)
             {

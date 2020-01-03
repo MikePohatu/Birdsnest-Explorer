@@ -80,6 +80,7 @@ namespace common
         public static string CMHasProgram { get { return "CM_HAS_PROGRAM"; } }
         public static string CMHasObject { get { return "CM_HAS_OBJECT"; } }
         public static string CMLimitingCollection { get { return "CM_LIMITING_FOR"; } }
+        public static string CMReferences { get { return "CM_REFERENCES"; } }
         public static string CMHasDeployment { get { return "CM_HAS_DEPLOYMENT"; } }
         //WUScanner
         public static string WUUpdate { get { return "WU_Update"; } }

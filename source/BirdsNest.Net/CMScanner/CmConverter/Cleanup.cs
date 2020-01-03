@@ -38,30 +38,47 @@ namespace CMScanner.CmConverter
             collectionsdata.ScannerID = scannerid;
 
             //nodes first
-            string query = "MATCH (n:" + Types.CMConfigurationItem + ") " +
-                "WHERE n.lastscan<>$ScanID " +
+            List<string> cmnodetypes = new List<string> {
+                Types.CMConfigurationItem,
+                Types.CMDevice,
+                Types.CMUser,
+                Types.CMClientSettings
+            };
+
+            string query;
+            foreach (string type in cmnodetypes)
+            {
+                query = "MATCH (n:" + type + ") " +
+                "WHERE n.scannerid<>$ScannerID AND n.lastscan<>$ScanID " +
                 "DETACH DELETE n " +
                 "RETURN n";
 
-            summary = NeoWriter.RunQuery(query, collectionsdata, driver.Session());
-            count = count + summary.Counters.NodesDeleted;
+                summary = NeoWriter.RunQuery(query, collectionsdata, driver.Session());
+                count = count + summary.Counters.NodesDeleted;
+            }
 
             //any remaining edges
-            query = "MATCH ()-[r:" + Types.CMHasObject + "]->() " +
-                "WHERE r.lastscan<>$ScanID " +
+            List<string> cmreltypes = new List<string> { 
+                Types.CMLimitingCollection,
+                Types.CMMemberOf,
+                Types.CMReferences,
+                Types.CMHasProgram,
+                Types.CMHasObject,
+                Types.CMHasDeployment
+            };
+
+
+
+            foreach (string type in cmreltypes)
+            {
+                query = "MATCH ()-[r:" + type + "]->() " +
+                "WHERE r.scannerid=$ScannerID AND r.lastscan<>$ScanID " +
                 "DELETE r " +
                 "RETURN r";
 
-            summary = NeoWriter.RunQuery(query, collectionsdata, driver.Session());
-            count = count + summary.Counters.RelationshipsDeleted;
-
-            query = "MATCH ()-[r:" + Types.CMLimitingCollection + "]->() " +
-                "WHERE r.lastscan<>$ScanID " +
-                "DELETE r " +
-                "RETURN r";
-
-            summary = NeoWriter.RunQuery(query, collectionsdata, driver.Session());
-            count = count + summary.Counters.RelationshipsDeleted;
+                summary = NeoWriter.RunQuery(query, collectionsdata, driver.Session());
+                count = count + summary.Counters.RelationshipsDeleted;
+            }
 
             return count;
         }
