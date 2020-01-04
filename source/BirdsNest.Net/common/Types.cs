@@ -73,6 +73,7 @@ namespace common
         public static string CMPackage { get { return "CM_Package"; } }
         public static string CMPackageProgram { get { return "CM_PackageProgram"; } }
         public static string CMTaskSequence { get { return "CM_TaskSequence"; } }
+        public static string CMSoftwareUpdate { get { return "CM_SoftwareUpdate"; } }
         public static string CMSoftwareUpdateGroup { get { return "CM_SoftwareUpdateGroup"; } }
         public static string CMClientSettings { get { return "CM_ClientSettings"; } }
 
@@ -82,6 +83,7 @@ namespace common
         public static string CMLimitingCollection { get { return "CM_LIMITING_FOR"; } }
         public static string CMReferences { get { return "CM_REFERENCES"; } }
         public static string CMHasDeployment { get { return "CM_HAS_DEPLOYMENT"; } }
+        public static string CMSuperSededBy{ get { return "CM_SUPERSEDED_BY"; } }
         //WUScanner
         public static string WUUpdate { get { return "WU_Update"; } }
         public static string Supersedes { get { return "SUPERSEDES"; } }

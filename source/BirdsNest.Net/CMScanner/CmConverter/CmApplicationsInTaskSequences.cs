@@ -78,5 +78,7 @@ namespace CMScanner.CmConverter
         {
             return summary.Counters.RelationshipsCreated + " created";
         }
+
+        public static CmApplicationsInTaskSequences GetInstance() { return new CmApplicationsInTaskSequences(); }
     }
 }

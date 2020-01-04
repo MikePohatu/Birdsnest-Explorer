@@ -86,5 +86,7 @@ namespace CMScanner.CmConverter
         {
             return summary.Counters.NodesCreated + " created";
         }
+
+        public static CmDevices GetInstance() { return new CmDevices(); }
     }
 }

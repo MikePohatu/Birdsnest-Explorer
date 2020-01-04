@@ -84,5 +84,7 @@ namespace CMScanner.CmConverter
         {
             return summary.Counters.RelationshipsCreated + " created";
         }
+
+        public static CmApplicationDependencies GetInstance() { return new CmApplicationDependencies(); }
     }
 }

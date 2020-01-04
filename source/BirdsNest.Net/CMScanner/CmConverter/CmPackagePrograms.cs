@@ -94,6 +94,10 @@ namespace CMScanner.CmConverter
 
         public string GetSummaryString(IResultSummary summary)
         {
-            return summary.Counters.NodesCreated + " nodes created, " + summary.Counters.RelationshipsCreated + " relationships created";        }
+            return summary.Counters.NodesCreated + " nodes created, " + summary.Counters.RelationshipsCreated + " relationships created";        
+        }
+
+        public static CmPackagePrograms GetInstance() { return new CmPackagePrograms(); }
+
     }
 }

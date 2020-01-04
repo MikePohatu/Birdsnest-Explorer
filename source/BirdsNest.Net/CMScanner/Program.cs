@@ -116,20 +116,23 @@ namespace CMScanner
             int count = 0;
             NeoWriter.ScanID = scanid;
 
-            List<ICmCollector> collectors = new List<ICmCollector>();
-            collectors.Add(new CmCollections());
-            collectors.Add(new CmLimitingCollections());
-            collectors.Add(new CmApplications());
-            collectors.Add(new CmPackages());
-            collectors.Add(new CmPackagePrograms());
-            collectors.Add(new CmTaskSequences());
-            collectors.Add(new CmDeployments());
-            collectors.Add(new CmUsers());
-            collectors.Add(new CmDevices());
-            collectors.Add(new CmDeviceAdConnections());
-            collectors.Add(new CmUserAdConnections());
-            collectors.Add(new CmCollectionMemberships());
-            collectors.Add(new CmApplicationsInTaskSequences());
+            List<ICmCollector> collectors = new List<ICmCollector>
+            {
+                CmCollections.GetInstance(),
+                CmLimitingCollections.GetInstance(),
+                CmApplications.GetInstance(),
+                CmPackages.GetInstance(),
+                CmPackagePrograms.GetInstance(),
+                CmTaskSequences.GetInstance(),
+                CmDeployments.GetInstance(),
+                CmUsers.GetInstance(),
+                CmDevices.GetInstance(),
+                CmDeviceAdConnections.GetInstance(),
+                CmUserAdConnections.GetInstance(),
+                CmCollectionMemberships.GetInstance(),
+                CmApplicationsInTaskSequences.GetInstance(),
+                CmSoftwareUpdate.GetInstance()
+            };
 
             foreach (ICmCollector collector in collectors)
             {

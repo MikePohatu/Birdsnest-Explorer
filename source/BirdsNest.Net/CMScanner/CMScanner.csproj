@@ -67,6 +67,7 @@
     <Compile Include="CmConverter\Cleanup.cs" />
     <Compile Include="CmConverter\CmApplicationDependencies.cs" />
     <Compile Include="CmConverter\CmApplicationsInTaskSequences.cs" />
+    <Compile Include="CmConverter\CmSoftwareUpdate.cs" />
     <Compile Include="CmConverter\CmUserAdConnections.cs" />
     <Compile Include="CmConverter\CmDeviceAdConnections.cs" />
     <Compile Include="CmConverter\CmDevices.cs" />

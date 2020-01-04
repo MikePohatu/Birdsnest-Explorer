@@ -53,5 +53,7 @@ namespace CMScanner.CmConverter
         {
             return summary.Counters.RelationshipsCreated + " connected";
         }
+
+        public static CmLimitingCollections GetInstance() { return new CmLimitingCollections(); }
     }
 }

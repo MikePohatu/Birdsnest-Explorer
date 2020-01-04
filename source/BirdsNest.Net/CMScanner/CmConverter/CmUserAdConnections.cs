@@ -54,5 +54,7 @@ namespace CMScanner.CmConverter
         {
             return summary.Counters.RelationshipsCreated + " created";
         }
+
+        public static CmUserAdConnections GetInstance() { return new CmUserAdConnections(); }
     }
 }

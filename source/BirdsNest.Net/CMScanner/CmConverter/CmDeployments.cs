@@ -90,5 +90,7 @@ namespace CMScanner.CmConverter
         {
             return summary.Counters.RelationshipsCreated + " created";
         }
+
+        public static CmDeployments GetInstance() { return new CmDeployments(); }
     }
 }

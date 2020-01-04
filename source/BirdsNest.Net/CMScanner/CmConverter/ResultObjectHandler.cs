@@ -18,6 +18,7 @@
 //
 #endregion
 using Microsoft.ConfigurationManagement.ManagementProvider;
+using System;
 
 namespace CMScanner.CmConverter
 {
@@ -62,7 +63,7 @@ namespace CMScanner.CmConverter
         }
 
         /// <summary>
-        /// Attempts to return the value of a propery, returns false on error
+        /// Attempts to return the value of a boolean propery
         /// </summary>
         /// <param name="resource"></param>
         /// <param name="property"></param>
@@ -77,6 +78,25 @@ namespace CMScanner.CmConverter
             catch
             {
                 return false;
+            }
+        }
+
+        /// <summary>
+        /// Attempts to return the value of a datetime propery
+        /// </summary>
+        /// <param name="resource"></param>
+        /// <param name="property"></param>
+        /// <returns></returns>
+        public static DateTime GetDateTime(IResultObject resource, string property)
+        {
+            try
+            {
+                DateTime d = resource[property].DateTimeValue;
+                return d;
+            }
+            catch (Exception e)
+            {
+                throw new ArgumentException("Error processing DateTime value for property: " + property + ". " + e.Message);
             }
         }
     }
