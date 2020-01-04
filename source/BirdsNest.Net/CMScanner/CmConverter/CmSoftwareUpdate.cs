@@ -40,7 +40,7 @@ namespace CMScanner.CmConverter
                 "SET n:" + Types.CMConfigurationItem + " " +
                 "SET n.name = prop.Name " +
                 "SET n.ArticleID = prop.ArticleID " +
-                "SET n.DateCreated = prop.DateCreated " +
+                "SET n.BulletinID = prop.BulletinID " +
                 "SET n.DateCreated = prop.DateCreated " +
                 "SET n.DateRevised = prop.DateRevised " +
                 "SET n.IsBundle = prop.IsBundle " +
@@ -53,7 +53,7 @@ namespace CMScanner.CmConverter
                 "SET n.PercentCompliant = prop.PercentCompliant " +
                 "SET n.SeverityName = prop.SeverityName " +
                 "SET n.Size = prop.Size " +
-                "SET n.scanid=$ScanID " +
+                "SET n.lastscan=$ScanID " +
                 "SET n.scannerid=$ScannerID " +
                 "SET n.layout='mesh' " +
                 "RETURN n.name";

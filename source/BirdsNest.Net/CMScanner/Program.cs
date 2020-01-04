@@ -131,7 +131,9 @@ namespace CMScanner
                 CmUserAdConnections.GetInstance(),
                 CmCollectionMemberships.GetInstance(),
                 CmApplicationsInTaskSequences.GetInstance(),
-                CmSoftwareUpdate.GetInstance()
+                CmSoftwareUpdate.GetInstance(),
+                CmSoftwareUpdateSupersedence.GetInstance(),
+                CmSoftwareUpdateGroupMembers.GetInstance()
             };
 
             foreach (ICmCollector collector in collectors)

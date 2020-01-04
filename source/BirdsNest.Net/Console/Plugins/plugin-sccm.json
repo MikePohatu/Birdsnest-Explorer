@@ -5,6 +5,10 @@
 
   },
   "edgedatatypes": {
+    "CM_EXCLUDES_COLLECTION": {
+      "displayname": "SCCM - CM_EXCLUDES_COLLECTION",
+      "description": "SCCM collection excludes another collection"
+    },
     "CM_HAS_DEPLOYMENT": {
       "displayname": "SCCM - CM_HAS_DEPLOYMENT",
       "description": "SCCM collection has deployment for item"
@@ -13,25 +17,25 @@
       "displayname": "SCCM - CM_HAS_PROGRAM",
       "description": "SCCM package program"
     },
-    "CM_LIMITING_FOR": {
-      "displayname": "SCCM - CM_LIMITING_FOR",
-      "description": "Limiting collection for an SCCM collection"
-    },
     "CM_INCLUDES_COLLECTION": {
       "displayname": "SCCM - CM_INCLUDES_COLLECTION",
       "description": "SCCM collection includes another collection"
     },
-    "CM_EXCLUDES_COLLECTION": {
-      "displayname": "SCCM - CM_EXCLUDES_COLLECTION",
-      "description": "SCCM collection excludes another collection"
+    "CM_LIMITING_FOR": {
+      "displayname": "SCCM - CM_LIMITING_FOR",
+      "description": "Limiting collection for an SCCM collection"
+    },
+    "CM_MEMBER_OF": {
+      "displayname": "SCCM - CM_MEMBER_OF",
+      "description": "SCCM object is a member of SCCM collection"
     },
     "CM_OBJECT_FOR": {
       "displayname": "SCCM - CM_OBJECT_FOR",
       "description": "SCCM object represents an object in Active Directory"
     },
-    "CM_MEMBER_OF": {
-      "displayname": "SCCM - CM_MEMBER_OF",
-      "description": "SCCM object is a member of SCCM collection"
+    "CM_SUPERSEDED_BY": {
+      "displayname": "SCCM - CM_SUPERSEDED_BY",
+      "description": "SCCM object is superseded by another e.g. software updates"
     }
   },
   "nodedatatypes": {
@@ -96,9 +100,50 @@
       "description": "SCCM program for Package item",
       "icon": "fas fa-cogs"
     },
+    "CM_SoftwareUpdate": {
+      "displayname": "SCCM - CM_SoftwareUpdate",
+      "description": "SCCM Software Update",
+      "icon": "far fa-arrow-alt-circle-up",
+      "properties": {
+        "ArticleID": {},
+        "DateCreated": {},
+        "DateRevised": {},
+        "Description": {},
+        "id": {},
+        "IsBundle": {
+          "type": "boolean"
+        },
+        "IsDeployed": {
+          "type": "boolean"
+        },
+        "IsExpired": {
+          "type": "boolean"
+        },
+        "IsLatest": {
+          "type": "boolean"
+        },
+        "IsSuperseded": {
+          "type": "boolean"
+        },
+        "lastscan": {},
+        "name": {},
+        "NumMissing": {
+          "type": "number"
+        },
+        "PercentCompliant": {
+          "type": "number"
+        },
+        "scannerid": {},
+        "SeverityName": {},
+        "Size": {
+          "type": "number"
+        }
+      }
+    },
     "CM_SoftwareUpdateGroup": {
       "displayname": "SCCM - CM_SoftwareUpdateGroup",
-      "description": "SCCM Software Update Group (SUG)"
+      "description": "SCCM Software Update Group (SUG)",
+      "icon": "fas fa-arrow-alt-circle-up"
     },
     "CM_TaskSequence": {
       "displayname": "SCCM - CM_TaskSequence",
