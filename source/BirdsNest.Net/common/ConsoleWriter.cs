@@ -87,6 +87,42 @@ namespace common
             }
         }
 
+        /// <summary>
+        /// Pass an array of tabstop values, and an array of strings. Strings will be written at the tabstop 
+        /// values
+        /// </summary>
+        /// <param name="tabstops"></param>
+        /// <param name="strings"></param>
+        public static void WriteLine(int[] tabstops, string[] strings)
+        {
+            lock (locker)
+            {
+                int origRow = Console.CursorTop;
+                int counter = 0;
+
+                for (int i = 0; i<tabstops.Length; i++)
+                {
+                    counter = i;
+                    if (i < strings.Length)
+                    {
+                        Console.SetCursorPosition(tabstops[i], origRow);
+                        Console.Write(strings[i]);
+                        
+                    }
+                    else { break; }
+                }
+                counter++;
+                for (int i = counter++; i < strings.Length; i++)
+                {
+                    Console.Write(strings[i]);
+                    counter = i;
+                }
+
+                Console.WriteLine();
+            }
+        }
+
+
         public static void Write(string message)
         {
             lock (locker)

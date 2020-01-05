@@ -112,8 +112,6 @@ namespace CMScanner
                 Environment.Exit(2);
             }
 
-            
-            int count = 0;
             NeoWriter.ScanID = scanid;
 
             List<ICmCollector> collectors = new List<ICmCollector>
@@ -124,7 +122,6 @@ namespace CMScanner
                 CmPackages.GetInstance(),
                 CmPackagePrograms.GetInstance(),
                 CmTaskSequences.GetInstance(),
-                CmDeployments.GetInstance(),
                 CmUsers.GetInstance(),
                 CmDevices.GetInstance(),
                 CmDeviceAdConnections.GetInstance(),
@@ -133,22 +130,35 @@ namespace CMScanner
                 CmApplicationsInTaskSequences.GetInstance(),
                 CmSoftwareUpdate.GetInstance(),
                 CmSoftwareUpdateSupersedence.GetInstance(),
-                CmSoftwareUpdateGroupMembers.GetInstance()
+                CmSoftwareUpdateGroupMembers.GetInstance(),
+                CmDeployments.GetInstance()
             };
 
+            int[] tabs = { 0, 60, 67, 74, 81, 88 };
+            string[] headervals = { "Description", "(n)+", "[r]+", "(n)-", "[r]-", "Properties Set"};
+            ConsoleWriter.WriteLine(tabs, headervals);
+            
             foreach (ICmCollector collector in collectors)
             {
-                Console.Write(collector.ProgressMessage);
                 NeoQueryData collectionsdata = collector.CollectData();
                 collectionsdata.ScanID = scanid;
                 collectionsdata.ScannerID = scannerid;
                 var summary = NeoWriter.RunQuery(collector.Query, collectionsdata, driver.Session());
-                Console.WriteLine(collector.GetSummaryString(summary));
+                
+                string[] sumvals = {
+                    collector.ProgressMessage,
+                    summary.Counters.NodesCreated.ToString(),
+                    summary.Counters.RelationshipsCreated.ToString(),
+                    summary.Counters.NodesDeleted.ToString(),
+                    summary.Counters.RelationshipsDeleted.ToString(),
+                    summary.Counters.PropertiesSet.ToString()
+                    };
+
+                ConsoleWriter.WriteLine(tabs, sumvals);
             }
 
             //cleanup
-            count = Cleanup.CleanupCmObjects(driver, scanid, scannerid);
-            Console.WriteLine("Cleaned up " + count + " items");
+            Cleanup.CleanupCmObjects(driver, scanid, scannerid, tabs);
 
             if (batchmode == true)
             {

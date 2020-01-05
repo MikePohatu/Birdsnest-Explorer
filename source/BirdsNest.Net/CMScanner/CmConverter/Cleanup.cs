@@ -29,9 +29,8 @@ namespace CMScanner.CmConverter
 {
     public static class Cleanup
     {
-        public static int CleanupCmObjects(IDriver driver, string scanid, string scannerid)
+        public static void CleanupCmObjects(IDriver driver, string scanid, string scannerid, int[] tabstops)
         {
-            int count= 0;
             IResultSummary summary;
             NeoQueryData collectionsdata = new NeoQueryData();
             collectionsdata.ScanID = scanid;
@@ -49,12 +48,21 @@ namespace CMScanner.CmConverter
             foreach (string type in cmnodetypes)
             {
                 query = "MATCH (n:" + type + ") " +
-                "WHERE n.scannerid<>$ScannerID AND n.lastscan<>$ScanID " +
+                "WHERE n.scannerid=$ScannerID AND n.lastscan<>$ScanID " +
                 "DETACH DELETE n " +
                 "RETURN n";
 
                 summary = NeoWriter.RunQuery(query, collectionsdata, driver.Session());
-                count = count + summary.Counters.NodesDeleted;
+                string[] sumvals = {
+                    "Cleaning up " + type,
+                    summary.Counters.NodesCreated.ToString(),
+                    summary.Counters.RelationshipsCreated.ToString(),
+                    summary.Counters.NodesDeleted.ToString(),
+                    summary.Counters.RelationshipsDeleted.ToString(),
+                    summary.Counters.PropertiesSet.ToString()
+                    };
+
+                ConsoleWriter.WriteLine(tabstops, sumvals);
             }
 
             //any remaining edges
@@ -77,10 +85,17 @@ namespace CMScanner.CmConverter
                 "RETURN r";
 
                 summary = NeoWriter.RunQuery(query, collectionsdata, driver.Session());
-                count = count + summary.Counters.RelationshipsDeleted;
-            }
+                string[] sumvals = {
+                    "Cleaning up " + type,
+                    summary.Counters.NodesCreated.ToString(),
+                    summary.Counters.RelationshipsCreated.ToString(),
+                    summary.Counters.NodesDeleted.ToString(),
+                    summary.Counters.RelationshipsDeleted.ToString(),
+                    summary.Counters.PropertiesSet.ToString()
+                    };
 
-            return count;
+                ConsoleWriter.WriteLine(tabstops, sumvals);
+            }
         }
     }
 }

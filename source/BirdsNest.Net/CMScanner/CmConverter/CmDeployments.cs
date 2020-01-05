@@ -66,12 +66,28 @@ namespace CMScanner.CmConverter
                             ciid = ResultObjectHandler.GetString(resource, "PackageID");
                         }
 
+                        string intent = string.Empty;
+                        switch (ResultObjectHandler.GetInt(resource, "DeploymentIntent"))
+                        {
+                            case 1:
+                                intent = "Install";
+                                break;
+                            case 2:
+                                intent = "Uninstall";
+                                break;
+                            case 3:
+                                intent = "Preflight";
+                                break;
+                            default:
+                                break;
+                        }
+
                         propertylist.Add(new
                         {
                             CollectionID = ResultObjectHandler.GetString(resource, "CollectionID"),
                             //CollectionName = ResultObjectHandler.GetString(resource, "CollectionName"),
                             DeploymentID = ResultObjectHandler.GetString(resource, "DeploymentID"),
-                            DeploymentIntent = ResultObjectHandler.GetInt(resource, "DeploymentIntent"),
+                            DeploymentIntent = intent,
                             SoftwareName = ResultObjectHandler.GetString(resource, "SoftwareName"),
                             //PackageID = ResultObjectHandler.GetString(resource, "PackageID"),
                             //ProgramName = ResultObjectHandler.GetString(resource, "ProgramName"),
@@ -88,7 +104,7 @@ namespace CMScanner.CmConverter
 
         public string GetSummaryString(IResultSummary summary)
         {
-            return summary.Counters.RelationshipsCreated + " created";
+            return summary.Counters.RelationshipsCreated + " created, " + summary.Counters.PropertiesSet + " properties set";
         }
 
         public static CmDeployments GetInstance() { return new CmDeployments(); }
