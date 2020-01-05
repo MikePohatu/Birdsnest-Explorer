@@ -25,7 +25,7 @@ import { event, select, selectAll, mouse } from "d3-selection";
 import { hierarchy, tree, HierarchyPointNode, HierarchyNode } from "d3-hierarchy";
 import { zoom, zoomTransform } from "d3-zoom";
 import { drag } from "d3-drag";
-import { forceLink, forceSimulation, forceCollide, SimulationNodeDatum, SimulationLinkDatum } from "d3-force";
+import { forceLink, forceSimulation, forceCollide, forceManyBody, SimulationNodeDatum, SimulationLinkDatum } from "d3-force";
 import { transition } from "d3-transition";
 import { easeCubicInOut, easeCubic } from "d3-ease";
 import { interpolateNumber } from "d3-interpolate";
@@ -35,7 +35,8 @@ export {
     hierarchy, tree, HierarchyPointNode, HierarchyNode,
     zoom, zoomTransform,
     drag,
-	forceLink, forceSimulation, forceCollide, SimulationNodeDatum, SimulationLinkDatum,
+    forceLink, forceSimulation, forceCollide, forceManyBody, 
+    SimulationNodeDatum, SimulationLinkDatum,
     transition,
     easeCubicInOut, easeCubic,
     interpolateNumber

@@ -56,7 +56,7 @@ export default class SimulationController {
         this.graphsimulation.stop();
         this.graphsimulation
             .force('collide', d3.forceCollide()
-                .strength(0.7)
+                .strength(0.9)
                 .radius(function (d: ISimNode) { return d.size * 1.5; }))
             .on('end', function () { me.onSimulationFinished(); })
             .on('tick', function () { me.onGraphTick(); });
@@ -74,15 +74,18 @@ export default class SimulationController {
         this.meshsimulation
             .force("link", d3.forceLink()
                 .id(function (d: ISimLink<ISimNode>) { return d.db_id; })
-                .distance(200)
-                .strength(0.8));
+                .distance(200))
+            .force("manybody", d3.forceManyBody()
+                .strength(-30)
+                .distanceMin(3)
+                .distanceMax(1000));
 
         this.treesimulation = d3.forceSimulation();
         this.treesimulation.stop();
         this.treesimulation
             .force("link", d3.forceLink()
                 .id(function (d: ISimLink<ISimNode>) { return d.db_id; })
-                .distance(150)
+                .distance(200)
                 .strength(0.8));
     }
 
