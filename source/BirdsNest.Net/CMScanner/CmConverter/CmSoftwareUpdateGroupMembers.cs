@@ -37,6 +37,7 @@ namespace CMScanner.CmConverter
             {
                 return "UNWIND $Properties AS prop " +
                 "MERGE (n:" + Types.CMSoftwareUpdateGroup + " {id:prop.id}) " +
+                "SET n:" + Types.CMConfigurationItem + " " +
                 "SET n.name = prop.name " +
                 "SET n.description = prop.description " +
                 "WITH n, prop " +
