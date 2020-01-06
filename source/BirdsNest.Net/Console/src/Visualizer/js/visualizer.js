@@ -24,6 +24,7 @@ import Slope from '../ts/Slope';
 import SimulationController from '../ts/SimulationController';
 import Mappings from '../ts/Mappings';
 import DatumStore from '../ts/DatumStore';
+import Spiral from '../ts/Spiral';
 
 import $ from 'jquery';
 
@@ -526,8 +527,9 @@ function addSearchResults(results, callback) {
                         //console.log(loopEdge);
                     });
 
-                    if (simController.simRunning === false) { updateLocationsEdges(); }
+                    
                 }
+                if (simController.simRunning === false) { updateLocationsEdges(); }
             });
 
             restartLayout();
@@ -646,13 +648,16 @@ function loadNodeData(newnodedata) {
     //console.log(newnodedata);
     let newcount = 0;
     let newtograph = [];
+    let spiral = new Spiral(defaultsize*2);
 
     //evaluate the nodes to figure out the max and min size so we can work out the scaling
     newnodedata.forEach(function (d) {
         if (graphnodes.DatumExists(d) === false) {
             newtograph.push(d);
-            d.x = 0;
-            d.y = 0;
+            d.x = spiral.x;
+            d.y = spiral.y;
+            spiral.Step();
+
             d.labels.forEach(function (label) {
                 if (graphnodelabels[label] === undefined) {
                     graphnodelabels[label] = true;
@@ -705,18 +710,20 @@ function loadNodeData(newnodedata) {
 function addSvgNodes(nodes) {
     //console.log(": addSvgNodes");
     //add the bg
-    setTimeout(function () {
-        graphbglayer.selectAll('.nodebg')
-            .data(nodes, function (d) { return d.db_id; })
-            .enter()
-            .append("circle")
-            .attr("r", function (d) { return d.radius + 10; })
-            .attr("cx", function (d) { return d.radius; })
-            .attr("cy", function (d) { return d.radius; })
-            .attr("id", function (d) { return "nodebg_" + d.db_id; })
-            .classed("graphbg", true)
-            .classed("nodebg", true);
-    }, 1);
+    let enternodebgG = graphbglayer.selectAll('.nodebg')
+        .data(nodes, function (d) { return d.db_id; })
+        .enter()
+        .append("g")
+        .classed("graphbg", true)
+        .classed("nodebg", true)
+        .attr("id", function (d) { return "nodebg_" + d.db_id; })
+        .attr("visibility", "hidden")
+        .attr("transform", function (d) { return "translate(" + d.x + "," + d.y + ")"; });
+
+    enternodebgG.append("circle")
+        .attr("r", function (d) { return d.radius + 10; })
+        .attr("cx", function (d) { return d.radius; })
+        .attr("cy", function (d) { return d.radius; });
 
     let enternodes = nodeslayer.selectAll(".nodes")
         .data(nodes, function (d) { return d.db_id; })
@@ -726,6 +733,8 @@ function addSvgNodes(nodes) {
         .attr("id", function (d) { return "node_" + d.db_id; })
         .attr("class", function (d) { return d.classes; })
         .attr("cursor", "pointer")
+        .attr("transform", function (d) { return "translate(" + d.x + "," + d.y + ")"; })
+        .attr("visibility", "hidden")
         .classed("nodes", true)
         .classed("enabled", true)
         .classed("selected", function (d) { return d.selected; })
@@ -765,6 +774,11 @@ function addSvgNodes(nodes) {
             .attr("y", function (d) { return d.size * 0.2; })
             .attr("class", function (d) { return d.icon; });
     }, 1);
+
+    setTimeout(function () {
+        enternodesg.attr("visibility", "visible");
+        enternodebgG.attr("visibility", "visible");
+    }, 2);
 }
 
 function updateNodeSize(node) {
@@ -854,16 +868,14 @@ function addSvgEdges(edges) {
     //   console.log(edges);
 
     //add the bg
-    setTimeout(function () {
-        graphbglayer.selectAll('.edgebg')
-            .data(edges, function (d) { return d.db_id; })
-            .enter()
-            .append("path")
-            .attr("id", function (d) { return "edgebg_" + d.db_id; })
-            .classed("graphbg", true)
-            .classed("edgebg", true)
-            .on("click", onEdgeClicked);
-    }, 1);
+    graphbglayer.selectAll('.edgebg')
+        .data(edges, function (d) { return d.db_id; })
+        .enter()
+        .append("path")
+        .attr("id", function (d) { return "edgebg_" + d.db_id; })
+        .classed("graphbg", true)
+        .classed("edgebg", true)
+        .on("click", onEdgeClicked);
 
     let enteredges = edgeslayer.selectAll(".edges")
         .data(edges, function (d) { return d.db_id; })

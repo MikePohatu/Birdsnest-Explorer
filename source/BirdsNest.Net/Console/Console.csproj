@@ -37,6 +37,7 @@
     <None Remove="src\Visualizer\ts\Mappings.ts" />
     <None Remove="src\Visualizer\ts\SimulationController.ts" />
     <None Remove="src\Visualizer\ts\Slope.ts" />
+    <None Remove="src\visualizer\ts\Spiral.ts" />
   </ItemGroup>
 
   <ItemGroup>
