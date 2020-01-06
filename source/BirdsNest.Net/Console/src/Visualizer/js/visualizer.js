@@ -713,17 +713,15 @@ function addSvgNodes(nodes) {
     let enternodebgG = graphbglayer.selectAll('.nodebg')
         .data(nodes, function (d) { return d.db_id; })
         .enter()
-        .append("g")
+        .append("circle")
+        .attr("r", function (d) { return d.radius + 10; })
+        .attr("cx", function (d) { return d.radius; })
+        .attr("cy", function (d) { return d.radius; })
         .classed("graphbg", true)
         .classed("nodebg", true)
         .attr("id", function (d) { return "nodebg_" + d.db_id; })
         .attr("visibility", "hidden")
         .attr("transform", function (d) { return "translate(" + d.x + "," + d.y + ")"; });
-
-    enternodebgG.append("circle")
-        .attr("r", function (d) { return d.radius + 10; })
-        .attr("cx", function (d) { return d.radius; })
-        .attr("cy", function (d) { return d.radius; });
 
     let enternodes = nodeslayer.selectAll(".nodes")
         .data(nodes, function (d) { return d.db_id; })
@@ -902,27 +900,21 @@ function addSvgEdges(edges) {
         .classed("enabled", true)
         .on("click", onEdgeClicked);
 
-    setTimeout(function () {
-        enteredgesg.append("path")
-            .classed("wrapper", true)
-            .attr("fill", "none");
-    }, 0);
+    enteredgesg.append("path")
+        .classed("wrapper", true)
+        .attr("fill", "none");
 
-    setTimeout(function () {
-        enteredgesg.append("path")
-            .classed("arrows", true);
-    }, 0);
+    enteredgesg.append("path")
+        .classed("arrows", true);
 
-    setTimeout(function () {
-        let edgelabels = enteredgesg.append("g")
-            .classed("edgelabel", true);
+    let edgelabels = enteredgesg.append("g")
+        .classed("edgelabel", true);
 
-        edgelabels.append("text")
-            .text(function (d) { return d.label; })
-            .attr("dominant-baseline", "text-bottom")
-            .attr("text-anchor", "middle")
-            .attr("transform", "translate(0,-5)");
-    }, 1);
+    edgelabels.append("text")
+        .text(function (d) { return d.label; })
+        .attr("dominant-baseline", "text-bottom")
+        .attr("text-anchor", "middle")
+        .attr("transform", "translate(0,-5)");
 }
 
 function removeNodes(nodeList) {
@@ -1567,19 +1559,6 @@ function updateLocationsEdges() {
                 "translate(" + diagLine.x1 + " " + (diagLine.y1 + lineshift) + ")";
         });
 
-        //do the bg as well
-        graphbglayer.select("#edgebg_" + d.db_id)
-            .attr("transform", function () {
-                return "rotate(" + diagLine.deg + " " + diagLine.x1 + " " + diagLine.y1 + ") " +
-                    "translate(" + diagLine.x1 + " " + (diagLine.y1 + lineshift) + ")";
-            })
-            .attr("d", function () {
-                return "M 0 -" + edgebgwidth + " " +
-                    "L " + diagLine.length + " -" + edgebgwidth + " " +
-                    "L " + diagLine.length + " " + edgebgwidth + " " +
-                    "L 0 " + edgebgwidth + " " + " Z";
-            });
-
         // Reevaluate the path coordinates so it looks right
         edge.selectAll(".wrapper")
             .attr("d", function (d) {
@@ -1617,6 +1596,19 @@ function updateLocationsEdges() {
                     //let axis = diagLine.getCoordsFromLength(diagLine.mid);
                     return "translate(" + diagLine.mid + ",0) rotate(180)";
                 }
+            });
+
+        //do the bg as well
+        graphbglayer.select("#edgebg_" + d.db_id)
+            .attr("transform", function () {
+                return "rotate(" + diagLine.deg + " " + diagLine.x1 + " " + diagLine.y1 + ") " +
+                    "translate(" + diagLine.x1 + " " + (diagLine.y1 + lineshift) + ")";
+            })
+            .attr("d", function () {
+                return "M 0 -" + edgebgwidth + " " +
+                    "L " + diagLine.length + " -" + edgebgwidth + " " +
+                    "L " + diagLine.length + " " + edgebgwidth + " " +
+                    "L 0 " + edgebgwidth + " " + " Z";
             });
     });
 }
