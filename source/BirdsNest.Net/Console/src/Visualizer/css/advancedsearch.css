@@ -1,7 +1,11 @@
 ﻿/*search config*/
-#advSearchView {
+#advSearchView, #simplequery {
     padding: 5px;
     background-color: rgba(255, 255, 255, 0.95);
+}
+
+#simpleQueryInput {
+    margin: 0 0 5px 0;
 }
 
 #querybar, #simplequery {
