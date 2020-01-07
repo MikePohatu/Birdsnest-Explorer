@@ -3,7 +3,7 @@
 @inject IAuthorizationService AuthorizationService
 
 @{
-    string welcomemsg = "Open Visualizer to get started. Or not. I'm not your mother.";
+    string welcomemsg = "Open Visualizer to get started.";
     ViewData["Title"] = "Portal";
     if (string.IsNullOrEmpty(User.Identity.Name)==false)
     {

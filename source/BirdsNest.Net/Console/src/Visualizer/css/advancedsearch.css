@@ -1,12 +1,12 @@
 ﻿/*search config*/
 
 #querybar, #simplequery {
-	position: fixed;
-	display: block;
-	top: 1.5em;
-	left: 0;
-	z-index: 50;
-	margin: 5px;
+    position: absolute;
+    display: block;
+    top: 0;
+    left: 0;
+    z-index: 50;
+    margin:0;
 }
 
 #querybar {

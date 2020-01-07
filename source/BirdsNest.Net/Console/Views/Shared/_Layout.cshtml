@@ -9,6 +9,9 @@
     <meta charset="utf-8">
     <meta http-equiv="x-ua-compatible" content="ie=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/png" href="/img/Logo_64x64.png" sizes="64x64">
+    <link rel="icon" type="image/png" href="/img/Logo_128x128.png" sizes="128x128">
+    @*<link rel="icon" type="image/png" href="/img/Logo_32x32.png" sizes="32x32">*@
     <link rel="stylesheet" type="text/css" href="~/dist/css/common-vendor-bundle.css" />
     <link rel="stylesheet" type="text/css" href="~/dist/css/console-bundle.css" />
 
@@ -26,18 +29,16 @@
     <div class="top-bar">
         <div class="top-bar-left">
             <ul class="menu">
-                <li class="menu-text"><a href="/">BirdsNest</a></li>
+                <li class="menu-text"><a href="/" >BirdsNest</a></li>
             </ul>
         </div>
         <div class="top-bar-right">
             <ul class="dropdown menu" data-dropdown-menu>
                 <li>
-                    <a>Menu</a>
+                    <a><img src="/img/Logo_64x64.png" width="24" height="24"></a>
                     <ul class="menu">
                         <li><a href="/">Home</a></li>
                         @{
-
-
                             if (User.Identity.IsAuthenticated)
                             {
                                 if ((await AuthorizationService.AuthorizeAsync(User, Types.BirdsNestAdminsPolicy)).Succeeded)

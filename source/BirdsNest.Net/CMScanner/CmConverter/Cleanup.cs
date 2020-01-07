@@ -38,7 +38,12 @@ namespace CMScanner.CmConverter
 
             //nodes first
             List<string> cmnodetypes = new List<string> {
-                Types.CMConfigurationItem,
+                Types.CMApplication,
+                Types.CMPackage,
+                Types.CMPackageProgram,
+                Types.CMSoftwareUpdateGroup,
+                Types.CMTaskSequence,
+                Types.CMCollection,
                 Types.CMDevice,
                 Types.CMUser,
                 Types.CMClientSettings
@@ -96,6 +101,26 @@ namespace CMScanner.CmConverter
 
                 ConsoleWriter.WriteLine(tabstops, sumvals);
             }
+
+
+            //We don't delete software updates. MS might expire something which might remove it from SCCM.
+            //We want to keep that info
+            query = "MATCH (n:" + Types.CMSoftwareUpdate + ") " +
+                "WHERE n.scannerid=$ScannerID AND n.lastscan<>$ScanID " +
+                "SET n.IsExpired = true " +
+                "RETURN n";
+
+            summary = NeoWriter.RunQuery(query, collectionsdata, driver.Session());
+            string[] vals = {
+                    "Finding expired updates",
+                    summary.Counters.NodesCreated.ToString(),
+                    summary.Counters.RelationshipsCreated.ToString(),
+                    summary.Counters.NodesDeleted.ToString(),
+                    summary.Counters.RelationshipsDeleted.ToString(),
+                    summary.Counters.PropertiesSet.ToString()
+                    };
+
+            ConsoleWriter.WriteLine(tabstops, vals);
         }
     }
 }

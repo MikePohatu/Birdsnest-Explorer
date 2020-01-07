@@ -57,3 +57,10 @@
 .menu {
     z-index: 500;
 }
+
+.title-text {
+    font-weight: bold;
+    text-decoration: none;
+    text-decoration-color: white;
+    color: white;
+}
