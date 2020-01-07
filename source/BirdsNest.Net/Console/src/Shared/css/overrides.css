@@ -1,13 +1,13 @@
-.top-bar .menu a {
-	padding: 0.1rem;
-	color: #FFF;
+.title-bar, .top-bar .menu a {
+    padding: 0.1rem;
+    color: #FFF;
 }
 
-.top-bar {
-	padding: 0;	
+.title-bar, .top-bar {
+    padding: 0;
 }
 
-.top-bar, .top-bar ul {
+.title-bar, .top-bar, .top-bar ul {
 	background-color: #606060;
 }
 
@@ -24,7 +24,7 @@
     padding: 0.4rem 1rem;
 }
 
-.top-bar-right .dropdown.menu > li.is-dropdown-submenu-parent > a::after {
+.dropdown.menu > li.is-dropdown-submenu-parent > a::after {
     border-color: #53FF67 transparent transparent;
 }
 
