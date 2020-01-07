@@ -1385,7 +1385,7 @@ export default class AdvancedSearchCoordinator {
 		//update view
 		if (proptype === SearchTypes.String) {
 			d3.select("#searchNotOptions").classed("hidden", false);
-			d3.select("#searchCaseOptions").classed("hidden", true);
+			d3.select("#searchCaseOptions").classed("hidden", false);
 			d3.select("#searchValInput").classed("hidden", false);
 			d3.select("#searchBoolInput").classed("hidden", true);
 		}
@@ -1397,7 +1397,7 @@ export default class AdvancedSearchCoordinator {
 		}
 		else {
 			d3.select("#searchNotOptions").classed("hidden", false);
-			d3.select("#searchCaseOptions").classed("hidden", false);
+			d3.select("#searchCaseOptions").classed("hidden", true);
 			d3.select("#searchValInput").classed("hidden", false);
 			d3.select("#searchBoolInput").classed("hidden", true);	
 		}

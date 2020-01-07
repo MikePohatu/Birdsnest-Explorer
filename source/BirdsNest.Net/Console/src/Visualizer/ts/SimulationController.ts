@@ -74,7 +74,8 @@ export default class SimulationController {
         this.meshsimulation
             .force("link", d3.forceLink()
                 .id(function (d: ISimLink<ISimNode>) { return d.db_id; })
-                .distance(200))
+                .distance(200)
+                .strength(0.6))
             .force("manybody", d3.forceManyBody()
                 .strength(-30)
                 .distanceMin(3)

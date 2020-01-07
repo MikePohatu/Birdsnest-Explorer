@@ -24,6 +24,8 @@
 
   <ItemGroup>
     <Content Remove="appsettings.Development.json" />
+    <Content Remove="package.json" />
+    <Content Remove="tsconfig.json" />
     <Content Remove="wwwroot\script\authcrap.ts" />
     <Content Remove="wwwroot\script\datacrap.ts" />
     <Content Remove="wwwroot\script\domcrap.ts" />
@@ -130,6 +132,8 @@
 
   <ItemGroup>
     <None Include="appsettings.Development.json" />
+    <None Include="package.json" />
+    <None Include="tsconfig.json" />
     <None Include="wwwroot\css\custom.css" />
   </ItemGroup>
 
