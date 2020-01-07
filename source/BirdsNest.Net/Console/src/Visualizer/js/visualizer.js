@@ -1111,39 +1111,46 @@ function onSelectMouseDown() {
     var oriMouseX = d3.mouse(this)[0];
     var oriMouseY = d3.mouse(this)[1];
 
+    let mousemove = function () {
+        drawAreaBox(areaBox, [oriMouseX, oriMouseY], d3.mouse(this));
+    };
+    let mouseup = function () {
+        //console.log("onSelectMouseDown mouseup");
+        let newMouseX = d3.mouse(this)[0];
+        let newMouseY = d3.mouse(this)[1];
+
+        let areaBoxEl = areaBox.node().getBoundingClientRect();
+
+        if (newMouseX !== oriMouseX && newMouseY !== oriMouseY) {
+            d3.selectAll(".nodes.enabled")
+                .each(function (d) {
+                    let elem = d3.select("#node_" + d.db_id + "_icon").node().getBoundingClientRect();
+
+                    if (areaBoxEl.top < elem.top && areaBoxEl.bottom > elem.bottom && areaBoxEl.left < elem.left && areaBoxEl.right > elem.right) {
+                        updateNodeSelection(d, true, false);
+                    }
+                    else {
+                        if (d3.event.ctrlKey === false) {
+                            updateNodeSelection(d, false, false);
+                        }
+                    }
+                });
+        }
+
+        drawingsvg
+            .on("mousemove", null)
+            .on("mouseup", null)
+            .on("touchmove", null)
+            .on("touchend", null);
+        areaBox.remove();
+        stopSelect();
+    };
+
     drawingsvg
-        .on("mousemove", function () {
-            drawAreaBox(areaBox, [oriMouseX, oriMouseY], d3.mouse(this));
-        })
-        .on("mouseup", function () {
-            //console.log("onSelectMouseDown mouseup");
-            let newMouseX = d3.mouse(this)[0];
-            let newMouseY = d3.mouse(this)[1];
-
-            let areaBoxEl = areaBox.node().getBoundingClientRect();
-
-            if (newMouseX !== oriMouseX && newMouseY !== oriMouseY) {
-                d3.selectAll(".nodes.enabled")
-                    .each(function (d) {
-                        let elem = d3.select("#node_" + d.db_id + "_icon").node().getBoundingClientRect();
-
-                        if (areaBoxEl.top < elem.top && areaBoxEl.bottom > elem.bottom && areaBoxEl.left < elem.left && areaBoxEl.right > elem.right) {
-                            updateNodeSelection(d, true, false);
-                        }
-                        else {
-                            if (d3.event.ctrlKey === false) {
-                                updateNodeSelection(d, false, false);
-                            }
-                        }
-                    });
-            }
-
-            drawingsvg
-                .on("mousemove", null)
-                .on("mouseup", null);
-            areaBox.remove();
-            stopSelect();
-        });
+        .on("mousemove", mousemove)
+        .on("mouseup", mouseup)
+        .on("touchmove", mousemove)
+        .on("touchend", mouseup);
 }
 
 d3.select("#cropBtn").on('click', startCrop);
@@ -1186,44 +1193,51 @@ function onCropMouseDown() {
     var oriMouseX = d3.mouse(this)[0];
     var oriMouseY = d3.mouse(this)[1];
 
-    drawingsvg
-        .on("mousemove", function () {
-            drawAreaBox(areaBox, [oriMouseX, oriMouseY], d3.mouse(this));
-        })
-        .on("mouseup", function () {
+    let mousemove = function () {
+        drawAreaBox(areaBox, [oriMouseX, oriMouseY], d3.mouse(this));
+    };
+    let mouseup = function () {
+        drawingsvg
+            .on("mousemove", null)
+            .on("mouseup", null)
+            .on("touchmove", null)
+            .on("touchend", null);
+
+        let newMouseX = d3.mouse(this)[0];
+        let newMouseY = d3.mouse(this)[1];
+
+        if (newMouseX !== oriMouseX && newMouseY !== oriMouseY) {
+            let box = drawingPane.node().getBoundingClientRect();
+            let areaBoxEl = areaBox.node().getBBox();
+            let currentk = d3.zoomTransform(drawingsvg.node()).k;
+            let k = Math.min(box.width / areaBoxEl.width, box.height / areaBoxEl.height);
+            let areaBoxElCenterX = areaBoxEl.x + areaBoxEl.width / 2;
+            let areaBoxElCenterY = areaBoxEl.y + areaBoxEl.height / 2;
+            let movex = (box.width / 2 - areaBoxElCenterX) / currentk;
+            let movey = (box.height / 2 - areaBoxElCenterY) / currentk;
+
             drawingsvg
-                .on("mousemove", null)
-                .on("mouseup", null);
+                .transition()
+                .duration(500)
+                .ease(d3.easeCubicInOut)
+                .call(zoomer.translateBy, movex, movey)
+                .on("end", function () {
+                    drawingsvg
+                        .transition()
+                        .duration(500)
+                        .ease(d3.easeCubicInOut)
+                        .call(zoomer.scaleBy, k);
+                });
+        }
+        areaBox.remove();
+        stopCrop();
+    };
 
-            let newMouseX = d3.mouse(this)[0];
-            let newMouseY = d3.mouse(this)[1];
-
-            if (newMouseX !== oriMouseX && newMouseY !== oriMouseY) {
-                let box = drawingPane.node().getBoundingClientRect();
-                let areaBoxEl = areaBox.node().getBBox();
-                let currentk = d3.zoomTransform(drawingsvg.node()).k;
-                let k = Math.min(box.width / areaBoxEl.width, box.height / areaBoxEl.height);
-                let areaBoxElCenterX = areaBoxEl.x + areaBoxEl.width / 2;
-                let areaBoxElCenterY = areaBoxEl.y + areaBoxEl.height / 2;
-                let movex = (box.width / 2 - areaBoxElCenterX) / currentk;
-                let movey = (box.height / 2 - areaBoxElCenterY) / currentk;
-
-                drawingsvg
-                    .transition()
-                    .duration(500)
-                    .ease(d3.easeCubicInOut)
-                    .call(zoomer.translateBy, movex, movey)
-                    .on("end", function () {
-                        drawingsvg
-                            .transition()
-                            .duration(500)
-                            .ease(d3.easeCubicInOut)
-                            .call(zoomer.scaleBy, k);
-                    });
-            }
-            areaBox.remove();
-            stopCrop();
-        });
+    drawingsvg
+        .on("mousemove", mousemove)
+        .on("mouseup", mouseup)
+        .on("touchmove", mousemove)
+        .on("touchend", mouseup);        
 }
 
 function drawAreaBox(areaBoxEl, oriCoords, newCoords) {
