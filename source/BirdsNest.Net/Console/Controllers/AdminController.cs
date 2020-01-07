@@ -63,24 +63,5 @@ namespace Console.Controllers
             }
             return data;
         }
-
-        // GET /admin/updateproperties?label=AD_Object
-        public async Task<object> UpdateProperties([FromQuery]string label)
-        {
-            Dictionary<string, object> data = new Dictionary<string, object>();
-            try
-            {
-                var ret = await this._service.UpdateMetadataAsync(label);
-                data.Add("status", 200);
-                data.Add("message", "OK");
-            }
-            catch (Exception e)
-            {
-                data.Add("status", 500);
-                data.Add("message", "There was an error updating metadata for " +label+ ": " + e.Message);
-            }
-
-            return data;
-        }
     }
 }

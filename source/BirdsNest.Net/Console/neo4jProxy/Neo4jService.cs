@@ -664,55 +664,6 @@ namespace Console.neo4jProxy
 			return ParseStringListResults(dbresult);
 		}
 
-        public async Task<bool> UpdateMetadataAsync(string label)
-        {
-            bool b = false;
-            await Task.Run(() => b = UpdateMetadata(label));
-
-            return b;
-        }
-
-        public bool UpdateMetadata(string label)
-        {
-            if (this._pluginmanager.NodeLabels.Contains(label))
-            {
-                string query =
-                "MATCH (n:" + label + ") " +
-                "WITH DISTINCT keys(n) as props " +
-                "UNWIND props as p " +
-                "WITH DISTINCT p as disprops " +
-                "WITH collect(disprops) as allprops " +
-                "MERGE(i: _Metadata { name: 'NodeProperties'}) " +
-                "SET i." + label + " = allprops " +
-                "RETURN i";
-                using (ISession session = this._driver.Session())
-                {
-                    session.WriteTransaction(tx => tx.Run(query));
-                }
-            }
-            else if (this._pluginmanager.EdgeLabels.Contains(label))
-            {
-                string query = "MATCH ()-[r:" + label + "]->()" +
-                "WITH DISTINCT keys(r) as props " +
-                "UNWIND props as p " +
-                "WITH DISTINCT p as disprops " +
-                "WITH collect(disprops) as allprops " +
-                "MERGE(i: _Metadata { name: 'EdgeProperties'}) " +
-                "SET i." + label + " = allprops " +
-                "RETURN i";
-                using (ISession session = this._driver.Session())
-                {
-                    session.WriteTransaction(tx => tx.Run(query));
-                }
-            }
-            else
-            {
-                throw new ArgumentException(label + " is not a valid plugin label");
-            }
-        
-            return true;
-        }
-
         private List<string> ParseStringListResults(IStatementResult dbresult)
         {
             List<string> results = new List<string>();

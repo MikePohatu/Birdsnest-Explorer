@@ -18,7 +18,17 @@
     @RenderSection("Styles", required: false)
 
     <link rel="stylesheet" type="text/css" href="/css/custom.css">
-    <title>@ViewBag.Title</title>
+    @{
+        if (string.IsNullOrWhiteSpace(ViewBag.Title))
+        {
+            <title>BirdsNest</title>
+        }
+        else
+        {
+            <title>BirdsNest - @ViewBag.Title</title>
+        }
+    }
+
 </head>
 <body>
     <div id="curtain"></div>
