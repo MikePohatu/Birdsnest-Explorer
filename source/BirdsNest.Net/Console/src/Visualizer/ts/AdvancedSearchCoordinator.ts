@@ -71,7 +71,7 @@ export default class AdvancedSearchCoordinator {
 	PlusSize: number = 25;
 	PaneHeight: number = 65;
 	Margin: number = 5;
-	SvgContainerHeight: number = 90;
+	SvgContainerHeight: number = 80;
 	ConditionTreeRoot: ViewTreeNode<ICondition> = null;
 	NodeDataTypes: object = null;
 	EdgeDataTypes: object = null;
@@ -431,7 +431,7 @@ export default class AdvancedSearchCoordinator {
 			currslot++;
 			d.index = currslot;
 			d.x = me.XSpacing * currslot - me.XSpacing * 0.5;
-			d.y = me.SvgContainerHeight / 2 + me.Margin;
+			d.y = me.Diameter + me.Margin;
 			return "translate(" + d.x + "," + d.y + ")";
 		};
 
@@ -553,7 +553,7 @@ export default class AdvancedSearchCoordinator {
 			//console.log(d);
 			currslot++;
 			var subspacingx = (currslot + 0.5) * me.XSpacing - rectwidth / 2 - me.XSpacing * 0.5;
-			var subspacingy = me.SvgContainerHeight /2 - rectheight / 2 + me.Margin;
+			var subspacingy = me.Diameter - rectheight / 2 + me.Margin;
 			//console.log(currslot + ": " + subspacingx + ": " + subspacingy);
 			//console.log("edge transforms");
 			//console.log(d);
@@ -590,7 +590,7 @@ export default class AdvancedSearchCoordinator {
 		var controls = d3.select("#" + this.PathElementID)
 			.append("g")
 			.attr("id", "nodecontrols")
-			.attr("transform", "translate(" + (searchnode.x - controlIconDimension * 2) + "," + (searchnode.y - this.Diameter - controlIconDimension - 10) + ")");
+			.attr("transform", "translate(" + (searchnode.x - controlIconDimension * 2) + " " + (searchnode.y + this.Diameter) + ")");
 		//.attr("transform", nodetransform);
 
 		//console.log("transform", "translate(" + (searchnode.x - controlIconDimension * 2) + "," + (searchnode.y - this.Diameter - controlIconDimension - 10) + ")");
@@ -1092,16 +1092,17 @@ export default class AdvancedSearchCoordinator {
 		var nodes = d3root.count().descendants();
 		
 		//var links = this.tree.links(nodes);
-		var me = this;
-		var gridwidth = 20;
-		var bracewidth = gridwidth;
-		var rectwidth = gridwidth * 6;
-		var rectheight = 70;
-		var xpadding = 5;
-		var xspacing = gridwidth * 3;
-		var ypadding = 5;
-		var strokewidth = 3;
-		
+		let me = this;
+		let gridwidth = 20;
+		let bracewidth = gridwidth;
+		let rectwidth = gridwidth * 6;
+		let rectheight = 50;
+		let xpadding = 5;
+		let xspacing = gridwidth * 3;
+		let ypadding = 5;
+		let strokewidth = 3;
+		let ybraceshift = rectheight - (ypadding*2);
+
 		//console.log('nodes:');
 		//console.log(nodes);
 		var enter = viewel.selectAll(".searchcondition")
@@ -1244,20 +1245,18 @@ export default class AdvancedSearchCoordinator {
 		});
 
 		//add the braces to the bg of the condition groups
-		var condgroupentersbg = condgroupenters.selectAll(".conditionbg");
-		var ybraceshift = me.SvgContainerHeight / 2 + ypadding + me.YSpacing;
+		let condgroupentersbg = condgroupenters.selectAll(".conditionbg");
+
 		condgroupentersbg.append("g")
 			.classed("conditionbrace leftbrace", true)
 			.append("text")
 			.text("{")
-			.attr("transform", "translate(0 " + ybraceshift + ")")
 			.attr("font-size", rectheight + "px");
 
 		condgroupentersbg.append("g")
 			.classed("conditionbrace rightbrace", true)
 			.append("text")
 			.text("}")
-			.attr("transform", "translate(0 " + ybraceshift + ")")
 			.attr("font-size", rectheight + "px");
 
 		var condgroups = viewel.selectAll(".conditiongroup")
@@ -1265,13 +1264,13 @@ export default class AdvancedSearchCoordinator {
 
 		condgroups.selectAll(".leftbrace")
 			.attr("transform", function () {
-				return "translate(0 " + ypadding + ")";
+				return "translate(0 " + ybraceshift + ")";
 			});
 
 		condgroups.selectAll(".rightbrace")
 			.attr("transform", function (d: d3.HierarchyPointNode<ViewTreeNode<ICondition>>) {
 				//console.log(d);
-				return "translate(" + (d.data.RectWidth - bracewidth + xpadding) + " " + ypadding + ")";
+				return "translate(" + (d.data.RectWidth - bracewidth + xpadding) + " " + ybraceshift + ")";
 			});
 
 		//remove the AND/OR labels and readd them
@@ -1307,7 +1306,7 @@ export default class AdvancedSearchCoordinator {
 			.attr("transform", function (d: d3.HierarchyPointNode<ViewTreeNode<ICondition>>) {
 				//console.log(d);
 				var x = 0;
-				var y = me.SvgContainerHeight / 2 - rectheight / 2 + me.Margin;
+				var y = 0;
 				if (d.parent !== null) {
 					if (d.data.Index >= 1) {
 						//console.log("Sub child");
@@ -1323,7 +1322,7 @@ export default class AdvancedSearchCoordinator {
 				}
 				d.x = x;
 				d.y = y;
-				return "translate(" + x + "," + (y + me.YSpacing / 2) + ")";
+				return "translate(" + x + "," + y + ")";
 			});
 	}
 
