@@ -25,6 +25,7 @@
   <ItemGroup>
     <Content Remove="appsettings.Development.json" />
     <Content Remove="package.json" />
+    <Content Remove="Plugins\plugin-testing.json" />
     <Content Remove="tsconfig.json" />
     <Content Remove="wwwroot\script\authcrap.ts" />
     <Content Remove="wwwroot\script\datacrap.ts" />
@@ -78,9 +79,6 @@
     <Content Update="Plugins\plugin-builtin.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Update="Plugins\plugin-testing.json">
-      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
-    </Content>
     <Content Update="Plugins\plugin-filesystem.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
@@ -133,6 +131,9 @@
   <ItemGroup>
     <None Include="appsettings.Development.json" />
     <None Include="package.json" />
+    <None Include="Plugins\plugin-testing.json">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </None>
     <None Include="tsconfig.json" />
     <None Include="wwwroot\css\custom.css" />
   </ItemGroup>
