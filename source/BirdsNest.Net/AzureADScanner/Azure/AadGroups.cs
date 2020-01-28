@@ -28,18 +28,21 @@ using System.Threading.Tasks;
 
 namespace AzureADScanner.Azure
 {
-    public class AadUsers: IDataCollector
+    public class AadGroups: IDataCollector
     {
-        public string ProgressMessage { get { return "Creating user nodes: "; } }
+        public string ProgressMessage { get { return "Creating group nodes: "; } }
+        public List<string> GroupIDs { get; private set; } = new List<string>();
+
         public string Query
         {
             get
             {
                 return "UNWIND $Properties AS prop " +
-                "MERGE (n:" + Types.AadUser + " {id:prop.ID}) " +
+                "MERGE (n:" + Types.AadGroup + " {id:prop.ID}) " +
                 "SET n:" + Types.AadObject + " " +
                 "SET n.name = prop.Name " +
-                "SET n.userprincipalname = prop.UPN " +
+                "SET n.description = prop.Description " +
+                "SET n.mailenabled = prop.MailEnabled " +
                 "SET n.lastscan=$ScanID " +
                 "SET n.scannerid=$ScannerID " +
                 "SET n.layout='mesh' " +
@@ -54,19 +57,21 @@ namespace AzureADScanner.Azure
 
             try
             {
-                IGraphServiceUsersCollectionPage page = Connector.Instance.Client.Users.Request().GetAsync().Result;
+                IGraphServiceGroupsCollectionPage page = Connector.Instance.Client.Groups.Request().GetAsync().Result;
 
                 while (page != null)
                 {
-                    foreach (User user in page.CurrentPage)
+                    foreach (Group group in page.CurrentPage)
                     {
                         propertylist.Add(new
                         {
-                            ID = user.Id,
-                            Enabled = user.AccountEnabled,
-                            UPN = user.UserPrincipalName,
-                            Name = user.DisplayName
+                            ID = group.Id,
+                            Name = group.DisplayName,
+                            Description = group.Description,
+                            MailEnabled = group.MailEnabled
                         });
+
+                        this.GroupIDs.Add(group.Id);
                     }
 
                     page = page.NextPageRequest?.GetAsync().Result;

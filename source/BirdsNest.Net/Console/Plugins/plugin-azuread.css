@@ -1,0 +1,21 @@
+.AAD_Group {
+    color: blue;
+    stroke: blue;
+    fill: #BBF0C6;
+}
+
+.AAD_User {
+    color: blue;
+    stroke: blue;
+    fill: #ffe2e7;
+}
+
+.AAD_Device {
+    color: blue;
+    stroke: blue;
+    fill: lightcyan;
+}
+
+.AAD_MEMBER_OF {
+    fill: blueviolet;
+}

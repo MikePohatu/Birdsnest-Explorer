@@ -67,6 +67,7 @@ namespace common
         //AzureAD nodes
         public static string AadUser { get { return "AAD_User"; } }
         public static string AadGroup { get { return "AAD_Group"; } }
+        public static string AadObject { get { return "AAD_Object"; } }
 
         //AzureAD edges
         public static string AadMemberOf { get { return "AAD_MEMBER_OF"; } }

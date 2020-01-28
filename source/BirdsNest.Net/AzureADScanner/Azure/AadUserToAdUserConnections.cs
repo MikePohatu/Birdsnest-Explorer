@@ -39,7 +39,7 @@ namespace AzureADScanner.Azure
                     "WITH collect(DISTINCT n) as adusers " +
                     "UNWIND adusers as user " +
                     "MATCH(aaduser: "+Types.AadUser+" { userprincipalname: user.userprincipalname}) " +
-                    "MERGE p = (user) -[r:"+Types.AadSync+"]->(aaduser) " +
+                    "MERGE p = (user)-[r:"+Types.AadSync+"]->(aaduser) " +
                     "SET r.lastscan = $ScanID " +
                     "SET r.scannerid = $ScannerID " +
                     "RETURN p";

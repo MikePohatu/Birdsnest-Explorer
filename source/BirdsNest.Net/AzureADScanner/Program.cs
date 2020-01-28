@@ -94,10 +94,16 @@ namespace AzureADScanner
 
             NeoWriter.ScanID = scanid;
 
+            var aadgroups = new AadGroups();
+            var aadgroupmembers = new AadGroupMemberships();
+            aadgroupmembers.GroupIDs = aadgroups.GroupIDs;
+
             List <IDataCollector> collectors = new List<IDataCollector>
             {
                 new AadUsers(),
-                new AadUserToAdUserConnections()
+                new AadUserToAdUserConnections(),
+                aadgroups,
+                aadgroupmembers
             };
 
             int[] tabs = { 0, 60, 67, 74, 81, 88 };
@@ -106,7 +112,7 @@ namespace AzureADScanner
 
             foreach (IDataCollector collector in collectors)
             {
-            NeoQueryData collectionsdata = collector.CollectData();
+                NeoQueryData collectionsdata = collector.CollectData();
                 collectionsdata.ScanID = scanid;
                 collectionsdata.ScannerID = scannerid;
                 var summary = NeoWriter.RunQuery(collector.Query, collectionsdata, driver.Session());

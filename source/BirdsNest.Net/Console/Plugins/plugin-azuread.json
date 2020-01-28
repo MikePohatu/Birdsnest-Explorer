@@ -1,0 +1,40 @@
+{
+  "name": "azuread",
+  "displayname": "Azure Active Directory",
+  "edgedatatypes": {
+    "AAD_SYNC": {
+      "displayname": "AAD - AAD_SYNC",
+      "properties": {
+        "scannerid": {},
+        "lastscan": {}
+      }
+    },
+    "AAD_MEMBER_OF": {
+      "displayname": "AAD - AAD_MEMBER_OF",
+      "properties": {
+        "scannerid": {},
+        "lastscan": {}
+      }
+    }
+  },
+  "nodedatatypes": {
+    "AAD_User": {
+      "displayname": "AAD User",
+      "description": "Azure Active Directory user",
+      "properties": {
+        "id": {},
+        "lastscan": {},
+        "name": {},
+        "enabled": {},
+        "userprincipalname": {}
+      },
+      "default": "userprincipalname",
+      "icon": "fas fa-user"
+    },
+    "AAD_Deleted": {
+      "displayname": "AAD Deleted",
+      "description": "AAD objects that have been deleted.",
+      "icon": "far fa-trash-alt"
+    }
+  }
+}
