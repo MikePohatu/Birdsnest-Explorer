@@ -28,7 +28,7 @@ using System.Threading.Tasks;
 
 namespace CMScanner.CmConverter
 {
-    public class CmUserAdConnections : ICmCollector
+    public class CmUserAdConnections : IDataCollector
     {
         public string ProgressMessage { get { return "Creating CM to AD user mappings: "; } }
         public string Query

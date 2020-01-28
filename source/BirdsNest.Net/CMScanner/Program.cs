@@ -114,7 +114,7 @@ namespace CMScanner
 
             NeoWriter.ScanID = scanid;
 
-            List<ICmCollector> collectors = new List<ICmCollector>
+            List<IDataCollector> collectors = new List<IDataCollector>
             {
                 CmCollections.GetInstance(),
                 CmLimitingCollections.GetInstance(),

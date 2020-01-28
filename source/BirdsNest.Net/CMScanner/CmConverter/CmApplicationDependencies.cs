@@ -28,7 +28,7 @@ using System.Threading.Tasks;
 
 namespace CMScanner.CmConverter
 {
-    public class CmApplicationDependencies: ICmCollector
+    public class CmApplicationDependencies: IDataCollector
     {
         public string ProgressMessage { get { return "Creating application dependencies: "; } }
         public string Query

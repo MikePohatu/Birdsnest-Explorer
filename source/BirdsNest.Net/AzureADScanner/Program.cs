@@ -2,7 +2,10 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using common;
+using Microsoft.Graph;
+using Microsoft.Identity.Client;
 using Neo4j.Driver.V1;
+using AzureADScanner.Azure;
 
 namespace AzureADScanner
 {
@@ -14,7 +17,7 @@ namespace AzureADScanner
             Stopwatch totaltimer = new Stopwatch();
             string _appdir = AppDomain.CurrentDomain.BaseDirectory;
             string neoconfigfile = _appdir + @"\neoconfig.json";
-            string configfile = _appdir + @"\cmconfig.json";
+            string configfile = _appdir + @"\aadconfig.json";
             bool batchmode = false;
             string scanid = ShortGuid.NewGuid().ToString();
             string scannerid = string.Empty;
@@ -57,8 +60,11 @@ namespace AzureADScanner
             {
                 using (Configuration config = Configuration.LoadConfiguration(configfile))
                 {
-                    scannerid = config.ScannerID;
+                    Console.WriteLine("Loading config for scanner: " + scannerid);
 
+                    scannerid = config.ScannerID;
+                    string url = config.RootURL + "/" + config.Version;
+                    Connector.Instance.Init(config.ID, config.Secret, config.Tenant);
                 }
             }
             catch (Exception e)
@@ -68,6 +74,8 @@ namespace AzureADScanner
                 if (batchmode == false) { Console.ReadLine(); }
                 Environment.Exit(1);
             }
+
+            
 
             try
             {
@@ -85,6 +93,41 @@ namespace AzureADScanner
             }
 
             NeoWriter.ScanID = scanid;
+
+            List <IDataCollector> collectors = new List<IDataCollector>
+            {
+                new AadUsers(),
+                new AadUserToAdUserConnections()
+            };
+
+            int[] tabs = { 0, 60, 67, 74, 81, 88 };
+            string[] headervals = { "Description", "(n)+", "[r]+", "(n)-", "[r]-", "Properties Set" };
+            ConsoleWriter.WriteLine(tabs, headervals);
+
+            foreach (IDataCollector collector in collectors)
+            {
+            NeoQueryData collectionsdata = collector.CollectData();
+                collectionsdata.ScanID = scanid;
+                collectionsdata.ScannerID = scannerid;
+                var summary = NeoWriter.RunQuery(collector.Query, collectionsdata, driver.Session());
+
+                string[] sumvals = {
+                    collector.ProgressMessage,
+                    summary.Counters.NodesCreated.ToString(),
+                    summary.Counters.RelationshipsCreated.ToString(),
+                    summary.Counters.NodesDeleted.ToString(),
+                    summary.Counters.RelationshipsDeleted.ToString(),
+                    summary.Counters.PropertiesSet.ToString()
+                    };
+
+                ConsoleWriter.WriteLine(tabs, sumvals);
+            }
+
+
+
+
+
+
 
             //cleanup
 
@@ -111,5 +154,7 @@ namespace AzureADScanner
             Console.WriteLine("Usage: AzureADScanner.exe /config:<configfile> /batch");
             Console.WriteLine("/batch makes scanner run in batch mode and does not wait before exit");
         }
+
+        
     }
 }

@@ -17,21 +17,18 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 #endregion
-using common;
-using Neo4j.Driver.V1;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CMScanner.CmConverter
+namespace common
 {
-    interface ICmCollector
+    public interface IDataCollector
     {
         string Query { get; }
         string ProgressMessage { get; }
         NeoQueryData CollectData();
-        string GetSummaryString(IResultSummary summary);
     }
 }

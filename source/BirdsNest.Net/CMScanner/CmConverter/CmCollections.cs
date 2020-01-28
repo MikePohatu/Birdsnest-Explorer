@@ -29,7 +29,7 @@ using Neo4j.Driver.V1;
 
 namespace CMScanner.CmConverter
 {
-    public class CmCollections: ICmCollector
+    public class CmCollections: IDataCollector
     {
         public string ProgressMessage { get { return "Creating collection nodes: "; } }
         public string Query

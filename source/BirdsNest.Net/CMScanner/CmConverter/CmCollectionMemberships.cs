@@ -28,7 +28,7 @@ using System.Threading.Tasks;
 
 namespace CMScanner.CmConverter
 {
-    public class CmCollectionMemberships: ICmCollector
+    public class CmCollectionMemberships: IDataCollector
     {
         public string ProgressMessage { get { return "Creating collection membership relationships: "; } }
         public string Query

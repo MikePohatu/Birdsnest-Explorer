@@ -24,7 +24,7 @@ using System.Collections.Generic;
 
 namespace CMScanner.CmConverter
 {
-    public class CmDeployments: ICmCollector
+    public class CmDeployments: IDataCollector
     {
         public string ProgressMessage { get { return "Creating deployment relationships: "; } }
         public string Query

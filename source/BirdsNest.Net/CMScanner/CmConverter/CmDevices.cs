@@ -28,7 +28,7 @@ using System.Threading.Tasks;
 
 namespace CMScanner.CmConverter
 {
-    public class CmDevices: ICmCollector
+    public class CmDevices: IDataCollector
     {
         public string ProgressMessage { get { return "Creating device nodes: "; } }
         public string Query

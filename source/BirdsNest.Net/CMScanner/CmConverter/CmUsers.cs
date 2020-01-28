@@ -28,7 +28,7 @@ using System.Threading.Tasks;
 
 namespace CMScanner.CmConverter
 {
-    public class CmUsers: ICmCollector
+    public class CmUsers: IDataCollector
     {
         public string ProgressMessage { get { return "Creating user nodes: "; } }
         public string Query

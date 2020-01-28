@@ -28,7 +28,7 @@ using System.Threading.Tasks;
 
 namespace CMScanner.CmConverter
 {
-    public class CmDeviceAdConnections: ICmCollector
+    public class CmDeviceAdConnections: IDataCollector
     {
         public string ProgressMessage { get { return "Creating CM to AD device mappings: "; } }
         public string Query

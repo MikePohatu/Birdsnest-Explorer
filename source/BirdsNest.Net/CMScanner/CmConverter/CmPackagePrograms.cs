@@ -28,7 +28,7 @@ using System.Threading.Tasks;
 
 namespace CMScanner.CmConverter
 {
-    public class CmPackagePrograms: ICmCollector
+    public class CmPackagePrograms: IDataCollector
     {
         public string ProgressMessage { get { return "Creating package programs: "; } }
         public string Query

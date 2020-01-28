@@ -18,7 +18,7 @@
 //
 #endregion
 using common;
-using Microsoft.ConfigurationManagement.ManagementProvider;
+using Microsoft.Graph;
 using Neo4j.Driver.V1;
 using System;
 using System.Collections.Generic;
@@ -26,34 +26,32 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CMScanner.CmConverter
+namespace AzureADScanner.Azure
 {
-    public class CmLimitingCollections: IDataCollector
+    public class AadUserToAdUserConnections : IDataCollector
     {
-        public string ProgressMessage { get { return "Connecting limiting collections: "; } }
+        public string ProgressMessage { get { return "Creating AD user to AAD user connections: "; } }
         public string Query
         {
             get
             {
-                return "MATCH (n:" + Types.CMCollection + ")" +
-                "MATCH (l:" + Types.CMCollection + " {id:n.limitingcollection}) " +
-                "MERGE (n)-[r:" + Types.CMLimitingCollection + "]->(l) " +
-                "SET r.lastscan=$ScanID " +
-                "SET r.scannerid=$ScannerID " +
-                "RETURN n.name";
+                return "MATCH (n:" + Types.User + ") " +
+                    "WITH collect(DISTINCT n) as adusers " +
+                    "UNWIND adusers as user " +
+                    "MATCH(aaduser: "+Types.AadUser+" { userprincipalname: user.userprincipalname}) " +
+                    "MERGE p = (user) -[r:"+Types.AadSync+"]->(aaduser) " +
+                    "SET r.lastscan = $ScanID " +
+                    "SET r.scannerid = $ScannerID " +
+                    "RETURN p";
             }
         }
 
         public NeoQueryData CollectData()
         {
-            return new NeoQueryData();
+            NeoQueryData querydata = new NeoQueryData();
+            List<object> propertylist = new List<object>();
+            querydata.Properties = propertylist;
+            return querydata;
         }
-
-        public string GetSummaryString(IResultSummary summary)
-        {
-            return summary.Counters.RelationshipsCreated + " connected";
-        }
-
-        public static CmLimitingCollections GetInstance() { return new CmLimitingCollections(); }
     }
 }

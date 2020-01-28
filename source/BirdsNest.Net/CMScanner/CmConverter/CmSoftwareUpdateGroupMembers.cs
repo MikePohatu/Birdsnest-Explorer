@@ -28,7 +28,7 @@ using System.Threading.Tasks;
 
 namespace CMScanner.CmConverter
 {
-    public class CmSoftwareUpdateGroupMembers : ICmCollector
+    public class CmSoftwareUpdateGroupMembers : IDataCollector
     {
         public string ProgressMessage { get { return "Creating software update groups: "; } }
         public string Query

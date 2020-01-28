@@ -30,13 +30,22 @@ namespace AzureADScanner
     public class Configuration : IDisposable
     {
         [JsonProperty("ScannerID")]
-        public string ScannerID { get; set; }
+        public string ScannerID { get; set; } = "AzureADScanner";
 
         [JsonProperty("Tenant")]
         public string Tenant { get; set; }
 
-        [JsonProperty("Key")]
-        public string Key { get; set; }
+        [JsonProperty("ID")]
+        public string ID { get; set; }
+
+        [JsonProperty("RootURL")]
+        public string RootURL { get; set; } = "https://graph.microsoft.com";
+
+        [JsonProperty("Version")]
+        public string Version { get; set; } = "v1.0";
+
+        [JsonProperty("Secret")]
+        public string Secret { get; set; }
 
         public static Configuration LoadConfiguration(string filepath)
         {
@@ -51,7 +60,7 @@ namespace AzureADScanner
 
         public void Dispose()
         {
-            this.Key = string.Empty;
+            this.ID = string.Empty;
         }
     }
 }

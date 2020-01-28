@@ -28,7 +28,7 @@ using System.Threading.Tasks;
 
 namespace CMScanner.CmConverter
 {
-    public class CmSoftwareUpdate: ICmCollector
+    public class CmSoftwareUpdate: IDataCollector
     {
         public string ProgressMessage { get { return "Creating software update nodes: "; } }
         public string Query

@@ -28,7 +28,7 @@ using System.Threading.Tasks;
 
 namespace CMScanner.CmConverter
 {
-    public class CmTaskSequences: ICmCollector
+    public class CmTaskSequences: IDataCollector
     {
         public string ProgressMessage { get { return "Creating task sequence nodes: "; } }
         public string Query

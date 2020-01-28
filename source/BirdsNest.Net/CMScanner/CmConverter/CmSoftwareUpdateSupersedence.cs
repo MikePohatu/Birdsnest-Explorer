@@ -28,7 +28,7 @@ using System.Threading.Tasks;
 
 namespace CMScanner.CmConverter
 {
-    public class CmSoftwareUpdateSupersedence : ICmCollector
+    public class CmSoftwareUpdateSupersedence : IDataCollector
     {
         public string ProgressMessage { get { return "Creating software update supersedence relationships: "; } }
         public string Query
