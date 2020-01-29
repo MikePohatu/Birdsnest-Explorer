@@ -35,5 +35,11 @@ namespace common
             list.RemoveRange(0, count);
             return newlist;
         }
+
+        //https://stackoverflow.com/a/222640
+        public static List<T> Clone<T>(List<T> listToClone) where T: ICloneable
+        {
+            return listToClone.Select(item => (T)item.Clone()).ToList();
+        }
     }
 }
