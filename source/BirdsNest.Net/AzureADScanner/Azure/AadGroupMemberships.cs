@@ -62,64 +62,66 @@ namespace AzureADScanner.Azure
 
                 while (this.GroupIDs?.Count > 0)
                 {
+                    //create the 20 batch requests
                     BatchRequestContent batchRequestContent = new BatchRequestContent();
-
-                    foreach (string groupid in ListExtensions.ListPop<string>(this.GroupIDs, 20))
+                    List<string> batchIDs = ListExtensions.ListPop<string>(this.GroupIDs, 20);
+                    foreach (string groupid in batchIDs)
                     {
                         requestcount++;
-                        string id = requestcount.ToString();
-                        idmappings.Add(id, groupid);
+                        string requestid = requestcount.ToString();
+                        idmappings.Add(requestid, groupid);
 
-                        // Create http GET request.
                         HttpRequestMessage httpRequestMessage1 = new HttpRequestMessage(HttpMethod.Get, Connector.Instance.RootUrl + "/groups/" + groupid + "/members?$select=id");
-
-                        // Add batch request steps to BatchRequestContent.
-                        batchRequestContent.AddBatchRequestStep(new BatchRequestStep(id, httpRequestMessage1, null));
+                        batchRequestContent.AddBatchRequestStep(new BatchRequestStep(requestid, httpRequestMessage1, null));
                     }
 
-
-
-                    string requesturl = Connector.Instance.RootUrl + "/$batch";
-                    while (string.IsNullOrWhiteSpace(requesturl) == false)
-                    {
-                        // Send batch request with BatchRequestContent.
-                        HttpResponseMessage response = httpClient.PostAsync(requesturl, batchRequestContent).Result;
-
-                        // Handle http responses using BatchResponseContent.
-                        BatchResponseContent batchResponseContent = new BatchResponseContent(response);
-                        Dictionary<string, HttpResponseMessage> responses = batchResponseContent.GetResponsesAsync().Result;
-
-                        foreach (string key in responses.Keys)
-                        {
-                            string groupid;
-                            if (idmappings.TryGetValue(key, out groupid))
-                            {
-                                HttpResponseMessage httpResponseMsg;
-
-                                if (responses.TryGetValue(key, out httpResponseMsg))
-                                {
-                                    string rawdata = httpResponseMsg.Content.ReadAsStringAsync().Result;
-                                    BatchRequestResponseSimple simpleresponse = JsonConvert.DeserializeObject<BatchRequestResponseSimple>(rawdata);
-                                    foreach (BatchRequestResponseValueSimple val in simpleresponse.Values)
-                                    {
-                                        propertylist.Add(new
-                                        {
-                                            groupid = groupid,
-                                            memberid = val.ID
-                                        });
-                                    }
-                                }
-                            }
-                        }
-
-                        requesturl = batchResponseContent.GetNextLinkAsync().Result;
-                    }
-
+                    List<object> newprops = MakeBatchRequest(httpClient, batchRequestContent, idmappings);
+                    propertylist.AddRange(newprops);
                 }
             }
 
             querydata.Properties = propertylist;
             return querydata;
+        }
+
+        private List<object> MakeBatchRequest(HttpClient httpClient, BatchRequestContent batchRequestContent, Dictionary<string, string> idmappings)
+        {
+            List<object> propertylist = new List<object>();
+
+            //make the batch request
+            string requesturl = Connector.Instance.RootUrl + "/$batch";
+            while (string.IsNullOrWhiteSpace(requesturl) == false)
+            {
+                HttpResponseMessage response = httpClient.PostAsync(requesturl, batchRequestContent).Result;
+                BatchResponseContent batchResponseContent = new BatchResponseContent(response);
+                Dictionary<string, HttpResponseMessage> responses = batchResponseContent.GetResponsesAsync().Result;
+
+                foreach (string key in responses.Keys)
+                {
+                    string groupid;
+                    if (idmappings.TryGetValue(key, out groupid))
+                    {
+                        HttpResponseMessage httpResponseMsg;
+
+                        if (responses.TryGetValue(key, out httpResponseMsg))
+                        {
+                            string rawdata = httpResponseMsg.Content.ReadAsStringAsync().Result;
+                            BatchRequestResponseSimple simpleresponse = JsonConvert.DeserializeObject<BatchRequestResponseSimple>(rawdata);
+                            foreach (BatchRequestResponseValueSimple val in simpleresponse.Values)
+                            {
+                                propertylist.Add(new
+                                {
+                                    groupid = groupid,
+                                    memberid = val.ID
+                                });
+                            }
+                        }
+                    }
+                }
+                requesturl = batchResponseContent.GetNextLinkAsync().Result;
+            }
+
+            return propertylist;
         }
     }
 }
