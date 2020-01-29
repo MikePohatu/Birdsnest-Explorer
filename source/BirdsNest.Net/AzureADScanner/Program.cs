@@ -63,8 +63,8 @@ namespace AzureADScanner
                     Console.WriteLine("Loading config for scanner: " + scannerid);
 
                     scannerid = config.ScannerID;
-                    string url = config.RootURL + "/" + config.Version;
-                    Connector.Instance.Init(config.ID, config.Secret, config.Tenant);
+                    string rooturl = config.RootURL + "/" + config.Version;
+                    Connector.Instance.Init(config.ID, config.Secret, config.Tenant, rooturl);
                 }
             }
             catch (Exception e)

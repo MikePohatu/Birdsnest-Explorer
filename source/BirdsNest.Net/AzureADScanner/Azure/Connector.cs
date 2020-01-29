@@ -12,7 +12,9 @@ namespace AzureADScanner.Azure
     {
         private static Connector _instance;
         private string[] _scopes = { ".default" };
-        public IConfidentialClientApplication _app;
+        private IConfidentialClientApplication _app;
+
+        public string RootUrl { get; private set; }
 
         public GraphServiceClient Client { get; private set; }
 
@@ -29,9 +31,11 @@ namespace AzureADScanner.Azure
 
         private Connector() { }
 
-        public void Init(string id, string secret, string tenant)
+        public void Init(string id, string secret, string tenant, string rooturl)
         {
             string loginroot = "https://login.microsoftonline.com/";
+            this.RootUrl = rooturl;
+
             this._app = ConfidentialClientApplicationBuilder.Create(id).WithClientSecret(secret).WithAuthority(new Uri(loginroot+ tenant)).Build();
             ClientCredentialProvider authenticationProvider = new ClientCredentialProvider(this._app);
             this.Client = new GraphServiceClient(authenticationProvider);
