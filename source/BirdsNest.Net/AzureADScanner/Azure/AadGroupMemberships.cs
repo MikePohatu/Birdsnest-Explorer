@@ -71,7 +71,7 @@ namespace AzureADScanner.Azure
                         idmappings.Add(id, groupid);
 
                         // Create http GET request.
-                        HttpRequestMessage httpRequestMessage1 = new HttpRequestMessage(HttpMethod.Get, Connector.Instance.RootUrl + "/groups/" + groupid + "/members");
+                        HttpRequestMessage httpRequestMessage1 = new HttpRequestMessage(HttpMethod.Get, Connector.Instance.RootUrl + "/groups/" + groupid + "/members?$select=id");
 
                         // Add batch request steps to BatchRequestContent.
                         batchRequestContent.AddBatchRequestStep(new BatchRequestStep(id, httpRequestMessage1, null));
