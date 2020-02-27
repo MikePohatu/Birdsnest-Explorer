@@ -73,7 +73,6 @@ var playMode = false;
 var shiftKey = false;
 
 var defaultsize = 40;
-var edgelabelwidth = 70;
 
 var minScaling = 1;
 var maxScaling = 3;

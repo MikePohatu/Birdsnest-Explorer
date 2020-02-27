@@ -24,6 +24,7 @@ class DataCrap {
     }
 
     apiGet(url, datatype, callback) {
+        var me = this;
         $.ajax({
             dataType: datatype,
             url: url,
@@ -32,7 +33,7 @@ class DataCrap {
                     //console.log("401-unauthorized");
                     //$("#curtain").slideToggle();
                     authcrap.showLoginCurtain(function () {
-                        this.apiGet(url, datatype, callback);
+                        me.apiGet(url, datatype, callback);
                     });
                 }
             },
@@ -45,18 +46,20 @@ class DataCrap {
     }
 
     apiPost(url, postdata, contenttype, callback) {
+        var me = this;
+
         $.ajax({
             url: url,
             method: "POST",
             data: postdata,
             contentType: contenttype,
             headers: {
-                'X-CSRFToken': this.getCookie('csrftoken')
+                'X-CSRFToken': me.getCookie('csrftoken')
             },
             statusCode: {
                 401: function () {
                     authcrap.showLoginCurtain(function () {
-                        this.apiPost(url, postdata, contenttype, callback);
+                        me.apiPost(url, postdata, contenttype, callback);
                     });
                 }
             },
