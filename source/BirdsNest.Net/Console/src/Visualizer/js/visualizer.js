@@ -438,14 +438,6 @@ function eyeShowHideLabel(label, show) {
         .classed("fa-eye-slash", !show);
 }
 
-function onTargetAddClicked(nodeid) {
-    //updateSearchDetails(nodeid, 'target');
-}
-
-function onSourceAddClicked(nodeid) {
-    //updateSearchDetails(nodeid, 'source');
-}
-
 function onLayoutFinished() {
     //console.log("onLayoutFinished");
     //simRunning = false;
@@ -631,12 +623,12 @@ function resetScale() {
             d.cx = d.x + d.radius;
             d.cy = d.y + d.radius;
             d.size = defaultsize * d.scaling;
-            
+
+            //setTimeout the size update so FontAwesome has a chance to replace <i> with <svg> items
+            setTimeout(function () {
+                updateNodeSize(d);
+            }, 5);
         }
-        setTimeout(function () {
-            updateNodeSize(d);
-        }, 3);
-        
     });
 
     refreshSimController();
@@ -768,8 +760,10 @@ function addSvgNodes(nodes) {
         .attr("y", function (d) { return d.size * 0.2; })
         .attr("class", function (d) { return d.icon; });
 
-    enternodesg.attr("visibility", "visible");
-    enternodebgG.attr("visibility", "visible");
+    setTimeout(function () {
+        enternodesg.attr("visibility", "visible");
+        enternodebgG.attr("visibility", "visible");
+    }, 5); 
 }
 
 function updateNodeSize(node) {
@@ -858,11 +852,12 @@ function addSvgEdges(edges) {
     //   console.log(edges);
 
     //add the bg
-    graphbglayer.selectAll('.edgebg')
+    let enteredgebgs = graphbglayer.selectAll('.edgebg')
         .data(edges, function (d) { return d.db_id; })
         .enter()
         .append("path")
         .attr("id", function (d) { return "edgebg_" + d.db_id; })
+        .attr("visibility", "hidden")
         .classed("graphbg", true)
         .classed("edgebg", true)
         .on("click", onEdgeClicked);
@@ -872,6 +867,7 @@ function addSvgEdges(edges) {
         .enter();
 
     let enteredgesg = enteredges.append("g")
+        .attr("visibility", "hidden")
         .attr("id", function (d) { return "edge_" + d.db_id; })
         .attr("class", function (d) {
             var combined;
@@ -907,6 +903,11 @@ function addSvgEdges(edges) {
         .attr("dominant-baseline", "text-bottom")
         .attr("text-anchor", "middle")
         .attr("transform", "translate(0,-5)");
+
+    setTimeout(function () {
+        enteredgebgs.attr("visibility", "visible");
+        enteredgesg.attr("visibility", "visible");
+    }, 15); 
 }
 
 function removeNodes(nodeList) {
