@@ -804,7 +804,7 @@ function updateNodeSize(node) {
 
     }
     else {
-        let duration = 500;
+        let duration = 200;
         nodebgel.transition()
             .duration(duration)
             .attr("r", function (d) { return d.radius + 10; })
