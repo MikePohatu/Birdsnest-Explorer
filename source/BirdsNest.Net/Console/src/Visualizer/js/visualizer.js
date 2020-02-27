@@ -508,11 +508,10 @@ function addSearchResults(results, callback) {
 
             addResultSet(data);
 
-            
-            addSvgNodes(graphnodes.GetArray());           
-            addSvgEdges(graphedges.GetArray());
+            addSvgNodes(graphnodes.GetArray()); 
             resetScale();
-
+            addSvgEdges(graphedges.GetArray());
+            
             //find direct loops between nodes e.g. node1<-[]->node2. The edges will need altering in the graph 
             //so they don't overlap
             getDirectLoopsForNodes(nodeids, function (loops) {
@@ -633,8 +632,11 @@ function resetScale() {
             d.cy = d.y + d.radius;
             d.size = defaultsize * d.scaling;
             
-        } 
-        updateNodeSize(d);
+        }
+        setTimeout(function () {
+            updateNodeSize(d);
+        }, 1);
+        
     });
 
     refreshSimController();
@@ -746,37 +748,28 @@ function addSvgNodes(nodes) {
                 .on('drag', onNodeDragged)
                 .on('end', onNodeDragFinished));
 
-    setTimeout(function () {
-        //node layout
-        enternodesg.append("circle")
-            .attr("id", function (d) { return "node_" + d.db_id + "_icon"; })
-            .classed("nodecircle", true)
-            .attr("r", function (d) { return d.radius; })
-            .attr("cx", function (d) { return d.radius; })
-            .attr("cy", function (d) { return d.radius; });
-    }, 1);
+    enternodesg.append("circle")
+        .attr("id", function (d) { return "node_" + d.db_id + "_icon"; })
+        .classed("nodecircle", true)
+        .attr("r", function (d) { return d.radius; })
+        .attr("cx", function (d) { return d.radius; })
+        .attr("cy", function (d) { return d.radius; });
 
-    setTimeout(function () {
-        enternodesg.append("text")
-            .text(function (d) { return d.name; })
-            .attr("text-anchor", "middle")
-            .attr("dominant-baseline", "central")
-            .attr("transform", function (d) { return "translate(" + (d.size / 2) + "," + (d.size + 10) + ")"; });
-    }, 1);
+    enternodesg.append("text")
+        .text(function (d) { return d.name; })
+        .attr("text-anchor", "middle")
+        .attr("dominant-baseline", "central")
+        .attr("transform", function (d) { return "translate(" + (d.size / 2) + "," + (d.size + 10) + ")"; });
 
-    setTimeout(function () {
-        enternodesg.append("i")
-            .attr("height", function (d) { return d.size * 0.6; })
-            .attr("width", function (d) { return d.size * 0.6; })
-            .attr("x", function (d) { return d.size * 0.2; })
-            .attr("y", function (d) { return d.size * 0.2; })
-            .attr("class", function (d) { return d.icon; });
-    }, 1);
+    enternodesg.append("i")
+        .attr("height", function (d) { return d.size * 0.6; })
+        .attr("width", function (d) { return d.size * 0.6; })
+        .attr("x", function (d) { return d.size * 0.2; })
+        .attr("y", function (d) { return d.size * 0.2; })
+        .attr("class", function (d) { return d.icon; });
 
-    setTimeout(function () {
-        enternodesg.attr("visibility", "visible");
-        enternodebgG.attr("visibility", "visible");
-    }, 2);
+    enternodesg.attr("visibility", "visible");
+    enternodebgG.attr("visibility", "visible");
 }
 
 function updateNodeSize(node) {
@@ -856,7 +849,6 @@ function updateNodeSize(node) {
             .attr("r", function (d) { return d.radius; })
             .attr("cx", function (d) { return d.radius; })
             .attr("cy", function (d) { return d.radius; });
-
     }
 }
 
