@@ -509,9 +509,9 @@ function addSearchResults(results, callback) {
             addResultSet(data);
 
             addSvgNodes(graphnodes.GetArray()); 
-            resetScale();
             addSvgEdges(graphedges.GetArray());
-            
+            resetScale();
+
             //find direct loops between nodes e.g. node1<-[]->node2. The edges will need altering in the graph 
             //so they don't overlap
             getDirectLoopsForNodes(nodeids, function (loops) {
@@ -635,7 +635,7 @@ function resetScale() {
         }
         setTimeout(function () {
             updateNodeSize(d);
-        }, 1);
+        }, 3);
         
     });
 
