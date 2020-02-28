@@ -107,13 +107,11 @@ export default class SimulationController {
                 tar.y = src.y + src.size;
             }
             else {
-                if (tar.tark !== k) {
-                    if (tar.hasOwnProperty("fy")) { return; }
+                if ((tar.tark !== k) && (tar.hasOwnProperty("fy") === false)) {
                     tar.y += k * 8;
                     tar.tark = k;
                 }
-                if (src.srck !== k) {
-                    if (src.hasOwnProperty("fy")) { return; }
+                if ((src.srck !== k) && (src.hasOwnProperty("fy")===false)) {
                     src.y -= k * 6;
                     src.srck = k;
                 }
