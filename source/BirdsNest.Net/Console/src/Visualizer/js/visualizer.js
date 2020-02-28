@@ -499,34 +499,42 @@ function addSearchResults(results, callback) {
 
             addResultSet(data);
 
-            addSvgNodes(graphnodes.GetArray()); 
+            addSvgNodes(graphnodes.GetArray());
             addSvgEdges(graphedges.GetArray());
-            resetScale();
 
-            //find direct loops between nodes e.g. node1<-[]->node2. The edges will need altering in the graph 
-            //so they don't overlap
-            getDirectLoopsForNodes(nodeids, function (loops) {
-                //console.log("loops");
-                //console.log(loops);
+            //call the fontawesome i2svg function to convert the <i> items to <svg>. The callback ensures that the svgs are created before running
+            //theh rest of the function. 
+            window.FontAwesome.dom.i2svg({
+                callback: function () {
+                    resetScale();
 
-                if (loops.Edges.length > 0) {
-                    loops.Edges.forEach(function (edge) {
-                        let loopEdge = graphedges.GetDatum(edge.db_id);
-                        loopEdge.shift = true;
-                        //console.log("loopEdge");
-                        //console.log(loopEdge);
+                    //find direct loops between nodes e.g. node1<-[]->node2. The edges will need altering in the graph 
+                    //so they don't overlap
+                    getDirectLoopsForNodes(nodeids, function (loops) {
+                        //console.log("loops");
+                        //console.log(loops);
+
+                        if (loops.Edges.length > 0) {
+                            loops.Edges.forEach(function (edge) {
+                                let loopEdge = graphedges.GetDatum(edge.db_id);
+                                loopEdge.shift = true;
+                                //console.log("loopEdge");
+                                //console.log(loopEdge);
+                            });
+
+
+                        }
+                        if (simController.simRunning === false) { updateLocationsEdges(); }
                     });
 
-                    
-                }
-                if (simController.simRunning === false) { updateLocationsEdges(); }
-            });
+                    updateLocationsEdges();
+                    restartLayout();
 
-            restartLayout();
-            if (callback !== undefined) {
-                //console.log(callback);
-                callback();
-            }
+                    if (callback !== undefined) {
+                        //console.log(callback);
+                        callback();
+                    }
+                }});
         });
     }
     else {
@@ -623,10 +631,7 @@ function resetScale() {
             d.cy = d.y + d.radius;
             d.size = defaultsize * d.scaling;
 
-            //setTimeout the size update so FontAwesome has a chance to replace <i> with <svg> items
-            setTimeout(function () {
-                updateNodeSize(d);
-            }, 5);
+            updateNodeSize(d);
         }
     });
 
@@ -759,10 +764,8 @@ function addSvgNodes(nodes) {
         .attr("y", function (d) { return d.size * 0.2; })
         .attr("class", function (d) { return d.icon; });
 
-    setTimeout(function () {
-        enternodesg.attr("visibility", "visible");
-        enternodebgG.attr("visibility", "visible");
-    }, 5); 
+    enternodesg.attr("visibility", "visible");
+    enternodebgG.attr("visibility", "visible");
 }
 
 function updateNodeSize(node) {
@@ -903,10 +906,8 @@ function addSvgEdges(edges) {
         .attr("text-anchor", "middle")
         .attr("transform", "translate(0,-5)");
 
-    setTimeout(function () {
-        enteredgebgs.attr("visibility", "visible");
-        enteredgesg.attr("visibility", "visible");
-    }, 15); 
+    enteredgebgs.attr("visibility", "visible");
+    enteredgesg.attr("visibility", "visible");
 }
 
 function removeNodes(nodeList) {
