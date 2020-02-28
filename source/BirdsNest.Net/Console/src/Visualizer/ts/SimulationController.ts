@@ -96,18 +96,24 @@ export default class SimulationController {
         //console.log(k);
         this.onPercentUpdated(100 - k * 100);
 
-		d3.selectAll(this.TreeEdgeTag).each(function (d: ISimLink<ISimNode>) {
+
+        //check the tree nodes and shunt up or down to get into a tree layout. Exit the function if 
+        //node is fixed i.e. has a fy (fixed y) property (https://github.com/d3/d3-force)
+        d3.selectAll(this.TreeEdgeTag).each(function (d: ISimLink<ISimNode>) {
             var src = d.source as ISimNode;
             var tar = d.target as ISimNode;
-            if ((tar as ISimNode).y < src.y + src.size / 4) {
-                (tar as ISimNode).y = src.y + src.size;
+            if (tar.y < src.y + src.size / 4) {
+                if (tar.hasOwnProperty("fy")) { return; }
+                tar.y = src.y + src.size;
             }
             else {
                 if (tar.tark !== k) {
+                    if (tar.hasOwnProperty("fy")) { return; }
                     tar.y += k * 8;
                     tar.tark = k;
                 }
                 if (src.srck !== k) {
+                    if (src.hasOwnProperty("fy")) { return; }
                     src.y -= k * 6;
                     src.srck = k;
                 }

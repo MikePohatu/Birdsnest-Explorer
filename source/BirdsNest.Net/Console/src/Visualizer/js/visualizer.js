@@ -1008,16 +1008,6 @@ function onSearchNodesClicked() {
 }
 
 
-//function findFromDbId(arraydata, id) {
-//    for (var i = 0; i < arraydata.length; i++) {
-//        if (arraydata[i].db_id === id) {
-//            return arraydata[i];
-//        }
-//    }
-//    return null;
-//}
-
-
 
 function pinNode(d) {
     //console.log("pinNode");
