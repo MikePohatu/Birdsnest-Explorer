@@ -9,5 +9,5 @@ The BirdsNest console then allows you to query and view all the interconnected d
 ![Console example](documentation/image/console_view1.png "Console example")
 
 
-[Simple Search](/documentation/simple-search/overview.md "Simple Search")
+[Simple Search](/documentation/simple-search/overview.md "Simple Search")\
 [Advanced Search](/documentation/advanced-search/overview.md "Advanced Search")
