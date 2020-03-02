@@ -9,4 +9,4 @@ The BirdsNest console then allows you to explore and query all the interconnecte
 ![Console example](documentation/image/console_view1.png "Console example")
 
 
-[Documentation](/documentation/index.md "Documentation")
+[Documentation](/documentation/README.md "Documentation")
