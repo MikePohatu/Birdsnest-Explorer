@@ -1,20 +1,19 @@
+## Contents
 
 * [Nodes](#Nodes)
 * [Relationships](#Relationships)
 * [Hops](#Hops)
 
 ## Nodes
-A node in BirdsNest is an object or configuration item in a system. This could an Active Directory user or group, a file system folder. These are represented by circular icons within the visualizer. 
+A node in BirdsNest is an object or configuration item in a system. This could an Active Directory user or group, a network folder, or a deployed application. These are represented by circular icons within the visualizer. 
 
 Each type of node has an icon and colour to help identify types of data quickly. Additionally, hovering over an icon will list what type of node it is e.g. AD_User, AD_Object. 
-
 
 ![Nodes](/documentation/image/intro/nodes.png "Nodes")
 
 
 ## Relationships
 Nodes are connected by relationships. Each relationship has a type to describe the relationship e.g. AD_MEMBER_OF, and a direction e.g. an Active Directory user node is a member of a group node, not the other way around. 
-
 
 ![Relationships](/documentation/image/intro/relationships.png "Relationships")
 
