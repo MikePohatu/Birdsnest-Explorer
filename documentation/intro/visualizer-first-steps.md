@@ -23,14 +23,14 @@ Nodes can be moved around the view using click and drag. As soon as a node is mo
 #### Node Details
 More details about a specific node can be shown by clicking a node. A node details pane will appear showing additional properties for the node, and any related nodes i.e. connected nodes that are one [hop](#Hops) away
 
-![Node Details](/documentation/image/intro/node-details.png "Node Details")
+![Node Details](/documentation/image/intro/node-details.png)
 
 Multiple nodes may be shown at once by hold CTRL and clicking the desired nodes.
 
 ### Relationships
 Nodes are connected by relationships. Each relationship has a type to describe the relationship e.g. AD_MEMBER_OF, and a direction e.g. an Active Directory user node is a member of a group node, not the other way around. 
 
-![Relationships](/documentation/image/intro/relationships.png "Relationships")
+![Relationships](/documentation/image/intro/relationships.png)
 
 
 ### Hops
@@ -54,10 +54,14 @@ There are a number of controls at the bottom left of the visualizer to help mani
 * [Find](#Find)
 * [Clear view](#Clear-view)
 
-![Controls](/documentation/image/intro/controls.png "Controls")
+![Controls](/documentation/image/intro/controls.png)
  
 ### Refresh view
+
+
 ### Play mode
+In play mode, the view will automatically be refreshed as soon as a node is moved. If another node is moved before the layout has finished calculating, this process will cancel and be restarted.
+
 ### Select
 ### Crop
 ### Delete item
