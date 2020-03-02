@@ -7,3 +7,6 @@ Data is ingested into the BirdsNest neo4j database by system-specific scanners t
 The BirdsNest console then allows you to query and view all the interconnected data, finding pathways to data that are not obvious or easily discovered. You can either start from a single node and discover interconnections as you go, or search for a specific type of path through your data. 
 
 ![Console example](documentation/image/console_view1.png "Console example")
+
+
+[Simple Search](documentation/simple-search/overview.md "Simple Search")
