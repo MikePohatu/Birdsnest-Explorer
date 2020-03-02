@@ -1,4 +1,3 @@
-![logo](documentation/image/logo/Logo_64x64.png "logo")
 # BirdsNest
 
 BirdsNest is designed to help visually explore and make sense the connections between systems and objects within your environment. 
