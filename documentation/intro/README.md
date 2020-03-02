@@ -39,6 +39,8 @@ The number of relationships between two connected nodes is it's 'hop count'. For
 * Mike Pohatu -> SCCM Admins -> Server Admins -> Administrators. This path is 3 hops
 * Mike Pohatu -> Domain Admins -> Administrators. This path is 2 hops. 
 
+The hop count is used in [Advanced Search](/documentation/advanced-search/README.md) to limit or refine searches. 
+
 
 ## Controls
 There are a number of controls at the bottom left of the visualizer to help manipulate the view. From left to right these are:
