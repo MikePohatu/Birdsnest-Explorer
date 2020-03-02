@@ -21,11 +21,11 @@ Each type of node has an icon and colour to help identify types of data quickly.
 Nodes can be moved around the view using click and drag. As soon as a node is moved, it becomes pinned, and won't dynamically move if you [refresh the view](#Refresh-view). Click the thumbtack icon to unpin the node and allow it to dynamically move again. 
 
 #### Node Details
-More details about a specific node can be shown by clicking a node. A node details pane will appear showing additional properties for the node, and any related nodes i.e. connected nodes that are one [hop](#Hops) away
+More details about a specific node can be shown by clicking a node to select it. A node details pane will appear showing additional properties for the node, and any related nodes i.e. connected nodes that are one [hop](#Hops) away
 
 ![Node Details](/documentation/image/intro/node-details.png)
 
-Multiple nodes may be shown at once by hold CTRL and clicking the desired nodes.
+Multiple node details may be shown at once by hold CTRL and clicking the desired nodes.
 
 ### Relationships
 Nodes are connected by relationships. Each relationship has a type to describe the relationship e.g. AD_MEMBER_OF, and a direction e.g. an Active Directory user node is a member of a group node, not the other way around. 
@@ -57,7 +57,7 @@ There are a number of controls at the bottom left of the visualizer to help mani
 ![Controls](/documentation/image/intro/controls.png)
  
 ### Refresh view
-The visualizer uses an algorithm to layout the nodes on the screen in a sensible way. Refreshing the view restarts this algorith to update the location of the nodes based on any changes e.g. the user manually moving certain nodes.
+The visualizer uses an algorithm to layout the nodes on the screen in a (hopefully) sensible way. Refreshing the view restarts this algorithm to update the location of the nodes based on any changes e.g. the user manually moving certain nodes.
 
 If the number of nodes on screen exceeds 300, animation will be disabled to improve performance. 
 
