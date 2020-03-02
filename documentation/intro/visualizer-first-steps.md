@@ -57,7 +57,9 @@ There are a number of controls at the bottom left of the visualizer to help mani
 ![Controls](/documentation/image/intro/controls.png)
  
 ### Refresh view
+The visualizer uses an algorithm to layout the nodes on the screen in a sensible way. Refreshing the view restarts this algorith to update the location of the nodes based on any changes e.g. the user manually moving certain nodes.
 
+If the number of nodes on screen exceeds 300, animation will be disabled to improve performance. 
 
 ### Play mode
 In play mode, the view will automatically be refreshed as soon as a node is moved. If another node is moved before the layout has finished calculating, this process will cancel and be restarted.
