@@ -707,6 +707,8 @@ function loadNodeData(newnodedata) {
 
 function addSvgNodes(nodes) {
     //console.log(": addSvgNodes");
+    //console.log(nodes);
+
     //add the bg
     let enternodebgG = graphbglayer.selectAll('.nodebg')
         .data(nodes, function (d) { return d.db_id; })
@@ -743,6 +745,8 @@ function addSvgNodes(nodes) {
                 .on('start', onNodeDragStart)
                 .on('drag', onNodeDragged)
                 .on('end', onNodeDragFinished));
+
+    enternodesg.append("title").text(function (d) { return "Types: " + d.labels.join(", "); });
 
     enternodesg.append("circle")
         .attr("id", function (d) { return "node_" + d.db_id + "_icon"; })
