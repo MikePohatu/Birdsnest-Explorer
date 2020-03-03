@@ -1,5 +1,5 @@
 # Visualizer
-THe Visualizer is the primary way of viewing data within BirdsNest. 
+The Visualizer is the primary way of viewing data within BirdsNest. 
 
 # Contents
 * [Items](#Items)
