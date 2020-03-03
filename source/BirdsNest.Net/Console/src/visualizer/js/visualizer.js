@@ -1311,6 +1311,15 @@ function onEdgeClicked(d) {
     }
 }
 
+d3.select("#invertBtn").on('click', invertSelection);
+function invertSelection() {
+    d3.selectAll(".nodes").classed("selected", function (d) {
+        d.selected = !d.selected;
+        return d.selected;
+    });
+}
+
+
 function updateNodeSelection(d, isselected, showdetails) {
     //console.log("updateNodeSelection : " + d.name + " : " + d.selected + ":" + isselected);     
     let node = nodeslayer.select("#node_" + d.db_id)
