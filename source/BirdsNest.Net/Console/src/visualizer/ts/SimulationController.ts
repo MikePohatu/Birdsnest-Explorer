@@ -102,7 +102,8 @@ export default class SimulationController {
         d3.selectAll(this.TreeEdgeTag).each(function (d: ISimLink<ISimNode>) {
             var src = d.source as ISimNode;
             var tar = d.target as ISimNode;
-            if (tar.y < src.y + src.size / 4) {
+
+            if (tar.y < src.y + src.size / 2) {
                 if (tar.hasOwnProperty("fy")) { return; }
                 tar.y = src.y + src.size;
             }

@@ -1,3 +1,15 @@
-[Visualizer First Steps](/documentation/intro/visualizer-first-steps.md "Visualizer First Steps")\
-[Simple Search](/documentation/simple-search/overview.md "Simple Search")\
-[Advanced Search](/documentation/advanced-search/overview.md "Advanced Search")
+# BirdsNest Reference Documentation
+
+## Installation
+
+## Data Ingestion
+
+
+
+## Console
+[Console First Steps](/documentation/console/README.md "Console First Steps")
+
+### Visualizer
+
+[Simple Search](/documentation/console/simple-search/README.md "Simple Search")\
+[Advanced Search](/documentation/console/advanced-search/README.md "Advanced Search")
