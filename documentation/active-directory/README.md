@@ -8,7 +8,7 @@ The AD objects are used to create connections with scanners such as the File Sys
 After install, BirdsNest will have a **Scanners** folder in the root install folder. for the rest of this documentation, the default **c:\birdsnest** will be assumed. The folder will contain a number of json config files. For the ADScanner, the **adconfig.json** and **neoconfig.json** files need to be configured.
 
 * **adconfig.json** configures access to the Active Directory domain the scanner will be reading from, and other ADScanner specific settings.
-* **neoconfig.json** is shared across multiple scanners, and configures access to write data to the neo4j database used by BirdsNest. 
+* **neoconfig.json** is shared across multiple scanners, and configures access to write data to the neo4j database used by BirdsNest. See [Scanners](/documentation/scanners/README.md) for more details on configuring this file. 
 
 
 ### Configuring adconfig.json
