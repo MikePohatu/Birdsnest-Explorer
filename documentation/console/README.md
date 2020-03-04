@@ -1,6 +1,6 @@
 # BirdsNest Console
 
-The Console is the front-end of BirdsNest. On login you will be presented with a simple portal view  with access to the main BirdsNest functions. 
+The Console is the front-end of BirdsNest. It is a web console supported on Chrome, Internet Explorer 11, and the new Microsoft Edge browsers. On login you will be presented with a simple portal view  with access to the main BirdsNest functions. 
 
 ![Nodes](/documentation/image/console/portal.png)
 
