@@ -11,7 +11,7 @@ After install, BirdsNest will have a **Scanners** folder in the root install fol
 * **neoconfig.json** is shared across multiple scanners, and configures access to write data to the neo4j database used by BirdsNest. 
 
 
-### AD Config File
+### Configuring adconfig.json
 An example adconfig.json file will already exist in the Scanners folder and consists of four fields:
 
 ```json
@@ -63,6 +63,6 @@ The Active Directory visualizer plugin includes the following reports:
 
 |Report            |Description|
 |------------------|:---|
-|AD Deep Paths     |Lists Active Directory groups that are part of 'member Of' chains with 5 hops or more|
+|AD Deep Paths     |Lists Active Directory groups that are part of 'member of' chains with 5 hops or more|
 |AD Empty Groups   |Lists Active Directory groups that contain no users or computers, either directly or indirectly|
 |AD Group Loops    |Lists Active Directory groups that have membership loops back to themselves|
