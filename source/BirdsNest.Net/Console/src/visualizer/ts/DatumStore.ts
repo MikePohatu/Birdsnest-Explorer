@@ -68,7 +68,7 @@ export default class DatumStore {
         this.objectUpdated = true;
     }
 
-    Removes(d): void {
+    Remove(d): void {
         if (this.DatumExists(d)) {
             delete this.datumObject[d.db_id];
             this.objectUpdated = true;
