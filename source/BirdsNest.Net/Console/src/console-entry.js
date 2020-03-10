@@ -45,8 +45,3 @@ $(document).foundation();
 if (!PRODUCTION) {
     console.log("Birdsnest Console loaded. Mode: " + ENV);
 }
-
-//set the mutateApproach to sync. If we do async we can have out of order issues because we might resize the icon
-//after adding it. We want to replace with svg first, then resize. 
-//https://fontawesome.com/how-to-use/with-the-api/setup/configuration
-window.FontAwesome.config.mutateApproach = 'sync';
