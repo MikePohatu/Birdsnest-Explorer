@@ -30,11 +30,11 @@ export default class DatumStore {
         this.objectUpdated = false;
     }
 
-    GetDatum (id) {
+    GetDatum(id): object {
         return this.datumObject[id];
     }
 
-    GetIDs (id) {
+    GetIDs(): string[] {
         if (this.objectUpdated === true) {
             //onsole.log(this.datumObject);
             this.RefreshArrays();
@@ -42,7 +42,7 @@ export default class DatumStore {
         return this.idArray;
     }
 
-    GetArray () {
+    GetArray(): object[] {
 
         if (this.objectUpdated === true) {
             //onsole.log(this.datumObject);
@@ -51,7 +51,7 @@ export default class DatumStore {
         return this.datumArray;
     }
 
-    RefreshArrays () {
+    RefreshArrays(): void {
         let o = this.datumObject;
         this.idArray = Object.keys(o);
         this.datumArray = this.idArray.map(function (key) {
@@ -62,24 +62,26 @@ export default class DatumStore {
         this.objectUpdated = false;
     }
 
-    Add (d) {
+    Add(d): void {
         //console.log("datumStore.Add: " + d.db_id);
         this.datumObject[d.db_id] = d;
         this.objectUpdated = true;
     }
 
-    Remove (d) {
-        delete this.datumObject[d.db_id];
-        this.objectUpdated = true;
+    Removes(d): void {
+        if (this.DatumExists(d)) {
+            delete this.datumObject[d.db_id];
+            this.objectUpdated = true;
+        }
     }
 
-    DatumExists (d) {
+    DatumExists(d): boolean {
         if (this.datumObject.hasOwnProperty(d.db_id)) { return true; }
         else { return false; }
     }
 
 
-    KeyExists (key) {
+    KeyExists(key): boolean {
         if (this.datumObject.hasOwnProperty(key)) { return true; }
         else { return false; }
     }
