@@ -17,7 +17,7 @@
     "d3": "5.9.7",
     "file-loader": "4.2.0",
     "foundation-sites": "6.5.3",
-    "jquery": "3.4.1",
+    "jquery": "3.5.0",
     "jquery-ui": "1.12.1",
     "loglevel": "1.6.3",
     "mini-css-extract-plugin": "0.8.0",
