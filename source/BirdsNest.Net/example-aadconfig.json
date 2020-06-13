@@ -1,0 +1,7 @@
+{
+  "ScannerID": "aad_scanner1",
+  "Tenant": "domain.com",
+  "ID": "xxxxxx",
+  "RootURL": "https://graph.microsoft.com",
+  "Version": "v1.0"
+}

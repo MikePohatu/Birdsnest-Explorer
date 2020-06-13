@@ -1,0 +1,29 @@
+{
+  "name": "builtin",
+  "displayName": "Built-In",
+  "reports": {
+    "builtin-connectedorphans": {
+      "displayName": "Connected Orphans",
+      "description": "Finds orphaned items that still have connections",
+      "query": "MATCH p=(n:Orphaned)-[]->(a) WITH nodes(p) as items UNWIND items as item RETURN DISTINCT item",
+      "propertyFilters": []
+    }
+  },
+  "edgeDataTypes": {
+  },
+  "nodeDataTypes": {
+    "Orphaned": {
+      "displayName": "Orphaned",
+      "description": "Orphaned object i.e. object has been deleted but is configured in another system",
+      "icon": "f128"
+    },
+    "BuiltinUser": {
+      "displayName": "Builtin User",
+      "icon": "f0c0"
+    },
+    "BuiltinGroup": {
+      "displayName": "Builtin Group",
+      "icon": "f007"
+    }
+  }
+}

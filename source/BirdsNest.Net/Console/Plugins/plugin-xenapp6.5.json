@@ -1,0 +1,42 @@
+{
+  "name": "xenapp6.5",
+  "displayName": "XenApp 6.5",
+  "reports": {
+    "ctx-deleteditemaccess": {
+      "displayName": "CTX Deleted Item Access",
+      "description": "Lists applications with permissions for deleted objects",
+      "query": "MATCH p=(d:AD_Deleted)-[]->(a:CTX_Application) WITH nodes(p) AS items UNWIND items as item RETURN DISTINCT item",
+      "propertyFilters": [ "name", "farm", "dn", "type", "folderpath", "samaccountname", "enabled" ]
+    },
+    "ctx-orphanedaccess": {
+      "displayName": "CTX Orphaned Item Access",
+      "description": "Lists applications with permissions for orphaned objects",
+      "query": "MATCH p=(d:Orphaned)-[]->(a:CTX_Application) WITH nodes(p) AS items UNWIND items as item RETURN DISTINCT item",
+      "propertyFilters": [ "name", "farm", "dn", "type", "folderpath", "samaccountname", "enabled" ]
+    }
+  },
+  "edgeDataTypes": {
+    "PUBLISHED_FROM": {
+      "displayName": "Citrix - PUBLISHED_FROM",
+      "description": "Application is published from farm"
+    },
+    "GIVES_ACCESS_TO_CTX": {
+      "displayName": "Citrix - GIVES_ACCESS_TO_CTX",
+      "description": "Item (e.g. AD group) gives access to/enables Citrix item"
+    }
+  },
+  "nodeDataTypes": {
+    "CTX_Farm": {
+      "displayName": "Citrix - CTX_Farm",
+      "description": "Citrix farm",
+      "icon": "f233",
+      "subType": "farm"
+    },
+    "CTX_Application": {
+      "displayName": "Citrix - CTX_Application",
+      "description": "Citrix application",
+      "icon": "f24d",
+      "subType": "farm"
+    }
+  }
+}

@@ -1,0 +1,103 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{4D563EC3-E7D4-4FEF-AF3C-327B9584AF6B}</ProjectGuid>
+    <OutputType>Exe</OutputType>
+    <RootNamespace>CMScanner</RootNamespace>
+    <AssemblyName>CMScanner</AssemblyName>
+    <TargetFrameworkVersion>v4.6.2</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+    <Deterministic>true</Deterministic>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>..\..\..\..\..\Release\birdsnest\Scanners\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="AdminUI.WqlQueryEngine">
+      <HintPath>libraries\AdminUI.WqlQueryEngine.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.ConfigurationManagement.ManagementProvider">
+      <HintPath>libraries\Microsoft.ConfigurationManagement.ManagementProvider.dll</HintPath>
+    </Reference>
+    <Reference Include="Neo4j.Driver, Version=1.7.226.2, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Neo4j.Driver.1.7.2\lib\net452\Neo4j.Driver.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.12.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="NLog, Version=4.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c, processorArchitecture=MSIL">
+      <HintPath>..\packages\NLog.4.6.3\lib\net45\NLog.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Configuration" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.IO.Compression" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.ServiceModel" />
+    <Reference Include="System.Transactions" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="CmConverter\Cleanup.cs" />
+    <Compile Include="CmConverter\CmApplicationDependencies.cs" />
+    <Compile Include="CmConverter\CmApplicationsInTaskSequences.cs" />
+    <Compile Include="CmConverter\CmSoftwareUpdateGroupMembers.cs" />
+    <Compile Include="CmConverter\CmSoftwareUpdateSupersedence.cs" />
+    <Compile Include="CmConverter\CmSoftwareUpdate.cs" />
+    <Compile Include="CmConverter\CmUserAdConnections.cs" />
+    <Compile Include="CmConverter\CmDeviceAdConnections.cs" />
+    <Compile Include="CmConverter\CmDevices.cs" />
+    <Compile Include="CmConverter\CmCollectionMemberships.cs" />
+    <Compile Include="CmConverter\CmUsers.cs" />
+    <Compile Include="CmConverter\CmDeployments.cs" />
+    <Compile Include="CmConverter\CmPackagePrograms.cs" />
+    <Compile Include="CmConverter\CmTaskSequences.cs" />
+    <Compile Include="CmConverter\CmPackages.cs" />
+    <Compile Include="CmConverter\CmApplications.cs" />
+    <Compile Include="CmConverter\CmCollections.cs" />
+    <Compile Include="CmConverter\CmLimitingCollections.cs" />
+    <Compile Include="CmConverter\Connector.cs" />
+    <Compile Include="CmConverter\Enums.cs" />
+    <Compile Include="CmConverter\ResultObjectHandler.cs" />
+    <Compile Include="Configuration.cs" />
+    <Compile Include="Program.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config" />
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\common\common.csproj">
+      <Project>{0dc87a09-17f3-4e57-ae54-f706920d7afa}</Project>
+      <Name>common</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+</Project>

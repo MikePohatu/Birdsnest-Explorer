@@ -1,0 +1,17 @@
+.CTX_Farm {
+    color: #80a500;
+    stroke: #80a500;
+    fill: #fbffed;
+}
+.CTX_Farm.icon {
+    fill: #80a500;
+}
+
+.CTX_Application {
+    color: #ffa500;
+    stroke: #ffa500;
+    fill: #fff1d8;
+}
+.CTX_Farm.icon {
+    fill: #ffa500;
+}

@@ -1,0 +1,53 @@
+.FS_Folder {
+    color: #ad9370;
+    stroke: #ad9370;
+    fill: cornsilk;
+    background-color: cornsilk;
+}
+
+.FS_Folder.icon {
+    fill: #ad9370;
+    background-color: #ad9370;
+}
+
+.FS_Datastore {
+    color: midnightblue;
+    stroke: midnightblue;
+    fill: lightblue;
+    background-color: lightblue;
+}
+
+.FS_Datastore.icon {
+    fill: midnightblue;
+    background-color: midnightblue;
+}
+
+.CONNECTED_TO {
+    stroke: blue;
+    color: blue;
+    background-color: blue;
+}
+
+.GIVES_ACCESS_TO {
+    stroke: orange;
+    color: black;
+    background-color: orange;
+}
+
+.FS_APPLIES_INHERITANCE_TO {
+    stroke: teal;
+    color: black;
+    background-color: teal;
+}
+
+.FS_BLOCKED_INHERITANCE {
+    stroke: red;
+    color: black;
+    background-color: red;
+}
+
+.FS_HOSTED_ON {
+    stroke: darkblue;
+    color: black;
+    background-color: darkblue;
+}

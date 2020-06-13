@@ -1,0 +1,8 @@
+.WU_Update {
+    color: darkblue;
+    stroke: darkblue;
+    fill: aliceblue;
+}
+.WU_Update.icon {
+    fill: darkblue;
+}

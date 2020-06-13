@@ -1,0 +1,35 @@
+{
+  "nodes": [
+    {
+      "type": "AD_User",
+      "identifier": "n1",
+      "andor": {
+        "left": {
+          "property": "samaccountname",
+          "value": "user",
+          "type": "StartsWith"
+        },
+        "type": "AND",
+        "right": {
+          "property": "samaccountname",
+          "value": "4",
+          "type": "EndsWith"
+        }
+      }
+    },
+    {
+      "type": "AD_User",
+      "identifier": "n2",
+      "condition": {
+        "property": "samaccountname",
+        "value": "user1"
+      }
+    }
+  ],
+  "edges": [
+    {
+      "type": "AD_MEMBER_OF",
+      "identifier": "e2"
+    }
+  ]  
+}

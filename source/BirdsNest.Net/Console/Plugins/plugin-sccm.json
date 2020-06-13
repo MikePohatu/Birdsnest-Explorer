@@ -1,0 +1,171 @@
+{
+  "name": "sccm",
+  "displayName": "SCCM",
+  "reports": {
+
+  },
+  "edgeDataTypes": {
+    "CM_EXCLUDES_COLLECTION": {
+      "displayName": "SCCM - CM_EXCLUDES_COLLECTION",
+      "description": "SCCM collection excludes another collection"
+    },
+    "CM_HAS_DEPLOYMENT": {
+      "displayName": "SCCM - CM_HAS_DEPLOYMENT",
+      "description": "SCCM collection has deployment for item"
+    },
+    "CM_HAS_PROGRAM": {
+      "displayName": "SCCM - CM_HAS_PROGRAM",
+      "description": "SCCM package program"
+    },
+    "CM_INCLUDES_COLLECTION": {
+      "displayName": "SCCM - CM_INCLUDES_COLLECTION",
+      "description": "SCCM collection includes another collection"
+    },
+    "CM_LIMITING_FOR": {
+      "displayName": "SCCM - CM_LIMITING_FOR",
+      "description": "Limiting collection for an SCCM collection"
+    },
+    "CM_MEMBER_OF": {
+      "displayName": "SCCM - CM_MEMBER_OF",
+      "description": "SCCM object is a member of SCCM collection"
+    },
+    "CM_OBJECT_FOR": {
+      "displayName": "SCCM - CM_OBJECT_FOR",
+      "description": "SCCM object represents an object in Active Directory"
+    },
+    "CM_SUPERSEDED_BY": {
+      "displayName": "SCCM - CM_SUPERSEDED_BY",
+      "description": "SCCM object is superseded by another e.g. software updates"
+    }
+  },
+  "nodeDataTypes": {
+    "CM_Application": {
+      "displayName": "SCCM - CM_Application",
+      "description": "SCCM application item",
+      "properties": {
+        "id": {},
+        "lastscan": {},
+        "name": {}
+      },
+      "icon": "f085"
+    },
+    "CM_User": {
+      "displayName": "SCCM - CM_User",
+      "description": "SCCM user object",
+      "properties": {
+        "dn": {},
+        "id": {},
+        "lastscan": {},
+        "name": {},
+        "sid": {}
+      },
+      "icon": "f007"
+    },
+    "CM_Collection": {
+      "displayName": "SCCM - CM_Collection",
+      "description": "SCCM collection",
+      "properties": {
+        "comment": {},
+        "id": {},
+        "lastscan": {},
+        "limitingcollection": {},
+        "name": {}
+      },
+      "icon": "f5fd"
+    },
+    "CM_Device": {
+      "displayName": "SCCM - CM_Device",
+      "description": "SCCM device object",
+      "properties": {
+        "dn": {},
+        "id": {},
+        "lastscan": {},
+        "name": {},
+        "sid": {}
+      },
+      "icon": "f108"
+    },
+    "CM_Package": {
+      "displayName": "SCCM - CM_Package",
+      "description": "SCCM package item",
+      "properties": {
+        "id": {},
+        "lastscan": {},
+        "name": {}
+      },
+      "icon": "f233"
+    },
+    "CM_PackageProgram": {
+      "displayName": "SCCM - CM_PackageProgram",
+      "description": "SCCM program for Package item",
+      "icon": "f085"
+    },
+    "CM_SoftwareUpdate": {
+      "displayName": "SCCM - CM_SoftwareUpdate",
+      "description": "SCCM Software Update",
+      "icon": "f35b",
+      "properties": {
+        "ArticleID": {},
+        "DateCreated": {},
+        "DateRevised": {},
+        "description": {},
+        "id": {},
+        "IsBundle": {
+          "Type": "boolean"
+        },
+        "IsDeployed": {
+          "Type": "boolean"
+        },
+        "IsExpired": {
+          "Type": "boolean"
+        },
+        "IsLatest": {
+          "Type": "boolean"
+        },
+        "IsSuperseded": {
+          "Type": "boolean"
+        },
+        "lastscan": {},
+        "name": {},
+        "NumMissing": {
+          "Type": "number"
+        },
+        "PercentCompliant": {
+          "Type": "number"
+        },
+        "scannerid": {},
+        "SeverityName": {},
+        "Size": {
+          "Type": "number"
+        }
+      }
+    },
+    "CM_SoftwareUpdateGroup": {
+      "displayName": "SCCM - CM_SoftwareUpdateGroup",
+      "description": "SCCM Software Update Group (SUG)",
+      "icon": "f35b"
+    },
+    "CM_TaskSequence": {
+      "displayName": "SCCM - CM_TaskSequence",
+      "description": "SCCM task sequence",
+      "properties": {
+        "id": {},
+        "lastscan": {},
+        "name": {}
+      },
+      "icon": "f0ae"
+    },
+    "CM_ConfigurationItem": {
+      "displayName": "SCCM - CM_ConfigurationItem",
+      "description": "SCCM configuration item e.g. application, package, task sequence",
+      "properties": {
+        "dn": {},
+        "id": {},
+        "lastscan": {},
+        "name": {},
+        "sid": {}
+      },
+      "icon": "f248"
+    }
+  }
+}

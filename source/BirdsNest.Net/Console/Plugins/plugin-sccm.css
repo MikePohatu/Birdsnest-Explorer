@@ -1,0 +1,44 @@
+.CM_ConfigurationItem {
+    color: #4626ff;
+    stroke: #4626ff;
+    fill: #e5f1ff;
+}
+.CM_ConfigurationItem.icon {
+    fill: #4626ff;
+}
+
+.CM_User {
+    color: #4626ff;
+    stroke: #4626ff;
+    fill: #e5f1ff;
+}
+.CM_User.icon {
+    fill: #4626ff;
+}
+
+.CM_Device {
+    color: #4626ff;
+    stroke: #4626ff;
+    fill: #e5f1ff;
+}
+.CM_Device.icon {
+    fill: #4626ff;
+}
+
+.CM_Collection {
+    color: #4626ff;
+    stroke: #4626ff;
+    fill: #e5f1ff;
+}
+.CM_Collection.icon {
+    fill: #4626ff;
+}
+
+.CM_Application {
+    color: #4626ff;
+    stroke: #4626ff;
+    fill: #e5f1ff;
+}
+.CM_Application.icon {
+    fill: #4626ff;
+}

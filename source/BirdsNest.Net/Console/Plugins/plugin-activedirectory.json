@@ -1,0 +1,134 @@
+{
+  "name": "active-directory",
+  "displayName": "Active Directory",
+  "reports": {
+    "ad-deeppaths": {
+      "displayName": "AD Deep Paths",
+      "description": "Lists Active Directory groups that are part of 'Member Of' chains with 5 hops or more",
+      "query": "MATCH p=(n:AD_Group)-[:AD_MEMBER_OF*5..]->(:AD_Group) WITH nodes(p) AS groups UNWIND groups as group RETURN DISTINCT group",
+      "propertyFilters": [ "name", "dn", "description", "scope" ]
+    },
+    "ad-emptygroups": {
+      "displayName": "AD Empty Groups",
+      "description": "Lists Active Directory groups that contain no users or computers, either directly or indirectly",
+      "query": "MATCH (n:AD_Group) where n.scope=0 RETURN n ORDER BY n.name",
+      "propertyFilters": [ "name", "dn", "description" ]
+    },
+    "ad-grouploops": {
+      "displayName": "AD Group Loops",
+      "description": "Lists Active Directory groups that have membership loops back to themselves",
+      "query": "MATCH p=(n:AD_Group)-[:AD_MEMBER_OF*]->(n) WITH nodes(p) as groups UNWIND groups as group RETURN DISTINCT group",
+      "propertyFilters": [ "name", "dn", "description", "scope" ]
+    }
+  },
+  "edgeDataTypes": {
+    "AD_MEMBER_OF": {
+      "displayName": "AD - AD_MEMBER_OF",
+      "properties": {
+        "domainid": {},
+        "lastscan": {}
+      }
+    }
+  },
+  "nodeDataTypes": {
+    "AD_Computer": {
+      "displayName": "AD Computer",
+      "description": "Active Directory domain joined computer object",
+      "properties": {
+        "description": {},
+        "dn": {},
+        "domainid": {},
+        "id": {},
+        "info": {},
+        "lastscan": {},
+        "name": {},
+        "operatingsystem": {},
+        "operatingsystemversion": {},
+        "path": {},
+        "primarygroupid": {},
+        "samaccountname": {},
+        "state": {}
+      },
+      "default": "samaccountname",
+      "icon": "f108"
+    },
+    "AD_Group": {
+      "displayName": "AD Group",
+      "description": "Active Directory group",
+      "properties": {
+        "description": {},
+        "dn": {},
+        "domainid": {},
+        "grouptype": {},
+        "id": {},
+        "info": {},
+        "lastscan": {},
+        "member_count": {},
+        "name": {},
+        "path": {},
+        "rid": {},
+        "samaccountname": {},
+        "scope": {
+          "type": "number"
+        }
+      },
+      "default": "samaccountname",
+      "subType": "grouptype",
+      "icon": "f500"
+    },
+    "AD_User": {
+      "displayName": "AD User",
+      "description": "Active Directory user account",
+      "properties": {
+        "description": {},
+        "displayname": {},
+        "dn": {},
+        "domainid": {},
+        "id": {},
+        "info": {},
+        "lastscan": {},
+        "name": {},
+        "path": {},
+        "primarygroupid": {},
+        "samaccountname": {},
+        "state": {},
+        "userprincipalname": {}
+      },
+      "default": "samaccountname",
+      "icon": "f007"
+    },
+    "AD_Deleted": {
+      "displayName": "AD Deleted",
+      "description": "AD objects that have been deleted.",
+      "icon": "f2ed"
+    },
+    "AD_Object": {
+      "displayName": "AD Object",
+      "description": "Active Directory object, which could be a user, group, or computer",
+      "properties": {
+        "description": {},
+        "displayname": {},
+        "dn": {},
+        "domainid": {},
+        "grouptype": {},
+        "id": {},
+        "info": {},
+        "lastscan": {},
+        "member_count": {},
+        "name": {},
+        "operatingsystem": {},
+        "operatingsystemversion": {},
+        "path": {},
+        "primarygroupid": {},
+        "rid": {},
+        "samaccountname": {},
+        "scope": {
+          "type": "number"
+        },
+        "state": {},
+        "userprincipalname": {}
+      },
+      "default": "samaccountname"
+    }
+  }
+}

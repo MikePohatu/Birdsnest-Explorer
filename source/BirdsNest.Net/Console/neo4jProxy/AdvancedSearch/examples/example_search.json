@@ -1,0 +1,49 @@
+{
+  "Nodes": [
+    {
+      "Name": "n1",
+      "Label": "NodeType"
+    },
+    {
+      "Name": "n2",
+      "Label": "NodeType"
+    }
+  ],
+  "Edges": [
+    {
+      "Name": "r1",
+      "Label": "RelType"
+    }
+  ],
+  "Condition": {
+    "Type": "AND",
+    "Conditions": [
+      {
+        "Type": "MATH",
+        "Name": "n1",
+        "Property": "tpropn1",
+        "Value": 1,
+        "Operator": "="
+      },
+      {
+        "Type": "OR",
+        "Conditions": [
+          {
+            "Type": "STRING",
+            "Name": "n2",
+            "Property": "tpropn2",
+            "Value": "testn2",
+            "Comparator": "STARTSWITH"
+          },
+          {
+            "Type": "STRING",
+            "Name": "r1",
+            "Property": "tpropr1",
+            "Value": "testr1",
+            "Comparator": "EQUALS"
+          }
+        ]
+      }
+    ]
+  }
+}

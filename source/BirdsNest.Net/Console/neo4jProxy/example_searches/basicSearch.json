@@ -1,0 +1,18 @@
+{
+  "nodes": [
+    {
+      "type": "AD_User",
+      "identifier": "n1"
+    },
+    {
+      "type": "AD_User",
+      "identifier": "n2"
+    }
+  ],
+  "edges": [
+    {
+      "type": "AD_MEMBER_OF",
+      "identifier": "e2"
+    }
+  ]  
+}

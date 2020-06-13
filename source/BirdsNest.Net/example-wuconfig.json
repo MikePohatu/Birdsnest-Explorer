@@ -1,0 +1,7 @@
+{
+	"server":{
+      "hostname": "wsus01",
+      "port": 8443,
+      "usessl":  false
+		}
+}

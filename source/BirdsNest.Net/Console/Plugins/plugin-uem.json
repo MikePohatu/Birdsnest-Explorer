@@ -1,0 +1,31 @@
+{
+  "name": "uem",
+  "displayName": "VMware UEM",
+  "reports": {
+    "uem-deleteditemaccess": {
+      "displayName": "UEM Deleted Items Configured",
+      "description": "Lists UEM settings configured with deleted AD objects",
+      "query": "MATCH p=(d:AD_Deleted)-[]->(a:UEM_Setting) WITH nodes(p) AS items UNWIND items as item RETURN DISTINCT item",
+      "propertyFilters": []
+    },
+    "uem-orphaneditemaccess": {
+      "displayName": "UEM Orphaned Items Configured",
+      "description": "Lists UEM settings configured with orphaned objects",
+      "query": "MATCH p=(d:Orphaned)-[]->(a:UEM_Setting) WITH nodes(p) AS items UNWIND items as item RETURN DISTINCT item",
+      "propertyFilters": []
+    }
+  },
+  "edgedatatypes": {
+    "ACTIVATES": {
+      "displayName": "UEM - ACTIVATES",
+      "description": "UEM item is activate/enabled by item e.g. AD group"
+    }
+  },
+  "nodedatatypes": {
+    "UEM_Setting": {
+      "displayName": "UEM - UEM_Setting",
+      "description": "Setting within the UEM configuration",
+      "icon": "f135"
+    }
+  }
+}

@@ -1,0 +1,79 @@
+{
+  "name": "filesystem",
+  "displayName": "File System",
+  "reports": {
+    "fs-orphanedperms": {
+      "displayName": "FS Orphaned Permissions",
+      "description": "Lists folders with permissions for deleted permissions",
+      "Query": "MATCH p=(:AD_Deleted)-[]->(:FS_Folder) MATCH q=(:Orphaned)-[]->(:FS_Folder) WITH nodes(p)+nodes(q) AS items UNWIND items as item RETURN DISTINCT item",
+      "PropertyFilters": [ "name", "id", "path" ]
+    },
+    "fs-inheritancedisabled": {
+      "displayName": "FS Inheritance Disabled",
+      "description": "Lists folders with inherited permissions disabled",
+      "Query": "MATCH (n:FS_Folder) WHERE n.inheritancedisabled=True return n ORDER BY n.path",
+      "PropertyFilters": [ "path" ]
+    }
+  },
+  "edgeDataTypes": {
+    "GIVES_ACCESS_TO": {
+      "displayName": "File System - GIVES_ACCESS_TO",
+      "description": "Applies permission to an object in the filesystem",
+      "properties": {
+        "fsid": {},
+        "right": {}
+      }
+    },
+    "FS_APPLIES_INHERITANCE_TO": {
+      "displayName": "File System - FS_APPLIES_INHERITANCE_TO"
+    },
+    "FS_BLOCKED_INHERITANCE": {
+      "displayName": "File System - FS_BLOCKED_INHERITANCE"
+    },
+    "FS_HOSTS": {
+      "displayName": "File System - FS_HOSTS",
+      "description": "Datastore is hosted on system"
+    }
+  },
+  "nodeDataTypes": {
+    "FS_Datastore": {
+      "displayName": "File System - FS_Datastore",
+      "description": "Datastore that contains one or more file systems",
+      "properties": {
+        "comment": {},
+        "host": {},
+        "name": {}
+      },
+      "default": "name",
+      "icon": "f0a0"
+    },
+    "FS_Folder": {
+      "displayName": "File System - FS_Folder",
+      "description": "A folder in a file system",
+      "properties": {
+        "fsid": {},
+        "lastpermission": {},
+        "lastscan": {},
+        "name": {},
+        "path": {},
+        "blocked": {
+          "description": "Scanner was unable to interogate this folder and further scanning was blocked",
+          "type": "boolean"
+        },
+        "inheritancedisabled": {
+          "description": "",
+          "type": "boolean"
+        }
+      },
+      "default": "path",
+      "icon": "f07c"
+    },
+    "FS_BlockedFolder": {
+      "displayName": "File System - FS_BlockedFolder",
+      "description": "Folder that couldn't be scanned"
+    },
+    "FS_DfsRoot": {
+      "displayName": "File System - FS_DfsRoot"
+    }
+  }
+}

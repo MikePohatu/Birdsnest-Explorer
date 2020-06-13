@@ -1,0 +1,56 @@
+.AD_Group {
+    color: green;
+    stroke: green;
+    background-color: #BBF0C6;
+    fill: #BBF0C6;
+}
+
+.AD_Group.icon {
+    fill: green;
+}
+
+.AD_Group-security_universal {
+    color: #33563a;
+    stroke: #33563a;
+    background-color: #72c182;
+    fill: #72c182;
+}
+
+.AD_Group-security_universal.icon {
+    fill: #33563a;
+}
+
+.AD_Group-security_domainlocal {
+    color: green;
+    stroke: green;
+    background-color: #f2f9f3;
+    fill: #f2f9f3;
+}
+
+.AD_User {
+    color: crimson;
+    stroke: crimson;
+    fill: #ffe2e7;
+    background-color: #ffe2e7;
+}
+
+.AD_User.icon {
+    fill: crimson;
+}
+
+.AD_Computer {
+    color: steelblue;
+    stroke: steelblue;
+    background-color: lightcyan;
+    fill: lightcyan;
+}
+
+.AD_Computer.icon {
+    fill: steelblue;
+}
+
+.AD_MEMBER_OF {
+    stroke: green;
+    color: green;
+    background-color: #f2f9f3;
+}

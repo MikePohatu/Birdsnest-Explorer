@@ -1,0 +1,19 @@
+.BuiltinGroup {
+    color: #474747;
+    stroke: #474747;
+    fill: #e5e5e5;
+}
+
+.BuiltinGroup.icon {
+    fill: #474747;
+}
+
+.BuiltinUser {
+    color: #474747;
+    stroke: #474747;
+    fill: #e5e5e5;
+}
+
+.BuiltinUser.icon {
+    fill: #474747;
+}

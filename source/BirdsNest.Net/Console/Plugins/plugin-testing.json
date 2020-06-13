@@ -1,0 +1,54 @@
+{
+  "name": "Testing",
+  "displayName": "Testing",
+  "reports": {
+    "custom-1000": {
+      "displayName": "custom-1000",
+      "description": "1000 nodes on display",
+      "query": "MATCH (n) RETURN n LIMIT 1000",
+      "propertyFilters": [ "name", "dn", "description", "scope" ]
+    },
+    "custom-1500": {
+      "displayName": "custom-1500",
+      "description": "1500 nodes on display",
+      "query": "MATCH (n) RETURN n LIMIT 1500",
+      "propertyFilters": [ "name", "dn", "description", "scope" ]
+    },
+    "custom-500": {
+      "displayName": "custom-500",
+      "description": "500 nodes on display",
+      "query": "MATCH (n) RETURN n LIMIT 500",
+      "propertyFilters": [ "name", "dn", "description", "scope" ]
+    },
+    "custom-750": {
+      "displayName": "custom-750",
+      "description": "750 nodes on display",
+      "query": "MATCH (n) RETURN n LIMIT 750",
+      "propertyFilters": [ "name", "dn", "description", "scope" ]
+    },
+    "custom-200": {
+      "displayName": "custom-200",
+      "description": "200 nodes on display",
+      "query": "MATCH (n) RETURN n LIMIT 200",
+      "propertyFilters": [ "name", "dn", "description", "scope" ]
+    },
+    "custom-300": {
+      "displayName": "custom-300",
+      "description": "300 nodes on display",
+      "query": "MATCH (n) RETURN n LIMIT 300",
+      "propertyFilters": [ "name", "dn", "description", "scope" ]
+    },
+    "custom-3000": {
+      "displayName": "custom-3000",
+      "description": "3000 nodes on display",
+      "query": "MATCH (n) RETURN n LIMIT 3000",
+      "propertyFilters": [ "name", "dn", "description", "scope" ]
+    },
+    "custom-10000": {
+      "displayName": "custom-10000",
+      "description": "10000 nodes on display",
+      "query": "MATCH (n) RETURN n LIMIT 10000",
+      "propertyFilters": [ "name", "dn", "description", "scope" ]
+    }
+  }
+}

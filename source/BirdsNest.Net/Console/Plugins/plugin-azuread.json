@@ -1,0 +1,53 @@
+{
+  "name": "azuread",
+  "displayName": "Azure Active Directory",
+  "edgeDataTypes": {
+    "AAD_SYNC": {
+      "displayName": "AAD - AAD_SYNC",
+      "properties": {
+        "scannerid": {},
+        "lastscan": {}
+      }
+    },
+    "AAD_MEMBER_OF": {
+      "displayName": "AAD - AAD_MEMBER_OF",
+      "properties": {
+        "scannerid": {},
+        "lastscan": {}
+      }
+    }
+  },
+  "nodeDataTypes": {
+    "AAD_User": {
+      "displayName": "AAD User",
+      "description": "Azure Active Directory user",
+      "properties": {
+        "id": {},
+        "lastscan": {},
+        "name": {},
+        "enabled": {},
+        "userprincipalname": {}
+      },
+      "Default": "userprincipalname",
+      "icon": "f007"
+    },
+    "AAD_Group": {
+      "displayName": "AAD Group",
+      "description": "Azure Active Directory group",
+      "properties": {
+        "id": {},
+        "lastscan": {},
+        "name": {},
+        "mailenabled": {},
+        "scannerid": {}
+      },
+      "Default": "name",
+      "icon": "f500"
+    },
+    "AAD_Deleted": {
+      "displayName": "AAD Deleted",
+      "description": "AAD objects that have been deleted.",
+      "icon": "f2ed"
+    }
+  }
+}
