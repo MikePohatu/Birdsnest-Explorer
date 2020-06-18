@@ -9,4 +9,8 @@ The BirdsNest console then allows you to explore and query all the interconnecte
 ![Console example](documentation/image/console_view1.png "Console example")
 
 
-[Documentation](/documentation/README.md "Documentation")
+## Resources
+
+* [Documentation](/documentation/README.md "Documentation")
+* [YouTube](https://www.youtube.com/playlist?list=PLbymiOxRQJvL01dXHwlRDcM0koccbGEro)
+* [20road.com](https://www.20road.com/birdsnest-environment-discovery/)
