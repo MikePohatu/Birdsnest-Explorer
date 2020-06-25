@@ -1,4 +1,4 @@
-begin
+:begin
 
 CREATE CONSTRAINT ON (g:AD_Group) ASSERT g.id IS UNIQUE;
 CREATE CONSTRAINT ON (u:AD_User) ASSERT u.id IS UNIQUE;
@@ -25,9 +25,9 @@ CREATE INDEX ON :WU_Update(KB);
 CREATE INDEX ON :WU_Update(id);
 
 
-commit
+:commit
 
-begin
+:begin
 
 WITH {
   groups: [
@@ -478,4 +478,4 @@ WITH *
 MATCH (n:Orphaned:BuiltinUser) REMOVE n:Orphaned
 RETURN *;
 
-commit
+:commit

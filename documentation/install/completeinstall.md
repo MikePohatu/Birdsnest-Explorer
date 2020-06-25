@@ -92,6 +92,16 @@ To logout the current user, run the following command:
 
 _Official neo4j documentation for user management is available [here](https://neo4j.com/docs/operations-manual/3.5/reference/user-management-community-edition/)._
 
+### DB Configuration and Importing Default Data
+
+Before starting data ingestion, the default data set should be imported that includes definitions of BuiltIn users and groups, as well as configuration of database indexes and constraints.
+
+On a Windows machine the following command will import the import the .cypher file (hosted at _source\neo4j_ in the source repository):
+
+```cmd
+type "%path_to_db_file%\DB_Setup.cypher" | "%path_to_neo4j%\bin\cypher-shell" -u %neo4j_username% -p %neo4j_password% --format plain
+```
+
 ## Firewall
 
 The following firewall rules are required on the BirdsNest server. Border firewalls will also require configuration if the BirdsNest server traverses security zones. 
@@ -166,16 +176,18 @@ The Active Directory and LDAP providers differ in that they use different librar
 
 #### Active Directory
 
-The following fields are required in an ActiveDirectory authorization configuation.
+The following fields are required in an ActiveDirectory authorization configuation. Two domain groups are required, one for BirdsNest admins, and one for normal users.
 
 **Type**: Must be "ActiveDirectory" \
 **Name**: The display name to appear in the BirdsNest Console login page\
 **Domain**: Fully qualified Active Directory domain name\
 **ContainerDN**: Root OU distinguished name containing users and groups authenticating to the Console.\
 **SSL**: Whether to use LDAPS or not.\
-**AdminGroup**: The SamAccountName of the BirdsNest admin group. Admin users must be a direct member of this group. Lookup is not recursive.\
-**UserGroup**: The SamAccountName of the BirdsNest user group. Users must be a direct member of this group. Lookup is not recursive.\
+**AdminGroup**: The SamAccountName of the BirdsNest admin group. Admin users must be a direct member of this group.  Nested groups are not supported.\
+**UserGroup**: The SamAccountName of the BirdsNest user group. Users must be a direct member of this group. Nested groups are not supported.\
 **TimeoutSeconds**: Console session timeout in seconds. This is the time between requests to the server after which the session is expired.
+
+Example "Authorization" section for Active Directory authorization:
 
 ```json
   "Authorization": [
@@ -189,13 +201,13 @@ The following fields are required in an ActiveDirectory authorization configuati
       "UserGroup": "BirdsNest Users",
       "TimeoutSeconds": 900
     },
-    ....
+    ...
   ]
 ```
 
 #### LDAP
 
-The following fields are required in an LDAP authorization configuation.
+The following fields are required in an LDAP authorization configuation. Two domain groups are required, one for BirdsNest admins, and one for normal users.
 
 **Type**: Must be "LDAP" \
 **Name**: The display name to appear in the BirdsNest Console login page\
@@ -205,9 +217,12 @@ The following fields are required in an LDAP authorization configuation.
 **Server**: The server/DNS alias to connect to for LDAP\
 **SearchBase**: Root OU distinguished name containing users and groups authenticating to the Console.\
 **SSL**: Whether to use LDAPS or not.\
-**AdminGroupDN**: The distinguished name of the BirdsNest admin group. Admin users must be a direct member of this group. Lookup is not recursive.\
-**UserGroupDN**: The distinguished name of the BirdsNest user group. Users must be a direct member of this group. Lookup is not recursive.\
+**AdminGroupDN**: The distinguished name of the BirdsNest admin group. Admin users must be a direct member of this group. Nested groups are not supported.\
+**UserGroupDN**: The distinguished name of the BirdsNest user group. Users must be a direct member of this group. Nested groups are not supported.\
 **TimeoutSeconds**: Console session timeout in seconds. This is the time between requests to the server after which the session is expired.
+
+
+Example "Authorization" section for LDAP authorization:
 
 ```json
   "Authorization": [
@@ -224,7 +239,7 @@ The following fields are required in an LDAP authorization configuation.
       "UserGroupDN": "CN=BirdsNest Users,OU=Groups,DC=domain,DC=local",
       "TimeoutSeconds": 900
     },
-    ....
+    ...
   ]
 ```
 
@@ -237,6 +252,8 @@ The following fields are required in an LocalServer authorization configuation. 
 **AdminUsers**: A comma separated list of usernames who are BirdsNest admins. This is a list of user accounts, not groups\
 **Users**: A comma separated list of usernames who are BirdsNest users. This is a list of user accounts, not groups\
 **TimeoutSeconds**: Console session timeout in seconds. This is the time between requests to the server after which the session is expired.
+
+Example "Authorization" section for Local Server authorization:
 
 ```json
   "Authorization": [
@@ -253,13 +270,13 @@ The following fields are required in an LocalServer authorization configuation. 
       ],
       "TimeoutSeconds": 900
     },
-    ....
+    ...
   ]
 ```
 
 #### neo4j Database Connection
 
-The following outlines the fields to configure the connection to the neo4j database. 
+The following outlines the fields to configure the connection to the neo4j database.
 
 **DB_URI**: The database server URI. The entry listed below is the default for the neo4j instance installed on the BirdsNest server\
 **DB_Username**: The neo4j connection username\
