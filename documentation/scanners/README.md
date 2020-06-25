@@ -2,11 +2,12 @@
 
 * [Overview](#Overview)
 * [Shared Configuration](#Shared-Configuration)
-   * [Configuring neoconfig.json](#Configuring-neoconfig.json)
+  * [Configuring neoconfig.json](#Configuring-neoconfig.json)
 * [Available Scanners](#Available-Scanners)
+* [Beta Scanners](#Beta-Scanners)
 
 ## Overview
-A BirdsNest scanner is responsible for querying an external system, and tranlating the data into a format that is then injested into the BirdsNest database.
+A BirdsNest scanner is responsible for querying an external system, and tranlating the data into a format that is then ingested into the BirdsNest database.
 
 
 ## Shared Configuration
@@ -19,7 +20,7 @@ The neo4j configuration file is the same format as the [neo4j Database Connectio
 ```
 {
   "DB_URI": "bolt://localhost:7687",
-  "DB_Username": "neo4j",
+  "DB_Username": "svc_birdsnest",
   "DB_Password": "my_secret_db_password",
   "DB_Timeout": 15
 }
@@ -31,6 +32,7 @@ The scanner specific configuration will be covered in the documentation for that
 
 
 ### Configuring neoconfig.json
+
 An example neoconfig.json file will already exist in the Scanners folder and consists of four fields:
 
 **DB_URI** (required) - This is the path to the neo4j database. This normally running on the BirdsNest server which also runs the scanners, so the default is usually fine. The bolt protocol running on port 7687 is the default neo4j connection protocol.\
@@ -41,14 +43,22 @@ An example neoconfig.json file will already exist in the Scanners folder and con
 ```json
 {
   "DB_URI": "bolt://localhost:7687",
-  "DB_Username": "svc_neo4j",
+  "DB_Username": "svc_birdsnest",
   "DB_Password": "my_secret_db_password",
   "DB_Timeout": 15
 }
 ```
 
-
 ## Available Scanners
 
 * [Active Directory](/documentation/scanners/active-directory/README.md)
 * [File System](/documentation/scanners/file-system/README.md)
+
+## Beta Scanners
+
+The following scanners are currently under development:
+
+* [AzureAD](/documentation/scanners/azuread/README.md)
+* [Custom Data Importer](/documentation/scanners/custom-importer/README.md)
+* [ConfigMgr/SCCM](/documentation/scanners/configmgr/README.md)
+* [VMWare UEM](/documentation/scanners/uem/README.md)

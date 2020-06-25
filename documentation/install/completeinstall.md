@@ -23,7 +23,7 @@
 
 ## Architecture
 
-The following diagram outlines the components and their interaction with each other and external systems. The Active Directory and file system scanners are shown as examples, but additional scanners will access other external systems as needed. 
+The following diagram outlines the components and their interaction with each other and external systems. The Active Directory and file system scanners are shown as examples, but additional scanners will access other external systems as needed.
 
 ![Architecture-Diagram](/documentation/image/architecture.png)
 
@@ -166,7 +166,7 @@ The Active Directory and LDAP providers differ in that they use different librar
 
 #### Active Directory
 
-The following fields are required in an ActiveDirectory authorization configuation. 
+The following fields are required in an ActiveDirectory authorization configuation.
 
 **Type**: Must be "ActiveDirectory" \
 **Name**: The display name to appear in the BirdsNest Console login page\
@@ -199,7 +199,7 @@ The following fields are required in an LDAP authorization configuation.
 
 **Type**: Must be "LDAP" \
 **Name**: The display name to appear in the BirdsNest Console login page\
-**Domain**: Fully qualified Active Directory domain name\
+**Domain**: Fully qualified domain name\
 **BindUser**: The service account user principal name used to bind to LDAP\
 **BindPassword**: The service account password used to bind to LDAP\
 **Server**: The server/DNS alias to connect to for LDAP\

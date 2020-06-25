@@ -1,6 +1,6 @@
 # BirdsNest Installation
 
-BirdsNest customers will receive the [Managed Installer](/documentation/install/managed.md), which should handle the installation from end to end. 
+BirdsNest customers will receive the [Managed Installer](/documentation/install/managed.md), which should handle the installation from end to end.
 
 For those doing a manual install, start with the [Manual Install Quick Start Guide](/documentation/install/manual-quickstart.md) if doing a standard install on Windows Server 2016+ authenticating against Active Directory.
 
