@@ -28,7 +28,7 @@ The BirdsNest advanced search tool is designed to allow searching for specific '
 **Controls**
 
 14. Minimise search
-15. Toggle simple search
+15. Toggle [simple search](/documentation/console/visualizer/simple-search/README.md)
 16. Clear search
 17. Share search
 18. Run Search
@@ -54,5 +54,3 @@ Additionally, when additional search properties are chosen e.g. 'nodes of type X
 
 
 ## Conditions
-
-

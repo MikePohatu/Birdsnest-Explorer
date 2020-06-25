@@ -8,7 +8,7 @@
 
 ## Overview
 
-The main part of the visualizer is the <a href="https://en.wikipedia.org/wiki/Graph_(discrete_mathematics)" target="_blank">graph</a>, a view that lays out connected data. Additionally, there are controls to manipulate the layout of the graph, and search functionality to find and add data to the graph. 
+The main part of the visualizer is the <a href="https://en.wikipedia.org/wiki/Graph_(discrete_mathematics)" target="_blank">graph</a>, a view that lays out connected data. Additionally, there are controls to manipulate the layout of the graph, and [search](/documentation/console/visualizer/simple-search/README.md) functionality to find and add data to the graph. 
 
 ![Visualizer](/documentation/image/console/visualizer-layout.png)
 
