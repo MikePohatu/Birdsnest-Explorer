@@ -240,27 +240,5 @@ namespace ADScanner.Neo4j
                 return result.Summary.Counters.RelationshipsDeleted;
             }
         }
-
-        public static void UpdateMetadata(IDriver driver)
-        {
-            List<string> types = new List<string>() { Types.ADObject, Types.Computer, Types.User, Types.Group};
-
-            foreach (string type in types)
-            {
-                string query = 
-                "MATCH (n:" + type + ") " +
-                "WITH DISTINCT keys(n) as props " +
-                "UNWIND props as p " +
-                "WITH DISTINCT p as disprops " +
-                "WITH collect(disprops) as allprops " +
-                "MERGE(i: _Metadata { name: 'NodeProperties'}) " +
-                "SET i." + type + " = allprops " +
-                "RETURN i";
-                using (ISession session = driver.Session())
-                {
-                    session.WriteTransaction(tx => tx.Run(query));
-                }
-            }
-        }
     }
 }

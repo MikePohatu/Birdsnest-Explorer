@@ -302,14 +302,6 @@ namespace ADScanner
             //Console.WriteLine();
             Console.WriteLine("Set group scopes in " + steptimer.ElapsedMilliseconds + "ms");
 
-            //mark deleted objects
-            steptimer.Restart();
-            Writer.UpdateMetadata(driver);
-            steptimer.Stop();
-            //Console.WriteLine();
-            Console.WriteLine("Updated metadata " + steptimer.ElapsedMilliseconds + "ms");
-
-
             //cleanup
             driver.Dispose();
             rootDE.Dispose();

@@ -237,42 +237,5 @@ namespace FSScanner
 
             return nodesdeleted;
         }
-
-        public static void UpdateMetadata(IDriver driver)
-        {
-			string query;
-
-			List<string> types = new List<string>() { Types.Folder, Types.Datastore };
-			foreach (string type in types)
-            {
-                query =
-                "MATCH (n:" + type + ") " +
-                "WITH DISTINCT keys(n) as props " +
-                "UNWIND props as p " +
-                "WITH DISTINCT p as disprops " +
-                "WITH collect(disprops) as allprops " +
-                "MERGE(i: _Metadata { name: 'NodeProperties'}) " +
-                "SET i." + type + " = allprops " +
-                "RETURN i";
-                using (ISession session = driver.Session())
-                {
-                    session.WriteTransaction(tx => tx.Run(query));
-                }
-            }
-
-			query =
-				"MATCH ()-[r:"+ Types.GivesAccessTo +"]->(n:" + Types.Folder + ") " +
-				"WITH DISTINCT keys(r) as props " +
-				"UNWIND props as p " +
-				"WITH DISTINCT p as disprops " +
-				"WITH collect(disprops) as allprops " +
-				"MERGE(i: _Metadata { name: 'EdgeProperties'}) " +
-				"SET i." + Types.GivesAccessTo + " = allprops " +
-				"RETURN i";
-			using (ISession session = driver.Session())
-			{
-				session.WriteTransaction(tx => tx.Run(query));
-			}
-		}
     }
 }
