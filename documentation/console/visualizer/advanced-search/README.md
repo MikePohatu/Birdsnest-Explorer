@@ -17,6 +17,7 @@ The BirdsNest advanced search tool is designed to allow searching for specific '
 7. Node item. This node doesn't have a type selected so has no styling applied.
 
 **Conditions**
+
 8. Move selected condition up or down
 9. Delete selected condition from search
 10. Edit selected condition
@@ -24,8 +25,8 @@ The BirdsNest advanced search tool is designed to allow searching for specific '
 12. Condition item
 13. Add new condition within existing AND/OR condition
 
-
 **Controls**
+
 14. Minimise search
 15. Toggle simple search
 16. Clear search
