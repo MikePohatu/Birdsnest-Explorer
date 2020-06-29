@@ -70,9 +70,10 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 import { Component, Vue, Prop } from "vue-property-decorator";
 import { Condition, ConditionType, AndOrCondition } from "@/assets/ts/visualizer/Search";
 import ValueConditionIcon from "./ValueConditionIcon.vue";
-import { SearchStorePaths } from "../../../store/modules/SearchStore";
+import { SearchStorePaths } from "@/store/modules/SearchStore";
 
 @Component({
+	name: "AndOrConditionIcon",
 	components: { ValueConditionIcon },
 })
 export default class AndOrConditionIcon extends Vue {
