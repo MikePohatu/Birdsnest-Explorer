@@ -238,13 +238,12 @@ export function ReplaceCondition(root: AndOrCondition, oldcondition: ValueCondit
 export function DeleteCondition(root: AndOrCondition, oldcondition: Condition): void {
     for (let i = 0; i < root.conditions.length; i++) {
         const cond: Condition = root.conditions[i];
-        if (cond.type === ConditionType.And || cond.type === ConditionType.Or) {
-            DeleteCondition((cond as AndOrCondition), oldcondition);
+        if (cond === oldcondition) {
+            root.conditions.splice(i, 1);
+            return;
         }
-        else {
-            if (cond === oldcondition) {
-                root.conditions.splice(i, 1);
-            }
+        else if (cond.type === ConditionType.And || cond.type === ConditionType.Or) {
+            DeleteCondition((cond as AndOrCondition), oldcondition);
         }
     }
 }
