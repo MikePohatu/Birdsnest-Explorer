@@ -1,12 +1,11 @@
 # Advanced Search
 
-The BirdsNest advanced search tool is designed to allow searching for specific 'paths' within the interconnected data stored in the database. 
-
+The BirdsNest advanced search tool is designed to allow searching for specific 'paths' within the interconnected data stored in the database.
 
 ### Advanced Search Items
-The advanced search box is designed to visually represent your search in a way that is similar to the graph view. 
+The advanced search box is designed to visually represent your search in a way that is similar to the graph view.
 
-When the add button is clicked, boxes are added to the search to represent nodes and relationships. 
+When the add button is clicked, boxes are added to the search to represent nodes and relationships.
 
 * The boxes with round sides represent the round items in the graph i.e. nodes
 * The boxes with straight sides represent the straight items in the graph i.e. relationships
@@ -19,7 +18,7 @@ Additionally, when additional search properties are chosen e.g. 'nodes of type X
 
 ![Adv-Search-Box](/documentation/image/console/search/adv-search.png)
 
-#### Search Path
+#### Search Path Items
 
 1. Move selected item up or down
 2. Delete selected item from search
@@ -29,7 +28,7 @@ Additionally, when additional search properties are chosen e.g. 'nodes of type X
 6. Relationship item. Double click or select and click edit button to edit.
 7. Node item. This node doesn't have a type selected so has no styling applied.
 
-#### Conditions
+#### Condition Items
 
 8. Move selected condition up or down
 9. Delete selected condition from search
@@ -38,7 +37,7 @@ Additionally, when additional search properties are chosen e.g. 'nodes of type X
 12. Condition item
 13. Add new condition within existing AND/OR condition
 
-#### Controls
+#### General Controls
 
 14. Minimise search
 15. Toggle [simple search](/documentation/console/visualizer/simple-search/README.md)
@@ -49,6 +48,5 @@ Additionally, when additional search properties are chosen e.g. 'nodes of type X
 ## Multi-Hop Searches
 
 ![Multi-Hop-Search](/documentation/image/console/search/multi-hop-search.png)
-
 
 ## Conditions
