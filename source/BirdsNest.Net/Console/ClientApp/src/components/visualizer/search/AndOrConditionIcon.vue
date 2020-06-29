@@ -16,8 +16,9 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see http://www.gnu.org/licenses/.
 -->
 <template>
-	<div id="andor" v-if="!(isRoot && isEmptyRoot)"
-		:class="[isRoot ? 'rootcondition' : '', isEmptyRoot && !isRoot ? 'emptyroot': '', isSelected ? 'selected' : '', 'advsearchbutton clickable']"
+	<div
+		v-if="!(isRoot && isEmptyRoot)"
+		:class="[isRoot ? 'rootcondition' : '', isEmptyRoot && !isRoot ? 'emptyroot': '', isSelected ? 'selected' : '', 'clickable andor']"
 		v-on:click.stop="onClicked"
 		v-on:dblclick.stop="onDblClicked"
 	>
@@ -27,33 +28,50 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 			<div v-if="index < conditions.length - 1">{{ condition.type }}</div>
 		</div>
 
-		<button v-if="!isEmptyRoot" id="addBtn" type="button" v-on:click.stop="onAddClicked">
+		<button v-if="!isEmptyRoot" class="addBtn" type="button" v-on:click.stop="onAddClicked">
 			<i class="icon clickable far fa-plus-square"></i>
 		</button>
 	</div>
 </template>
 
 <style scoped>
-#andor {
-	padding: 5px 15px;
-	min-height: 2.5em;
+.andor {
+	border-width: 2px;
+	padding-top: 4px;
+	padding-bottom: 4px;
+	padding-right: 10px;
+	padding-left: 5px;
+	min-height: 25px;
+	position: relative;
+	border-style: solid;
+	text-align: center;
+	text-decoration: none;
+	font-size: 0.8rem;
+	margin-top: 0;
+	margin-bottom: 0;
 }
 
-#andor.selected {
-	padding: 3px 13px;
+.andor.selected {
+	border-width: 4px;
+	padding-top: 2px;
+	padding-bottom: 2px;
+	padding-right: 8px;
+	padding-left: 3px;
 }
 
-#addBtn {
+.addBtn {
 	position: absolute;
+	padding: 0;
+	margin: 0;
 	top: 50%;
 	left: 100%;
 	transform: translate(-50%, -50%);
 	background-color: white;
 }
 
-#addBtn .icon {
-	height: 1em;
-	width: 1em;
+.addBtn .icon {
+	padding: 0;
+	margin: 0;
 }
 
 .emptyroot {
