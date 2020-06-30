@@ -18,16 +18,16 @@ import webcrap from "../webcrap/webcrap"
 import { Dictionary } from 'vue-router/types/router';
 
 export const ConditionOperators: Dictionary<string[]> = {
-    "NUMBER": ["=", ">", "<", "<=", ">="],
-    "STRING": ["=", "StartsWith", "EndsWith", "Contains"],
-    "BOOLEAN": ["="]
+    "number": ["=", ">", "<", "<=", ">="],
+    "string": ["=", "StartsWith", "EndsWith", "Contains"],
+    "boolean": ["="]
 }
 
 // these ↓ need to match these ^
 export const ConditionType = {
-    Number: "NUMBER",
-    String: "STRING",
-    Boolean: "BOOLEAN",
+    Number: "number",
+    String: "string",
+    Boolean: "boolean",
     And: "AND",
     Or: "OR",
 }
@@ -224,12 +224,13 @@ export function ReplaceCondition(root: AndOrCondition, oldcondition: ValueCondit
     for (let i = 0; i < root.conditions.length; i++) {
         const cond: Condition = root.conditions[i];
 
-        if (cond.type === "OR" || cond.type === "AND") {
+        if (cond.type === ConditionType.Or || cond.type === ConditionType.And) {
             ReplaceCondition((cond as AndOrCondition), oldcondition, newcondition);
         }
         else {
             if (cond === oldcondition) {
                 root.conditions.splice(i, 1, newcondition);
+                return;
             }
         }
     }

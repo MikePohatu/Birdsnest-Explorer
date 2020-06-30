@@ -42,10 +42,10 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 					</div>
 
 					<!-- booleans -->
-					<div v-show="condition.property !== null && propertyType === 'boolean'" class="input-group">
+					<div v-if="condition.property !== null && propertyType === 'boolean'" class="input-group">
 						<span class="input-group-label">=</span>
 						<div class="input-group-button">
-							<select class="input-group-field">
+							<select class="input-group-field" v-model="condition.value">
 								<option value="TRUE">true</option>
 								<option value="FALSE">false</option>
 							</select>
@@ -228,7 +228,7 @@ export default class ValueConditionEdit extends Vue {
 	@Prop({ type: Object as () => ValueCondition, required: true })
 	source: ValueCondition;
 
-	condition: ValueCondition = copyCondition(this.source);
+	condition: ValueCondition = null;
 
 	autocompleteList: string[] = [];
 	alertMessage = "";
@@ -236,6 +236,7 @@ export default class ValueConditionEdit extends Vue {
 	saveable = true;
 
 	created(): void {
+		this.condition = copyCondition(this.source);
 		if (this.condition.property === "" && this.dataType !== null) {
 			this.condition.property = this.dataType.default;
 		}
@@ -296,7 +297,8 @@ export default class ValueConditionEdit extends Vue {
 
 	get propertyType(): string {
 		if (this.dataType !== null && webcrap.misc.isNullOrWhitespace(this.condition.property) === false) {
-			return this.dataType.properties[this.condition.property].type;
+			this.condition.type = this.dataType.properties[this.condition.property].type;
+			return this.condition.type;
 		} else {
 			return null;
 		}
@@ -306,7 +308,7 @@ export default class ValueConditionEdit extends Vue {
 		if (webcrap.misc.isNullOrWhitespace(this.propertyType)) {
 			return [];
 		} else {
-			return ConditionOperators[this.propertyType.toUpperCase()];
+			return ConditionOperators[this.propertyType];
 		}
 	}
 

@@ -108,7 +108,7 @@ namespace ADScanner.Neo4j
             "SET n.domainid = $scanprops.domainid " +
             "SET n.primarygroupid = u.primarygroupid " +
             "SET n.displayname = u.displayname " +
-            "SET n.state = u.state " +
+            "SET n.enabled = u.enabled " +
             "SET n.layout = 'mesh' " +
             "SET n.userprincipalname = u.userprincipalname " +
             "RETURN n.name";

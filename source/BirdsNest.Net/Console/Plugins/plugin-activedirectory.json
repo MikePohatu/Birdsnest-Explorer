@@ -84,6 +84,9 @@
         "displayname": {},
         "dn": {},
         "domainid": {},
+        "enabled": {
+          "type": "boolean"
+        },
         "id": {},
         "info": {},
         "lastscan": {},
@@ -91,7 +94,6 @@
         "path": {},
         "primarygroupid": {},
         "samaccountname": {},
-        "state": {},
         "userprincipalname": {}
       },
       "default": "samaccountname",

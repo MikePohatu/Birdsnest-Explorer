@@ -58,16 +58,16 @@ namespace Console.neo4jProxy.AdvancedSearch.Conditions
                 case "OR":
                     retcond = new AndOrCondition();
                     break;
-                case "STRING":
+                case "string":
                     retcond = new StringCondition();
                     break;
-                case "NUMBER":
+                case "number":
                     retcond = new NumberCondition();
                     break;
-                case "BOOLEAN":
+                case "boolean":
                     retcond = new BooleanCondition();
                     break;
-                case "REGEX":
+                case "regex":
                     retcond = new RegExCondition();
                     break;
                 default:

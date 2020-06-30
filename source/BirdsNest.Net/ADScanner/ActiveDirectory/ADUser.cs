@@ -25,7 +25,7 @@ namespace ADScanner.ActiveDirectory
     public class ADUser : ADEntity
     {
         public override string Type { get { return Types.User; } }
-        public string State { get; private set; }
+        public bool Enabled { get; private set; }
         public string DisplayName { get; private set; }
 
         public string UPN { get; private set; }
@@ -35,11 +35,11 @@ namespace ADScanner.ActiveDirectory
             this.DisplayName = ADSearchResultConverter.GetSinglestringValue(result, "displayname");
             this.UPN = ADSearchResultConverter.GetSinglestringValue(result, "userPrincipalName");
 
-            //find if the user is enabled
+            //find if the user is enabled. use bitwise comparison
             int istate = ADSearchResultConverter.GetIntSingleValue(result, "useraccountcontrol");
-            this.State = ((istate == 512) || (istate == 66050)) ? "disabled" : "enabled";
+            this.Enabled = (((UserAccountControlDefinitions)istate & UserAccountControlDefinitions.ACCOUNTDISABLE) == UserAccountControlDefinitions.ACCOUNTDISABLE) ? false: true;
 
-            this.Properties.Add("state", this.State);
+            this.Properties.Add("enabled", this.Enabled);
             this.Properties.Add("displayname", this.DisplayName);
             this.Properties.Add("type", this.Type);
             this.Properties.Add("userprincipalname", this.UPN);

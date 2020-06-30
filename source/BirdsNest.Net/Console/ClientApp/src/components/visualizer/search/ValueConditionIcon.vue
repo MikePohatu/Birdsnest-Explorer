@@ -30,7 +30,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 import { Component, Vue, Prop } from "vue-property-decorator";
 import { ValueCondition, ConditionType } from "@/assets/ts/visualizer/Search";
 
-import { SearchStorePaths } from "../../../store/modules/SearchStore";
+import { SearchStorePaths } from "@/store/modules/SearchStore";
 
 @Component
 export default class ValueConditionIcon extends Vue {
