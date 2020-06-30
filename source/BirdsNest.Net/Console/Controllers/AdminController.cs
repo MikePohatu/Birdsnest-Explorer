@@ -25,6 +25,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Console.Plugins;
 using Microsoft.Extensions.Logging;
+using System.Security.Claims;
 
 namespace Console.Controllers
 {
@@ -47,7 +48,7 @@ namespace Console.Controllers
         [HttpPost("reloadplugins")]
         public async Task<object> ReloadPlugins()
         {
-            this._logger.LogInformation("Reload plugins initiated by " + HttpContext.User.ToString());
+            this._logger.LogInformation("Reload plugins initiated by {0}", User.FindFirst(ClaimTypes.Name)?.Value);
             Dictionary<string,object> data = new Dictionary<string, object>();
             bool ret = await this._pluginmanager.ReloadAsync();
             if (ret)

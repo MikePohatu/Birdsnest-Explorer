@@ -169,7 +169,7 @@ namespace Console.Controllers
 
                     var claims = new List<Claim> {
                         new Claim(ClaimTypes.GivenName,login.GivenName,conf.Name),
-                        new Claim(ClaimTypes.Name,login.GivenName,conf.Name),
+                        new Claim(ClaimTypes.Name,login.Name,conf.Name),
                         new Claim(ClaimTypes.Surname,login.Surname,conf.Name),
                         new Claim(ClaimTypes.Sid,login.ID,conf.Name)
                     };

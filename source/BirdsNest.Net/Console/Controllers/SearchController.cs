@@ -19,6 +19,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Text.Json;
 using System.Threading.Tasks;
 using Console.neo4jProxy;
@@ -50,7 +51,7 @@ namespace Console.Controllers
         [HttpPost("advancedsearch")]
         public async Task<ResultSet> AdvancedSearch(Search search)
         {
-            this._logger.LogDebug("Running search: " + search.ToSearchString());
+            this._logger.LogInformation("{0} executed search: {1}", User.FindFirst(ClaimTypes.Name).Value, search.ToSearchString());
             return await this._service.AdvancedSearch(search);
         }
 
