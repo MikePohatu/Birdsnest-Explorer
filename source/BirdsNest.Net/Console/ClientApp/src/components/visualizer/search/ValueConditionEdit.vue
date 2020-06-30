@@ -24,7 +24,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 					<!-- Reference -->
 					<div class="input-group">
 						<span class="input-group-label">Referenced Item</span>
-						<select class="input-group-field" v-model="condition.name">
+						<select class="input-group-field" v-model="condition.name" v-on:change="onSelectedItemChanged">
 							<option v-for="item in availableItems" :value="item.name" :key="item.name">{{ item.name }}</option>
 						</select>
 					</div>
@@ -220,7 +220,7 @@ import {
 import { DataType } from "@/assets/ts/dataMap/DataType";
 import { SearchItemType } from "@/assets/ts/visualizer/Search";
 import webcrap from "@/assets/ts/webcrap/webcrap";
-import { SearchStorePaths } from "../../../store/modules/SearchStore";
+import { SearchStorePaths } from "@/store/modules/SearchStore";
 import { api, Request } from "@/assets/ts/webcrap/apicrap";
 
 @Component
@@ -229,6 +229,7 @@ export default class ValueConditionEdit extends Vue {
 	source: ValueCondition;
 
 	condition: ValueCondition = null;
+	selectedItem: SearchItem = null;
 
 	autocompleteList: string[] = [];
 	alertMessage = "";
@@ -237,9 +238,7 @@ export default class ValueConditionEdit extends Vue {
 
 	created(): void {
 		this.condition = copyCondition(this.source);
-		if (this.condition.property === "" && this.dataType !== null) {
-			this.condition.property = this.dataType.default;
-		}
+		this.onSelectedItemChanged();
 	}
 
 	get autocompleteDebounce(): Function {
@@ -249,24 +248,6 @@ export default class ValueConditionEdit extends Vue {
 		const edges = this.$store.state.visualizer.search.search.edges;
 		const nodes = this.$store.state.visualizer.search.search.nodes;
 		return nodes.concat(edges);
-	}
-
-	get selectedItem(): SearchItem {
-		let item: SearchItem = null;
-		item = GetNode(this.condition.name, this.$store.state.visualizer.search.search);
-		if (item === null) {
-			item = GetEdge(this.condition.name, this.$store.state.visualizer.search.search);
-		}
-		if (item !== null && webcrap.misc.isNullOrWhitespace(item.label)) {
-			this.alertMessage = "Selected item must have a type set";
-			this.saveable = false;
-			this.showAlert = true;
-		} else {
-			this.alertMessage = "";
-			this.showAlert = false;
-			this.saveable = true;
-		}
-		return item;
 	}
 
 	get dataType(): DataType {
@@ -317,6 +298,37 @@ export default class ValueConditionEdit extends Vue {
 			return false;
 		} else {
 			return true;
+		}
+	}
+
+	onSelectedItemChanged(): void {
+		let item: SearchItem = null;
+		item = GetNode(this.condition.name, this.$store.state.visualizer.search.search);
+		if (item === null) {
+			item = GetEdge(this.condition.name, this.$store.state.visualizer.search.search);
+		}
+		if (item !== null && webcrap.misc.isNullOrWhitespace(item.label)) {
+			this.alertMessage = "Selected item must have a type set";
+			this.saveable = false;
+			this.showAlert = true;
+		} else {
+			this.alertMessage = "";
+			this.showAlert = false;
+			this.saveable = true;
+		}
+		this.selectedItem = item;
+
+		//if selected item type has changed, properties need to be re-checked
+		if (this.dataType === null) {
+			this.condition.property = "";	
+		}
+		else if (webcrap.misc.isNullOrWhitespace(this.condition.property)) {
+			this.condition.property = this.dataType.default;
+		}
+		else {
+			if (this.dataType.propertyNames.includes(this.condition.property) === false) {
+				this.condition.property = this.dataType.default;
+			}
 		}
 	}
 
