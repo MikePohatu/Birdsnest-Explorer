@@ -1,5 +1,19 @@
 # Advanced Search
 
+* [Overview](#Overview)
+    * [Advanced Search Items](#Advanced-Search-Items)
+    * [Advanced Search Box](#Advanced-Search-Box)
+        * [Search Path Items](#Search-Path-Items)
+        * [Condition Items](#Condition-Items)
+        * [General Controls](#General-Controls)
+* [Multi-Hop Searches](#Multi-Hop-Searches)
+* [Conditions](#Conditions)
+* [Results](#Results)
+    * [Adding Search Results Graph](#Adding-Search-Results-Graph)
+    * [Search Result Relationships](#Search-Result-Relationships)
+* [Sharing Searches](#Sharing-Searches)
+
+## Overview
 The BirdsNest advanced search tool is designed to allow searching for specific 'paths' within the interconnected data stored in the database.
 
 ### Advanced Search Items
@@ -50,3 +64,34 @@ Additionally, when additional search properties are chosen e.g. 'nodes of type X
 ![Multi-Hop-Search](/documentation/image/console/search/multi-hop-search.png)
 
 ## Conditions
+
+Conditions will almost always be required when creating searches to filter results to a manageable size. 
+
+## Results
+
+Search results will be listed at the bottom of the Advanced Search box. Search results may be added as a whole, or individually.
+
+### Adding Search Results Graph
+
+To add all search results to the graph, click **Add to view**. 
+
+![Adv-Search-Results](/documentation/image/console/search/adv-search-results.png)
+
+To add individual results to the graph, click the number e.g. 10 in the screenshot above. A listing of all nodes will be displayed. Click the **(+)** icon next to the item to add the node to the graph.
+
+### Search Result Relationships
+
+It is important to note that you may see additional relationships in the graph after adding your results. For example if your search only included _GIVES_ACCESS_TO_ relationships, you may also see _AD_MEMBER_OF_ relationships between groups and AD objects, or _FS_APPLIES_INHERITANCE_TO_ relationships between folders. 
+
+This is because the visualizer will search for any relationships between all the nodes that exist in the graph. If the nodes have relationships in addition to the ones that you searched for, then they will also be added. 
+
+## Sharing Searches
+
+It is often useful to share a search you have created with other users, or with an admin to turn into a report. You can do this by clicking the _share_ button
+
+![Adv-Search-Results](/documentation/image/console/search/adv-search-share.png)
+
+This will display a dialog with two items:
+
+1. A URL containing an encoded version of the search. Note that the full URL is not displayed in the text due to its length. Right click the URL and select _Copy Link_ or the equivalent for your browser. 
+2. A Cypher database query. This can be used by the BirdsNest administrator to create a report based on that query in a [Console Plugin](/documentation/console/plugins/README.md#Reports)
