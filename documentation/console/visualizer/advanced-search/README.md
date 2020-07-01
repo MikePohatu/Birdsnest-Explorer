@@ -6,7 +6,10 @@
         * [Search Path Items](#Search-Path-Items)
         * [Condition Items](#Condition-Items)
         * [General Controls](#General-Controls)
-* [Multi-Hop Searches](#Multi-Hop-Searches)
+* [Editing Searches](#Editing-Searches)
+    * [Multiple Hop Relationships](#Multiple-Hop-Relationships)
+        * [Unlimited Hops](#Unlimited-Hops)
+    * [Relationship Types](#Relationship-Types)
 * [Conditions](#Conditions)
 * [Results](#Results)
     * [Adding Search Results Graph](#Adding-Search-Results-Graph)
@@ -59,13 +62,70 @@ Additionally, when additional search properties are chosen e.g. 'nodes of type X
 17. Share search
 18. Run Search
 
-## Multi-Hop Searches
+## Editing Relationships
 
-![Multi-Hop-Search](/documentation/image/console/search/multi-hop-search.png)
+To change the details of a relationship in the search, click it and then click the _Edit_ button, or double click it. The Relationship edit dialog will appear.
+
+![Multi-Hop-Search](/documentation/image/console/search/adv-search-rel-condition.png)
+
+From here you can edit the various options:
+
+1. The relationship type
+2. The identifier of the relationship within the search
+3. Whether there are multiple hops of this relationship type
+4. If hops are limited, the minimum and maximum hop count
+5. The direction of the relationship relative to the nodes that surround it
+
+### Multiple Hop Relationships
+
+It is often the case that multiple hops exist between two nodes you are interested in. For the following examples we will look at paths connecting (node1) to (node2).
+
+By default, when a relationship is added to the search, it is limited to a single hop<sup>*</sup> e.g.
+
+```cypher
+(node1)-[hop1]->(node2)
+```
+
+_<sup>*</sup> This is done for performance reasons. The more 'open ended' a search is, the more likely it is that it will slow down. Where possible, always make your searches as specific as possible._
+
+
+However you may be looking for ways that node1 is related to node2 indirectly with other nodes in between, e.g.
+
+```cypher
+(node1)-[hop1]->(some_other_node)-[hop2]->(node2)
+```
+
+In this instance you could change the minimum & maximum hop count to 2 to represent this in your search. In the screenshot below, _node1_ maps to the Bob.Demo node, _node2_ to the Administrators node, and _hop1_ maps to the two **AD_MEMBER_OF** relationships.
+
+![Multi-Rel-Search](/documentation/image/console/search/adv-search-multi-rel.png)
+
+_Note the '2..2' in the relationship box in the screenshot above. This represents the Min and Max selected in the edit dialog box. This will shown as * if the hop count is not limited_
+
+#### Unlimited Hops
+
+If you don't know how many hops there will be between node1 and node2, you can either set a large range e.g. Min=1 and Max=20, or uncheck _Limit hops_. 
+
+```cypher
+(node1)-[hop1]->.......-[hop_n]->(node2)
+```
+
+### Relationship Types
+
+Until now we have discussed relationships that could be of any type. However sometimes we want to be specific about the type of relationship/hop e.g.
+
+```cypher
+(node1)-[hop1:AD_MEMBER_OF]->(some_other_node)-[hop2:GIVES_ACCESS_TO]->(node2)
+```
+
+![Relationship-Types](/documentation/image/console/search/adv-search-rel-types.png)
+
+In this instance you need to set the **Type** in the edit dialog. Note that you cannot set multiple types e.g. relationship/hop is AD_MEMBER_OF _or_ GIVES_ACCESS_TO.
 
 ## Conditions
 
 Conditions will almost always be required when creating searches to filter results to a manageable size. 
+
+Note that you cannot create a condition for an item for which you have not set a type. This is for performance reasons as not limiting the search by type would likely result in a full database search (very slow).
 
 ## Results
 
@@ -93,5 +153,5 @@ It is often useful to share a search you have created with other users, or with 
 
 This will display a dialog with two items:
 
-1. A URL containing an encoded version of the search. Note that the full URL is not displayed in the text due to its length. Right click the URL and select _Copy Link_ or the equivalent for your browser. 
+1. A URL containing an encoded version of the search to open. Note that the full URL is not displayed in the text due to its length. Right click the URL and select _Copy Link_ or the equivalent for your browser. 
 2. A Cypher database query. This can be used by the BirdsNest administrator to create a report based on that query in a [Console Plugin](/documentation/console/plugins/README.md#Reports)
