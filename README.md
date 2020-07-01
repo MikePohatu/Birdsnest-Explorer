@@ -6,11 +6,10 @@ Data is ingested into a <a href="https://neo4j.com/" target="_blank">neo4j</a> g
 
 The BirdsNest console then allows you to explore and query all the interconnected data in a visual way, finding pathways that are not obvious or easily discovered. You can either start from a single node and discover interconnections as you go, or search for a specific type of path through your data. 
 
-![Console example](documentation/image/console_view1.png "Console example")
-
-
 ## Resources
 
 * [Documentation](/documentation/README.md "Documentation")
 * [YouTube](https://www.youtube.com/playlist?list=PLbymiOxRQJvL01dXHwlRDcM0koccbGEro)
 * [20road.com](https://www.20road.com/birdsnest-environment-discovery/)
+
+![Console example](documentation/image/console_view1.png "Console example")

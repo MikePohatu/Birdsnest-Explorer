@@ -6,13 +6,13 @@
         * [Search Path Items](#Search-Path-Items)
         * [Condition Items](#Condition-Items)
         * [General Controls](#General-Controls)
-* [Editing Searches](#Editing-Searches)
+* [Editing Relationships](#Editing-Relationships)
     * [Multiple Hop Relationships](#Multiple-Hop-Relationships)
         * [Unlimited Hops](#Unlimited-Hops)
     * [Relationship Types](#Relationship-Types)
 * [Conditions](#Conditions)
 * [Results](#Results)
-    * [Adding Search Results Graph](#Adding-Search-Results-Graph)
+    * [Adding Search Results to Graph](#Adding-Search-Results-to-Graph)
     * [Search Result Relationships](#Search-Result-Relationships)
 * [Sharing Searches](#Sharing-Searches)
 
@@ -131,7 +131,7 @@ Note that you cannot create a condition for an item for which you have not set a
 
 Search results will be listed at the bottom of the Advanced Search box. Search results may be added as a whole, or individually.
 
-### Adding Search Results Graph
+### Adding Search Results to Graph
 
 To add all search results to the graph, click **Add to view**. 
 
@@ -141,7 +141,7 @@ To add individual results to the graph, click the number e.g. 10 in the screensh
 
 ### Search Result Relationships
 
-It is important to note that you may see additional relationships in the graph after adding your results. For example if your search only included _GIVES_ACCESS_TO_ relationships, you may also see _AD_MEMBER_OF_ relationships between groups and AD objects, or _FS_APPLIES_INHERITANCE_TO_ relationships between folders. 
+It is important to note that you may see additional relationships in the graph after adding your results. For example if your search only includeds _GIVES_ACCESS_TO_ relationships, you may also see _AD_MEMBER_OF_ relationships between groups and AD objects, or _FS_APPLIES_INHERITANCE_TO_ relationships between folders. 
 
 This is because the visualizer will search for any relationships between all the nodes that exist in the graph. If the nodes have relationships in addition to the ones that you searched for, then they will also be added. 
 

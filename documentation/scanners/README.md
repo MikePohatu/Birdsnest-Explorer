@@ -4,7 +4,7 @@
 * [Shared Configuration](#Shared-Configuration)
   * [Configuring neoconfig.json](#Configuring-neoconfig.json)
 * [Available Scanners](#Available-Scanners)
-* [Beta Scanners](#Beta-Scanners)
+* [Scanners Under Development](#Scanners-Under-Development)
 
 ## Overview
 A BirdsNest scanner is responsible for querying an external system, and tranlating the data into a format that is then ingested into the BirdsNest database.
@@ -54,7 +54,7 @@ An example neoconfig.json file will already exist in the Scanners folder and con
 * [Active Directory](/documentation/scanners/active-directory/README.md)
 * [File System](/documentation/scanners/file-system/README.md)
 
-## Beta Scanners
+## Scanners Under Development
 
 The following scanners are currently under development:
 
