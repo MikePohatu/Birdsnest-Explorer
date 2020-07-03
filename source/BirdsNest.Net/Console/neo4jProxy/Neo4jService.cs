@@ -63,28 +63,30 @@ namespace Console.neo4jProxy
 
         public async Task<ResultSet> GetResultSetFromQueryAsync(string query, object props)
         {
-            ISession session = this._driver.Session();
             ResultSet returnedresults = new ResultSet();
-            try
+            using (ISession session = this._driver.Session())
             {
-                await session.ReadTransactionAsync(async (tx) =>
+                try
                 {
-                    IStatementResultCursor reader = await tx.RunAsync(query, props);
-                    while (await reader.FetchAsync())
+                    await session.ReadTransactionAsync(async (tx) =>
                     {
-                        // Each current read in buffer can be reached via Current
-                        returnedresults.Append(ParseRecord(reader.Current));
-                    }
-                });
-            }
-            catch (Exception e)
-            {
-                this._logger.LogError("Error running query from {0}: {1}", e.StackTrace, e.Message);
-                this._logger.LogError("Query {0}", query);
-            }
-            finally
-            {
-                await session.CloseAsync();
+                        IStatementResultCursor reader = await tx.RunAsync(query, props);
+                        while (await reader.FetchAsync())
+                        {
+                            // Each current read in buffer can be reached via Current
+                            returnedresults.Append(ParseRecord(reader.Current));
+                        }
+                    });
+                }
+                catch (Exception e)
+                {
+                    this._logger.LogError("Error running query from {0}: {1}", e.StackTrace, e.Message);
+                    this._logger.LogError("Query {0}", query);
+                }
+                finally
+                {
+                    await session.CloseAsync();
+                }
             }
 
             return returnedresults;
@@ -183,29 +185,31 @@ namespace Console.neo4jProxy
 
         public async Task<ResultSet> AdvancedSearch(AdvancedSearch.Search search)
         {
-            //validate the types/labels 
-            ISession session = this._driver.Session();
-
             string query = search.ToTokenizedSearchString();
             ResultSet returnedresults = new ResultSet();
-            try
+
+            //validate the types/labels 
+            using (ISession session = this._driver.Session())
             {
-                await session.ReadTransactionAsync(async (tx) =>
+                try
                 {
-                    IStatementResultCursor reader = await tx.RunAsync(query, search.Tokens.Properties);
-                    while (await reader.FetchAsync())
+                    await session.ReadTransactionAsync(async (tx) =>
                     {
-                        returnedresults.Append(ParseRecord(reader.Current));
-                    }
-                });
-            }
-            catch (Exception e)
-            {
-                this._logger.LogError("Error running advanced search: " + e.Message);
-            }
-            finally
-            {
-                await session.CloseAsync();
+                        IStatementResultCursor reader = await tx.RunAsync(query, search.Tokens.Properties);
+                        while (await reader.FetchAsync())
+                        {
+                            returnedresults.Append(ParseRecord(reader.Current));
+                        }
+                    });
+                }
+                catch (Exception e)
+                {
+                    this._logger.LogError("Error running advanced search: " + e.Message);
+                }
+                finally
+                {
+                    await session.CloseAsync();
+                }
             }
 
             return returnedresults;
@@ -220,30 +224,33 @@ namespace Console.neo4jProxy
 			string typequery = string.Empty;
 			if (string.IsNullOrWhiteSpace(type) == false) { typequery = "$type IN labels(n) AND "; }
 
-            ISession session = this._driver.Session();
+           
             List<string> results = new List<string>();
 
-            try
+            using (ISession session = this._driver.Session())
             {
-                string query = "MATCH (n) WHERE " + typequery + "n[{prop}]  =~ $regex RETURN DISTINCT n[{prop}] ORDER BY n[{prop}] LIMIT 20";
-
-                await session.ReadTransactionAsync(async (tx) =>
+                try
                 {
-                    IStatementResultCursor reader = await tx.RunAsync(query, new { type, prop = property, regex = regexterm });
-                    while (await reader.FetchAsync())
-                    {
-                        results.AddRange(ParseStringListRecord(reader.Current));
-                    }
+                    string query = "MATCH (n) WHERE " + typequery + "n[{prop}]  =~ $regex RETURN DISTINCT n[{prop}] ORDER BY n[{prop}] LIMIT 20";
 
-                });
-            }
-            catch (Exception e)
-            {
-                this._logger.LogError("Error querying SearchNodePropertyValues: " + e.Message);
-            }
-            finally
-            {
-                await session.CloseAsync();
+                    await session.ReadTransactionAsync(async (tx) =>
+                    {
+                        IStatementResultCursor reader = await tx.RunAsync(query, new { type, prop = property, regex = regexterm });
+                        while (await reader.FetchAsync())
+                        {
+                            results.AddRange(ParseStringListRecord(reader.Current));
+                        }
+
+                    });
+                }
+                catch (Exception e)
+                {
+                    this._logger.LogError("Error querying SearchNodePropertyValues: " + e.Message);
+                }
+                finally
+                {
+                    await session.CloseAsync();
+                }
             }
 
             return results;
@@ -259,30 +266,33 @@ namespace Console.neo4jProxy
 
 			string regexterm = "(?i).*" + searchterm + ".*";
 
-            ISession session = this._driver.Session();
+            
             List<string> results = new List<string>();
 
-            try
+            using (ISession session = this._driver.Session())
             {
-                string query = "MATCH ()-[r:" + type + "]->() WHERE r[{prop}] =~ $regex RETURN DISTINCT r[{prop}] ORDER BY r[{prop}] LIMIT 20";
-
-                await session.ReadTransactionAsync(async (tx) =>
+                try
                 {
-                    IStatementResultCursor reader = await tx.RunAsync(query, new { prop = property, regex = regexterm });
-                    while (await reader.FetchAsync())
-                    {
-                        results.AddRange(ParseStringListRecord(reader.Current));
-                    }
+                    string query = "MATCH ()-[r:" + type + "]->() WHERE r[{prop}] =~ $regex RETURN DISTINCT r[{prop}] ORDER BY r[{prop}] LIMIT 20";
 
-                });
-            }
-            catch (Exception e)
-            {
-                this._logger.LogError("Error querying SearchNodePropertyValues: " + e.Message);
-            }
-            finally
-            {
-                await session.CloseAsync();
+                    await session.ReadTransactionAsync(async (tx) =>
+                    {
+                        IStatementResultCursor reader = await tx.RunAsync(query, new { prop = property, regex = regexterm });
+                        while (await reader.FetchAsync())
+                        {
+                            results.AddRange(ParseStringListRecord(reader.Current));
+                        }
+
+                    });
+                }
+                catch (Exception e)
+                {
+                    this._logger.LogError("Error querying SearchNodePropertyValues: " + e.Message);
+                }
+                finally
+                {
+                    await session.CloseAsync();
+                }
             }
 
             return results;
