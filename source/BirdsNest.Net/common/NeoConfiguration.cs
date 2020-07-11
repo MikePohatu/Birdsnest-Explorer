@@ -24,14 +24,17 @@ namespace common
 {
     public class NeoConfiguration: IDisposable
     {
-        [JsonProperty("DB_URI")]
+        [JsonProperty("dbURI")]
         public string DB_URI { get; set; }
 
-        [JsonProperty("DB_Username")]
+        [JsonProperty("dbUsername")]
         public string DB_Username { get; set; }
 
-        [JsonProperty("DB_Password")]
+        [JsonProperty("dbPassword")]
         public string DB_Password { get; set; }
+
+        [JsonProperty("dbTimeout")]
+        public int DB_Timeout { get; set; } = 15;
 
         public virtual void Dispose()
         {
