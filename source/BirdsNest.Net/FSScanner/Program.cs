@@ -23,6 +23,7 @@ using Neo4j.Driver.V1;
 using System.Linq;
 using common;
 using System.Net;
+using CSharpVitamins;
 
 namespace FSScanner
 {

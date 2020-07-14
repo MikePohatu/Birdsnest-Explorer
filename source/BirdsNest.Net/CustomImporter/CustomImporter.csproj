@@ -4,14 +4,14 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{5062CB83-0AEB-4AE4-9F86-8279DFF2F48A}</ProjectGuid>
+    <ProjectGuid>{5F0A0D01-3702-4DBE-AED0-63211BEFE774}</ProjectGuid>
     <OutputType>Exe</OutputType>
-    <RootNamespace>CustomAppScanner</RootNamespace>
-    <AssemblyName>CustomAppScanner</AssemblyName>
+    <RootNamespace>CustomImporter</RootNamespace>
+    <AssemblyName>CustomImporter</AssemblyName>
     <TargetFrameworkVersion>v4.6.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
-    <TargetFrameworkProfile />
+    <Deterministic>true</Deterministic>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -33,6 +33,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="CSharpVitamins.ShortGuid, Version=1.0.2.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\CSharpVitamins.ShortGuid.1.0.2\lib\net40\CSharpVitamins.ShortGuid.dll</HintPath>
+    </Reference>
     <Reference Include="Neo4j.Driver, Version=1.7.226.2, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\Neo4j.Driver.1.7.2\lib\net452\Neo4j.Driver.dll</HintPath>
     </Reference>
@@ -57,27 +60,20 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Application.cs" />
+    <Compile Include="Configuration.cs" />
+    <Compile Include="CustomItem.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Writer.cs" />
+    <Compile Include="TypeDefinition.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\ADScanner\ADScanner.csproj">
-      <Project>{a0192080-8f1a-460e-aa31-2d4b6674b485}</Project>
-      <Name>ADScanner</Name>
-    </ProjectReference>
     <ProjectReference Include="..\common\common.csproj">
       <Project>{0dc87a09-17f3-4e57-ae54-f706920d7afa}</Project>
       <Name>common</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\FSScanner\FSScanner.csproj">
-      <Project>{232699c0-a1d1-4daa-b064-55555c5859ea}</Project>
-      <Name>FSScanner</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

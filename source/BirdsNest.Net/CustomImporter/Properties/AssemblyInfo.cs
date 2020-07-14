@@ -23,12 +23,12 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("CustomAppScanner")]
+[assembly: AssemblyTitle("CustomImporter")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("CustomAppScanner")]
-[assembly: AssemblyCopyright("Copyright © 20Road Limited, 2018")]
+[assembly: AssemblyProduct("CustomImporter")]
+[assembly: AssemblyCopyright("Copyright ©  2020")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
@@ -38,7 +38,7 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("5062cb83-0aeb-4ae4-9f86-8279dff2f48a")]
+[assembly: Guid("5f0a0d01-3702-4dbe-aed0-63211befe774")]
 
 // Version information for an assembly consists of the following four values:
 //

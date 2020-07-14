@@ -1,0 +1,38 @@
+{
+  "ScannerID": "custom-app",
+  "Items": [
+    {
+      "PrimaryProperty": "name",
+      "PrimaryType": "CustomApp1",
+      "Types": [
+        "CustomApp1",
+        "CustomApp"
+      ],
+      "Properties": {
+        "scope": 1,
+        "name": "Custom App",
+        "description": "This is a custom app in BirdsNest",
+        "businessOwner": "Mickey Mouse"
+      },
+      "Edges": [
+        {
+          "Type": "EDGE_TYPE",
+          "Properties": {
+            "access": "ReadOnly"
+          },
+          "Item": {
+            "Type": "AD_Group",
+            "Property": "sid",
+            "Value": "xyz"
+          }
+        }
+      ] 
+    }
+  ],
+  "TypeDefinitions": [
+    {
+      "TypeName": "CustomApp1",
+      "Indexes": [ "name" ]
+    }
+  ]
+}

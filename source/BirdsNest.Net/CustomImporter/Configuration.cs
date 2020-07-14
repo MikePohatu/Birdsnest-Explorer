@@ -18,16 +18,30 @@
 #endregion
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Dynamic;
+using System.IO;
+using Newtonsoft.Json;
 
-namespace CustomAppScanner
+namespace CustomImporter
 {
-    class Program
+    public class Configuration
     {
-        static void Main(string[] args)
+        [JsonProperty("ScannerID")]
+        public string ScannerID { get; set; }
+        [JsonProperty("Items")]
+        public List<CustomItem> Items { get; set; }
+        [JsonProperty("TypeDefinitions")]
+        public List<TypeDefinition> TypeDefinitions { get; set; }
+
+        public static Configuration LoadConfiguration(string filepath)
         {
+            Configuration conf;
+            using (StreamReader file = File.OpenText(filepath))
+            {
+                JsonSerializer serializer = new JsonSerializer();
+                conf = (Configuration)serializer.Deserialize(file, typeof(Configuration));
+            }
+            return conf;
         }
     }
 }

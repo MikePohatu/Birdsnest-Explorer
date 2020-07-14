@@ -16,24 +16,17 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #endregion
-using System.Collections.Generic;
-using Neo4j.Driver.V1;
 using System;
+using System.Collections.Generic;
 using System.Text;
-using common;
 
-namespace CustomAppScanner
+namespace CustomImporter
 {
-    public class Writer
+    public class CustomItem
     {
-        public int UpdateApplication(Application app, ISession session)
-        {
-            string query = "MERGE (app:" + Types.Application +" {name:$Name}) "+
-                "SET app.lastscan=$ScanId " +
-                "RETURN app";
-
-            IStatementResult result = session.WriteTransaction(tx => tx.Run(query, app));
-            return result.Summary.Counters.NodesDeleted;
-        }
+        public Dictionary<string, object> Properties { get; set; }
+        public string PrimaryProperty { get; set; }
+        public string PrimaryType { get; set; }
+        public List<string> Types { get; set; }
     }
 }

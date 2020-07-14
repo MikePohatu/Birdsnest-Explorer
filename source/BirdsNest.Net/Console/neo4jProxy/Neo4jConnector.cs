@@ -25,29 +25,16 @@ namespace Console.neo4jProxy
     {
         public static IDriver ConnectToNeo(NeoConfiguration config)
         {
-            try
-            {
-                var dbconfig = new Config { ConnectionTimeout = TimeSpan.FromSeconds(config.DB_Timeout) };
-                if (string.IsNullOrWhiteSpace(config.DB_Password) || string.IsNullOrWhiteSpace(config.DB_Username))
-                { return GraphDatabase.Driver(config.DB_URI, dbconfig); }
-                else
-                { return GraphDatabase.Driver(config.DB_URI, AuthTokens.Basic(config.DB_Username, config.DB_Password), dbconfig); }
+            Config neo4jconfig = new Config();
+            neo4jconfig.ConnectionTimeout = TimeSpan.FromSeconds(config.DB_Timeout);
+            neo4jconfig.ConnectionIdleTimeout = Config.InfiniteInterval;
+            neo4jconfig.MaxConnectionLifetime = Config.InfiniteInterval;
+            neo4jconfig.SocketKeepAlive = true;
 
-            }
-            catch (Exception e)
-            {
-                //Console.WriteLine("Error connecting to Neo4j: " + e.Message);
-                Environment.Exit(1002);
-            }
-            return null;
-        }
-
-        public static IDriver ConnectToNeo(NeoConfiguration config, Config neo4jconfig)
-        {
             try
             {
                 if (string.IsNullOrWhiteSpace(config.DB_Password) || string.IsNullOrWhiteSpace(config.DB_Username))
-                { return GraphDatabase.Driver(config.DB_URI,neo4jconfig); }
+                { return GraphDatabase.Driver(config.DB_URI, neo4jconfig); }
                 else
                 { return GraphDatabase.Driver(config.DB_URI, AuthTokens.Basic(config.DB_Username, config.DB_Password), neo4jconfig); }
 

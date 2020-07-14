@@ -24,6 +24,7 @@ using Neo4j.Driver.V1;
 using common;
 using Attributed;
 using System.Threading;
+using CSharpVitamins;
 
 namespace FSScanner
 {

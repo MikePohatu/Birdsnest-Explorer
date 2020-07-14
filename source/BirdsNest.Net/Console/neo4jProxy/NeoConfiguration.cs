@@ -18,6 +18,7 @@
 #endregion
 using System;
 using System.IO;
+using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
 
 namespace Console.neo4jProxy
@@ -55,14 +56,28 @@ namespace Console.neo4jProxy
 
         public static NeoConfiguration LoadJsonString(string json)
         {
-            NeoConfiguration conf;
+            NeoConfiguration conf = null;
             JsonSerializer serializer = new JsonSerializer();
-
-            using (StringReader reader = new StringReader(json))
+            if (string.IsNullOrEmpty(json) == false) 
             {
-                conf = (NeoConfiguration)serializer.Deserialize(reader, typeof(NeoConfiguration));
+                using (StringReader reader = new StringReader(json))
+                {
+                    conf = (NeoConfiguration)serializer.Deserialize(reader, typeof(NeoConfiguration));
+                }
             }
+            
                 
+            return conf;
+        }
+
+        public static NeoConfiguration LoadIConfigurationSection(IConfiguration configSection)
+        {
+            NeoConfiguration conf = new NeoConfiguration();
+            conf.DB_URI = configSection.GetValue<string>("dbURI");
+            conf.DB_Username = configSection.GetValue<string>("dbUsername");
+            conf.DB_Password = configSection.GetValue<string>("dbPassword");
+            conf.DB_Timeout = configSection.GetValue<int>("dbTimeout");
+
             return conf;
         }
     }

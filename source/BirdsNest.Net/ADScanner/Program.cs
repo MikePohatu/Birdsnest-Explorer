@@ -24,6 +24,7 @@ using Neo4j.Driver.V1;
 using ADScanner.ActiveDirectory;
 using ADScanner.Neo4j;
 using common;
+using CSharpVitamins;
 
 namespace ADScanner
 {

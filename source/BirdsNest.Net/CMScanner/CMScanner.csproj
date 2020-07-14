@@ -37,6 +37,9 @@
     <Reference Include="AdminUI.WqlQueryEngine">
       <HintPath>libraries\AdminUI.WqlQueryEngine.dll</HintPath>
     </Reference>
+    <Reference Include="CSharpVitamins.ShortGuid, Version=1.0.2.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\CSharpVitamins.ShortGuid.1.0.2\lib\net40\CSharpVitamins.ShortGuid.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.ConfigurationManagement.ManagementProvider">
       <HintPath>libraries\Microsoft.ConfigurationManagement.ManagementProvider.dll</HintPath>
     </Reference>

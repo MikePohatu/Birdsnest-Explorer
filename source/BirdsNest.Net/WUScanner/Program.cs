@@ -26,6 +26,7 @@ using Microsoft.UpdateServices.Administration;
 using common;
 using Neo4j.Driver.V1;
 using WUScanner.Neo4j;
+using CSharpVitamins;
 
 namespace WUScanner
 {

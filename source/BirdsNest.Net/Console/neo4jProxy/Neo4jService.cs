@@ -27,6 +27,7 @@ using System.Text.RegularExpressions;
 using Microsoft.Extensions.Logging;
 using Console.Plugins;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Primitives;
 
 namespace Console.neo4jProxy
 {
@@ -40,20 +41,13 @@ namespace Console.neo4jProxy
         {
             this._logger = logger;
             this._pluginmanager = manager;
-            Config neo4jconfig = new Config();
 
             //load the config
             Stopwatch stopwatch = Stopwatch.StartNew();
-            using (NeoConfiguration config = new NeoConfiguration())
-            {
-                config.DB_URI = configuration["neo4jSettings:DB_URI"];
-                config.DB_Username = configuration["neo4jSettings:DB_Username"];
-                config.DB_Password = configuration["neo4jSettings:DB_Password"];
-                neo4jconfig.ConnectionIdleTimeout = Config.InfiniteInterval;
-                neo4jconfig.MaxConnectionLifetime = Config.InfiniteInterval;
-                neo4jconfig.SocketKeepAlive = true;
 
-                this._driver = Neo4jConnector.ConnectToNeo(config, neo4jconfig);
+            using (NeoConfiguration config = NeoConfiguration.LoadIConfigurationSection(configuration.GetSection("neo4jSettings")))
+            {
+                this._driver = Neo4jConnector.ConnectToNeo(config);
                 stopwatch.Stop();
             }
 
