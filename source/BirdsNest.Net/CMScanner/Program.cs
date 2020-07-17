@@ -138,7 +138,7 @@ namespace CMScanner
             string[] headervals = { "Description", "(n)+", "[r]+", "(n)-", "[r]-", "Properties Set"};
             ConsoleWriter.WriteLine(tabs, headervals);
             
-            foreach (ICmCollector collector in collectors)
+            foreach (IDataCollector collector in collectors)
             {
                 NeoQueryData collectionsdata = collector.CollectData();
                 collectionsdata.ScanID = scanid;

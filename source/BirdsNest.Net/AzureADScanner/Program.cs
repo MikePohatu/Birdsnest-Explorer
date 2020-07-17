@@ -24,6 +24,7 @@ using Microsoft.Graph;
 using Microsoft.Identity.Client;
 using Neo4j.Driver.V1;
 using AzureADScanner.Azure;
+using CSharpVitamins;
 
 namespace AzureADScanner
 {
