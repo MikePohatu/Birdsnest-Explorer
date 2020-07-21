@@ -1,5 +1,5 @@
 {
-  "ID": "789",
+  "ID": "domain.local",
   "AD_DomainPath": "LDAP://domain.local/DC=domain,DC=local",
   "AD_Username": "domain\\user",
   "AD_Password": "Password1"

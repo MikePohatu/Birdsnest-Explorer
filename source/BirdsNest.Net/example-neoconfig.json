@@ -1,6 +1,0 @@
-{
-	"dbURI": "bolt://server:7687",
-	"dbUsername": "svc_neo4j",
-	"dbPassword": "P@ssword1",
-	"dbTimeout": 15
-}
