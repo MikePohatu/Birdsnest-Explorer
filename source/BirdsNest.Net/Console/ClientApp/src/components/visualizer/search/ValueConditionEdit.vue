@@ -222,6 +222,7 @@ import { SearchItemType } from "@/assets/ts/visualizer/Search";
 import webcrap from "@/assets/ts/webcrap/webcrap";
 import { SearchStorePaths } from "@/store/modules/SearchStore";
 import { api, Request } from "@/assets/ts/webcrap/apicrap";
+import { SearchEdge } from "../../../assets/ts/visualizer/Search";
 
 @Component
 export default class ValueConditionEdit extends Vue {
@@ -303,19 +304,36 @@ export default class ValueConditionEdit extends Vue {
 
 	onSelectedItemChanged(): void {
 		let item: SearchItem = null;
+		let isNode = true;
 		item = GetNode(this.condition.name, this.$store.state.visualizer.search.search);
 		if (item === null) {
 			item = GetEdge(this.condition.name, this.$store.state.visualizer.search.search);
+			isNode = false;
 		}
-		if (item !== null && webcrap.misc.isNullOrWhitespace(item.label)) {
-			this.alertMessage = "Selected item must have a type set";
-			this.saveable = false;
-			this.showAlert = true;
-		} else {
-			this.alertMessage = "";
-			this.showAlert = false;
-			this.saveable = true;
+		if (item !== null) {
+			if ( webcrap.misc.isNullOrWhitespace(item.label)) {
+				this.alertMessage = "Selected item must have a type set";
+				this.saveable = false;
+				this.showAlert = true;
+			} else if ( isNode === false) {
+				const edge = item as SearchEdge;
+				if ((edge.min === 1 && edge.max === 1) === false) {
+					this.alertMessage = "Conditions are not supported on multi-hop relationships";
+					this.saveable = false;
+					this.showAlert = true;
+				}	
+			}
+			else {
+				this.alertMessage = "";
+				this.showAlert = false;
+				this.saveable = true;
+			}
 		}
+		else {
+				this.alertMessage = "An error occured getting named item";
+				this.showAlert = true;
+				this.saveable = false;
+			}
 		this.selectedItem = item;
 
 		//if selected item type has changed, properties need to be re-checked

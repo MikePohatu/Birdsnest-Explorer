@@ -72,9 +72,54 @@ namespace ConsoleTests
                     }
                 ]
             }
-        
         ",
             ExpectedResult = "MATCH p=(n1:AD_User)-[e1:AD_MEMBER_OF*0..1]->(n2:AD_Group) UNWIND nodes(p) as bnest_nodes RETURN DISTINCT bnest_nodes ORDER BY LOWER(bnest_nodes.name)")]
+        [TestCase(@"
+            {
+                ""nodes"": [
+                    {
+                        ""label"": """",
+                        ""name"": ""n1""
+                    },
+                    {
+                        ""label"": ""AD_Group"",
+                        ""name"": ""n2""
+                    }
+                ],
+                ""edges"": [
+                    {
+                        ""label"": ""AD_MEMBER_OF"",
+                        ""name"": ""e1"",
+                        ""min"": 0,
+                        ""max"": 1
+                    }
+                ]
+            }
+        ",
+        ExpectedResult = "MATCH p=()-[e1:AD_MEMBER_OF*0..1]->(n2:AD_Group) UNWIND nodes(p) as bnest_nodes RETURN DISTINCT bnest_nodes ORDER BY LOWER(bnest_nodes.name)")]
+        [TestCase(@"
+            {
+                ""nodes"": [
+                    {
+                        ""label"": """",
+                        ""name"": ""node1""
+                    },
+                    {
+                        ""label"": ""AD_Group"",
+                        ""name"": ""node2""
+                    }
+                ],
+                ""edges"": [
+                    {
+                        ""label"": """",
+                        ""name"": ""hop1"",
+                        ""min"": 1,
+                        ""max"": 7
+                    }
+                ]
+            }
+        ",
+        ExpectedResult = "MATCH p=()-[*1..7]->(node2:AD_Group) UNWIND nodes(p) as bnest_nodes RETURN DISTINCT bnest_nodes ORDER BY LOWER(bnest_nodes.name)")]
         public string GenerateSearchStringTest(string json)
         {
             Search s = JsonConvert.DeserializeObject<Search>(json);

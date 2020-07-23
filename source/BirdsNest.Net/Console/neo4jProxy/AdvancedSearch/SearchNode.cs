@@ -48,14 +48,13 @@ namespace Console.neo4jProxy.AdvancedSearch
         {
             if (tokenized && string.IsNullOrWhiteSpace(this.TokenizedName))
             {
-                throw new ArgumentException("Cannot build Edge tokenized search string. Edge has not been tokenized");
+                throw new ArgumentException("Cannot build Node tokenized search string. Node has not been tokenized");
             }
 
+            if (string.IsNullOrEmpty(this.Label)) { return "()"; }
+
             string name = tokenized ? this.TokenizedName : this.Name;
-            string s = string.Empty;
-            if (string.IsNullOrEmpty(this.Label)) { s = "(" + this.Name + ")"; }
-            else { s = "(" + name + ":" + this.Label + ")"; }
-            return s;
+            return $"({name}:{this.Label})";
         }
 
         public void Tokenize(SearchTokens tokens)

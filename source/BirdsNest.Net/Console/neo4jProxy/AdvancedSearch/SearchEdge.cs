@@ -69,8 +69,9 @@ namespace Console.neo4jProxy.AdvancedSearch
             string min = "";
             string max = "";
 
-            //labels are not supported on variable length relationships
-            if (this.Min < 0 || this.Max < 0)
+            //variable names are not supported on variable length relationships and can cause slow downs with no label
+            //or conditions
+            if (this.Min < 0 || this.Max < 0 || string.IsNullOrWhiteSpace(this.Label))
             {
                 name = string.Empty;
             }
