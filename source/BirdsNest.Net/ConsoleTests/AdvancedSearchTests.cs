@@ -20,9 +20,9 @@ using NUnit.Framework;
 using System;
 using System.Collections.Generic;
 using System.Text;
-using Newtonsoft.Json;
 using Console.neo4jProxy.AdvancedSearch.Conditions;
 using Console.neo4jProxy.AdvancedSearch;
+using Newtonsoft.Json;
 
 namespace ConsoleTests
 {
@@ -31,32 +31,32 @@ namespace ConsoleTests
     {
         [Test]
         [TestCase(@"{
-    ""Condition"": {
-        ""Type"": ""AND"",
-        ""Conditions"": [
+    ""condition"": {
+        ""type"": ""AND"",
+        ""conditions"": [
             {
-                ""Type"": ""STRING"",
-                ""Name"": ""n1"",
-                ""Property"": ""tpropn1"",
-                ""Value"": ""testn1"",
-                ""Operator"": ""EQUALS""
+                ""type"": ""string"",
+                ""name"": ""n1"",
+                ""property"": ""tpropn1"",
+                ""value"": ""testn1"",
+                ""operator"": ""=""
             },
             {
-                ""Type"": ""OR"",
-                ""Conditions"": [
+                ""type"": ""OR"",
+                ""conditions"": [
                     {
-                        ""Type"": ""STRING"",
-                        ""Name"": ""n2"",
-                        ""Property"": ""tpropn2"",
-                        ""Value"": ""testn2"",
-                        ""Operator"": ""STARTSWITH""
+                        ""type"": ""string"",
+                        ""name"": ""n2"",
+                        ""property"": ""tpropn2"",
+                        ""value"": ""testn2"",
+                        ""operator"": ""StartsWith""
                     },
                     {
-                        ""Type"": ""STRING"",
-                        ""Name"": ""r1"",
-                        ""Property"": ""tpropr1"",
-                        ""Value"": ""testr1"",
-                        ""Operator"": ""EQUALS""
+                        ""type"": ""string"",
+                        ""name"": ""r1"",
+                        ""property"": ""tpropr1"",
+                        ""value"": ""testr1"",
+                        ""operator"": ""=""
                     }
                 ]
             }
@@ -65,103 +65,103 @@ namespace ConsoleTests
 }", 
             ExpectedResult = "(n1.tpropn1 = 'testn1' AND (n2.tpropn2 STARTS WITH 'testn2' OR r1.tpropr1 = 'testr1'))")]
         [TestCase(@"{
-    ""Condition"": {
-        ""Type"": ""AND"",
-        ""Conditions"": [{
-            ""Type"": ""MATH"",
-            ""Name"": ""n1"",
-            ""Property"": ""tpropn1"",
-            ""Value"": 1,
-            ""Operator"": ""=""
+    ""condition"": {
+        ""type"": ""AND"",
+        ""conditions"": [{
+            ""type"": ""number"",
+            ""name"": ""n1"",
+            ""property"": ""tpropn1"",
+            ""value"": 1,
+            ""operator"": ""=""
         },
         {
-            ""Type"": ""OR"",
-            ""Conditions"": [{
-                ""Type"": ""STRING"",
-                ""Name"": ""n2"",
-                ""Property"": ""tpropn2"",
-                ""Value"": ""testn2"",
-                ""Operator"": ""STARTSWITH""
+            ""type"": ""OR"",
+            ""conditions"": [{
+                ""type"": ""string"",
+                ""name"": ""n2"",
+                ""property"": ""tpropn2"",
+                ""value"": ""testn2"",
+                ""operator"": ""StartsWith""
             },
             {
-                ""Type"": ""STRING"",
-                ""Name"": ""r1"",
-                ""Property"": ""tpropr1"",
-                ""Value"": ""testr1"",
-                ""Operator"": ""EQUALS""
+                ""type"": ""string"",
+                ""name"": ""r1"",
+                ""property"": ""tpropr1"",
+                ""value"": ""testr1"",
+                ""operator"": ""=""
             }]
         }]
     }
 }",
             ExpectedResult = "(n1.tpropn1 = 1 AND (n2.tpropn2 STARTS WITH 'testn2' OR r1.tpropr1 = 'testr1'))")]
         [TestCase(@"{
-    ""Condition"": {
-        ""Type"": ""AND"",
-        ""Conditions"": [{
-            ""Type"": ""MATH"",
-            ""Name"": ""n1"",
-            ""Property"": ""tpropn1"",
-            ""Value"": 1,
-            ""Operator"": ""<""
+    ""condition"": {
+        ""type"": ""AND"",
+        ""conditions"": [{
+            ""type"": ""number"",
+            ""name"": ""n1"",
+            ""property"": ""tpropn1"",
+            ""value"": 1,
+            ""operator"": ""<""
         },
         {
-            ""Type"": ""OR"",
-            ""Conditions"": [{
-                ""Type"": ""STRING"",
-                ""Name"": ""n2"",
-                ""Property"": ""tpropn2"",
-                ""Value"": ""testn2"",
-                ""Operator"": ""STARTSWITH""
+            ""type"": ""OR"",
+            ""conditions"": [{
+                ""type"": ""string"",
+                ""name"": ""n2"",
+                ""property"": ""tpropn2"",
+                ""value"": ""testn2"",
+                ""operator"": ""StartsWith""
             },
             {
-                ""Type"": ""STRING"",
-                ""Name"": ""r1"",
-                ""Property"": ""tpropr1"",
-                ""Value"": ""testr1"",
-                ""Operator"": ""EQUALS""
+                ""type"": ""string"",
+                ""name"": ""r1"",
+                ""property"": ""tpropr1"",
+                ""value"": ""testr1"",
+                ""operator"": ""=""
             }]
         }]
     }
 }",
             ExpectedResult = "(n1.tpropn1 < 1 AND (n2.tpropn2 STARTS WITH 'testn2' OR r1.tpropr1 = 'testr1'))")]
         [TestCase(@"{
-    ""Condition"": {
-        ""Type"": ""AND"",
-        ""Conditions"": [{
-            ""Type"": ""MATH"",
-            ""Name"": ""n1"",
-            ""Property"": ""tpropn1"",
-            ""Value"": 1,
-            ""Operator"": ""<""
+    ""condition"": {
+        ""type"": ""AND"",
+        ""conditions"": [{
+            ""type"": ""number"",
+            ""name"": ""n1"",
+            ""property"": ""tpropn1"",
+            ""value"": 1,
+            ""operator"": ""<""
         },
         {
-            ""Type"": ""OR"",
-            ""Conditions"": [{
-                ""Type"": ""STRING"",
-                ""Name"": ""n2"",
-                ""Property"": ""tpropn2"",
-                ""Value"": ""testn2"",
-                ""Operator"": ""STARTSWITH""
+            ""type"": ""OR"",
+            ""conditions"": [{
+                ""type"": ""string"",
+                ""name"": ""n2"",
+                ""property"": ""tpropn2"",
+                ""value"": ""testn2"",
+                ""operator"": ""StartsWith""
             },
             {
-                ""Type"": ""STRING"",
-                ""Name"": ""r1"",
-                ""Property"": ""tpropr1"",
-                ""Value"": ""testr1"",
-                ""Operator"": ""EQUALS""
+                ""type"": ""string"",
+                ""name"": ""r1"",
+                ""property"": ""tpropr1"",
+                ""value"": ""testr1"",
+                ""operator"": ""=""
             },
             {
-                ""Type"": ""STRING"",
-                ""Name"": ""r2"",
-                ""Property"": ""tpropr2"",
-                ""Value"": ""testr2"",
-                ""Operator"": ""EQUALS""
+                ""type"": ""string"",
+                ""name"": ""r2"",
+                ""property"": ""tpropr2"",
+                ""value"": ""testr2"",
+                ""operator"": ""=""
             }]
         }]
     }
 }",
             ExpectedResult = "(n1.tpropn1 < 1 AND (n2.tpropn2 STARTS WITH 'testn2' OR r1.tpropr1 = 'testr1' OR r2.tpropr2 = 'testr2'))")]
-        public string GenerateSearchStringTest(string json)
+        public string GenerateSearchConditionStringTest(string json)
         {
             Search s = JsonConvert.DeserializeObject<Search>(json);
             return s.Condition.ToSearchString();

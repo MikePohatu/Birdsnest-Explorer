@@ -19,7 +19,7 @@
 using NUnit.Framework;
 using System;
 using System.Collections.Generic;
-using System.Text.Json;
+using Newtonsoft.Json;
 using Console.neo4jProxy.AdvancedSearch.Conditions;
 using Console.neo4jProxy.AdvancedSearch;
 
@@ -30,32 +30,32 @@ namespace ConsoleTests
     {
         [Test]
         [TestCase(@"{
-    ""Condition"": {
-        ""Type"": ""AND"",
-        ""Conditions"": [
+    ""condition"": {
+        ""type"": ""AND"",
+        ""conditions"": [
             {
-                ""Type"": ""STRING"",
-                ""Name"": ""n1"",
-                ""Property"": ""tpropn1"",
-                ""Value"": ""testn1"",
-                ""Operator"": ""EQUALS""
+                ""type"": ""string"",
+                ""name"": ""n1"",
+                ""property"": ""tpropn1"",
+                ""value"": ""testn1"",
+                ""operator"": ""=""
             },
             {
-                ""Type"": ""OR"",
-                ""Conditions"": [
+                ""type"": ""OR"",
+                ""conditions"": [
                     {
-                        ""Type"": ""STRING"",
-                        ""Name"": ""n2"",
-                        ""Property"": ""tpropn2"",
-                        ""Value"": ""testn2"",
-                        ""Operator"": ""STARTSWITH""
+                        ""type"": ""string"",
+                        ""name"": ""n2"",
+                        ""property"": ""tpropn2"",
+                        ""value"": ""testn2"",
+                        ""operator"": ""StartsWith""
                     },
                     {
-                        ""Type"": ""STRING"",
-                        ""Name"": ""r1"",
-                        ""Property"": ""tpropr1"",
-                        ""Value"": ""testr1"",
-                        ""Operator"": ""EQUALS""
+                        ""type"": ""string"",
+                        ""name"": ""r1"",
+                        ""property"": ""tpropr1"",
+                        ""value"": ""testr1"",
+                        ""operator"": ""=""
                     }
                 ]
             }
@@ -68,29 +68,29 @@ namespace ConsoleTests
         ""type"": ""AND"",
         ""conditions"": [
             {
-                ""type"": ""STRING"",
+                ""type"": ""string"",
                 ""name"": ""n1"",
                 ""property"": ""tpropn1"",
                 ""value"": ""testn1"",
-                ""operator"": ""EQUALS"",
+                ""operator"": ""="",
                 ""caseSensitive"":false
             },
             {
                 ""type"": ""OR"",
                 ""conditions"": [
                     {
-                        ""type"": ""STRING"",
+                        ""type"": ""string"",
                         ""name"": ""n2"",
                         ""property"": ""tpropn2"",
                         ""value"": ""testn2"",
-                        ""operator"": ""STARTSWITH""
+                        ""operator"": ""StartsWith""
                     },
                     {
-                        ""type"": ""STRING"",
+                        ""type"": ""string"",
                         ""name"": ""r1"",
                         ""property"": ""tpropr1"",
                         ""value"": ""testr1"",
-                        ""operator"": ""EQUALS""
+                        ""operator"": ""=""
                     }
                 ]
             }
@@ -100,7 +100,7 @@ namespace ConsoleTests
             ExpectedResult = "(token1.tpropn1 =~ $val1 AND (token2.tpropn2 STARTS WITH $val2 OR token3.tpropr1 = $val3))")]
         public string GenerateSearchTokenStringTest(string json)
         {
-            Search s = JsonSerializer.Deserialize<Search>(json);
+            Search s = JsonConvert.DeserializeObject<Search>(json);
             s.Tokenize();
             return s.Condition.ToTokenizedSearchString();
         }

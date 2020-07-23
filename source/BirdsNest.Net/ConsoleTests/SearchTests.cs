@@ -30,10 +30,51 @@ namespace ConsoleTests
     public class SearchTests
     {
         [Test]
-        [TestCase("{\"nodes\": [{ \"label\": \"AD_User\",\"name\": \"n1\"},{ \"label\": \"AD_Group\", \"name\": \"n2\"}],\"edges\": [{\"label\": \"AD_MEMBER_OF\",\"name\": \"e1\"}]}", 
-            ExpectedResult = "MATCH p=(n1:AD_User)-[e1:AD_MEMBER_OF*0..1]->(n2:AD_Group) UNWIND nodes(p) as n RETURN DISTINCT n LIMIT 1000 ORDER BY LOWER(n.name)")]
-        [TestCase("{\"nodes\": [{ \"type\": \"AD_User\",\"identifier\": \"n1\"},{ \"type\": \"AD_Group\", \"identifier\": \"n2\"}],\"edges\": [{\"type\": \"AD_MEMBER_OF\",\"identifier\": \"e1\"}]}",
-            ExpectedResult = "MATCH p=(n1:AD_User)-[e1:AD_MEMBER_OF*0..1]->(n2:AD_Group) UNWIND nodes(p) as n RETURN DISTINCT n LIMIT 1000 ORDER BY LOWER(n.name)")]
+        [TestCase(@"
+            {
+                ""nodes"": [
+                    {
+                        ""label"": ""AD_User"",
+                        ""name"": ""n1""
+                    },
+                    {
+                        ""label"": ""AD_Group"",
+                        ""name"": ""n2""
+                    }
+                ],
+                ""edges"": [
+                    {
+                        ""label"": ""AD_MEMBER_OF"",
+                        ""name"": ""e1""
+                    }
+                ]
+            }
+        ", 
+            ExpectedResult = "MATCH p=(n1:AD_User)-[:AD_MEMBER_OF*]->(n2:AD_Group) UNWIND nodes(p) as bnest_nodes RETURN DISTINCT bnest_nodes ORDER BY LOWER(bnest_nodes.name)")]
+        [TestCase(@"
+            {
+                ""nodes"": [
+                    {
+                        ""label"": ""AD_User"",
+                        ""name"": ""n1""
+                    },
+                    {
+                        ""label"": ""AD_Group"",
+                        ""name"": ""n2""
+                    }
+                ],
+                ""edges"": [
+                    {
+                        ""label"": ""AD_MEMBER_OF"",
+                        ""name"": ""e1"",
+                        ""min"": 0,
+                        ""max"": 1
+                    }
+                ]
+            }
+        
+        ",
+            ExpectedResult = "MATCH p=(n1:AD_User)-[e1:AD_MEMBER_OF*0..1]->(n2:AD_Group) UNWIND nodes(p) as bnest_nodes RETURN DISTINCT bnest_nodes ORDER BY LOWER(bnest_nodes.name)")]
         public string GenerateSearchStringTest(string json)
         {
             Search s = JsonConvert.DeserializeObject<Search>(json);
