@@ -25,11 +25,13 @@ using ADScanner.ActiveDirectory;
 using ADScanner.Neo4j;
 using common;
 using CSharpVitamins;
+using System.DirectoryServices.AccountManagement;
 
 namespace ADScanner
 {
     class Program
     {
+        private static bool _batchmode = false;
         static void Main(string[] args)
         {
             Stopwatch steptimer = new Stopwatch();
@@ -39,11 +41,10 @@ namespace ADScanner
             string neoconfigfile = _appdir + @"\config\neoconfig.json";
             string configfile = _appdir + @"\config\adconfig.json";
             int relcounter = 0;
-            bool batchmode = false;
             string scanid = ShortGuid.NewGuid().ToString();
 
             IDriver driver = null;
-            DirectoryEntry rootDE = null;
+            PrincipalContext context = null;
 
             totaltimer.Start();
             try
@@ -61,7 +62,7 @@ namespace ADScanner
                             configfile = param[1];
                             break;
                         case "/BATCH":
-                            batchmode = true;
+                            _batchmode = true;
                             break;
                         default:
                             break;
@@ -73,7 +74,7 @@ namespace ADScanner
                 Console.WriteLine("There is a problem with arguments: " + string.Join(" ", args));
                 Console.WriteLine("");
                 ShowUsage();
-                Environment.Exit(1);
+                ExitError(1);
             }
 
 
@@ -88,22 +89,14 @@ namespace ADScanner
                         Console.WriteLine("Your configuration does not have a scanner ID. A random ID will be generated for you below:");
                         Console.WriteLine(ShortGuid.NewGuid().ToString());
                         Console.WriteLine();
-                        if (batchmode == false)
-                        {
-                            Console.WriteLine("Press any key to exit");
-                            Console.ReadLine();
-                        }
-                        Environment.Exit(2);
+                        ExitError(2);
                     }
-                    rootDE = ConnectToAD(config);
+                    context = Connector.CreatePrincipalContext(config);
                 }
             }
             catch (Exception e)
             {
-                Console.WriteLine("There was an error loading your configuration");
-                Console.WriteLine(e.Message);
-                if (batchmode == false) { Console.ReadLine(); }
-                Environment.Exit(1);
+                ExitError(e, "There was an error loading your configuration", 1);
             }
             
 
@@ -118,10 +111,7 @@ namespace ADScanner
             }
             catch (Exception e)
             {
-                Console.WriteLine("There was an error loading your neo4j configuration");
-                Console.WriteLine(e.Message);
-                if (batchmode == false) { Console.ReadLine(); }
-                Environment.Exit(2);
+                ExitError(e, "There was an error loading your neo4j configuration", 2);
             }
             
 
@@ -129,7 +119,7 @@ namespace ADScanner
 
             //process groups
             //load the groups
-            using (SearchResultCollection results = QueryHandler.GetAllGroupResults(rootDE))
+            using (SearchResultCollection results = QueryHandler.GetAllGroupResults(context))
             {
                 Console.Write("Adding groups to graph");
                 if (results != null)
@@ -176,7 +166,7 @@ namespace ADScanner
 
             //process users
             //load the users
-            using (SearchResultCollection results = QueryHandler.GetAllUserResults(rootDE))
+            using (SearchResultCollection results = QueryHandler.GetAllUserResults(context))
             {
                 Console.Write("Adding users to graph");
                 if (results != null)
@@ -222,7 +212,7 @@ namespace ADScanner
             }
 
             //load the computers
-            using (SearchResultCollection results = QueryHandler.GetAllComputerResults(rootDE))
+            using (SearchResultCollection results = QueryHandler.GetAllComputerResults(context))
             {
                 Console.Write("Adding computers to graph");
                 if (results != null)
@@ -305,13 +295,13 @@ namespace ADScanner
 
             //cleanup
             driver.Dispose();
-            rootDE.Dispose();
+            context.Dispose();
 
             totaltimer.Stop();
             double totaltime = totaltimer.ElapsedMilliseconds / 1000;
             Console.WriteLine();
             Console.WriteLine("Finished in " + totaltime + "secs");
-            if (batchmode == true)
+            if (_batchmode == true)
             {
                 Console.Write("Exiting.");
                 for (int i = 0; i < 3; i++)
@@ -327,22 +317,29 @@ namespace ADScanner
             }
         }
 
-        private static DirectoryEntry ConnectToAD(Configuration config)
+        public static void ExitError(Exception e, string message, int returncode)
         {
-            try
+            Console.WriteLine(message);
+            Console.WriteLine(e.Message);
+            if (_batchmode == false) 
             {
-                Console.WriteLine("Connecting to domain: " + config.AD_DomainPath);
-                if (string.IsNullOrWhiteSpace(config.AD_Password) || string.IsNullOrWhiteSpace(config.AD_Username))
-                { return new DirectoryEntry(config.AD_DomainPath); }
-                else
-                { return new DirectoryEntry(config.AD_DomainPath, config.AD_Username, config.AD_Password); } 
+                Console.WriteLine("Press any key to exit");
+                Console.ReadLine(); 
             }
-            catch (Exception e)
-            {
-                Console.WriteLine("Error connecting to Active Directory: " + e.Message);
-                Environment.Exit(1003);
-            }
-            return null;
+            Environment.Exit(returncode);
+        }
+
+        public static void ExitError(string message, int returncode)
+        {
+            Console.WriteLine(message);
+            if (_batchmode == false) { Console.ReadLine(); }
+            Environment.Exit(returncode);
+        }
+
+        public static void ExitError(int returncode)
+        {
+            if (_batchmode == false) { Console.ReadLine(); }
+            Environment.Exit(returncode);
         }
 
         private static void ShowUsage()

@@ -49,8 +49,9 @@ namespace ADScanner.Neo4j
             scanprops.Add("domainid", Writer.DomainID);
 
             string query = "UNWIND $propertylist AS g " +
-                "MERGE (n:" + Types.Group + "{id:g.id}) " +
-                "SET n: " + Types.ADObject + " " +
+                "MERGE (n:" + Types.ADObject + "{id:g.id}) " +
+                "SET n: " + Types.Group + " " +
+                "REMOVE n: " + Types.Deleted + " " +
                 "SET n.info = g.info " +
                 "SET n.description = g.description " +
                 "SET n.name = g.name " +
@@ -95,8 +96,9 @@ namespace ADScanner.Neo4j
             scanprops.Add("domainid", Writer.DomainID);
 
             string query = "UNWIND $propertylist AS u " +
-            "MERGE (n:" + Types.User + "{id:u.id}) " +
-            "SET n: " + Types.ADObject + " " +
+            "MERGE (n:" + Types.ADObject + "{id:u.id}) " +
+            "SET n: " + Types.User + " " +
+            "REMOVE n: " + Types.Deleted + " " +
             "SET n.info = u.info " +
             "SET n.description = u.description " +
             "SET n.name = u.name " +
@@ -126,9 +128,10 @@ namespace ADScanner.Neo4j
             scanprops.Add("domainid", Writer.DomainID);
 
             string query = "UNWIND $propertylist AS c " +
-            "MERGE (n:" + Types.Computer + "{id:c.id}) " +
+            "MERGE (n:" + Types.ADObject + "{id:c.id}) " +
             "SET n: " + Types.Device + " " +
-            "SET n: " + Types.ADObject + " " +
+            "SET n: " + Types.Computer + " " +
+            "REMOVE n: " + Types.Deleted + " " +
             "SET n.info = c.info " +
             "SET n.description = c.description " +
             "SET n.name = c.name " +

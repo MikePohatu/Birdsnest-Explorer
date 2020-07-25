@@ -19,85 +19,103 @@
 using System;
 using System.DirectoryServices;
 using System.Diagnostics;
+using System.DirectoryServices.AccountManagement;
 
 namespace ADScanner.ActiveDirectory
 {
     public static class QueryHandler
     {
-        public static SearchResultCollection GetAllGroupResults(DirectoryEntry de)
+        public static SearchResultCollection GetAllGroupResults(PrincipalContext context)
         {
             Stopwatch timer = new Stopwatch();
             SearchResultCollection results = null;
-            using (DirectorySearcher searcher = new DirectorySearcher(de))
+            using (PrincipalSearcher principalSearcher = new PrincipalSearcher(new UserPrincipal(context)))
             {
                 try
                 {
-                    timer.Start();
-                    searcher.Filter = ("(&(objectCategory=group))");
-                    searcher.SearchScope = SearchScope.Subtree;
-                    searcher.PropertiesToLoad.Add("cn");
-                    searcher.PropertiesToLoad.Add("memberof");
-                    searcher.PropertiesToLoad.Add("name");
-                    searcher.PropertiesToLoad.Add("samaccountname");
-                    searcher.PropertiesToLoad.Add("grouptype");
-                    searcher.PropertiesToLoad.Add("member");
-                    searcher.PropertiesToLoad.Add("objectcategory");
-                    searcher.PropertiesToLoad.Add("objectSid");
-                    searcher.PropertiesToLoad.Add("distinguishedName");
-                    searcher.PropertiesToLoad.Add("description");
-                    searcher.PropertiesToLoad.Add("info");
+                    DirectorySearcher searcher = principalSearcher.GetUnderlyingSearcher() as DirectorySearcher;
+                    if (searcher != null)
+                    {
+                        timer.Start();
+                        searcher.Filter = ("(&(objectCategory=group))");
+                        searcher.SearchScope = SearchScope.Subtree;
+                        searcher.PropertiesToLoad.Add("cn");
+                        searcher.PropertiesToLoad.Add("memberof");
+                        searcher.PropertiesToLoad.Add("name");
+                        searcher.PropertiesToLoad.Add("samaccountname");
+                        searcher.PropertiesToLoad.Add("grouptype");
+                        searcher.PropertiesToLoad.Add("member");
+                        searcher.PropertiesToLoad.Add("objectcategory");
+                        searcher.PropertiesToLoad.Add("objectSid");
+                        searcher.PropertiesToLoad.Add("distinguishedName");
+                        searcher.PropertiesToLoad.Add("description");
+                        searcher.PropertiesToLoad.Add("info");
 
-                    searcher.PageSize = 1000;
-                    Console.WriteLine("Searching for groups");
-                    results = searcher.FindAll();
-                    timer.Stop();
-                    Console.WriteLine("Found " + results.Count + " groups in " + timer.ElapsedMilliseconds + "ms.");
+                        searcher.PageSize = 1000;
+                        Console.WriteLine("Searching for groups");
+                        results = searcher.FindAll();
+                        timer.Stop();
+                        Console.WriteLine("Found " + results.Count + " groups in " + timer.ElapsedMilliseconds + "ms.");
+                    }
+                    else
+                    {
+                        Program.ExitError("Error retrieving groups from AD", 200);
+                    }
                 }
                 catch (Exception e)
                 {
                     timer.Stop();
-                    Console.WriteLine("Error retrieving groups from AD: " + e.Message);
+                    Program.ExitError(e, "Error retrieving groups from AD", 201);
                 }
             }
             return results;
         }
 
-        public static SearchResultCollection GetAllUserResults(DirectoryEntry de)
+        public static SearchResultCollection GetAllUserResults(PrincipalContext context)
         {
             Stopwatch timer = new Stopwatch();
             SearchResultCollection results = null;
-            using (DirectorySearcher searcher = new DirectorySearcher(de))
+            using (PrincipalSearcher principalSearcher = new PrincipalSearcher(new UserPrincipal(context)))
             {
                 try
                 {
-                    timer.Start();
-                    searcher.Filter = ("(&(objectCategory=person)(objectClass=user))");
-                    searcher.SearchScope = SearchScope.Subtree;
-                    searcher.PropertiesToLoad.Add("canonicalName");
-                    searcher.PropertiesToLoad.Add("cn");
-                    searcher.PropertiesToLoad.Add("memberof");
-                    searcher.PropertiesToLoad.Add("name");
-                    searcher.PropertiesToLoad.Add("samaccountname");
-                    searcher.PropertiesToLoad.Add("objectcategory");
-                    searcher.PropertiesToLoad.Add("objectSid");
-                    searcher.PropertiesToLoad.Add("displayName");
-                    searcher.PropertiesToLoad.Add("distinguishedName");
-                    searcher.PropertiesToLoad.Add("primaryGroupID");
-                    searcher.PropertiesToLoad.Add("userAccountControl");
-                    searcher.PropertiesToLoad.Add("description");
-                    searcher.PropertiesToLoad.Add("userPrincipalName");
-                    searcher.PropertiesToLoad.Add("info");
+                    DirectorySearcher searcher = principalSearcher.GetUnderlyingSearcher() as DirectorySearcher;
+                    if (searcher != null)
+                    {
+                        timer.Start();
+                        searcher.Filter = ("(&(objectCategory=person)(objectClass=user))");
+                        searcher.SearchScope = SearchScope.Subtree;
+                        searcher.PropertiesToLoad.Add("canonicalName");
+                        searcher.PropertiesToLoad.Add("cn");
+                        searcher.PropertiesToLoad.Add("memberof");
+                        searcher.PropertiesToLoad.Add("name");
+                        searcher.PropertiesToLoad.Add("samaccountname");
+                        searcher.PropertiesToLoad.Add("objectcategory");
+                        searcher.PropertiesToLoad.Add("objectSid");
+                        searcher.PropertiesToLoad.Add("displayName");
+                        searcher.PropertiesToLoad.Add("distinguishedName");
+                        searcher.PropertiesToLoad.Add("primaryGroupID");
+                        searcher.PropertiesToLoad.Add("userAccountControl");
+                        searcher.PropertiesToLoad.Add("description");
+                        searcher.PropertiesToLoad.Add("userPrincipalName");
+                        searcher.PropertiesToLoad.Add("info");
 
-                    searcher.PageSize = 1000;
-                    Console.WriteLine("Searching for users");
-                    results = searcher.FindAll();
-                    timer.Stop();
-                    Console.WriteLine("Found " + results.Count + " users in " + timer.ElapsedMilliseconds + "ms.");
+                        searcher.PageSize = 1000;
+                        Console.WriteLine("Searching for users");
+                        results = searcher.FindAll();
+                        timer.Stop();
+                        Console.WriteLine("Found " + results.Count + " users in " + timer.ElapsedMilliseconds + "ms.");
+                    }
+                    else
+                    {
+                        Program.ExitError("Error retrieving groups from AD", 200);
+                    }
+
                 }
                 catch (Exception e)
                 {
                     timer.Stop();
-                    Console.WriteLine("Error retrieving users from AD: " + e.Message);
+                    Program.ExitError(e, "Error retrieving users from AD", 202);
                 }
             }
             return results;
@@ -137,40 +155,48 @@ namespace ADScanner.ActiveDirectory
         //    return results;
         //}
 
-        public static SearchResultCollection GetAllComputerResults(DirectoryEntry de)
+        public static SearchResultCollection GetAllComputerResults(PrincipalContext context)
         {
             Stopwatch timer = new Stopwatch();
             SearchResultCollection results = null;
-            using (DirectorySearcher searcher = new DirectorySearcher(de))
+            using (PrincipalSearcher principalSearcher = new PrincipalSearcher(new UserPrincipal(context)))
             {
                 try
                 {
-                    timer.Start();
-                    searcher.Filter = ("(&(objectCategory=computer))");
-                    searcher.SearchScope = SearchScope.Subtree;
-                    searcher.PropertiesToLoad.Add("memberof");
-                    searcher.PropertiesToLoad.Add("name");
-                    searcher.PropertiesToLoad.Add("cn");
-                    searcher.PropertiesToLoad.Add("samaccountname");
-                    searcher.PropertiesToLoad.Add("objectcategory");
-                    searcher.PropertiesToLoad.Add("objectSid");
-                    searcher.PropertiesToLoad.Add("distinguishedName");
-                    searcher.PropertiesToLoad.Add("operatingSystem");
-                    searcher.PropertiesToLoad.Add("operatingSystemVersion");
-                    searcher.PropertiesToLoad.Add("primaryGroupID");
-                    searcher.PropertiesToLoad.Add("description");
-                    searcher.PropertiesToLoad.Add("info");
+                    DirectorySearcher searcher = principalSearcher.GetUnderlyingSearcher() as DirectorySearcher;
+                    if (searcher != null)
+                    {
+                        timer.Start();
+                        searcher.Filter = ("(&(objectCategory=computer))");
+                        searcher.SearchScope = SearchScope.Subtree;
+                        searcher.PropertiesToLoad.Add("memberof");
+                        searcher.PropertiesToLoad.Add("name");
+                        searcher.PropertiesToLoad.Add("cn");
+                        searcher.PropertiesToLoad.Add("samaccountname");
+                        searcher.PropertiesToLoad.Add("objectcategory");
+                        searcher.PropertiesToLoad.Add("objectSid");
+                        searcher.PropertiesToLoad.Add("distinguishedName");
+                        searcher.PropertiesToLoad.Add("operatingSystem");
+                        searcher.PropertiesToLoad.Add("operatingSystemVersion");
+                        searcher.PropertiesToLoad.Add("primaryGroupID");
+                        searcher.PropertiesToLoad.Add("description");
+                        searcher.PropertiesToLoad.Add("info");
 
-                    searcher.PageSize = 1000;
-                    Console.WriteLine("Searching for computers");
-                    results = searcher.FindAll();
-                    timer.Stop();
-                    Console.WriteLine("Found " + results.Count + " computers in " + timer.ElapsedMilliseconds + "ms.");
+                        searcher.PageSize = 1000;
+                        Console.WriteLine("Searching for computers");
+                        results = searcher.FindAll();
+                        timer.Stop();
+                        Console.WriteLine("Found " + results.Count + " computers in " + timer.ElapsedMilliseconds + "ms.");
+                    }
+                    else
+                    {
+                        Program.ExitError("Error retrieving groups from AD", 200);
+                    }
                 }
                 catch (Exception e)
                 {
                     timer.Stop();
-                    Console.WriteLine("Error retrieving computers from AD: " + e.Message);
+                    Program.ExitError(e, "Error retrieving computers from AD", 202);
                 }
             }
             return results;

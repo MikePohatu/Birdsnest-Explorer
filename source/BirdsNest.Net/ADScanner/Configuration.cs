@@ -27,14 +27,26 @@ namespace ADScanner
         [JsonProperty("ID")]
         public string ID { get; set; } = string.Empty;
 
-        [JsonProperty("AD_DomainPath")]
-        public string AD_DomainPath { get; set; }
+        [JsonProperty("Domain")]
+        public string Domain { get; set; }
 
-        [JsonProperty("AD_Username")]
-        public string AD_Username { get; set; }
+        [JsonProperty("Name")]
+        public string Name { get; set; }
 
-        [JsonProperty("AD_Password")]
-        public string AD_Password { get; set; }
+        [JsonProperty("ContainerDN")]
+        public string ContainerDN { get; set; }
+
+        [JsonProperty("SSL")]
+        public bool SSL { get; set; } = false;
+
+        [JsonProperty("TimeoutSeconds")]
+        public int TimeoutSeconds { get; set; } = 900;
+
+        [JsonProperty("Username")]
+        public string Username { get; set; }
+
+        [JsonProperty("Password")]
+        public string Password { get; set; }
 
         public static Configuration LoadConfiguration(string filepath)
         {
@@ -49,7 +61,7 @@ namespace ADScanner
 
         public void Dispose()
         {
-            this.AD_Password = string.Empty;
+            this.Password = string.Empty;
         }
     }
 }

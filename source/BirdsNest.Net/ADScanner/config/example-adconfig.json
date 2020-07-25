@@ -1,6 +1,9 @@
 {
   "ID": "domain.local",
-  "AD_DomainPath": "LDAP://domain.local/DC=domain,DC=local",
-  "AD_Username": "domain\\user",
-  "AD_Password": "Password1"
+  "Domain": "domain.local",
+  "ContainerDN": "DC=domain,DC=local",
+  "SSL": false,
+  "TimeoutSeconds": 900,
+  "Username": "domain\\user",
+  "Password": "Password1"
 }
