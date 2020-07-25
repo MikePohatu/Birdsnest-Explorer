@@ -91,9 +91,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
-    <None Include="example-fsconfig.json">
+    <Content Include="config\example-fsconfig.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
+    </Content>
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>

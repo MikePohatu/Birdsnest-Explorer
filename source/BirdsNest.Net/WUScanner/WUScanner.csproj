@@ -89,9 +89,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
-    <None Include="example-wuconfig.json">
+    <Content Include="config\example-wuconfig.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
+    </Content>
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>

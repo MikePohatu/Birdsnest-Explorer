@@ -29,8 +29,8 @@ namespace CustomImporter
         static void Main(string[] args)
         {
             string appdir = AppDomain.CurrentDomain.BaseDirectory;
-            string neoconfigfile = appdir + @"\neoconfig.json";
-            string configfile = appdir + @"\ciconfig.json";
+            string neoconfigfile = appdir + @"\config\neoconfig.json";
+            string configfile = appdir + @"\config\ciconfig.json";
             bool batchmode = false;
             IDriver driver = null;
             string scanid = ShortGuid.NewGuid().ToString();

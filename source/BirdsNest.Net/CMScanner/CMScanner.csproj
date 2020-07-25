@@ -94,9 +94,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
-    <None Include="example-cmconfig.json">
+    <Content Include="config\example-cmconfig.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
+    </Content>
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>

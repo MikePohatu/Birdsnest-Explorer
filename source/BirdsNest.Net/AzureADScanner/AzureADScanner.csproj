@@ -6,6 +6,16 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="config\example-aadconfig.json" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="config\example-aadconfig.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="CSharpVitamins.ShortGuid" Version="1.0.2" />
     <PackageReference Include="Microsoft.Extensions.Configuration.UserSecrets" Version="3.1.1" />
     <PackageReference Include="Microsoft.Graph" Version="1.21.0" />
@@ -17,12 +27,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\common\common.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <None Update="example-aadconfig.json">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
   </ItemGroup>
 
 </Project>

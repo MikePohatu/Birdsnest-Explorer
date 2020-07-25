@@ -61,9 +61,9 @@
     <Compile Include="Types.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="example-neoconfig.json">
+    <Content Include="config\example-neoconfig.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
+    </Content>
     <None Include="packages.config">
       <SubType>Designer</SubType>
     </None>

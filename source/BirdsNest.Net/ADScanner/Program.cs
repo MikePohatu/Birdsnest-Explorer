@@ -1,4 +1,4 @@
-﻿#region license
+#region license
 // Copyright (c) 2019-2020 "20Road"
 // 20Road Limited [https://20road.com]
 //
@@ -36,8 +36,8 @@ namespace ADScanner
             Stopwatch totaltimer = new Stopwatch();
 
             string _appdir = AppDomain.CurrentDomain.BaseDirectory;
-            string neoconfigfile = _appdir + @"\neoconfig.json";
-            string configfile = _appdir + @"\adconfig.json";
+            string neoconfigfile = _appdir + @"\config\neoconfig.json";
+            string configfile = _appdir + @"\config\adconfig.json";
             int relcounter = 0;
             bool batchmode = false;
             string scanid = ShortGuid.NewGuid().ToString();

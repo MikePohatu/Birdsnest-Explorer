@@ -39,8 +39,8 @@ namespace FSScanner
             List<DataStore> datastores = new List<DataStore>();
 
             string _appdir = AppDomain.CurrentDomain.BaseDirectory;
-            string neoconfigfile = _appdir + @"\neoconfig.json";
-            string configfile = _appdir + @"\fsconfig.json";
+            string neoconfigfile = _appdir + @"\config\neoconfig.json";
+            string configfile = _appdir + @"\config\fsconfig.json";
 
             //int relcounter = 0;
             bool batchmode = false;

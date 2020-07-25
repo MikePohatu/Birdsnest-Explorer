@@ -68,9 +68,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
-    <None Include="example-customimporterconfig.json">
+    <Content Include="config\example-customimporterconfig.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
+    </Content>
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>

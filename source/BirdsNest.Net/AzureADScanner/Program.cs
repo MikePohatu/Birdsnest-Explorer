@@ -35,8 +35,8 @@ namespace AzureADScanner
             Stopwatch steptimer = new Stopwatch();
             Stopwatch totaltimer = new Stopwatch();
             string _appdir = AppDomain.CurrentDomain.BaseDirectory;
-            string neoconfigfile = _appdir + @"\neoconfig.json";
-            string configfile = _appdir + @"\aadconfig.json";
+            string neoconfigfile = _appdir + @"\config\neoconfig.json";
+            string configfile = _appdir + @"\config\aadconfig.json";
             bool batchmode = false;
             string scanid = ShortGuid.NewGuid().ToString();
             string scannerid = string.Empty;

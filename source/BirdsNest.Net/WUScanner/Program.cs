@@ -40,8 +40,8 @@ namespace WUScanner
             Configuration wuconfig = null;
 
             string _appdir = AppDomain.CurrentDomain.BaseDirectory;
-            string neoconfigfile = _appdir + @"\neoconfig.json";
-            string configfile = _appdir + @"\wuconfig.json";
+            string neoconfigfile = _appdir + @"\config\neoconfig.json";
+            string configfile = _appdir + @"\config\wuconfig.json";
             //int relcounter = 0;
             bool batchmode = false;
             string scanid = ShortGuid.NewGuid().ToString();
