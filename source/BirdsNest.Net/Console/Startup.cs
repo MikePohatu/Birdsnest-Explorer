@@ -31,6 +31,8 @@ using Microsoft.AspNetCore.SpaServices.ReactDevelopmentServer;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Neo4j.Driver.V1;
+using System;
 using VueCliMiddleware;
 
 namespace Console
@@ -47,6 +49,23 @@ namespace Console
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            if (Configuration.GetValue<bool>("EnableHsts") == true)
+            {
+                int maxage = 24;
+                try
+                {
+                    maxage = Configuration.GetValue<int>("HstsMaxAgeHours");
+                }
+                catch { }
+
+                maxage = maxage < 1 ? 24 : maxage;
+
+                services.AddHsts(options =>
+                {
+                    options.MaxAge = TimeSpan.FromHours(maxage);
+                });
+            }
+
             services.AddSingleton<IConfiguration>(Configuration);
             services.Configure<CookiePolicyOptions>(options =>
             {
@@ -98,9 +117,16 @@ namespace Console
             else
             {
                 app.UseExceptionHandler("/Error");
-                // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
-                app.UseHsts();
-                app.UseHttpsRedirection();
+
+                if (Configuration.GetValue<bool>("EnableHSTS") == true)
+                {
+                    // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
+                    app.UseHsts();
+                }
+                if (Configuration.GetValue<bool>("AllowHTTP") != true)
+                {
+                    app.UseHttpsRedirection();
+                }
             }
 
             app.UseStaticFiles();
