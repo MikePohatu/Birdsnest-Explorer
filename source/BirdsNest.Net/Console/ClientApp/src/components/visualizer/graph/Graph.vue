@@ -823,7 +823,7 @@ export default class Graph extends Vue {
 	//#region d3 stuff
 	updateNodeSizes() {
 		this.graphData.updateScale();
-
+		this.simController.RefreshData();
 		if (this.$store.state.visualizer.perfMode === true) {
 			this.graphNodes.forEach(node => {
 				node.currentSize = node.size;
