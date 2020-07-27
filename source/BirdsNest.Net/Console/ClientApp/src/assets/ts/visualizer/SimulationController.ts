@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2019-2020 "20Road"
+// Copyright (c) 2019-2020 "20Road"
 // 20Road Limited [https://20road.com]
 //
 // This file is part of BirdsNest.
@@ -48,29 +48,22 @@ export default class SimulationController {
         this.connectsimulation.stop();
         this.connectsimulation
             .force("link", d3.forceLink()
-                .id(function (d: SimLink<SimNode>) { return d.dbId; })
-                .distance(200)
-                .strength(0.3));
+                .id(function (d: SimLink<SimNode>) { return d.dbId; }));
 
         this.meshsimulation = d3.forceSimulation();
         this.meshsimulation.stop();
         this.meshsimulation
             .force("link", d3.forceLink()
-                .id(function (d: SimLink<SimNode>) { return d.dbId; })
-                .distance(200)
-                .strength(0.6))
+                .id(function (d: SimLink<SimNode>) { return d.dbId; }))
             .force("manybody", d3.forceManyBody()
-                .strength(-30)
-                .distanceMin(3)
-                .distanceMax(1000));
+                .strength(-50));
 
         this.treesimulation = d3.forceSimulation();
         this.treesimulation.stop();
         this.treesimulation
             .force("link", d3.forceLink()
                 .id(function (d: SimLink<SimNode>) { return d.dbId; })
-                .distance(200)
-                .strength(0.8));
+                .strength(1));
     }
 
     onGraphTick() {
@@ -115,6 +108,7 @@ export default class SimulationController {
 
     RefreshData() {
         this.StopSimulations();
+
         this.SetNodes(
             graphData.graphNodes.GetArray(),
             graphData.meshNodes.GetArray(),
