@@ -16,8 +16,8 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see http://www.gnu.org/licenses/.
 -->
 <template>
-	<div id="results" v-bind:class="{ hidden: !hasResults }">
-		<div v-bind:class="{ hidden: zeroResults }">
+	<div id="results" v-bind:class="{hidden: !showResults}" >
+		<div v-bind:class="{hidden: zeroResults}">
 			<div>
 				Found
 				<a :data-toggle="dropdownId">{{nodes.length}}</a> results.
@@ -37,15 +37,14 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 				</div>
 			</div>
 		</div>
-
-		<div v-bind:class="{ hidden: !zeroResults }">Found no results.</div>
+		<div v-if="(searchNotification !== null)" v-bind:class="{loading: isSearching}">{{searchNotification}}</div>
 	</div>
 </template>
 
 
 <style scoped>
 #results {
-	height: 1.2em;
+	height: auto;
 	min-width: 200px;
 	margin: 5px;
 }
@@ -96,8 +95,8 @@ export default class SearchResults extends Vue {
 		return results === null ? [] : results.nodes;
 	}
 
-	get hasResults(): boolean {
-		return this.$store.state.visualizer.search.results !== null ? true : false;
+	get showResults(): boolean {
+		return (this.$store.state.visualizer.search.results !== null) || (this.searchNotification !== null);
 	}
 
 	get zeroResults(): boolean {
@@ -105,7 +104,15 @@ export default class SearchResults extends Vue {
 		if (results === null) {
 			return true;
 		}
-		return results.nodes.length === 0 ? true : false;
+		return results.nodes.length === 0;
+	}
+
+	get searchNotification(): string {
+		return this.$store.state.visualizer.search.statusMessage;
+	}
+
+	get isSearching(): boolean {
+		return this.$store.state.visualizer.search.isSearching;
 	}
 
 	onAddClicked(node: SearchNode): void {
@@ -113,7 +120,13 @@ export default class SearchResults extends Vue {
 	}
 
 	onAddToViewClicked(): void {
-		if (this.$store.state.visualizer.search.results.nodes.length > 0) {
+		let proceed = true;
+
+		if (this.$store.state.visualizer.search.results.nodes.length > 300) {
+			proceed = confirm("You are adding a large number of nodes to the graph. Animation will be disabled to improve performance.\n\nAre you sure you want to proceed?");
+		}
+					
+		if (proceed && this.$store.state.visualizer.search.results.nodes.length > 0) {
 			bus.$emit(events.Notifications.Processing, "Adding results to view");
 			this.$store.commit(VisualizerStorePaths.mutations.Add.PENDING_RESULTS, this.$store.state.visualizer.search.results);
 			this.$store.commit(SearchStorePaths.mutations.Delete.RESULTS);

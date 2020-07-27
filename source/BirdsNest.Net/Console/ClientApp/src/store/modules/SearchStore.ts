@@ -94,6 +94,8 @@ export interface SearchState {
 
     shareCypher: string;
     shareUrl: string;
+    statusMessage: string;
+    isSearching: boolean;
 }
 
 const state: SearchState = {
@@ -116,6 +118,8 @@ const state: SearchState = {
 
     shareCypher: "",
     shareUrl: "",
+    statusMessage: null,
+    isSearching: false,
 }
 
 export const SearchStore: Module<SearchState, RootState> = {
@@ -144,6 +148,18 @@ export const SearchStore: Module<SearchState, RootState> = {
         deleteResults(state): void {
             state.results = null;
         },
+
+        //status message mutations
+        setStatusMessage(state, newMessage): void {
+            state.statusMessage = newMessage;
+        },
+        clearStatusMessage(state): void {
+            state.statusMessage = null;
+        },
+        setIsSearching(state, isseaching: boolean): void {
+            state.isSearching = isseaching;
+        },
+
 
         //#region Path update mutations
         selectedItem(state, newItem: SearchItem) {
@@ -339,6 +355,10 @@ export const SearchStore: Module<SearchState, RootState> = {
     },
     actions: {
         search(context): void {
+            context.commit('results', null);
+            context.commit('setStatusMessage', "Searching");
+            context.commit('setIsSearching', true);
+
             const postdata = JSON.stringify(context.state.search);
             //const postdata = context.state.search;
             //console.log(postdata);
@@ -349,23 +369,42 @@ export const SearchStore: Module<SearchState, RootState> = {
                 postJson: true,
                 successCallback: (data?: ResultSet) => {
                     //console.log(data);
+                    if (data.nodes.length === 0) {
+                        context.commit('setStatusMessage', 'Found no results.');
+                    } else {
+                        context.commit('clearStatusMessage');
+                    }
+                    context.commit('setIsSearching', false);
                     context.commit('results', data);
                 },
                 errorCallback: (jqXHR?: JQueryXHR, status?: string, error?: string) => {
+                    context.commit('setStatusMessage', "Error");
+                    context.commit('setIsSearching', false);
                     console.error(error);
                 }
             };
             api.post(request);
         },
         simpleSearch(context, term): void {
+            context.commit('results', null);
+            context.commit('setIsSearching', true);
+            context.commit('setStatusMessage', "Searching");
+
             const request: Request = {
                 url: "/api/search/?searchterm=" + term,
                 postJson: true,
                 successCallback: (data?: ResultSet) => {
-                    //console.log(data);
+                    if (data.nodes.length === 0) {
+                        context.commit('setStatusMessage', 'Found no results.');
+                    } else {
+                        context.commit('clearStatusMessage');
+                    }
+                    context.commit('setIsSearching', false);
                     context.commit('results', data);
                 },
                 errorCallback: (jqXHR?: JQueryXHR, status?: string, error?: string) => {
+                    context.commit('setIsSearching', false);
+                    context.commit('setStatusMessage', "Error");
                     console.error(error);
                 }
             };

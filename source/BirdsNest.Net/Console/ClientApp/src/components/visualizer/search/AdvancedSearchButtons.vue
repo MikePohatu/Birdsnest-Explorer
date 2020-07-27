@@ -64,7 +64,6 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 					<span>Search</span>
 				</button>
 			</div>
-			<div v-if="searchNotification !== ''" class="searchNotification">{{searchNotification}}</div>
 		</div>
 	</div>
 </template>
@@ -92,9 +91,9 @@ import { SearchStorePaths } from "../../../store/modules/SearchStore";
 	mixins: [foundation],
 })
 export default class AdvancedSearchButtons extends Vue {
-	searchNotification = "";
 	cypherquery = "";
 	shareUrl = "";
+	searchRetry = 0;
 
 	onMinimizeClicked(): void {
 		this.$store.commit(SearchStorePaths.mutations.TOGGLE_SEARCH);
@@ -114,6 +113,12 @@ export default class AdvancedSearchButtons extends Vue {
 		const search = this.$store.state.visualizer.search.search;
 		if (search.nodes.length > 0) {
 			this.$store.dispatch(SearchStorePaths.actions.SEARCH);
+			this.searchRetry = 0;
+		} else {
+			this.searchRetry++;
+			if (this.searchRetry > 2) {
+				alert("You haven't added any items to the search");
+			}
 		}
 	}
 
@@ -123,7 +128,5 @@ export default class AdvancedSearchButtons extends Vue {
 			this.$store.dispatch(SearchStorePaths.actions.UPDATE_SHARE);
 		}
 	}
-
-	
 }
 </script>

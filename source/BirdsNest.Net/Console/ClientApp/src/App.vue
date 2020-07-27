@@ -174,8 +174,6 @@ html {
 	}
 }
 
-
-
 .icon {
 	font-family: "Font Awesome 5 Free";
 	font-weight: 900;
@@ -191,5 +189,32 @@ html {
 	-moz-user-select: none;
 	-ms-user-select: none;
 	user-select: none; 
+}
+
+.loading::after {
+  content: '.';
+  animation: dots 4s steps(5, end) infinite;
+}
+
+@keyframes dots {
+  0%, 20% {
+    color: rgba(0,0,0,0);
+    text-shadow:
+      .2em 0 0 rgba(0,0,0,0),
+      .4em 0 0 rgba(0,0,0,0);
+      }
+  40% {
+    color: #606060;
+    text-shadow:
+      .2em 0 0 rgba(0,0,0,0),
+      .4em 0 0 rgba(0,0,0,0);}
+  60% {
+    text-shadow:
+      .2em 0 0 #606060,
+      .4em 0 0 rgba(0,0,0,0);}
+  80%, 100% {
+    text-shadow:
+      .2em 0 0 #606060,
+      .4em 0 0 #606060;}
 }
 </style>
