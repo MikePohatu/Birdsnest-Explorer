@@ -113,9 +113,9 @@ namespace ADScanner
             {
                 ExitError(e, "There was an error loading your neo4j configuration", 2);
             }
-            
 
             
+            Console.WriteLine($"Starting scan.\nScan ID: {scanid}\n");
 
             //process groups
             //load the groups

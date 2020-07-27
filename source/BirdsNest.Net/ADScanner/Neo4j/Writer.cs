@@ -209,10 +209,7 @@ namespace ADScanner.Neo4j
             scanprops.Add("scanid", scanid);
             scanprops.Add("domainid", Writer.DomainID);
 
-            string query = "MATCH(n:" + Types.ADObject + ") " +
-                "WHERE n.domainid = $domainid " +
-                "WITH n " +
-                "MATCH(n) -[r:" + Types.MemberOf + " {domainid:$domainid}]->(g:" + Types.Group + ") " +
+            string query = "MATCH (n:" + Types.ADObject + ") -[r:" + Types.MemberOf + " {domainid:$domainid}]->(g:" + Types.ADObject + ") " +
                 "WHERE NOT EXISTS(r.lastscan) OR r.lastscan <> $scanid " +
                 "DELETE r " +
                 "RETURN r ";
