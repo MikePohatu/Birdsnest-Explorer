@@ -279,7 +279,14 @@ export default class ValueConditionEdit extends Vue {
 
 	get propertyType(): string {
 		if (this.dataType !== null && webcrap.misc.isNullOrWhitespace(this.condition.property) === false) {
-			this.condition.type = this.dataType.properties[this.condition.property].type;
+			if (Object.prototype.hasOwnProperty.call(this.dataType.properties, [this.condition.property])) {
+				this.condition.type = this.dataType.properties[this.condition.property].type;
+			} else {
+				const firstkey = Object.keys(this.dataType.properties)[0];
+				this.condition.type = this.dataType.properties[firstkey].type;
+			}
+
+			
 			return this.condition.type;
 		} else {
 			return null;

@@ -85,7 +85,7 @@ export default class GraphNode extends Vue {
 		this.node.labels.forEach(label => {
 			if (Object.prototype.hasOwnProperty.call(subTypeProps,label)) {
 				const subProp = subTypeProps[label];
-				const subType = String(this.node.properties[subProp]);
+				const subType = this.node.properties[subProp].toString();
 
 				if (webcrap.misc.isNullOrWhitespace(subType) === false) {
 					subTypes.push(label + '-'+ subType);
