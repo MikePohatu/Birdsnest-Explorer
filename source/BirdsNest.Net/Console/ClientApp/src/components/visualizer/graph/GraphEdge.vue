@@ -25,7 +25,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 		v-on:contextmenu.prevent="onEdgeCtrlClicked"
 	>
 		<path
-			:class="['arrows', edge.label]"
+			:class="['arrows', edge.label, subType]"
 		></path>
 		<g class="edgelabel">
 			<text
