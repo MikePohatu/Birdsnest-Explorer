@@ -16,30 +16,30 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #endregion
-using common;
-using Microsoft.ConfigurationManagement.ManagementProvider;
-using Neo4j.Driver.V1;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace CMScanner.CmConverter
+using common;
+
+namespace ADScanner.ActiveDirectory
 {
-    public class CmDeviceAdConnections: IDataCollector
+    class ForeignSecurityPrincipalConnectionCollector: IDataCollector
     {
-        public string ProgressMessage { get { return "Creating CM to AD device mappings"; } }
+        public string ProgressMessage { get { return "Creating foreign security principal relationships"; } }
+
         public string Query
         {
             get
             {
-                return "MATCH (dev:" + Types.CMDevice + ") " +
-                "MATCH (addev:" + Types.Computer + " {id: dev.sid }) " +
-                "MERGE p=(addev)-[r:" + Types.CMHasObject + "]->(dev) " +
-                "SET r.lastscan=$ScanID " +
-                "SET r.scannerid=$ScannerID " +
-                "RETURN p";
+                return "MATCH (n:" + Types.ForeignSecurityPrincipal + " {domainid: $ScannerID})" +
+                " MATCH (o:" + Types.ADObject + ") WHERE n.id = o.id AND NOT o:" + Types.ForeignSecurityPrincipal +
+                " MERGE (o)-[:REPRESENTED_BY]->(n) " +
+                " WITH o,n" +
+                " MATCH (o)-[:REPRESENTED_BY]->(n)-[ref:" + Types.MemberOf + "]->(g)" +
+                " MERGE (o)-[r:" + Types.MemberOf + "]->(g)" +
+                " SET r.foreignmember = true" +
+                " SET r.foreignreference = n.id" + 
+                " SET r.lastscan = $ScanID" +
+                " SET r.refrence = id(ref)" +
+                "  RETURN n,o";
             }
         }
 
@@ -48,12 +48,5 @@ namespace CMScanner.CmConverter
             NeoQueryData querydata = new NeoQueryData();
             return querydata;
         }
-
-        public string GetSummaryString(IResultSummary summary)
-        {
-            return summary.Counters.RelationshipsCreated + " created";
-        }
-
-        public static CmDeviceAdConnections GetInstance() { return new CmDeviceAdConnections(); }
     }
 }

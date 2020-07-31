@@ -132,7 +132,7 @@ namespace FSScanner
                         ConsoleWriter.WriteError("A random ID has been generated for you to use in your config: " + ShortGuid.NewGuid().ToString());
                         if (batchmode == false)
                         {
-                            ConsoleWriter.WriteLine("Press any key to continue");
+                            ConsoleWriter.WriteLine("Press enter to continue");
                             Console.ReadLine();
                         }
                         continue;
@@ -168,7 +168,7 @@ namespace FSScanner
             else
             {
                 ConsoleWriter.WriteLine();
-                ConsoleWriter.WriteLine("Press any key to exit");
+                ConsoleWriter.WriteLine("Press enter to exit");
                 Console.ReadLine();
             }
         }

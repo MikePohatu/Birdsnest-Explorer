@@ -29,7 +29,7 @@ namespace CMScanner.CmConverter
 {
     public class CmApplicationsInTaskSequences: IDataCollector
     {
-        public string ProgressMessage { get { return "Creating application/task sequence references: "; } }
+        public string ProgressMessage { get { return "Creating application/task sequence references"; } }
         public string Query
         {
             get

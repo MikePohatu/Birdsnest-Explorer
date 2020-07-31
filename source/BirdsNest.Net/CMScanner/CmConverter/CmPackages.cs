@@ -29,7 +29,7 @@ namespace CMScanner.CmConverter
 {
     public class CmPackages: IDataCollector
     {
-        public string ProgressMessage { get { return "Creating package nodes: "; } }
+        public string ProgressMessage { get { return "Creating package nodes"; } }
         public string Query
         {
             get

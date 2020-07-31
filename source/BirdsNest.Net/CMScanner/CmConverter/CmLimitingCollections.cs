@@ -29,7 +29,7 @@ namespace CMScanner.CmConverter
 {
     public class CmLimitingCollections: IDataCollector
     {
-        public string ProgressMessage { get { return "Connecting limiting collections: "; } }
+        public string ProgressMessage { get { return "Connecting limiting collections"; } }
         public string Query
         {
             get

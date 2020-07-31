@@ -29,7 +29,7 @@ namespace CMScanner.CmConverter
 {
     public class CmDevices: IDataCollector
     {
-        public string ProgressMessage { get { return "Creating device nodes: "; } }
+        public string ProgressMessage { get { return "Creating device nodes"; } }
         public string Query
         {
             get

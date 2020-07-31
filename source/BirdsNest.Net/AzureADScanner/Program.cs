@@ -125,27 +125,14 @@ namespace AzureADScanner
                 aadgroupmembers
             };
 
-            int[] tabs = { 0, 60, 67, 74, 81, 88 };
-            string[] headervals = { "Description", "(n)+", "[r]+", "(n)-", "[r]-", "Properties Set" };
-            ConsoleWriter.WriteLine(tabs, headervals);
+            NeoWriter.WriteHeaders();
 
             foreach (IDataCollector collector in collectors)
             {
                 NeoQueryData collectionsdata = collector.CollectData();
                 collectionsdata.ScanID = scanid;
                 collectionsdata.ScannerID = scannerid;
-                var summary = NeoWriter.RunQuery(collector.Query, collectionsdata, driver.Session());
-
-                string[] sumvals = {
-                    collector.ProgressMessage,
-                    summary.Counters.NodesCreated.ToString(),
-                    summary.Counters.RelationshipsCreated.ToString(),
-                    summary.Counters.NodesDeleted.ToString(),
-                    summary.Counters.RelationshipsDeleted.ToString(),
-                    summary.Counters.PropertiesSet.ToString()
-                    };
-
-                ConsoleWriter.WriteLine(tabs, sumvals);
+                NeoWriter.WriteIDataCollector(collector, driver, true, true);
             }
 
 

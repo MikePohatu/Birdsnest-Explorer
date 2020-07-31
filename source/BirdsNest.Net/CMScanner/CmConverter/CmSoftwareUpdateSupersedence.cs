@@ -29,7 +29,7 @@ namespace CMScanner.CmConverter
 {
     public class CmSoftwareUpdateSupersedence : IDataCollector
     {
-        public string ProgressMessage { get { return "Creating software update supersedence relationships: "; } }
+        public string ProgressMessage { get { return "Creating software update supersedence relationships"; } }
         public string Query
         {
             get

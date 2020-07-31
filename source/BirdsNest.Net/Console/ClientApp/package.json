@@ -20,7 +20,7 @@
     "vuex": "^3.3.0"
   },
   "devDependencies": {
-    "@fortawesome/fontawesome-free": "^5.13.0",
+    "@fortawesome/fontawesome-free": "^5.14.0",
     "@types/d3": "^5.7.2",
     "@types/jest": "^24.0.19",
     "@types/jquery": "^3.3.36",

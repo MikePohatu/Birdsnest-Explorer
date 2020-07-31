@@ -27,7 +27,8 @@
       "properties": {
         "domainid": {},
         "lastscan": {}
-      }
+      },
+      "subType": "foreignmember"
     }
   },
   "nodeDataTypes": {
@@ -103,6 +104,22 @@
       "displayName": "AD Deleted",
       "description": "AD objects that have been deleted.",
       "icon": "f2ed"
+    },
+    "AD_ForeignSecurityPrincipal": {
+      "displayName": "AD Foreign Security Principal",
+      "description": "AD object from foreign domain i.e. via domain or forest trust",
+      "properties": {
+        "dn": {},
+        "domainid": {},
+        "id": {},
+        "lastscan": {},
+        "name": {},
+        "scope": {
+          "type": "number"
+        }
+      },
+      "default": "dn",
+      "icon": "e068"
     },
     "AD_Object": {
       "displayName": "AD Object",

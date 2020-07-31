@@ -29,7 +29,7 @@ namespace CMScanner.CmConverter
 {
     public class CmTaskSequences: IDataCollector
     {
-        public string ProgressMessage { get { return "Creating task sequence nodes: "; } }
+        public string ProgressMessage { get { return "Creating task sequence nodes"; } }
         public string Query
         {
             get

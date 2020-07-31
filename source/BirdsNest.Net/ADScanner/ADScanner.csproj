@@ -37,6 +37,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -46,6 +47,7 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="CSharpVitamins.ShortGuid, Version=1.0.2.0, Culture=neutral, processorArchitecture=MSIL">
@@ -77,21 +79,19 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ActiveDirectory\ADComputer.cs" />
-    <Compile Include="ActiveDirectory\ADEntity.cs" />
-    <Compile Include="ActiveDirectory\ADGroup.cs" />
-    <Compile Include="ActiveDirectory\ADObject.cs" />
     <Compile Include="ActiveDirectory\ADSearchResultConverter.cs" />
-    <Compile Include="ActiveDirectory\ADUser.cs" />
-    <Compile Include="ActiveDirectory\ADGroupMemberObject.cs" />
+    <Compile Include="ActiveDirectory\StandAloneQueries.cs" />
     <Compile Include="ActiveDirectory\Connector.cs" />
-    <Compile Include="ActiveDirectory\DeletedObject.cs" />
+    <Compile Include="ActiveDirectory\ForeignSecurityPrincipalConnectionCollector .cs" />
+    <Compile Include="ActiveDirectory\ForeignSecurityPrincipalCollector.cs" />
+    <Compile Include="ActiveDirectory\GroupMembershipsCollector.cs" />
+    <Compile Include="ActiveDirectory\GroupsCollector.cs" />
     <Compile Include="ActiveDirectory\UserAccountControlDefinitions.cs" />
+    <Compile Include="ActiveDirectory\ComputersCollector.cs" />
+    <Compile Include="ActiveDirectory\UsersCollector.cs" />
     <Compile Include="Configuration.cs" />
+    <Compile Include="ErrorCodes.cs" />
     <Compile Include="FileHandler.cs" />
-    <Compile Include="ActiveDirectory\QueryHandler.cs" />
-    <Compile Include="Neo4j\Reader.cs" />
-    <Compile Include="Neo4j\Writer.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

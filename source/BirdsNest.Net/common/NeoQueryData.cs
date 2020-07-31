@@ -28,6 +28,6 @@ namespace common
     {
         public string ScanID { get; set; }
         public string ScannerID { get; set; }
-        public object Properties { get; set; }
+        public List<object> Properties { get; set; }
     }
 }

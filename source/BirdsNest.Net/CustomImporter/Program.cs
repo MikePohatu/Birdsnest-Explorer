@@ -21,6 +21,7 @@ using System;
 using common;
 using CSharpVitamins;
 using System.Text;
+using System.Collections.Generic;
 
 namespace CustomImporter
 {
@@ -140,7 +141,7 @@ namespace CustomImporter
                     data.ScanID = scanid;
                     data.ScannerID = config.ScannerID;
                     data.Properties = config.Items;
-                    NeoWriter.RunQuery(query, data, session);
+                    NeoWriter.RunQuery(query, data, driver, true);
                 }
             }
 

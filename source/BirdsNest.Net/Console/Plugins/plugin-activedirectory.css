@@ -49,8 +49,25 @@
     fill: steelblue;
 }
 
+.AD_ForeignSecurityPrincipal.icon {
+    fill: darkorange;
+}
+
+.AD_ForeignSecurityPrincipal {
+    color: darkorange;
+    stroke: darkorange;
+    background-color: rgb(255, 240, 218);
+    fill: rgb(255, 240, 218);
+}
+
 .AD_MEMBER_OF {
     stroke: green;
     color: green;
+    background-color: #f2f9f3;
+}
+
+.AD_MEMBER_OF-true {
+    stroke: darkorange;
+    color: darkorange;
     background-color: #f2f9f3;
 }

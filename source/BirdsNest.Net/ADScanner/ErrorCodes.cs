@@ -16,12 +16,21 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #endregion
-using System;
-using Neo4j.Driver;
 
-namespace ADScanner.Neo4j
+namespace ADScanner
 {
-    public class Reader
+    public static class ErrorCodes
     {
+        public static int ComputersCollectorSearcherNull { get { return 210; } }
+        public static int ComputersCollectorSearcherException { get { return 211; } }
+
+        public static int GroupsCollectorSearcherNull { get { return 220; } }
+        public static int GroupsCollectorException { get { return 221; } }
+
+        public static int UsersCollectorSearcherNull { get { return 230; } }
+        public static int UsersCollectorException { get { return 231; } }
+
+        public static int ForeignSecurityPrincipalCollectorSearcherNull { get { return 240; } }
+        public static int ForeignSecurityPrincipalCollectorSearcherException { get { return 241; } }
     }
 }

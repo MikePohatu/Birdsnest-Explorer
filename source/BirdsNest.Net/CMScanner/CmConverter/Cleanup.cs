@@ -28,12 +28,11 @@ namespace CMScanner.CmConverter
 {
     public static class Cleanup
     {
-        public static void CleanupCmObjects(IDriver driver, string scanid, string scannerid, int[] tabstops)
+        public static void CleanupCmObjects(IDriver driver)
         {
-            IResultSummary summary;
             NeoQueryData collectionsdata = new NeoQueryData();
-            collectionsdata.ScanID = scanid;
-            collectionsdata.ScannerID = scannerid;
+            collectionsdata.ScanID = NeoWriter.ScanID;
+            collectionsdata.ScannerID = NeoWriter.ScannerID;
 
             //nodes first
             List<string> cmnodetypes = new List<string> {
@@ -56,17 +55,8 @@ namespace CMScanner.CmConverter
                 "DETACH DELETE n " +
                 "RETURN n";
 
-                summary = NeoWriter.RunQuery(query, collectionsdata, driver.Session());
-                string[] sumvals = {
-                    "Cleaning up " + type,
-                    summary.Counters.NodesCreated.ToString(),
-                    summary.Counters.RelationshipsCreated.ToString(),
-                    summary.Counters.NodesDeleted.ToString(),
-                    summary.Counters.RelationshipsDeleted.ToString(),
-                    summary.Counters.PropertiesSet.ToString()
-                    };
-
-                ConsoleWriter.WriteLine(tabstops, sumvals);
+                Console.Write("Cleaning up " + type);
+                NeoWriter.RunQuery(query, collectionsdata, driver, true, true);
             }
 
             //any remaining edges
@@ -88,17 +78,8 @@ namespace CMScanner.CmConverter
                 "DELETE r " +
                 "RETURN r";
 
-                summary = NeoWriter.RunQuery(query, collectionsdata, driver.Session());
-                string[] sumvals = {
-                    "Cleaning up " + type,
-                    summary.Counters.NodesCreated.ToString(),
-                    summary.Counters.RelationshipsCreated.ToString(),
-                    summary.Counters.NodesDeleted.ToString(),
-                    summary.Counters.RelationshipsDeleted.ToString(),
-                    summary.Counters.PropertiesSet.ToString()
-                    };
-
-                ConsoleWriter.WriteLine(tabstops, sumvals);
+                Console.Write("Cleaning up " + type);
+                NeoWriter.RunQuery(query, collectionsdata, driver, true, true);
             }
 
 
@@ -109,17 +90,8 @@ namespace CMScanner.CmConverter
                 "SET n.IsExpired = true " +
                 "RETURN n";
 
-            summary = NeoWriter.RunQuery(query, collectionsdata, driver.Session());
-            string[] vals = {
-                    "Finding expired updates",
-                    summary.Counters.NodesCreated.ToString(),
-                    summary.Counters.RelationshipsCreated.ToString(),
-                    summary.Counters.NodesDeleted.ToString(),
-                    summary.Counters.RelationshipsDeleted.ToString(),
-                    summary.Counters.PropertiesSet.ToString()
-                    };
-
-            ConsoleWriter.WriteLine(tabstops, vals);
+            Console.Write("Finding expired updates");
+            NeoWriter.RunQuery(query, collectionsdata, driver, true, true);
         }
     }
 }

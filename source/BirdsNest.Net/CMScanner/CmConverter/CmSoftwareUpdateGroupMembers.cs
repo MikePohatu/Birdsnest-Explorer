@@ -29,7 +29,7 @@ namespace CMScanner.CmConverter
 {
     public class CmSoftwareUpdateGroupMembers : IDataCollector
     {
-        public string ProgressMessage { get { return "Creating software update groups: "; } }
+        public string ProgressMessage { get { return "Creating software update groups"; } }
         public string Query
         {
             get

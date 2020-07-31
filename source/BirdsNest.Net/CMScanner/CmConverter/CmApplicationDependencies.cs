@@ -29,7 +29,7 @@ namespace CMScanner.CmConverter
 {
     public class CmApplicationDependencies: IDataCollector
     {
-        public string ProgressMessage { get { return "Creating application dependencies: "; } }
+        public string ProgressMessage { get { return "Creating application dependencies"; } }
         public string Query
         {
             //TO DO

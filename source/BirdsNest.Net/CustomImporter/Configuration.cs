@@ -29,7 +29,7 @@ namespace CustomImporter
         [JsonProperty("ScannerID")]
         public string ScannerID { get; set; }
         [JsonProperty("Items")]
-        public List<CustomItem> Items { get; set; }
+        public List<object> Items { get; set; }
         [JsonProperty("TypeDefinitions")]
         public List<TypeDefinition> TypeDefinitions { get; set; }
 

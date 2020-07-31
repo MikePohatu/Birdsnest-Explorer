@@ -1,26 +1,30 @@
 :begin
 
-CREATE CONSTRAINT ON (g:AD_Group) ASSERT g.id IS UNIQUE;
 CREATE CONSTRAINT ON (u:AD_User) ASSERT u.id IS UNIQUE;
-CREATE CONSTRAINT ON (o:AD_Object) ASSERT o.id IS UNIQUE;
 CREATE CONSTRAINT ON (c:AD_Computer) ASSERT c.id IS UNIQUE;
 
+CREATE INDEX ON :AD_ForeignSecurityPrincipal(dn);
+CREATE INDEX ON :AD_Group(dn);
+CREATE INDEX ON :AD_Group(id);
+CREATE INDEX ON :AD_Object(id);
+CREATE INDEX ON :AD_Object(dn);
+CREATE INDEX ON :AD_Object(scannerid);
+CREATE INDEX ON :AD_Object(domainid);
+CREATE INDEX ON :AD_User(dn);
+CREATE INDEX ON :AD_Computer(dn);
+
 CREATE CONSTRAINT ON (f:FS_Folder) ASSERT f.path IS UNIQUE;
+CREATE INDEX ON :FS_Datastore(name);
+CREATE INDEX ON :FS_Folder(scannerid);
 
 CREATE CONSTRAINT ON (app:CTX_Application) ASSERT app.id IS UNIQUE;
 CREATE CONSTRAINT ON (farm:CTX_Farm) ASSERT farm.name IS UNIQUE;
 
-CREATE INDEX ON :FS_Datastore(name);
-CREATE INDEX ON :FS_Folder(scannerid);
-CREATE INDEX ON :AD_Group(dn);
-CREATE INDEX ON :AD_Object(dn);
-CREATE INDEX ON :AD_Object(scannerid);
-CREATE INDEX ON :AD_User(dn);
-CREATE INDEX ON :AD_Computer(dn);
 CREATE INDEX ON :CM_Collection(id);
 CREATE INDEX ON :CM_Device(id);
 CREATE INDEX ON :CM_User(id);
 CREATE INDEX ON :CM_ConfigurationItem(id);
+
 CREATE INDEX ON :WU_Update(KB);
 CREATE INDEX ON :WU_Update(id);
 

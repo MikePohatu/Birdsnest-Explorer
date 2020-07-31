@@ -16,13 +16,11 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #endregion
+
 using System;
-using System.DirectoryServices;
-using System.Collections.Generic;
 using System.Diagnostics;
 using Neo4j.Driver.V1;
 using ADScanner.ActiveDirectory;
-using ADScanner.Neo4j;
 using common;
 using CSharpVitamins;
 using System.DirectoryServices.AccountManagement;
@@ -34,14 +32,12 @@ namespace ADScanner
         private static bool _batchmode = false;
         static void Main(string[] args)
         {
-            Stopwatch steptimer = new Stopwatch();
             Stopwatch totaltimer = new Stopwatch();
 
             string _appdir = AppDomain.CurrentDomain.BaseDirectory;
             string neoconfigfile = _appdir + @"\config\neoconfig.json";
             string configfile = _appdir + @"\config\adconfig.json";
-            int relcounter = 0;
-            string scanid = ShortGuid.NewGuid().ToString();
+            NeoWriter.ScanID = ShortGuid.NewGuid().ToString();
 
             IDriver driver = null;
             PrincipalContext context = null;
@@ -83,14 +79,14 @@ namespace ADScanner
             {
                 using (Configuration config = Configuration.LoadConfiguration(configfile))
                 {
-                    Writer.DomainID = config.ID;
-                    if (string.IsNullOrEmpty(Writer.DomainID))
+                    if (string.IsNullOrEmpty(config.ID))
                     {
                         Console.WriteLine("Your configuration does not have a scanner ID. A random ID will be generated for you below:");
                         Console.WriteLine(ShortGuid.NewGuid().ToString());
                         Console.WriteLine();
                         ExitError(2);
                     }
+                    NeoWriter.ScannerID = config.ID;
                     context = Connector.CreatePrincipalContext(config);
                 }
             }
@@ -115,183 +111,66 @@ namespace ADScanner
             }
 
             
-            Console.WriteLine($"Starting scan.\nScan ID: {scanid}\n");
+            Console.WriteLine($"Starting scan\nScanner ID: {NeoWriter.ScannerID}\nScan ID: {NeoWriter.ScanID}\n");
+            
 
-            //process groups
-            //load the groups
-            using (SearchResultCollection results = QueryHandler.GetAllGroupResults(context))
-            {
-                Console.Write("Adding groups to graph");
-                if (results != null)
-                {
-                    steptimer.Restart();
-                    int groupcount = 0;
-                    int relationshipcount = 0;
-                    List<object> groupmappings = new List<object>();
-                    List<Dictionary<string, object>> groupprops = new List<Dictionary<string, object>>(); 
+            NeoWriter.WriteHeaders();
 
-                    foreach (SearchResult result in results)
-                    {
-                        ADGroup g = new ADGroup(result,scanid);
-                        groupprops.Add(g.Properties);
-                        if (groupprops.Count >= 1000)
-                        {
-                            Console.Write(".");
-                            groupcount = groupcount + Writer.MergeADGroups(ListExtensions.ListPop(groupprops,1000), driver);
-                        }
-                        foreach (string dn in g.MemberOfDNs)
-                        {
-                            groupmappings.Add(Writer.GetGroupRelationshipObject(g.Type, g.ID, dn, scanid));
-                        }
-                    }
-                    //purge any remaining groups and mappings to the database
-                    if (groupprops.Count > 0) { groupcount = groupcount + Writer.MergeADGroups(groupprops, driver); }
-                    steptimer.Stop();
-                    Console.WriteLine();
-                    Console.WriteLine("Created " + groupcount + " groups in " + steptimer.ElapsedMilliseconds + "ms");
-
-                    Console.Write("Creating group->group mappings");
-                    steptimer.Restart();
-                    while (groupmappings.Count > 0)
-                    {
-                        relationshipcount = relationshipcount + Writer.MergeGroupRelationships(Types.Group, ListExtensions.ListPop(groupmappings, 1000), driver);
-                        Console.Write(".");
-                    }
-                    steptimer.Stop();
-                    Console.WriteLine();
-                    Console.WriteLine("Created " + relationshipcount + " group->group mappings in " + steptimer.ElapsedMilliseconds + "ms");
-                    Console.WriteLine();
-                }   
-            }
+            //write the foreign principals
+            NeoWriter.WriteIDataCollector(new ForeignSecurityPrincipalCollector(context), driver, true, true);
 
             //process users
-            //load the users
-            using (SearchResultCollection results = QueryHandler.GetAllUserResults(context))
-            {
-                Console.Write("Adding users to graph");
-                if (results != null)
-                {
-                    steptimer.Restart();
-                    int usercount = 0;
-                    int relationshipcount = 0;
-                    List<object> groupmappings = new List<object>();
-                    List<Dictionary<string, object>> userprops = new List<Dictionary<string, object>>();
-
-                    foreach (SearchResult result in results)
-                    {
-                        ADUser u = new ADUser(result, scanid);
-                        userprops.Add(u.Properties);
-                        if (userprops.Count >= 1000)
-                        {
-                            Console.Write(".");
-                            usercount = usercount + Writer.MergeAdUsers(ListExtensions.ListPop(userprops, 1000), driver);
-                        }
-                        foreach (string dn in u.MemberOfDNs)
-                        {
-                            groupmappings.Add(Writer.GetGroupRelationshipObject(u.Type, u.ID, dn, scanid));
-                        }
-                    }
-                    //purge any remaining groups and mappings to the database
-                    if (userprops.Count > 0) { usercount = usercount + Writer.MergeAdUsers(userprops, driver); }
-                    steptimer.Stop();
-                    Console.WriteLine();
-                    Console.WriteLine("Created " + usercount + " users in " + steptimer.ElapsedMilliseconds + "ms");
-
-                    Console.Write("Creating user->group mappings");
-                    steptimer.Restart();
-                    while (groupmappings.Count > 0)
-                    {
-                        relationshipcount = relationshipcount + Writer.MergeGroupRelationships(Types.User, ListExtensions.ListPop(groupmappings, 1000), driver);
-                        Console.Write(".");
-                    }
-                    steptimer.Stop();
-                    Console.WriteLine();
-                    Console.WriteLine("Created " + relationshipcount + " user->group mappings in " + steptimer.ElapsedMilliseconds + "ms");
-                    Console.WriteLine();
-                }
-            }
+            NeoWriter.WriteIDataCollector(new UsersCollector(context), driver, true, true);
 
             //load the computers
-            using (SearchResultCollection results = QueryHandler.GetAllComputerResults(context))
-            {
-                Console.Write("Adding computers to graph");
-                if (results != null)
-                {
-                    steptimer.Restart();
-                    int computercount = 0;
-                    int relationshipcount = 0;
+            NeoWriter.WriteIDataCollector(new ComputersCollector(context), driver, true, true);
 
-                    List<object> groupmappings = new List<object>();
-                    List<Dictionary<string, object>> compprops = new List<Dictionary<string, object>>();
-                    foreach (SearchResult result in results)
-                    {
-                        ADComputer c = new ADComputer(result, scanid);
-                        compprops.Add(c.Properties);
-                        if (compprops.Count >= 1000)
-                        {
-                            Console.Write(".");
-                            computercount = computercount + Writer.MergeAdComputers(ListExtensions.ListPop(compprops, 1000), driver);
-                        }
-                        foreach (string dn in c.MemberOfDNs)
-                        {
-                            groupmappings.Add(Writer.GetGroupRelationshipObject(c.Type, c.ID, dn, scanid));
-                        }
-                    }
-                    //purge any remaining groups and mappings to the database
-                    if (compprops.Count > 0) { computercount = computercount + Writer.MergeAdComputers(compprops, driver); }
-                    steptimer.Stop();
-                    Console.WriteLine();
-                    Console.WriteLine("Created " + computercount + " computers in " + steptimer.ElapsedMilliseconds + "ms");
+            //process groups
+            GroupsCollector groupscollector = new GroupsCollector(context);
+            NeoWriter.WriteIDataCollector(groupscollector, driver, true, true);
+            NeoWriter.WriteIDataCollector(groupscollector.GetMembershipsCollector(), driver, true, true);
 
-                    Console.Write("Creating computer->group mappings");
-                    steptimer.Restart();
-                    while (groupmappings.Count > 0)
-                    {
-                        relationshipcount = relationshipcount + Writer.MergeGroupRelationships(Types.Computer, ListExtensions.ListPop(groupmappings, 1000), driver);
-                        Console.Write(".");
-                    }
-                    steptimer.Stop();
-                    Console.WriteLine();
-                    Console.WriteLine("Created " + relationshipcount + " computer->group mappings in " + steptimer.ElapsedMilliseconds + "ms");
-                    Console.WriteLine();
-                }
-            }
+            //process foreign item connections
+            NeoWriter.WriteIDataCollector(new ForeignSecurityPrincipalConnectionCollector(), driver, true, true);
 
-            steptimer.Restart();
+           
+
+            NeoQueryData nopropsdata = new NeoQueryData();
+            nopropsdata.ScanID = NeoWriter.ScanID;
+            nopropsdata.ScannerID = NeoWriter.ScannerID;
+
+           
+
             //create primary group mappings
-            relcounter = relcounter + Writer.CreatePrimaryGroupRelationships(driver, scanid);
-            steptimer.Stop();
-            Console.WriteLine("Created " + relcounter + " primary group relationships in " + steptimer.ElapsedMilliseconds + "ms");
-
-            steptimer.Restart();
-            //create primary group mappings
-            int propcounter = Writer.UpdateMemberCounts(driver);
-            steptimer.Stop();
-            Console.WriteLine("Created " + propcounter + " group membership counts updated in " + steptimer.ElapsedMilliseconds + "ms");
-
+            Console.Write("Setting primary groups");
+            NeoWriter.RunQuery(StandAloneQueries.SetPrimaryGroupRelationships, nopropsdata, driver, true, true);
 
             Console.WriteLine();
-            Console.WriteLine("Cleaning up deleted items");
-            steptimer.Restart();
+            Console.WriteLine("*Cleaning up");
 
             //*cleanup deleted items
             //remove group memberships that have been deleted
-            Console.WriteLine("Deleted " + Writer.RemoveDeletedGroupMemberShips(driver, scanid) + " relationships");
+            Console.Write("Deleted group memberships");
+            NeoWriter.RunQuery(StandAloneQueries.DeletedGroupMemberships, nopropsdata, driver, true, true);
+
+            Console.Write("Deleted foreign group memberships");
+            NeoWriter.RunQuery(StandAloneQueries.DeletedForeignGroupMemberShips, nopropsdata, driver, true, true);
 
             //mark deleted objects
-            Console.WriteLine("Marked " + Writer.FindAndMarkDeletedItems(Types.User, driver, scanid) + " users as deleted");
-            Console.WriteLine("Marked " + Writer.FindAndMarkDeletedItems(Types.Computer, driver, scanid) + " computers as deleted");
-            Console.WriteLine("Marked " + Writer.FindAndMarkDeletedItems(Types.Group, driver, scanid) + " groups as deleted");
+            Console.Write("Mark deleted users");
+            NeoWriter.RunQuery(StandAloneQueries.GetMarkDeletedObjectsQuery(Types.User), nopropsdata, driver, true, true);
+
+            Console.Write("Mark deleted computers");
+            NeoWriter.RunQuery(StandAloneQueries.GetMarkDeletedObjectsQuery(Types.Computer), nopropsdata, driver, true, true);
+
+            Console.Write("Mark deleted groups");
+            NeoWriter.RunQuery(StandAloneQueries.GetMarkDeletedObjectsQuery(Types.Group), nopropsdata, driver, true, true);
+            
+            Console.WriteLine("*Finished cleaning up");
             Console.WriteLine();
-            steptimer.Stop();
-            Console.WriteLine("Finished cleaning up deleted items in " + steptimer.ElapsedMilliseconds + "ms");
 
-            //mark deleted objects
-            steptimer.Restart();
-            Writer.SetGroupScope(driver);
-            steptimer.Stop();
-            //Console.WriteLine();
-            Console.WriteLine("Set group scopes in " + steptimer.ElapsedMilliseconds + "ms");
+            Console.Write("Setting group scopes");
+            NeoWriter.RunQuery(StandAloneQueries.SetGroupScope, nopropsdata, driver, true, true);
 
             //cleanup
             driver.Dispose();
@@ -312,7 +191,7 @@ namespace ADScanner
             }
             else
             {
-                Console.WriteLine("Press any key to exit");
+                Console.WriteLine("Press enter to exit");
                 Console.ReadLine();
             }
         }
@@ -323,7 +202,7 @@ namespace ADScanner
             Console.WriteLine(e.Message);
             if (_batchmode == false) 
             {
-                Console.WriteLine("Press any key to exit");
+                Console.WriteLine("Press enter to exit");
                 Console.ReadLine(); 
             }
             Environment.Exit(returncode);

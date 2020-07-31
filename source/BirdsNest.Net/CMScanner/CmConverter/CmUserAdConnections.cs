@@ -29,7 +29,7 @@ namespace CMScanner.CmConverter
 {
     public class CmUserAdConnections : IDataCollector
     {
-        public string ProgressMessage { get { return "Creating CM to AD user mappings: "; } }
+        public string ProgressMessage { get { return "Creating CM to AD user mappings"; } }
         public string Query
         {
             get
