@@ -217,12 +217,9 @@ namespace FSScanner
             return nodesdeleted;
         }
 
-        public int CleanupInheritanceMappings(string rootpath, string scanid, IDriver driver)
+        public int CleanupConnections(string rootpath, string scanid, IDriver driver)
         {
-            string query = "MATCH (f:" + Types.Folder +") "+
-                "WHERE f.fsid = $fsid " +
-                "WITH f " +
-                "MATCH (f)-[r]->() WHERE r.lastscan <> $scanid " +
+            string query = "MATCH (:" + Types.Folder + " {fsid: $fsid})-[r]-() WHERE r.lastscan <> $scanid " +
                 "DELETE r ";
 
             int nodesdeleted = 0;

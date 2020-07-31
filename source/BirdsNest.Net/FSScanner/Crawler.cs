@@ -149,7 +149,7 @@ namespace FSScanner
                 _timer.Restart();
                 ConsoleWriter.WriteInfo("Cleaning up ");
                 Writer.CleanupChangedFolders(rootpath, this.ScanId, this.Driver);
-                Writer.CleanupInheritanceMappings(rootpath, this.ScanId, this.Driver);
+                Writer.CleanupConnections(rootpath, this.ScanId, this.Driver);
                 _timer.Stop();
                 ConsoleWriter.WriteInfo("Clean finished in " + _timer.Elapsed);
                 ConsoleWriter.WriteLine();
