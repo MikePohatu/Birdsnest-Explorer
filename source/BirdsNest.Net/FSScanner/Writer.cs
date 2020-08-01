@@ -72,7 +72,7 @@ namespace FSScanner
         public int SendFolder(Folder folder, IDriver driver)
         {
             string query = "MERGE(folder {path:$path}) " +
-                "SET folder:" + folder.Type + ", " +
+                "SET folder:" + Types.Folder + ", " +
                 "folder.name=$name, " +
                 "folder.lastpermission=$lastfolder, " +
                 "folder.inheritancedisabled=$inheritancedisabled, " +
@@ -114,14 +114,19 @@ namespace FSScanner
         public int ConnectFolderToParent(Folder folder, IDriver driver)
         {
             StringBuilder builder = new StringBuilder();
-            builder.AppendLine("MERGE(folder {path:$path}) ");
+            builder.AppendLine("MERGE(folder:" + Types.Folder + " {path:$path}) ");
             builder.AppendLine("WITH folder ");
-            builder.AppendLine("MERGE(lastfolder {path:$lastfolder}) ");
+            builder.AppendLine("MERGE(lastfolder:" + Types.Folder + " {path:$lastfolder}) ");
 
             if (folder.InheritanceDisabled) { builder.AppendLine("MERGE (lastfolder) -[r:" + Types.BlockedInheritance + "]->(folder) "); }
             else { builder.AppendLine("MERGE (lastfolder) -[r:" + Types.AppliesInhertitanceTo + "]->(folder) "); }
 
             builder.AppendLine("SET r.lastscan = $scanid ");
+            builder.AppendLine("SET r.fsid = $fsid ");
+            builder.AppendLine("WITH folder ");
+            builder.AppendLine($"MATCH (:{Types.Folder})-[r]->(folder) ");
+            builder.AppendLine($"WHERE (type(r)='{Types.AppliesInhertitanceTo}' OR type(r)='{Types.BlockedInheritance}') AND r.lastscan <> $scanid ");
+            builder.AppendLine("DELETE r ");
             builder.AppendLine("RETURN folder.path");
 
             int relcreated = 0;
@@ -131,7 +136,8 @@ namespace FSScanner
                 {
                     path = folder.Path,
                     lastfolder = folder.PermParent,
-                    scanid = this.ScanID
+                    scanid = this.ScanID,
+                    fsid = this.FsID
                 }));
                 relcreated = result.Summary.Counters.RelationshipsCreated;
             }
@@ -140,16 +146,20 @@ namespace FSScanner
 
         public int SendPermissions(List<Permission> permissions, IDriver driver)
         {
-            string query = "UNWIND $perms as p " +
-            "MERGE(folder:"+ Types.Folder +" {path:p.Path}) " +
-            "WITH folder,p " +
-            "MERGE(n {id:p.ID})  " + // generic because could be ad_object or builtin
-            "ON CREATE SET n:" + Types.Orphaned + ",n.lastscan = p.ScanId " +
-            "MERGE (n) -[r:" + Types.GivesAccessTo + "]->(folder) " +
-            "SET r.right=p.Right " +
-            "SET r.lastscan=$scanid " +
-            "SET r.fsid=$fsid " +
-            "RETURN folder.path ";
+            string query = "UNWIND $perms as p" +
+            " MERGE(folder:"+ Types.Folder +" {path:p.Path})" +
+            " WITH folder,p" +
+            " MERGE(n {id:p.ID})" + // generic because could be ad_object or builtin
+            $" ON CREATE SET n:{Types.Orphaned},n.lastscan = $scanid" +
+            $" MERGE (n)-[r:{Types.GivesAccessTo}]->(folder)" +
+            " SET r.right=p.Right" +
+            " SET r.lastscan=$scanid" +
+            " SET r.fsid=$fsid" +
+            " WITH folder" +
+            $" MATCH ()-[r:{Types.GivesAccessTo}]->(folder)" +
+            " WHERE r.lastscan <> $scanid" +
+            " DELETE r"+
+            " RETURN folder.path";
 
             int relcreated = 0;
             using (ISession session = driver.Session())
@@ -190,7 +200,7 @@ namespace FSScanner
             int relcreated = 0;
             using (ISession session = driver.Session())
             {
-                IStatementResult result = session.WriteTransaction(tx => tx.Run(query, new { dsname = ds.Name, rootpath = rootpath?.ToLower() }));
+                IStatementResult result = session.WriteTransaction(tx => tx.Run(query, new { dsname = ds.Name, rootpath = rootpath?.ToLower(), scanid }));
                 relcreated = result.Summary.Counters.RelationshipsCreated;
             }
 
@@ -207,8 +217,8 @@ namespace FSScanner
             using (ISession session = driver.Session())
             {
                 IStatementResult result = session.WriteTransaction(tx => tx.Run(query, new {
-                    rootpath = rootpath,
-                    scanid = scanid,
+                    rootpath,
+                    scanid,
                     fsid = this.FsID
                 }));
                 nodesdeleted = result.Summary.Counters.NodesDeleted;
@@ -219,8 +229,9 @@ namespace FSScanner
 
         public int CleanupConnections(string rootpath, string scanid, IDriver driver)
         {
-            string query = "MATCH (:" + Types.Folder + " {fsid: $fsid})-[r]-() WHERE r.lastscan <> $scanid " +
-                "DELETE r ";
+            string query = "MATCH (:" + Types.Folder + " {fsid: $fsid})-[r]-()"+
+                " WHERE r.fsid = $fsid AND r.lastscan <> $scanid" +
+                " DELETE r ";
 
             int nodesdeleted = 0;
             using (ISession session = driver.Session())

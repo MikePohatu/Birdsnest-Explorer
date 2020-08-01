@@ -35,7 +35,6 @@ namespace FSScanner
         [JsonProperty("name")]
         public string Name { get; set; } = string.Empty;
 
-        public virtual string Type { get { return Types.Folder; } }
         private string _permparent = string.Empty;
         public string PermParent
         {
