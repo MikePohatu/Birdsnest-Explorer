@@ -41,10 +41,12 @@ namespace ADScanner.ActiveDirectory
         {
             get
             {
-                return "OPTIONAL MATCH (o:" + Types.ADObject + ") -[r:" + Types.MemberOf + "]->(g:" + Types.Group + " {domainid:$ScannerID})" +
-                "<-[rf: " + Types.MemberOf + "]-(fsp: " + Types.ForeignSecurityPrincipal + ")" +
-                " WHERE o.domainid <> $ScannerID AND o.id = fsp.id AND rf=null " +
-                " DELETE r";
+                return "MATCH (fsp:"+ Types.ForeignSecurityPrincipal + " {domainid: $ScannerID})" +
+                    " MATCH(o: "+Types.ADObject+ " {id: fsp.id}) -[r:" + Types.MemberOf + "]->(g:" + Types.Group + " { domainid: $ScannerID})" +
+                    " WHERE NOT(fsp)-[:" + Types.MemberOf + "]->(g)"+
+                    " WITH o, g"+
+                    " MATCH(o)-[rf:" + Types.MemberOf + "]-(g)" +
+                    " DELETE rf";
             }
         }
 
