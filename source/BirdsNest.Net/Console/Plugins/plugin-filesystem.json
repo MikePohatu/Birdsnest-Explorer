@@ -5,7 +5,7 @@
     "fs-orphanedperms": {
       "displayName": "FS Orphaned Permissions",
       "description": "Lists folders with permissions for deleted permissions",
-      "Query": "MATCH p=(:AD_Deleted)-[]->(:FS_Folder) MATCH q=(:Orphaned)-[]->(:FS_Folder) WITH nodes(p)+nodes(q) AS items UNWIND items as item RETURN DISTINCT item",
+      "Query": "MATCH p=(n)-[]->(:FS_Folder) WHERE n:AD_Deleted OR n:Orphaned WITH nodes(p) AS items UNWIND items as item RETURN DISTINCT item",
       "PropertyFilters": [ "name", "id", "path" ]
     },
     "fs-inheritancedisabled": {
