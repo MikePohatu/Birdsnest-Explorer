@@ -51,14 +51,15 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 								<a href="#" v-on:click="onVisualizerClicked">Open in Visualizer</a>
 							</li>
 							<li v-if="query !== ''">
-								<a href="#" data-open="querydialog">Show query</a>
+								<a href="#" v-on:click="onShowQueryClicked">Show query</a>
 							</li>
 						</ul>
 					</li>
 				</ul>
 			</div>
 
-			<div class="cell auto" id="status">{{ statusMessage }}</div>
+			<div class="cell auto"/>
+			<div class="x-center show-for-medium reportHeader" id="status"><h5>{{ reportName }}</h5></div>
 
 			<div id="pages" class="cell shrink">
 				<span id="prevPageBtn" style="margin:5px;" :class="{ hidden: !hasPrevPage }">
@@ -96,11 +97,23 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 			</table>
 		</div>
 
-		<div id="querydialog" class="reveal" data-reveal>
-			<p>{{ query }}</p>
-			<button class="close-button" data-close aria-label="Close query dialog" type="button">
-				<span aria-hidden="true">&times;</span>
-			</button>
+		<div v-show="showQuery" id="querydialog" class="dialogWrapper">
+			<div class="dialog">
+				<div>
+					<h5><u>Neo4j Cypher Query</u></h5>
+					<button
+						class="close-button"
+						v-on:click="onQueryCloseClicked"
+						aria-label="Close query dialog"
+						type="button"
+					>
+						<span aria-hidden="true">&times;</span>
+					</button>
+				</div>
+				<div>
+					<p>{{ query }}</p>
+				</div>
+			</div>
 		</div>
 	</div>
 </template>
@@ -123,6 +136,10 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 	margin-right: 5px;
 	margin-bottom: 3px;
 	vertical-align: text-bottom;
+}
+
+.reportHeader {
+	padding-top: 5px;
 }
 </style>
 
@@ -151,8 +168,10 @@ export default class ReportView extends Vue {
 	pageNum = 1;
 	pageCount = 0;
 	query = "";
+	showQuery = false;
 	plugin: Plugin;
 	report: Report;
+	reportName = "";
 	resultsLoaded = false;
 	columnStates: Dictionary<boolean> = {}; //column name as supplied by report property name, and whether enabled
 	activePropertyNames: string[] = [];
@@ -277,7 +296,8 @@ export default class ReportView extends Vue {
 	updatePluginReportData(reportName: string, pluginName: string) {
 		this.plugin = this.$store.state.pluginManager.plugins[pluginName] as Plugin;
 		this.report = this.plugin.reports[reportName] as Report;
-		this.query = this.report.query;
+		this.query = this.report.query
+		this.reportName = this.report.displayName;
 
 		const url = "/api/reports/report/?pluginname=" + pluginName + "&reportname=" + reportName;
 
@@ -381,6 +401,14 @@ export default class ReportView extends Vue {
 		});
 
 		this.download(text, "results.csv", "text/csv;encoding:utf-8");
+	}
+
+	onShowQueryClicked(): void {
+		this.showQuery = true;
+	}
+
+	onQueryCloseClicked(): void {
+		this.showQuery = false;
 	}
 
 	download(content, fileName, mimeType) {

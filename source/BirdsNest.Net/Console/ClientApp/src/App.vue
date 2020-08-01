@@ -99,6 +99,12 @@ html {
 	transform: translate(-50%, -50%);
 }
 
+.x-center {
+	position: absolute;
+	left: 50%;
+	transform: translate(-50%, 0);
+}
+
 .absolute-top-left {
 	position: absolute;
 	top: 0;
