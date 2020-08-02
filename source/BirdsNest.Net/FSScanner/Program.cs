@@ -77,13 +77,20 @@ namespace FSScanner
                 Console.WriteLine("There is a problem with arguments: " + string.Join(" ", args));
                 Console.WriteLine("");
                 ShowUsage();
-                Environment.Exit(1);
+                Environment.Exit(ErrorCodes.ArgumentsError);
             }
 
             try
             {
                 using (Configuration config = Configuration.LoadConfiguration(configfile))
                 {
+                    try { config.Validate(); }
+                    catch ( ArgumentException e )
+                    {
+                        ConsoleWriter.WriteError(e.Message);
+                        if (batchmode == false) { Console.ReadLine(); }
+                        Environment.Exit(ErrorCodes.ConfigValidationError);
+                    } 
                     foreach (Credential cred in config.Credentials)
                     {
                         NetworkCredential netcred = new NetworkCredential(cred.Username, cred.Password, cred.Domain);
@@ -98,7 +105,7 @@ namespace FSScanner
             {
                 ConsoleWriter.WriteError("There was an error loading your configuration: " + e.Message);
                 if (batchmode == false) { Console.ReadLine(); }
-                Environment.Exit(1); 
+                Environment.Exit(ErrorCodes.ConfigLoadError); 
             }
             
             try
@@ -112,10 +119,11 @@ namespace FSScanner
             {
                 ConsoleWriter.WriteError("There was an error loading your neo4j configuration: " + e.Message);
                 if (batchmode == false) { Console.ReadLine(); }
-                Environment.Exit(2);
+                Environment.Exit(ErrorCodes.NeoConfigLoadError);
             }
-            
 
+
+            ConsoleWriter.WriteInfo("Initialising file system scanner, scan ID: " + scanid);
             foreach (DataStore ds in datastores)
             {
                 
@@ -137,7 +145,7 @@ namespace FSScanner
                         }
                         continue;
                     }
-                    Crawler crawler = new Crawler(driver, fs);
+                    Crawler crawler = new Crawler(driver, fs, scanid);
 
                     NetworkCredential fscred;
                     if (!string.IsNullOrEmpty(fs.CredentialID) && (credentials.TryGetValue(fs.CredentialID, out fscred)))

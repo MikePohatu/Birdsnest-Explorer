@@ -1,4 +1,4 @@
-﻿#region license
+#region license
 // Copyright (c) 2019-2020 "20Road"
 // 20Road Limited [https://20road.com]
 //
@@ -32,15 +32,16 @@ namespace FSScanner
     {
         private Dictionary<string, Folder> _existingfolders;
         private Stopwatch _timer = new Stopwatch();
-        public string ScanId { get; private set; } = ShortGuid.NewGuid().ToString();
+        public string ScanId { get; private set; }
         public string FsID { get; private set; }
 
         public int FolderCount { get; set; } = 0;
         public IDriver Driver { get; private set; }
         public Writer Writer { get; private set; }
 
-        public Crawler(IDriver driver, FileSystem fs)
+        public Crawler(IDriver driver, FileSystem fs, string scanid)
         {
+            this.ScanId = scanid;
             this.FsID = fs.ID;
             this.Driver = driver;
             this.Writer = new Writer(this.FsID, this.ScanId);
@@ -98,8 +99,8 @@ namespace FSScanner
             try
             {
                 _timer.Start();
-                Writer.SendDatastore(ds, this.ScanId, this.Driver);
-                Writer.AttachRootToDataStore(ds, rootpath.ToLower(), this.ScanId, this.Driver);                    
+                Writer.SendDatastore(ds, this.Driver);
+                Writer.AttachRootToDataStore(ds, rootpath.ToLower(), this.Driver);                    
             }
             catch (Exception e)
             {
@@ -148,8 +149,8 @@ namespace FSScanner
             {
                 _timer.Restart();
                 ConsoleWriter.WriteInfo("Cleaning up ");
-                Writer.CleanupChangedFolders(rootpath, this.ScanId, this.Driver);
-                Writer.CleanupConnections(rootpath, this.ScanId, this.Driver);
+                Writer.CleanupChangedFolders(rootpath, this.Driver);
+                Writer.CleanupConnections(rootpath, this.Driver);
                 _timer.Stop();
                 ConsoleWriter.WriteInfo("Clean finished in " + _timer.Elapsed);
                 ConsoleWriter.WriteLine();

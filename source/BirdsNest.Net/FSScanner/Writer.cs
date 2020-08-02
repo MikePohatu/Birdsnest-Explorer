@@ -198,7 +198,7 @@ namespace FSScanner
             return relcreated;
         }
 
-        public int SendDatastore(DataStore ds, string scanid, IDriver driver)
+        public int SendDatastore(DataStore ds, IDriver driver)
         {
             string query = "MERGE(n:" + Types.Datastore + " {name:$Name}) " +           
             "SET n.comment=$Comment " +
@@ -218,7 +218,7 @@ namespace FSScanner
             return relcreated;
         }
 
-        public int AttachRootToDataStore(DataStore ds, string rootpath, string scanid, IDriver driver)
+        public int AttachRootToDataStore(DataStore ds, string rootpath, IDriver driver)
         {
             string query = "MERGE(datastore:" + Types.Datastore + " {name:$dsname}) " +
             "MERGE(root:" + Types.Folder + " {path:$rootpath}) " +
@@ -228,14 +228,17 @@ namespace FSScanner
             int relcreated = 0;
             using (ISession session = driver.Session())
             {
-                IStatementResult result = session.WriteTransaction(tx => tx.Run(query, new { dsname = ds.Name, rootpath = rootpath?.ToLower(), scanid }));
+                IStatementResult result = session.WriteTransaction(tx => tx.Run(query, new { 
+                    dsname = ds.Name, 
+                    rootpath = rootpath?.ToLower(), 
+                    scanid = this.ScanID}));
                 relcreated = result.Summary.Counters.RelationshipsCreated;
             }
 
             return relcreated;
         }
 
-        public int CleanupChangedFolders(string rootpath, string scanid, IDriver driver)
+        public int CleanupChangedFolders(string rootpath, IDriver driver)
         {
             string query = "MATCH(f:" + Types.Folder + ") " +
             "WHERE f.fsid = $fsid AND f.lastscan<>$scanid " +
@@ -246,7 +249,7 @@ namespace FSScanner
             {
                 IStatementResult result = session.WriteTransaction(tx => tx.Run(query, new {
                     rootpath,
-                    scanid,
+                    scanid = this.ScanID,
                     fsid = this.FsID
                 }));
                 nodesdeleted = result.Summary.Counters.NodesDeleted;
@@ -255,7 +258,7 @@ namespace FSScanner
             return nodesdeleted;
         }
 
-        public int CleanupConnections(string rootpath, string scanid, IDriver driver)
+        public int CleanupConnections(string rootpath, IDriver driver)
         {
             string query = "MATCH (:" + Types.Folder + " {fsid: $fsid})-[r]-()"+
                 " WHERE r.fsid = $fsid AND r.lastscan <> $scanid" +
@@ -266,7 +269,7 @@ namespace FSScanner
             {
                 IStatementResult result = session.WriteTransaction(tx => tx.Run(query, new {
                     rootpath = rootpath,
-                    scanid = scanid,
+                    scanid = this.ScanID,
                     fsid = this.FsID }));
                 nodesdeleted = result.Summary.Counters.NodesDeleted;
             }

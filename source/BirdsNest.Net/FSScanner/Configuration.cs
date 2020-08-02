@@ -63,5 +63,41 @@ namespace FSScanner
                 cred.Dispose();
             }
         }
+
+        /// <summary>
+        /// Validate a loaded configuration. Will throw an ArgumentException if an issue is found
+        /// </summary>
+        /// <returns></returns>
+        public void Validate()
+        {
+            List<FileSystem> fslist = new List<FileSystem>();
+
+            foreach (DataStore ds in this.Datastores)
+            {
+                foreach (FileSystem fs in ds.FileSystems)
+                {
+                    fslist.Add(fs);
+                }
+            }
+
+            foreach (FileSystem fs in fslist)
+            { 
+                foreach (FileSystem checkingfs in fslist)
+                {
+                    if (fs != checkingfs)
+                    {
+                        if (fs.ID == checkingfs.ID)
+                        {
+                            throw new ArgumentException($"Found duplicate file system IDs in {fs.Path} & {checkingfs.Path}");
+                        }
+
+                        if (fs.Path == checkingfs.Path)
+                        {
+                            throw new ArgumentException($"Found duplicate file system paths in {fs.ID} & {checkingfs.ID}");
+                        }
+                    }
+                }
+            }
+        }
     }
 }
