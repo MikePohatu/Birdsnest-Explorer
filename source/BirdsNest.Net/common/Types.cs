@@ -38,7 +38,7 @@ namespace common
 
         //general edges
         public static string Uses { get { return "USES"; } }
-        public static string GivesAccessTo { get { return "GIVES_ACCESS_TO"; } }
+        public static string AppliesPermissionTo { get { return "APPLIES_PERMISSION_TO"; } }
         public static string ConnectedTo { get { return "CONNECTED_TO"; } }
         public static string WritesDataTo { get { return "WRITES_DATA_TO"; } }
         public static string ReadsDataFrom { get { return "READS_DATA_FROM"; } }

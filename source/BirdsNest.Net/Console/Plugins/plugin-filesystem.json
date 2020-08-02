@@ -16,13 +16,16 @@
     }
   },
   "edgeDataTypes": {
-    "GIVES_ACCESS_TO": {
-      "displayName": "File System - GIVES_ACCESS_TO",
+    "APPLIES_PERMISSION_TO": {
+      "displayName": "File System - APPLIES_PERMISSION_TO",
       "description": "Applies permission to an object in the filesystem",
       "properties": {
+        "accesstype": {},
         "fsid": {},
         "right": {}
-      }
+      },
+      "default": "accesstype",
+      "subType": "accesstype"
     },
     "FS_APPLIES_INHERITANCE_TO": {
       "displayName": "File System - FS_APPLIES_INHERITANCE_TO"

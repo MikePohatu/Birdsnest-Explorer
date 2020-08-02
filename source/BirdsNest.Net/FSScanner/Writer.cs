@@ -154,8 +154,9 @@ namespace FSScanner
             " WITH folderDom,domainperm" +
             " MERGE(ndom:" + Types.ADObject + " {id:domainperm.ID})" +
             " ON CREATE SET ndom:" + Types.Orphaned + ",ndom.lastscan = $scanid" +
-            " MERGE (ndom)-[r:" + Types.GivesAccessTo + "]->(folderDom)" +
+            " MERGE (ndom)-[r:" + Types.AppliesPermissionTo + "]->(folderDom)" +
             " SET r.right=domainperm.Right" +
+            " SET r.accesstype=domainperm.AccessType" +
             " SET r.lastscan=$scanid" +
             " SET r.fsid=$fsid" +
 
@@ -163,18 +164,19 @@ namespace FSScanner
             " UNWIND $builtinperms as builtinperm" +
             " MERGE(folderBuiltin:" + Types.Folder + " {path:$path})" +
             " MERGE(nbuiltin:" + Types.BuiltinObject + " {id:builtinperm.ID})" +
-            " MERGE (nbuiltin)-[r:" + Types.GivesAccessTo + "]->(folderBuiltin)" +
+            " MERGE (nbuiltin)-[r:" + Types.AppliesPermissionTo + "]->(folderBuiltin)" +
             " SET r.right=builtinperm.Right" +
+            " SET r.accesstype=builtinperm.AccessType" +
             " SET r.lastscan=$scanid" +
             " SET r.fsid=$fsid" +
 
             " WITH folderDom, folderBuiltin" +
-            " MATCH ()-[rdom:" + Types.GivesAccessTo + "]->(folderDom)" +
+            " MATCH ()-[rdom:" + Types.AppliesPermissionTo + "]->(folderDom)" +
             " WHERE rdom.lastscan <> $scanid" +
             " DELETE rdom" +
 
             " WITH folderDom, folderBuiltin" +
-            " MATCH ()-[rbuiltin:" + Types.GivesAccessTo + "]->(folderBuiltin)" +
+            " MATCH ()-[rbuiltin:" + Types.AppliesPermissionTo + "]->(folderBuiltin)" +
             " WHERE rbuiltin.lastscan <> $scanid" +
             " DELETE rbuiltin" +
 

@@ -24,5 +24,6 @@ namespace FSScanner
         public string Right { get; set; }
         public string Path { get; set; }
         public string ScanId { get; set; }
+        public string AccessType { get; set; }
     }
 }

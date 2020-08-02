@@ -72,11 +72,13 @@ namespace FSScanner
                 foreach (FileSystemAccessRule rule in rules)
                 {
                     SecurityIdentifier identifier = rule.IdentityReference as SecurityIdentifier;
+
                     Permission perm = new Permission()
                     {
                         ID = rule.IdentityReference.Value,
                         Path = this._path,
-                        Right = rule.FileSystemRights.ToString()
+                        Right = rule.FileSystemRights.ToString(),
+                        AccessType = rule.AccessControlType.ToString()
                     };
 
                     if (identifier != null && identifier.AccountDomainSid == null)

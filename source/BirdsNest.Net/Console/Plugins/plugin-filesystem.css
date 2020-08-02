@@ -28,10 +28,22 @@
     background-color: blue;
 }
 
-.GIVES_ACCESS_TO {
-    stroke: orange;
+.APPLIES_PERMISSION_TO {
+    stroke: darkgray;
     color: black;
-    background-color: orange;
+    background-color: darkgray;
+}
+
+.APPLIES_PERMISSION_TO-Allow {
+    stroke: limegreen;
+    color: black;
+    background-color: limegreen;
+}
+
+.APPLIES_PERMISSION_TO-Deny {
+    stroke: red;
+    color: black;
+    background-color: red;
 }
 
 .FS_APPLIES_INHERITANCE_TO {
