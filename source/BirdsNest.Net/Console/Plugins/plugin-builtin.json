@@ -24,6 +24,9 @@
     "BuiltinGroup": {
       "displayName": "Builtin Group",
       "icon": "f007"
+    },
+    "BuiltinObject": {
+      "displayName": "Builtin Object"
     }
   }
 }

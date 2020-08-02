@@ -55,7 +55,7 @@ namespace FSScanner
             try
             {
                 Folder f = this.QueryFolder(new DirectoryInfo(this.Path), this.PermParent, this.IsRoot);
-                if ((f.Permissions.Count > 0) || this.IsRoot)
+                if ((f.PermissionCount > 0) || this.IsRoot)
                 {
                     newpermparent = this.Path;
                     this._parent.Writer.UpdateFolder(f, this._parent.Driver);

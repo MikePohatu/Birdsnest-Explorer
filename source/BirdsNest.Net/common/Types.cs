@@ -34,6 +34,7 @@ namespace common
         //builtin nodes
         public static string BuiltinUser { get { return "BuiltinUser"; } }
         public static string BuiltinGroup { get { return "BuiltinGroup"; } }
+        public static string BuiltinObject { get { return "BuiltinObject"; } }
 
         //general edges
         public static string Uses { get { return "USES"; } }

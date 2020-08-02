@@ -1,14 +1,19 @@
 :begin
 
+CREATE INDEX ON :BuiltinObject(id);
+CREATE INDEX ON :BuiltinUser(id);
+CREATE INDEX ON :BuiltinGroup(id);
+
 CREATE CONSTRAINT ON (u:AD_User) ASSERT u.id IS UNIQUE;
 CREATE CONSTRAINT ON (c:AD_Computer) ASSERT c.id IS UNIQUE;
 
 CREATE INDEX ON :AD_ForeignSecurityPrincipal(dn);
+CREATE INDEX ON :AD_ForeignSecurityPrincipal(id);
+CREATE INDEX ON :AD_ForeignSecurityPrincipal(domainid);
 CREATE INDEX ON :AD_Group(dn);
 CREATE INDEX ON :AD_Group(id);
 CREATE INDEX ON :AD_Object(id);
 CREATE INDEX ON :AD_Object(dn);
-CREATE INDEX ON :AD_Object(scannerid);
 CREATE INDEX ON :AD_Object(domainid);
 CREATE INDEX ON :AD_User(dn);
 CREATE INDEX ON :AD_Computer(dn);
@@ -471,11 +476,11 @@ WITH {
 } AS json
 UNWIND json.users AS user
 MERGE (u {id:user.id})
-SET u.name=user.name, u.description=user.description, u:BuiltinUser
+SET u.name=user.name, u.description=user.description, u:BuiltinUser, u:BuiltinObject
 WITH json
 UNWIND json.groups AS group
 MERGE (g {id:group.id})
-SET g.name=group.name, g.description=group.description, g:BuiltinGroup
+SET g.name=group.name, g.description=group.description, g:BuiltinGroup, g:BuiltinObject
 WITH *
 MATCH (n:Orphaned:BuiltinGroup) REMOVE n:Orphaned
 WITH *

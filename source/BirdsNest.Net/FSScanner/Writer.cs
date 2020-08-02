@@ -103,9 +103,10 @@ namespace FSScanner
                 ConnectFolderToParent(folder, driver);
             }
 
-            if (folder.Permissions?.Count > 0)
+            //send the perms
+            if (folder.PermissionCount > 0)
             {
-                this.SendPermissions(folder.Permissions, driver);
+                this.SendFolderPermissions(folder, driver);
             }
 
             return nodescreated;
@@ -144,27 +145,52 @@ namespace FSScanner
             return relcreated;
         }
 
-        public int SendPermissions(List<Permission> permissions, IDriver driver)
+        public int SendFolderPermissions(Folder folder, IDriver driver)
         {
-            string query = "UNWIND $perms as p" +
-            " MERGE(folder:"+ Types.Folder +" {path:p.Path})" +
-            " WITH folder,p" +
-            " MERGE(n {id:p.ID})" + // generic because could be ad_object or builtin
-            $" ON CREATE SET n:{Types.Orphaned},n.lastscan = $scanid" +
-            $" MERGE (n)-[r:{Types.GivesAccessTo}]->(folder)" +
-            " SET r.right=p.Right" +
+            string query = 
+                
+            "UNWIND $domainpermissions as domainperm" +
+            " MERGE(folderDom:" + Types.Folder + " {path:$path})" +
+            " WITH folderDom,domainperm" +
+            " MERGE(ndom:" + Types.ADObject + " {id:domainperm.ID})" +
+            " ON CREATE SET ndom:" + Types.Orphaned + ",ndom.lastscan = $scanid" +
+            " MERGE (ndom)-[r:" + Types.GivesAccessTo + "]->(folderDom)" +
+            " SET r.right=domainperm.Right" +
             " SET r.lastscan=$scanid" +
             " SET r.fsid=$fsid" +
-            " WITH folder" +
-            $" MATCH ()-[r:{Types.GivesAccessTo}]->(folder)" +
-            " WHERE r.lastscan <> $scanid" +
-            " DELETE r"+
-            " RETURN folder.path";
+
+            " WITH folderDom" +
+            " UNWIND $builtinperms as builtinperm" +
+            " MERGE(folderBuiltin:" + Types.Folder + " {path:$path})" +
+            " MERGE(nbuiltin:" + Types.BuiltinObject + " {id:builtinperm.ID})" +
+            " MERGE (nbuiltin)-[r:" + Types.GivesAccessTo + "]->(folderBuiltin)" +
+            " SET r.right=builtinperm.Right" +
+            " SET r.lastscan=$scanid" +
+            " SET r.fsid=$fsid" +
+
+            " WITH folderDom, folderBuiltin" +
+            " MATCH ()-[rdom:" + Types.GivesAccessTo + "]->(folderDom)" +
+            " WHERE rdom.lastscan <> $scanid" +
+            " DELETE rdom" +
+
+            " WITH folderDom, folderBuiltin" +
+            " MATCH ()-[rbuiltin:" + Types.GivesAccessTo + "]->(folderBuiltin)" +
+            " WHERE rbuiltin.lastscan <> $scanid" +
+            " DELETE rbuiltin" +
+
+            " RETURN $path";
 
             int relcreated = 0;
             using (ISession session = driver.Session())
             {
-                IStatementResult result = session.WriteTransaction(tx => tx.Run(query, new { fsid = this.FsID, scanid = this.ScanID, perms = permissions }));
+                IStatementResult result = session.WriteTransaction(tx => tx.Run(query, new 
+                { 
+                    fsid = this.FsID, 
+                    scanid = this.ScanID, 
+                    domainpermissions = folder.DomainPermissions, 
+                    builtinperms = folder.BuiltinPermissions,
+                    path = folder.Path
+                }));
                 relcreated = result.Summary.Counters.RelationshipsCreated;
             }
             return relcreated;

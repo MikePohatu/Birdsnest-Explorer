@@ -21,6 +21,7 @@ using System.Collections.Generic;
 using System.Security.AccessControl;
 using Newtonsoft.Json;
 using common;
+using System.Security.Principal;
 
 namespace FSScanner
 {
@@ -49,7 +50,10 @@ namespace FSScanner
             get { return this._path; }
             set { this._path = value.ToLower(); }
         }
-        public List<Permission> Permissions { get; } = new List<Permission>();
+        public List<Permission> DomainPermissions { get; } = new List<Permission>();
+        public List<Permission> BuiltinPermissions { get; } = new List<Permission>();
+
+        public int PermissionCount { get { return this.DomainPermissions.Count + this.BuiltinPermissions.Count; } }
 
         public Folder() { }
 
@@ -67,11 +71,23 @@ namespace FSScanner
                 ConsoleWriter.WriteInfo("Permissions set: " + path);
                 foreach (FileSystemAccessRule rule in rules)
                 {
-                    this.Permissions.Add(new Permission() {
+                    SecurityIdentifier identifier = rule.IdentityReference as SecurityIdentifier;
+                    Permission perm = new Permission()
+                    {
                         ID = rule.IdentityReference.Value,
                         Path = this._path,
                         Right = rule.FileSystemRights.ToString()
-                    });
+                    };
+
+                    if (identifier != null && identifier.AccountDomainSid == null)
+                    {
+                        this.BuiltinPermissions.Add(perm);
+                    } 
+                    else
+                    {
+                        this.DomainPermissions.Add(perm);
+                    }
+                    
                     //Console.WriteLine("{0} | Account: {1} | Permission: {2}", path, rule.IdentityReference.Value, rule.FileSystemRights.ToString());
                 }
             }
