@@ -17,13 +17,7 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #endregion
 using common;
-using Microsoft.ConfigurationManagement.ManagementProvider;
 using Neo4j.Driver.V1;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace CMScanner.CmConverter
 {
@@ -36,7 +30,7 @@ namespace CMScanner.CmConverter
             {
                 return "MATCH (n:" + Types.CMCollection + ")" +
                 "MATCH (l:" + Types.CMCollection + " {id:n.limitingcollection}) " +
-                "MERGE (n)-[r:" + Types.CMLimitingCollection + "]->(l) " +
+                "MERGE (l)-[r:" + Types.CMLimitingCollection + "]->(n) " +
                 "SET r.lastscan=$ScanID " +
                 "SET r.scannerid=$ScannerID " +
                 "RETURN n.name";
