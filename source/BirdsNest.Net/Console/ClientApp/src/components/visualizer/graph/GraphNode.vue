@@ -27,7 +27,6 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 		v-on:click.ctrl.exact.prevent="onNodeCtrlClicked"
 		v-on:contextmenu.prevent="onNodeCtrlClicked"
 	>
-		<title>Types: {{node.labels.join(', ')}}</title>
 		<circle
 			:id="'node_'+node.dbId + '_icon'"
 			class="nodecircle"
@@ -50,6 +49,12 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 			dominant-baseline="central"
 			:transform="textTranslate"
 		>{{node.name}}</text>
+		<text 
+			class="tooltip nodetext noselect" 
+			text-anchor="middle"
+			dominant-baseline="central"
+			:transform="tooltipTranslate" 
+			:font-size="radius">{{toolTip}}</text>
 
 		<g v-show="pinned" class="pin" v-on:click.stop="onPinClicked">
 			<circle :r="radius/2.5" :cx="radius/4" :cy="radius/4"></circle>
@@ -58,7 +63,17 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 	</g>
 </template>
 
+<style scoped>
+.tooltip {
+	opacity: 0;
+	font-size: 8px;
+}
 
+.nodes:hover .tooltip {
+  opacity:1;
+  transition-delay:0.7s;
+}
+</style>
 <script lang="ts">
 import { Component, Vue, Prop } from "vue-property-decorator";
 import { SimNode } from "@/assets/ts/visualizer/SimNode";
@@ -120,6 +135,14 @@ export default class GraphNode extends Vue {
 
 	get textTranslate(): string {
 		return "translate(" + this.radius + "," + (this.size + 10) + ")";
+	}
+
+	get tooltipTranslate(): string {
+		return "translate(" + this.radius + "," + (this.size + 22) + ")";
+	}
+
+	get toolTip(): string {
+		return this.node.labels.join(', ');
 	}
 
 	onPinClicked(): void {
