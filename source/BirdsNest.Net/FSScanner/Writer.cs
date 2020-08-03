@@ -76,6 +76,7 @@ namespace FSScanner
                 "folder.name=$name, " +
                 "folder.lastpermission=$lastfolder, " +
                 "folder.inheritancedisabled=$inheritancedisabled, " +
+                "folder.depth=$depth, " +
                 "folder.lastscan=$scanid, " +
                 "folder.fsid=$fsid, " +
                 "folder.blocked=$blocked, " +
@@ -92,6 +93,7 @@ namespace FSScanner
                     inheritancedisabled = folder.InheritanceDisabled,
                     blocked = folder.Blocked,
                     name = folder.Name,
+                    depth = folder.Depth,
                     scanid = this.ScanID,
                     fsid = this.FsID
                 }));

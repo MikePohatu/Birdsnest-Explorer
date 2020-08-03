@@ -111,7 +111,7 @@ namespace FSScanner
             //start at root and recurse down
             try
             {
-                CrawlerThreadWrapper threadwrapper = new CrawlerThreadWrapper(this);
+                CrawlerThreadWrapper threadwrapper = new CrawlerThreadWrapper(this, 0);
                 threadwrapper.IsRoot = true;
                 threadwrapper.Path = rootpath;
                 threadwrapper.PermParent = null;

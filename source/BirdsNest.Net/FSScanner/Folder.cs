@@ -53,6 +53,8 @@ namespace FSScanner
         public List<Permission> DomainPermissions { get; } = new List<Permission>();
         public List<Permission> BuiltinPermissions { get; } = new List<Permission>();
 
+        public int Depth { get; set; } = 0;
+
         public int PermissionCount { get { return this.DomainPermissions.Count + this.BuiltinPermissions.Count; } }
 
         public Folder() { }

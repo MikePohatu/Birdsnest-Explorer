@@ -35,9 +35,12 @@ namespace FSScanner
         public string Path { get; set; } = null;
         public bool IsNewThread { get; set; } = false;
 
-        public CrawlerThreadWrapper(Crawler parent)
+        public int Depth { get; private set; } = 0;
+
+        public CrawlerThreadWrapper(Crawler parent, int depth)
         {
             this._parent = parent;
+            this.Depth = depth;
         }
 
         public void Crawl(object state)
@@ -66,7 +69,14 @@ namespace FSScanner
             catch (Exception e)
             {
                 ConsoleWriter.WriteError("Error connecting to " + this.Path + ": " + e.Message);
-                Folder f = new Folder() { Blocked = true, Path = this.Path, Name = this.Path, PermParent = this.PermParent, InheritanceDisabled = true };
+                Folder f = new Folder() {
+                    Blocked = true,
+                    Path = this.Path,
+                    Name = this.Path,
+                    PermParent = this.PermParent,
+                    InheritanceDisabled = true,
+                    Depth = this.Depth
+                };
                 this._parent.Writer.UpdateFolder(f, this._parent.Driver);
             }
 
@@ -76,7 +86,7 @@ namespace FSScanner
                 {
                     foreach (string subdirpath in Directory.EnumerateDirectories(this.Path))
                     {
-                        CrawlerThreadWrapper subwrapper = new CrawlerThreadWrapper(this._parent);
+                        CrawlerThreadWrapper subwrapper = new CrawlerThreadWrapper(this._parent, this.Depth + 1);
                         subwrapper.Path = subdirpath;
                         subwrapper.PermParent = newpermparent;
                         subwrapper.IsRoot = false;
@@ -126,6 +136,7 @@ namespace FSScanner
             AuthorizationRuleCollection directrules = dirsec.GetAccessRules(true, isroot, typeof(SecurityIdentifier));
 
             Folder f = new Folder(directory.Name, directory.FullName, permroot, directrules, dirsec.AreAccessRulesProtected);
+            f.Depth = this.Depth;
             return f;
         }
     }
