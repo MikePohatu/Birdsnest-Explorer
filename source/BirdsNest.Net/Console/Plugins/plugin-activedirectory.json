@@ -14,6 +14,12 @@
       "query": "MATCH (n:AD_Group) where n.scope=0 RETURN n ORDER BY n.name",
       "propertyFilters": [ "name", "dn", "description" ]
     },
+    "ad-foreignmembers": {
+      "displayName": "AD Foreign Members",
+      "description": "Lists Active Directory groups that contain members from a foreign domain e.g. via a domain trust",
+      "query": "MATCH (:AD_Object)-[r:AD_MEMBER_OF]->(n:AD_Group) where r.foreignmember = true RETURN n",
+      "propertyFilters": [ "name", "dn", "description" ]
+    },
     "ad-grouploops": {
       "displayName": "AD Group Loops",
       "description": "Lists Active Directory groups that have membership loops back to themselves",
@@ -26,7 +32,10 @@
       "displayName": "AD - AD_MEMBER_OF",
       "properties": {
         "domainid": {},
-        "lastscan": {}
+        "lastscan": {},
+        "foreignmember": {
+          "type": "boolean"
+        }
       },
       "subType": "foreignmember"
     }
