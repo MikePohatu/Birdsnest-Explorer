@@ -162,7 +162,8 @@ namespace FSScanner
             totaltimer.Stop();
             ConsoleWriter.ShowProgress = false;
             ConsoleWriter.ClearProgress();
-            ConsoleWriter.WriteLine("Finished in " + (totaltimer.ElapsedMilliseconds/1000) + " seconds");
+            TimeSpan totaltime = new TimeSpan(totaltimer.ElapsedTicks);
+            ConsoleWriter.WriteLine("Finished in " + totaltime.ToString());
             ConsoleWriter.WriteLine("Done");
             if (batchmode == true)
             {
