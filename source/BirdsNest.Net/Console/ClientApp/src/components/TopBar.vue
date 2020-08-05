@@ -16,7 +16,7 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see http://www.gnu.org/licenses/.
 -->
 <template>
-	<div class="main-bar">
+	<div>
 		<div
 			class="title-bar portrait-bar grid-x"
 			data-responsive-toggle="full-bar"
@@ -60,11 +60,6 @@ export default class TopBar extends Vue {
 </script>
 
 <style>
-.main-bar {
-	position: relative;
-	z-index: 3000;
-}
-
 .menu a {
 	padding: 0.1rem;
 }

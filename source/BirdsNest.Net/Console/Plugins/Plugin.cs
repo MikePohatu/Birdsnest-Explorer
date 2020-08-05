@@ -27,6 +27,7 @@ namespace Console.Plugins
     {
         public string Name { get; set; }
         public string DisplayName { get; set; }
+        public string Link { get; set; } = string.Empty;
 
         public Dictionary<string, DataType> NodeDataTypes { get; private set; } = new Dictionary<string, DataType>();
         public Dictionary<string, DataType> EdgeDataTypes { get; private set; } = new Dictionary<string, DataType>();

@@ -1,6 +1,7 @@
 {
   "name": "active-directory",
   "displayName": "Active Directory",
+  "link": "https://github.com/MikePohatu/BirdsNest/tree/master/documentation/scanners/active-directory",
   "reports": {
     "ad-deeppaths": {
       "displayName": "AD Deep Paths",

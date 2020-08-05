@@ -16,7 +16,7 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 import Vue from "vue";
 import VueRouter, { RouteConfig } from "vue-router";
-import store from "../store";
+import store, { rootPaths }  from "../store";
 import { auth } from "../assets/ts/webcrap/authcrap";
 Vue.use(VueRouter);
 
@@ -48,6 +48,10 @@ export const routeDefs = {
   login: {
     name: "Login",
     path: "/login"
+  },
+  info: {
+    name: "Info",
+    path: "/info"
   }
 }
 
@@ -100,6 +104,12 @@ const routes: Array<RouteConfig> = [
     name: routeDefs.visualizer.name,
     component: () =>
       import(/* webpackChunkName: "visualizer" */ "../views/Visualizer.vue")
+  },
+  {
+    path: routeDefs.info.path,
+    name: routeDefs.info.name,
+    component: () =>
+      import(/* webpackChunkName: "visualizer" */ "../views/ServerInfoView.vue")
   }
 ];
 
@@ -125,6 +135,9 @@ router.beforeEach((to, from, next) => {
           });
       }
       else {
+        if (store.state.pluginManager === null || store.state.serverInfo === null) {
+          store.dispatch(rootPaths.actions.UPDATE_AUTHENTICATED_DATA); 
+        }
         next();
       }
     })

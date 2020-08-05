@@ -100,10 +100,9 @@ class AuthCrap {
                 store.commit(rootPaths.mutations.IS_ADMIN, data.isAdmin);
                 store.commit(rootPaths.mutations.USERNAME, data.name);
                 bus.$emit(events.Auth.Message, data.message);
-                
+
                 if (data.isAuthorized) { 
                     store.commit(rootPaths.mutations.SESSION_STATUS, 'Authorized');
-                    store.dispatch(rootPaths.actions.UPDATE_AUTHENTICATED_DATA); 
                 }
                 typeof callback === 'function' && callback();
             },

@@ -16,31 +16,23 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see http://www.gnu.org/licenses/.
 -->
 <template>
-	<div class="reports page">
-		<PluginReportList v-for="(value, name) in plugins" :key="name" :plugin="value" />
-	</div>
+    <div>
+        <div>
+            <router-link to="reports">Reports</router-link>
+        </div>
+        <div>
+            <router-link to="reports">
+                <img class="portalBox" src="/img/reports-screen.png" />
+            </router-link>
+        </div>
+        <div class="description">Click to view pre-configured reports and queries. The data returned can be saved to csv file, or opened in the Visualizer</div>
+    </div>
 </template>
-
-<style scoped>
-.reports {
-	top: 0;
-	bottom: 0;
-	right: 0;
-	left: 0;
-	overflow: auto;
-}
-</style>
 
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
-import PluginReportList from "@/components/reports/PluginReportList.vue";
 
-@Component({
-	components: { PluginReportList },
-})
-export default class Reports extends Vue {
-	get plugins(): Plugin[] {
-		return this.$store.state.pluginManager === null ? [] : this.$store.state.pluginManager.plugins;
-	}
+@Component
+export default class ReportsPortalBlock extends Vue {
 }
 </script>

@@ -48,34 +48,34 @@ class ApiCrap {
     });
   }
 
-get(details: Request) {
-  $.ajax(
-    details.url,
-    {
-      dataType: details.dataType,
-      method: "GET",
-      headers: details.headers,
-      statusCode: {
-        401: function () {
-          store.commit(rootPaths.mutations.DEAUTH);
+  get(details: Request) {
+    $.ajax(
+      details.url,
+      {
+        dataType: details.dataType,
+        method: "GET",
+        headers: details.headers,
+        statusCode: {
+          401: function () {
+            store.commit(rootPaths.mutations.DEAUTH);
+          }
+        },
+        success: function (data?, status?: string, jqXHR?: JQueryXHR) {
+          typeof details.successCallback === 'function' && details.successCallback(data, status, jqXHR);
+        },
+        error: function (jqXHR?: JQueryXHR, status?: string, error?: string) {
+          typeof details.errorCallback === 'function' && details.errorCallback(jqXHR, status, error);
         }
-      },
-      success: function (data?, status?: string, jqXHR?: JQueryXHR) {
-        typeof details.successCallback === 'function' && details.successCallback(data, status, jqXHR);
-      },
-      error: function (jqXHR?: JQueryXHR, status?: string, error?: string) {
-        typeof details.errorCallback === 'function' && details.errorCallback(jqXHR, status, error);
-      }
-    });
-}
+      });
+  }
 
-states = {
-  NOTAUTHORIZED: -1,
-  INIT: 0,
-  LOADING: 1,
-  ERROR: 2,
-  READY: 3
-}
+  states = {
+    NOTAUTHORIZED: -1,
+    INIT: 0,
+    LOADING: 1,
+    ERROR: 2,
+    READY: 3
+  }
 }
 
 export class Request {

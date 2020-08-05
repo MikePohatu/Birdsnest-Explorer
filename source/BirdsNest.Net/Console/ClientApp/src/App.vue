@@ -16,10 +16,11 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see http://www.gnu.org/licenses/.
 -->
 <template>
-	<div id="app" class="fillAvailable">
+	<!-- See updateHeight function for why height is set -->
+	<div id="app" class="grid-y" style="height: 400px">
 		<Curtain />
-		<TopBar />
-		<div id="contentPane" class="fillAvailable">
+		<TopBar class="cell shrink" />
+		<div id="contentPane" class="cell auto">
 			<router-view />
 		</div>
 		<NotificationIcon />
@@ -45,22 +46,38 @@ export default class App extends Vue {
 	created() {
 		this.$store.dispatch(rootPaths.actions.UPDATE_PROVIDERS);
 	}
+
+	mounted() {
+		window.addEventListener("resize", () => {
+			this.updateHeight();
+		});
+		window.addEventListener("orientationchange", () => {
+			this.updateHeight();
+		});
+
+		this.updateHeight();
+	}
+
+	//this is to allow for mobile devices which don't deal with vh height. 
+	//The address bar will appear and disappear based on what the browser thinks is
+	//the right thing to do 
+	updateHeight(): void {
+		document.getElementById("app").style.height = window.innerHeight.toString() + "px";
+	}
 }
 </script>
 
 <style lang="scss">
 body {
 	position: relative;
+	overflow: hidden;
 }
 
 #contentPane {
-	position: fixed;
 	overflow: auto;
 }
 
-.fillAvailable,
-body,
-html {
+.fillAvailable {
 	margin: 0;
 	padding: 0;
 	height: 100%;
@@ -157,14 +174,14 @@ html {
 .dialog {
 	padding: 5px 15px;
 	background: rgba(255, 255, 255, 1);
-	opacity: 1;	
+	opacity: 1;
 }
 
 .dialogWrapper {
 	padding: 5px;
 	background-color: rgba(220, 220, 220, 0.8);
-  z-index: 4000;
-  position: fixed;
+	z-index: 4000;
+	position: fixed;
 	top: 50%;
 	left: 50%;
 	transform: translate(-50%, -50%);
@@ -174,9 +191,9 @@ html {
 	.dialogWrapper {
 		position: fixed;
 		top: 50%;
-    left: 0;
-    right: 0;
-    transform: translate(0, -50%);
+		left: 0;
+		right: 0;
+		transform: translate(0, -50%);
 	}
 }
 
@@ -194,33 +211,30 @@ html {
 	-khtml-user-select: none;
 	-moz-user-select: none;
 	-ms-user-select: none;
-	user-select: none; 
+	user-select: none;
 }
 
 .loading::after {
-  content: '.';
-  animation: dots 4s steps(5, end) infinite;
+	content: ".";
+	animation: dots 4s steps(5, end) infinite;
 }
 
 @keyframes dots {
-  0%, 20% {
-    color: rgba(0,0,0,0);
-    text-shadow:
-      .2em 0 0 rgba(0,0,0,0),
-      .4em 0 0 rgba(0,0,0,0);
-      }
-  40% {
-    color: #606060;
-    text-shadow:
-      .2em 0 0 rgba(0,0,0,0),
-      .4em 0 0 rgba(0,0,0,0);}
-  60% {
-    text-shadow:
-      .2em 0 0 #606060,
-      .4em 0 0 rgba(0,0,0,0);}
-  80%, 100% {
-    text-shadow:
-      .2em 0 0 #606060,
-      .4em 0 0 #606060;}
+	0%,
+	20% {
+		color: rgba(0, 0, 0, 0);
+		text-shadow: 0.2em 0 0 rgba(0, 0, 0, 0), 0.4em 0 0 rgba(0, 0, 0, 0);
+	}
+	40% {
+		color: #606060;
+		text-shadow: 0.2em 0 0 rgba(0, 0, 0, 0), 0.4em 0 0 rgba(0, 0, 0, 0);
+	}
+	60% {
+		text-shadow: 0.2em 0 0 #606060, 0.4em 0 0 rgba(0, 0, 0, 0);
+	}
+	80%,
+	100% {
+		text-shadow: 0.2em 0 0 #606060, 0.4em 0 0 #606060;
+	}
 }
 </style>

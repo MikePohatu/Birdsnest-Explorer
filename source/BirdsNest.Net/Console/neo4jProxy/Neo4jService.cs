@@ -55,6 +55,35 @@ namespace Console.neo4jProxy
         }
 
 
+        public delegate void ProcessIRecord(IRecord record);
+        public async Task ProcessDelegateFromQueryAsync(string query, object props, ProcessIRecord processor)
+        {
+            using (ISession session = this._driver.Session())
+            {
+                try
+                {
+                    await session.ReadTransactionAsync(async (tx) =>
+                    {
+                        IStatementResultCursor reader = await tx.RunAsync(query, props);
+                        while (await reader.FetchAsync())
+                        {
+                            // Each current read in buffer can be reached via Current
+                            processor(reader.Current);
+                        }
+                    });
+                }
+                catch (Exception e)
+                {
+                    this._logger.LogError("Error running query from {0}: {1}", e.StackTrace, e.Message);
+                    this._logger.LogError("Query {0}", query);
+                }
+                finally
+                {
+                    await session.CloseAsync();
+                }
+            }
+        }
+
         public async Task<ResultSet> GetResultSetFromQueryAsync(string query, object props)
         {
             ResultSet returnedresults = new ResultSet();
@@ -84,6 +113,11 @@ namespace Console.neo4jProxy
             }
 
             return returnedresults;
+        }
+
+        public async Task<ResultSet> GetResultSetFromQueryAsync(string query)
+        {
+            return await GetResultSetFromQueryAsync(query, null);
         }
 
         public async Task<ResultSet> GetNodeAsync(long nodeid)

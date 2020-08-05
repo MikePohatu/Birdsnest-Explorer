@@ -19,6 +19,8 @@ import Vuex from "vuex";
 import { api, Request} from "../assets/ts/webcrap/apicrap";
 import { VisualizerStore } from "./modules/VisualizerStore";
 import PluginManager from '@/assets/ts/dataMap/PluginManager';
+import ServerInfo from '@/assets/ts/dataMap/ServerInfo';
+
 import { bus, events } from '@/bus';
 Vue.use(Vuex);
 
@@ -30,12 +32,15 @@ export const rootPaths = {
     SESSION_STATUS: "sessionStatus",
     PLUGIN_MANAGER: "pluginManager",
     API_STATE: "apiState",
+    SERVER_INFO_STATE: "serverInfoState",
     DEAUTH: "deAuth",
+    SERVER_INFO: "serverInfo"
   },
   actions: {
     UPDATE_PROVIDERS: "updateProviders",
     UPDATE_PLUGINS: "updatePlugins",
     UPDATE_AUTHENTICATED_DATA: "updateAuthedData",
+    UPDATE_SERVER_INFO: "updateServerInfo"
   }
 }
 
@@ -50,6 +55,8 @@ export interface RootState {
       providers: string[];
     };
     pluginManager: PluginManager;
+    serverInfo: ServerInfo;
+    serverInfoState: number;
     apiState: number;
     visualizer?;
 }
@@ -65,6 +72,8 @@ const state: RootState = {
     providers: [],
   },
   pluginManager: null,
+  serverInfo: null,
+  serverInfoState: api.states.NOTAUTHORIZED,
   apiState: api.states.NOTAUTHORIZED
 }
 
@@ -89,6 +98,12 @@ export default new Vuex.Store({
     },
     pluginManager(state, newManager: PluginManager) {
       state.pluginManager = newManager;
+    },
+    serverInfo(state, newStats: ServerInfo) {
+      state.serverInfo = newStats;
+    },
+    serverInfoState(state, newstate: number) {
+      state.serverInfoState = newstate;
     },
     apiState(state, newstate: number) {
       state.apiState = newstate;
@@ -137,9 +152,26 @@ export default new Vuex.Store({
       } 
       api.get(request);
     },
+
+    updateServerInfo(context) {
+      console.log("Refreshing server info");
+      context.commit(rootPaths.mutations.SERVER_INFO_STATE, api.states.LOADING);
+      const request: Request = {
+        url: "/api/serverinfo",
+        successCallback: (data: PluginManager) => {
+            context.commit(rootPaths.mutations.SERVER_INFO, data);
+            context.commit(rootPaths.mutations.SERVER_INFO_STATE, api.states.READY);
+        },
+        errorCallback: () => {
+          context.commit(rootPaths.mutations.SERVER_INFO_STATE, api.states.ERROR);
+        }
+      } 
+      api.get(request);
+    },
     updateAuthedData(context) {
       if (this.state.user.isAuthorized) {
         context.dispatch(rootPaths.actions.UPDATE_PLUGINS);
+        context.dispatch(rootPaths.actions.UPDATE_SERVER_INFO);
       }
     }
   }

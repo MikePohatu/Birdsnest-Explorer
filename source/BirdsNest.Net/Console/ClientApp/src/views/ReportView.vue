@@ -16,8 +16,8 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see http://www.gnu.org/licenses/.
 -->
 <template>
-	<div id="report-view">
-		<div id="report-menu" class="grid-x">
+	<div id="reportView">
+		<div id="reportHeader" class="grid-x">
 			<div class="cell shrink" id="reportmenu">
 				<ul
 					class="dropdown menu"
@@ -59,10 +59,10 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 			</div>
 
 			<div class="cell auto"/>
-			<div class="x-center show-for-medium reportHeader" id="status"><h5>{{ reportName }}</h5></div>
-
+			<div class="x-center show-for-medium" id="reportName"><h5>{{ reportName }}</h5></div>
+			
 			<div id="pages" class="cell shrink">
-				<span id="prevPageBtn" style="margin:5px;" :class="{ hidden: !hasPrevPage }">
+				<span v-if="hasPrevPage" id="prevPageBtn" style="margin:5px;">
 					<a href="#" v-on:click="onPageDownClicked">
 						<i class="fas fa-caret-left"></i>
 					</a>
@@ -70,9 +70,8 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 				<span
 					style="margin:5px;"
 					class="text-center"
-					id="pageMessage"
-				>Page {{ pageNum }} of {{ pageCount }}</span>
-				<span id="nextPageBtn" style="margin:5px;" :class="{ hidden: !hasNextPage }">
+				>{{ pageNum }} of {{ pageCount }}</span>
+				<span v-if="hasNextPage" id="nextPageBtn" style="margin:5px;">
 					<a href="#" v-on:click="onPageUpClicked">
 						<i class="fas fa-caret-right"></i>
 					</a>
@@ -82,7 +81,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 
 		<!-- Main output area -->
 		<Loading v-if="!resultsLoaded">Loading</Loading>
-		<div v-else id="output" class="table-scroll">
+		<div v-else id="output">
 			<table id="outputtable" class="hover">
 				<thead>
 					<tr id="outputHeader">
@@ -119,15 +118,24 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 </template>
 
 <style scoped>
-#output {
-	position: absolute;
-	height: 100%;
-	width: 100%;
-}
-
-#outputtable thead tr {
+#reportHeader {
+	position: -webkit-sticky; 
 	position: sticky;
 	top: 0;
+	left: 0;
+	width: 100vw;
+	padding-top: 5px;
+	background-color: #e7e7e7;
+}
+
+#reportView {
+	width: max-content;
+}
+
+#pages {
+	right: 0;
+	margin-left: 10px;
+	margin-right: 18px;
 }
 
 .toggleitem {
@@ -136,10 +144,6 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 	margin-right: 5px;
 	margin-bottom: 3px;
 	vertical-align: text-bottom;
-}
-
-.reportHeader {
-	padding-top: 5px;
 }
 </style>
 
