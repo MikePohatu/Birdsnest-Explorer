@@ -26,6 +26,12 @@
       "query": "MATCH (n) RETURN n LIMIT 750",
       "propertyFilters": [ "name", "dn", "description", "scope" ]
     },
+    "custom-100": {
+      "displayName": "custom-100",
+      "description": "100 nodes on display",
+      "query": "MATCH (n) RETURN n LIMIT 100",
+      "propertyFilters": [ "name", "dn", "description", "scope" ]
+    },
     "custom-200": {
       "displayName": "custom-200",
       "description": "200 nodes on display",
