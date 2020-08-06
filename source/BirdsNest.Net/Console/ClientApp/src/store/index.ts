@@ -26,6 +26,7 @@ export const rootPaths = {
   mutations: {
     IS_AUTHORIZED: "isAuthorized",
     IS_ADMIN: "isAdmin",
+    USERNAME: "username",
     SESSION_STATUS: "sessionStatus",
     PLUGIN_MANAGER: "pluginManager",
     API_STATE: "apiState",
@@ -79,6 +80,9 @@ export default new Vuex.Store({
     },
     isAdmin(state, isadmin: boolean) {
       state.user.isAdmin = isadmin;
+    },
+    username(state, name: string) {
+      state.user.name = name;
     },
     sessionStatus(state, statusmessage: string) {
       state.session.status = statusmessage;

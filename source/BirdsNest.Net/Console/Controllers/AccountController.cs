@@ -78,6 +78,10 @@ namespace Console.Controllers
                     result.IsAuthorized = true;
                     result.Message = "OK";
                 }
+                else if (claim.Type == ClaimTypes.GivenName)
+                {
+                    result.Name = claim.Value;
+                }
             }
             
             if (result.IsAuthorized == false) { await Logout(); }
@@ -123,28 +127,6 @@ namespace Console.Controllers
             return result;
         }
 
-        private class AuthResults {
-            public bool IsAuthenticated { get; set; } = false;
-            public bool IsAuthorized { get; set; } = false;
-            public bool IsAdmin { get; set; } = false;
-            public string Message { get; set; }
-        }
-
-        public class AuthDetails
-        {
-            public string Username { get; set; }
-            public string Password { get; set; }
-            public string Provider { get; set; }
-
-            public bool IsValid()
-            {
-                if (string.IsNullOrWhiteSpace(this.Username) || string.IsNullOrWhiteSpace(this.Password) || string.IsNullOrWhiteSpace(this.Provider))
-                { return false; }
-                else
-                { return true; }
-            }
-        }
-
         private async Task<AuthResults> Auth(AuthDetails details)
         {
             AuthResults result = new AuthResults();
@@ -159,6 +141,7 @@ namespace Console.Controllers
 
                 if (login.IsAuthenticated)
                 {
+                    result.Name = login.GivenName;
                     result.IsAuthenticated = true;
                     if (login.IsAuthorised == false)
                     {

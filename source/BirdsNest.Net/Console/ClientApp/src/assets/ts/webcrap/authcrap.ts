@@ -22,7 +22,8 @@ class AuthResults {
     isAuthenticated = false;
     isAuthorized = false;
     isAdmin = false;
-    message: string;
+    name = "";
+    message = "";
 }
 
 class AuthCrap {
@@ -42,6 +43,7 @@ class AuthCrap {
             successCallback: (data: AuthResults) => {
                 store.commit(rootPaths.mutations.IS_AUTHORIZED, data.isAuthorized);
                 store.commit(rootPaths.mutations.IS_ADMIN, data.isAdmin);
+                store.commit(rootPaths.mutations.USERNAME, data.name);
                 bus.$emit(events.Auth.Message, data.message);
 
                 if (data.isAuthorized) {
@@ -96,6 +98,7 @@ class AuthCrap {
             successCallback: (data: AuthResults) => {
                 store.commit(rootPaths.mutations.IS_AUTHORIZED, data.isAuthorized);
                 store.commit(rootPaths.mutations.IS_ADMIN, data.isAdmin);
+                store.commit(rootPaths.mutations.USERNAME, data.name);
                 bus.$emit(events.Auth.Message, data.message);
                 
                 if (data.isAuthorized) { 
