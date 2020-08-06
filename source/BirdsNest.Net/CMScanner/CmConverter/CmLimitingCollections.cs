@@ -30,7 +30,7 @@ namespace CMScanner.CmConverter
             {
                 return "MATCH (n:" + Types.CMCollection + ")" +
                 "MATCH (l:" + Types.CMCollection + " {id:n.limitingcollection}) " +
-                "MERGE (l)-[r:" + Types.CMLimitingCollection + "]->(n) " +
+                "MERGE (n)-[r:" + Types.CMLimitingCollection + "]->(l) " +
                 "SET r.lastscan=$ScanID " +
                 "SET r.scannerid=$ScannerID " +
                 "RETURN n.name";

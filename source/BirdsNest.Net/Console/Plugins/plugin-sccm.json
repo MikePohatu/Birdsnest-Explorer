@@ -21,8 +21,8 @@
       "displayName": "SCCM - CM_INCLUDES_COLLECTION",
       "description": "SCCM collection includes another collection"
     },
-    "CM_LIMITING_FOR": {
-      "displayName": "SCCM - CM_LIMITING_FOR",
+    "CM_LIMITING_COLLECTION": {
+      "displayName": "SCCM - CM_LIMITING_COLLECTION",
       "description": "Limiting collection for an SCCM collection"
     },
     "CM_MEMBER_OF": {

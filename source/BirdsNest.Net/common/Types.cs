@@ -90,7 +90,7 @@ namespace common
         public static string CMMemberOf { get { return "CM_MEMBER_OF"; } }
         public static string CMHasProgram { get { return "CM_HAS_PROGRAM"; } }
         public static string CMHasObject { get { return "CM_HAS_OBJECT"; } }
-        public static string CMLimitingCollection { get { return "CM_LIMITING_FOR"; } }
+        public static string CMLimitingCollection { get { return "CM_LIMITING_COLLECTION"; } }
         public static string CMReferences { get { return "CM_REFERENCES"; } }
         public static string CMHasDeployment { get { return "CM_HAS_DEPLOYMENT"; } }
         public static string CMSuperSededBy{ get { return "CM_SUPERSEDED_BY"; } }
