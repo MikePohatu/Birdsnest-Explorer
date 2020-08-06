@@ -36,6 +36,7 @@ import { Component, Vue } from "vue-property-decorator";
 import { api, Request } from "../assets/ts/webcrap/apicrap";
 import { auth } from "../assets/ts/webcrap/authcrap";
 import { Dictionary } from "vue-router/types/router";
+import { rootPaths } from "@/store/index";
 
 @Component
 export default class Admin extends Vue {
@@ -51,6 +52,7 @@ export default class Admin extends Vue {
       postJson: true,
       successCallback: (data: Dictionary<string>) => {
         this.reloadMessage = data.message;
+        this.$store.dispatch(rootPaths.actions.UPDATE_PLUGINS);
       },
       errorCallback: (jqXHR: JQueryXHR, status: string, error: string) => {
         this.reloadMessage = error;
