@@ -98,16 +98,19 @@ export default class GraphNode extends Vue {
 		const subTypeProps = this.$store.state.pluginManager.subTypeProperties;
 
 		this.node.labels.forEach(label => {
-			if (Object.prototype.hasOwnProperty.call(subTypeProps,label)) {
+			if (Object.prototype.hasOwnProperty.call(subTypeProps, label)) {
 				const subProp = subTypeProps[label];
-				const subType = this.node.properties[subProp].toString();
 
-				if (webcrap.misc.isNullOrWhitespace(subType) === false) {
-					subTypes.push(label + '-'+ subType);
+				if (Object.prototype.hasOwnProperty.call(this.node.properties, subProp)) {
+					const subType = this.node.properties[subProp].toString();
+
+					if (webcrap.misc.isNullOrWhitespace(subType) === false) {
+						subTypes.push(label + "-" + subType);
+					}
 				}
-			} 
+			}
 		});
-		
+
 		return subTypes;
 	}
 
