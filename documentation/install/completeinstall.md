@@ -17,7 +17,7 @@
     * [Active Directory](#Active-Directory)
     * [LDAP](#LDAP)
     * [LocalServer](#LocalServer)
-  * [neo4j Database Connection](#neo4j-Database-Connection)
+  * [Neo4j Database Connection](#Neo4j-Database-Connection)
   * [Full Configuration File](#Full-Configuration-File)
 * [Scanners](#Scanners)
 
@@ -36,29 +36,29 @@ The following diagram outlines the components and their interaction with each ot
 
 ## Dependencies
 
-The following dependencies are installed by the managed installer with BirdsNest if not already discovered on the system.
+The following dependencies are required to run BirdsNest. The managed installer provides automated install of these components in addition to BirdsNest itself.
 
 * Web Server Role (IIS) installed
 * Java 1.8
-* .Net Core Server Hosting Runtime 3.1.3
+* .Net Core Server Hosting Runtime 3.1.6
 
-Additionally, a modern browser is required for use with the neo4j web console. neo4j provides an article [here](https://neo4j.com/developer/kb/explanation-of-error-security-error-18-when-using-internet-explorer-and-neo4j-browser/) that outlines changes to make IE11 work, but this has shown to be problematic in our testing. Microsoft Edge or Chrome are recommended.
+Additionally, a modern browser is required for use with the Neo4j web console. Neo4j provides an article [here](https://neo4j.com/developer/kb/explanation-of-error-security-error-18-when-using-internet-explorer-and-neo4j-browser/) that outlines changes to make IE11 work, but this has shown to be problematic in our testing. Microsoft Edge or Chrome are recommended.
 
 ## Database
 
-BirdsNest uses a [neo4j](https://neo4j.com/) graph database at its core. neo4j 3.5 is installed and configured as part of the managed install, and default data imported i.e. Windows builtin groups/users definitions.
+BirdsNest uses a [Neo4j](https://neo4j.com/) graph database at its core. Neo4j 3.5 is installed and configured as part of the managed install, and default data imported i.e. Windows builtin groups/users definitions.
 
-Full documentation for neo4j is available from the [neo4j documentation site](https://neo4j.com/docs/operations-manual/3.5/).
+Full documentation for Neo4j is available from the [Neo4j documentation site](https://neo4j.com/docs/operations-manual/3.5/).
 
-During installation, the password for the default neo4j database account must be set, and the details for the BirdsNest service account must be set. The BirdsNest service account will be used later during setup of the [Console](#Console) and [Scanners](#Scanners).
+During installation, the password for the default Neo4j database account must be set, and the details for the BirdsNest service account must be set. The BirdsNest service account will be used later during setup of the [Console](#Console) and [Scanners](#Scanners).
 
 ### Account Setup
 
-If using the managed installer, the neo4j and BirdsNest service account will be configured during install. For manual acccount setup you can use the process below.
+If using the managed installer, the Neo4j and BirdsNest service account will be configured during install. For manual acccount setup you can use the process below.
 
-To setup neo4j accounts, on the BirdsNest server open a browser (Edge or Chrome recommneded) at <http://localhost:7474/>
+To setup Neo4j accounts, on the BirdsNest server open a browser (Edge or Chrome recommneded) at <http://localhost:7474/>
 
-If the neo4j password was not set prior to service start, you will be prompted on first login to update the default **neo4j** user account password.
+If the Neo4j password was not set prior to service start, you will be prompted on first login to update the default **neo4j** user account password.
 
 To create the BirdsNest service account, enter the following command into the command bar and click the **play** button:
 
@@ -90,7 +90,7 @@ To logout the current user, run the following command:
 :server disconnect
 ```
 
-_Official neo4j documentation for user management is available [here](https://neo4j.com/docs/operations-manual/3.5/reference/user-management-community-edition/)._
+_Official Neo4j documentation for user management is available [here](https://neo4j.com/docs/operations-manual/3.5/reference/user-management-community-edition/)._
 
 ### DB Configuration and Importing Default Data
 
@@ -195,7 +195,7 @@ Example "Authorization" section for Active Directory authorization:
       "Type": "ActiveDirectory",
       "Name": "AD-DisplayName",
       "Domain": "domain.local",
-      "ContainerDN": "DC=home,DC=local",
+      "ContainerDN": "DC=domain,DC=local",
       "SSL": false,
       "AdminGroup": "BirdsNest Admins",
       "UserGroup": "BirdsNest Users",
@@ -274,21 +274,21 @@ Example "Authorization" section for Local Server authorization:
   ]
 ```
 
-#### neo4j Database Connection
+#### Neo4j Database Connection
 
-The following outlines the fields to configure the connection to the neo4j database.
+The following outlines the fields to configure the connection to the Neo4j database.
 
-**DB_URI**: The database server URI. The entry listed below is the default for the neo4j instance installed on the BirdsNest server\
-**DB_Username**: The neo4j connection username\
-**DB_Password**: The neo4j connection password\
-**DB_Timeout**: The neo4j connection timeout in seconds
+**dbURI**: The database server URI. The entry listed below is the default for the Neo4j instance installed on the BirdsNest server\
+**dbUsername**: The Neo4j connection username\
+**dbPassword**: The Neo4j connection password\
+**dbTimeout**: The Neo4j connection timeout in seconds
 
 ```json
   "neo4jSettings": {
-    "DB_URI": "bolt://localhost:7687",
-    "DB_Username": "neo4j",
-    "DB_Password": "my_secret_db_password",
-    "DB_Timeout": 15
+    "dbURI": "bolt://localhost:7687",
+    "dbUsername": "svc_birdsnest_db",
+    "dbPassword": "my_secret_db_password",
+    "dbTimeout": 15
   }
 ```
 
@@ -309,7 +309,7 @@ The following outlines the fields to configure the connection to the neo4j datab
       "Type": "ActiveDirectory",
       "Name": "AD-DisplayName",
       "Domain": "domain.local",
-      "ContainerDN": "DC=home,DC=local",
+      "ContainerDN": "DC=domain,DC=local",
       "SSL": false,
       "AdminGroup": "BirdsNest Admins",
       "UserGroup": "BirdsNest Users",
@@ -337,10 +337,10 @@ The following outlines the fields to configure the connection to the neo4j datab
     }
   ],
   "neo4jSettings": {
-    "DB_URI": "bolt://localhost:7687",
-    "DB_Username": "neo4j",
-    "DB_Password": "my_secret_db_password",
-    "DB_Timeout": 15
+    "dbURI": "bolt://localhost:7687",
+    "dbUsername": "neo4j",
+    "dbPassword": "my_secret_db_password",
+    "dbTimeout": 15
   }
 }
 ```
