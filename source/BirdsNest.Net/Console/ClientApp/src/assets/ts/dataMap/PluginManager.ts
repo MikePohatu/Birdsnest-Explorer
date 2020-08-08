@@ -19,6 +19,7 @@ import {DataType} from "./DataType";
 
 export default interface PluginManager {
     plugins: Dictionary<Plugin>;
+    extensionCount: number;
     nodeDisplayNames: Dictionary<string>;
     edgeDisplayNames: Dictionary<string>;
     subTypeProperties: Dictionary<string>;

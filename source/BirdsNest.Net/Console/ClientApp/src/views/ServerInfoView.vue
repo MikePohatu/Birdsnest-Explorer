@@ -35,6 +35,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 							<thead>
 								<tr>
 									<th>Active Plugins</th>
+									<th v-if="pluginManager.extensionCount > 0">Extensions</th>
 								</tr>
 							</thead>
 							<tbody>
@@ -43,6 +44,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 										<a :href="plugin.link" target="_blank">{{ plugin.displayName }}</a>
 									</td>
 									<td v-else>{{ plugin.displayName}}</td>
+									<td v-if="pluginManager.extensionCount > 0" v-html="plugin.extendedBy.join('<br/>')" />
 								</tr>
 							</tbody>
 						</table>

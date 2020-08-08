@@ -21,6 +21,8 @@ import {Report} from "./Report";
 export interface Plugin {
     name: string;
     displayName: string;
+    extends: string;
+    extendedBy: string[];
     nodeDataTypes: Dictionary<DataType>;
     edgeDataTypes: Dictionary<DataType>;
     reports: Dictionary<Report>;

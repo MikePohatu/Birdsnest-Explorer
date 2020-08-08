@@ -16,21 +16,20 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #endregion
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace Console.Plugins
 {
     public class Plugin
     {
         public string Name { get; set; }
+        public string Extends { get; set; }
+        public List<string> ExtendedBy { get; } = new List<string>();
         public string DisplayName { get; set; }
         public string Link { get; set; } = string.Empty;
 
-        public Dictionary<string, DataType> NodeDataTypes { get; private set; } = new Dictionary<string, DataType>();
-        public Dictionary<string, DataType> EdgeDataTypes { get; private set; } = new Dictionary<string, DataType>();
-        public Dictionary<string,Report> Reports { get; private set; } = new Dictionary<string, Report>();
+        public SortedDictionary<string, DataType> NodeDataTypes { get; private set; } = new SortedDictionary<string, DataType>();
+        public SortedDictionary<string, DataType> EdgeDataTypes { get; private set; } = new SortedDictionary<string, DataType>();
+        public SortedDictionary<string,Report> Reports { get; private set; } = new SortedDictionary<string, Report>();
     }
 }

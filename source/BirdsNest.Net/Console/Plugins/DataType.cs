@@ -39,7 +39,7 @@ namespace Console.Plugins
             } 
         }
 
-        public Dictionary<string,Property> Properties { get; set; } = new Dictionary<string, Property>();
+        public SortedDictionary<string,Property> Properties { get; set; } = new SortedDictionary<string, Property>();
 
         public string Default { get; set; } = string.Empty;
         public string SubType { get; set; } = string.Empty;
