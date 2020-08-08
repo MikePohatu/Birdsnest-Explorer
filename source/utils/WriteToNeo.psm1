@@ -37,3 +37,12 @@
     }
     return $response
 }
+
+#Based on https://github.com/csharpvitamins/CSharpVitamins.ShortGuid
+function Get-ShortGuid {   
+    $guid = New-Guid
+    $Bytes = [System.Text.Encoding]::Unicode.GetBytes($guid)
+    $EncodedText =[Convert]::ToBase64String($Bytes)
+    $ShortGuid=$EncodedText.Replace('/','_').Replace('+','-').Substring(0, 22)
+    $ShortGuid
+} 
