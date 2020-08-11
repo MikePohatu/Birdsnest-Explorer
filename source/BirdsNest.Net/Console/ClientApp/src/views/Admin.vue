@@ -64,11 +64,13 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 
 
 <style scoped>
-#pluginsWrapper, #actionsWrapper, #actionsWrapper .button  {
+#pluginsWrapper,
+#actionsWrapper,
+#actionsWrapper .button {
 	font-size: 0.7rem;
 }
 
-#actionsWrapper .button  {
+#actionsWrapper .button {
 	width: 60px;
 	margin: 0;
 }

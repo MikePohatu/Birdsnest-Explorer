@@ -109,9 +109,6 @@ export default new Vuex.Store({
       state.apiState = newstate;
       if (newstate === api.states.READY) {
         bus.$emit(events.Notifications.Clear);
-      } else if (newstate === api.states.LOADING) {
-        bus.$emit(events.Notifications.Info, "Loading");
-        bus.$emit(events.Notifications.Processing);
       }
     },
     deAuth(state) {

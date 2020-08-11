@@ -14,6 +14,7 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
+import { bus, events } from "@/bus";
 import Vue from "vue";
 import VueRouter, { RouteConfig } from "vue-router";
 import store, { rootPaths }  from "../store";
@@ -148,7 +149,13 @@ router.beforeEach((to, from, next) => {
         if (store.state.pluginManager === null || store.state.serverInfo === null) {
           store.dispatch(rootPaths.actions.UPDATE_AUTHENTICATED_DATA); 
         }
-        next();
+        if (to.name === routeDefs.admin.name && !store.state.user.isAdmin) {
+          console.error("Access forbidden. Redirecting to portal.");
+          bus.$emit(events.Notifications.Error, "Access to admin page forbidden");
+          next(from);
+        } else {
+          next();
+        }        
       }
     })
   }

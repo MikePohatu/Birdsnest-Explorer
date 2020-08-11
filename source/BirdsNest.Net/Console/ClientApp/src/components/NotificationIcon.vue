@@ -16,21 +16,15 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see http://www.gnu.org/licenses/.
 -->
 <template>
-	<div id="graphNotification" v-show="!isHidden" :title="message">
+	<div id="graphNotification" :class="{disabled: isHidden}" :title="tooltipmessage" v-on:click="onNotificationClicked()">
 		<div style="position: relative">
-			<svg viewBox="-32 -32 64 64"  width="64" height="64" :class="{spinner: processing}">
+			<svg viewBox="-32 -32 64 64" width="64" height="64" :class="{spinner: processing}">
 				<g>
 					<circle id="notificationCircle" r="24" :class="stateClass" />
-					<path
-						v-show="processing"
-						id="spinnerIcon"
-						d="M 0 -18 a 18 18 0 1 1 -12.78 5.22"
-					/>
+					<path v-show="processing" id="spinnerIcon" d="M 0 -18 a 18 18 0 1 1 -12.78 5.22" />
 				</g>
 			</svg>
-			<div
-				id="notificationIcon"
-				>
+			<div id="notificationIcon">
 				<span v-html="icon" font-size class="icon noselect"></span>
 			</div>
 		</div>
@@ -40,13 +34,17 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 
 
 <style scoped>
+.disabled {
+	display: none;
+}
+
 #graphNotification {
 	height: 64px;
 	width: 64px;
 	position: fixed;
 	right: 0;
 	bottom: 0;
-	z-index: 500;
+	z-index: 5000;
 	padding: 0;
 	margin: 10px;
 }
@@ -137,6 +135,13 @@ export default class NotificationIcon extends Vue {
 	states = notificationStates;
 	processing = false;
 
+	get tooltipmessage(): string {
+		if (this.processing) {
+			return this.message;
+		} else {
+			return this.message + '\nClick icon to close notification';
+		}
+	}
 	get icon(): string {
 		return this.state < notificationStates.WARN ? "&#xf129;" : "&#xf12a;";
 	}
@@ -156,10 +161,21 @@ export default class NotificationIcon extends Vue {
 		}
 	}
 
+	get isHidden(): boolean {
+		return this.state === notificationStates.HIDDEN;
+	}
+
+	get stateClass(): string {
+		return "state" + this.state;
+	}
+
 	created() {
 		bus.$on(events.Notifications.Clear, () => {
-			this.state = notificationStates.HIDDEN;
-			this.message = "";
+			if (this.state < notificationStates.WARN) {
+				this.state = notificationStates.HIDDEN;
+				this.message = "";
+			}
+
 			this.processing = false;
 		});
 
@@ -213,11 +229,13 @@ export default class NotificationIcon extends Vue {
 		bus.$off(events.Notifications.Error);
 		bus.$off(events.Notifications.Fatal);
 	}
-	get isHidden(): boolean {
-		return this.state === notificationStates.HIDDEN;
-	}
-	get stateClass(): string {
-		return "state" + this.state;
+
+	onNotificationClicked() {
+		if (this.processing === false) {
+			this.state = notificationStates.HIDDEN;
+		this.message = "";
+		this.processing = false;
+		}
 	}
 }
 </script>
