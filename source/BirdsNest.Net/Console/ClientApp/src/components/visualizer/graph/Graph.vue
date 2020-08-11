@@ -59,8 +59,12 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 	position: relative;
 	bottom: 0;
 	height: 100%;
-	background-color: #e2e2e2;
 	font-family: "helvetica", arial, sans-serif;
+}
+
+/* bg color set on drawingSvg as well so it comes out when exporting to svg file */
+#drawingpane, #drawingSvg {
+	background-color: #e2e2e2;
 }
 
 #drawingSvg {

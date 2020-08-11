@@ -52,6 +52,32 @@ class MiscCrap {
     generateUID() {
         return uuidv4();
     }
+
+	download(content, fileName, mimeType) {
+		if (!mimeType) {
+			mimeType = "application/octet-stream";
+		}
+		const blob = new Blob([content], {
+			type: mimeType,
+		});
+
+		//IE
+		if (navigator.msSaveBlob) {
+			navigator.msSaveBlob(blob, fileName);
+		}
+		//HTML5
+		else {
+			const downel = document.createElement("a");
+			downel.href = URL.createObjectURL(blob);
+			downel.setAttribute("download", fileName);
+			downel.click();
+			downel.remove();
+		}
+    }
+    
+    isIE(): boolean {
+        return window.navigator.userAgent.match(/(MSIE|Trident)/) !== null;
+    }
 }
 
 export default new MiscCrap();

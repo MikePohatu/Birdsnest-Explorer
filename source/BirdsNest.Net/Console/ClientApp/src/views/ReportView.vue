@@ -153,6 +153,7 @@ import { Component, Vue } from "vue-property-decorator";
 import Loading from "@/components/Loading.vue";
 import { ResultSet } from "../assets/ts/dataMap/ResultSet";
 import { api, Request } from "@/assets/ts/webcrap/apicrap";
+import webcrap from "@/assets/ts/webcrap/webcrap";
 import { ApiNode } from "@/assets/ts/dataMap/ApiNode";
 import { Report } from "@/assets/ts/dataMap/Report";
 import { Plugin } from "@/assets/ts/dataMap/Plugin";
@@ -404,7 +405,7 @@ export default class ReportView extends Vue {
 			text = text + row.join(",") + "\n";
 		});
 
-		this.download(text, "results.csv", "text/csv;encoding:utf-8");
+		webcrap.misc.download(text, "results.csv", "text/csv;encoding:utf-8");
 	}
 
 	onShowQueryClicked(): void {
@@ -413,28 +414,6 @@ export default class ReportView extends Vue {
 
 	onQueryCloseClicked(): void {
 		this.showQuery = false;
-	}
-
-	download(content, fileName, mimeType) {
-		if (!mimeType) {
-			mimeType = "application/octet-stream";
-		}
-		const blob = new Blob([content], {
-			type: mimeType,
-		});
-
-		//IE
-		if (navigator.msSaveBlob) {
-			navigator.msSaveBlob(blob, fileName);
-		}
-		//HTML5
-		else {
-			const downel = document.createElement("a");
-			downel.href = URL.createObjectURL(blob);
-			downel.setAttribute("download", fileName);
-			downel.click();
-			downel.remove();
-		}
 	}
 }
 </script>
