@@ -21,16 +21,44 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 		<div class="watermark">
 			<img src="/img/icons/logo.svg" height="512px" width="512px" />
 		</div>
-		
+
 		<div>
 			<h6>Server Statistics</h6>
-			
+
 			<Loading v-if="!statsDataReady" />
-			
+
 			<div v-else id="statsWrapper">
 				<div class="grid-x grid-margin-x">
-					<!-- PLUGINS -->
 					<div class="cell shrink medium-cell-block-y large-3">
+						<!-- TOTALS -->
+						<table class="hover">
+							<thead>
+								<tr>
+									<th class="left">Database Information</th>
+									<th class="right"></th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr>
+									<td class="left">Total Nodes</td>
+									<td class="right">{{ serverInfo.dbStats.totals["nodes"] }}</td>
+								</tr>
+								<tr>
+									<td class="left">Total Relationships</td>
+									<td class="right">{{ serverInfo.dbStats.totals["edges"] }}</td>
+								</tr>
+								<tr>
+									<td class="left">Version</td>
+									<td class="right">{{ serverInfo.dbStats.version }}</td>
+								</tr>
+								<tr>
+									<td class="left">Edition</td>
+									<td class="right">{{ serverInfo.dbStats.edition }}</td>
+								</tr>
+							</tbody>
+						</table>
+
+						<!-- PLUGINS -->
 						<table id="pluginsTable" class="hover">
 							<thead>
 								<tr>
@@ -50,6 +78,36 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 						</table>
 					</div>
 
+					<!-- INDEXES -->
+					<div class="cell shrink medium-cell-block-y large-3">
+						<table id="indexesTable" class="hover">
+							<thead>
+								<tr>
+									<th>
+										Indexes
+										<router-link v-if="isAdmin" :to="routeDefs.indexEditor.path" class="sublink">Edit</router-link>
+									</th>
+									<th>Property</th>
+									<!-- <th>Index Name</th> -->
+									<th>Status</th>
+								</tr>
+							</thead>
+
+							<tbody
+								v-for="(value, name) in serverInfo.indexes"
+								:key="name"
+								name="indexesTransition"
+								is="transition-group"
+							>
+								<tr v-for="index in value" :key="index.propertyName">
+									<td>{{ name }}</td>
+									<td>{{ index.propertyName }}</td>
+									<!-- <td>{{ index.indexName }}</td> -->
+									<td>{{ index.state }}</td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
 					<!-- NODES -->
 					<div class="cell shrink medium-cell-block-y large-3">
 						<table class="hover">
@@ -85,40 +143,15 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 							</tbody>
 						</table>
 					</div>
-
-					<!-- TOTALS -->
-					<div class="cell shrink medium-cell-block-y large-3">
-						<table class="hover">
-							<thead>
-								<tr>
-									<th class="left">Database Information</th>
-									<th class="right"></th>
-								</tr>
-							</thead>
-							<tbody>
-								<tr>
-									<td class="left">Total Nodes</td>
-									<td class="right">{{ serverInfo.dbStats.totals["nodes"] }}</td>
-								</tr>
-								<tr>
-									<td class="left">Total Relationships</td>
-									<td class="right">{{ serverInfo.dbStats.totals["edges"] }}</td>
-								</tr>
-								<tr>
-									<td class="left">Version</td>
-									<td class="right">{{ serverInfo.dbStats.version }}</td>
-								</tr>
-								<tr>
-									<td class="left">Edition</td>
-									<td class="right">{{ serverInfo.dbStats.edition }}</td>
-								</tr>
-							</tbody>
-						</table>
-					</div>
-				</div>	
+				</div>
 
 				<!-- Refresh button -->
-				<div id="refreshBtn" class="icon clickable" title="Refresh" v-on:click="onRefreshClicked">&#xf021;</div>	
+				<div
+					id="refreshBtn"
+					class="icon clickable"
+					title="Refresh"
+					v-on:click="onRefreshClicked"
+				>&#xf021;</div>
 			</div>
 		</div>
 	</div>
@@ -151,12 +184,17 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 	font-size: 24px;
 }
 
+.sublink {
+	font-weight: normal;
+	font-size: 0.7em;
+}
+
 .watermark {
-    position: fixed;
-    top: 0px;
-    right: 0px;
-    opacity: 0.03;
-    z-index: -10;
+	position: fixed;
+	top: 0px;
+	right: 0px;
+	opacity: 0.03;
+	z-index: -10;
 }
 
 tr {
@@ -185,6 +223,7 @@ import Loading from "@/components/Loading.vue";
 import PluginManager from "@/assets/ts/dataMap/PluginManager";
 import ServerInfo from "@/assets/ts/dataMap/ServerInfo";
 import { rootPaths } from "@/store/index";
+import { routeDefs } from "@/router/index";
 
 @Component({
 	components: {
@@ -193,6 +232,11 @@ import { rootPaths } from "@/store/index";
 })
 export default class ServerInfoView extends Vue {
 	api = api;
+	routeDefs = routeDefs;
+
+	get isAdmin() {
+		return this.$store.state.user.isAdmin;
+	}
 
 	get statsDataReady(): boolean {
 		return (
@@ -220,7 +264,7 @@ export default class ServerInfoView extends Vue {
 	}
 
 	onRefreshClicked(): void {
-        this.$store.dispatch(rootPaths.actions.UPDATE_SERVER_INFO);
+		this.$store.dispatch(rootPaths.actions.UPDATE_SERVER_INFO);
 	}
 }
 </script>

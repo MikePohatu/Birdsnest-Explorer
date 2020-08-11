@@ -17,4 +17,5 @@
 export interface Property {
     description: string;
     type: string;
+    indexEnforced: boolean;
 }

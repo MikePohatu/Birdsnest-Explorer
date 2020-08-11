@@ -52,6 +52,10 @@ export const routeDefs = {
   info: {
     name: "Info",
     path: "/info"
+  },
+  indexEditor: {
+    name: "IndexEditor",
+    path: "/indexeditor"
   }
 }
 
@@ -109,7 +113,13 @@ const routes: Array<RouteConfig> = [
     path: routeDefs.info.path,
     name: routeDefs.info.name,
     component: () =>
-      import(/* webpackChunkName: "visualizer" */ "../views/ServerInfoView.vue")
+      import(/* webpackChunkName: "portal" */ "../views/ServerInfoView.vue")
+  },
+  {
+    path: routeDefs.indexEditor.path,
+    name: routeDefs.indexEditor.name,
+    component: () =>
+      import(/* webpackChunkName: "admin" */ "../views/IndexEditorView.vue")
   }
 ];
 

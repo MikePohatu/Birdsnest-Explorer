@@ -20,12 +20,9 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 		<div class="cell auto"></div>
 		<div class="content">
 			<h4>About</h4>
-      <p>
-				BirdsNest is created and maintained by 
-				<a
-					href="https://20road.com"
-					target="_blank"
-				>20Road</a>. 
+			<p>
+				BirdsNest is created and maintained by
+				<a href="https://20road.com" target="_blank">20Road</a>.
 			</p>
 
 			<h5>Documentation</h5>
@@ -34,7 +31,8 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 				<a
 					href="https://github.com/MikePohatu/BirdsNest"
 					target="_blank"
-				>source repository</a>. If you are not running the latest version, documentation for each version is available from the <b>Branch</b> dropdown list.
+				>source repository</a>. If you are not running the latest version, documentation for each version is available from the
+				<b>Branch</b> dropdown list.
 			</p>
 
 			<h5>License</h5>
@@ -53,25 +51,30 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 			<p>
 				.Net Core -
 				<a href="https://github.com/dotnet/core" target="_blank">Microsoft</a>
-        <br />D3 -
+				<br />D3 -
 				<a href="https://d3js.org/" target="_blank">d3js.org</a>
-        <br />FontAwesome -
+				<br />CSharpVitamins -
+				<a href="https://github.com/csharpvitamins/CSharpVitamins.ShortGuid" target="_blank">CSharpVitamins</a>
+				<br />FontAwesome -
 				<a href="https://fontawesome.com/" target="_blank">fontawesome.com</a>
 				<br />Foundation 6 -
 				<a href="https://get.foundation/index.html" target="_blank">Zurb</a>
-        <br />JQuery - 
-        <a href="https://jquery.com/" target="_blank">jquery.com</a>
-        <br />Json.Net - 
-        <a href="https://www.newtonsoft.com/" target="_blank">NewtonSoft</a>
+				<br />JQuery -
+				<a href="https://jquery.com/" target="_blank">jquery.com</a>
+				<br />Json.Net -
+				<a href="https://www.newtonsoft.com/" target="_blank">NewtonSoft</a>
 				<br />neo4j -
 				<a href="https://neo4j.com/" target="_blank">neo4j.com</a>
-				<br />NLog - 
-        <a href="https://nlog-project.org/" target="_blank">nlog-project.org</a>
-        <br />Novell.Directory.Ldap.NETStandard - 
-        <a href="https://github.com/dsbenghe/Novell.Directory.Ldap.NETStandard" target="_blank">dsbenghe</a>
-        <br />uuid js -
+				<br />NLog -
+				<a href="https://nlog-project.org/" target="_blank">nlog-project.org</a>
+				<br />Novell.Directory.Ldap.NETStandard -
+				<a
+					href="https://github.com/dsbenghe/Novell.Directory.Ldap.NETStandard"
+					target="_blank"
+				>dsbenghe</a>
+				<br />uuid js -
 				<a href="https://github.com/uuidjs/uuid" target="_blank">uuidjs</a>
-        <br />Vue -
+				<br />Vue -
 				<a href="https://vuejs.org/" target="_blank">vuejs.org</a>
 			</p>
 		</div>
@@ -81,11 +84,11 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 
 <style scoped>
 p {
-  font-size: 0.9rem;
+	font-size: 0.9rem;
 }
 
 .content {
-  margin: 2rem;
+	margin: 2rem;
 	max-width: 600px;
 	text-align: center;
 }

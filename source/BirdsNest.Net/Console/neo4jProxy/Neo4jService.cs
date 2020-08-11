@@ -28,6 +28,7 @@ using Microsoft.Extensions.Logging;
 using Console.Plugins;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Primitives;
+using Console.neo4jProxy.Indexes;
 
 namespace Console.neo4jProxy
 {
@@ -56,7 +57,7 @@ namespace Console.neo4jProxy
 
 
         public delegate void ProcessIRecord(IRecord record);
-        public async Task ProcessDelegateFromQueryAsync(string query, object props, ProcessIRecord processor)
+        public async Task ProcessDelegatePerRecordFromQueryAsync(string query, object props, ProcessIRecord processor)
         {
             using (ISession session = this._driver.Session())
             {
@@ -442,6 +443,62 @@ namespace Console.neo4jProxy
                 foreach (IRelationship r in path.Relationships) { results.Edges.Add(BirdsNestRelationship.GetRelationship(r)); }
                 return;
             }
+        }
+
+        public async Task<int> CreateIndexAsync(NewIndex newIndex)
+        {
+            string query = $"CREATE INDEX ON :{newIndex.Label}({newIndex.Property})";
+            int count = 0;
+            using (ISession session = this._driver.Session())
+            {
+                try
+                {
+                    await session.ReadTransactionAsync(async (tx) =>
+                    {
+                        IStatementResultCursor reader = await tx.RunAsync(query);
+                        await reader.ConsumeAsync();
+                        IResultSummary summary = await reader.SummaryAsync();
+                        count = summary.Counters.IndexesAdded;
+                    });
+                }
+                catch (Exception e)
+                {
+                    this._logger.LogError(e, $"Error creating index for label {newIndex.Label} on property {newIndex.Property}");
+                }
+                finally
+                {
+                    await session.CloseAsync();
+                }
+            }
+            return count;
+        }
+
+        public async Task<int> DropIndexAsync(string label, string propertyname)
+        {
+            string query = $"DROP INDEX ON :{label}({propertyname})";
+            int count = 0;
+            using (ISession session = this._driver.Session())
+            {
+                try
+                {
+                    await session.ReadTransactionAsync(async (tx) =>
+                    {
+                        IStatementResultCursor reader = await tx.RunAsync(query);
+                        await reader.ConsumeAsync();
+                        IResultSummary summary = await reader.SummaryAsync();
+                        count = summary.Counters.IndexesRemoved;
+                    });
+                }
+                catch (Exception e)
+                {
+                    this._logger.LogError(e, $"Error dropping index for label {label} on property {propertyname}");
+                }
+                finally
+                {
+                    await session.CloseAsync();
+                }
+            }
+            return count;
         }
 
         public void Dispose()

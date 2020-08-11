@@ -95,20 +95,17 @@
   <ItemGroup>
     <Folder Include="ClientApp\public\css\" />
     <Folder Include="Vue\" />
+    <Folder Include="neo4jProxy\Indexes\" />
   </ItemGroup>
 
   <ItemGroup>
     <None Include="appsettings.Development.json">
-      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </None>
     <None Include="neo4jProxy\AdvancedSearch\examples\example_search.json">
-      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </None>
     <None Include="neo4jProxy\example_searches\basicConditionSearch.json">
-      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </None>
     <None Include="neo4jProxy\example_searches\basicSearch.json">
-      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </None>
     <None Include="wwwroot\dynamic\plugins.css" />
     <None Include="wwwroot\dynamic\plugins.css" />
@@ -165,7 +162,7 @@
     <!-- Include the newly-built files in the publish output -->
     <ItemGroup>
       <DistFiles Include="$(SpaRoot)dist\**" />
-      <ResolvedFileToPublish Include="@(DistFiles->'%(FullPath)')" Exclude="@(ResolvedFileToPublish)">
+      <ResolvedFileToPublish Include="@(DistFiles-&gt;'%(FullPath)')" Exclude="@(ResolvedFileToPublish)">
         <RelativePath>%(DistFiles.Identity)</RelativePath>
         <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
         <ExcludeFromSingleFile>true</ExcludeFromSingleFile>

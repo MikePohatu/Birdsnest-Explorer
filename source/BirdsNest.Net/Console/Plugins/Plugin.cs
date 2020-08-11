@@ -28,7 +28,9 @@ namespace Console.Plugins
         public string DisplayName { get; set; }
         public string Link { get; set; } = string.Empty;
 
-        public SortedDictionary<string, DataType> NodeDataTypes { get; private set; } = new SortedDictionary<string, DataType>();
+        //don't be tempted to change to SortedDictionary for Nodes to help with UI layout. These need to honor ordering for icons
+        public Dictionary<string, DataType> NodeDataTypes { get; private set; } = new Dictionary<string, DataType>();
+
         public SortedDictionary<string, DataType> EdgeDataTypes { get; private set; } = new SortedDictionary<string, DataType>();
         public SortedDictionary<string,Report> Reports { get; private set; } = new SortedDictionary<string, Report>();
     }

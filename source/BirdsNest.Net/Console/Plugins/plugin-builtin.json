@@ -19,14 +19,29 @@
     },
     "BuiltinUser": {
       "displayName": "Builtin User",
+      "properties": {
+        "description": {},
+        "id": { "indexEnforced": true },
+        "name": {}
+      },
       "icon": "f0c0"
     },
     "BuiltinGroup": {
       "displayName": "Builtin Group",
+      "properties": {
+        "description": {},
+        "id": { "indexEnforced": true },
+        "name": {}
+      },
       "icon": "f007"
     },
     "BuiltinObject": {
-      "displayName": "Builtin Object"
+      "displayName": "Builtin Object",
+      "properties": {
+        "description": {},
+        "id": { "indexEnforced": true },
+        "name": {}
+      }
     }
   }
 }

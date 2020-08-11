@@ -58,7 +58,7 @@
       "properties": {
         "comment": {},
         "host": {},
-        "name": {}
+        "name": { "indexEnforced": true }
       },
       "default": "name",
       "icon": "f0a0"
@@ -74,7 +74,7 @@
         "lastpermission": {},
         "lastscan": {},
         "name": {},
-        "path": {},
+        "path": { "indexEnforced": true },
         "blocked": {
           "description": "Scanner was unable to interogate this folder and further scanning was blocked",
           "type": "boolean"
@@ -82,7 +82,8 @@
         "inheritancedisabled": {
           "description": "",
           "type": "boolean"
-        }
+        },
+        "scannerid": { "indexEnforced": true }
       },
       "default": "path",
       "icon": "f07c"

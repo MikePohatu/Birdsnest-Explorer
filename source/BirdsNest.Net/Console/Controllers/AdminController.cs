@@ -23,9 +23,11 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Console.Plugins;
 using Microsoft.Extensions.Logging;
 using System.Security.Claims;
+using Console.Plugins;
+using Console.neo4jProxy;
+using Console.neo4jProxy.Indexes;
 
 namespace Console.Controllers
 {
@@ -36,12 +38,53 @@ namespace Console.Controllers
     public class AdminController : Controller
     {
         private readonly PluginManager _pluginmanager;
+        private readonly Neo4jService _neoservice;
         private readonly ILogger _logger;
 
-        public AdminController(ILogger<AdminController> logger, PluginManager plugman)
+        public AdminController(ILogger<AdminController> logger, PluginManager plugman, Neo4jService service)
         {
+            this._neoservice = service;
             this._pluginmanager = plugman;
             this._logger = logger;
+        }
+
+        [ValidateAntiForgeryToken]
+        [HttpPost("indexes/drop")]
+        public async Task<int> DropIndex([FromBody] Console.neo4jProxy.Indexes.Index index)
+        {
+            this._logger.LogWarning($"Index drop for {index.Label}:{index.PropertyName} initiated by {User.FindFirst(ClaimTypes.Name)?.Value}");
+            if (this._pluginmanager.NodeDataTypes.ContainsKey(index.Label))
+            {
+                DataType dt = this._pluginmanager.NodeDataTypes[index.Label];
+                if (dt.Properties.ContainsKey(index.PropertyName))
+                {
+                    Property prop = dt.Properties[index.PropertyName];
+                    if (prop.IndexEnforced == false) { return await this._neoservice.DropIndexAsync(index.Label, index.PropertyName); }
+                }
+            }
+
+            this._logger.LogError($"Invalid index drop request: {index.Label}:{index.PropertyName}");
+            return -1;
+
+            
+        }
+
+        [ValidateAntiForgeryToken]
+        [HttpPost("indexes/create")]
+        public async Task<int> CreateIndex([FromBody]NewIndex newIndex)
+        {
+            this._logger.LogWarning($"Index creation for {newIndex.Label}:{newIndex.Property} initiated by {User.FindFirst(ClaimTypes.Name)?.Value}" );
+            if (this._pluginmanager.NodeDataTypes.ContainsKey(newIndex.Label))
+            {
+                DataType dt = this._pluginmanager.NodeDataTypes[newIndex.Label];
+                if (dt.Properties.ContainsKey(newIndex.Property))
+                {
+                    return await this._neoservice.CreateIndexAsync(newIndex);
+                }
+            }
+
+            this._logger.LogError($"Invalid index creation request: {newIndex.Label}:{newIndex.Property}");
+            return -1;
         }
 
         [ValidateAntiForgeryToken]

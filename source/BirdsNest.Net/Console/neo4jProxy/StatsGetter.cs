@@ -42,7 +42,7 @@ namespace Console.neo4jProxy
 
             //get the node label stats
             string nodesquery = "MATCH (n) RETURN DISTINCT count(labels(n)) as labelCount, labels(n) as labels";
-            await this._neoservice.ProcessDelegateFromQueryAsync(nodesquery, null, (IRecord record)=> {
+            await this._neoservice.ProcessDelegatePerRecordFromQueryAsync(nodesquery, null, (IRecord record)=> {
                 if (record == null) { return; };
 
                 try
@@ -71,7 +71,7 @@ namespace Console.neo4jProxy
             //get the relationship label stats
             string edgesquery = "MATCH ()-[r]->() RETURN count(TYPE(r)) as labelCount, TYPE(r) as label";
 
-            await this._neoservice.ProcessDelegateFromQueryAsync(edgesquery, null, (IRecord record) => {
+            await this._neoservice.ProcessDelegatePerRecordFromQueryAsync(edgesquery, null, (IRecord record) => {
                 if (record == null) { return; };
 
                 try
@@ -93,7 +93,7 @@ namespace Console.neo4jProxy
 
             //get the total node count
             string nodetotal = "MATCH (n) RETURN count(n) as nodeCount";
-            await this._neoservice.ProcessDelegateFromQueryAsync(nodetotal, null, (IRecord record) => {
+            await this._neoservice.ProcessDelegatePerRecordFromQueryAsync(nodetotal, null, (IRecord record) => {
                 if (record == null) { return; };
 
                 try
@@ -109,7 +109,7 @@ namespace Console.neo4jProxy
 
             //get the total edge count
             string edgetotalquery = "MATCH ()-[r]-() RETURN count(r) as edgeCount";
-            await this._neoservice.ProcessDelegateFromQueryAsync(edgetotalquery, null, (IRecord record) => {
+            await this._neoservice.ProcessDelegatePerRecordFromQueryAsync(edgetotalquery, null, (IRecord record) => {
                 if (record == null) { return; };
 
                 try
@@ -129,7 +129,7 @@ namespace Console.neo4jProxy
             string version = string.Empty;
             string edition = string.Empty;
 
-            await this._neoservice.ProcessDelegateFromQueryAsync(serverdeetsquery, null, (IRecord record) => {
+            await this._neoservice.ProcessDelegatePerRecordFromQueryAsync(serverdeetsquery, null, (IRecord record) => {
                 if (record == null) { return; };
 
                 try

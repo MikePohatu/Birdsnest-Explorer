@@ -16,34 +16,15 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #endregion
-using Microsoft.Extensions.Logging;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-
-namespace Console.Plugins
+namespace Console.neo4jProxy.Indexes
 {
-    public class Property
+    public class Index
     {
-        public bool IndexEnforced{ get; set; } = false;
-        public string Description { get; set; } = string.Empty;
-
-        private string _type = "string";
-        public string Type
-        {
-            get { return this._type; }
-            set
-            {
-                if (value == "string" || value == "number" || value == "boolean")
-                {
-                    this._type = value;
-                }
-                else
-                {
-                    throw new ArgumentException("Invalid property type: " + value);
-                }
-            }
-        }
+        public string Label { get; set; }
+        public string IndexName { get; set; }
+        public string PropertyName { get; set; }
+        public string State { get; set; }
+        public bool IsConstraint { get; set; }
     }
 }

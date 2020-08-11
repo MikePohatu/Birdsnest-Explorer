@@ -47,9 +47,9 @@
       "description": "Active Directory domain joined computer object",
       "properties": {
         "description": {},
-        "dn": {},
+        "dn": { "indexEnforced": true },
         "domainid": {},
-        "id": {},
+        "id": { "indexEnforced": true },
         "info": {},
         "lastscan": {},
         "name": {},
@@ -68,10 +68,10 @@
       "description": "Active Directory group",
       "properties": {
         "description": {},
-        "dn": {},
+        "dn": { "indexEnforced": true },
         "domainid": {},
         "grouptype": {},
-        "id": {},
+        "id": { "indexEnforced": true },
         "info": {},
         "lastscan": {},
         "member_count": {},
@@ -93,12 +93,12 @@
       "properties": {
         "description": {},
         "displayname": {},
-        "dn": {},
+        "dn": { "indexEnforced": true },
         "domainid": {},
         "enabled": {
           "type": "boolean"
         },
-        "id": {},
+        "id": { "indexEnforced": true },
         "info": {},
         "lastscan": {},
         "name": {},
@@ -119,9 +119,9 @@
       "displayName": "AD Foreign Security Principal",
       "description": "AD object from foreign domain i.e. via domain or forest trust",
       "properties": {
-        "dn": {},
-        "domainid": {},
-        "id": {},
+        "dn": { "indexEnforced": true },
+        "domainid": { "indexEnforced": true },
+        "id": { "indexEnforced": true },
         "lastscan": {},
         "name": {},
         "scope": {
@@ -137,10 +137,10 @@
       "properties": {
         "description": {},
         "displayname": {},
-        "dn": {},
-        "domainid": {},
+        "dn": { "indexEnforced": true },
+        "domainid": { "indexEnforced": true },
         "grouptype": {},
-        "id": {},
+        "id": { "indexEnforced": true },
         "info": {},
         "lastscan": {},
         "member_count": {},

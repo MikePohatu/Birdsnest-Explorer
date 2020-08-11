@@ -14,18 +14,11 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
-import { Dictionary } from 'vue-router/types/router';
-import { Index } from "@/assets/ts/dataMap/indexes/Index";
 
-export default interface ServerInfo {
-    dbStats: {
-        name: string;
-        edition: string;
-        version:string;
-        nodeLabelCounts: Dictionary<number>;
-        edgeLabelCounts: Dictionary<number>;
-        totals: Dictionary<number>;
-    };
-    serverVersion: string;
-    indexes: Dictionary<Dictionary<Index>>;
+export interface Index {
+    label: string;
+    indexName: string;
+    propertyName: string;
+    state: string;
+    isConstraint: boolean;
 }

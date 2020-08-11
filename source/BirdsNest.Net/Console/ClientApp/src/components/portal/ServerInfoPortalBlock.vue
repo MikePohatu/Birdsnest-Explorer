@@ -16,32 +16,40 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see http://www.gnu.org/licenses/.
 -->
 <template>
-    <div v-if="serverInfoReady">
-        <div>
-            <router-link to="info">Server Information</router-link>
-        </div>
-        <div>
-            <router-link to="info">
-                <table class="hover portalBox">
-                    <tbody>
+	<div v-if="serverInfoReady">
+		<div>
+			<router-link to="info">Server Information</router-link>
+		</div>
+		<div>
+			<router-link to="info">
+				<table class="hover portalBox">
+					<tbody>
+						<tr>
+							<td class="left">Installed plugins</td>
+							<td class="right">{{ Object.keys(pluginManager.plugins).length }}</td>
+						</tr>
+						<tr>
+							<td class="left">Nodes</td>
+							<td class="right">{{ serverInfo.dbStats.totals["nodes"] }}</td>
+						</tr>
+						<tr>
+							<td class="left">Relationships</td>
+							<td class="right">{{ serverInfo.dbStats.totals["edges"] }}</td>
+						</tr>
                         <tr>
-                            <td class="left">Nodes</td>
-                            <td class="right">{{ serverInfo.dbStats.totals["nodes"] }}</td>
-                        </tr>
-                        <tr>
-                            <td class="left">Relationships</td>
-                            <td class="right">{{ serverInfo.dbStats.totals["edges"] }}</td>
-                        </tr>
-                        <tr>
-                            <td class="left">Server version</td>
-                            <td class="right">{{ serverInfo.serverVersion }}</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </router-link>
-        </div>
-        <div class="description">Click to view server information and data statistics</div>
-    </div>
+							<td class="left">Server version</td>
+							<td class="right">{{ serverInfo.serverVersion }}</td>
+						</tr>
+						<tr>
+							<td class="left">Database Version</td>
+							<td class="right">{{ serverInfo.dbStats.version }}</td>
+						</tr>
+					</tbody>
+				</table>
+			</router-link>
+		</div>
+		<div class="description">Click to view server information and data statistics</div>
+	</div>
 </template>
 
 <style scoped>
@@ -67,16 +75,14 @@ td {
 import { Component, Vue } from "vue-property-decorator";
 import { api } from "@/assets/ts/webcrap/apicrap";
 import ServerInfo from "@/assets/ts/dataMap/ServerInfo";
+import PluginManager from "@/assets/ts/dataMap/PluginManager";
 
 @Component
 export default class ServerInfoPortalBlock extends Vue {
-    api = api;
+	api = api;
 
 	get serverInfoReady(): boolean {
-		return (
-			this.serverInfoState === api.states.READY &&
-			this.serverInfo !== null 
-		);
+		return this.serverInfoState === api.states.READY && this.serverInfo !== null;
 	}
 
 	get serverInfoState(): number {
@@ -89,6 +95,10 @@ export default class ServerInfoPortalBlock extends Vue {
 
 	get apiState(): number {
 		return this.$store.state.apiState;
+	}
+
+	get pluginManager(): PluginManager {
+		return this.$store.state.pluginManager;
 	}
 }
 </script>

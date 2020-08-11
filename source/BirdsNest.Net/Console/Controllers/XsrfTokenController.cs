@@ -45,7 +45,7 @@ namespace Console.Controllers
         [HttpGet]
         public IActionResult Get()
         {
-            this._logger.LogInformation("XsrfToken requested: " + HttpContext.Connection.RemoteIpAddress);
+            this._logger.LogDebug("XsrfToken requested: " + HttpContext.Connection.RemoteIpAddress);
             var tokens = _antiforgery.GetAndStoreTokens(HttpContext);
 
             return new ObjectResult(new

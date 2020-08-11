@@ -16,56 +16,107 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see http://www.gnu.org/licenses/.
 -->
 <template>
-  <div class="page">
-    <div class="grid-x grid-margin-x">
-      <div class="cell medium-3 large-2">
-        <span>
-          <button type="button" class="button" v-on:click="onReloadPlugins">Reload Plugins</button>
-        </span>
-      </div>
-      <div class="messages cell medium-9 large-10">
-        <span>{{ reloadMessage }}</span>
-      </div>
-    </div>
-  </div>
+	<div id="adminPageWrapper" class="page grid-x grid-margin-x">
+		<!-- PLUGINS -->
+		<div v-if="pluginManager !== null" id="pluginsWrapper" class="cell shrink medium-6">
+			<table id="pluginsTable" class="hover">
+				<thead>
+					<tr>
+						<th>Active Plugins</th>
+						<th v-if="pluginManager.extensionCount > 0">Extensions</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr v-for="(plugin, name) in pluginManager.plugins" :key="name">
+						<td v-if="plugin.link">
+							<a :href="plugin.link" target="_blank">{{ plugin.displayName }}</a>
+						</td>
+						<td v-else>{{ plugin.displayName}}</td>
+						<td v-if="pluginManager.extensionCount > 0" v-html="plugin.extendedBy.join('<br/>')" />
+					</tr>
+				</tbody>
+			</table>
+		</div>
+
+		<div class="cell shrink medium-6" id="actionsWrapper">
+			<h6>Actions</h6>
+			<table id="actionsTable">
+				<tbody>
+					<tr>
+						<td width="100">Reload Plugins</td>
+						<td width="100">
+							<button type="button" class="button" v-on:click="onReloadPlugins">Go</button>
+						</td>
+						<td id="reloadMessage">{{ reloadMessage }}</td>
+					</tr>
+					<tr>
+						<td>Index Editor</td>
+						<td>
+							<router-link :to="routeDefs.indexEditor.path" class="button" tag="button">Open</router-link>
+						</td>
+						<td />
+					</tr>
+				</tbody>
+			</table>
+		</div>
+	</div>
 </template>
 
 
+<style scoped>
+#pluginsWrapper, #actionsWrapper, #actionsWrapper .button  {
+	font-size: 0.7rem;
+}
+
+#actionsWrapper .button  {
+	width: 60px;
+	margin: 0;
+}
+
+#actionsTable {
+	table-layout: auto;
+}
+</style>
+
+
 <script lang="ts">
+import { bus, events } from "@/bus";
 import { Component, Vue } from "vue-property-decorator";
 import { api, Request } from "../assets/ts/webcrap/apicrap";
 import { auth } from "../assets/ts/webcrap/authcrap";
 import { Dictionary } from "vue-router/types/router";
 import { rootPaths } from "@/store/index";
+import PluginManager from "@/assets/ts/dataMap/PluginManager";
+import { routeDefs } from "@/router/index";
 
 @Component
 export default class Admin extends Vue {
-  reloadMessage = "";
+	reloadMessage = "";
+	routeDefs = routeDefs;
 
-  created(): void {
-    auth.getValidationToken();
-  }
+	get pluginManager(): PluginManager {
+		return this.$store.state.pluginManager;
+	}
 
-  onReloadPlugins() {
-    const request: Request = {
-      url: "/api/admin/reloadplugins",
-      postJson: true,
-      successCallback: (data: Dictionary<string>) => {
-        this.reloadMessage = data.message;
-        this.$store.dispatch(rootPaths.actions.UPDATE_PLUGINS);
-      },
-      errorCallback: (jqXHR: JQueryXHR, status: string, error: string) => {
-        this.reloadMessage = error;
-      }
-    };
-    api.post(request);
-    return false;
-  }
+	created(): void {
+		auth.getValidationToken();
+	}
+
+	onReloadPlugins() {
+		const request: Request = {
+			url: "/api/admin/reloadplugins",
+			postJson: true,
+			successCallback: (data: Dictionary<string>) => {
+				this.reloadMessage = data.message;
+				this.$store.dispatch(rootPaths.actions.UPDATE_PLUGINS);
+			},
+			errorCallback: (jqXHR: JQueryXHR, status: string, error: string) => {
+				this.reloadMessage = error;
+			},
+		};
+		bus.$emit(events.Notifications.Processing, "Processing");
+		api.post(request);
+		return false;
+	}
 }
 </script>
-
-<style scoped>
-.messages {
-  padding-top: 0.5em;
-}
-</style>

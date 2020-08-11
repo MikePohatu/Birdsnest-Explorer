@@ -27,6 +27,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Console.Plugins;
 using System.Reflection;
+using Console.neo4jProxy.Indexes;
+
 
 namespace Console.Controllers
 {
@@ -37,9 +39,11 @@ namespace Console.Controllers
     {
         private readonly StatsGetter _getter;
         private readonly ILogger _logger;
+        private readonly Neo4jService _neoservice;
 
         public ServerInfoController(Neo4jService neoservice, ILogger<ServerInfoController> logger)
         {
+            this._neoservice = neoservice;
             this._getter = new StatsGetter(neoservice);
             this._logger = logger;
         }
@@ -53,7 +57,8 @@ namespace Console.Controllers
         {
             var dbStats = await this._getter.GatherDbStats();
             var assemblyInfo = Assembly.GetEntryAssembly().GetName().Version.ToString();
-            return new { serverVersion = assemblyInfo, dbStats };
+            var indexes = await IndexGetter.GatherDbIndexes(this._neoservice);
+            return new { serverVersion = assemblyInfo, dbStats, indexes };
         }
     }
 }
