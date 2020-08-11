@@ -38,5 +38,5 @@ new Vue({
   render: h => h(App)
 }).$mount("#app");
 
-$.ajaxSetup({xhrFields: {withCredentials: true}});
+$.ajaxSetup({ xhrFields: { withCredentials: true }, cache: false });
 $(document).foundation();
