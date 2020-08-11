@@ -17,55 +17,64 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 -->
 <template>
 	<div class="page" id="indexEditor">
-		<h6>Indexes</h6>
+		<h6>Indexes by Plugin</h6>
 		<Loading v-if="!statsDataReady" />
 		<div v-else>
-			<div v-for="(plugin, pluginname) in pluginManager.plugins" :key="pluginname">
-				<div class="pluginHeader">Plugin - {{ plugin.displayName }}</div>
-				<table class="hover">
-					<thead>
-						<tr>
-							<th>Type</th>
-							<th>Property</th>
-							<!-- <th>Index Name</th> -->
-							<th></th>
-						</tr>
-					</thead>
+			<ul class="accordion" data-accordion data-allow-all-closed="true" data-multi-expand="true">
+				<li
+					class="accordion-item"
+					data-accordion-item
+					v-for="(plugin, pluginname) in pluginManager.plugins"
+					:key="pluginname"
+				>
+					<a href="#" class="pluginHeader accordion-title">{{ plugin.displayName }}</a>
+					<div class="accordion-content" data-tab-content>
+						<table class="hover">
+							<thead>
+								<tr>
+									<th>Type</th>
+									<th>Property</th>
+									<!-- <th>Index Name</th> -->
+									<th></th>
+								</tr>
+							</thead>
 
-					<tbody v-for="(datatype, label) in plugin.nodeDataTypes" :key="label">
-						<tr v-for="(property, propname) in datatype.properties" :key="propname">
-							<td>{{ label }}</td>
-							<td>{{ propname }}</td>
-							<!-- <td>{{ index.indexName }}</td> -->
-							<!-- <td>{{ index.state }}</td> -->
-							<td>
-								<div v-if="propertyHasIndex(label, propname)">
-									<span
-										v-if="propertyHasConstraint(label, propname)"
-										class="inactive"
-										title="Editing indexes created by constraints is not supported"
-									>Constraint</span>
-									<span
-										v-else-if="propertyIndexIsEnforced(label, propname)"
-										class="inactive delete"
-										title="Index is enforced and cannot be deleted"
-									>Delete</span>
-									<a v-else v-on:click="onDeleteIndexClicked(label, propname)" class="delete">Delete</a>
-								</div>
-								<div v-else>
-									<a
-										v-if="propertyIndexIsEnforced(label, propname)"
-										v-on:click="onCreateIndexClicked(label, propname)"
-										class="create warning"
-										title="Index is marked as enforced, but is missing from the database. Please re-create this index as soon as possible"
-									>Create</a>
-									<a v-else v-on:click="onCreateIndexClicked(label, propname)" class="create">Create</a>
-								</div>
-							</td>
-						</tr>
-					</tbody>
-				</table>
-			</div>
+							<tbody v-for="(datatype, label) in plugin.nodeDataTypes" :key="label">
+								<tr v-for="(property, propname) in datatype.properties" :key="propname">
+									<td>{{ label }}</td>
+									<td>{{ propname }}</td>
+									<!-- <td>{{ index.indexName }}</td> -->
+									<!-- <td>{{ index.state }}</td> -->
+									<td>
+										<div v-if="propertyHasIndex(label, propname)">
+											<span
+												v-if="propertyHasConstraint(label, propname)"
+												class="inactive"
+												title="Editing indexes created by constraints is not supported"
+											>Constraint</span>
+											<span
+												v-else-if="propertyIndexIsEnforced(label, propname)"
+												class="inactive delete"
+												title="Index is enforced and cannot be deleted"
+											>Delete</span>
+											<a v-else v-on:click="onDeleteIndexClicked(label, propname)" class="delete">Delete</a>
+										</div>
+										<div v-else>
+											<a
+												v-if="propertyIndexIsEnforced(label, propname)"
+												v-on:click="onCreateIndexClicked(label, propname)"
+												class="create warning"
+												title="Index is marked as enforced, but is missing from the database. Please re-create this index as soon as possible"
+											>Create</a>
+											<a v-else v-on:click="onCreateIndexClicked(label, propname)" class="create">Create</a>
+										</div>
+									</td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+				</li>
+			</ul>
 		</div>
 	</div>
 </template>
@@ -93,7 +102,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 
 .create.warning {
 	color: orange;
-    font-weight: bold;
+	font-weight: bold;
 }
 
 .inactive {
@@ -126,6 +135,8 @@ import ServerInfo from "@/assets/ts/dataMap/ServerInfo";
 import { DataType } from "@/assets/ts/dataMap/DataType";
 import { Property } from "@/assets/ts/dataMap/Property";
 import { rootPaths } from "@/store/index";
+import $ from "jquery";
+import "foundation-sites";
 
 @Component({
 	components: {
@@ -154,6 +165,35 @@ export default class IndexEditorView extends Vue {
 
 	get statsDataReady(): boolean {
 		return this.serverInfo !== null && this.pluginManager !== null;
+	}
+
+	mounted() {
+		if (this.statsDataReady) {
+			//double requestAnimationFrame required primarily for IE
+			requestAnimationFrame(() => {
+				requestAnimationFrame(() => {
+					$(this.$el).foundation();
+				});
+			});
+		} else {
+			const unwatch = this.$store.watch(
+				() => {
+					return this.$store.state.serverInfo;
+				},
+				() => {
+					requestAnimationFrame(() => {
+						requestAnimationFrame(() => {
+							unwatch();
+							$(this.$el).foundation();
+						});
+					});
+				}
+			);
+		}
+	}
+
+	beforeDestoyed() {
+		$(this.$el).foundation("_destroy");
 	}
 
 	propertyHasIndex(label: string, propertyName: string): boolean {
