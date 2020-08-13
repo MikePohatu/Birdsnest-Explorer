@@ -17,59 +17,42 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 -->
 <template>
 	<div v-if="serverInfoReady">
-		<div>
+		<div class="portalBoxHeading">
 			<router-link to="info">Server Information</router-link>
 		</div>
 		<div>
 			<router-link to="info">
-				<table class="hover portalBox">
-					<tbody>
-						<tr>
-							<td class="left">Installed plugins</td>
-							<td class="right">{{ Object.keys(pluginManager.plugins).length }}</td>
-						</tr>
-						<tr>
-							<td class="left">Nodes</td>
-							<td class="right">{{ serverInfo.dbStats.totals["nodes"] }}</td>
-						</tr>
-						<tr>
-							<td class="left">Relationships</td>
-							<td class="right">{{ serverInfo.dbStats.totals["edges"] }}</td>
-						</tr>
-                        <tr>
-							<td class="left">Server version</td>
-							<td class="right">{{ serverInfo.serverVersion }}</td>
-						</tr>
-						<tr>
-							<td class="left">Database Version</td>
-							<td class="right">{{ serverInfo.dbStats.version }}</td>
-						</tr>
-					</tbody>
-				</table>
+				<div class="portalBox">
+					<table>
+						<tbody>
+							<tr>
+								<td class="left">Installed plugins</td>
+								<td class="right">{{ Object.keys(pluginManager.plugins).length }}</td>
+							</tr>
+							<tr>
+								<td class="left">Nodes</td>
+								<td class="right">{{ serverInfo.dbStats.totals["nodes"] }}</td>
+							</tr>
+							<tr>
+								<td class="left">Relationships</td>
+								<td class="right">{{ serverInfo.dbStats.totals["edges"] }}</td>
+							</tr>
+							<tr>
+								<td class="left">Server version</td>
+								<td class="right">{{ serverInfo.serverVersion }}</td>
+							</tr>
+							<tr>
+								<td class="left">Database Version</td>
+								<td class="right">{{ serverInfo.dbStats.version }}</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
 			</router-link>
 		</div>
 		<div class="description">Click to view server information and data statistics</div>
 	</div>
 </template>
-
-<style scoped>
-tr {
-	font-size: 12px;
-}
-
-td {
-	width: min-content;
-	font-size: 10px;
-}
-
-.left {
-	text-align: left;
-}
-
-.right {
-	text-align: right;
-}
-</style>
 
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";

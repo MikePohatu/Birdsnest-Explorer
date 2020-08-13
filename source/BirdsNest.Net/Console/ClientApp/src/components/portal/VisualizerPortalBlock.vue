@@ -16,23 +16,29 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see http://www.gnu.org/licenses/.
 -->
 <template>
-    <div>
-        <div>
-            <router-link to="visualizer">Visualizer</router-link>
-        </div>
-        <div>
-            <router-link to="visualizer">
-                <img class="portalBox" src="/img/vis-screen.png" />
-            </router-link>
-        </div>
-        <div class="description">The BirdsNest Visualizer provides visualization, search, and discovery functionality</div>
-    </div>
+	<div>
+		<div class="portalBoxHeading">
+			<router-link to="visualizer">Visualizer</router-link>
+		</div>
+		<div>
+			<router-link to="visualizer">
+				<div class="portalBox">
+					<VisualizerPortalScreeny />
+				</div>
+			</router-link>
+		</div>
+		<div
+			class="description"
+		>The BirdsNest Visualizer provides visualization, search, and discovery functionality</div>
+	</div>
 </template>
 
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
+import VisualizerPortalScreeny from "@/components/portal/VisualizerPortalScreeny.vue";
 
-@Component
-export default class VisualizerPortalBlock extends Vue {
-}
+@Component({
+	components: { VisualizerPortalScreeny },
+})
+export default class VisualizerPortalBlock extends Vue {}
 </script>

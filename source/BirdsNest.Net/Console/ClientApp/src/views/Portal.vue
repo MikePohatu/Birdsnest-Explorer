@@ -28,9 +28,9 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 			<ServerInfoPortalBlock class="cell large-4 medium-6 portalBoxWrapper" />
 		</div>
 
-		<p>Usage information and links to how-tos videos are available from the BirdsNest online <a href="https://github.com/MikePohatu/BirdsNest" target="_blank">documentation</a>. For support, you can contact us via the <a href="https://www.20road.com/support" target="_blank">20Road support page.</a></p>
+		<p class="text-center">Usage information and links to how-tos videos are available from the BirdsNest online <a href="https://github.com/MikePohatu/BirdsNest" target="_blank">documentation</a>. For support, you can contact us via the <a href="https://www.20road.com/support" target="_blank">20Road support page.</a></p>
 		
-		<p>For license and attribution information please see the <router-link to="about">About</router-link> page</p>
+		<p class="text-center">For license and attribution information please see the <router-link to="about">About</router-link> page</p>
 	</div>
 </template>
 
@@ -59,8 +59,8 @@ span {
 }
 
 #portalBoxes {
-	margin-top: 2rem;
-	margin-bottom: 3rem;
+	margin-top: 1.5rem;
+	margin-bottom: 1.5rem;
 }
 
 .portalBoxWrapper {
@@ -70,10 +70,28 @@ span {
 	margin-bottom: 20px;
 	width: 250px;
 }
+/deep/ .portalBoxHeading {
+	margin-bottom: 0.8rem;
+}
+
+/deep/ td {
+	width: min-content;
+	font-size: 0.8em;
+	padding: 0.625em 0.625em;
+}
+
+/deep/ .left {
+	text-align: left;
+}
+
+/deep/ .right {
+	text-align: right;
+}
 
 /deep/ .portalBoxWrapper .description {
-	margin-top: 5px;
-	font-size: 0.8rem;
+	margin-top: 0.8rem;
+	margin-bottom: 1.5rem;
+	font-size: 0.8em;
 }
 
 /deep/ .portalBox {
@@ -83,32 +101,34 @@ span {
 	border-color: lightgray;
 	border-style: solid;
 	background-color: rgba(235, 235, 235, 0.281);
+	padding: 3px;
+	height: 195px;
+	color: black;
 }
 
-/deep/ table.portalBox {
+/deep/ .portalBox table {
 	border-collapse: separate;
 	margin-bottom: 0;
 	margin-left: auto;
 	margin-right: auto;
-	color: black;
 }
 
-/deep/ table.portalBox tr:last-child td:first-child {
+/deep/ .portalBox table tr:last-child td:first-child {
 	-moz-border-radius: 0 0 0 4px;
 	border-radius: 0 0 0 4px;
 }
 
-/deep/ table.portalBox tr:last-child td:last-child {
+/deep/ .portalBox table tr:last-child td:last-child {
 	-moz-border-radius: 0 0 4px 0;
 	border-radius: 0 0 4px 0;
 }
 
-/deep/ table.portalBox tr:first-child td:first-child {
+/deep/ .portalBox table tr:first-child td:first-child {
 	-moz-border-radius: 4px 0 0 0;
 	border-radius: 4px 0 0 0;
 }
 
-/deep/ table.portalBox tr:first-child td:last-child {
+/deep/ .portalBox table tr:first-child td:last-child {
 	-moz-border-radius: 0 4px 0 0;
 	border-radius: 0 4px 0 0;
 }

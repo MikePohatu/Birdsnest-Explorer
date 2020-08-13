@@ -15,8 +15,8 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 import { Dictionary } from 'vue-router/types/router';
-import {DataType} from "./DataType";
-import {Report} from "./Report";
+import { DataType } from "./DataType";
+import { Report } from "./Report";
 
 export interface Plugin {
     name: string;
