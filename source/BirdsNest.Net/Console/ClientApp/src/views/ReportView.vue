@@ -18,7 +18,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 <template>
 	<div id="reportView">
 		<div id="reportHeader" class="grid-x">
-			<div class="cell shrink" id="reportmenu">
+			<div class="cell shrink headerItem" id="reportmenu">
 				<ul
 					class="dropdown menu"
 					data-dropdown-menu
@@ -58,19 +58,18 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 				</ul>
 			</div>
 
-			<div class="cell auto"/>
-			<div class="x-center show-for-medium" id="reportName"><h5>{{ reportName }}</h5></div>
-			
-			<div id="pages" class="cell shrink">
+			<div class="cell auto" />
+			<div class="x-center show-for-medium headerItem" id="reportName">
+				<h5>{{ reportName }}</h5>
+			</div>
+
+			<div id="pages" class="cell shrink headerItem">
 				<span v-if="hasPrevPage" id="prevPageBtn" style="margin:5px;">
 					<a href="#" v-on:click="onPageDownClicked">
 						<i class="fas fa-caret-left"></i>
 					</a>
 				</span>
-				<span
-					style="margin:5px;"
-					class="text-center"
-				>{{ pageNum }} of {{ pageCount }}</span>
+				<span style="margin:5px;" class="text-center">{{ pageNum }} of {{ pageCount }}</span>
 				<span v-if="hasNextPage" id="nextPageBtn" style="margin:5px;">
 					<a href="#" v-on:click="onPageUpClicked">
 						<i class="fas fa-caret-right"></i>
@@ -99,7 +98,9 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 		<div v-show="showQuery" id="querydialog" class="dialogWrapper">
 			<div class="dialog">
 				<div>
-					<h5><u>Neo4j Cypher Query</u></h5>
+					<h5>
+						<u>Neo4j Cypher Query</u>
+					</h5>
 					<button
 						class="close-button"
 						v-on:click="onQueryCloseClicked"
@@ -119,13 +120,25 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 
 <style scoped>
 #reportHeader {
-	position: -webkit-sticky; 
+	position: -webkit-sticky;
 	position: sticky;
 	top: 0;
 	left: 0;
 	width: 100vw;
-	padding-top: 5px;
 	background-color: #e7e7e7;
+	padding-bottom: 0.5rem;
+}
+
+#reportHeader h5 {
+	line-height: 1;
+	font-size: 1rem;
+}
+
+#reportmenutext {
+	padding-left: 1rem;
+	padding-top: 0;
+	padding-bottom: 0;
+	padding-right: 1.5rem;
 }
 
 #reportView {
@@ -136,6 +149,11 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 	right: 0;
 	margin-left: 10px;
 	margin-right: 18px;
+	line-height: 1;
+}
+
+.headerItem {
+	margin-top: 0.5rem;
 }
 
 .toggleitem {
@@ -301,7 +319,7 @@ export default class ReportView extends Vue {
 	updatePluginReportData(reportName: string, pluginName: string) {
 		this.plugin = this.$store.state.pluginManager.plugins[pluginName] as Plugin;
 		this.report = this.plugin.reports[reportName] as Report;
-		this.query = this.report.query
+		this.query = this.report.query;
 		this.reportName = this.report.displayName;
 
 		const url = "/api/reports/report/?pluginname=" + pluginName + "&reportname=" + reportName;
@@ -343,7 +361,6 @@ export default class ReportView extends Vue {
 				}
 			});
 		}
-		
 
 		this.resultsLoaded = true;
 		this.updateActiveProperties();
