@@ -1,7 +1,8 @@
 {
   "ScannerID": "custom-app",
-  "Items": [
+  "CustomNodes": [
     {
+      "ID": "Custom_Node_Config_ID",
       "PrimaryProperty": "name",
       "PrimaryType": "CustomApp1",
       "Types": [
@@ -13,26 +14,27 @@
         "name": "Custom App",
         "description": "This is a custom app in BirdsNest",
         "businessOwner": "Mickey Mouse"
-      },
-      "Edges": [
-        {
-          "Type": "EDGE_TYPE",
-          "Properties": {
-            "access": "ReadOnly"
-          },
-          "Item": {
-            "Type": "AD_Group",
-            "Property": "sid",
-            "Value": "xyz"
-          }
-        }
-      ] 
+      }
     }
   ],
-  "TypeDefinitions": [
+  "ExistingNodes": [
     {
-      "TypeName": "CustomApp1",
-      "Indexes": [ "name" ]
+      "ID": "Existing_Node_Config_ID",
+      "Type":  "AD_Group",
+      "Matches": {
+        "samaccountname": "test_group",
+        "domainid": "domain.local"
+      }
+    }
+  ],
+  "Edges": [
+    {
+      "Type": "EDGE_TYPE",
+      "Properties": {
+        "access": "ReadOnly"
+      },
+      "Source": "Source_Node_Config_ID",
+      "Target": "Target_Node_Config_ID"
     }
   ]
 }

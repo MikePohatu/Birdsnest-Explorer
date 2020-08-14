@@ -28,10 +28,15 @@ namespace CustomImporter
     {
         [JsonProperty("ScannerID")]
         public string ScannerID { get; set; }
-        [JsonProperty("Items")]
-        public List<object> Items { get; set; }
-        [JsonProperty("TypeDefinitions")]
-        public List<TypeDefinition> TypeDefinitions { get; set; }
+
+        [JsonProperty("CustomNodes")]
+        public List<CustomNode> CustomNodes { get; set; }
+
+        [JsonProperty("ExistingNodes")]
+        public List<ExistingNode> ExistingNodes { get; set; }
+
+        [JsonProperty("Edges")]
+        public List<CustomEdge> Edges { get; set; }
 
         public static Configuration LoadConfiguration(string filepath)
         {

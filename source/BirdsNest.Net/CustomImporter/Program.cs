@@ -30,8 +30,8 @@ namespace CustomImporter
         static void Main(string[] args)
         {
             string appdir = AppDomain.CurrentDomain.BaseDirectory;
-            string neoconfigfile = appdir + @"\config\neoconfig.json";
-            string configfile = appdir + @"\config\ciconfig.json";
+            string neoconfigfile = appdir + @"config/neoconfig.json";
+            string configfile = appdir + @"config/ciconfig.json";
             bool batchmode = false;
             IDriver driver = null;
             string scanid = ShortGuid.NewGuid().ToString();
@@ -96,53 +96,9 @@ namespace CustomImporter
             }
 
 
-            foreach (CustomItem item in config.Items)
+            foreach (CustomNode node in config.CustomNodes)
             {
-                using (ISession session = driver.Session())
-                {
-                    object prop;
-                    if (item.Properties.TryGetValue(item.PrimaryProperty, out prop) == false)
-                    {
-                        Console.WriteLine("Primary property does not have a value");
-                        Environment.Exit(10);
-                    }
-                    StringBuilder builder = new StringBuilder();
-                    builder.AppendLine($"MERGE (n:{item.PrimaryType} {{{item.PrimaryProperty}:\"{prop}\"}})");
-
-                    if (item.Types.Count > 1)
-                    {
-                        foreach (string type in item.Types)
-                        {
-                            if (type != item.PrimaryType)
-                            {
-                                builder.AppendLine($"SET n:{type}");
-                            }
-                        }
-                    }
-
-                    foreach (string key in item.Properties.Keys)
-                    {
-                        object o = item.Properties[key];
-                        string s = o as string;
-                        if (s == null)
-                        {
-                            builder.AppendLine($"SET n.{key}={o}");
-                        }
-                        else
-                        {
-                            builder.AppendLine($"SET n.{key}=\"{s}\"");
-                        }
-                        
-                    }
-                    builder.AppendLine("RETURN n");
-
-                    string query = builder.ToString();
-                    NeoQueryData data = new NeoQueryData();
-                    data.ScanID = scanid;
-                    data.ScannerID = config.ScannerID;
-                    data.Properties = config.Items;
-                    NeoWriter.RunQuery(query, data, driver, true);
-                }
+                Processor.ProcessCustomNode(node, driver, config.ScannerID, scanid);
             }
 
 

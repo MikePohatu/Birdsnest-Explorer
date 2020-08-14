@@ -21,9 +21,9 @@ using System.Collections.Generic;
 
 namespace CustomImporter
 {
-    public class TypeDefinition
+    public class CustomEdge
     {
-        public string TypeName { get; set; }
-        public List<string> Indexes { get; set; }
+        public string Source { get; set; }
+        public string Target { get; set; }
     }
 }

@@ -18,15 +18,13 @@
 #endregion
 using System;
 using System.Collections.Generic;
-using System.Text;
 
 namespace CustomImporter
 {
-    public class CustomItem
+    public class ExistingNode
     {
-        public Dictionary<string, object> Properties { get; set; }
-        public string PrimaryProperty { get; set; }
-        public string PrimaryType { get; set; }
-        public List<string> Types { get; set; }
+        public string ID { get; set; }
+        public string Type { get; set; }
+        public Dictionary<string, object> Matches { get; set; }
     }
 }
