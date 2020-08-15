@@ -28,7 +28,10 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 					:key="pluginname"
 				>
 					<a href="#" class="pluginHeader accordion-title">{{ plugin.displayName }}</a>
-					<div class="accordion-content" data-tab-content>
+					<div v-if="pluginHasProperties(plugin)===false" class="accordion-content" data-tab-content>
+						<p class="noPropsMessage">Plugin has no data-type properties defined</p>
+					</div>
+					<div v-else class="accordion-content" data-tab-content>
 						<table class="hover">
 							<thead>
 								<tr>
@@ -80,6 +83,10 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 </template>
 
 <style scoped>
+h6 {
+	font-weight: bold;
+}
+
 #indexEditor {
 	max-width: 1024px;
 	margin-left: auto;
@@ -88,7 +95,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 
 .pluginHeader {
 	padding: 0.5rem 0.5rem 0.625rem;
-	font-size: 12px;
+	font-size: 0.9rem;
 	font-weight: bold;
 }
 
@@ -113,13 +120,16 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 	color: pink;
 }
 
-tr {
-	font-size: 12px;
+tr, .noPropsMessage {
+	font-size: 0.8rem;
 }
 
 td {
 	width: min-content;
-	font-size: 10px;
+}
+
+p {
+	margin: 0;
 }
 </style>
 
@@ -131,6 +141,7 @@ import { Index } from "@/assets/ts/dataMap/indexes/Index";
 import { api, Request } from "@/assets/ts/webcrap/apicrap";
 import { Dictionary } from "vue-router/types/router";
 import PluginManager from "@/assets/ts/dataMap/PluginManager";
+import { Plugin } from "@/assets/ts/dataMap/Plugin";
 import ServerInfo from "@/assets/ts/dataMap/ServerInfo";
 import { DataType } from "@/assets/ts/dataMap/DataType";
 import { Property } from "@/assets/ts/dataMap/Property";
@@ -194,6 +205,18 @@ export default class IndexEditorView extends Vue {
 
 	beforeDestoyed() {
 		$(this.$el).foundation("_destroy");
+	}
+
+	pluginHasProperties(plugin: Plugin) {
+		const dataTypeNames = Object.keys(plugin.nodeDataTypes);
+		for (let i = 0; i < dataTypeNames.length; i++) {
+			const datatype = plugin.nodeDataTypes[dataTypeNames[i]];
+			if (datatype.propertyNames.length > 0) {
+				return true;
+			}
+		}
+
+		return false;
 	}
 
 	propertyHasIndex(label: string, propertyName: string): boolean {
