@@ -268,7 +268,8 @@ export default class IndexEditorView extends Vue {
 	}
 
 	onDeleteIndexClicked(label: string, property: string): void {
-		if (confirm("Are you sure you delete index on " + label + ":" + property + "?")) {
+		const message = "Are you sure you delete index on\n" + label + " : " + property + "?";
+		if (confirm(message)) {
 			const indexes: Dictionary<Index> = this.serverInfo.indexes[label];
 			const index = indexes[property];
 			const postdata = JSON.stringify(index);
@@ -292,7 +293,8 @@ export default class IndexEditorView extends Vue {
 	}
 
 	onCreateIndexClicked(label, property) {
-		if (confirm("Are you sure you create index on " + label + ":" + property + "?")) {
+		const message = "Are you sure you create index on\n" + label + " : " + property + "?";
+		if (confirm(message)) {
 			const postdata = JSON.stringify({ label: label, property: property });
 
 			const request: Request = {
