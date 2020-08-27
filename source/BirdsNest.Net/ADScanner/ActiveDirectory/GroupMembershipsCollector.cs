@@ -1,10 +1,10 @@
 ﻿#region license
 // Copyright (c) 2019-2020 "20Road"
-// 20Road Limited [https://20road.com]
+// 20Road Limited [https://www.20road.com]
 //
-// This file is part of BirdsNest.
+// This file is part of Birdsnest Explorer.
 //
-// BirdsNest is free software: you can redistribute it and/or modify
+// Birdsnest Explorer is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation, version 3 of the License.
 //
@@ -16,7 +16,6 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #endregion
-
 using common;
 using System.Collections.Generic;
 
