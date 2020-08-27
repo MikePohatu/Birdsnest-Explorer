@@ -1,6 +1,6 @@
 # Search
 
-BirdsNest's simple search consists of a single text box into which a user can enter search terms. Searches only query the name field on nodes within the database, i.e. the node names that appear in the visualizer.
+Birdsnest Explorer's simple search consists of a single text box into which a user can enter search terms. Searches only query the name field on nodes within the database, i.e. the node names that appear in the visualizer.
 
 For advanced search options e.g. additional fields, path searching, and conditional logic, you can toggle to the [Advanced Search](/documentation/console/visualizer/advanced-search/README.md "Advanced Search") mode (see item #4 below). 
 

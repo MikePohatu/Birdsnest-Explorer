@@ -1,14 +1,14 @@
 # Active Directory Scanner
 
-Active Directory is the core of most Windows/Microsoft environments, and is the first BirdsNest scanner that was built. The ADScanner reads Active Directory Users, Groups, and Computers, and connects the membership relationships. 
+Active Directory is the core of most Windows/Microsoft environments, and is the first Birdsnest Explorer scanner that was built. The ADScanner reads Active Directory Users, Groups, and Computers, and connects the membership relationships. 
 
-The AD objects are used to create connections with scanners such as the File System Scanner, so it is usually best to run this scanner first after installing BirdsNest.
+The AD objects are used to create connections with scanners such as the File System Scanner, so it is usually best to run this scanner first after installing Birdsnest Explorer.
 
 ## Setup
-After install, BirdsNest will have a **Scanners** folder in the root install folder. for the rest of this documentation, the default **c:\birdsnest** will be assumed. The folder will contain a number of json config files. For the ADScanner, the **adconfig.json** and **neoconfig.json** files need to be configured.
+After install, Birdsnest Explorer will have a **Scanners** folder in the root install folder. for the rest of this documentation, the default **c:\birdsnest** will be assumed. The folder will contain a number of json config files. For the ADScanner, the **adconfig.json** and **neoconfig.json** files need to be configured.
 
 * **adconfig.json** configures access to the Active Directory domain the scanner will be reading from, and other ADScanner specific settings.
-* **neoconfig.json** is shared across multiple scanners, and configures access to write data to the neo4j database used by BirdsNest. See [Scanners](/documentation/scanners/README.md) for more details on configuring this file. 
+* **neoconfig.json** is shared across multiple scanners, and configures access to write data to the neo4j database used by Birdsnest Explorer. See [Scanners](/documentation/scanners/README.md) for more details on configuring this file. 
 
 
 ### Configuring adconfig.json

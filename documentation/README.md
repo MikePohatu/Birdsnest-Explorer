@@ -1,4 +1,4 @@
-# BirdsNest Reference Documentation
+# Birdsnest Explorer Reference Documentation
 
 
 * [Installation](/documentation/install/README.md "Installation")

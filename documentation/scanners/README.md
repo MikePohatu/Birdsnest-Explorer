@@ -7,7 +7,7 @@
 * [Scanners Under Development](#Scanners-Under-Development)
 
 ## Overview
-A BirdsNest scanner is responsible for querying an external system, and tranlating the data into a format that is then ingested into the BirdsNest database.
+A Birdsnest Explorer scanner is responsible for querying an external system, and tranlating the data into a format that is then ingested into the Birdsnest Explorer database.
 
 
 ## Shared Configuration
@@ -28,14 +28,14 @@ The neo4j configuration file is the same format as the [neo4j Database Connectio
 
 The scanner specific configuration will be covered in the documentation for that scanner.  
 
-**neoconfig.json** is shared across multiple scanners, and configures access to write data to the neo4j database used by BirdsNest. 
+**neoconfig.json** is shared across multiple scanners, and configures access to write data to the neo4j database used by Birdsnest Explorer. 
 
 
 ### Configuring neoconfig.json
 
 An example neoconfig.json file will already exist in the Scanners folder and consists of four fields:
 
-**DB_URI** (required) - This is the path to the neo4j database. This normally running on the BirdsNest server which also runs the scanners, so the default is usually fine. The bolt protocol running on port 7687 is the default neo4j connection protocol.\
+**DB_URI** (required) - This is the path to the neo4j database. This normally running on the Birdsnest Explorer server which also runs the scanners, so the default is usually fine. The bolt protocol running on port 7687 is the default neo4j connection protocol.\
 **DB_Username** (required) - The neo4j username for accessing the database\
 **DB_Password** (required) -  The neo4j password for accessing the database\
 **DB_Timeout** (optional) - The neo4j connection timeout in seconds

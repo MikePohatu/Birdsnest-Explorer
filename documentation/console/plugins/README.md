@@ -1,4 +1,4 @@
-# BirdsNest Console Plugins
+# Birdsnest Explorer Console Plugins
 
 After data is ingested into the database by a scanner, a console plugin is required to define the new types of data available. Each console plugin consists of a .json file and a .css file that contains the following:
 
@@ -35,7 +35,7 @@ The css classes applied to items in the visualizer are dependant on the data typ
 
 ---
 ## High Level Schema
-The following outlines the high level schema of the _plugin-$pluginname.json_ file. It should be noted that in the BirdsNest backend and code, a relationship is known by the term **edge** (from mathematical graphs). The _edgeDataTypes_ field below relates to relationships in the visualizer.
+The following outlines the high level schema of the _plugin-$pluginname.json_ file. It should be noted that in the backend and code, a relationship is known by the term **edge** (from mathematical graphs). The _edgeDataTypes_ field below relates to relationships in the visualizer.
 
 Fields denoted with a $ are items to be configured.
 See [Reports](#Reports) and [Data Types](#Data-Types) for details on reports and edge/node data types configuration respectively.
@@ -148,7 +148,7 @@ Firstly, the cypher [documentation](https://neo4j.com/docs/cypher-manual/3.5/) i
 
 Secondly, the visualizer advanced search function provides the Cypher query when you click the **Share** button. If you have a search you want to run regularly you can take the query from the search as your starting point. The report view also provides a **Show Query** option in the menu.
 
-Once an initial query is created, it is worth testing the query in the neo4j web console. On the BirdsNest server, this will be available at http://localhost:7474
+Once an initial query is created, it is worth testing the query in the neo4j web console. On the Birdsnest Explorer server, this will be available at http://localhost:7474
 
 #### Returned data
 One thing worth noting when working with a query is the uniqueness of the data returned. For example lets look at the query below which forms the basis of the **AD Deep Paths** report. For reference _p_ stands for _path_, _n_ stands for _node_.

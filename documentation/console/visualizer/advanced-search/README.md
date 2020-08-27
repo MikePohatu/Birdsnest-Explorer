@@ -17,7 +17,7 @@
 * [Sharing Searches](#Sharing-Searches)
 
 ## Overview
-The BirdsNest advanced search tool is designed to allow searching for specific 'paths' within the interconnected data stored in the database.
+The Birdsnest Explorer advanced search tool is designed to allow searching for specific 'paths' within the interconnected data stored in the database.
 
 ### Advanced Search Items
 The advanced search box is designed to visually represent your search in a way that is similar to the graph view.
@@ -154,4 +154,4 @@ It is often useful to share a search you have created with other users, or with 
 This will display a dialog with two items:
 
 1. A URL containing an encoded version of the search to open. Note that the full URL is not displayed in the text due to its length. Right click the URL and select _Copy Link_ or the equivalent for your browser. 
-2. A Cypher database query. This can be used by the BirdsNest administrator to create a report based on that query in a [Console Plugin](/documentation/console/plugins/README.md#Reports)
+2. A Cypher database query. This can be used by the Birdsnest Explorer administrator to create a report based on that query in a [Console Plugin](/documentation/console/plugins/README.md#Reports)

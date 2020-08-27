@@ -1,6 +1,6 @@
-# BirdsNest Installation
+# Birdsnest Explorer Installation
 
-BirdsNest customers will receive the [Managed Installer](/documentation/install/managed.md), which should handle the installation from end to end.
+Birdsnest Explorer customers will receive the [Managed Installer](/documentation/install/managed.md), which should handle the installation from end to end.
 
 See the [Complete Installation Documentation](/documentation/install/completeinstall.md) for detailed installation information.
 
