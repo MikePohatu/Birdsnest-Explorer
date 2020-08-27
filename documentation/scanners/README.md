@@ -19,10 +19,10 @@ The neo4j configuration file is the same format as the [neo4j Database Connectio
 
 ```
 {
-  "DB_URI": "bolt://localhost:7687",
-  "DB_Username": "svc_birdsnest",
-  "DB_Password": "my_secret_db_password",
-  "DB_Timeout": 15
+  "dbURI": "bolt://localhost:7687",
+  "dbUsername": "svc_birdsnest",
+  "dbPassword": "my_secret_db_password",
+  "dbTimeout": 15
 }
 ```
 
@@ -35,17 +35,17 @@ The scanner specific configuration will be covered in the documentation for that
 
 An example neoconfig.json file will already exist in the Scanners folder and consists of four fields:
 
-**DB_URI** (required) - This is the path to the neo4j database. This normally running on the Birdsnest Explorer server which also runs the scanners, so the default is usually fine. The bolt protocol running on port 7687 is the default neo4j connection protocol.\
-**DB_Username** (required) - The neo4j username for accessing the database\
-**DB_Password** (required) -  The neo4j password for accessing the database\
-**DB_Timeout** (optional) - The neo4j connection timeout in seconds
+**dbURI** (required) - This is the path to the neo4j database. This normally running on the Birdsnest Explorer server which also runs the scanners, so the default is usually fine. The bolt protocol running on port 7687 is the default neo4j connection protocol.\
+**dbUsername** (required) - The neo4j username for accessing the database\
+**dbPassword** (required) -  The neo4j password for accessing the database\
+**dbTimeout** (optional) - The neo4j connection timeout in seconds
 
 ```json
 {
-  "DB_URI": "bolt://localhost:7687",
-  "DB_Username": "svc_birdsnest",
-  "DB_Password": "my_secret_db_password",
-  "DB_Timeout": 15
+  "dbURI": "bolt://localhost:7687",
+  "dbUsername": "svc_birdsnest",
+  "dbPassword": "my_secret_db_password",
+  "dbTimeout": 15
 }
 ```
 
