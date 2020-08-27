@@ -29,7 +29,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 		</div>
 		<div
 			class="description"
-		>The BirdsNest Visualizer provides visualization, search, and discovery functionality</div>
+		>The Visualizer provides visualization, search, and discovery functionality</div>
 	</div>
 </template>
 
