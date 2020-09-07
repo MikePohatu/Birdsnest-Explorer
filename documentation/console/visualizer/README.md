@@ -2,9 +2,27 @@
 
 
 # Contents
-* [Overview](#Overview)
-* [Items](#Items)
-* [Controls](#Controls)
+* [Visualizer](#visualizer)
+* [Contents](#contents)
+  * [Overview](#overview)
+  * [Items](#items)
+    * [Nodes](#nodes)
+      * [Moving Nodes](#moving-nodes)
+      * [Node Details](#node-details)
+    * [Relationships](#relationships)
+    * [Hops](#hops)
+  * [Controls](#controls)
+    * [Refresh view](#refresh-view)
+    * [Play mode](#play-mode)
+    * [Select](#select)
+    * [Invert Selection](#invert-selection)
+    * [Crop](#crop)
+    * [Delete item](#delete-item)
+    * [Center view](#center-view)
+    * [Hide/show items](#hideshow-items)
+    * [Export to report](#export-to-report)
+    * [Find](#find)
+    * [Clear view](#clear-view)
 
 ## Overview
 
@@ -54,27 +72,18 @@ The hop count is used in [Advanced Search](/documentation/console/visualizer/adv
 ## Controls
 There are a number of controls at the bottom left of the visualizer to help manipulate the view. From left to right these are:
 
-* [Visualizer](#visualizer)
-* [Contents](#contents)
-  * [Overview](#overview)
-  * [Items](#items)
-    * [Nodes](#nodes)
-      * [Moving Nodes](#moving-nodes)
-      * [Node Details](#node-details)
-    * [Relationships](#relationships)
-    * [Hops](#hops)
-  * [Controls](#controls)
-    * [Refresh view](#refresh-view)
-    * [Play mode](#play-mode)
-    * [Select](#select)
-    * [Invert Selection](#invert-selection)
-    * [Crop](#crop)
-    * [Delete item](#delete-item)
-    * [Center view](#center-view)
-    * [Hide/show items](#hideshow-items)
-    * [Export to report](#export-to-report)
-    * [Find](#find)
-    * [Clear view](#clear-view)
+<!-- no toc -->
+* [Refresh view](#Refresh-view)
+* [Play mode](#Play-mode)
+* [Select](#Select)
+* [Invert selection](#Invert-Selection)
+* [Crop](#Crop)
+* [Delete item](#Delete-item)
+* [Center view](#Center-view)
+* [Hide/show items](#Hide/show-items)
+* [Export to report](#Export-to-report)
+* [Find](#Find)
+* [Clear view](#Clear-view)
 
 ![Controls](/documentation/image/console/controls.png)
  
