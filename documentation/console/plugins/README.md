@@ -1,18 +1,29 @@
 # Birdsnest Explorer Console Plugins
 
+* [Birdsnest Explorer Console Plugins](#birdsnest-explorer-console-plugins)
+  * [Overview](#overview)
+  * [Files](#files)
+  * [High Level Schema](#high-level-schema)
+  * [Data Types](#data-types)
+    * [Sub-Types](#sub-types)
+  * [Data Type Schema Definition](#data-type-schema-definition)
+  * [Example Data Type](#example-data-type)
+  * [Reports](#reports)
+    * [Query](#query)
+      * [Returned data](#returned-data)
+    * [Property Filters](#property-filters)
+    * [Report Schema](#report-schema)
+    * [Example Report](#example-report)
+
+## Overview
+
 After data is ingested into the database by a scanner, a console plugin is required to define the new types of data available. Each console plugin consists of a .json file and a .css file that contains the following:
 
 * Definition of new data types available for search functions
 * Definition of properties for each new data type
 * Custom Reports
 * Styling and icons for new data types in the Visualizer
-
-
-[Files](#Files)\
-[High Level Schema](#High-Level-Schema)\
-[Data Types](#Data-Types)\
-[Reports](#Reports)
-
+  
 ---
 ## Files
 A plugin consists of two files:

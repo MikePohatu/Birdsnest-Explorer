@@ -1,14 +1,18 @@
 # File System Scanner
 
-* [Overview](#Overview)
-* [Concepts](#Concepts)
-    * [Threads](#Threads)
-    * [Device](#Device)
-    * [Datastore](#Datastore)
-    * [File System](#File-System)
-        * [Blocked Folders](#Blocked-Folders)
+* [File System Scanner](#file-system-scanner)
+  * [Overview](#overview)
+  * [Configuration Structure](#configuration-structure)
+  * [Threads](#threads)
+  * [Datastores](#datastores)
+  * [Host](#host)
+  * [File System](#file-system)
+    * [Blocked folders](#blocked-folders)
+  * [Credentials](#credentials)
+  * [Configuration Details](#configuration-details)
+
 ## Overview
-The File System Scanner is a multi-threaded Windows file system 'crawler', traversing one or more file systems interrogating the permissions and mapping them to Active Directory or Builtin objects.
+The File System Scanner is a multi-threaded Windows file system 'crawler', traversing one or more file systems, interrogating the permissions and mapping them to Active Directory or Builtin objects.
 
 The following points should be noted:
 

@@ -1,10 +1,11 @@
 # Scanners
 
-* [Overview](#Overview)
-* [Shared Configuration](#Shared-Configuration)
-  * [Configuring neoconfig.json](#Configuring-neoconfig.json)
-* [Available Scanners](#Available-Scanners)
-* [Scanners Under Development](#Scanners-Under-Development)
+* [Scanners](#scanners)
+  * [Overview](#overview)
+  * [Shared Configuration](#shared-configuration)
+    * [Configuring neoconfig.json](#configuring-neoconfigjson)
+  * [Available Scanners](#available-scanners)
+  * [Scanners Under Development](#scanners-under-development)
 
 ## Overview
 A Birdsnest Explorer scanner is responsible for querying an external system, and tranlating the data into a format that is then ingested into the Birdsnest Explorer database.

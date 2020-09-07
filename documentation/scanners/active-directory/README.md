@@ -1,5 +1,15 @@
 # Active Directory Scanner
 
+* [Active Directory Scanner](#active-directory-scanner)
+  * [Overview](#overview)
+  * [Setup](#setup)
+    * [Configuring adconfig.json](#configuring-adconfigjson)
+  * [Command Line Options](#command-line-options)
+  * [Results](#results)
+  * [Reports](#reports)
+
+## Overview
+
 Active Directory is the core of most Windows/Microsoft environments, and is the first Birdsnest Explorer scanner that was built. The ADScanner reads Active Directory Users, Groups, and Computers, and connects the membership relationships. 
 
 The AD objects are used to create connections with scanners such as the File System Scanner, so it is usually best to run this scanner first after installing Birdsnest Explorer.
