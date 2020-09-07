@@ -61,7 +61,7 @@ A Datastore item represents a set of physical disks on which one or more file sy
 
 It is recommended to only create one scanner configuration for each datastore, with all relevant file systems listed within the configuration. This way only the specified number of scanning threads can apply load to those physical disks. The following example outlines the potential result of not doing this:
 
-*A set of disks contains 5 file systems. You create an file system scanner configuration for each file system, each with 8 threads, intending to have 8 threads running on the disks at a time. You setup scheduled tasks that run the scanner for each configuration i.e. 8 scheduled tasks. The scan jobs take several hours, and there starts to be overlap i.e. more than one scan job is running at a time. Each scan job has 8 threads, so if 3 are overlapping, that is 3\*8=24 scan threads, not the 8 intended.*
+*A set of disks contains 5 file systems. You create an file system scanner configuration for each file system, each with 8 threads, intending to have 8 threads running on the disks at a time. You setup scheduled tasks that run the scanner for each configuration i.e. 5 scheduled tasks. The scan jobs take several hours, and there starts to be overlap i.e. more than one scan job is running at a time. Each scan job has 8 threads, so if 3 are overlapping, that is 3\*8=24 scan threads, not the 8 intended.*
 
 Configuration excerpt:
 
