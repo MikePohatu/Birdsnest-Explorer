@@ -185,13 +185,14 @@ RETURN p
 With this:
 
 ```cypher
-WITH nodes(p) AS groups UNWIND groups as group RETURN DISTINCT group
+WITH nodes(p) AS items UNWIND items as item RETURN DISTINCT item
 ```
 
+This translates to: "With all the nodes in the resulting path *p* collected together, which we will assign to a variable *items*, unwind that list into individual items, with each item assigned to a variable *item*. Return to me each distinct/unique *item* (discard duplicates)."
 
-This approach works well in most cases. Replace _group_ and _groups_ from the Cypher above with more descriptive terms as desired. 
+This approach works well in most cases. Replace _item_ and _items_ from the Cypher above with more descriptive terms as desired. 
 
-The full query ends up as follows:
+The full query from above ends up as follows:
 ```cypher
 MATCH p=(n:AD_Group)-[:AD_MEMBER_OF*5..]->(:AD_Group) WITH nodes(p) AS groups UNWIND groups as group RETURN DISTINCT group
 ```
