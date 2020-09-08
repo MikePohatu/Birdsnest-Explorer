@@ -96,7 +96,8 @@ This new css class allows the node or edge to be styled differently from the par
 
 
 ## Data Type Schema Definition
-Fields denoted with a $ are items to be configured.
+Fields denoted with a $ are items to be configured. 
+
 ```json
 "nodeDataTypes": {
     "$data_type": {
@@ -109,10 +110,12 @@ Fields denoted with a $ are items to be configured.
         },
         "default": "$default_property_name_for_search",
         "subType": "$sub-type-property",
-        "icon": "$font_awesome_icon_unicode_https://fontawesome.com/icons?d=gallery&m=free"
+        "icon": "$font_awesome_icon_unicode*"
     }
 }
 ```
+
+\*FontAwesome icons are available from https://fontawesome.com/icons?d=gallery&m=free (only free icons can be used).
 
 ## Example Data Type
 
