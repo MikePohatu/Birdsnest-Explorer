@@ -1,33 +1,31 @@
 {
-	"credentials":[
+	"credentials": [
 		{
-			"id":"cred1",
+			"id": "cred1",
 			"username": "domain\\username",
 			"password": "P@ssword1"
 		}
 	],
-	"datastores":[
+	"datastores": [
 		{
-			"name":"datastore1",
-			"host":"server",
-			"comment":"san1",
-			"filesystems":[
-        {
-          "id":"123",
-          "credentialid": "cred1",
-          "path": "\\\\server\\share1",
-          "scanfiles": false,
-          "comment": "san1-share1"
-        },
-        {
-          "id": "456",
-          "credentialid": "cred1",
-          "path": "\\\\server\\share2",
-          "comment": "san1-share2"
-        }
+			"name": "datastore1",
+			"host": "server",
+			"comment": "san1",
+			"filesystems": [
+				{
+					"id": "123",
+					"credentialid": "cred1",
+					"path": "\\\\server\\share1",
+					"comment": "san1-share1"
+				},
+				{
+					"id": "456",
+					"credentialid": "cred1",
+					"path": "\\\\server\\share2",
+					"comment": "san1-share2"
+				}
 			]
-			
 		}
 	],
-	"maxthreads":10
+	"maxthreads": 10
 }
