@@ -18,7 +18,7 @@ Each scanner will reference two configuration files:
 
 The neo4j configuration file is the same format as the [neo4j Database Connection](/documentation/install/README.md#neo4j-Database-Connection) section of the install documentation. 
 
-```
+```json
 {
   "dbURI": "bolt://localhost:7687",
   "dbUsername": "svc_birdsnest",

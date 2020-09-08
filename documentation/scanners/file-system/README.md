@@ -28,7 +28,7 @@ The scanner has a inbuilt structure designed to both represent how a file system
 
 When you create a configuration for the scanner, it will contain a structure like this:
 
-```
+```json
 "credentials": ...,
 "maxthreads": 8,
 "datastores": [
@@ -65,17 +65,17 @@ It is recommended to only create one scanner configuration for each datastore, w
 
 Configuration excerpt:
 
-```
+```json
 "datastores": [
     {
         "name": "datastore1",
         "host": "server1",
         "filesystems": [
             {
-                ...  file system 1
+                "...file system 1"
             },
             {
-                ...  file system 2
+                "...file system 2"
             }
         ]
     },
@@ -84,10 +84,10 @@ Configuration excerpt:
         "host": "server1",
         "filesystems": [
             {
-                ...  file system 3
+                "...file system 3"
             },
             {
-                ...  file system 4
+                "...file system 4"
             }
         ]
     }
@@ -114,21 +114,21 @@ The **filesystems** section in the configuration is a list of file system object
 * path - The UNC path for root of the scan job. Note the double slashes due to the json file format
 * comment (optional) - A description/comment for the file system
 
-```
+```json
 "filesystems": [
-            {
-                "id": "unique-id-1",
-                "credentialid": "cred1",
-                "path": "\\\\server1\\share1",
-                "comment": "san1-share1"
-            },
-            {
-                "id": "unique-id-2",
-                "credentialid": "cred1",
-                "path": "\\\\server1\share2",
-                "comment": "san1-share2"
-            }
-        ]
+    {
+        "id": "unique-id-1",
+        "credentialid": "cred1",
+        "path": "\\\\server1\\share1",
+        "comment": "san1-share1"
+    },
+    {
+        "id": "unique-id-2",
+        "credentialid": "cred1",
+        "path": "\\\\server1\\share2",
+        "comment": "san1-share2"
+    }
+],
 ...
 ```
 
@@ -144,7 +144,7 @@ If you wish you use different credentials to access a file system, you can add a
 
 In the example **credentials** section below, note the **cred1** id. 
 
-```
+```json
 "credentials": [
     {
         "id": "cred1",
@@ -158,24 +158,24 @@ In the example **credentials** section below, note the **cred1** id.
 
 The **cred1** id is then used in the file system configuration in the **creditialid** property to use the credential when scanning this file system. The **id** property below is the id of the file system, not the credential.
 
-```
+```json
 ...
 "filesystems": [
-            {
-                "id": "123",
-                "credentialid": "cred1",
-                "path": "\\\\server\\share1",
-                "scanfiles": false,
-                "comment": "san1-share1"
-            },
-...
+    {
+        "id": "123",
+        "credentialid": "cred1",
+        "path": "\\\\server\\share1",
+        "scanfiles": false,
+        "comment": "san1-share1"
+    },
+    ...
 ```
 ## Configuration Details
 
 The following example shows a full configuration containing one datastore on a host called **server1** and 2 file systems. Note the use double slashes due to the json file format i.e. each \\ becomes \\\\.
 
 
-```
+```json
 "credentials": [
     {
         "id": "cred1",
@@ -200,7 +200,7 @@ The following example shows a full configuration containing one datastore on a h
             {
                 "id": "456",
                 "credentialid": "cred1",
-                "path": "\\\\server1\share2",
+                "path": "\\\\server1\\share2",
                 "comment": "san1-share2"
             }
         ]

@@ -51,18 +51,18 @@ The following outlines the high level schema of the _plugin-$pluginname.json_ fi
 Fields denoted with a $ are items to be configured.
 See [Reports](#Reports) and [Data Types](#Data-Types) for details on reports and edge/node data types configuration respectively.
 
-```
+```json
 {
    "name": "$plugin_name",
     "displayName": "$plugin_display_name",
     "reports": {
-        $reports_config...
+        "$reports_config..."
     },
     "edgeDataTypes": {
-        $edge_data_types_config...
+        "$edge_data_types_config..."
     },
     "nodeDataTypes": {
-        $node_data_types_config...
+        "$node_data_types_config..."
     }
 }
 ```
@@ -97,7 +97,7 @@ This new css class allows the node or edge to be styled differently from the par
 
 ## Data Type Schema Definition
 Fields denoted with a $ are items to be configured.
-```
+```json
 "nodeDataTypes": {
     "$data_type": {
         "displayName": "$name_to_appear_in_search_list",
@@ -116,6 +116,7 @@ Fields denoted with a $ are items to be configured.
 
 ## Example Data Type
 
+```json
     "nodeDataTypes": {
         "AD_Group": {
             "displayName": "AD Group",
@@ -144,7 +145,7 @@ Fields denoted with a $ are items to be configured.
         },
         ...
     }
-
+```
 ---
 
 ## Reports
@@ -164,7 +165,7 @@ Once an initial query is created, it is worth testing the query in the neo4j web
 #### Returned data
 One thing worth noting when working with a query is the uniqueness of the data returned. For example lets look at the query below which forms the basis of the **AD Deep Paths** report. For reference _p_ stands for _path_, _n_ stands for _node_.
 
-```
+```cypher
 MATCH p=(n:AD_Group)-[:AD_MEMBER_OF*5..]->(:AD_Group) RETURN p
 ```
 
@@ -174,13 +175,13 @@ Additionally, we don't need to return the edges/relationships in our report.
 
 To remedy this, we can unwind the resulting list of nodes and then return only distinct (unique) nodes. We do this by replacing this:
 
-```
+```cypher
 RETURN p
 ```
 
 With this:
 
-```
+```cypher
 WITH nodes(p) AS groups UNWIND groups as group RETURN DISTINCT group
 ```
 
@@ -188,7 +189,7 @@ WITH nodes(p) AS groups UNWIND groups as group RETURN DISTINCT group
 This approach works well in most cases. Replace _group_ and _groups_ from the Cypher above with more descriptive terms as desired. 
 
 The full query ends up as follows:
-```
+```cypher
 MATCH p=(n:AD_Group)-[:AD_MEMBER_OF*5..]->(:AD_Group) WITH nodes(p) AS groups UNWIND groups as group RETURN DISTINCT group
 ```
 ---
@@ -204,20 +205,20 @@ Displayed properties can be altered in the report view by the user, but the orde
 
 ### Report Schema
 
-```
+```json
 "reports": {
     "$report_name": {
       "displayName": "$report_display_name",
       "description": "$report_description",
       "query": "$report_cypher_query",
-      "propertyFilters": [ $list_displayed_property_names ]
+      "propertyFilters": [ "$list_displayed_property_name1", "$list_displayed_property_name2" ]
     },
     ....
 }
 ```
 
 ### Example Report
-```
+```json
 "reports": {
     "ad-deeppaths": {
       "displayName": "AD Deep Paths",
