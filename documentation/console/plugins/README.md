@@ -40,7 +40,7 @@ e.g.
 
 **_C:\birdsnest\Console\1.0\Plugins_**
 
-The .json file contains definitions of the various properties of the plugin, and the .css file contains standard css styling for items added to the visualizer.
+The .json file contains definitions of the various properties of the plugin, and the .css file contains standard css [styling](#styling) for items added to the visualizer.
 
 The [high level schema](#High-Level-Schema) of the .json file is covered in the following section, and [data types](#Data-Types) and [reports](#Reports) covered in more detail following that. 
 
@@ -50,7 +50,7 @@ The css classes applied to items in the visualizer are dependant on the data typ
 ## High Level Schema
 The following outlines the high level schema of the _plugin-$pluginname.json_ file. It should be noted that in the backend and code, a relationship is known by the term **edge** (from mathematical graphs). The _edgeDataTypes_ field below relates to relationships in the visualizer.
 
-Fields denoted with a $ are items to be configured.
+Fields denoted with a **$** are items to be configured.
 See [Reports](#Reports) and [Data Types](#Data-Types) for details on reports and edge/node data types configuration respectively.
 
 ```json
@@ -72,29 +72,35 @@ See [Reports](#Reports) and [Data Types](#Data-Types) for details on reports and
 ---
 
 ## Data Types
-Each node or edge in the database must have one or more data types defined e.g AD_User, AD_Object, AD_MEMBER_OF. In the neo4j database these are called 'labels'.
+Each node or edge in the database must have one or more data types defined e.g AD_User, AD_Object, AD_MEMBER_OF. In the Neo4j database these are called 'labels'.
 
 When a node or edge is added to the visualizer, it's data types are added as css classes to the HTML/SVG element e.g. 
 
-**_class="AD_User AD_Object"\
-class="AD_MEMBER_OF"_**
+```html
+class="AD_User AD_Object"
+class="AD_MEMBER_OF"
+```
 
 Additionally, if any [sub-types](#Sub-Types) are defined, they are also added as classes to the HTML/SVG element. 
 
-These classes can be used to apply styling to the items using the plugin .css file. 
+These classes can be used to apply [styling](#styling) to the items using the plugin .css file. 
 
 ### Sub-Types
 In some cases, it is useful to further break up a data-type into smaller groups. An example of this is Active Directory groups which can be Security or Distribution, and additionally Domain Local, Global, or Universal. 
 
-If a sub-type is required, a property of the data type is chosen as the 'sub-type property'. The value of this property will become the sub-type.
+If a sub-type is required, a property is chosen as the 'sub-type property'. The value of this property will become the sub-type.
 
-The data-type and the value of the sub-type property are concatendated together with a dash (-) and added as a CSS class on the HTML/SVG element. For example for an AD_Group, the sub-type property is 'grouptype'. The value of the 'grouptype' property may have a value of 'security_global', 'security_domainlocal', etc. 
+The data-type and the sub-type are joined together with a dash (-) and added as a CSS class on the HTML/SVG element. 
 
-An AD_Group node with a 'grouptype' of 'security_domainlocal' will have the following css class applied:
+For example, on an AD_Group, the sub-type property is 'grouptype'. The value of the 'grouptype' property may have a value of 'security_global', 'security_domainlocal', etc. 
 
-**AD_Group-security_domainlocal**
+An AD_Group node with a 'grouptype' of 'security_domainlocal' will have the following css class added:
 
-This new css class allows the node or edge to be styled differently from the parent type or other sub-types. 
+```
+AD_Group-security_domainlocal
+```
+
+This new css class allows the node or edge to be [styled](#styling) differently from the parent type or other sub-types. 
 
 ### Icons
 The icons used on nodes within the Visualizer are provided by FontAwesome. Each data type can specify the unicode value for a FontAwesome icon. Note that only free icons are available in Birdsnest Explorer at this time.
