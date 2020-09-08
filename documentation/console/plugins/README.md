@@ -86,16 +86,20 @@ In some cases, it is useful to further break up a data-type into smaller groups.
 
 If a sub-type is required, a property of the data type is chosen as the 'sub-type property'. The value of this property will become the sub-type.
 
-The data-type and the value of the sub-type property are appended together with a dash (-) and added as a CSS class on the HTML/SVG element. For example for an AD_Group, the sub-type property is 'grouptype'. The value of the 'grouptype' property may have a value of 'security_global', 'security_domainlocal', etc. 
+The data-type and the value of the sub-type property are concatendated together with a dash (-) and added as a CSS class on the HTML/SVG element. For example for an AD_Group, the sub-type property is 'grouptype'. The value of the 'grouptype' property may have a value of 'security_global', 'security_domainlocal', etc. 
 
 An AD_Group node with a 'grouptype' of 'security_domainlocal' will have the following css class applied:
 
-**_AD_Group-security_domainlocal_**
+**AD_Group-security_domainlocal**
 
 This new css class allows the node or edge to be styled differently from the parent type or other sub-types. 
 
+### Icons
+The icons used on nodes within the Visualizer are provided by FontAwesome. Each data type can specify the unicode value for a FontAwesome icon. Note that only free icons are available in Birdsnest Explorer at this time.
 
-## Data Type Schema Definition
+FontAwesome icons are available from https://fontawesome.com/icons?d=gallery&m=free.
+
+### Data Type Schema Definition
 Fields denoted with a $ are items to be configured. 
 
 ```json
@@ -110,14 +114,12 @@ Fields denoted with a $ are items to be configured.
         },
         "default": "$default_property_name_for_search",
         "subType": "$sub-type-property",
-        "icon": "$font_awesome_icon_unicode*"
+        "icon": "$font_awesome_icon_unicode"
     }
 }
 ```
 
-\*FontAwesome icons are available from https://fontawesome.com/icons?d=gallery&m=free (only free icons can be used).
-
-## Example Data Type
+### Example Data Type
 
 ```json
     "nodeDataTypes": {
@@ -149,6 +151,31 @@ Fields denoted with a $ are items to be configured.
         ...
     }
 ```
+
+### Styling
+Each plugin includes a .css file containing any custom styling to be applied for the defined data types. 
+
+The [Data Types](#data-types) and [Sub-Types](#sub-types) sections provide details on the css classes that are applied to items when added to the Visualizer. 
+
+The following diagram shows the areas to configure to apply custom colours to the items in the Visualizer. $dataType represents the data type name configured above e.g. AD_Group or AD_Group-security_domainlocal.
+
+![Styling](/documentation/image/console/styling.png)
+
+As an example, the basic css for styling an AD_User node would look like this:
+
+```css
+.AD_User {
+    stroke: crimson;
+    fill: #ffe2e7;
+}
+
+.AD_User.icon {
+    fill: crimson;
+}
+```
+
+When applying styling to sub types, normal css rules apply i.e. last write wins. If you apply styling lower in the css file for your subtype, it will override any conflicting css above it.
+
 ---
 
 ## Reports
