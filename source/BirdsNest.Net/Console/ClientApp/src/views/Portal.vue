@@ -28,7 +28,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 			<ServerInfoPortalBlock class="cell large-4 medium-6 portalBoxWrapper" />
 		</div>
 
-		<p class="text-center">Usage information and links to how-tos videos are available from the Birdsnest Explorer online <a href="https://github.com/MikePohatu/BirdsNest" target="_blank">documentation</a>. For support, you can contact us via the <a href="https://www.20road.com/support" target="_blank">20Road support page.</a></p>
+		<p class="text-center">Usage information and links to how-tos videos are available from the Birdsnest Explorer online <a href="https://github.com/MikePohatu/Birdsnest-Explorer" target="_blank">documentation</a>. For support, you can contact us via the <a href="https://www.20road.com/support" target="_blank">20Road support page.</a></p>
 		
 		<p class="text-center">For license and attribution information please see the <router-link to="about">About</router-link> page</p>
 	</div>

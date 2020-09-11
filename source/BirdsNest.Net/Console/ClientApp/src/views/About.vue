@@ -29,7 +29,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 			<p class="justify">
 				Documentation is available from the BirdsNest
 				<a
-					href="https://github.com/MikePohatu/BirdsNest"
+					href="https://github.com/MikePohatu/Birdsnest-Explorer"
 					target="_blank"
 				>source repository</a>. If you are not running the latest version, documentation for each version is available from the
 				<b>Branch</b> dropdown list.
@@ -39,7 +39,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 			<p class="justify">
 				BirdsNest is open source software, licensed under the GPLv3. Please refer to the license available from the BirdsNest
 				<a
-					href="https://github.com/MikePohatu/BirdsNest"
+					href="https://github.com/MikePohatu/Birdsnest-Explorer"
 					target="_blank"
 				>source repository</a>.
 			</p>
