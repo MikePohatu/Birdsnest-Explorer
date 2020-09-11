@@ -1,9 +1,6 @@
 # Birdsnest Explorer Installation
 
-## Contents
-
 * [Birdsnest Explorer Installation](#birdsnest-explorer-installation)
-  * [Contents](#contents)
   * [Architecture](#architecture)
   * [System Requirements](#system-requirements)
   * [Dependencies](#dependencies)
