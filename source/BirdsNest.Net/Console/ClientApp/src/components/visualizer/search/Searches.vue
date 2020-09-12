@@ -23,9 +23,9 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 				id="searchMaximise"
 				v-on:click="onExpandClicked"
 				class="button absolute-top-left"
-				aria-label="Show search"
+				:aria-label="$t('phrase_Show_search')"
 				type="button"
-				title="Search"
+				:title="$t('word_Search')"
 			>
 				<i class="fas fa-search"></i>
 			</button>

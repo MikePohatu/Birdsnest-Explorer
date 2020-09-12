@@ -19,10 +19,10 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 	<div v-if="node !== null" class="dialogWrapper">
 		<div id="searchNodeEdit" class="dialog">
 			<fieldset class="fieldset cell">
-				<legend>Node</legend>
+				<legend>{{ $t('word_Node') }}</legend>
 
 				<div class="input-group">
-					<span class="input-group-label">Type</span>
+					<span class="input-group-label">{{ $tc('word_Type') }}</span>
 					<select id="nodeType" class="input-group-field" v-model="node.label">
 						<option value="">*</option>
 						<option
@@ -34,7 +34,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 					</select>
 				</div>
 				<div class="input-group">
-					<span class="input-group-label">Identifier</span>
+					<span class="input-group-label">{{ $t('word_Identifier') }}</span>
 					<input
 						id="nodeIdentifier"
 						type="search"
@@ -48,7 +48,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 			<button
 				class="close-button"
 				v-on:click="onCloseClicked"
-				aria-label="Close query dialog"
+				:aria-label="$t('phrase_Close_query_dialog')"
 				type="button"
 			>
 				<span aria-hidden="true">&times;</span>
@@ -57,22 +57,22 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 				<button
 					v-on:click="saveNode"
 					class="button searchbutton-wide small"
-					aria-label="Save this node"
+					:aria-label="$t('phrase_Save_this_node')"
 					type="button"
-				>Save</button>
+				>{{ $t('word_Save') }}</button>
 				<button
 					v-on:click="saveNodeAndCond"
 					class="button searchbutton-x-wide small"
-					aria-label="Save this node and add condition"
+					:aria-label="$t('phrase_Save_this_node_and_add_condition')"
 					type="button"
-				>Save + Add Condition</button>
+				>{{ $t('phrase_Save_Add_Condition')}}</button>
 				<button
 					v-on:click="deleteNode"
 					class="alert button searchbutton-wide small"
-					aria-label="Delete this node"
+					:aria-label="$t('phrase_Delete_this_node')"
 					type="button"
 				>
-					<span>Delete</span>
+					<span>{{ $t('word_Delete') }}</span>
 				</button>
 			</div>
 		</div>

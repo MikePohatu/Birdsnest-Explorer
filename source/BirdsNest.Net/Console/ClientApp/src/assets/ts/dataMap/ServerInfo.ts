@@ -21,7 +21,7 @@ export default interface ServerInfo {
     dbStats: {
         name: string;
         edition: string;
-        version:string;
+        version: string;
         nodeLabelCounts: Dictionary<number>;
         edgeLabelCounts: Dictionary<number>;
         totals: Dictionary<number>;

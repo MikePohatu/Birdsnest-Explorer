@@ -19,12 +19,12 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 	<div class="dialogWrapper">
 		<div id="andOrEdit" class="dialog">
 			<fieldset class="fieldset">
-				<legend>And/Or</legend>
+				<legend>{{ $t('phrase_And_Or') }}</legend>
 				<div class="input-group">
-					<span class="input-group-label small-4">Type</span>
+					<span class="input-group-label small-4">{{ $tc('word_Type') }}</span>
 					<select v-model="type" class="small-8 input-group-field">
-						<option value="AND">AND</option>
-						<option value="OR">OR</option>
+						<option value="AND">{{ $t('word_AND') }}</option>
+						<option value="OR">{{ $t('word_OR') }}</option>
 					</select>
 				</div>
 
@@ -32,7 +32,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 					v-on:click="onCloseClicked"
 					class="close-button"
 					data-close
-					aria-label="Close condition dialog"
+					:aria-label="$t('phrase_Close_condition_dialog')"
 					type="button"
 				>
 					<span aria-hidden="true">&times;</span>
@@ -42,17 +42,17 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 						<button
 							id="searchAndOrSaveBtn"
 							class="button searchbutton-wide small"
-							aria-label="Save this condition"
+							:aria-label="$t('phrase_Save_this_condition')"
 							type="button"
 							v-on:click="onSaveClicked"
-						>Save</button>
+						>{{ $t('word_Save') }}</button>
 						<button
 							id="searchAndOrDeleteBtn"
 							class="alert searchbutton-wide button small"
-							aria-label="Delete this condition"
+							:aria-label="$t('phrase_Delete_this_condition')"
 							type="button"
 							v-on:click="onDeleteClicked"
-						>Delete</button>
+						>{{ $t('word_Delete') }}</button>
 					</div>
 				</div>
 			</fieldset>
@@ -63,22 +63,22 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 
 <script lang="ts">
 import { Component, Vue, Prop } from "vue-property-decorator";
-import { AndOrCondition } from "@/assets/ts/visualizer/Search";
-import { SearchStorePaths } from "../../../store/modules/SearchStore";
+import { AndOrCondition, NewConditionType } from "@/assets/ts/visualizer/Search";
+import { SearchStorePaths } from "@/store/modules/SearchStore";
 
 @Component
 export default class AndOrConditionEdit extends Vue {
 	@Prop({ type: Object as () => AndOrCondition, required: true })
 	source: AndOrCondition;
-
-	type = this.source.type;
+	
+	type = this.source.type; 
 
 	onSaveClicked(): void {
 		this.$store.commit(SearchStorePaths.mutations.Save.EDIT_ANDOR_CONDITION, this.type);
 	}
 
 	onDeleteClicked(): void {
-		if (confirm("Are you sure you want to delete this condtion and any associated sub conditions?")) {
+		if (confirm(this.$t('visualizer.search.confirm_andor_condition_delete').toString())) {
 			this.$store.commit(SearchStorePaths.mutations.Delete.EDIT_ANDOR_CONDITION);
 		}
 	}

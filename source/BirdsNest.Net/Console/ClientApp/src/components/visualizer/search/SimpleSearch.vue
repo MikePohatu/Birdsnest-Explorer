@@ -28,7 +28,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 					autocomplete="on"
 					type="search"
 					class="input-group-field"
-					placeholder="Search"
+					:placeholder="$t('word_Search')"
 				/>
 				<datalist id="simplecompletes">
 					<option v-for="opt in autocompleteList" :key="opt">{{opt}}</option>
@@ -37,9 +37,9 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 					<button
 						v-on:click="onSearchClicked"
 						class="button"
-						aria-label="Search"
+						:aria-label="$t('word_Search')"
 						type="submit"
-						title="Search"
+						:title="$t('word_Search')"
 					>
 						<i class="fas fa-search"></i>
 					</button>
@@ -51,9 +51,9 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 				id="simpleSearchMinimize"
 				v-on:click="onMinimizeClicked"
 				class="button searchbutton small"
-				aria-label="Minimise search"
+				:aria-label="$t('phrase_Minimize_search')"
 				type="button"
-				title="Minimise search"
+				:title="$t('phrase_Minimize_search')"
 			>
 				<i class="fas fa-angle-up"></i>
 			</button>
@@ -61,9 +61,9 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 				id="modeToggle"
 				v-on:click="onModeToggleClicked"
 				class="button searchbutton small"
-				aria-label="Advanced mode"
+				:aria-label="$t('phrase_Advanced_mode')"
 				type="button"
-				title="Advanced mode"
+				:title="$t('phrase_Advanced_mode')"
 			>
 				<i class="fas fa-expand-alt"></i>
 			</button>

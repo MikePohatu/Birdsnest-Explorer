@@ -19,35 +19,35 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 	<div class="grid-x grid-margin-x">
 		<div class="cell auto"></div>
 		<div class="content">
-			<h4>About</h4>
+			<h4>{{ $t('word_About') }}</h4>
 			<p>
-				BirdsNest is created and maintained by
-				<a href="https://20road.com" target="_blank">20Road</a>.
+				{{ $t('Birdsnest_Explorer') }} {{ $t('about.is_created_and_maintained_by') }}
+				<a href="https://20road.com" target="_blank">{{ $t('20road') }}</a>.
 			</p>
 
-			<h5>Documentation</h5>
+			<h5>{{ $t('word_Documentation') }}</h5>
 			<p class="justify">
-				Documentation is available from the BirdsNest
+				{{ $t('about.documentation_available_from') }} {{ $t('Birdsnest_Explorer') }}
 				<a
 					href="https://github.com/MikePohatu/Birdsnest-Explorer"
 					target="_blank"
-				>source repository</a>. If you are not running the latest version, documentation for each version is available from the
-				<b>Branch</b> dropdown list.
+				>{{ $t('phrase_source_repository') }}</a>. {{ $t('about.version_documentation_branch') }}
+				<b>{{ $t('word_Branch') }}</b> {{ $t('about.dropdown_list') }}
 			</p>
 
-			<h5>License</h5>
+			<h5>{{ $t('word_License') }}</h5>
 			<p class="justify">
-				BirdsNest is open source software, licensed under the GPLv3. Please refer to the license available from the BirdsNest
+				{{ $t('Birdsnest_Explorer') }} {{ $t('about.is_open_source_software')}} {{ $t('Birdsnest_Explorer') }}
 				<a
 					href="https://github.com/MikePohatu/Birdsnest-Explorer"
 					target="_blank"
-				>source repository</a>.
+				>{{ $t('phrase_source_repository') }}</a>.
 			</p>
 
-			<h5>Attribution</h5>
+			<h5>{{ $t('word_Attribution') }}</h5>
 			<p
 				class="justify"
-			>BirdsNest is built upon the amazing work of other open source projects and frameworks. Please support their projects and products.</p>
+			>{{ $t('Birdsnest_Explorer') }} {{ $t('about.is_built_upon') }}</p>
 			<p>
 				.Net Core -
 				<a href="https://github.com/dotnet/core" target="_blank">Microsoft</a>
@@ -76,6 +76,8 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 				<a href="https://github.com/uuidjs/uuid" target="_blank">uuidjs</a>
 				<br />Vue -
 				<a href="https://vuejs.org/" target="_blank">vuejs.org</a>
+				<br />vue-cookies - 
+				<a href="https://github.com/cmp-cc/vue-cookies" target="_blank">cmp-cc</a>
 			</p>
 		</div>
 		<div class="cell auto"></div>

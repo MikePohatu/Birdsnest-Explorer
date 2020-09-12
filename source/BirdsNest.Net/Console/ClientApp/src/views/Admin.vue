@@ -22,8 +22,8 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 			<table id="pluginsTable" class="hover">
 				<thead>
 					<tr>
-						<th>Active Plugins</th>
-						<th v-if="pluginManager.extensionCount > 0">Extensions</th>
+						<th>{{ $t('phrase_Active_Plugins') }}</th>
+						<th v-if="pluginManager.extensionCount > 0">{{ $t('word_Extensions') }}</th>
 					</tr>
 				</thead>
 				<tbody>
@@ -39,20 +39,24 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 		</div>
 
 		<div class="cell shrink medium-6" id="actionsWrapper">
-			<h6>Actions</h6>
+			<h6>{{ $t('word_Actions') }}</h6>
 			<table id="actionsTable">
 				<tbody>
 					<tr>
-						<td width="100">Reload Plugins</td>
+						<td width="100">{{ $t('phrase_Reload_Plugins') }}</td>
 						<td width="100">
-							<button type="button" class="button" v-on:click="onReloadPlugins">Go</button>
+							<button type="button" class="button" v-on:click="onReloadPlugins">{{ $t('word_Go') }}</button>
 						</td>
 						<td id="reloadMessage">{{ reloadMessage }}</td>
 					</tr>
 					<tr>
-						<td>Index Editor</td>
+						<td>{{ $t('phrase_Index_Editor') }}</td>
 						<td>
-							<router-link :to="routeDefs.indexEditor.path" class="button" tag="button">Open</router-link>
+							<router-link
+								:to="routeDefs.indexEditor.path"
+								class="button"
+								tag="button"
+							>{{ $t('word_Go') }}</router-link>
 						</td>
 						<td />
 					</tr>
@@ -71,7 +75,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 }
 
 #actionsWrapper .button {
-	width: 60px;
+	width: 75px;
 	margin: 0;
 }
 

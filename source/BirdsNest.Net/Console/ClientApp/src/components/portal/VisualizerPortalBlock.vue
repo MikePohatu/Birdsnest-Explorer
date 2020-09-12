@@ -18,7 +18,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 <template>
 	<div>
 		<div class="portalBoxHeading">
-			<router-link to="visualizer">Visualizer</router-link>
+			<router-link to="visualizer">{{ $t('word_Visualizer') }}</router-link>
 		</div>
 		<div>
 			<router-link to="visualizer">
@@ -29,7 +29,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 		</div>
 		<div
 			class="description"
-		>The Visualizer provides visualization, search, and discovery functionality</div>
+		>{{ $t('portal.visualizer.info') }}</div>
 	</div>
 </template>
 

@@ -17,7 +17,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 -->
 <template>
 	<div>
-		<ul class="dropdown menu align-right" data-dropdown-menu data-click-open="true">
+		<ul class="dropdown menu align-right" data-dropdown-menu data-click-open="true" data-disable-hover="true">
 			<li>
 				<a href="#">
 					<img id="menuicon" src="/img/icons/logo.svg" height="24px" width="24px" />
@@ -25,16 +25,18 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 				<ul class="main-menu">
 					<li>
 						<div v-if="isAuthorized">
-							<router-link :to="routeDefs.portal.path">Home</router-link>
-							<router-link v-if="isAdmin" :to="routeDefs.admin.path">Admin</router-link>
-							<router-link :to="routeDefs.reports.path">Reports</router-link>
-							<router-link :to="routeDefs.visualizer.path">Visualizer</router-link>
-							<router-link :to="routeDefs.about">About</router-link>
-							<a v-on:click="logout">Logout</a>
+							<router-link :to="routeDefs.portal.path">{{ $t('word_Home') }}</router-link>
+							<router-link v-if="isAdmin" :to="routeDefs.admin.path">{{ $t('word_Admin') }}</router-link>
+							<router-link :to="routeDefs.reports.path">{{ $t('word_Reports') }}</router-link>
+							<router-link :to="routeDefs.visualizer.path">{{ $t('word_Visualizer') }}</router-link>
+							<router-link :to="routeDefs.about">{{ $t('word_About') }}</router-link>
+							<LangMenu />
+							<a v-on:click="logout">{{ $t('word_Logout') }}</a>
 						</div>
 						<div v-else>
-							<router-link :to="routeDefs.about">About</router-link>
-							<router-link :to="routeDefs.login.path">Login</router-link>
+							<router-link :to="routeDefs.about">{{ $t('word_About') }}</router-link>
+							<LangMenu />
+							<router-link :to="routeDefs.login.path">{{ $t('word_Login') }}</router-link>
 						</div>
 					</li>
 				</ul>
@@ -47,8 +49,11 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 import { Component, Vue } from "vue-property-decorator";
 import { auth } from "../assets/ts/webcrap/authcrap";
 import { routeDefs } from "@/router/index";
+import LangMenu from "@/components/LangMenu.vue";
 
-@Component
+@Component({
+	components: { LangMenu },
+})
 export default class Menu extends Vue {
 	routeDefs = routeDefs;
 

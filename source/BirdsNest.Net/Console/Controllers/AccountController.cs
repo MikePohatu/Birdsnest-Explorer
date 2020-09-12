@@ -101,7 +101,10 @@ namespace Console.Controllers
 
             foreach (var cookie in HttpContext.Request.Cookies)
             {
-                HttpContext.Response.Cookies.Delete(cookie.Key);
+                if (cookie.Key == ".AspNetCore.Cookies" || cookie.Key.StartsWith(".AspNetCore.Antiforgery."))
+                { 
+                    HttpContext.Response.Cookies.Delete(cookie.Key);
+                }
             }
 
             AuthResults result = new AuthResults();

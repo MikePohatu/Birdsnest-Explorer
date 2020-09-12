@@ -19,12 +19,12 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 	<div v-if="detailsLoaded" :id="'related'+node.DbId" class="detailcard pane">
 		<div class="detaillist">
 			<div class="grid-x align-middle">
-				<div class="cell small-3">
+				<div class="cell shrink detailsHeader">
 					<u>
-						<b>Details</b>
+						<b>{{ $t('word_Details') }}</b>
 					</u>
 				</div>
-				<div class="cell small-1" title="Show/hide node">
+				<div class="cell small-1" :title="$t('visualizer.details.show_hide_node')">
 					<a v-on:click="onEyeClicked()">
 						<span v-show="node.enabled">
 							<i class="cell far fa-eye small-2"></i>
@@ -37,28 +37,28 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 				<div
 					v-if="relatedNodeIds.length > 0"
 					class="cell small-1"
-					:title="'Add ' + relatedNodeIds.length + ' related nodes'"
+					:title="$tc('visualizer.details.add_related',relatedNodeIds.length)"
 				>
 					<a v-on:click="onExpandClicked()">
 						<i class="cell fas fa-expand-arrows-alt small-2"></i>
 					</a>
 				</div>
-				<div class="cell small-1" title="Remove from view">
+				<div class="cell small-1" :title="$t('phrase_Remove_from_view')">
 					<a v-on:click="onRemoveClicked()">
 						<div class="cell fas fa-trash-alt small-2"></div>
 					</a>
 				</div>
 			</div>
-			<b>Name:</b>
+			<b>{{ $t('word_Name') }}:</b>
 			{{node.name}}
 			<br />
 			<b>dbId:</b>
 			{{node.dbId}}
 			<br />
-			<b>Types:</b>
+			<b>{{ $tc('word_Type', node.labels.length)}}:</b>
 			{{types}}
 			<br />
-			<b>Scope:</b>
+			<b>{{ $t('word_Scope') }}:</b>
 			{{node.scope}}
 			<br />
 		</div>
@@ -67,7 +67,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 			<ul class="accordion" data-accordion data-allow-all-closed="true" data-multi-expand="true">
 				<!-- Properties -->
 				<li class="accordion-item" data-accordion-item>
-					<a href="#" class="accordion-title">Properties ({{propertyNames.length}}):</a>
+					<a href="#" class="accordion-title">{{ $t('word_Properties') }} ({{propertyNames.length}}):</a>
 					<div class="accordion-content detaillist" data-tab-content>
 						<div v-for="name in propertyNames" :key="name">
 							<b>{{name}}:</b>
@@ -79,11 +79,11 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 
 				<!-- Related -->
 				<li v-if="inCount > 0 || outCount > 0" class="accordion-item" data-accordion-item>
-					<a href="#" class="accordion-title">Related ({{relatedNodeIds.length}}):</a>
+					<a href="#" class="accordion-title">{{ $t('word_Related') }} ({{relatedNodeIds.length}}):</a>
 					<div class="accordion-content detaillist" data-tab-content>
 						<ul class="accordion" data-accordion data-allow-all-closed="true" data-multi-expand="true">
 							<li v-if="inCount > 0" class="accordion-item" data-accordion-item>
-								<a href="#" class="accordion-title">Inbound</a>
+								<a href="#" class="accordion-title">{{ $t('word_Inbound') }}</a>
 								<div class="accordion-content" data-tab-content>
 									<ul
 										v-for="listing in inListings"
@@ -115,7 +115,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 							</li>
 
 							<li v-if="outCount > 0" class="accordion-item" data-accordion-item>
-								<a href="#" class="accordion-title">Outbound</a>
+								<a href="#" class="accordion-title">{{ $t('word_Outbound') }}</a>
 								<div class="accordion-content" data-tab-content>
 									<ul
 										v-for="listing in outListings"
@@ -201,6 +201,10 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 
 .currentActiveDetailCard {
 	border-color: orange;
+}
+
+.detailsHeader {
+	margin-right: 0.5rem;
 }
 </style>
 

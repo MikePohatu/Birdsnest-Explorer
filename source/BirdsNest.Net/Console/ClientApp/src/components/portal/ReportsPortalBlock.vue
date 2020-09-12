@@ -18,7 +18,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 <template>
 	<div v-if="pluginManagerReady">
 		<div class="portalBoxHeading">
-			<router-link to="reports">Reports</router-link>
+			<router-link to="reports">{{ $t('word_Reports')}}</router-link>
 		</div>
 		<div>
 			<router-link to="reports">
@@ -26,11 +26,11 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 					<table>
 						<tbody>
 							<tr>
-								<td class="left">Available reports</td>
+								<td class="left">{{ $t('phrase_Available_reports') }}</td>
 								<td class="right">{{ reportCount }}</td>
 							</tr>
 							<tr>
-								<td class="left">Plugins with reports</td>
+								<td class="left">{{ $t('phrase_Plugins_with_reports') }}</td>
 								<td class="right">{{ pluginCount }}</td>
 							</tr>
 							<tr>
@@ -41,7 +41,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 							</tr>
 							<tr>
 								<td class="left small" colspan="2">
-									<router-link to="reports">More...</router-link>
+									<router-link to="reports">{{ $t('word_More...') }}</router-link>
 								</td>
 							</tr>
 						</tbody>
@@ -51,7 +51,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 		</div>
 		<div
 			class="description"
-		>Click to view pre-configured reports and queries. The data returned can be saved to csv file, or opened in the Visualizer</div>
+		>{{ $t('portal.reports.info') }}</div>
 	</div>
 </template>
 

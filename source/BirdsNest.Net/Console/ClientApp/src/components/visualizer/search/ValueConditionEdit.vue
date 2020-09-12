@@ -19,11 +19,11 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 	<div v-if="condition !== null" class="dialogWrapper">
 		<div id="conditionEdit" class="dialog">
 			<fieldset class="fieldset">
-				<legend>Condition</legend>
+				<legend>{{ $t('word_Condition') }}</legend>
 				<div id="editControls">
 					<!-- Reference -->
 					<div class="input-group">
-						<span class="input-group-label">Referenced Item</span>
+						<span class="input-group-label">{{ $t('phrase_Referenced_Item') }}</span>
 						<select class="input-group-field" v-model="condition.name" v-on:change="onSelectedItemChanged">
 							<option v-for="item in availableItems" :value="item.name" :key="item.name">{{ item.name }}</option>
 						</select>
@@ -31,7 +31,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 
 					<!-- Property -->
 					<div class="input-group" v-if="condition.name !== null">
-						<span class="input-group-label">Property</span>
+						<span class="input-group-label">{{ $t('word_Property') }}</span>
 						<select
 							class="small-8 input-group-field"
 							v-model="condition.property"
@@ -46,8 +46,8 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 						<span class="input-group-label">=</span>
 						<div class="input-group-button">
 							<select class="input-group-field" v-model="condition.value">
-								<option value="TRUE">true</option>
-								<option value="FALSE">false</option>
+								<option value="TRUE">{{ $t('word_true') }}</option>
+								<option value="FALSE">{{ $t('word_false') }}</option>
 							</select>
 						</div>
 					</div>
@@ -94,9 +94,9 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 					<div
 						v-if="propertyType === 'string' || propertyType === 'number'"
 						class="grid-x grid-margin-x align-top"
-						title="Invert search (not equal, not startswith)"
+						:key="$t('visualizer.search.not_descript')"
 					>
-						<div class="cell shrink">NOT:</div>
+						<div class="cell shrink">{{ $t('word_Not') }}:</div>
 						<div class="cell auto">
 							<div class="switch tiny" style="display: inline;">
 								<input
@@ -107,7 +107,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 									name="searchNot"
 								/>
 								<label class="switch-paddle" for="searchNot">
-									<span class="show-for-sr">Not:</span>
+									<span class="show-for-sr">{{ $t('word_Not') }}</span>
 								</label>
 							</div>
 						</div>
@@ -118,9 +118,9 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 						v-if="propertyType === 'string'"
 						id="searchCaseOptions"
 						class="grid-x grid-margin-x align-top"
-						title="*Case sensitive search is faster"
+						:title="$t('visualizer.search.case_sensitive_descript')"
 					>
-						<div class="cell shrink">Case Sensitive:</div>
+						<div class="cell shrink">{{ $t('phrase_Case_Sensitive') }}:</div>
 						<div class="cell auto">
 							<div class="switch tiny" style="display: inline;">
 								<input
@@ -131,7 +131,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 									name="searchCase"
 								/>
 								<label class="switch-paddle" for="searchCase">
-									<span class="show-for-sr">Case Sensitive</span>
+									<span class="show-for-sr">{{ $t('phrase_Case_Sensitive') }}</span>
 								</label>
 							</div>
 						</div>
@@ -156,25 +156,25 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 					<button
 						id="searchConditionSaveBtn"
 						class="button small searchbutton-wide"
-						aria-label="Save this condition"
+						:aria-label="$t('word_Save')"
 						type="button"
 						v-on:click="onSaveClicked"
 						:disabled="!saveable"
-					>Save</button>
+					>{{ $t('word_Save') }}</button>
 					<button
 						id="searchConditionDeleteBtn"
 						class="alert button small searchbutton-wide"
-						aria-label="Delete this condition"
+						:aria-label="$t('word_Delete')"
 						type="button"
 						v-on:click="onDeleteClicked"
-					>Delete</button>
+					>{{ $t('word_Delete') }}</button>
 					<button
 						id="searchConditionCancelBtn"
 						class="button small searchbutton-wide"
-						aria-label="Cancel"
+						:aria-label="$t('word_Cancel')"
 						type="button"
 						v-on:click="onCloseClicked"
-					>Cancel</button>
+					>{{ $t('word_Cancel') }}</button>
 				</div>
 			</fieldset>
 		</div>
@@ -319,13 +319,13 @@ export default class ValueConditionEdit extends Vue {
 		}
 		if (item !== null) {
 			if ( webcrap.misc.isNullOrWhitespace(item.label)) {
-				this.alertMessage = "Selected item must have a type set";
+				this.alertMessage = this.$t('visualizer.search.error_no_selected_type_set').toString();
 				this.saveable = false;
 				this.showAlert = true;
 			} else if ( isNode === false) {
 				const edge = item as SearchEdge;
 				if ((edge.min === 1 && edge.max === 1) === false) {
-					this.alertMessage = "Conditions are not supported on multi-hop relationships";
+					this.alertMessage = this.$t('visualizer.search.multi_hop_cond_not_supported').toString();
 					this.saveable = false;
 					this.showAlert = true;
 				}	
@@ -337,7 +337,7 @@ export default class ValueConditionEdit extends Vue {
 			}
 		}
 		else {
-				this.alertMessage = "An error occured getting named item";
+				this.alertMessage = this.$t('visualizer.search.error_getting_named_item').toString();
 				this.showAlert = true;
 				this.saveable = false;
 			}
@@ -400,7 +400,7 @@ export default class ValueConditionEdit extends Vue {
 	}
 
 	onDeleteClicked(): void {
-		if (confirm("Are you sure you want to delete the condition?")) {
+		if (confirm(this.$t('confirm_value_condition_delete').toString())) {
 			this.$store.commit(SearchStorePaths.mutations.Delete.EDIT_VALUE_CONDITION);
 		}
 	}

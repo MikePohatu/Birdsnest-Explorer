@@ -19,10 +19,10 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 	<div class="dialogWrapper">
 		<div id="searchEdgeEdit" class="dialog">
 			<fieldset class="fieldset small-4 cell">
-				<legend>Relationship</legend>
+				<legend>{{ $t('word_Relationship') }}</legend>
 
 				<div class="input-group">
-					<span class="input-group-label small-3">Type</span>
+					<span class="input-group-label small-3">{{ $tc('word_Type') }}</span>
 					<select id="edgeType" class="small-9 input-group-field" v-model="edge.label">
 						<option value selected>*</option>
 						<option
@@ -35,7 +35,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 				</div>
 
 				<div class="input-group">
-					<span class="input-group-label small-4">Identifier</span>
+					<span class="input-group-label small-4">{{ $t('word_Identifier') }}</span>
 					<input
 						id="edgeIdentifier"
 						type="search"
@@ -46,7 +46,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 					/>
 				</div>
 
-				<span>Limit Hops</span>
+				<span>{{ $t('phrase_Limit_Hops') }}</span>
 
 				<div class="switch tiny">
 					<input
@@ -62,7 +62,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 				<!-- sliders -->
 				<div class="grid-x align-self-middle sliderwrapper">
 					<div class="cell small-2">
-						<div>Min</div>
+						<div>{{ $t('word_Min') }}</div>
 					</div>
 					<div class="slidecontainer">
 						<input
@@ -82,14 +82,14 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 							:max="maxValue"
 							v-model.number="min"
 							:disabled="!limitHops"
-							title="Minimum hop count"
+							:title="$t('phrase_Minimum_hop_count')"
 						/>
 					</div>
 				</div>
 
 				<div class="grid-x align-self-middle sliderwrapper">
 					<div class="cell small-2">
-						<div>Max</div>
+						<div>{{ $t('word_Max') }}</div>
 					</div>
 					<div class="slidecontainer">
 						<input
@@ -109,14 +109,14 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 							:max="maxValue"
 							v-model.number="max"
 							:disabled="!limitHops"
-							title="Maximum hop count"
+							:title="$t('phrase_Maximum_hop_count')"
 						/>
 					</div>
 				</div>
 
 				<!-- Direction -->
 				<div>
-					<span>Direction</span>
+					<span>{{ $t('word_Direction') }}</span>
 					<span v-on:click="onDirectionClicked" class="clickable diricon">
 						<span v-show="edgeDirRight">
 							<i class="fas fa-arrow-right"></i>
@@ -133,7 +133,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 				v-on:click="onCloseClicked"
 				class="close-button"
 				data-close
-				aria-label="Close query dialog"
+				:aria-label="$t('phrase_Close_query_dialog')"
 				type="button"
 			>
 				<span aria-hidden="true">&times;</span>
@@ -142,15 +142,15 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 				v-on:click="onSaveEdge"
 				id="searchEdgeSaveBtn"
 				class="button searchbutton-wide small"
-				aria-label="Save relationship dialog"
+				:aria-label="$t('phrase_Save_relationship')"
 				type="button"
-			>Save</button>
+			>{{ $t('word_Save') }}</button>
 			<button
 				v-on:click="onSaveAndAddCondClicked"
 				class="button searchbutton-x-wide small"
 				aria-label="Save and add condition"
 				type="button"
-			>Save + Add Condition</button>
+			>{{ $t('phrase_Save_Add_Condition') }}</button>
 		</div>
 	</div>
 </template>

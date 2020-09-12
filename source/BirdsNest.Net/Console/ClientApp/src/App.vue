@@ -45,6 +45,10 @@ import NotificationIcon from "@/components/NotificationIcon.vue";
 export default class App extends Vue {
 	created() {
 		this.$store.dispatch(rootPaths.actions.UPDATE_PROVIDERS);
+		const storedlocale = this.$cookies.get("locale");
+		if (storedlocale !== null) {
+			this.$store.commit(rootPaths.mutations.LOCALE, storedlocale);
+		}
 	}
 
 	mounted() {
@@ -58,9 +62,9 @@ export default class App extends Vue {
 		this.updateHeight();
 	}
 
-	//this is to allow for mobile devices which don't deal with vh height. 
+	//this is to allow for mobile devices which don't deal with vh height.
 	//The address bar will appear and disappear based on what the browser thinks is
-	//the right thing to do 
+	//the right thing to do
 	updateHeight(): void {
 		document.getElementById("app").style.height = window.innerHeight.toString() + "px";
 	}

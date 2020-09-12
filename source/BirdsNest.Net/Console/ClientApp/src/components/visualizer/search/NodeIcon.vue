@@ -23,11 +23,6 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 	>{{text}}</div>
 </template>
 
-
-<style scoped>
-</style>
-
-
 <script lang="ts">
 import { Component, Prop, Vue } from "vue-property-decorator";
 import { SearchNode } from "@/assets/ts/visualizer/Search";

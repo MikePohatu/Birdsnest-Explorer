@@ -17,7 +17,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 -->
 <template>
 	<div class="page" id="indexEditor">
-		<h6>Indexes by Plugin</h6>
+		<h6>{{ $t('phrase_Indexes_by_Plugin') }}</h6>
 		<Loading v-if="!statsDataReady" />
 		<div v-else>
 			<ul class="accordion" data-accordion data-allow-all-closed="true" data-multi-expand="true">
@@ -29,14 +29,14 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 				>
 					<a href="#" class="pluginHeader accordion-title">{{ plugin.displayName }}</a>
 					<div v-if="pluginHasProperties(plugin)===false" class="accordion-content" data-tab-content>
-						<p class="noPropsMessage">Plugin has no data-type properties defined</p>
+						<p class="noPropsMessage">{{ $t('index_editor.plugin_no_datatypes') }}</p>
 					</div>
 					<div v-else class="accordion-content" data-tab-content>
 						<table class="hover">
 							<thead>
 								<tr>
-									<th>Type</th>
-									<th>Property</th>
+									<th>{{ $tc('word_Type') }}</th>
+									<th>{{ $t('word_Property') }}</th>
 									<!-- <th>Index Name</th> -->
 									<th></th>
 								</tr>
@@ -53,23 +53,23 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 											<span
 												v-if="propertyHasConstraint(label, propname)"
 												class="inactive"
-												title="Editing indexes created by constraints is not supported"
-											>Constraint</span>
+												:title="$t('index_editor.constraints_not_supported')"
+											>{{ $t('word_Constraint') }}</span>
 											<span
 												v-else-if="propertyIndexIsEnforced(label, propname)"
 												class="inactive delete"
-												title="Index is enforced and cannot be deleted"
-											>Delete</span>
-											<a v-else v-on:click="onDeleteIndexClicked(label, propname)" class="delete">Delete</a>
+												:title="$t('index_editor.index_enforced')"
+											>{{ $t('word_Delete') }}</span>
+											<a v-else v-on:click="onDeleteIndexClicked(label, propname)" class="delete">{{ $t('word_Delete')}}</a>
 										</div>
 										<div v-else>
 											<a
 												v-if="propertyIndexIsEnforced(label, propname)"
 												v-on:click="onCreateIndexClicked(label, propname)"
 												class="create warning"
-												title="Index is marked as enforced, but is missing from the database. Please re-create this index as soon as possible"
-											>Create</a>
-											<a v-else v-on:click="onCreateIndexClicked(label, propname)" class="create">Create</a>
+												:title="$t('index_editor.enforced_missing')"
+											>{{ $t('word_Create') }}</a>
+											<a v-else v-on:click="onCreateIndexClicked(label, propname)" class="create">{{ $t('word_Create') }}</a>
 										</div>
 									</td>
 								</tr>
@@ -268,7 +268,7 @@ export default class IndexEditorView extends Vue {
 	}
 
 	onDeleteIndexClicked(label: string, property: string): void {
-		const message = "Are you sure you delete index on\n" + label + " : " + property + "?";
+		const message = this.$t('index_editor.confirm_index_delete', {label: label, property: property}).toString();
 		if (confirm(message)) {
 			const indexes: Dictionary<Index> = this.serverInfo.indexes[label];
 			const index = indexes[property];
@@ -283,17 +283,17 @@ export default class IndexEditorView extends Vue {
 				},
 				errorCallback: (jqXHR?: JQueryXHR, status?: string, error?: string) => {
 					console.error(error);
-					bus.$emit(events.Notifications.Error, "Error deleting index " + label + ":" + property + "\n" + error);
+					bus.$emit(events.Notifications.Error, this.$t('index_editor.error_delete', {label: label, property: property}).toString() + "\n" + error);
 				},
 			};
 
-			bus.$emit(events.Notifications.Processing, "Processing");
+			bus.$emit(events.Notifications.Processing, this.$t('word_Processing'));
 			api.post(request);
 		}
 	}
 
 	onCreateIndexClicked(label, property) {
-		const message = "Are you sure you create index on\n" + label + " : " + property + "?";
+		const message = this.$t('index_editor.confirm_index_create', {label: label, property: property}).toString();
 		if (confirm(message)) {
 			const postdata = JSON.stringify({ label: label, property: property });
 
@@ -306,11 +306,11 @@ export default class IndexEditorView extends Vue {
 				},
 				errorCallback: (jqXHR?: JQueryXHR, status?: string, error?: string) => {
 					console.error(error);
-					bus.$emit(events.Notifications.Error, "Error creating index " + label + ":" + property + "\n" + error);
+					bus.$emit(events.Notifications.Error, this.$t('index_editor.error_create', {label: label, property:property}) + "\n" + error);
 				},
 			};
 
-			bus.$emit(events.Notifications.Processing, "Processing");
+			bus.$emit(events.Notifications.Processing, this.$t('word_Processing'));
 			api.post(request);
 		}
 	}

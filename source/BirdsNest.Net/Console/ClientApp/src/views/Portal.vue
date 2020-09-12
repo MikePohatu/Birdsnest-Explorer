@@ -20,17 +20,31 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 		<div class="watermark">
 			<img src="/img/icons/logo.svg" height="512px" width="512px" />
 		</div>
-		<p>{{ welcomeMessage }} Welcome to Birdsnest Explorer</p>
-		
+		<p>{{ $t('word_Hi') }}{{ userName }}. {{ $t('portal.welcome') }}</p>
+
 		<div class="grid-x grid-margin-x" id="portalBoxes">
 			<VisualizerPortalBlock class="cell large-4 medium-6 portalBoxWrapper" />
 			<ReportsPortalBlock class="cell large-4 medium-6 portalBoxWrapper" />
 			<ServerInfoPortalBlock class="cell large-4 medium-6 portalBoxWrapper" />
 		</div>
 
-		<p class="text-center">Usage information and links to how-tos videos are available from the Birdsnest Explorer online <a href="https://github.com/MikePohatu/Birdsnest-Explorer" target="_blank">documentation</a>. For support, you can contact us via the <a href="https://www.20road.com/support" target="_blank">20Road support page.</a></p>
-		
-		<p class="text-center">For license and attribution information please see the <router-link to="about">About</router-link> page</p>
+		<p class="text-center">
+			{{ $t('portal.usage_info_1') }}
+			<a
+				href="https://github.com/MikePohatu/Birdsnest-Explorer"
+				target="_blank"
+			>{{ $t('word_documentation') }}</a>. {{ $t('portal.usage_info_2') }}
+			<a
+				href="https://support.20road.com"
+				target="_blank"
+			>{{ $t('20road')}} {{ $t('portal.usage_info_3') }}</a>
+		</p>
+
+		<p class="text-center">
+			{{ $t('portal.license_attribution')}}
+			<router-link to="about">{{ $t('word_About') }}</router-link>
+			{{ $t('word_page') }}
+		</p>
 	</div>
 </template>
 
@@ -145,18 +159,12 @@ import ServerInfoPortalBlock from "@/components/portal/ServerInfoPortalBlock.vue
 	components: { VisualizerPortalBlock, ReportsPortalBlock, ServerInfoPortalBlock },
 })
 export default class Portal extends Vue {
-	name = "Portal";
-
-	get welcomeMessage() {
+	get userName() {
 		if (this.$store.state.user.name !== "") {
-			return "Hi " + this.$store.state.user.name + ". ";
+			return " " + this.$store.state.user.name;
 		} else {
 			return "";
 		}
-	}
-
-	get userName() {
-		return this.$store.state.user.name;
 	}
 }
 </script>

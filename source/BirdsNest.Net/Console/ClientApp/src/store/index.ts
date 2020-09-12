@@ -16,12 +16,14 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 import Vue from "vue";
 import Vuex from "vuex";
-import { api, Request} from "../assets/ts/webcrap/apicrap";
+import { api, Request } from "../assets/ts/webcrap/apicrap";
 import { VisualizerStore } from "./modules/VisualizerStore";
 import PluginManager from '@/assets/ts/dataMap/PluginManager';
 import ServerInfo from '@/assets/ts/dataMap/ServerInfo';
+import i18n from '@/i18n';
 
 import { bus, events } from '@/bus';
+import { Dictionary } from 'vue-router/types/router';
 Vue.use(Vuex);
 
 export const rootPaths = {
@@ -34,7 +36,8 @@ export const rootPaths = {
     API_STATE: "apiState",
     SERVER_INFO_STATE: "serverInfoState",
     DEAUTH: "deAuth",
-    SERVER_INFO: "serverInfo"
+    SERVER_INFO: "serverInfo",
+    LOCALE: "locale"
   },
   actions: {
     UPDATE_PROVIDERS: "updateProviders",
@@ -44,21 +47,28 @@ export const rootPaths = {
   }
 }
 
+export interface LanguageSelector {
+  flag: string;
+  title: string;
+}
+
 export interface RootState {
-    user: {
-      isAuthorized: boolean;
-      isAdmin: boolean;
-      name: string;
-    };
-    session: {
-      status: string;
-      providers: string[];
-    };
-    pluginManager: PluginManager;
-    serverInfo: ServerInfo;
-    serverInfoState: number;
-    apiState: number;
-    visualizer?;
+  user: {
+    isAuthorized: boolean;
+    isAdmin: boolean;
+    name: string;
+  };
+  session: {
+    status: string;
+    providers: string[];
+  };
+  locale: string;
+  languages: Dictionary<LanguageSelector>;
+  pluginManager: PluginManager;
+  serverInfo: ServerInfo;
+  serverInfoState: number;
+  apiState: number;
+  visualizer?;
 }
 
 const state: RootState = {
@@ -70,6 +80,11 @@ const state: RootState = {
   session: {
     status: "",
     providers: [],
+  },
+  locale: "en",
+  languages: {
+    "en": { flag: "us", title: "English (US)" },
+    "mi": { flag: "nz", title: "Māori" }
   },
   pluginManager: null,
   serverInfo: null,
@@ -84,6 +99,11 @@ export default new Vuex.Store({
   },
   state: state,
   mutations: {
+    locale(state, locale: string) {
+      i18n.locale = locale;
+      state.locale = i18n.locale;
+      Vue.prototype.$cookies.set("locale", i18n.locale);
+    },
     isAuthorized(state, isauthenticated: boolean) {
       state.user.isAuthorized = isauthenticated;
     },
@@ -140,15 +160,15 @@ export default new Vuex.Store({
       const request: Request = {
         url: "/api/plugins",
         successCallback: (data: PluginManager) => {
-            context.commit(rootPaths.mutations.PLUGIN_MANAGER, data);
-            context.commit(rootPaths.mutations.API_STATE, api.states.READY);
-            bus.$emit(events.Notifications.Clear);
+          context.commit(rootPaths.mutations.PLUGIN_MANAGER, data);
+          context.commit(rootPaths.mutations.API_STATE, api.states.READY);
+          bus.$emit(events.Notifications.Clear);
         },
         errorCallback: (jqXHR?: JQueryXHR, status?: string, error?: string) => {
           context.commit(rootPaths.mutations.API_STATE, api.states.ERROR);
           bus.$emit(events.Notifications.Error, "Error updating plugins: " + error);
         }
-      } 
+      }
       api.get(request);
     },
 
@@ -158,15 +178,15 @@ export default new Vuex.Store({
       const request: Request = {
         url: "/api/serverinfo",
         successCallback: (data: PluginManager) => {
-            context.commit(rootPaths.mutations.SERVER_INFO, data);
-            context.commit(rootPaths.mutations.SERVER_INFO_STATE, api.states.READY);
-            bus.$emit(events.Notifications.Clear);
+          context.commit(rootPaths.mutations.SERVER_INFO, data);
+          context.commit(rootPaths.mutations.SERVER_INFO_STATE, api.states.READY);
+          bus.$emit(events.Notifications.Clear);
         },
         errorCallback: (jqXHR?: JQueryXHR, status?: string, error?: string) => {
           context.commit(rootPaths.mutations.SERVER_INFO_STATE, api.states.ERROR);
           bus.$emit(events.Notifications.Error, "Error updating server info: " + error);
         }
-      } 
+      }
       api.get(request);
     },
     updateAuthedData(context) {

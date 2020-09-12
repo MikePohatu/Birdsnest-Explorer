@@ -20,7 +20,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 		<div class="cell"></div>
 		<div class="cell loginbox" style="max-width: 350px; min-width: 280px;">
 			<fieldset class="fieldset">
-				<legend>Login</legend>
+				<legend>{{ $t('word_Login') }}</legend>
 				<form id="loginForm" class="cell" type="POST" @submit.prevent="login">
 					<div class="input-group">
 						<input
@@ -29,7 +29,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 							v-model="username"
 							tabindex="1"
 							type="text"
-							placeholder="Username"
+							:placeholder="$t('word_Username')"
 							class="small-8 input-group-field"
 						/>
 					</div>
@@ -41,7 +41,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 							v-model="password"
 							tabindex="2"
 							type="password"
-							placeholder="Password"
+							:placeholder="$t('word_Password')"
 							class="small-8 input-group-field"
 						/>
 					</div>
@@ -60,7 +60,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 
 					<div class="grid-x">
 						<div class="cell small-3 medium-3 large-3">
-							<input id="loginbtn" tabindex="3" type="submit" class="button" value="Login" />
+							<input id="loginbtn" tabindex="3" type="submit" class="button" :value="$t('word_Login')" />
 						</div>
 						<div id="authmessage" class="cell small-9 medium-9 large-9">
 							<span>{{ message }}</span>

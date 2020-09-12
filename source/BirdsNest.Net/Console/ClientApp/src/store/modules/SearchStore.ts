@@ -20,7 +20,7 @@ import { Search, SearchItem, SearchEdge, SearchNode, Condition, moveCondition, C
 import webcrap from "@/assets/ts/webcrap/webcrap";
 import { RootState } from '../index';
 import { ResultSet } from '@/assets/ts/dataMap/ResultSet';
-
+import i18n from '@/i18n';
 
 
 export const SearchStorePaths = {
@@ -356,7 +356,7 @@ export const SearchStore: Module<SearchState, RootState> = {
     actions: {
         search(context): void {
             context.commit('results', null);
-            context.commit('setStatusMessage', "Searching");
+            context.commit('setStatusMessage', i18n.t('word_Searching'));
             context.commit('setIsSearching', true);
 
             const postdata = JSON.stringify(context.state.search);
@@ -370,7 +370,7 @@ export const SearchStore: Module<SearchState, RootState> = {
                 successCallback: (data?: ResultSet) => {
                     //console.log(data);
                     if (data.nodes.length === 0) {
-                        context.commit('setStatusMessage', 'Found no results.');
+                        context.commit('setStatusMessage', i18n.t('phrase_Found_no_results'));
                     } else {
                         context.commit('clearStatusMessage');
                     }
@@ -378,7 +378,7 @@ export const SearchStore: Module<SearchState, RootState> = {
                     context.commit('results', data);
                 },
                 errorCallback: (jqXHR?: JQueryXHR, status?: string, error?: string) => {
-                    context.commit('setStatusMessage', "Error");
+                    context.commit('setStatusMessage', i18n.t('word_Error'));
                     context.commit('setIsSearching', false);
                     console.error(error);
                 }
@@ -388,14 +388,14 @@ export const SearchStore: Module<SearchState, RootState> = {
         simpleSearch(context, term): void {
             context.commit('results', null);
             context.commit('setIsSearching', true);
-            context.commit('setStatusMessage', "Searching");
+            context.commit('setStatusMessage', i18n.t('word_Searching'));
 
             const request: Request = {
                 url: "/api/search/?searchterm=" + term,
                 postJson: true,
                 successCallback: (data?: ResultSet) => {
                     if (data.nodes.length === 0) {
-                        context.commit('setStatusMessage', 'Found no results.');
+                        context.commit('setStatusMessage', i18n.t('phrase_Found_no_results'));
                     } else {
                         context.commit('clearStatusMessage');
                     }
@@ -404,7 +404,7 @@ export const SearchStore: Module<SearchState, RootState> = {
                 },
                 errorCallback: (jqXHR?: JQueryXHR, status?: string, error?: string) => {
                     context.commit('setIsSearching', false);
-                    context.commit('setStatusMessage', "Error");
+                    context.commit('setStatusMessage', i18n.t('word_Error'));
                     console.error(error);
                 }
             };

@@ -20,7 +20,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 		<div>
 			<fieldset class="fieldset">
 				<legend>
-					<span>Search</span>
+					<span>{{ $t('word_Search') }}</span>
 					<div id="itemEditButtons">
 						<span class="fieldset-spacer" />
 						<!-- path buttons -->
@@ -65,7 +65,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 		<div>
 			<fieldset class="fieldset">
 				<legend>
-					<span>Conditions</span>
+					<span>{{ $t('word_Conditions') }}</span>
 					<div id="itemEditButtons">
 						<span class="fieldset-spacer" />
 						<!-- path buttons -->
@@ -106,7 +106,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 				<div id="alertMessageLink"></div>
 				<div>
 					<button class="button" data-close aria-label="Close alert dialog" type="button">
-						<span aria-hidden="true">OK</span>
+						<span aria-hidden="true">{{ $t('word_OK') }}</span>
 					</button>
 				</div>
 			</div>
@@ -310,11 +310,7 @@ export default class AdvancedSearch extends Vue {
 		this.$store.commit(SearchStorePaths.mutations.Update.SELECTED_ITEM_DOWN);
 	}
 	onItemDeleteClicked(): void {
-		const confirmed = confirm(
-			"Are you sure you want to delete " +
-				this.$store.state.visualizer.search.selectedItem.name +
-				" and any associated conditions?"
-		);
+		const confirmed = confirm(this.$t('visualizer.search.confirm_item_delete', {name: this.$store.state.visualizer.search.selectedItem.name}).toString());
 
 		if (confirmed) {
 			this.$store.commit(SearchStorePaths.mutations.Delete.SELECTED_ITEM);
@@ -341,9 +337,9 @@ export default class AdvancedSearch extends Vue {
 		const cond = this.$store.state.visualizer.search.selectedCondition;
 		let message: string; 
 		if (cond.type === ConditionType.And || cond.type === ConditionType.Or) {
-			message = "Are you sure you want to delete this condtion and any associated sub conditions?"
+			message = this.$t('visualizer.search.confirm_andor_condition_delete').toString();
 		} else {
-			message = "Are you sure you want to delete this condtions?"
+			message = this.$t('visualizer.search.confirm_value_condition_delete').toString()
 		}
 		if (confirm(message)) {
 			this.$store.commit(SearchStorePaths.mutations.Delete.SELECTED_CONDITION);

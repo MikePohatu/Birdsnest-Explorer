@@ -22,7 +22,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 		</div>
 
 		<div>
-			<h6>Server Statistics</h6>
+			<h6>{{ $t('phrase_Server_Statistics') }}</h6>
 
 			<Loading v-if="!statsDataReady" />
 
@@ -33,25 +33,25 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 						<table class="hover">
 							<thead>
 								<tr>
-									<th class="left">Database Information</th>
+									<th class="left">{{ $t('phrase_Database_Information') }}</th>
 									<th class="right"></th>
 								</tr>
 							</thead>
 							<tbody>
 								<tr>
-									<td class="left">Total Nodes</td>
+									<td class="left">{{ $t('phrase_Total_Nodes') }}</td>
 									<td class="right">{{ serverInfo.dbStats.totals["nodes"] }}</td>
 								</tr>
 								<tr>
-									<td class="left">Total Relationships</td>
+									<td class="left">{{ $t('phrase_Total_Relationships') }}</td>
 									<td class="right">{{ serverInfo.dbStats.totals["edges"] }}</td>
 								</tr>
 								<tr>
-									<td class="left">Version</td>
+									<td class="left">{{ $t('word_Version') }}</td>
 									<td class="right">{{ serverInfo.dbStats.version }}</td>
 								</tr>
 								<tr>
-									<td class="left">Edition</td>
+									<td class="left">{{ $t('word_Edition') }}</td>
 									<td class="right">{{ serverInfo.dbStats.edition }}</td>
 								</tr>
 							</tbody>
@@ -61,8 +61,8 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 						<table id="pluginsTable" class="hover">
 							<thead>
 								<tr>
-									<th>Active Plugins</th>
-									<th v-if="pluginManager.extensionCount > 0">Extensions</th>
+									<th>{{ $t('phrase_Active_Plugins') }}</th>
+									<th v-if="pluginManager.extensionCount > 0">{{ $t('word_Extensions') }}</th>
 								</tr>
 							</thead>
 							<tbody>
@@ -83,12 +83,12 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 							<thead>
 								<tr>
 									<th>
-										Indexes
+										{{ $t('word_Indexes') }}
 										<router-link v-if="isAdmin" :to="routeDefs.indexEditor.path" class="sublink">Edit</router-link>
 									</th>
-									<th>Property</th>
+									<th>{{ $t('word_Property') }}</th>
 									<!-- <th>Index Name</th> -->
-									<th>Status</th>
+									<th>{{ $t('word_Status') }}</th>
 								</tr>
 							</thead>
 
@@ -112,8 +112,8 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 						<table class="hover">
 							<thead>
 								<tr>
-									<th class="left">Node Types</th>
-									<th class="right">Count</th>
+									<th class="left">{{ $t('phrase_Node_Types') }}</th>
+									<th class="right">{{ $t('word_Count') }}</th>
 								</tr>
 							</thead>
 							<tbody>
@@ -130,8 +130,8 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 						<table class="hover">
 							<thead>
 								<tr>
-									<th class="left">Relationship Types</th>
-									<th class="right">Count</th>
+									<th class="left">{{ $t('phrase_Relationship_Types') }}</th>
+									<th class="right">{{ $t('word_Count') }}</th>
 								</tr>
 							</thead>
 							<tbody>
@@ -148,7 +148,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 				<div
 					id="refreshBtn"
 					class="icon clickable"
-					title="Refresh"
+					:title="$t('word_Refresh')"
 					v-on:click="onRefreshClicked"
 				>&#xf021;</div>
 			</div>

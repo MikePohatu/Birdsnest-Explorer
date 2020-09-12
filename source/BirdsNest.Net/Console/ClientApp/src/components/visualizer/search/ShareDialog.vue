@@ -20,7 +20,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 		<div id="shareDialog" class="dialog">
 			<div class="share-block">
 				<div>
-					<b>Copy and paste this url:</b>
+					<b>{{ $t('phrase_Copy_and_paste_this_url') }}:</b>
 				</div>
 				<div class="share-code">
 					<router-link :to="shareUrl">{{ sharedUrlDisplay }}</router-link>
@@ -30,7 +30,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 			<div class="share-block">
 				<div>
 					<div>
-						<b>Cypher query:</b>
+						<b>{{ $t('phrase_Cypher_query') }}</b>
 					</div>
 					<div class="share-code">{{cypherquery}}</div>
 				</div>
@@ -41,10 +41,10 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 					v-on:click="onShareOkClicked"
 					class="button searchbutton-wide small"
 					data-close
-					aria-label="Close alert dialog"
+					:aria-label="$t('phrase_Close_dialog')"
 					type="button"
 				>
-					<span aria-hidden="true">OK</span>
+					<span aria-hidden="true">{{ $t('word_OK') }}</span>
 				</button>
 			</div>
 		</div>

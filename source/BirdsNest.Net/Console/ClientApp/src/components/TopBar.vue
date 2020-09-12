@@ -25,7 +25,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 		>
 			<div class="cell small-2"></div>
 			<div class="cell small-8 text-center">
-				<router-link :to="routeDefs.portal.path">Birdsnest Explorer</router-link>
+				<router-link :to="routeDefs.portal.path">{{ $t('Birdsnest_Explorer') }}</router-link>
 			</div>
 			<div class="cell small-2">
 				<div class="cell auto" />
@@ -37,7 +37,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 
 		<div class="top-bar landscape-bar" id="full-bar">
 			<div class="landscape-bar-left">
-				<router-link :to="routeDefs.portal.path">Birdsnest Explorer</router-link>
+				<router-link :to="routeDefs.portal.path">{{ $t('Birdsnest_Explorer') }}</router-link>
 			</div>
 			<div class="landscape-bar-right">
 				<Menu />

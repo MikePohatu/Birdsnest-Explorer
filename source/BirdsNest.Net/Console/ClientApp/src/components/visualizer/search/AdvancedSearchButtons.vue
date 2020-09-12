@@ -22,35 +22,35 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 				<button
 					v-on:click="onMinimizeClicked"
 					class="button searchbutton small"
-					aria-label="Minimise search"
+					:aria-label="$t('phrase_Minimize_search')"
 					type="button"
-					title="Minimise search"
+					:title="$t('phrase_Minimize_search')"
 				>
 					<i class="fas fa-angle-up"></i>
 				</button>
 				<button
 					v-on:click="onModeToggleClicked"
 					class="button searchbutton small"
-					aria-label="Simple mode"
+					:aria-label="$t('phrase_Simple_mode')"
 					type="button"
-					title="Simple search mode"
+					:title="$t('phrase_Simple_mode')"
 				>
 					<i class="fas fa-compress-alt"></i>
 				</button>
 				<button
 					v-on:click="onClearClicked"
 					class="button searchbutton small"
-					aria-label="Clear search"
+					:aria-label="$t('phrase_Clear_search')"
 					type="button"
-					title="Clear search"
+					:title="$t('phrase_Clear_search')"
 				>
 					<i class="fas fa-ban"></i>
 				</button>
 				<button
 					class="button searchbutton small"
-					aria-label="Share search"
+					:aria-label="$t('phrase_Share_search')"
 					type="button"
-					title="Share search"
+					:title="$t('phrase_Share_search')"
 					v-on:click="onShareClicked"
 				>
 					<i class="fas fa-share-alt"></i>
@@ -58,10 +58,10 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 				<button
 					v-on:click="onSearchClicked"
 					class="button searchbutton-wide small"
-					aria-label="Submit search"
+					:aria-label="$t('word_Search')"
 					type="button"
 				>
-					<span>Search</span>
+					<span>{{ $t('word_Search') }}</span>
 				</button>
 			</div>
 		</div>
@@ -84,8 +84,8 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
-import { foundation } from "../../../mixins/foundation";
-import { SearchStorePaths } from "../../../store/modules/SearchStore";
+import { foundation } from "@/mixins/foundation";
+import { SearchStorePaths } from "@/store/modules/SearchStore";
 
 @Component({
 	mixins: [foundation],

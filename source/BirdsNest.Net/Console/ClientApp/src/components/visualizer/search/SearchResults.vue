@@ -19,9 +19,9 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 	<div id="results" v-bind:class="{hidden: !showResults}" >
 		<div v-bind:class="{hidden: zeroResults}">
 			<div>
-				Found
-				<a :data-toggle="dropdownId">{{nodes.length}}</a> results.
-				<a v-on:click="onAddToViewClicked">Add to view</a>
+				{{ $t('word_Found') }}
+				<a :data-toggle="dropdownId">{{nodes.length}}</a> {{ $t('word_results') }}.
+				<a v-on:click="onAddToViewClicked">{{ $t('phrase_Add_to_view') }}</a>
 			</div>
 
 			<div
@@ -123,11 +123,11 @@ export default class SearchResults extends Vue {
 		let proceed = true;
 
 		if (this.$store.state.visualizer.search.results.nodes.length > 300) {
-			proceed = confirm("You are adding a large number of nodes to the graph. Animation will be disabled to improve performance.\n\nAre you sure you want to proceed?");
+			proceed = confirm(this.$t('visualizer.search.count_warning').toString());
 		}
 					
 		if (proceed && this.$store.state.visualizer.search.results.nodes.length > 0) {
-			bus.$emit(events.Notifications.Processing, "Adding results to view");
+			bus.$emit(events.Notifications.Processing, this.$t('visualizer.search.adding_results').toString());
 			this.$store.commit(VisualizerStorePaths.mutations.Add.PENDING_RESULTS, this.$store.state.visualizer.search.results);
 			this.$store.commit(SearchStorePaths.mutations.Delete.RESULTS);
 		}

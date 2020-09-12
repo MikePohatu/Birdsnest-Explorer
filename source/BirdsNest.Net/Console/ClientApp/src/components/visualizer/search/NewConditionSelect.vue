@@ -19,9 +19,9 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 	<div class="dialogWrapper">
 		<div id="newCond" class="dialog">
 			<fieldset class="fieldset">
-				<legend>New</legend>
+				<legend>{{ $t('word_New') }}</legend>
 				<div class="input-group">
-					<span class="input-group-label small-4">Type</span>
+					<span class="input-group-label small-4">{{ $tc('word_Type') }}</span>
 					<select v-model="type" class="small-8 input-group-field">
                         <option v-for="(value, name) in newTypes" :key="name" :value="value">{{ name }}</option>
 					</select>
@@ -31,7 +31,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 					v-on:click="onCancelClicked"
 					class="close-button"
 					data-close
-					aria-label="Close dialog"
+					:aria-label="$t('phrase_Close_dialog')"
 					type="button"
 				>
 					<span aria-hidden="true">&times;</span>
@@ -40,16 +40,16 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 					<div>
 						<button
 							class="button searchbutton-wide small"
-							aria-label="Continue"
+							:aria-label="$t('word_Continue')"
 							type="button"
 							v-on:click="onOkClicked"
-						>OK</button>
+						>{{ $t('word_OK') }}</button>
 						<button
 							class="alert searchbutton-wide button small"
-							aria-label="Cancel"
+							:aria-label="$t('word_Cancel')"
 							type="button"
 							v-on:click="onCancelClicked"
-						>Cancel</button>
+						>{{ $t('word_Cancel') }}</button>
 					</div>
 				</div>
 			</fieldset>

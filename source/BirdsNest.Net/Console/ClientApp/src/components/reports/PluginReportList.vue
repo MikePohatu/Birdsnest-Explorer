@@ -20,8 +20,8 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
         <table id="outputtable" class="hover">
             <thead>
                 <tr>
-                    <th>{{ pluginName }} Reports</th>
-                    <th>Description</th>
+                    <th>{{ pluginName }} {{ $t('word_Reports') }}</th>
+                    <th>{{ $t('word_Description') }}</th>
                 </tr>
             </thead>
             <tbody>

@@ -139,7 +139,7 @@ export default class NotificationIcon extends Vue {
 		if (this.processing) {
 			return this.message;
 		} else {
-			return this.message + '\nClick icon to close notification';
+			return this.message + '\n'+ this.$t('notifications.click_to_close');
 		}
 	}
 	get icon(): string {

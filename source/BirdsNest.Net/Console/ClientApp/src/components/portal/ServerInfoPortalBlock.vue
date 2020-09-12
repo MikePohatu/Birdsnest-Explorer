@@ -18,7 +18,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 <template>
 	<div v-if="serverInfoReady">
 		<div class="portalBoxHeading">
-			<router-link to="info">Server Information</router-link>
+			<router-link to="info">{{ $t('phrase_Server_Information') }}</router-link>
 		</div>
 		<div>
 			<router-link to="info">
@@ -26,23 +26,23 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 					<table>
 						<tbody>
 							<tr>
-								<td class="left">Installed plugins</td>
+								<td class="left">{{ $t('phrase_Installed_Plugins') }}</td>
 								<td class="right">{{ Object.keys(pluginManager.plugins).length }}</td>
 							</tr>
 							<tr>
-								<td class="left">Nodes</td>
+								<td class="left">{{ $t('word_Nodes') }}</td>
 								<td class="right">{{ serverInfo.dbStats.totals["nodes"] }}</td>
 							</tr>
 							<tr>
-								<td class="left">Relationships</td>
+								<td class="left">{{ $t('word_Relationships') }}</td>
 								<td class="right">{{ serverInfo.dbStats.totals["edges"] }}</td>
 							</tr>
 							<tr>
-								<td class="left">Server version</td>
+								<td class="left">{{ $t('phrase_Server_Version') }}</td>
 								<td class="right">{{ serverInfo.serverVersion }}</td>
 							</tr>
 							<tr>
-								<td class="left">Database Version</td>
+								<td class="left">{{ $t('phrase_Database_Version') }}</td>
 								<td class="right">{{ serverInfo.dbStats.version }}</td>
 							</tr>
 						</tbody>
@@ -50,7 +50,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 				</div>
 			</router-link>
 		</div>
-		<div class="description">Click to view server information and data statistics</div>
+		<div class="description">{{ $t('portal.server_info.info') }}</div>
 	</div>
 </template>
 
