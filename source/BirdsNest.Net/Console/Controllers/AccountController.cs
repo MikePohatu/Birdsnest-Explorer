@@ -85,6 +85,7 @@ namespace Console.Controllers
             }
             
             if (result.IsAuthorized == false) { await Logout(); }
+            result.IsProcessed = true;
             return result;
         }
 
@@ -109,6 +110,7 @@ namespace Console.Controllers
 
             AuthResults result = new AuthResults();
             result.Message = "Logged out";
+            result.IsProcessed = true;
             return result;
         }
 
@@ -184,18 +186,19 @@ namespace Console.Controllers
                     result.IsAuthorized = true;
                     result.Message = "OK";
                     this._logger.LogInformation("Login successful: {username}", details.Username);
-                    return result;
                 }
                 else
                 {
                     result.Message = "Login failed";
-                    
                 }
+
+                result.IsProcessed = true;
             }
             catch (Exception e)
             {
                 result.Message = "There was an error logging in: " + e.Message;
-                this._logger.LogInformation("Login error: {username}. Error: {error}", details.Username, e.Message);
+                this._logger.LogWarning("Login error: {username}. Error: {error}", details.Username, e.Message);
+                this._logger.LogTrace(e,"Login error stacktrace");
             }
             return result;
         }

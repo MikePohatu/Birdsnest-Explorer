@@ -20,7 +20,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 		<div class="cell"></div>
 		<div class="cell loginbox" style="max-width: 350px; min-width: 280px;">
 			<fieldset class="fieldset">
-				<legend>{{ $t('word_Login') }}</legend>
+				<legend>{{ $t("word_Login") }}</legend>
 				<form id="loginForm" class="cell" type="POST" @submit.prevent="login">
 					<div class="input-group">
 						<input
@@ -47,14 +47,8 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 					</div>
 
 					<div class="input-group">
-						<select
-							id="provider"
-							tabindex="3"
-							v-model="provider"
-							class="small-8 input-group-field"
-							required
-						>
-							<option v-for="prov in providers" :key="prov" :value="prov">{{prov}}</option>
+						<select id="provider" tabindex="3" v-model="provider" class="small-8 input-group-field" required>
+							<option v-for="prov in providers" :key="prov" :value="prov">{{ prov }}</option>
 						</select>
 					</div>
 
@@ -62,9 +56,10 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 						<div class="cell small-3 medium-3 large-3">
 							<input id="loginbtn" tabindex="3" type="submit" class="button" :value="$t('word_Login')" />
 						</div>
-						<div id="authmessage" class="cell small-9 medium-9 large-9">
-							<span>{{ message }}</span>
-						</div>
+					</div>
+
+					<div id="authmessage" class="cell small-9 medium-9 large-9">
+						<span>{{ message }}</span>
 					</div>
 				</form>
 			</fieldset>
@@ -75,14 +70,15 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 
 
 <style scoped>
-#authmessage{
-	padding: 0.5em 10px;
+#authmessage {
+	padding: 0;
+	font-size: 0.8em;
+	min-height: 2em;
 }
 </style>
 
 
 <script lang="ts">
-import { bus, events } from "@/bus";
 import { Component, Vue } from "vue-property-decorator";
 import { auth } from "../assets/ts/webcrap/authcrap";
 import { rootPaths } from "../store";
@@ -92,7 +88,10 @@ export default class LoginCredentials extends Vue {
 	username = "";
 	password = "";
 	provider = "";
-	message = "";
+
+	get message(): string {
+		return this.$store.state.auth.message;
+	}
 
 	get providers(): string[] {
 		const provs = this.$store.state.session.providers;
@@ -100,24 +99,21 @@ export default class LoginCredentials extends Vue {
 		return provs;
 	}
 
-	mounted(): void {
-		(this.$refs.username as HTMLElement).focus();
-		bus.$on(events.Auth.Message, (message) => {
-			this.message = message;
-		});
-
+	created(): void {
 		this.$store.commit(rootPaths.mutations.SESSION_STATUS, "");
 		if (this.providers && this.providers.length > 0) {
 			this.provider = this.providers[0];
 		}
 	}
 
-	beforeDestroy(): void {
-		bus.$off(events.Auth.Message);
+	mounted(): void {
+		(this.$refs.username as HTMLElement).focus();
 	}
 
 	login(): void {
-		auth.login(this.username, this.password, this.provider);
+		auth.login(this.username, this.password, this.provider, () => {
+			this.password = "";
+		});
 	}
 }
 </script>

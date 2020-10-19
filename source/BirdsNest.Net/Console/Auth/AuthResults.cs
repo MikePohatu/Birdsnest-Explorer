@@ -16,10 +16,6 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #endregion
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace Console.Auth
 {
@@ -30,5 +26,6 @@ namespace Console.Auth
         public bool IsAdmin { get; set; } = false;
         public string Name { get; set; } = string.Empty;
         public string Message { get; set; }
+        public bool IsProcessed { get; set; } = false;
     }
 }

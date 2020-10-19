@@ -18,9 +18,6 @@ import Vue from "vue";
 export const bus = new Vue();
 
 export const events = {
-    Auth: {
-        Message: "events.auth.message",
-    },
     Notifications: {
         Clear: "events.Notifications.Clear",
         Info: "events.Notifications.Info",

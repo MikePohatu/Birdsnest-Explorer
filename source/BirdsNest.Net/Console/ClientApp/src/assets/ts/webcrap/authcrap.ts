@@ -22,6 +22,7 @@ class AuthResults {
     isAuthenticated = false;
     isAuthorized = false;
     isAdmin = false;
+    isProcessed = false;
     name = "";
     message = "";
 }
@@ -37,24 +38,33 @@ class AuthCrap {
         }
 
         bus.$emit(events.Notifications.Processing, "Logging in");
+        
         const request: Request = {
             url: "/api/account/login",
             data: logindetails,
             successCallback: (data: AuthResults) => {
-                store.commit(rootPaths.mutations.IS_AUTHORIZED, data.isAuthorized);
-                store.commit(rootPaths.mutations.IS_ADMIN, data.isAdmin);
-                store.commit(rootPaths.mutations.USERNAME, data.name);
-                bus.$emit(events.Auth.Message, data.message);
+                if (data.isProcessed === true) {
+                    store.commit(rootPaths.mutations.IS_AUTHORIZED, data.isAuthorized);
+                    store.commit(rootPaths.mutations.IS_ADMIN, data.isAdmin);
+                    store.commit(rootPaths.mutations.USERNAME, data.name);
+                    store.commit(rootPaths.mutations.AUTH_MESSAGE, "");
 
-                if (data.isAuthorized) {
-                    store.dispatch(rootPaths.actions.UPDATE_AUTHENTICATED_DATA);
-                    typeof successcallback === 'function' && successcallback();
+                    if (data.isAuthorized) {
+                        store.dispatch(rootPaths.actions.UPDATE_AUTHENTICATED_DATA);
+                        typeof successcallback === 'function' && successcallback();
+                    }
+                    bus.$emit(events.Notifications.Clear);
                 }
-                bus.$emit(events.Notifications.Clear);
+                else {
+                    store.commit(rootPaths.mutations.DEAUTH);
+                    store.commit(rootPaths.mutations.AUTH_MESSAGE, data.message);
+                    bus.$emit(events.Notifications.Error, data.message);
+                }
+
             },
             errorCallback: (data: JQueryXHR, status: string, error: string) => {
                 store.commit(rootPaths.mutations.DEAUTH);
-                bus.$emit(events.Auth.Message, error);
+                store.commit(rootPaths.mutations.AUTH_MESSAGE, error);
                 bus.$emit(events.Notifications.Error, "Failed to login: " + error);
             }
         };
@@ -84,7 +94,7 @@ class AuthCrap {
                 typeof callback === 'function' && callback();
             },
             errorCallback: (data: JQueryXHR, status: string, error: string) => {
-                bus.$emit(events.Auth.Message, "Error logging out: " + error);
+                store.commit(rootPaths.mutations.AUTH_MESSAGE, "Error logging out: " + error);
                 store.commit(rootPaths.mutations.SESSION_STATUS, "Error logging out");
                 bus.$emit(events.Notifications.Error, "Error logging out: " + error);
             }
@@ -96,20 +106,28 @@ class AuthCrap {
         const request: Request = {
             url: "/api/account/ping",
             successCallback: (data: AuthResults) => {
-                store.commit(rootPaths.mutations.IS_AUTHORIZED, data.isAuthorized);
-                store.commit(rootPaths.mutations.IS_ADMIN, data.isAdmin);
-                store.commit(rootPaths.mutations.USERNAME, data.name);
-                bus.$emit(events.Auth.Message, data.message);
+                if (data.isProcessed === true) {
+                    store.commit(rootPaths.mutations.IS_AUTHORIZED, data.isAuthorized);
+                    store.commit(rootPaths.mutations.IS_ADMIN, data.isAdmin);
+                    store.commit(rootPaths.mutations.USERNAME, data.name);
+                    store.commit(rootPaths.mutations.AUTH_MESSAGE, "");
 
-                if (data.isAuthorized) { 
-                    store.commit(rootPaths.mutations.SESSION_STATUS, 'Authorized');
+                    if (data.isAuthorized) {
+                        store.commit(rootPaths.mutations.SESSION_STATUS, 'Authorized');
+                    }
+                    typeof callback === 'function' && callback();
+
                 }
-                typeof callback === 'function' && callback();
+                else {
+                    store.commit(rootPaths.mutations.DEAUTH);
+                    store.commit(rootPaths.mutations.AUTH_MESSAGE, data.message);
+                    bus.$emit(events.Notifications.Error, data.message);
+                }
             },
             errorCallback: (jqXHR?: JQueryXHR, status?: string, error?: string) => {
                 store.commit(rootPaths.mutations.DEAUTH);
                 store.commit(rootPaths.mutations.SESSION_STATUS, status);
-                bus.$emit(events.Auth.Message, error);
+                store.commit(rootPaths.mutations.AUTH_MESSAGE, error);
                 bus.$emit(events.Notifications.Error, "Pinging server: " + error);
                 typeof callback === 'function' && callback();
             }

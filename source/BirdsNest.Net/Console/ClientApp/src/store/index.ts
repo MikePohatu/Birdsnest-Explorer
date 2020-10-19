@@ -28,6 +28,7 @@ Vue.use(Vuex);
 
 export const rootPaths = {
   mutations: {
+    AUTH_MESSAGE: "authMessage",
     IS_AUTHORIZED: "isAuthorized",
     IS_ADMIN: "isAdmin",
     USERNAME: "username",
@@ -53,6 +54,9 @@ export interface LanguageSelector {
 }
 
 export interface RootState {
+  auth: {
+    message: string;
+  };
   user: {
     isAuthorized: boolean;
     isAdmin: boolean;
@@ -72,6 +76,9 @@ export interface RootState {
 }
 
 const state: RootState = {
+  auth: {
+    message: ""
+  },
   user: {
     isAuthorized: false,
     isAdmin: false,
@@ -99,6 +106,9 @@ export default new Vuex.Store({
   },
   state: state,
   mutations: {
+    authMessage(state, message: string) {
+      state.auth.message = message;
+    },
     locale(state, locale: string) {
       i18n.locale = locale;
       state.locale = i18n.locale;
