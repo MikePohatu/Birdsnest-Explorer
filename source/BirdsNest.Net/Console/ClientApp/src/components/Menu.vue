@@ -30,12 +30,12 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 							<router-link :to="routeDefs.reports.path">{{ $t('word_Reports') }}</router-link>
 							<router-link :to="routeDefs.visualizer.path">{{ $t('word_Visualizer') }}</router-link>
 							<router-link :to="routeDefs.about">{{ $t('word_About') }}</router-link>
-							<LangMenu />
+							<!-- <LangMenu /> -->
 							<a v-on:click="logout">{{ $t('word_Logout') }}</a>
 						</div>
 						<div v-else>
 							<router-link :to="routeDefs.about">{{ $t('word_About') }}</router-link>
-							<LangMenu />
+							<!-- <LangMenu /> -->
 							<router-link :to="routeDefs.login.path">{{ $t('word_Login') }}</router-link>
 						</div>
 					</li>

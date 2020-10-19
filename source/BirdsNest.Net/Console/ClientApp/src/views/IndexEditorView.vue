@@ -278,7 +278,7 @@ export default class IndexEditorView extends Vue {
 				url: "/api/admin/indexes/drop",
 				data: postdata,
 				postJson: true,
-				successCallback: (data?: number) => {
+				successCallback: () => {
 					this.$store.dispatch(rootPaths.actions.UPDATE_SERVER_INFO);
 				},
 				errorCallback: (jqXHR?: JQueryXHR, status?: string, error?: string) => {
@@ -301,7 +301,7 @@ export default class IndexEditorView extends Vue {
 				url: "/api/admin/indexes/create",
 				data: postdata,
 				postJson: true,
-				successCallback: (data?: number) => {
+				successCallback: () => {
 					this.$store.dispatch(rootPaths.actions.UPDATE_SERVER_INFO);
 				},
 				errorCallback: (jqXHR?: JQueryXHR, status?: string, error?: string) => {

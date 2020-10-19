@@ -63,15 +63,18 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 
 <script lang="ts">
 import { Component, Vue, Prop } from "vue-property-decorator";
-import { AndOrCondition, NewConditionType } from "@/assets/ts/visualizer/Search";
+import { AndOrCondition } from "@/assets/ts/visualizer/Search";
 import { SearchStorePaths } from "@/store/modules/SearchStore";
 
 @Component
 export default class AndOrConditionEdit extends Vue {
 	@Prop({ type: Object as () => AndOrCondition, required: true })
 	source: AndOrCondition;
+	type = "AND";
 	
-	type = this.source.type; 
+	created(): void {
+		this.type = this.source.type;
+	}	
 
 	onSaveClicked(): void {
 		this.$store.commit(SearchStorePaths.mutations.Save.EDIT_ANDOR_CONDITION, this.type);
