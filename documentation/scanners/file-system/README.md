@@ -232,4 +232,4 @@ The diagram shows the following:
 * The Applications and Logs folders inherit permissions from the contentstore folder
 * Inheritance is blocked on the Restricted folder
 
-![Results-Diagram](/documentation/image/file-system/results1.png)
+![Results-Diagram](/documentation/image/file-system/results1.PNG)
