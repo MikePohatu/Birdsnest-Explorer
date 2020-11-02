@@ -42,6 +42,14 @@
         "id": { "indexEnforced": true },
         "name": {}
       }
+    },
+    "Device": {
+      "displayName": "Device",
+      "properties": {
+        "description": {},
+        "id": { },
+        "name": {}
+      }
     }
   }
 }
