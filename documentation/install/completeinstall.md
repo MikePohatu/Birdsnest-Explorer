@@ -33,7 +33,7 @@ The following diagram outlines the components and their interaction with each ot
 
 * 2 core CPU
 * 8GB RAM (minimum 16GB recommended)
-* 10GB disk space
+* 20GB disk space
 * Windows Server 2016 or newer (Nano & Hyper-V versions not supported)
 
 ## Dependencies

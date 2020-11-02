@@ -17,7 +17,8 @@ The 20Road Managed Installer is provided to Birdsnest Explorer customers to make
   * Active Directory scanner setup
   * Optional steps to enable Windows long path support and cleanup of IIS default site
 
-<img src="/documentation/image/install/installer-welcome.png" width="800">
+![Installer-Diagram](/documentation/image/install/installer-welcome.png)
+
 
 ## TLDR version
 For those in a hurry, here is the abbreviated version. Note also there is a quick start video that will step you through the process.

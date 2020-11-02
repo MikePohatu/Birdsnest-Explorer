@@ -5,11 +5,12 @@
   * [Configuration Structure](#configuration-structure)
   * [Threads](#threads)
   * [Datastores](#datastores)
-  * [Host](#host)
-  * [File System](#file-system)
+    * [Host](#host)
+    * [File System](#file-system)
     * [Blocked folders](#blocked-folders)
   * [Credentials](#credentials)
   * [Configuration Details](#configuration-details)
+  * [Results](#results)
 
 ## Overview
 The File System Scanner is a multi-threaded Windows file system 'crawler', traversing one or more file systems, interrogating the permissions and mapping them to Active Directory or Builtin objects.
@@ -29,7 +30,6 @@ The scanner has a inbuilt structure designed to both represent how a file system
 When you create a configuration for the scanner, it will contain a structure like this:
 
 ```json
-"credentials": ...,
 "maxthreads": 8,
 "datastores": [
     {
@@ -44,14 +44,15 @@ When you create a configuration for the scanner, it will contain a structure lik
             }
         ]
     }
-]
+],
+"credentials": ...
 ```
 
 The following sections outline each item. Pay special attention to [Datastores](#Datastores) and [Threads](#Threads), as these have implications to how the scanner will apply load to your infrastructure. 
 
 ## Threads
 
-The File System Scanner is a multi-threaded application. The number of threads the scanner will use is set in the configuration file. Some testing and tuning may be required to find the ideal number of threads to apply to each [Datastore](#Datastore) for best performance. 
+The File System Scanner is a multi-threaded application. The number of threads the scanner will use is set in the configuration file. Some testing and tuning may be required to find the ideal number of threads to apply to each [Datastore](#Datastore) for best performance. The number of threads is configured using the **maxthreads** property.
 
 It should be noted that each time the scanner is run, it is completely independant and unaware of any already running scanners.
 
@@ -96,11 +97,11 @@ Configuration excerpt:
 ```
 
 
-## Host
+### Host
 
 The **Host** item is used to create a connection to a Device node within the the database e.g. an Active Directory computer object. The value of this item is matched against the **name** property of a **Device** data type (**AD_Computer** data types are **Device** data types as well). This match is case sensitive.
 
-## File System
+### File System
 
 A File System item represents a Windows network file system. The scanner will crawl the file system and read the security permissions of each folder. 
 
@@ -207,3 +208,28 @@ The following example shows a full configuration containing one datastore on a h
     }
 ]
 ```
+
+## Results
+
+The following diagram shows example data within the Birdsnest Explorer Visualizer. The diagram shows a shared folder named 'contentstore' with a structure as below:
+
+```
+contentstore 
+└───Applications
+└───Logs
+└───Packages
+    └───Packages
+        └───Restricted
+```
+
+The diagram shows the following:
+
+* The contentstore shared folder structure is hosted on a datastore also named 'contentstore' (note the differing icons). 
+* The datastore is connected to the SERVER01 device (server)
+* The AD group 'ContentStore_RO' is assigned permissions to the contentstore folder
+* The Bob.Demo AD user account is assigned permissions to the Logs folder
+* An orphaned AD object is assigned permissions to the Applications folder
+* The Applications and Logs folders inherit permissions from the contentstore folder
+* Inheritance is blocked on the Restricted folder
+
+![Results-Diagram](/documentation/image/file-system/results1.png)
