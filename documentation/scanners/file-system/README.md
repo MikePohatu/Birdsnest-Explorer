@@ -11,6 +11,7 @@
   * [Credentials](#credentials)
   * [Configuration Details](#configuration-details)
   * [Results](#results)
+  * [Reports](#reports)
 
 ## Overview
 The File System Scanner is a multi-threaded Windows file system 'crawler', traversing one or more file systems, interrogating the permissions and mapping them to Active Directory or Builtin objects.
@@ -233,3 +234,14 @@ The diagram shows the following:
 * Inheritance is blocked on the Restricted folder
 
 ![Results-Diagram](/documentation/image/file-system/results1.PNG)
+
+## Reports
+The File System visualizer plugin includes the following reports:
+
+|Report            |Description|
+|------------------|:---|
+| FS Blocked Folders        | Lists folders that are blocked from being scanned
+| FS Deep Permissions	    | Lists folders with permissions that are more that 5 levels deep in the folder structure |
+| FS Deny Permissions	    | Lists folders with deny permissions set |
+| FS Inheritance Disabled   | Lists folders with inherited permissions disabled |
+| FS Orphaned Permissions	| Lists folders with permissions set for deleted accounts |
