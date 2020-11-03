@@ -45,9 +45,9 @@ In addition, make sure you have details on your Active Directory domain such as 
 ## TLDR version
 For those in a hurry, here is the abbreviated version. Note also there is a quick start video that will step you through the process.
 
-Now open **ManagedInstaller.exe** (you will be prompted for elevation), and click through the tabs from left to right. Accept the licenses, then on each tab, run through each step from top to bottom. If the component is not installed, click the action link e.g. install/update. You will be prompted to reboot and enter appropriate information as needed. 
+Open **ManagedInstaller.exe** (you will be prompted for elevation), and click through the tabs from left to right. Accept the licenses, then on each tab, run through each step from top to bottom. If the component is not installed, click the action link e.g. install/update. You will be prompted to reboot and enter appropriate information as needed. 
 
-Once complete, should have a functional Birdsnest Explorer server, and you should be able to connect to your web console (https://localhost from the local server). You will be prompted to accept the default self-signed SSL certificate. The certificate for the site can be changed to one from a trusted CA in IIS in the normal way.
+Once complete, you should have a functional Birdsnest Explorer server, and you should be able to connect to your web console (https://localhost from the local server). You will be prompted to accept the default self-signed SSL certificate. The certificate for the site can be changed to one from a trusted CA in IIS in the normal way.
 
 From here you can run an [Active Directory](/documentation/scanners/active-directory/README.md) scan and configure your [File System Scanner](/documentation/scanners/file-system/README.md). 
 
@@ -72,11 +72,11 @@ Click the License tab, review and accept the license details. Birdsnest Explorer
 
 Click the Install tab. You will see a listing of dependency components that are required prior to the Birdsnest Explorer installation. 
 
-Where a 'hard' dependency exists that isn't installed, the install action for the dependent component will be disabled and the missing dependency noted. Some dependencies To find out which dependency is missing, hover the cursor over the 'Missing dependency' message. 
+Where a 'hard' dependency exists that isn't installed, the install action for the dependent component will be disabled and the missing dependency noted. To find out which dependency is missing, hover the cursor over the 'Missing dependency' message. 
 
 It should be noted that some dependencies will not block the installer even if they are missing. For example Java 1.8 is required, but if you would prefer to use another distribution of Java e.g. from Oracle, this will work fine. As such the installer will let you continue if OpenJDK isn't installed.
 
-If you have install a dependency manually outside of the installer, click the 'Refresh' option to recheck the status in the installer. 
+If you have installed a dependency manually outside of the installer, click the 'Refresh' option to recheck the status in the installer. 
 
 ![Install page](/documentation/image/install/install-page.png)
 
@@ -99,14 +99,14 @@ When you click the Neo4j install action and after it has finished installing, th
 
 Save these credentials in a secure location
 
-The BirdsNest Scanners and BirdsNest Console installers will run through without any user input
+The BirdsNest Scanners and BirdsNest Console install actions will run through without any user input
 
 ---
 ### Post Install
 
 After the components have been installed, the 'Post Install' tab will run you through configuring the remaining core components. 
 
-If you entered the Neo4j database credentials above, you will see that the Neo4j Database Setup and Neo4j Scanners Configuration components are already installed/complete. 
+If you entered the Neo4j database credentials above, you will see that the Neo4j Database Setup and Neo4j Scanners Configuration components are already installed/complete. If not you can trigger them from here. 
 
 ![Post Install page](/documentation/image/install/post-install-page.png)
 
@@ -158,6 +158,7 @@ Run the Neo4j memory recommendations tool to get recommended configuration setti
 
 ![DB recommendations](/documentation/image/install/post-install-dbrecommendations.png)
 
+---
 ### Complete
 
 Your Birdsnest Explorer install is now finished and you should be able to connect to your web console (https://localhost from the local server). You will be prompted to accept the default self-signed SSL certificate. The certificate for the site can be changed to one from a trusted CA in IIS in the normal way.
