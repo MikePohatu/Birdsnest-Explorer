@@ -43,7 +43,7 @@ module.exports = {
       favicon32: 'img/icons/favicon-32x32.png',
       favicon16: 'img/icons/favicon-16x16.png'
     },
-    name: 'BirdsNest'
+    name: 'Birdsnest Explorer'
   },
 
   productionSourceMap: false,
@@ -55,5 +55,14 @@ module.exports = {
       localeDir: 'locales',
       enableInSFC: true
     }
+  },
+
+  chainWebpack: config => {
+    config
+      .plugin('html')
+      .tap(args => {
+        args[0].title = "Birdsnest Explorer";
+        return args;
+      })
   }
 }

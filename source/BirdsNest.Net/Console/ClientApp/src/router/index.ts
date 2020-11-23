@@ -164,7 +164,7 @@ router.beforeEach((to, from, next) => {
 });
 
 router.afterEach((to) => {
-  document.title = "BirdsNest - " + to.name;
+  document.title = "Birdsnest Explorer - " + to.name;
 });
 
 export default router;
