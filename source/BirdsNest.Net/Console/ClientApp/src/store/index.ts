@@ -159,6 +159,7 @@ export default new Vuex.Store({
           context.commit(rootPaths.mutations.API_STATE, api.states.READY);
         },
         errorCallback: (jqXHR, status, error: string) => {
+          // eslint-disable-next-line
           console.error(error);
         },
       };
@@ -183,6 +184,7 @@ export default new Vuex.Store({
     },
 
     updateServerInfo(context) {
+      // eslint-disable-next-line
       console.log("Refreshing server info");
       context.commit(rootPaths.mutations.SERVER_INFO_STATE, api.states.LOADING);
       const request: Request = {

@@ -282,6 +282,7 @@ export default class IndexEditorView extends Vue {
 					this.$store.dispatch(rootPaths.actions.UPDATE_SERVER_INFO);
 				},
 				errorCallback: (jqXHR?: JQueryXHR, status?: string, error?: string) => {
+					// eslint-disable-next-line
 					console.error(error);
 					bus.$emit(events.Notifications.Error, this.$t('index_editor.error_delete', {label: label, property: property}).toString() + "\n" + error);
 				},
@@ -305,6 +306,7 @@ export default class IndexEditorView extends Vue {
 					this.$store.dispatch(rootPaths.actions.UPDATE_SERVER_INFO);
 				},
 				errorCallback: (jqXHR?: JQueryXHR, status?: string, error?: string) => {
+					// eslint-disable-next-line
 					console.error(error);
 					bus.$emit(events.Notifications.Error, this.$t('index_editor.error_create', {label: label, property:property}) + "\n" + error);
 				},

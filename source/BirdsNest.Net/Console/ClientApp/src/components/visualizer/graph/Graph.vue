@@ -541,6 +541,7 @@ export default class Graph extends Vue {
 				this.simController.RestartSimulation();
 			},
 			errorCallback: () => {
+				// eslint-disable-next-line
 				console.error("Error getting Edges");
 			},
 		};
@@ -561,6 +562,7 @@ export default class Graph extends Vue {
 				api.post(loopsrequest);
 			},
 			errorCallback: () => {
+				// eslint-disable-next-line
 				console.error("Error getting Edges");
 			},
 		};
@@ -1111,6 +1113,7 @@ export default class Graph extends Vue {
 			postJson: true,
 			successCallback: callback,
 			errorCallback: () => {
+				// eslint-disable-next-line
 				console.error("Error getting Edges");
 			},
 		};
@@ -1126,6 +1129,7 @@ export default class Graph extends Vue {
 			data: postdata,
 			postJson: true,
 			errorCallback: () => {
+				// eslint-disable-next-line
 				console.error("Error getting direct loops");
 			},
 		};
@@ -1140,6 +1144,7 @@ export default class Graph extends Vue {
 			data: JSON.stringify(nodelist),
 			postJson: true,
 			errorCallback: () => {
+				// eslint-disable-next-line
 				console.error("Error getting direct loops");
 			},
 		};

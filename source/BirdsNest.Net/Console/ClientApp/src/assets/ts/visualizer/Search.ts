@@ -122,6 +122,7 @@ export class ValueCondition implements Condition {
         if (Object.keys(ConditionOperators).includes(type)) {
             this.type = type;
         } else {
+            // eslint-disable-next-line
             console.error("Invalid condition type: " + type);
         }
         this.id = webcrap.misc.generateUID();

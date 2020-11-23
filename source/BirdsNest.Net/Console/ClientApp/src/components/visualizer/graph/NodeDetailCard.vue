@@ -326,6 +326,7 @@ export default class NodeDetailCard extends Vue {
 				});
 			},
 			errorCallback: () => {
+				// eslint-disable-next-line
 				console.error("Error downloading detail data");
 			},
 		};

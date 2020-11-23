@@ -138,6 +138,7 @@ router.beforeEach((to, from, next) => {
     auth.ping(() => {
       if (!store.state.user.isAuthorized) {
         //Still not authorised, redirect to login view
+        // eslint-disable-next-line
         console.log("Not authorized. Redirecting to login page.");
         next(
           {
@@ -150,6 +151,7 @@ router.beforeEach((to, from, next) => {
           store.dispatch(rootPaths.actions.UPDATE_AUTHENTICATED_DATA); 
         }
         if (to.name === routeDefs.admin.name && !store.state.user.isAdmin) {
+          // eslint-disable-next-line
           console.error("Access forbidden. Redirecting to portal.");
           bus.$emit(events.Notifications.Error, "Access to admin page forbidden");
           next(from);

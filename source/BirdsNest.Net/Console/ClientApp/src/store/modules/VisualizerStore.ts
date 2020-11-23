@@ -149,6 +149,7 @@ export const VisualizerStore: Module<VisualizerState, RootState> = {
           context.commit("iconMappings", data);
         },
         errorCallback: (jqXHR?: JQueryXHR, status?: string, error?: string) => {
+          // eslint-disable-next-line
           console.error(error);
         }
       };
@@ -161,6 +162,7 @@ export const VisualizerStore: Module<VisualizerState, RootState> = {
           context.commit("subtypeMappings", data);
         },
         errorCallback: (jqXHR?: JQueryXHR, status?: string, error?: string) => {
+          // eslint-disable-next-line
           console.error(error);
         }
       };

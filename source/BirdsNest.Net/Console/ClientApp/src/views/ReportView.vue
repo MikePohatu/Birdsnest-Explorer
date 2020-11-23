@@ -330,6 +330,7 @@ export default class ReportView extends Vue {
 				this.applyData(data);
 			},
 			errorCallback: () => {
+				// eslint-disable-next-line
 				console.error("Error downloading report data");
 			},
 		};

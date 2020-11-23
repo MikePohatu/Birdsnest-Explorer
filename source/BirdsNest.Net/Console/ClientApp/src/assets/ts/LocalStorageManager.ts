@@ -36,6 +36,7 @@ export default class LStore {
                 bus.$emit(events.Notifications.Error, "Error saving results to local store");
             }
         } else {
+            // eslint-disable-next-line
             console.log("No Web Storage support..");
             bus.$emit(events.Notifications.Error, "No Web Storage support");
         }
@@ -53,6 +54,7 @@ export default class LStore {
                 bus.$emit(events.Notifications.Error, "Error retrieving results from local store");
             }
         } else {
+            // eslint-disable-next-line
             console.log("No Web Storage support..");
             bus.$emit(events.Notifications.Error, "No Web Storage support");
         }
@@ -70,6 +72,7 @@ export default class LStore {
                 bus.$emit(events.Notifications.Error, "Error saving node list to local store");
             }
         } else {
+            // eslint-disable-next-line
             console.log("No Web Storage support..");
             bus.$emit(events.Notifications.Error, "No Web Storage support");
         }
@@ -87,6 +90,7 @@ export default class LStore {
                 bus.$emit(events.Notifications.Error, "Error retrieving results from local store");
             }
         } else {
+            // eslint-disable-next-line
             console.log("No Web Storage support..");
             bus.$emit(events.Notifications.Error, "No Web Storage support");
         }
@@ -105,6 +109,7 @@ export default class LStore {
                 bus.$emit(events.Notifications.Error, "Error saving results to local store");
             }
         } else {
+            // eslint-disable-next-line
             console.log("No Web Storage support..");
             bus.$emit(events.Notifications.Error, "No Web Storage support");
         }
@@ -122,6 +127,7 @@ export default class LStore {
                 bus.$emit(events.Notifications.Error, "Error retrieving results from local store");
             }
         } else {
+            // eslint-disable-next-line
             console.log("No Web Storage support..");
             bus.$emit(events.Notifications.Error, "No Web Storage support");
         }

@@ -219,6 +219,7 @@ export const SearchStore: Module<SearchState, RootState> = {
                 }
                 state.selectedItem = null;
             } else {
+                // eslint-disable-next-line
                 console.error("Can't delete an edge");
             }
         },
@@ -380,6 +381,7 @@ export const SearchStore: Module<SearchState, RootState> = {
                 errorCallback: (jqXHR?: JQueryXHR, status?: string, error?: string) => {
                     context.commit('setStatusMessage', i18n.t('word_Error'));
                     context.commit('setIsSearching', false);
+                    // eslint-disable-next-line
                     console.error(error);
                 }
             };
@@ -405,6 +407,7 @@ export const SearchStore: Module<SearchState, RootState> = {
                 errorCallback: (jqXHR?: JQueryXHR, status?: string, error?: string) => {
                     context.commit('setIsSearching', false);
                     context.commit('setStatusMessage', i18n.t('word_Error'));
+                    // eslint-disable-next-line
                     console.error(error);
                 }
             };
@@ -429,6 +432,7 @@ export const SearchStore: Module<SearchState, RootState> = {
                         context.commit("shareCypher", data);
                     },
                     errorCallback: (jqXHR: JQueryXHR, status: string, error: string) => {
+                        // eslint-disable-next-line
                         console.error("Error retrieving cypher query: " + error);
                     },
                 };
