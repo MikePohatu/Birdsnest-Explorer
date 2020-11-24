@@ -131,14 +131,11 @@ namespace ADScanner
 
             //process foreign item connections
             NeoWriter.WriteIDataCollector(new ForeignSecurityPrincipalConnectionCollector(), driver, true, true);
-
-           
+            NeoWriter.WriteIDataCollector(new RemoteForeignSecurityPrincipalConnectionCollector(), driver, true, true);
 
             NeoQueryData nopropsdata = new NeoQueryData();
             nopropsdata.ScanID = NeoWriter.ScanID;
             nopropsdata.ScannerID = NeoWriter.ScannerID;
-
-           
 
             //create primary group mappings
             Console.Write("Setting primary groups");

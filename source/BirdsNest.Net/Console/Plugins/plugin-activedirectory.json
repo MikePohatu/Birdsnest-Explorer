@@ -18,7 +18,7 @@
     "ad-foreignmembers": {
       "displayName": "AD Foreign Members",
       "description": "Lists Active Directory groups that contain members from a foreign domain e.g. via a domain trust",
-      "query": "MATCH (:AD_Object)-[r:AD_MEMBER_OF]->(n:AD_Group) where r.foreignmember = true RETURN n",
+      "query": "MATCH (o:AD_Object)-[r:AD_MEMBER_OF]->(n:AD_Group) where r.foreignmember = true RETURN n,o",
       "propertyFilters": [ "name", "dn", "description" ]
     },
     "ad-grouploops": {

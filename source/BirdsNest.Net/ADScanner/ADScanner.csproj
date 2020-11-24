@@ -80,6 +80,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ActiveDirectory\ADSearchResultConverter.cs" />
+    <Compile Include="ActiveDirectory\RemoteForeignSecurityPrincipalConnectionCollector.cs" />
     <Compile Include="ActiveDirectory\StandAloneQueries.cs" />
     <Compile Include="ActiveDirectory\Connector.cs" />
     <Compile Include="ActiveDirectory\ForeignSecurityPrincipalConnectionCollector .cs" />
