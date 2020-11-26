@@ -2,6 +2,7 @@
 
 * [File System Scanner](#file-system-scanner)
   * [Overview](#overview)
+  * [Command Line Options](#command-line-options)
   * [Configuration Structure](#configuration-structure)
   * [Threads](#threads)
   * [Datastores](#datastores)
@@ -23,6 +24,18 @@ The following points should be noted:
 * The scanner can only interrogate items it has permissions to. Make sure that the service account running the scanner has the appropriate permissions to read the permissions of all the items you wish to scan.
 
 * The scanner does not record every folder it finds in the database, only ones that have permissions set on them. This is done to reduce the number of nodes in the Visualizer, and the associated 'clutter' and performance impact.
+
+## Command Line Options
+
+    Usage: FSScanner.exe /config:<configfile> /batch
+
+By default, FSScanner.exe will search for **fsconfig.json** in the config folder, and will pause when finished so the user can see the resulting output. These options may be overridden with the **/config** and **/batch** options.
+
+`/config:%path_to_config_file%` - override the default location of the config file, for example if you are scanning multiple domains and require multiple configs. 
+
+`/batch` - Normally FSScanner.exe will pause at the end and prompt the user to press a key (see screenshot below. /batch removes this pause and exits immediately. This option is required when running ADScanner from a scheduled task or other automated process where no user interaction is required. 
+
+`/?` - show command line options and exit.
 
 ## Configuration Structure
 

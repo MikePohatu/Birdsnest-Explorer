@@ -46,7 +46,7 @@ An example adconfig.json file will already exist in the Scanners folder and cons
 
     Usage: ADScanner.exe /config:<configfile> /batch
 
-By default, ADScanner.exe will search for **adconfig.json** in the same directory as itself, and will pause when finished so the user can see the resulting output. These options may be overridden with the **/config** and **/batch** options.
+By default, ADScanner.exe will search for **adconfig.json** in the config directory, and will pause when finished so the user can see the resulting output. These options may be overridden with the **/config** and **/batch** options.
 
 `/config:%path_to_config_file%` - override the default location of the config file, for example if you are scanning multiple domains and require multiple configs. 
 
