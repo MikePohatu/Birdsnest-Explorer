@@ -24,11 +24,11 @@ using System.Runtime.InteropServices;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 [assembly: AssemblyTitle("common")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyDescription("Birdsnest Explorer Common Library")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("common")]
-[assembly: AssemblyCopyright("Copyright © 20Road Limited, 2018")]
+[assembly: AssemblyCompany("20Road Limited")]
+[assembly: AssemblyProduct("Birdsnest Explorer")]
+[assembly: AssemblyCopyright("Copyright © 20Road Limited, 2020")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 

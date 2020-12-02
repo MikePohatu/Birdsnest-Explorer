@@ -1,7 +1,7 @@
 {
   "ScannerID": "cm_scanner1",
-  "Domain": "domain.local",
-  "Username": "user",
-  "Password": "Password1",
-  "SiteServer": "SccmServer"
+  "SiteServer": "SccmServer",
+  "Domain": "",
+  "Username": "",
+  "Password": ""
 }

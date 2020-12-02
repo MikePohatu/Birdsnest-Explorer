@@ -7,6 +7,7 @@
   * [Data Types](#data-types)
     * [Sub-Types](#sub-types)
     * [Icons](#icons)
+    * [Properties](#properties)
     * [Data Type Schema Definition](#data-type-schema-definition)
     * [Example Data Type](#example-data-type)
     * [Styling](#styling)
@@ -107,6 +108,14 @@ The icons used on nodes within the Visualizer are provided by FontAwesome. Each 
 
 FontAwesome icons are available from https://fontawesome.com/icons?d=gallery&m=free.
 
+### Properties
+
+Each property for the data type must be defined in the **properties** object. Each property has two options that may be defined:
+
+**type:** Defines the type of property as a string (default), number, or boolean. This will dictate the options available to the user when creating/editing conditions in the console [Advanced Search](/documentation/console/visualizer/advanced-search/README.md)
+
+**indexEnforced:** Specifies that an index set on that property cannot be edited/disabled in the [index editor](/documentation/console/admin/README.md#Index-Editor). The index may be required for a scan task to perform correctly.
+
 ### Data Type Schema Definition
 Fields denoted with a $ are items to be configured. 
 
@@ -117,7 +126,8 @@ Fields denoted with a $ are items to be configured.
         "description": "$description_to_appear_in_tooltip",
         "properties": {
             "$property_name": {
-                "type": "$OPTIONAL - (string (default) | number | boolean)"
+                "type": "$OPTIONAL - (string (default) | number | boolean)",
+                "indexEnforced": false
             }
         },
         "default": "$default_property_name_for_search",
@@ -136,13 +146,19 @@ Fields denoted with a $ are items to be configured.
             "description": "Active Directory group",
             "properties": {
                 "description": {},
-                "dn": {},
+                "dn": { 
+                    "indexEnforced": true 
+                },
                 "domainid": {},
                 "grouptype": {},
-                "id": {},
+                "id": { 
+                    "indexEnforced": true 
+                },
                 "info": {},
                 "lastscan": {},
-                "member_count": {},
+                "member_count": {
+                    "type": "number"
+                },
                 "name": {},
                 "path": {},
                 "rid": {},
@@ -154,10 +170,9 @@ Fields denoted with a $ are items to be configured.
             "default": "samaccountname",
             "subType": "grouptype",
             "icon": "f500"
-            }
-        },
-        ...
-    }
+        }
+    },
+    ...
 ```
 
 ### Styling

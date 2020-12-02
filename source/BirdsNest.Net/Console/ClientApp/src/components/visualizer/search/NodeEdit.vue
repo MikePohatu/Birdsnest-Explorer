@@ -20,6 +20,18 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 		<div id="searchNodeEdit" class="dialog">
 			<fieldset class="fieldset cell">
 				<legend>{{ $t('word_Node') }}</legend>
+				
+				<div class="input-group">
+					<span class="input-group-label">{{ $t('word_Identifier') }}</span>
+					<input
+						id="nodeIdentifier"
+						type="search"
+						autocomplete="off"
+						placeholder="*"
+						class="input-group-field"
+						v-model="node.name"
+					/>
+				</div>
 
 				<div class="input-group">
 					<span class="input-group-label">{{ $tc('word_Type') }}</span>
@@ -32,17 +44,6 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 							:title="nodeDataTypes[value].description"
 						>{{name}}</option>
 					</select>
-				</div>
-				<div class="input-group">
-					<span class="input-group-label">{{ $t('word_Identifier') }}</span>
-					<input
-						id="nodeIdentifier"
-						type="search"
-						autocomplete="off"
-						placeholder="*"
-						class="input-group-field"
-						v-model="node.name"
-					/>
 				</div>
 			</fieldset>
 			<button

@@ -22,6 +22,18 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 				<legend>{{ $t('word_Relationship') }}</legend>
 
 				<div class="input-group">
+					<span class="input-group-label small-4">{{ $t('word_Identifier') }}</span>
+					<input
+						id="edgeIdentifier"
+						type="search"
+						autocomplete="off"
+						placeholder="*"
+						class="small-8 input-group-field"
+						v-model="edge.name"
+					/>
+				</div>
+
+				<div class="input-group">
 					<span class="input-group-label small-3">{{ $tc('word_Type') }}</span>
 					<select id="edgeType" class="small-9 input-group-field" v-model="edge.label">
 						<option value selected>*</option>
@@ -32,18 +44,6 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 							:title="edgeDataTypes[value].description"
 						>{{name}}</option>
 					</select>
-				</div>
-
-				<div class="input-group">
-					<span class="input-group-label small-4">{{ $t('word_Identifier') }}</span>
-					<input
-						id="edgeIdentifier"
-						type="search"
-						autocomplete="off"
-						placeholder="*"
-						class="small-8 input-group-field"
-						v-model="edge.name"
-					/>
 				</div>
 
 				<span>{{ $t('phrase_Limit_Hops') }}</span>

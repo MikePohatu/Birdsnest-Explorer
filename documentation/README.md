@@ -10,5 +10,6 @@
     * [Visualizer](/documentation/console/visualizer/README.md)
         * [Simple Search](/documentation/console/visualizer/simple-search/README.md)
         * [Advanced Search](/documentation/console/visualizer/advanced-search/README.md)
+        * [Admin](/documentation/console/admin/README.md)
     * [Reports](/documentation/console/plugins/README.md#reports)
     * [Plugins](/documentation/console/plugins/README.md)

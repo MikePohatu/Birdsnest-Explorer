@@ -1,31 +1,49 @@
 {
   "name": "active-directory",
   "displayName": "Active Directory",
-  "link": "https://github.com/MikePohatu/BirdsNest/tree/master/documentation/scanners/active-directory",
+  "link": "https://github.com/MikePohatu/Birdsnest-Explorer/tree/master/documentation/scanners/active-directory",
   "reports": {
     "ad-deeppaths": {
       "displayName": "AD Deep Paths",
       "description": "Lists Active Directory groups that are part of 'Member Of' chains with 5 hops or more",
       "query": "MATCH p=(n:AD_Group)-[:AD_MEMBER_OF*5..]->(:AD_Group) WITH nodes(p) AS groups UNWIND groups as group RETURN DISTINCT group",
-      "propertyFilters": [ "name", "dn", "description", "scope" ]
+      "propertyFilters": [
+        "name",
+        "dn",
+        "description",
+        "scope"
+      ]
     },
     "ad-emptygroups": {
       "displayName": "AD Empty Groups",
       "description": "Lists Active Directory groups that contain no users or computers, either directly or indirectly",
       "query": "MATCH (n:AD_Group) where n.scope=0 RETURN n ORDER BY n.name",
-      "propertyFilters": [ "name", "dn", "description" ]
+      "propertyFilters": [
+        "name",
+        "dn",
+        "description"
+      ]
     },
     "ad-foreignmembers": {
       "displayName": "AD Foreign Members",
       "description": "Lists Active Directory groups that contain members from a foreign domain e.g. via a domain trust",
       "query": "MATCH (o:AD_Object)-[r:AD_MEMBER_OF]->(n:AD_Group) where r.foreignmember = true RETURN n,o",
-      "propertyFilters": [ "name", "dn", "description" ]
+      "propertyFilters": [
+        "name",
+        "dn",
+        "description"
+      ]
     },
     "ad-grouploops": {
       "displayName": "AD Group Loops",
       "description": "Lists Active Directory groups that have membership loops back to themselves",
       "query": "MATCH p=(n:AD_Group)-[:AD_MEMBER_OF*]->(n) WITH nodes(p) as groups UNWIND groups as group RETURN DISTINCT group",
-      "propertyFilters": [ "name", "dn", "description", "scope" ]
+      "propertyFilters": [
+        "name",
+        "dn",
+        "description",
+        "scope"
+      ]
     }
   },
   "edgeDataTypes": {
@@ -47,9 +65,13 @@
       "description": "Active Directory domain joined computer object",
       "properties": {
         "description": {},
-        "dn": { "indexEnforced": true },
+        "dn": {
+          "indexEnforced": true
+        },
         "domainid": {},
-        "id": { "indexEnforced": true },
+        "id": {
+          "indexEnforced": true
+        },
         "info": {},
         "lastscan": {},
         "name": {},
@@ -68,13 +90,19 @@
       "description": "Active Directory group",
       "properties": {
         "description": {},
-        "dn": { "indexEnforced": true },
+        "dn": {
+          "indexEnforced": true
+        },
         "domainid": {},
         "grouptype": {},
-        "id": { "indexEnforced": true },
+        "id": {
+          "indexEnforced": true
+        },
         "info": {},
         "lastscan": {},
-        "member_count": {},
+        "member_count": {
+          "type": "number"
+        },
         "name": {},
         "path": {},
         "rid": {},
@@ -93,12 +121,16 @@
       "properties": {
         "description": {},
         "displayname": {},
-        "dn": { "indexEnforced": true },
+        "dn": {
+          "indexEnforced": true
+        },
         "domainid": {},
         "enabled": {
           "type": "boolean"
         },
-        "id": { "indexEnforced": true },
+        "id": {
+          "indexEnforced": true
+        },
         "info": {},
         "lastscan": {},
         "name": {},
@@ -119,9 +151,15 @@
       "displayName": "AD Foreign Security Principal",
       "description": "AD object from foreign domain i.e. via domain or forest trust",
       "properties": {
-        "dn": { "indexEnforced": true },
-        "domainid": { "indexEnforced": true },
-        "id": { "indexEnforced": true },
+        "dn": {
+          "indexEnforced": true
+        },
+        "domainid": {
+          "indexEnforced": true
+        },
+        "id": {
+          "indexEnforced": true
+        },
         "lastscan": {},
         "name": {},
         "scope": {
@@ -137,13 +175,21 @@
       "properties": {
         "description": {},
         "displayname": {},
-        "dn": { "indexEnforced": true },
-        "domainid": { "indexEnforced": true },
+        "dn": {
+          "indexEnforced": true
+        },
+        "domainid": {
+          "indexEnforced": true
+        },
         "grouptype": {},
-        "id": { "indexEnforced": true },
+        "id": {
+          "indexEnforced": true
+        },
         "info": {},
         "lastscan": {},
-        "member_count": {},
+        "member_count": {
+          "type": "number"
+        },
         "name": {},
         "operatingsystem": {},
         "operatingsystemversion": {},

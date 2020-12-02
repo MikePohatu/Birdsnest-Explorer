@@ -51,8 +51,8 @@
     <None Remove="Plugins\plugin-activedirectory.css" />
     <None Remove="Plugins\plugin-azuread.css" />
     <None Remove="Plugins\plugin-builtin.css" />
+    <None Remove="Plugins\plugin-configmgr.css" />
     <None Remove="Plugins\plugin-filesystem.css" />
-    <None Remove="Plugins\plugin-sccm.css" />
     <None Remove="Plugins\plugin-uem.css" />
     <None Remove="Plugins\plugin-windowsupdate.css" />
     <None Remove="Plugins\plugin-xenapp6.5.css" />
@@ -75,7 +75,7 @@
     <Content Include="Plugins\plugin-filesystem.css">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="Plugins\plugin-sccm.css">
+    <Content Include="Plugins\plugin-configmgr.css">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Plugins\plugin-uem.css">
@@ -124,7 +124,7 @@
     <Content Update="Plugins\plugin-filesystem.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Update="Plugins\plugin-sccm.json">
+    <Content Update="Plugins\plugin-configmgr.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Update="Plugins\plugin-testing.json">
@@ -162,7 +162,7 @@
     <!-- Include the newly-built files in the publish output -->
     <ItemGroup>
       <DistFiles Include="$(SpaRoot)dist\**" />
-      <ResolvedFileToPublish Include="@(DistFiles-&gt;'%(FullPath)')" Exclude="@(ResolvedFileToPublish)">
+      <ResolvedFileToPublish Include="@(DistFiles->'%(FullPath)')" Exclude="@(ResolvedFileToPublish)">
         <RelativePath>%(DistFiles.Identity)</RelativePath>
         <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
         <ExcludeFromSingleFile>true</ExcludeFromSingleFile>

@@ -84,7 +84,7 @@ namespace ADScanner.ActiveDirectory
         {
             get
             {
-                return "MATCH (o)-[:" + Types.MemberOf + " *]->(g:" + Types.Group + " {domainid:$ScannerID})" +
+                return "MATCH (o)-[:" + Types.MemberOf + " *]->(g:" + Types.Group + ")" +
                 " WHERE o:" + Types.User + " OR o:" + Types.Computer +
                 " WITH collect(DISTINCT o) as nodes, g" +
                 " SET g.scope = size(nodes)" +

@@ -168,6 +168,9 @@ namespace ADScanner
             Console.Write("Setting group scopes");
             NeoWriter.RunQuery(StandAloneQueries.SetGroupScope, nopropsdata, driver, true, true);
 
+            Console.Write("Updating member counts");
+            NeoWriter.RunQuery(StandAloneQueries.UpdateMemberCounts, nopropsdata, driver, true, true);
+
             //cleanup
             driver.Dispose();
             context.Dispose();

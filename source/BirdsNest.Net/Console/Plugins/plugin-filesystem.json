@@ -1,7 +1,7 @@
 {
   "name": "filesystem",
   "displayName": "File System",
-  "link": "https://github.com/MikePohatu/BirdsNest/tree/master/documentation/scanners/file-system",
+  "link": "https://github.com/MikePohatu/Birdsnest-Explorer/tree/master/documentation/scanners/file-system",
   "reports": {
     "fs-blockedfolders": {
       "displayName": "FS Blocked Folders",

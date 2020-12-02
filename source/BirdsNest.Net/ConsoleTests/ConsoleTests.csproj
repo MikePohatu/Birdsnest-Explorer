@@ -4,6 +4,12 @@
     <TargetFramework>netcoreapp3.1</TargetFramework>
 
     <IsPackable>false</IsPackable>
+
+    <Product>Birdsnest Explorer</Product>
+
+    <Company>20Road Limited</Company>
+
+    <Copyright>Copyright © 20Road Limited, 2020</Copyright>
   </PropertyGroup>
 
   <ItemGroup>
