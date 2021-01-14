@@ -4,15 +4,16 @@
   * [Overview](#overview)
   * [Command Line Options](#command-line-options)
   * [Configuration Structure](#configuration-structure)
-  * [Threads](#threads)
-  * [Datastores](#datastores)
+    * [Threads](#threads)
+    * [Datastores](#datastores)
     * [Host](#host)
     * [File System](#file-system)
-    * [Blocked folders](#blocked-folders)
-  * [Credentials](#credentials)
+    * [Credentials](#credentials)
   * [Configuration Details](#configuration-details)
+  * [Blocked folders](#blocked-folders)
   * [Results](#results)
   * [Reports](#reports)
+  * [FAQ](#faq)
 
 ## Overview
 The File System Scanner is a multi-threaded Windows file system 'crawler', traversing one or more file systems, interrogating the permissions and mapping them to Active Directory or Builtin objects.
@@ -25,6 +26,8 @@ The following points should be noted:
 
 * The scanner does not record every folder it finds in the database, only ones that have permissions set on them. This is done to reduce the number of nodes in the Visualizer, and the associated 'clutter' and performance impact.
 
+---
+
 ## Command Line Options
 
     Usage: FSScanner.exe /config:<configfile> /batch
@@ -36,6 +39,8 @@ By default, FSScanner.exe will search for **fsconfig.json** in the config folder
 `/batch` - Normally FSScanner.exe will pause at the end and prompt the user to press a key (see screenshot below. /batch removes this pause and exits immediately. This option is required when running ADScanner from a scheduled task or other automated process where no user interaction is required. 
 
 `/?` - show command line options and exit.
+
+---
 
 ## Configuration Structure
 
@@ -64,13 +69,13 @@ When you create a configuration for the scanner, it will contain a structure lik
 
 The following sections outline each item. Pay special attention to [Datastores](#Datastores) and [Threads](#Threads), as these have implications to how the scanner will apply load to your infrastructure. 
 
-## Threads
+### Threads
 
 The File System Scanner is a multi-threaded application. The number of threads the scanner will use is set in the configuration file. Some testing and tuning may be required to find the ideal number of threads to apply to each [Datastore](#Datastore) for best performance. The number of threads is configured using the **maxthreads** property.
 
 It should be noted that each time the scanner is run, it is completely independant and unaware of any already running scanners.
 
-## Datastores
+### Datastores
 
 A Datastore item represents a set of physical disks on which one or more file systems are located. 
 
@@ -110,7 +115,6 @@ Configuration excerpt:
 ...
 ```
 
-
 ### Host
 
 The **Host** item is used to create a connection to a Device node within the the database e.g. an Active Directory computer object. The value of this item is matched against the **name** property of a **Device** data type (**AD_Computer** data types are **Device** data types as well). This match is case sensitive.
@@ -147,12 +151,7 @@ The **filesystems** section in the configuration is a list of file system object
 ...
 ```
 
-### Blocked folders
-A blocked folder is one where the scanner cannot read it's details, and therefore is blocked from scanning it and it's child folders. The folder will be recorded by the scanner and the property 'blocked' will be set to **true** on the item in the database to allow for searching and reporting.
-
-A blocked usually represents a folder where inheritance is disabled, and there aren't appropriate permissions for the account running the file system scanner.
-
-## Credentials
+### Credentials
 The file system scanner will use the context of the user running the fsscanner.exe process by default. This would normally be the logged in user or service account if running as a scheduled task. It is recommended to use this approach where possible.
 
 If you wish you use different credentials to access a file system, you can add a **credentials** section to your configuration with the relevant details. The **id** property is used to reference these credentials in your file system configuration. 
@@ -185,6 +184,9 @@ The **cred1** id is then used in the file system configuration in the **creditia
     },
     ...
 ```
+
+---
+
 ## Configuration Details
 
 The following example shows a full configuration containing one datastore on a host called **server1** and 2 file systems. Note the use double slashes due to the json file format i.e. each \\ becomes \\\\.
@@ -223,6 +225,15 @@ The following example shows a full configuration containing one datastore on a h
 ]
 ```
 
+---
+
+## Blocked folders
+A blocked folder is one where the scanner cannot read it's details, and therefore is blocked from scanning it and it's child folders. The folder will be recorded by the scanner and the property 'blocked' will be set to **true** on the item in the database to allow for searching and reporting.
+
+A blocked usually represents a folder where inheritance is disabled, and there aren't appropriate permissions for the account running the file system scanner.
+
+---
+
 ## Results
 
 The following diagram shows example data within the Birdsnest Explorer Visualizer. The diagram shows a shared folder named 'contentstore' with a structure as below:
@@ -248,6 +259,8 @@ The diagram shows the following:
 
 ![Results-Diagram](/documentation/image/file-system/results1.PNG)
 
+---
+
 ## Reports
 The File System visualizer plugin includes the following reports:
 
@@ -258,3 +271,10 @@ The File System visualizer plugin includes the following reports:
 | FS Deny Permissions	    | Lists folders with deny permissions set |
 | FS Inheritance Disabled   | Lists folders with inherited permissions disabled |
 | FS Orphaned Permissions	| Lists folders with permissions set for deleted accounts |
+
+---
+
+## FAQ
+
+Q - Why does Birdsnest Explorer shows fewer permissions connected to my folder than the permissions tab in Windows?\
+A - Birdsnest Explorer will only connect permissions where they have been set on that particular folder. The other permissions listed will be inherited from a parent folder. You will find the group/user listed on the permissions tab connected to the relevant parent folder.
