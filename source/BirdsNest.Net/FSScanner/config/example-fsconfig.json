@@ -14,15 +14,14 @@
 			"filesystems": [
 				{
 					"id": "123",
-					"credentialid": "cred1",
 					"path": "\\\\server\\share1",
 					"comment": "san1-share1"
 				},
 				{
 					"id": "456",
 					"credentialid": "cred1",
-					"path": "\\\\server\\share2",
-					"comment": "san1-share2"
+					"path": "\\\\server-with-credential\\share2",
+					"comment": "san1-share2 requires use of the cred1 credential defined above"
 				}
 			]
 		}
