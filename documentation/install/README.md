@@ -6,3 +6,4 @@ See the [Complete Installation Documentation](/documentation/install/completeins
 
 * [Managed Install Guide](/documentation/install/managed.md)
 * [Complete Installation Documentation](/documentation/install/completeinstall.md)
+* [Troubleshooting](/documentation/install/troubleshooting.md)

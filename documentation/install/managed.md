@@ -169,4 +169,6 @@ Be sure to view the [Console](/documentation/console/README.md) and [Scanners](/
 
 ## Troubleshooting
 
-In addition to loggin to the output window in the installer, logs are also written to the **Logs** directory in the same folder as the installer executable. You can review these for clues as to the cause of any issues. 20Road Support may also request these logs for any support enquiries. 
+In addition to logging to the output window in the installer, logs are also written to the **Logs** directory in the same folder as the installer executable. You can review these for clues as to the cause of any issues. 20Road Support may also request these logs for any support enquiries. 
+
+Additional troubleshooting steps can be found [here](/documentation/install/troubleshooting.md)

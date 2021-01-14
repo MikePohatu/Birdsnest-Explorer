@@ -22,6 +22,7 @@
       * [Neo4j Database Connection](#neo4j-database-connection)
       * [Full Configuration File](#full-configuration-file)
   * [Scanners](#scanners)
+  * [Troubleshooting](#troubleshooting)
 
 ## Architecture
 
@@ -350,3 +351,7 @@ The following outlines the fields to configure the connection to the Neo4j datab
 ## Scanners
 
 A list of scanners and links to documentation is maintained in the [Scanner Documentation](/documentation/scanners/README.md).
+
+## Troubleshooting
+
+Additional troubleshooting steps can be found [here](/documentation/install/troubleshooting.md)
