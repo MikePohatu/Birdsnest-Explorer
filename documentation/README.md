@@ -1,6 +1,6 @@
 # Birdsnest Explorer Reference Documentation
 
-
+* [FAQ](/documentation/faq.md "FAQ")
 * [Installation](/documentation/install/README.md "Installation")
 * [Data Ingestion & Scanners](/documentation/scanners/README.md "Scanners")
     * [Active Directory](/documentation/scanners/active-directory/README.md)
