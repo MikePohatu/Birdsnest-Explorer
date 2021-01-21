@@ -17,12 +17,12 @@
 import { bus, events } from "@/bus";
 import Vue from "vue";
 import VueRouter, { RouteConfig } from "vue-router";
-import store, { rootPaths }  from "../store";
+import store, { rootPaths } from "../store";
 import { auth } from "../assets/ts/webcrap/authcrap";
 Vue.use(VueRouter);
 
 export const routeDefs = {
-  portal: { 
+  portal: {
     name: "Portal",
     path: "/portal"
   },
@@ -31,7 +31,7 @@ export const routeDefs = {
     path: "/about"
   },
   report: {
-    name: "Report",
+    name: "Report Viewer",
     path: "/report"
   },
   reports: {
@@ -51,11 +51,11 @@ export const routeDefs = {
     path: "/login"
   },
   info: {
-    name: "Info",
+    name: "Server Information",
     path: "/info"
   },
   indexEditor: {
-    name: "IndexEditor",
+    name: "Index Editor",
     path: "/indexeditor"
   }
 }
@@ -64,6 +64,11 @@ const routes: Array<RouteConfig> = [
   {
     path: routeDefs.portal.path,
     name: routeDefs.portal.name,
+    meta: {
+      breadcrumbs: [
+        { name: routeDefs.portal.name }
+      ]
+    },
     component: () =>
       import(/* webpackChunkName: "portal" */ "../views/Portal.vue")
   },
@@ -74,6 +79,11 @@ const routes: Array<RouteConfig> = [
   {
     path: routeDefs.about.path,
     name: routeDefs.about.name,
+    meta: {
+      breadcrumbs: [
+        { name: routeDefs.about.name }
+      ]
+    },
     // route level code-splitting
     // this generates a separate chunk (about.[hash].js) for this route
     // which is lazy-loaded when the route is visited.
@@ -83,42 +93,79 @@ const routes: Array<RouteConfig> = [
   {
     path: routeDefs.reports.path,
     name: routeDefs.reports.name,
+    meta: {
+      breadcrumbs: [
+        { name: routeDefs.reports.name }
+      ]
+    },
     component: () =>
       import(/* webpackChunkName: "reports" */ "../views/Reports.vue")
   },
   {
     path: routeDefs.report.path,
     name: routeDefs.report.name,
+    meta: {
+      breadcrumbs: [
+        { name: routeDefs.reports.name, link: routeDefs.reports.path },
+        { name: routeDefs.report.name }
+      ]
+    },
     component: () =>
       import(/* webpackChunkName: "reports" */ "../views/ReportView.vue")
   },
   {
     path: routeDefs.admin.path,
     name: routeDefs.admin.name,
+    meta: {
+      breadcrumbs: [
+        { name: routeDefs.admin.name }
+      ]
+    },
     component: () =>
       import(/* webpackChunkName: "admin" */ "../views/Admin.vue")
   },
   {
     path: routeDefs.login.path,
     name: routeDefs.login.name,
+    meta: {
+      breadcrumbs: [
+        { name: routeDefs.login.name }
+      ]
+    },
     component: () =>
       import(/* webpackChunkName: "login" */ "../views/Login.vue")
   },
   {
     path: routeDefs.visualizer.path,
     name: routeDefs.visualizer.name,
+    meta: {
+      breadcrumbs: [
+        { name: routeDefs.visualizer.name }
+      ]
+    },
     component: () =>
       import(/* webpackChunkName: "visualizer" */ "../views/Visualizer.vue")
   },
   {
     path: routeDefs.info.path,
     name: routeDefs.info.name,
+    meta: {
+      breadcrumbs: [
+        { name: routeDefs.info.name }
+      ]
+    },
     component: () =>
       import(/* webpackChunkName: "portal" */ "../views/ServerInfoView.vue")
   },
   {
     path: routeDefs.indexEditor.path,
     name: routeDefs.indexEditor.name,
+    meta: {
+      breadcrumbs: [
+        { name: routeDefs.admin.name, link: routeDefs.admin.path },
+        { name: routeDefs.indexEditor.name }
+      ]
+    },
     component: () =>
       import(/* webpackChunkName: "admin" */ "../views/IndexEditorView.vue")
   }
@@ -148,7 +195,7 @@ router.beforeEach((to, from, next) => {
       }
       else {
         if (store.state.pluginManager === null || store.state.serverInfo === null) {
-          store.dispatch(rootPaths.actions.UPDATE_AUTHENTICATED_DATA); 
+          store.dispatch(rootPaths.actions.UPDATE_AUTHENTICATED_DATA);
         }
         if (to.name === routeDefs.admin.name && !store.state.user.isAdmin) {
           // eslint-disable-next-line
@@ -157,7 +204,7 @@ router.beforeEach((to, from, next) => {
           next(from);
         } else {
           next();
-        }        
+        }
       }
     })
   }

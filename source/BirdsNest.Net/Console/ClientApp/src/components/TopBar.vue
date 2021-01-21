@@ -21,23 +21,43 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 			class="title-bar portrait-bar grid-x"
 			data-responsive-toggle="full-bar"
 			data-hide-for="medium"
-			style="display: none;"
+			style="display: none"
 		>
-			<div class="cell small-2"></div>
-			<div class="cell small-8 text-center">
-				<router-link :to="routeDefs.portal.path">{{ $t('Birdsnest_Explorer') }}</router-link>
-			</div>
-			<div class="cell small-2">
-				<div class="cell auto" />
-				<div class="cell shrink">
-					<Menu />
+			<!-- <div class="cell small-2"></div> -->
+			<div id="smallcrumbs" class="cell small-9">
+				<router-link :to="routeDefs.portal.path">{{ $t("Birdsnest_Explorer") }}</router-link>
+				<div>
+					<nav aria-label="You are here:" role="navigation">
+						<ul class="breadcrumbs">
+							<li />
+							<li v-for="crumb in breadcrumbs" :key="crumb.name" class="bn-header-crumb">
+								<router-link v-if="crumb.link" :to="crumb.link" class="crumb">{{ crumb.name }}</router-link>
+								<span v-else class="crumb">{{ crumb.name }}</span>
+							</li>
+						</ul>
+					</nav>
 				</div>
+			</div>
+
+			<div class="cell auto" />
+			<div class="cell shrink">
+				<Menu />
 			</div>
 		</div>
 
 		<div class="top-bar landscape-bar" id="full-bar">
 			<div class="landscape-bar-left">
-				<router-link :to="routeDefs.portal.path">{{ $t('Birdsnest_Explorer') }}</router-link>
+				<nav aria-label="You are here:" role="navigation">
+					<ul class="breadcrumbs">
+						<li>
+							<router-link class="bn-header" :to="routeDefs.portal.path">{{ $t("Birdsnest_Explorer") }}</router-link>
+						</li>
+						<li v-for="crumb in breadcrumbs" :key="crumb.name" class="bn-header-crumb">
+							<router-link v-if="crumb.link" :to="crumb.link" class="crumb">{{ crumb.name }}</router-link>
+							<span v-else class="crumb">{{ crumb.name }}</span>
+						</li>
+					</ul>
+				</nav>
 			</div>
 			<div class="landscape-bar-right">
 				<Menu />
@@ -56,8 +76,55 @@ import { routeDefs } from "@/router/index";
 })
 export default class TopBar extends Vue {
 	routeDefs = routeDefs;
+
+	get breadcrumbs() {
+		return this.$route.meta.breadcrumbs;
+	}
 }
 </script>
+
+<style scoped>
+#smallcrumbs {
+	margin-left: 0.8em;
+	margin-top: 0.2em;
+	margin-bottom: 0.2em;
+}
+
+#smallcrumbs li {
+	padding-top: 0;
+}
+
+.bn-header {
+	font-size: 16px;
+	text-transform: none;
+}
+
+#smallcrumbs .bn-header {
+	font-size: 14px;
+}
+
+.crumb {
+	color: white;
+	font-size: 0.75rem;
+	font-weight: 500;
+}
+
+.bn-header-crumb {
+	padding-top: 0.4em;
+}
+
+ul {
+	margin-bottom: 0;
+}
+
+.breadcrumbs li {
+	text-transform: none;
+}
+
+.breadcrumbs a:hover {
+	text-decoration: none;
+}
+</style>
 
 <style>
 .menu a {
