@@ -12,6 +12,7 @@
     <Product>BirdsNest</Product>
     <Copyright>20Road Limited 2020</Copyright>
     <AspNetCoreHostingModel>OutOfProcess</AspNetCoreHostingModel>
+    <Version>1.0.1</Version>
   </PropertyGroup>
 
   <ItemGroup>
