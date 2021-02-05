@@ -46,6 +46,16 @@ namespace AzureADScanner
         [JsonProperty("Secret")]
         public string Secret { get; set; }
 
+        /// <summary>
+        /// The number of times a request can retry due to error (not including throttling)
+        /// </summary>
+        [JsonProperty("RetryCount")]
+        public int RetryCount { get; set; } = 5;
+
+        [JsonProperty("ThrottlingRetryCount")]
+        public int ThrottlingRetryCount { get; set; } = 5;
+
+
         public static Configuration LoadConfiguration(string filepath)
         {
             Configuration conf;
@@ -60,6 +70,7 @@ namespace AzureADScanner
         public void Dispose()
         {
             this.ID = string.Empty;
+            this.Secret = string.Empty;
         }
     }
 }

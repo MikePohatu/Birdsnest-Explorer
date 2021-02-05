@@ -27,7 +27,7 @@ using System.Threading.Tasks;
 
 namespace AzureADScanner.Azure
 {
-    public class AadGroups: IDataCollector
+    public class AadGroups: IDataCollectorAsync
     {
         public string ProgressMessage { get { return "Creating group nodes: "; } }
         public List<string> GroupIDs { get; private set; } = new List<string>();
@@ -51,12 +51,17 @@ namespace AzureADScanner.Azure
 
         public NeoQueryData CollectData()
         {
+            return this.CollectDataAsync().Result;
+        }
+
+        public async Task<NeoQueryData> CollectDataAsync()
+        {
             NeoQueryData querydata = new NeoQueryData();
             List<object> propertylist = new List<object>();
 
             try
             {
-                IGraphServiceGroupsCollectionPage page = Connector.Instance.Client.Groups.Request().GetAsync().Result;
+                IGraphServiceGroupsCollectionPage page = await Connector.Instance.Client.Groups.Request().GetAsync();
 
                 while (page != null)
                 {
@@ -73,7 +78,7 @@ namespace AzureADScanner.Azure
                         this.GroupIDs.Add(group.Id);
                     }
 
-                    page = page.NextPageRequest?.GetAsync().Result;
+                    page = await page.NextPageRequest?.GetAsync();
                 }
 
                 

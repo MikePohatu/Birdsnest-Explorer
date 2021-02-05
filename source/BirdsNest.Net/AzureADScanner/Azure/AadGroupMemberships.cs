@@ -29,7 +29,7 @@ using Newtonsoft.Json;
 
 namespace AzureADScanner.Azure
 {
-    public class AadGroupMemberships: IDataCollector
+    public class AadGroupMemberships: IDataCollectorAsync
     {
         public List<string> GroupIDs { get; set; }
 
@@ -49,6 +49,11 @@ namespace AzureADScanner.Azure
         }
 
         public NeoQueryData CollectData()
+        {
+            return this.CollectDataAsync().Result;
+        }
+
+        public async Task<NeoQueryData> CollectDataAsync()
         {
             NeoQueryData querydata = new NeoQueryData();
             Dictionary<string, string> idmappings = new Dictionary<string, string>();  //mapping dictionary for which groupid is associated with which request id
@@ -74,7 +79,7 @@ namespace AzureADScanner.Azure
                         batchRequestContent.AddBatchRequestStep(new BatchRequestStep(requestid, httpRequestMessage1, null));
                     }
 
-                    List<object> newprops = MakeBatchRequest(httpClient, batchRequestContent, idmappings);
+                    List<object> newprops = await this.MakeBatchRequest(batchRequestContent, idmappings);
                     propertylist.AddRange(newprops);
                 }
             }
@@ -83,42 +88,41 @@ namespace AzureADScanner.Azure
             return querydata;
         }
 
-        private List<object> MakeBatchRequest(HttpClient httpClient, BatchRequestContent batchRequestContent, Dictionary<string, string> idmappings)
+        private async Task<List<object>> MakeBatchRequest(BatchRequestContent batchRequestContent, Dictionary<string, string> idmappings)
         {
             List<object> propertylist = new List<object>();
 
-            //make the batch request
-            string requesturl = Connector.Instance.RootUrl + "/$batch";
-            while (string.IsNullOrWhiteSpace(requesturl) == false)
+            using (HttpClient httpClient = await Connector.Instance.GetHttpClientWithToken())
             {
-                HttpResponseMessage response = httpClient.PostAsync(requesturl, batchRequestContent).Result;
-                BatchResponseContent batchResponseContent = new BatchResponseContent(response);
-                Dictionary<string, HttpResponseMessage> responses = batchResponseContent.GetResponsesAsync().Result;
-
-                foreach (string key in responses.Keys)
+                await Connector.Instance.MakeBatchRequest(httpClient, batchRequestContent, (Dictionary<string, HttpResponseMessage> responses) =>
                 {
-                    string groupid;
-                    if (idmappings.TryGetValue(key, out groupid))
+                    foreach (string key in responses.Keys)
                     {
-                        HttpResponseMessage httpResponseMsg;
-
-                        if (responses.TryGetValue(key, out httpResponseMsg))
+                        string groupid;
+                        if (idmappings.TryGetValue(key, out groupid))
                         {
-                            string rawdata = httpResponseMsg.Content.ReadAsStringAsync().Result;
-                            BatchRequestResponseSimple simpleresponse = JsonConvert.DeserializeObject<BatchRequestResponseSimple>(rawdata);
-                            foreach (BatchRequestResponseValueSimple val in simpleresponse.Values)
+                            HttpResponseMessage httpResponseMsg;
+
+                            if (responses.TryGetValue(key, out httpResponseMsg))
                             {
-                                propertylist.Add(new
+                                string rawdata = httpResponseMsg.Content.ReadAsStringAsync().Result;
+                                BatchRequestResponseSimple simpleresponse = JsonConvert.DeserializeObject<BatchRequestResponseSimple>(rawdata);
+                                foreach (BatchRequestResponseValueSimple val in simpleresponse.Values)
                                 {
-                                    groupid = groupid,
-                                    memberid = val.ID
-                                });
+                                    propertylist.Add(new
+                                    {
+                                        groupid = groupid,
+                                        memberid = val.ID
+                                    });
+                                }
                             }
                         }
                     }
-                }
-                requesturl = batchResponseContent.GetNextLinkAsync().Result;
+
+                    return 1;
+                });
             }
+            
 
             return propertylist;
         }

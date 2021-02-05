@@ -82,8 +82,7 @@ namespace AzureADScanner
                     Console.WriteLine("Loading config for scanner: " + scannerid);
 
                     scannerid = config.ScannerID;
-                    string rooturl = config.RootURL + "/" + config.Version;
-                    Connector.Instance.Init(config.ID, config.Secret, config.Tenant, rooturl);
+                    Connector.Instance.Init(config);
                 }
             }
             catch (Exception e)
@@ -117,7 +116,7 @@ namespace AzureADScanner
             var aadgroupmembers = new AadGroupMemberships();
             aadgroupmembers.GroupIDs = aadgroups.GroupIDs;
 
-            List <IDataCollector> collectors = new List<IDataCollector>
+            List <IDataCollectorAsync> collectors = new List<IDataCollectorAsync>
             {
                 new AadUsers(),
                 new AadUserToAdUserConnections(),
@@ -127,12 +126,20 @@ namespace AzureADScanner
 
             NeoWriter.WriteHeaders();
 
-            foreach (IDataCollector collector in collectors)
+            foreach (IDataCollectorAsync collector in collectors)
             {
-                NeoQueryData collectionsdata = collector.CollectData();
-                collectionsdata.ScanID = scanid;
-                collectionsdata.ScannerID = scannerid;
-                NeoWriter.WriteIDataCollector(collector, driver, true, true);
+                try
+                {
+                    NeoQueryData collectionsdata = collector.CollectDataAsync().Result;
+                    collectionsdata.ScanID = scanid;
+                    collectionsdata.ScannerID = scannerid;
+                    NeoWriter.WriteIDataCollector(collector, driver, true, true);
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine("There was an error collecting data for " + collector.GetType());
+                    Console.WriteLine(e.Message);
+                }
             }
 
 

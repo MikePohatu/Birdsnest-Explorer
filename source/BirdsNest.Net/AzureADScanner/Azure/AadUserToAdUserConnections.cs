@@ -27,7 +27,7 @@ using System.Threading.Tasks;
 
 namespace AzureADScanner.Azure
 {
-    public class AadUserToAdUserConnections : IDataCollector
+    public class AadUserToAdUserConnections : IDataCollectorAsync
     {
         public string ProgressMessage { get { return "Creating AD user to AAD user connections: "; } }
         public string Query
@@ -50,6 +50,16 @@ namespace AzureADScanner.Azure
             NeoQueryData querydata = new NeoQueryData();
             List<object> propertylist = new List<object>();
             querydata.Properties = propertylist;
+            return querydata;
+        }
+
+        public async Task<NeoQueryData> CollectDataAsync()
+        {
+            NeoQueryData querydata = await Task.Run(() =>
+            {
+                return this.CollectData();
+            });
+
             return querydata;
         }
     }

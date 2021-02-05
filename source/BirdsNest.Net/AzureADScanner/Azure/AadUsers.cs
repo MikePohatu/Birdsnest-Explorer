@@ -27,7 +27,7 @@ using System.Threading.Tasks;
 
 namespace AzureADScanner.Azure
 {
-    public class AadUsers: IDataCollector
+    public class AadUsers: IDataCollectorAsync
     {
         public string ProgressMessage { get { return "Creating user nodes: "; } }
         public string Query
@@ -48,32 +48,44 @@ namespace AzureADScanner.Azure
 
         public NeoQueryData CollectData()
         {
+            return this.CollectDataAsync().Result;
+        }
+
+        public async Task<NeoQueryData> CollectDataAsync()
+        {
             NeoQueryData querydata = new NeoQueryData();
             List<object> propertylist = new List<object>();
 
-            try
+            IGraphServiceUsersCollectionRequest request = Connector.Instance.Client.Users.Request();
+            request.Top(999);
+
+            IGraphServiceUsersCollectionPage page = null;
+
+            await Connector.Instance.MakeGraphClientRequestAsync(async () =>
             {
-                IGraphServiceUsersCollectionPage page = Connector.Instance.Client.Users.Request().GetAsync().Result;
+                page = await request.GetAsync();
+            });
 
-                while (page != null)
+            while (page != null)
+            {
+                foreach (User user in page.CurrentPage)
                 {
-                    foreach (User user in page.CurrentPage)
+                    propertylist.Add(new
                     {
-                        propertylist.Add(new
-                        {
-                            ID = user.Id,
-                            Enabled = user.AccountEnabled,
-                            UPN = user.UserPrincipalName,
-                            Name = user.DisplayName
-                        });
-                    }
-
-                    page = page.NextPageRequest?.GetAsync().Result;
+                        ID = user.Id,
+                        Enabled = user.AccountEnabled,
+                        UPN = user.UserPrincipalName,
+                        Name = user.DisplayName
+                    });
                 }
 
+                if (page.NextPageRequest == null) { break; }
                 
+                await Connector.Instance.MakeGraphClientRequestAsync(async () =>
+                {
+                    page = await page.NextPageRequest.GetAsync();
+                });
             }
-            catch { }
 
             querydata.Properties = propertylist;
             return querydata;

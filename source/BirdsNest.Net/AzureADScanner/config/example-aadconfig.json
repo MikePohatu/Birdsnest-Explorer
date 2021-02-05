@@ -2,6 +2,9 @@
   "ScannerID": "aad_scanner1",
   "Tenant": "domain.com",
   "ID": "xxxxxx",
+  "Secret": "xxxxxx",
   "RootURL": "https://graph.microsoft.com",
-  "Version": "v1.0"
+  "Version": "v1.0",
+  "RetryCount": 5,
+  "ThrottlingRetryCount": 5
 }

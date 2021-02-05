@@ -49,6 +49,7 @@
   <ItemGroup>
     <Compile Include="ConsoleWriter.cs" />
     <Compile Include="Credential.cs" />
+    <Compile Include="IDataCollectorAsync.cs" />
     <Compile Include="IDataCollector.cs" />
     <Compile Include="NeoConfiguration.cs" />
     <Compile Include="ListExtensions.cs" />
