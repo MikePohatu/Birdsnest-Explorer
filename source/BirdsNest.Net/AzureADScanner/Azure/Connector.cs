@@ -100,51 +100,30 @@ namespace AzureADScanner.Azure
 
         public async Task<HttpResponseMessage> PostAsync(HttpClient httpClient, string url, HttpContent content)
         {
-            HttpResponseMessage response;
-            HttpResponseMessage finalresponse = null;
-                
-            while (this._throttlingretrycount < this._maxthrottlingretry && this._retrycount < this._maxretrycount && finalresponse == null)
-            {
-                response = await httpClient.PostAsync(url, content);
+            string errorMessage = "Error with POST to URL: " + url;
 
-                if(response.StatusCode == HttpStatusCode.OK)
-                {
-                    finalresponse = response;
-                    this._retrycount = 0;
-                    this._throttlingretrycount = 0;
-                }
-                else if (response.StatusCode == HttpStatusCode.TooManyRequests)
-                {
-                    this._throttlingretrycount++;
-                    await this.ResponseDelayAsync(response.Headers.RetryAfter.Delta);
-                }
-                // FailedDependency can occur if one of the responses includes a 429
-                else if (response.StatusCode == HttpStatusCode.FailedDependency)
-                {
-                    this._throttlingretrycount++;
-                    await this.ResponseDelayAsync(response.Headers.RetryAfter.Delta);
-                }
-                else
-                {
-                    this._retrycount++;
-                    Console.WriteLine("Error with POST to URL: " + url);
-                    Console.WriteLine(response.ReasonPhrase);
-                }
-            }
-
-            return finalresponse;
+            return await this.ProcessHttpMethodAsync(async () => {
+                return await httpClient.PostAsync(url, content); ;
+            }, errorMessage);
         }
 
         public async Task<HttpResponseMessage> GetAsync(HttpClient httpClient, string url)
         {
+            string errorMessage = "Error with GET to URL: " + url;
+
+            return await this.ProcessHttpMethodAsync(async () => {
+                return await httpClient.GetAsync(url);
+            }, errorMessage);
+        }
+
+        private async Task<HttpResponseMessage> ProcessHttpMethodAsync(Func<Task<HttpResponseMessage>> httpFunctionAsync, string errorMessage)
+        {
             HttpResponseMessage response;
             HttpResponseMessage finalresponse = null;
-            int throttled = 0;
-            int retried = 0;
 
-            while (throttled < this._maxthrottlingretry && retried < this._maxretrycount && finalresponse == null)
+            while (finalresponse == null)
             {
-                response = await httpClient.GetAsync(url);
+                response = await httpFunctionAsync();
 
                 if (response.StatusCode == HttpStatusCode.OK)
                 {
@@ -154,20 +133,39 @@ namespace AzureADScanner.Azure
                 }
                 else if (response.StatusCode == HttpStatusCode.TooManyRequests)
                 {
-                    throttled++;
+                    if (this._throttlingretrycount >= this._maxthrottlingretry)
+                    {
+                        Console.WriteLine("Throttling retry limit hit. Aborting operation");
+                        break;
+                    }
+                    this._throttlingretrycount++;
                     await this.ResponseDelayAsync(response.Headers.RetryAfter.Delta);
                 }
                 else
                 {
-                    retried++;
-                    Console.WriteLine("Error with GET to URL: " + url);
+                    Console.WriteLine(errorMessage);
                     Console.WriteLine(response.ReasonPhrase);
+
+                    if (this._retrycount >= this._maxretrycount)
+                    {
+                        Console.WriteLine("Retry limit hit. Aborting operation");
+                        break;
+                    }
+                    this._retrycount++;
                 }
             }
 
             return finalresponse;
         }
 
+        /// <summary>
+        /// Make a GraphAPI batch request, optionally passing in a function to process the returned Dictionary<string, HttpResponseMessage>. This method will dispose all HttpResponseMessage
+        /// before returning
+        /// </summary>
+        /// <param name="httpClient"></param>
+        /// <param name="content"></param>
+        /// <param name="asyncresponsehandler"></param>
+        /// <returns></returns>
         public async Task<BatchResponseContent> MakeBatchRequest(HttpClient httpClient, BatchRequestContent content, Func<Dictionary<string, HttpResponseMessage>, Task> asyncresponsehandler)
         {
             //make the batch request
@@ -185,6 +183,10 @@ namespace AzureADScanner.Azure
                     await asyncresponsehandler(responses);
                 }
 
+                foreach (HttpResponseMessage message in responses.Values)
+                {
+                    message.Dispose();
+                }
                 requesturl = await batchResponseContent.GetNextLinkAsync();
             }
 

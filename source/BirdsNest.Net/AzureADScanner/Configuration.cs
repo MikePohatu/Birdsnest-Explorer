@@ -52,6 +52,9 @@ namespace AzureADScanner
         [JsonProperty("RetryCount")]
         public int RetryCount { get; set; } = 5;
 
+        /// <summary>
+        /// The number of times a request can retry due to throttling
+        /// </summary>
         [JsonProperty("ThrottlingRetryCount")]
         public int ThrottlingRetryCount { get; set; } = 5;
 
