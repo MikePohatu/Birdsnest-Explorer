@@ -23,6 +23,7 @@ using System;
 using System.Collections.Generic;
 using System.Net;
 using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -33,12 +34,26 @@ namespace AzureADScanner.Azure
         private static Connector _instance;
         private string[] _scopes = { ".default" };
         private IConfidentialClientApplication _app;
-        private int _retrycount = 5;
+
+        /// <summary>
+        /// The number of times a request can retried
+        /// </summary>
+        private int _maxretrycount = 5;
+
+        /// <summary>
+        /// The current number of times retry has occured. Reset after successful request
+        /// </summary>
+        private int _retrycount = 0;
 
         /// <summary>
         /// The number of times a request can retry due to throttling
         /// </summary>
-        private int _throttlingretry = 5;
+        private int _maxthrottlingretry = 5;
+
+        /// <summary>
+        /// The current number of times retry has occured following throttling. Reset after successful request
+        /// </summary>
+        private int _throttlingretrycount = 0;
 
         public string RootUrl { get; private set; }
 
@@ -61,8 +76,8 @@ namespace AzureADScanner.Azure
         {
             this.RootUrl = config.RootURL + "/" + config.Version;
             string loginroot = "https://login.microsoftonline.com/";
-            this._retrycount = config.RetryCount;
-            this._throttlingretry = config.ThrottlingRetryCount;
+            this._maxretrycount = config.RetryCount;
+            this._maxthrottlingretry = config.ThrottlingRetryCount;
 
             this._app = ConfidentialClientApplicationBuilder.Create(config.ID).WithClientSecret(config.Secret).WithAuthority(new Uri(loginroot + config.Tenant)).Build();
             ClientCredentialProvider authenticationProvider = new ClientCredentialProvider(this._app);
@@ -83,50 +98,35 @@ namespace AzureADScanner.Azure
             return httpClient;
         }
 
-        public async Task<BatchResponseContent> MakeBatchRequest(HttpClient httpClient, BatchRequestContent content, Func<Dictionary<string, HttpResponseMessage>, int> responsehandler)
-        {
-            //make the batch request
-            string requesturl = Connector.Instance.RootUrl + "/$batch";
-            BatchResponseContent batchResponseContent = null;
-
-            while (string.IsNullOrWhiteSpace(requesturl) == false)
-            {
-                HttpResponseMessage response = await this.PostAsync(httpClient, requesturl, content);
-                batchResponseContent = new BatchResponseContent(response);
-
-                Dictionary<string, HttpResponseMessage> responses = await batchResponseContent.GetResponsesAsync();
-
-                if (responsehandler != null) { responsehandler(responses); }
-
-                requesturl = await batchResponseContent.GetNextLinkAsync();
-            }
-
-            return batchResponseContent;
-        }
-
         public async Task<HttpResponseMessage> PostAsync(HttpClient httpClient, string url, HttpContent content)
         {
             HttpResponseMessage response;
             HttpResponseMessage finalresponse = null;
-            int throttled = 0;
-            int retried = 0;
                 
-            while (throttled < this._throttlingretry && retried < this._retrycount && finalresponse == null)
+            while (this._throttlingretrycount < this._maxthrottlingretry && this._retrycount < this._maxretrycount && finalresponse == null)
             {
                 response = await httpClient.PostAsync(url, content);
 
                 if(response.StatusCode == HttpStatusCode.OK)
                 {
                     finalresponse = response;
+                    this._retrycount = 0;
+                    this._throttlingretrycount = 0;
                 }
                 else if (response.StatusCode == HttpStatusCode.TooManyRequests)
                 {
-                    throttled++;
-                    await this.ResponseDelayAsync(response);
+                    this._throttlingretrycount++;
+                    await this.ResponseDelayAsync(response.Headers.RetryAfter.Delta);
+                }
+                // FailedDependency can occur if one of the responses includes a 429
+                else if (response.StatusCode == HttpStatusCode.FailedDependency)
+                {
+                    this._throttlingretrycount++;
+                    await this.ResponseDelayAsync(response.Headers.RetryAfter.Delta);
                 }
                 else
                 {
-                    retried++;
+                    this._retrycount++;
                     Console.WriteLine("Error with POST to URL: " + url);
                     Console.WriteLine(response.ReasonPhrase);
                 }
@@ -142,18 +142,20 @@ namespace AzureADScanner.Azure
             int throttled = 0;
             int retried = 0;
 
-            while (throttled < this._throttlingretry && retried < this._retrycount && finalresponse == null)
+            while (throttled < this._maxthrottlingretry && retried < this._maxretrycount && finalresponse == null)
             {
                 response = await httpClient.GetAsync(url);
 
                 if (response.StatusCode == HttpStatusCode.OK)
                 {
                     finalresponse = response;
+                    this._retrycount = 0;
+                    this._throttlingretrycount = 0;
                 }
                 else if (response.StatusCode == HttpStatusCode.TooManyRequests)
                 {
                     throttled++;
-                    await this.ResponseDelayAsync(response);
+                    await this.ResponseDelayAsync(response.Headers.RetryAfter.Delta);
                 }
                 else
                 {
@@ -166,51 +168,83 @@ namespace AzureADScanner.Azure
             return finalresponse;
         }
 
+        public async Task<BatchResponseContent> MakeBatchRequest(HttpClient httpClient, BatchRequestContent content, Func<Dictionary<string, HttpResponseMessage>, Task> asyncresponsehandler)
+        {
+            //make the batch request
+            string requesturl = Connector.Instance.RootUrl + "/$batch";
+            BatchResponseContent batchResponseContent = null;
+
+            while (string.IsNullOrWhiteSpace(requesturl) == false)
+            {
+                HttpResponseMessage response = await this.PostAsync(httpClient, requesturl, content);
+                batchResponseContent = new BatchResponseContent(response);
+
+                Dictionary<string, HttpResponseMessage> responses = await batchResponseContent.GetResponsesAsync();
+
+                if (asyncresponsehandler != null) {
+                    await asyncresponsehandler(responses);
+                }
+
+                requesturl = await batchResponseContent.GetNextLinkAsync();
+            }
+
+            return batchResponseContent;
+        }
+
         public async Task MakeGraphClientRequestAsync(Func<Task> asyncRequest)
         {
             if (asyncRequest == null) { throw new ArgumentNullException(); }
 
-            int retrycount = 0;
-            int throttleretry = 0;
-
-            while (retrycount < this._retrycount && throttleretry < this._throttlingretry)
+            while (this._retrycount < this._maxretrycount && this._throttlingretrycount < this._maxthrottlingretry)
             {
                 try
                 {
                     await asyncRequest();
+                    this._retrycount = 0;
+                    this._throttlingretrycount = 0;
                     break;
                 }
                 catch (ServiceException e)
                 {
-                    if (e.IsMatch(GraphErrorCode.ActivityLimitReached.ToString()) || e.IsMatch(GraphErrorCode.ThrottledRequest.ToString()))
+                    switch (e.StatusCode)
                     {
-                        if (throttleretry >= this._throttlingretry)
-                        {
-                            Console.WriteLine("Throttling retry limit hit. Aborting operation");
+                        case HttpStatusCode.TooManyRequests:
+                            if (this._throttlingretrycount >= this._maxthrottlingretry)
+                            {
+                                Console.WriteLine("Throttling retry limit hit. Aborting operation");
+                                break;
+                            }
+                            Console.Write("#");
+                            Console.WriteLine(e.RawResponseBody);
+                            RetryConditionHeaderValue retry = e.ResponseHeaders.RetryAfter;
+                            await this.ResponseDelayAsync(retry?.Delta);
+
+                            this._throttlingretrycount++;
                             break;
-                        }
-                        await Task.Delay(10000);
-                        throttleretry++;
-                    }
-                    else
-                    {
-                        if (retrycount >= this._retrycount)
-                        {
-                            Console.WriteLine("Retry limit hit. Aborting operation");
-                            Console.WriteLine(e.Message);
+                        case HttpStatusCode.FailedDependency:
                             break;
-                        }
-                        
-                        if (e.IsMatch(GraphErrorCode.ServiceNotAvailable.ToString()))
-                        {
-                            retrycount++;
-                            await Task.Delay(10000);
-                        }
-                        else
-                        {
-                            Console.WriteLine("Graph client error: " + e.Message);
+                        default:
+                            if (this._retrycount >= this._maxretrycount)
+                            {
+                                Console.WriteLine("Graph client error: " + e.Message);
+                                Console.WriteLine("Retry limit hit. Aborting operation");
+                                Console.WriteLine(e.Message);
+                                break;
+                            }
+
+                            if (e.StatusCode == HttpStatusCode.ServiceUnavailable)
+                            {
+                                Console.WriteLine("Service unavailable. Will retry in 60 seconds");
+                                this._retrycount++;
+                                await Task.Delay(60000);
+                            }
+                            else
+                            {
+                                Console.WriteLine("Graph client error: " + e.Message);
+                                break;
+                            }
                             break;
-                        }
+
                     }
                 }
                 catch (Exception e)
@@ -221,15 +255,16 @@ namespace AzureADScanner.Azure
             }
         }
 
-        private async Task ResponseDelayAsync(HttpResponseMessage response)
+        private async Task ResponseDelayAsync(TimeSpan? retryseconds)
         {
-            TimeSpan? retryseconds = response.Headers.RetryAfter.Delta;
             if (retryseconds == null)
             {
-                //retry in 60 seconds as a default
-                retryseconds = new TimeSpan(0, 0, 60);
+                //retry in 60 seconds as a default times number of retries (plus 1 to stop 0 second delays)
+                retryseconds = new TimeSpan(0, 0, 60 * (this._throttlingretrycount + 1) * (this._retrycount + 1));
             }
-            int delay = retryseconds.GetValueOrDefault().Milliseconds;
+
+            // set the delay to the suggested back off plus a second to give a little buffer
+            int delay = retryseconds.GetValueOrDefault().Milliseconds + 1000;
 
             Console.WriteLine("Throttling limits hit. Backing off for " + delay + " milliseconds");
             await Task.Delay(delay);

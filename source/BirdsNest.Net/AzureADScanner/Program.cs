@@ -118,6 +118,7 @@ namespace AzureADScanner
 
             List <IDataCollectorAsync> collectors = new List<IDataCollectorAsync>
             {
+                //new AadTeams(),
                 new AadUsers(),
                 new AadUserToAdUserConnections(),
                 aadgroups,

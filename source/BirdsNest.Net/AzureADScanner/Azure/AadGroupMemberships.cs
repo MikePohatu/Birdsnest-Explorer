@@ -56,45 +56,51 @@ namespace AzureADScanner.Azure
         public async Task<NeoQueryData> CollectDataAsync()
         {
             NeoQueryData querydata = new NeoQueryData();
-            Dictionary<string, string> idmappings = new Dictionary<string, string>();  //mapping dictionary for which groupid is associated with which request id
-            List<object> propertylist = new List<object>();
-            int requestcount = 0;
-
-            using (HttpClient httpClient = new HttpClient())
+            if (this.GroupIDs?.Count > 0)
             {
-                httpClient.DefaultRequestHeaders.Add("Authorization", "Bearer " + Connector.Instance.GetToken().Result);
+                Dictionary<string, string> idmappings = new Dictionary<string, string>();  //mapping dictionary for which groupid is associated with which request id
+                List<object> propertylist = new List<object>();
+                int requestcount = 0;
 
-                while (this.GroupIDs?.Count > 0)
+                var enumerator = this.GroupIDs.GetEnumerator();
+                BatchRequestContent batchRequestContent;
+
+                while (enumerator.MoveNext())
                 {
+                    batchRequestContent = new BatchRequestContent();
+
                     //create the 20 batch requests
-                    BatchRequestContent batchRequestContent = new BatchRequestContent();
-                    List<string> batchIDs = ListExtensions.ListPop<string>(this.GroupIDs, 20);
-                    foreach (string groupid in batchIDs)
+                    for (int i = 0; i < 20; i++)
                     {
-                        requestcount++;
+                        string groupid = enumerator.Current;
                         string requestid = requestcount.ToString();
                         idmappings.Add(requestid, groupid);
+                        HttpRequestMessage requestmessage = new HttpRequestMessage(HttpMethod.Get, Connector.Instance.RootUrl + "/groups/" + groupid + "/members?$select=id");
+                        batchRequestContent.AddBatchRequestStep(new BatchRequestStep(requestid, requestmessage, null));
 
-                        HttpRequestMessage httpRequestMessage1 = new HttpRequestMessage(HttpMethod.Get, Connector.Instance.RootUrl + "/groups/" + groupid + "/members?$select=id");
-                        batchRequestContent.AddBatchRequestStep(new BatchRequestStep(requestid, httpRequestMessage1, null));
-                    }
+                        requestcount++;
 
-                    List<object> newprops = await this.MakeBatchRequest(batchRequestContent, idmappings);
+                        if (enumerator.MoveNext() == false) { break; }
+                    } 
+
+                    // now make the request
+                    List<object> newprops = await this.ProcessBatch(batchRequestContent, idmappings);
                     propertylist.AddRange(newprops);
-                }
-            }
+                } 
 
-            querydata.Properties = propertylist;
+                querydata.Properties = propertylist;
+            }
+            
             return querydata;
         }
 
-        private async Task<List<object>> MakeBatchRequest(BatchRequestContent batchRequestContent, Dictionary<string, string> idmappings)
+        private async Task<List<object>> ProcessBatch(BatchRequestContent batchRequestContent, Dictionary<string, string> idmappings)
         {
             List<object> propertylist = new List<object>();
 
             using (HttpClient httpClient = await Connector.Instance.GetHttpClientWithToken())
             {
-                await Connector.Instance.MakeBatchRequest(httpClient, batchRequestContent, (Dictionary<string, HttpResponseMessage> responses) =>
+                await Connector.Instance.MakeBatchRequest(httpClient, batchRequestContent, async (Dictionary<string, HttpResponseMessage> responses) =>
                 {
                     foreach (string key in responses.Keys)
                     {
@@ -105,7 +111,7 @@ namespace AzureADScanner.Azure
 
                             if (responses.TryGetValue(key, out httpResponseMsg))
                             {
-                                string rawdata = httpResponseMsg.Content.ReadAsStringAsync().Result;
+                                string rawdata = await httpResponseMsg.Content.ReadAsStringAsync();
                                 BatchRequestResponseSimple simpleresponse = JsonConvert.DeserializeObject<BatchRequestResponseSimple>(rawdata);
                                 foreach (BatchRequestResponseValueSimple val in simpleresponse.Values)
                                 {
@@ -118,8 +124,6 @@ namespace AzureADScanner.Azure
                             }
                         }
                     }
-
-                    return 1;
                 });
             }
             
