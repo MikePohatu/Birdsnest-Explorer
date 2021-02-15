@@ -56,6 +56,11 @@ namespace common
                 data.ScanID = NeoWriter.ScanID;
             }
 
+            if (string.IsNullOrWhiteSpace(data.ScannerID))
+            {
+                data.ScannerID = NeoWriter.ScannerID;
+            }
+
             if (data.Properties != null)
             {
                 while (data.Properties.Count > 1000)
@@ -131,8 +136,6 @@ namespace common
         public static List<IResultSummary> WriteIDataCollector(IDataCollector collector, IDriver driver, bool showprogressdots)
         {
             NeoQueryData collectionsdata = collector.CollectData();
-            collectionsdata.ScanID = NeoWriter.ScanID;
-            collectionsdata.ScannerID = NeoWriter.ScannerID;
             List<IResultSummary> summaries = NeoWriter.RunQuery(collector.Query, collectionsdata, driver, showprogressdots);
             return summaries;
         }
@@ -146,8 +149,6 @@ namespace common
         {
             ConsoleWriter.Write(collector.ProgressMessage);
             NeoQueryData collectionsdata = collector.CollectData();
-            collectionsdata.ScanID = NeoWriter.ScanID;
-            collectionsdata.ScannerID = NeoWriter.ScannerID;
             List<IResultSummary> summaries = NeoWriter.RunQuery(collector.Query, collectionsdata, driver, showstats, showprogressdots);
             return summaries;
         }
