@@ -1,4 +1,4 @@
-#region license
+﻿#region license
 // Copyright (c) 2019-2020 "20Road"
 // 20Road Limited [https://www.20road.com]
 //
@@ -132,9 +132,6 @@ namespace AzureADScanner
             {
                 try
                 {
-                    NeoQueryData collectionsdata = collector.CollectDataAsync().Result;
-                    collectionsdata.ScanID = scanid;
-                    collectionsdata.ScannerID = scannerid;
                     NeoWriter.WriteIDataCollector(collector, driver, true, true);
                 }
                 catch (Exception e)

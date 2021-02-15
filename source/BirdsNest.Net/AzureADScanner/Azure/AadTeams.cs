@@ -35,7 +35,7 @@ namespace AzureADScanner.Azure
             get
             {
                 return "UNWIND $Properties AS prop " +
-                "MERGE (n:" + Types.AaTeam + " { id:prop.ID}) " +
+                "MERGE (n:" + Types.AadTeam + " { id:prop.ID}) " +
                 "SET n:" + Types.AadObject + " " +
                 "SET n.name = prop.Name " +
                 "SET n.description = prop.Description " +

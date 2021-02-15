@@ -1,4 +1,4 @@
-#region license
+﻿#region license
 // Copyright (c) 2019-2020 "20Road"
 // 20Road Limited [https://www.20road.com]
 //
@@ -69,7 +69,7 @@ namespace common
         public static string AadUser { get { return "AAD_User"; } }
         public static string AadGroup { get { return "AAD_Group"; } }
         public static string AadObject { get { return "AAD_Object"; } }
-        public static string AaTeam { get { return "AAD_Team"; } }
+        public static string AadTeam { get { return "AAD_Team"; } }
         public static string AadSite { get { return "AAD_Site"; } }
 
         //AzureAD edges
