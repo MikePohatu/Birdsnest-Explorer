@@ -1,4 +1,4 @@
-﻿#region license
+#region license
 // Copyright (c) 2019-2020 "20Road"
 // 20Road Limited [https://www.20road.com]
 //
@@ -82,6 +82,7 @@ namespace AzureADScanner
                     Console.WriteLine("Loading config for scanner: " + scannerid);
 
                     scannerid = config.ScannerID;
+                    NeoWriter.ScannerID = scannerid;
                     Connector.Instance.Init(config);
                 }
             }
@@ -118,7 +119,7 @@ namespace AzureADScanner
 
             List <IDataCollectorAsync> collectors = new List<IDataCollectorAsync>
             {
-                //new AadTeams(),
+                new AadSites(),
                 new AadUsers(),
                 new AadUserToAdUserConnections(),
                 aadgroups,
