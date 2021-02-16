@@ -45,12 +45,17 @@ namespace AzureADScanner.Azure
                 "SET n:" + Types.AadObject + " " +
                 "SET n.name = prop.Name " +
                 "SET n.description = prop.Description " +
+                "SET n.dynamic = prop.Dynamic " +
                 "SET n.mail = prop.Mail " +
                 "SET n.mailenabled = prop.MailEnabled " +
                 "SET n.type = prop.Type " +
+                "SET n.onpremisessid = prop.OnPremSid " +
                 "SET n.lastscan=$ScanID " +
                 "SET n.scannerid=$ScannerID " +
                 "SET n.layout='mesh' " +
+                "WITH n " +
+                "MATCH (adgroup:" + Types.Group + " {id: n.onpremisessid}) " +
+                "MERGE (n)-[:" + Types.AadSync + "]->(adgroup) " +
                 "RETURN n.name";
             }
         }
@@ -73,26 +78,35 @@ namespace AzureADScanner.Azure
                 {
                     foreach (Group group in page.CurrentPage)
                     {
-                        string grouptype = "Security";
+                        string grouptype = group.SecurityEnabled.Value ? "Security" : "Distribution";
+                        bool dynamic = false;
 
                         foreach (string type in group.GroupTypes)
                         {
-                            if (type == "Unified")
+                            switch (type)
                             {
-                                this.O365GroupIDs.Add(group.Id);
-                                grouptype = "Microsoft 365";
-                                break;
+                                case "DynamicMembership":
+                                    dynamic = true;
+                                    break;
+                                case "Unified":
+                                    this.O365GroupIDs.Add(group.Id);
+                                    grouptype = "Microsoft365";
+                                    break;
+                                default:
+                                    break;
                             }
                         }
 
                         propertylist.Add(new
                         {
                             ID = group.Id,
+                            Dynamic = dynamic,
                             Name = group.DisplayName,
                             Description = group.Description,
                             MailEnabled = group.MailEnabled,
                             Mail = group.Mail,
-                            Type = grouptype
+                            Type = grouptype,
+                            OnPremSid = group.OnPremisesSecurityIdentifier
                         });
 
                         this.GroupIDs.Add(group.Id);

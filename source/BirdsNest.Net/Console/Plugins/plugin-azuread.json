@@ -18,19 +18,6 @@
     }
   },
   "nodeDataTypes": {
-    "AAD_Object": {
-      "displayName": "AAD Object",
-      "description": "Azure Object",
-      "properties": {
-        "id": {
-          "indexEnforced": true
-        },
-        "lastscan": {},
-        "name": {}
-      },
-      "Default": "name",
-      "icon": "f128"
-    },
     "AAD_User": {
       "displayName": "AAD User",
       "description": "Azure Active Directory user",
@@ -52,6 +39,10 @@
       "displayName": "AAD Group",
       "description": "Azure Active Directory group",
       "properties": {
+        "description": {},
+        "dynamic": {
+          "type": "boolean"
+        },
         "id": {
           "indexEnforced": true
         },
@@ -60,8 +51,9 @@
         "mailenabled": {
           "type": "boolean"
         },
-        "type": {},
-        "scannerid": {}
+        "onpremisessid": {},
+        "scannerid": {},
+        "type": {}
       },
       "subType": "type",
       "Default": "name",
@@ -108,6 +100,19 @@
         }
       },
       "icon": "f2ed"
+    },
+    "AAD_Object": {
+      "displayName": "AAD Object",
+      "description": "Azure Object",
+      "properties": {
+        "id": {
+          "indexEnforced": true
+        },
+        "lastscan": {},
+        "name": {}
+      },
+      "Default": "name",
+      "icon": "f128"
     }
   }
 }
