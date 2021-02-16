@@ -26,6 +26,7 @@ using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
+using AzureADScanner.Azure.Facades;
 
 namespace AzureADScanner.Azure
 {
@@ -63,17 +64,35 @@ namespace AzureADScanner.Azure
             NeoQueryData querydata = new NeoQueryData();
             querydata.Properties = new List<object>();
 
+            //var test = Connector.Instance.Client.Sites["20road-my.sharepoint.com,0690831f-23fa-4515-86e9-c7805d152326,605f593f-0e0c-45dd-bfb4-dda5f2241b77"].Drives.Request().Top(999);
+            //var test2 = await test.GetAsync();
+
             //requests.Add(Connector.Instance.Client.Drives.Request().Top(999));
-            foreach (string id in AadGroups.Instance.O365GroupIDs) { querydata.Properties.AddRange( await ProcessRequestAsync(id, Connector.Instance.Client.Groups[id].Drives.Request().Top(999))); }
-            foreach (string id in AadSites.Instance.SiteIDs) { querydata.Properties.AddRange(await ProcessRequestAsync(id, Connector.Instance.Client.Sites[id].Drives.Request().Top(999))); }
-            foreach (string id in AadUsers.Instance.UserIDs) { querydata.Properties.AddRange(await ProcessRequestAsync(id, Connector.Instance.Client.Users[id].Drives.Request().Top(999))); }
+            foreach (string id in AadGroups.Instance.O365GroupIDs)
+            {
+                var facade = FacadeGroupDrivesRequest.GetFacade(Connector.Instance.Client.Groups[id].Drives.Request().Top(999));
+                querydata.Properties.AddRange(await ProcessRequestAsync(id, facade));
+            }
+            Console.Write(".");
+            foreach (string id in AadSites.Instance.SiteIDs) 
+            {
+                var facade = FacadeSitesDrivesRequest.GetFacade(Connector.Instance.Client.Sites[id].Drives.Request().Top(999));
+                querydata.Properties.AddRange(await ProcessRequestAsync(id, facade)); 
+            }
+            Console.Write(".");
+            foreach (string id in AadUsers.Instance.UserIDs)
+            {
+                var facade = FacadeUserDrivesRequest.GetFacade(Connector.Instance.Client.Users[id].Drives.Request().Top(999));
+                querydata.Properties.AddRange(await ProcessRequestAsync(id, facade));
+            }
+            Console.Write(".");
 
             return querydata;
         }
 
-        private async Task<List<object>> ProcessRequestAsync(string id, dynamic request ) {
+        private async Task<List<object>> ProcessRequestAsync(string id, IDrivesRequest request ) {
             List<object> props = new List<object>();
-            dynamic page = null;
+            IDrivesCollectionPage page = null;
 
             await Connector.Instance.MakeGraphClientRequestAsync(async () =>
             {
