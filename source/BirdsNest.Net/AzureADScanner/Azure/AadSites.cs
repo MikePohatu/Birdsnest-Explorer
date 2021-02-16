@@ -31,7 +31,10 @@ namespace AzureADScanner.Azure
 {
     public class AadSites : IDataCollectorAsync
     {
-        public List<string> GroupIDs { get; set; }
+        public static AadSites Instance { get; } = new AadSites();
+        private AadSites() { }
+
+        public List<string> SiteIDs { get; set; }
 
         public string ProgressMessage { get { return "Creating site nodes: "; } }
         public string Query
@@ -60,6 +63,7 @@ namespace AzureADScanner.Azure
 
         public async Task<NeoQueryData> CollectDataAsync()
         {
+            this.SiteIDs = new List<string>();
             NeoQueryData querydata = new NeoQueryData();
             List<object> propertylist = new List<object>();
 
@@ -77,12 +81,16 @@ namespace AzureADScanner.Azure
             {
                 foreach (Site site in page.CurrentPage)
                 {
+                    this.SiteIDs.Add(site.Id); //record the site ID so it can be used later
+                    string sitename = string.IsNullOrEmpty(site.DisplayName) ? site.Name : site.DisplayName;
+                    sitename = string.IsNullOrEmpty(sitename) ? site.WebUrl : sitename;
+
                     propertylist.Add(new
                     {
                         ID = site.Id,
                         WebUrl = site.WebUrl,
                         DisplayName = site.DisplayName,
-                        Name = site.DisplayName,
+                        Name = sitename,
                         SiteName = site.Name,
                         Description = site.Description
                     });

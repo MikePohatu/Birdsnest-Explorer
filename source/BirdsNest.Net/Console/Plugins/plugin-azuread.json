@@ -18,14 +18,31 @@
     }
   },
   "nodeDataTypes": {
+    "AAD_Object": {
+      "displayName": "AAD Object",
+      "description": "Azure Object",
+      "properties": {
+        "id": {
+          "indexEnforced": true
+        },
+        "lastscan": {},
+        "name": {}
+      },
+      "Default": "name",
+      "icon": "f128"
+    },
     "AAD_User": {
       "displayName": "AAD User",
       "description": "Azure Active Directory user",
       "properties": {
-        "id": {},
+        "id": {
+          "indexEnforced": true
+        },
         "lastscan": {},
         "name": {},
-        "enabled": {},
+        "enabled": {
+          "type": "boolean"
+        },
         "userprincipalname": {}
       },
       "Default": "userprincipalname",
@@ -35,18 +52,61 @@
       "displayName": "AAD Group",
       "description": "Azure Active Directory group",
       "properties": {
-        "id": {},
+        "id": {
+          "indexEnforced": true
+        },
         "lastscan": {},
         "name": {},
-        "mailenabled": {},
+        "mailenabled": {
+          "type": "boolean"
+        },
+        "type": {},
+        "scannerid": {}
+      },
+      "subType": "type",
+      "Default": "name",
+      "icon": "f500"
+    },
+    "AAD_Site": {
+      "displayName": "AAD Site",
+      "description": "Azure Sharepoint Site",
+      "properties": {
+        "id": {
+          "indexEnforced": true
+        },
+        "lastscan": {},
+        "name": {},
+        "displayname": {},
+        "weburl": {},
+        "sitename": {},
         "scannerid": {}
       },
       "Default": "name",
-      "icon": "f500"
+      "icon": "f558"
+    },
+    "AAD_Drive": {
+      "displayName": "AAD Drive",
+      "description": "Azure Drive",
+      "properties": {
+        "id": {
+          "indexEnforced": true
+        },
+        "lastscan": {},
+        "name": {},
+        "description": {},
+        "drivetype": {}
+      },
+      "Default": "name",
+      "icon": "f0a0"
     },
     "AAD_Deleted": {
       "displayName": "AAD Deleted",
       "description": "AAD objects that have been deleted.",
+      "properties": {
+        "id": {
+          "indexEnforced": true
+        }
+      },
       "icon": "f2ed"
     }
   }

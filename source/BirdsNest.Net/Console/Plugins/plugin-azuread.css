@@ -1,7 +1,16 @@
+.AAD_Object {
+    color: blue;
+    stroke: blue;
+    fill: gainsboro;
+}
+.AAD_Object.icon {
+    fill: blue;
+}
+
 .AAD_Group {
     color: blue;
     stroke: blue;
-    fill: #BBF0C6;
+    fill: #e6ffeb;
 }
 .AAD_Group.icon {
     fill: blue;
@@ -10,7 +19,7 @@
 .AAD_User {
     color: blue;
     stroke: blue;
-    fill: #ffe2e7;
+    fill: #fff6f8;
 }
 .AAD_User.icon {
     fill: blue;
@@ -22,6 +31,24 @@
     fill: lightcyan;
 }
 .AAD_Device.icon {
+    fill: blue;
+}
+
+.AAD_Drive {
+    color: blue;
+    stroke: blue;
+    fill: lightcyan;
+}
+.AAD_Drive.icon {
+    fill: blue;
+}
+
+.AAD_Site {
+    color: blue;
+    stroke: blue;
+    fill: lightcyan;
+}
+.AAD_Site.icon {
     fill: blue;
 }
 

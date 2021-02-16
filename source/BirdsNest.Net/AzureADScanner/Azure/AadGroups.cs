@@ -31,6 +31,10 @@ namespace AzureADScanner.Azure
     {
         public string ProgressMessage { get { return "Creating group nodes: "; } }
         public List<string> GroupIDs { get; private set; } = new List<string>();
+        public List<string> O365GroupIDs { get; private set; } = new List<string>();
+
+        public static AadGroups Instance { get; } = new AadGroups();
+        private AadGroups() { }
 
         public string Query
         {
@@ -41,7 +45,9 @@ namespace AzureADScanner.Azure
                 "SET n:" + Types.AadObject + " " +
                 "SET n.name = prop.Name " +
                 "SET n.description = prop.Description " +
+                "SET n.mail = prop.Mail " +
                 "SET n.mailenabled = prop.MailEnabled " +
+                "SET n.type = prop.Type " +
                 "SET n.lastscan=$ScanID " +
                 "SET n.scannerid=$ScannerID " +
                 "SET n.layout='mesh' " +
@@ -67,15 +73,31 @@ namespace AzureADScanner.Azure
                 {
                     foreach (Group group in page.CurrentPage)
                     {
+                        string grouptype = "Security";
+
+                        foreach (string type in group.GroupTypes)
+                        {
+                            if (type == "Unified")
+                            {
+                                this.O365GroupIDs.Add(group.Id);
+                                grouptype = "Microsoft 365";
+                                break;
+                            }
+                        }
+
                         propertylist.Add(new
                         {
                             ID = group.Id,
                             Name = group.DisplayName,
                             Description = group.Description,
-                            MailEnabled = group.MailEnabled
+                            MailEnabled = group.MailEnabled,
+                            Mail = group.Mail,
+                            Type = grouptype
                         });
 
                         this.GroupIDs.Add(group.Id);
+
+                        
                     }
 
                     page = await page.NextPageRequest?.GetAsync();

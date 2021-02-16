@@ -65,16 +65,18 @@ namespace common
         //ADScanner edges
         public static string MemberOf { get { return "AD_MEMBER_OF"; } }
 
-        //AzureAD nodes
+        //Azure nodes
         public static string AadUser { get { return "AAD_User"; } }
         public static string AadGroup { get { return "AAD_Group"; } }
         public static string AadObject { get { return "AAD_Object"; } }
         public static string AadTeam { get { return "AAD_Team"; } }
         public static string AadSite { get { return "AAD_Site"; } }
+        public static string AadDrive { get { return "AAD_Drive"; } }
 
-        //AzureAD edges
+        //Azure edges
         public static string AadMemberOf { get { return "AAD_MEMBER_OF"; } }
         public static string AadSync { get { return "AAD_SYNC"; } }
+        public static string AadHasDrive { get { return "AAD_HAS_DRIVE"; } }
 
         //CMScanner nodes 
         public static string CMCollection { get { return "CM_Collection"; } }

@@ -29,6 +29,10 @@ namespace AzureADScanner.Azure
 {
     public class AadUsers: IDataCollectorAsync
     {
+        public static AadUsers Instance { get; } = new AadUsers();
+        private AadUsers() { }
+
+        public List<string> UserIDs { get; private set; }
         public string ProgressMessage { get { return "Creating user nodes: "; } }
         public string Query
         {
@@ -53,6 +57,7 @@ namespace AzureADScanner.Azure
 
         public async Task<NeoQueryData> CollectDataAsync()
         {
+            this.UserIDs = new List<string>();
             NeoQueryData querydata = new NeoQueryData();
             List<object> propertylist = new List<object>();
 
@@ -70,6 +75,8 @@ namespace AzureADScanner.Azure
             {
                 foreach (User user in page.CurrentPage)
                 {
+                    this.UserIDs.Add(user.Id);
+
                     propertylist.Add(new
                     {
                         ID = user.Id,

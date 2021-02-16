@@ -113,17 +113,18 @@ namespace AzureADScanner
 
             NeoWriter.ScanID = scanid;
 
-            var aadgroups = new AadGroups();
             var aadgroupmembers = new AadGroupMemberships();
-            aadgroupmembers.GroupIDs = aadgroups.GroupIDs;
+            aadgroupmembers.GroupIDs = AadGroups.Instance.GroupIDs;
 
             List <IDataCollectorAsync> collectors = new List<IDataCollectorAsync>
             {
-                new AadSites(),
-                new AadUsers(),
+                
+                AadUsers.Instance,
                 new AadUserToAdUserConnections(),
-                aadgroups,
-                aadgroupmembers
+                AadGroups.Instance,
+                aadgroupmembers,
+                AadSites.Instance,
+                new AadDrives()
             };
 
             NeoWriter.WriteHeaders();

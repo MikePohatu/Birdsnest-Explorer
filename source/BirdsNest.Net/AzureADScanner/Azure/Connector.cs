@@ -141,6 +141,12 @@ namespace AzureADScanner.Azure
                     this._throttlingretrycount++;
                     await this.ResponseDelayAsync(response.Headers.RetryAfter.Delta);
                 }
+                else if (response.StatusCode == HttpStatusCode.NotFound)
+                {
+                    finalresponse = response;
+                    this._retrycount = 0;
+                    this._throttlingretrycount = 0;
+                }
                 else
                 {
                     Console.WriteLine(errorMessage);
@@ -179,7 +185,8 @@ namespace AzureADScanner.Azure
 
                 Dictionary<string, HttpResponseMessage> responses = await batchResponseContent.GetResponsesAsync();
 
-                if (asyncresponsehandler != null) {
+                if (asyncresponsehandler != null)
+                {
                     await asyncresponsehandler(responses);
                 }
 
@@ -193,6 +200,12 @@ namespace AzureADScanner.Azure
             return batchResponseContent;
         }
 
+        /// <summary>
+        /// Make a request to graph using a Graph SDK client request. Pass in an async function around which error handling
+        /// and throttling will be wrapped. The function will not be run for a NotFound error
+        /// </summary>
+        /// <param name="asyncRequest"></param>
+        /// <returns></returns>
         public async Task MakeGraphClientRequestAsync(Func<Task> asyncRequest)
         {
             if (asyncRequest == null) { throw new ArgumentNullException(); }
@@ -211,6 +224,7 @@ namespace AzureADScanner.Azure
                     switch (e.StatusCode)
                     {
                         case HttpStatusCode.TooManyRequests:
+                        case HttpStatusCode.FailedDependency:
                             if (this._throttlingretrycount >= this._maxthrottlingretry)
                             {
                                 Console.WriteLine("Throttling retry limit hit. Aborting operation");
@@ -223,8 +237,10 @@ namespace AzureADScanner.Azure
 
                             this._throttlingretrycount++;
                             break;
-                        case HttpStatusCode.FailedDependency:
-                            break;
+                        case HttpStatusCode.NotFound:
+                            this._retrycount = 0;
+                            this._throttlingretrycount = 0;
+                            return;
                         default:
                             if (this._retrycount >= this._maxretrycount)
                             {
