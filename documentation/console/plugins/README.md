@@ -43,16 +43,16 @@ e.g.
 
 The .json file contains definitions of the various properties of the plugin, and the .css file contains standard css [styling](#styling) for items added to the visualizer.
 
-The [high level schema](#High-Level-Schema) of the .json file is covered in the following section, and [data types](#Data-Types) and [reports](#Reports) covered in more detail following that. 
+The [high level schema](#high-level-schema) of the .json file is covered in the following section, and [data types](#data-types) and [reports](#reports) covered in more detail following that. 
 
-The css classes applied to items in the visualizer are dependant on the data types of the item. This is covered in more detail in [Data Types](#Data-Types).
+The css classes applied to items in the visualizer are dependant on the data types of the item. This is covered in more detail in [Data Types](#data-types).
 
 ---
 ## High Level Schema
 The following outlines the high level schema of the _plugin-$pluginname.json_ file. It should be noted that in the backend and code, a relationship is known by the term **edge** (from mathematical graphs). The _edgeDataTypes_ field below relates to relationships in the visualizer.
 
 Fields denoted with a **$** are items to be configured.
-See [Reports](#Reports) and [Data Types](#Data-Types) for details on reports and edge/node data types configuration respectively.
+See [Reports](#reports) and [Data Types](#data-types) for details on reports and edge/node data types configuration respectively.
 
 ```json
 {
@@ -82,7 +82,7 @@ class="AD_User AD_Object"
 class="AD_MEMBER_OF"
 ```
 
-Additionally, if any [sub-types](#Sub-Types) are defined, they are also added as classes to the HTML/SVG element. 
+Additionally, if any [sub-types](#sub-types) are defined, they are also added as classes to the HTML/SVG element. 
 
 These classes can be used to apply [styling](#styling) to the items using the plugin .css file. 
 

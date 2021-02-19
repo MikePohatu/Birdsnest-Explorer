@@ -16,7 +16,7 @@ Each scanner will reference two configuration files:
 1. The neo4j database connection config file
 2. The scanner specific config file
 
-The neo4j configuration file is the same format as the [neo4j Database Connection](/documentation/install/README.md#neo4j-Database-Connection) section of the install documentation. 
+The neo4j configuration file is the same format as the [neo4j Database Connection](/documentation/install/completeinstall.md#neo4j-database-connection) section of the install documentation. 
 
 ```json
 {

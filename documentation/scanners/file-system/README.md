@@ -67,11 +67,11 @@ When you create a configuration for the scanner, it will contain a structure lik
 "credentials": ...
 ```
 
-The following sections outline each item. Pay special attention to [Datastores](#Datastores) and [Threads](#Threads), as these have implications to how the scanner will apply load to your infrastructure. 
+The following sections outline each item. Pay special attention to [Datastores](#datastores) and [Threads](#threads), as these have implications to how the scanner will apply load to your infrastructure. 
 
 ### Threads
 
-The File System Scanner is a multi-threaded application. The number of threads the scanner will use is set in the configuration file. Some testing and tuning may be required to find the ideal number of threads to apply to each [Datastore](#Datastore) for best performance. The number of threads is configured using the **maxthreads** property.
+The File System Scanner is a multi-threaded application. The number of threads the scanner will use is set in the configuration file. Some testing and tuning may be required to find the ideal number of threads to apply to each [Datastore](#datastores) for best performance. The number of threads is configured using the **maxthreads** property.
 
 It should be noted that each time the scanner is run, it is completely independant and unaware of any already running scanners.
 
@@ -123,13 +123,13 @@ The **Host** item is used to create a connection to a Device node within the the
 
 A File System item represents a Windows network file system. The scanner will crawl the file system and read the security permissions of each folder. 
 
-Where a folder cannot be read for whatever reason, it will be recorded as a [blocked folder](#Blocked-Folders) in the database.
+Where a folder cannot be read for whatever reason, it will be recorded as a [blocked folder](#blocked-folders) in the database.
 
 Note that the share permissions are not read.
 
 The **filesystems** section in the configuration is a list of file system objects containing the following properties:
 * id -  A unique value to use as the id of the file system in the database.
-* credentialid (optional) - The id of the [credential](#Credentials) to use to access the file system
+* credentialid (optional) - The id of the [credential](#credentials) to use to access the file system
 * path - The UNC path for root of the scan job. Note the double slashes due to the json file format
 * comment (optional) - A description/comment for the file system
 

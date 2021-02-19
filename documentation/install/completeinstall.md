@@ -53,7 +53,7 @@ Birdsnest Explorer uses a [Neo4j](https://neo4j.com/) graph database at its core
 
 Full documentation for Neo4j is available from the [Neo4j documentation site](https://neo4j.com/docs/operations-manual/3.5/).
 
-During installation, the password for the default Neo4j database account must be set, and the details for the Birdsnest Explorer service account must be set. The Birdsnest Explorer service account will be used later during setup of the [Console](#Console) and [Scanners](#Scanners).
+During installation, the password for the default Neo4j database account must be set, and the details for the Birdsnest Explorer service account must be set. The Birdsnest Explorer service account will be used later during setup of the [Console](#console) and [Scanners](#scanners).
 
 ### Account Setup
 
