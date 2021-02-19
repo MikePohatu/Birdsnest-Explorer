@@ -34,6 +34,10 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 								<router-link v-if="crumb.link" :to="crumb.link" class="crumb">{{ crumb.name }}</router-link>
 								<span v-else class="crumb">{{ crumb.name }}</span>
 							</li>
+							<li v-for="crumb in pagecrumbs" :key="crumb.link" class="bn-header-crumb">
+								<router-link v-if="crumb.link" :to="crumb.link" class="crumb">{{ crumb.name }}</router-link>
+								<span v-else class="crumb">{{ crumb.name }}</span>
+							</li>
 						</ul>
 					</nav>
 				</div>
@@ -53,6 +57,10 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 							<router-link class="bn-header" :to="routeDefs.portal.path">{{ $t("Birdsnest_Explorer") }}</router-link>
 						</li>
 						<li v-for="crumb in breadcrumbs" :key="crumb.name" class="bn-header-crumb">
+							<router-link v-if="crumb.link" :to="crumb.link" class="crumb">{{ crumb.name }}</router-link>
+							<span v-else class="crumb">{{ crumb.name }}</span>
+						</li>
+						<li v-for="crumb in pagecrumbs" :key="crumb.name" class="bn-header-crumb">
 							<router-link v-if="crumb.link" :to="crumb.link" class="crumb">{{ crumb.name }}</router-link>
 							<span v-else class="crumb">{{ crumb.name }}</span>
 						</li>
@@ -79,6 +87,14 @@ export default class TopBar extends Vue {
 
 	get breadcrumbs() {
 		return this.$route.meta.breadcrumbs;
+	}
+
+	get pagecrumbs() {
+		if (Object.prototype.hasOwnProperty.call(this.$route.meta, "pagecrumbs") && this.$route.meta.pagecrumbs !== null) {
+			return this.$route.meta.pagecrumbs;
+		} else {
+			return [];
+		}
 	}
 }
 </script>

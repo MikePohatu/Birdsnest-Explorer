@@ -19,6 +19,7 @@ import Vue from "vue";
 import VueRouter, { RouteConfig } from "vue-router";
 import store, { rootPaths } from "../store";
 import { auth } from "../assets/ts/webcrap/authcrap";
+import webcrap from "@/assets/ts/webcrap/webcrap";
 Vue.use(VueRouter);
 
 export const routeDefs = {
@@ -29,6 +30,10 @@ export const routeDefs = {
   about: {
     name: "About",
     path: "/about"
+  },
+  docs: {
+    name: "Docs",
+    path: "/docs"
   },
   report: {
     name: "Report Viewer",
@@ -80,6 +85,7 @@ const routes: Array<RouteConfig> = [
     path: routeDefs.about.path,
     name: routeDefs.about.name,
     meta: {
+      allowAnonymous: true,
       breadcrumbs: [
         { name: routeDefs.about.name }
       ]
@@ -128,6 +134,7 @@ const routes: Array<RouteConfig> = [
     path: routeDefs.login.path,
     name: routeDefs.login.name,
     meta: {
+      allowAnonymous: true,
       breadcrumbs: [
         { name: routeDefs.login.name }
       ]
@@ -168,6 +175,18 @@ const routes: Array<RouteConfig> = [
     },
     component: () =>
       import(/* webpackChunkName: "admin" */ "../views/IndexEditorView.vue")
+  },
+  {
+    path: routeDefs.docs.path + "*",
+    name: routeDefs.docs.name,
+    meta: {
+      allowAnonymous: true,
+      breadcrumbs: [
+        { name: routeDefs.docs.name, link: routeDefs.docs.path }
+      ]
+    },
+    component: () =>
+      import(/* webpackChunkName: "docs" */ "../views/Docs.vue")
   }
 ];
 
@@ -178,15 +197,51 @@ const router = new VueRouter({
 });
 
 router.beforeEach((to, from, next) => {
-  if (to.name === routeDefs.login.name || to.name === routeDefs.about.name) {
-    next();
+  if (to.meta.allowAnonymous === true) {
+    auth.softPing(); // do an auth ping to make sure all is OK e.g. menus stay current
+    if (to.name === routeDefs.docs.name && webcrap.misc.isIE() === false) {
+      const path = to.path.split("#")[0];
+
+      if (path === routeDefs.docs.path) {
+        next({
+          path: "/docs/static/documentation/README.md"
+        });
+      } else if (path.endsWith("/")) {
+        next({
+          path: path + "README.md"
+        });
+      } else if (path.endsWith(".md") === false) {
+        next({
+          path: path + "/README.md"
+        });
+      } else {
+        to.meta.pagecrumbs = [];
+
+        if (to.path !== routeDefs.docs.path) {
+          const pathbits = to.path.replace("/docs/static/documentation/", "").split("/");
+          let currentpath = "";
+
+          pathbits.forEach((bit: string) => {
+            currentpath = currentpath + "/" + bit;
+            to.meta.pagecrumbs.push({
+              name: webcrap.misc.capitalize(bit),
+              link: "/docs/static/documentation" + currentpath,
+            });
+          });
+        }
+
+        next();
+      }
+    } else {
+      next();
+    }
   } else {
-    //potentially a refresh. Ping the server to check if cookie still valid
+    //Ping the server to check if cookie still valid
     auth.ping(() => {
       if (!store.state.user.isAuthorized) {
         //Still not authorised, redirect to login view
         // eslint-disable-next-line
-        console.log("Not authorized. Redirecting to login page.");
+        console.log("Not authorized. Redirecting to login page. Path: " + to.path);
         next(
           {
             name: routeDefs.login.name,

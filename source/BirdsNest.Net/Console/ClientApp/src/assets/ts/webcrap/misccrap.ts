@@ -17,13 +17,18 @@
 import { v4 as uuidv4 } from 'uuid';
 
 class MiscCrap {
-    isNullOrWhitespace(input: string ) {
+    isNullOrWhitespace(input: string) {
         if (typeof input === 'undefined' || input == null) return true;
         return input.replace(/\s/g, '').length < 1;
     }
 
-    isNullOrEmpty(input: string ) {
+    isNullOrEmpty(input: string) {
         return input === null || input === "";
+    }
+
+    capitalize(s: string) {
+        if (typeof s !== 'string') return ''
+        return s.charAt(0).toUpperCase() + s.slice(1);
     }
 
     //decode string from encodeUrlB64 function
@@ -53,28 +58,28 @@ class MiscCrap {
         return uuidv4();
     }
 
-	download(content, fileName, mimeType) {
-		if (!mimeType) {
-			mimeType = "application/octet-stream";
-		}
-		const blob = new Blob([content], {
-			type: mimeType,
-		});
+    download(content, fileName, mimeType) {
+        if (!mimeType) {
+            mimeType = "application/octet-stream";
+        }
+        const blob = new Blob([content], {
+            type: mimeType,
+        });
 
-		//IE
-		if (navigator.msSaveBlob) {
-			navigator.msSaveBlob(blob, fileName);
-		}
-		//HTML5
-		else {
-			const downel = document.createElement("a");
-			downel.href = URL.createObjectURL(blob);
-			downel.setAttribute("download", fileName);
-			downel.click();
-			downel.remove();
-		}
+        //IE
+        if (navigator.msSaveBlob) {
+            navigator.msSaveBlob(blob, fileName);
+        }
+        //HTML5
+        else {
+            const downel = document.createElement("a");
+            downel.href = URL.createObjectURL(blob);
+            downel.setAttribute("download", fileName);
+            downel.click();
+            downel.remove();
+        }
     }
-    
+
     isIE(): boolean {
         return window.navigator.userAgent.match(/(MSIE|Trident)/) !== null;
     }

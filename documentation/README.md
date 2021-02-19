@@ -1,5 +1,7 @@
 # Birdsnest Explorer Reference Documentation
 
+## Contents
+
 * [FAQ](/documentation/faq.md "FAQ")
 * [Installation](/documentation/install/README.md "Installation")
 * [Data Ingestion & Scanners](/documentation/scanners/README.md "Scanners")
@@ -13,3 +15,8 @@
         * [Admin](/documentation/console/admin/README.md)
     * [Reports](/documentation/console/plugins/README.md#reports)
     * [Plugins](/documentation/console/plugins/README.md)
+
+## Online Resources
+
+* [YouTube](https://www.youtube.com/playlist?list=PLbymiOxRQJvL01dXHwlRDcM0koccbGEro)
+* [www.20road.com](https://www.20road.com/birdsnest-explorer/)

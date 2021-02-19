@@ -3,7 +3,7 @@
   "Birdsnest_Explorer": "Birdsnest Explorer",
   "about": {
     "is_created_and_maintained_by": "is created and maintained by",
-    "documentation_available_from": "Documentation is available from the",
+    "documentation_available_from": "is also available from online from",
     "version_documentation_branch": "If you are not running the latest version, documentation for each version is available from the",
     "dropdown_list": "dropdown list.",
     "is_open_source_software": "is open source software, licensed under the GPLv3. Please refer to the license available from the",
@@ -11,7 +11,7 @@
   },
   "portal": {
     "welcome": "Welcome to Birdsnest Explorer.",
-    "usage_info_1": "Usage information and links to how-tos videos are available from the Birdsnest Explorer online",
+    "usage_info_1": "Usage information and links to how-tos videos are available from the Birdsnest Explorer ",
     "usage_info_2": "For support, you can contact us via the",
     "usage_info_3": "support page.",
     "license_attribution": "For license and attribution information please see the",
@@ -123,6 +123,7 @@
   "word_documentation": "documentation",
   "word_false": "false",
   "word_of": "of",
+  "word_online": "online",
   "word_page": "page",
   "word_records": "records",
   "word_results": "results",
@@ -145,6 +146,7 @@
   "word_Description": "Description",
   "word_Details": "Details",
   "word_Direction": "Direction",
+  "word_Docs": "Docs",
   "word_Documentation": "Documentation",
   "word_Download": "Download",
   "word_Edition": "Edition",

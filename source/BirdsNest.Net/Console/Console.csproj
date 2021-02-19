@@ -171,4 +171,8 @@
     </ItemGroup>
   </Target>
 
+  <Target Name="PostBuild" AfterTargets="PostBuildEvent">
+    <Exec Command="rmdir /s /q &quot;$(ProjectDir)wwwroot\static\documentation&quot;&#xD;&#xA;xcopy /i /e /h /y &quot;$(SolutionDir)..\..\documentation&quot; &quot;$(ProjectDir)wwwroot\static\documentation&quot;" />
+  </Target>
+
 </Project>

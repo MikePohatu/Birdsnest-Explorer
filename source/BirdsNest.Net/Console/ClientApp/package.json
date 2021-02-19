@@ -12,6 +12,7 @@
     "preinstall": "npx npm-force-resolutions"
   },
   "dependencies": {
+    "@adapttive/vue-markdown": "^3.0.3",
     "core-js": "^3.6.5",
     "register-service-worker": "^1.7.1",
     "vue": "^2.6.11",

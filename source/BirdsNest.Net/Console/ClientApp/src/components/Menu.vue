@@ -24,17 +24,20 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 				</a>
 				<ul class="main-menu">
 					<li>
-						<div v-if="isAuthorized">
+						<div v-if="isAuthorized" class="menuwrapper">
 							<router-link :to="routeDefs.portal.path">{{ $t('word_Home') }}</router-link>
 							<router-link v-if="isAdmin" :to="routeDefs.admin.path">{{ $t('word_Admin') }}</router-link>
 							<router-link :to="routeDefs.reports.path">{{ $t('word_Reports') }}</router-link>
 							<router-link :to="routeDefs.visualizer.path">{{ $t('word_Visualizer') }}</router-link>
-							<router-link :to="routeDefs.about">{{ $t('word_About') }}</router-link>
+							<hr>
+							<router-link :to="routeDefs.about.path">{{ $t('word_About') }}</router-link>
+							<router-link v-if="!isIE" :to="routeDefs.docs.path">{{ $t('word_Docs') }}</router-link>
 							<!-- <LangMenu /> -->
 							<a v-on:click="logout">{{ $t('word_Logout') }}</a>
 						</div>
-						<div v-else>
-							<router-link :to="routeDefs.about">{{ $t('word_About') }}</router-link>
+						<div v-else class="menuwrapper">
+							<router-link :to="routeDefs.about.path">{{ $t('word_About') }}</router-link>
+							<router-link v-if="!isIE" :to="routeDefs.docs.path">{{ $t('word_Docs') }}</router-link>
 							<!-- <LangMenu /> -->
 							<router-link :to="routeDefs.login.path">{{ $t('word_Login') }}</router-link>
 						</div>
@@ -50,12 +53,14 @@ import { Component, Vue } from "vue-property-decorator";
 import { auth } from "../assets/ts/webcrap/authcrap";
 import { routeDefs } from "@/router/index";
 import LangMenu from "@/components/LangMenu.vue";
+import webcrap from "@/assets/ts/webcrap/webcrap";
 
 @Component({
 	components: { LangMenu },
 })
 export default class Menu extends Vue {
 	routeDefs = routeDefs;
+	isIE = webcrap.misc.isIE();
 
 	get isAdmin() {
 		return this.$store.state.user.isAdmin;
@@ -87,5 +92,13 @@ export default class Menu extends Vue {
 #menuicon {
 	min-width: 24px;
 	min-height: 24px;
+}
+
+.menuwrapper {
+	width: 100%;
+}
+
+hr {
+	margin: 1px 1rem;
 }
 </style>

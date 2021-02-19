@@ -28,12 +28,9 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 			<ServerInfoPortalBlock class="cell large-4 medium-6 portalBoxWrapper" />
 		</div>
 
-		<p class="text-center">
-			{{ $t('portal.usage_info_1') }}
-			<a
-				href="https://github.com/MikePohatu/Birdsnest-Explorer"
-				target="_blank"
-			>{{ $t('word_documentation') }}</a>. {{ $t('portal.usage_info_2') }}
+		<p class="text-center">{{ $t('portal.usage_info_1') }}
+			<router-link v-if="!isIE" :to="routeDefs.docs.path">{{ $t('word_documentation') }}</router-link>
+			<a v-else href="https://github.com/MikePohatu/Birdsnest-Explorer" target="_blank">{{ $t('phrase_source_repository') }}</a>. {{ $t('portal.usage_info_2') }}
 			<a
 				href="https://support.20road.com"
 				target="_blank"
@@ -154,11 +151,16 @@ import { Component, Vue } from "vue-property-decorator";
 import VisualizerPortalBlock from "@/components/portal/VisualizerPortalBlock.vue";
 import ReportsPortalBlock from "@/components/portal/ReportsPortalBlock.vue";
 import ServerInfoPortalBlock from "@/components/portal/ServerInfoPortalBlock.vue";
+import { routeDefs } from "@/router/index";
+import webcrap from "@/assets/ts/webcrap/webcrap";
 
 @Component({
 	components: { VisualizerPortalBlock, ReportsPortalBlock, ServerInfoPortalBlock },
 })
 export default class Portal extends Vue {
+	routeDefs = routeDefs;
+	isIE = webcrap.misc.isIE();
+	
 	get userName() {
 		if (this.$store.state.user.name !== "") {
 			return " " + this.$store.state.user.name;

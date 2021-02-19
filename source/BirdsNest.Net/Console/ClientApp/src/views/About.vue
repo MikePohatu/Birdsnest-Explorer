@@ -27,7 +27,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 
 			<h5>{{ $t('word_Documentation') }}</h5>
 			<p class="justify">
-				{{ $t('about.documentation_available_from') }} {{ $t('Birdsnest_Explorer') }}
+				<router-link v-if="!isIE" to="/docs">{{ $t('word_Documentation') }}</router-link><span v-else style="padding: 0px;">{{ $t('word_Documentation') }}</span> {{ $t('about.documentation_available_from') }} {{ $t('Birdsnest_Explorer') }}
 				<a
 					href="https://github.com/MikePohatu/Birdsnest-Explorer"
 					target="_blank"
@@ -99,3 +99,13 @@ p {
 	text-align: justify;
 }
 </style>
+
+<script lang="ts">
+import { Component, Vue } from "vue-property-decorator";
+import webcrap from "@/assets/ts/webcrap/webcrap";
+
+@Component
+export default class About extends Vue {
+	isIE = webcrap.misc.isIE();
+}
+</script>

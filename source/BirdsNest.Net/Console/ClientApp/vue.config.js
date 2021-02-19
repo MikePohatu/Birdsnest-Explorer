@@ -30,8 +30,13 @@ module.exports = {
         target: 'https://localhost:44341',
         secure: false,
         withCredentials: true
+      },
+      '^/static': {
+        changeOrigin: true,
+        target: 'https://localhost:44341',
+        secure: false,
+        withCredentials: true
       }
-
     },
     watchOptions: {
       ignored: ['**/node_modules/**']

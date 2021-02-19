@@ -33,13 +33,13 @@ The main part of the visualizer is the <a href="https://en.wikipedia.org/wiki/Gr
 
 ## Zoom
 
-The view can be zoomed in and out by scrolling with your mouse or trackpad. You can also zoom into a specific location using the [crop](#Crop) tool.
+The view can be zoomed in and out by scrolling with your mouse or trackpad. You can also zoom into a specific location using the [crop](#crop) tool.
 
 ## Items
 
-* [Nodes](#Nodes)
-* [Relationships](#Relationships)
-* [Hops](#Hops)
+* [Nodes](#nodes)
+* [Relationships](#relationships)
+* [Hops](#hops)
 
 
 ### Nodes
@@ -50,10 +50,10 @@ Each type of node has an icon and colour to help identify types of data quickly.
 ![Nodes](/documentation/image/console/nodes.png "Nodes")
 
 #### Moving Nodes
-Nodes can be moved around the view using click and drag. As soon as a node is moved, it becomes pinned, and won't dynamically move if you [refresh the view](#Refresh-view). Click the thumbtack icon to unpin the node and allow it to dynamically move again. 
+Nodes can be moved around the view using click and drag. As soon as a node is moved, it becomes pinned, and won't dynamically move if you [refresh the view](#refresh-view). Click the thumbtack icon to unpin the node and allow it to dynamically move again. 
 
 #### Node Details
-More details about a specific node can be shown by clicking a node to select it. A node details pane will appear showing additional properties for the node, and any related nodes i.e. connected nodes that are one [hop](#Hops) away
+More details about a specific node can be shown by clicking a node to select it. A node details pane will appear showing additional properties for the node, and any related nodes i.e. connected nodes that are one [hop](#hops) away
 
 ![Node Details](/documentation/image/console/node-details.png)
 
@@ -78,17 +78,17 @@ The hop count is used in [Advanced Search](/documentation/console/visualizer/adv
 There are a number of controls at the bottom left of the visualizer to help manipulate the view. From left to right these are:
 
 <!-- no toc -->
-* [Refresh view](#Refresh-view)
-* [Play mode](#Play-mode)
-* [Select](#Select)
-* [Invert selection](#Invert-Selection)
-* [Crop](#Crop)
-* [Delete item](#Delete-item)
-* [Center view](#Center-view)
-* [Hide/show items](#Hide/show-items)
-* [Export to report](#Export-to-report)
-* [Find](#Find)
-* [Clear view](#Clear-view)
+* [Refresh view](#refresh-view)
+* [Play mode](#play-mode)
+* [Select](#select)
+* [Invert selection](#invert-selection)
+* [Crop](#crop)
+* [Delete item](#delete-item)
+* [Center view](#center-view)
+* [Hide/show items](#hide/show-items)
+* [Export to report](#export-to-report)
+* [Find](#find)
+* [Clear view](#clear-view)
 
 ![Controls](/documentation/image/console/controls.png)
  
@@ -103,12 +103,12 @@ If the number of nodes on screen exceeds 300, animation will be disabled to impr
 In play mode, the view will automatically be refreshed as soon as a node is moved. If another node is moved before the layout has finished calculating, this process will cancel and be restarted.
 
 ### Select
-The select tool is used to select multiple nodes within the specified area. Click and drag the desired area in the visualizer. All nodes within the area will be selected. Note that [node detail](#Node-Details) cards will not be displayed using this method as you may be selecting dozens or even hundreds of nodes at a time.
+The select tool is used to select multiple nodes within the specified area. Click and drag the desired area in the visualizer. All nodes within the area will be selected. Note that [node detail](#node-details) cards will not be displayed using this method as you may be selecting dozens or even hundreds of nodes at a time.
 
 ![Select](/documentation/image/console/select.png)
 
 ### Invert Selection
-The invert tool inverts the selection of all enabled nodes in the view. Like the [select](#Select) tool, [node detail](#Node-Details) cards will not be displayed using this method.
+The invert tool inverts the selection of all enabled nodes in the view. Like the [select](#select) tool, [node detail](#node-details) cards will not be displayed using this method.
 
 ### Crop
 The crop tool uses click and drag to select an area within the view similar to the select tool, but its purpose is to zoom in on an area of interest. Click and drag to select an area within the view, and it will zoom and re-center appropriately.
@@ -124,7 +124,7 @@ The center view tool will re-center the view based on the nodes currently displa
 ### Hide/show items
 The 'eye' tool is used to disable information within the view, thereby allowing other information to be more prominent. 
 
-Additionally, disabled items cannot be selected when using the [select](#Select) tool. This allows you to delete all data of a specific type by disabling all other types, then selecting everything. Only the enabled items will be selected, so you can then move or delete them.
+Additionally, disabled items cannot be selected when using the [select](#select) tool. This allows you to delete all data of a specific type by disabling all other types, then selecting everything. Only the enabled items will be selected, so you can then move or delete them.
 
 Clicking the appropriate 'eye' icon for a type will disable or enable any nodes of that type in the view. 
 

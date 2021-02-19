@@ -134,6 +134,37 @@ class AuthCrap {
         };
         api.get(request);
     }
+
+    // same as a ping function, but won't deauth on error. Used for pages that don't require authorization. They only ping to keep menus etc up to date
+    softPing(callback?: () => void) {
+        const request: Request = {
+            url: "/api/account/ping",
+            successCallback: (data: AuthResults) => {
+                if (data.isProcessed === true) {
+                    store.commit(rootPaths.mutations.IS_AUTHORIZED, data.isAuthorized);
+                    store.commit(rootPaths.mutations.IS_ADMIN, data.isAdmin);
+                    store.commit(rootPaths.mutations.USERNAME, data.name);
+                    store.commit(rootPaths.mutations.AUTH_MESSAGE, "");
+
+                    if (data.isAuthorized) {
+                        store.commit(rootPaths.mutations.SESSION_STATUS, 'Authorized');
+                    }
+                    typeof callback === 'function' && callback();
+                }
+                else {
+                    store.commit(rootPaths.mutations.AUTH_MESSAGE, data.message);
+                    bus.$emit(events.Notifications.Error, data.message);
+                }
+            },
+            errorCallback: (jqXHR?: JQueryXHR, status?: string, error?: string) => {
+                store.commit(rootPaths.mutations.SESSION_STATUS, status);
+                store.commit(rootPaths.mutations.AUTH_MESSAGE, error);
+                bus.$emit(events.Notifications.Error, "Pinging server: " + error);
+                typeof callback === 'function' && callback();
+            }
+        };
+        api.get(request);
+    }
 }
 
 export const auth = new AuthCrap();
