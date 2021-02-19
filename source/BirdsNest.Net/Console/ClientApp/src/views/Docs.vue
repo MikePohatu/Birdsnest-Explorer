@@ -117,12 +117,27 @@ export default class Docs extends Vue {
 		});
 	}
 
+	//Separate movetoanchor function is required because the links won't be created at page load. 
+	//This is requried to run separately after content has finished loading
+	moveToAnchor(): void {
+		if (this.$route.hash) {
+			setTimeout(() => { //setTimeout so this will run after page has loaded and created id
+				const pathsplit = this.$route.hash.split("#");
+				if (pathsplit.length > 1) {
+					const id = document.getElementById(pathsplit[1]);
+					if (id !== null) { id.scrollIntoView(); } //check in case there is an invalid link
+				}
+			},10);
+		}
+	}
+
 	beforeMount(): void {
 		this.updateMarkdown(this.$route);
 	}
 
 	updated(): void {
 		this.updateLinks();
+		this.moveToAnchor();
 	}
 
 	@Watch("$route", { immediate: true, deep: true })
