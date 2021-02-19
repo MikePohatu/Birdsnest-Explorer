@@ -99,7 +99,7 @@ When you click the Neo4j install action and after it has finished installing, th
 
 Save these credentials in a secure location
 
-The BirdsNest Scanners and BirdsNest Console install actions will run through without any user input
+The Birdsnest Explorer Scanners and Console install actions will run through without any user input
 
 ---
 ### Post Install
@@ -113,7 +113,7 @@ If you entered the Neo4j database credentials above, you will see that the Neo4j
 ---
 #### Console Authentication
 
-When you click the 'BirdsNest Console Configuration' configure action, you will be prompted to enter details about your Active Directory domain that users will login against when using the Birdsnest Explorer web console. 
+When you click the 'Birdsnest Explorer Console Configuration' configure action, you will be prompted to enter details about your Active Directory domain that users will login against when using the Birdsnest Explorer web console. 
 
 * Name - the name that will appear in the web console
 * Domain - the FQDN of the domain or domain controller you wish to authenticate against

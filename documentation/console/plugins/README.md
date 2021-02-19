@@ -114,7 +114,7 @@ Each property for the data type must be defined in the **properties** object. Ea
 
 **type:** Defines the type of property as a string (default), number, or boolean. This will dictate the options available to the user when creating/editing conditions in the console [Advanced Search](/documentation/console/visualizer/advanced-search/README.md)
 
-**indexEnforced:** Specifies that an index set on that property cannot be edited/disabled in the [index editor](/documentation/console/admin/README.md#Index-Editor). The index may be required for a scan task to perform correctly.
+**indexEnforced:** Specifies that an index set on that property cannot be edited/disabled in the [index editor](/documentation/console/admin/README.md#index-editor). The index may be required for a scan task to perform correctly.
 
 ### Data Type Schema Definition
 Fields denoted with a $ are items to be configured. 
