@@ -22,9 +22,9 @@
   <ItemGroup>
     <PackageReference Include="CSharpVitamins.ShortGuid" Version="1.0.2" />
     <PackageReference Include="Microsoft.Extensions.Configuration.UserSecrets" Version="5.0.0" />
-    <PackageReference Include="Microsoft.Graph" Version="3.23.0" />
+    <PackageReference Include="Microsoft.Graph" Version="3.25.0" />
     <PackageReference Include="Microsoft.Graph.Auth" Version="1.0.0-preview.2" />
-    <PackageReference Include="Microsoft.Identity.Client" Version="4.25.0" />
+    <PackageReference Include="Microsoft.Identity.Client" Version="4.26.0" />
     <PackageReference Include="Neo4j.Driver" Version="1.7.2" />
     <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
   </ItemGroup>
