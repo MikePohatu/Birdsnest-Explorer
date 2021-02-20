@@ -87,7 +87,11 @@ export default class ScrollToTop extends Vue {
 
 	// When the user clicks on the button, scroll to the top of the document
 	topFunction() {
-		this.contentarea.scrollTop = 0; // For Safari
+		this.contentarea.scrollTo({
+			top: 0,
+			left: 0,
+			behavior: "smooth",
+		});
 	}
 }
 </script>

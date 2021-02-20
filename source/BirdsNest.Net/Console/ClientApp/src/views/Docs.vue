@@ -18,7 +18,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 <template>
 	<div id="docowrapper" class="page">
 		<div v-if="markdown !== defaultmd" class="page">
-			<vue-markdown :source="markdown" />
+			<vue-markdown :source="markdown"/>
 		</div>
 
 		<ScrollToTop />
@@ -108,12 +108,7 @@ export default class Docs extends Vue {
 		const headings: NodeListOf<HTMLHeadingElement> = docowrapper.querySelectorAll("h1, h2, h3, h4, h5, h6");
 		headings.forEach((h) => {
 			const id = h.innerText.replace(/ /g, "-").replace(/\./g, "").toLowerCase();
-
-			if (h.previousElementSibling === null || h.previousElementSibling.id !== id) {
-				const anchor: HTMLAnchorElement = document.createElement("a");
-				anchor.id = id;
-				h.parentElement.insertBefore(anchor, h);
-			}
+			h.id = id;
 		});
 	}
 
@@ -125,9 +120,9 @@ export default class Docs extends Vue {
 				const pathsplit = this.$route.hash.split("#");
 				if (pathsplit.length > 1) {
 					const id = document.getElementById(pathsplit[1]);
-					if (id !== null) { id.scrollIntoView(); } //check in case there is an invalid link
+					if (id !== null) { id.scrollIntoView({behavior: "smooth"}); } //check in case there is an invalid link
 				}
-			},10);
+			}, 500);
 		}
 	}
 
