@@ -14,6 +14,9 @@ These options are also presented in the menu available on the Birdsnest Explorer
 
 ![Menu](/documentation/image/console/menu.png)
 
+## Customization
+The Birdsnest Explorer console has some customization options to include branding and messaging for your environment. More details are provided in the [customization documentation](/documentation/console/customization/README.md)
+
 ## Plugins
 The Birdsnest Explorer Console includes a plugin infrastructure for extending functionality for your needs. This allows creating custom reports, styling custom data types in the Visualizer, and providing access to properties for those data types in Advanced Search. This is especially important if you are creating custom scanners to import data from your business systems. 
 

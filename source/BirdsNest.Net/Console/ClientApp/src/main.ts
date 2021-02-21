@@ -27,7 +27,7 @@ import Vue from "vue";
 import App from "./App.vue";
 import "./registerServiceWorker";
 import router from "./router";
-import store from "./store";
+import store, { rootPaths } from "./store";
 import i18n from './i18n';
 import FlagIcon from 'vue-flag-icon';
 import VueCookies from 'vue-cookies';
@@ -45,3 +45,4 @@ new Vue({
 
 $.ajaxSetup({ xhrFields: { withCredentials: true }, cache: false });
 $(document).foundation();
+store.dispatch(rootPaths.actions.INIT);

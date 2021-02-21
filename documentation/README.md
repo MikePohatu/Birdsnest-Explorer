@@ -14,6 +14,7 @@
         * [Advanced Search](/documentation/console/visualizer/advanced-search/README.md)
         * [Admin](/documentation/console/admin/README.md)
     * [Reports](/documentation/console/plugins/README.md#reports)
+    * [Customization](/documentation/console/customization/README.md)
     * [Plugins](/documentation/console/plugins/README.md)
 
 ## Online Resources

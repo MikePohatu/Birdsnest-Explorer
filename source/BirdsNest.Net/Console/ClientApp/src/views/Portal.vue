@@ -20,6 +20,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 		<div class="watermark">
 			<img src="/img/icons/logo.svg" height="512px" width="512px" />
 		</div>
+		<div v-html="bannerHtml" />
 		<p>{{ $t('word_Hi') }}{{ userName }}. {{ $t('portal.welcome') }}</p>
 
 		<div class="grid-x grid-margin-x" id="portalBoxes">
@@ -42,6 +43,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 			<router-link to="about">{{ $t('word_About') }}</router-link>
 			{{ $t('word_page') }}
 		</p>
+		<div v-html="footerHtml" />
 	</div>
 </template>
 
@@ -167,6 +169,14 @@ export default class Portal extends Vue {
 		} else {
 			return "";
 		}
+	}
+
+	get bannerHtml(): string {
+		return this.$store.state.customization.portal.banner;
+	}
+
+	get footerHtml(): string {
+		return this.$store.state.customization.portal.footer;
 	}
 }
 </script>

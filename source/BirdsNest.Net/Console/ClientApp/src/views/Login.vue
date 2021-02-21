@@ -17,7 +17,9 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 -->
 <template>
   <div class="login page">
+    <div v-html="bannerHtml" />
     <LoginCredentials />
+    <div v-html="footerHtml" />
   </div>
 </template>
 
@@ -31,6 +33,15 @@ import { routeDefs } from "@/router/index";
   components: { LoginCredentials }
 })
 export default class Login extends Vue {
+  get bannerHtml(): string {
+    return this.$store.state.customization.login.banner;
+  }
+
+  get footerHtml(): string {
+    return this.$store.state.customization.login.footer;
+  }
+
+
   created(): void {
     const unwatch = this.$store.watch(
       () => {

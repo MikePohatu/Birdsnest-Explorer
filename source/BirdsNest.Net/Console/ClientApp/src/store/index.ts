@@ -29,6 +29,12 @@ Vue.use(Vuex);
 export const rootPaths = {
   mutations: {
     AUTH_MESSAGE: "authMessage",
+    CUSTOMIZATION: {
+      LOGIN_BANNER: "loginBanner",
+      LOGIN_FOOTER: "loginFooter",
+      PORTAL_BANNER: "portalBanner",
+      PORTAL_FOOTER: "portalFooter"
+    },
     IS_AUTHORIZED: "isAuthorized",
     IS_ADMIN: "isAdmin",
     USERNAME: "username",
@@ -38,9 +44,12 @@ export const rootPaths = {
     SERVER_INFO_STATE: "serverInfoState",
     DEAUTH: "deAuth",
     SERVER_INFO: "serverInfo",
-    LOCALE: "locale"
+    LOCALE: "locale",
+    PROVIDERS: "providers"
   },
   actions: {
+    INIT: "init",
+    UPDATE_CUSTOMIZATION: "updateCustomization",
     UPDATE_PROVIDERS: "updateProviders",
     UPDATE_PLUGINS: "updatePlugins",
     UPDATE_AUTHENTICATED_DATA: "updateAuthedData",
@@ -56,6 +65,16 @@ export interface LanguageSelector {
 export interface RootState {
   auth: {
     message: string;
+  };
+  customization: {
+    login: {
+      banner: string;
+      footer: string;
+    };
+    portal: {
+      banner: string;
+      footer: string;
+    };
   };
   user: {
     isAuthorized: boolean;
@@ -78,6 +97,16 @@ export interface RootState {
 const state: RootState = {
   auth: {
     message: ""
+  },
+  customization: {
+    login: {
+      banner: "",
+      footer: ""
+    },
+    portal: {
+      banner: "",
+      footer: ""
+    }
   },
   user: {
     isAuthorized: false,
@@ -113,6 +142,18 @@ export default new Vuex.Store({
       i18n.locale = locale;
       state.locale = i18n.locale;
       Vue.prototype.$cookies.set("locale", i18n.locale);
+    },
+    loginBanner(state, bannerHtml: string) {
+      state.customization.login.banner = bannerHtml;
+    },
+    loginFooter(state, footerHtml: string) {
+      state.customization.login.footer = footerHtml;
+    },
+    portalBanner(state, bannerHtml: string) {
+      state.customization.portal.banner = bannerHtml;
+    },
+    portalFooter(state, footerHtml: string) {
+      state.customization.portal.footer = footerHtml;
     },
     isAuthorized(state, isauthenticated: boolean) {
       state.user.isAuthorized = isauthenticated;
@@ -151,11 +192,65 @@ export default new Vuex.Store({
     }
   },
   actions: {
+    init(context) {
+      context.dispatch(rootPaths.actions.UPDATE_CUSTOMIZATION);
+    },
+
+    updateCustomization(context) {
+      //login_banner
+      api.get({
+        url: "/static/customization/login_banner.htm",
+        successCallback: (data: string[]) => {
+          context.commit(rootPaths.mutations.CUSTOMIZATION.LOGIN_BANNER, data);
+        },
+        errorCallback: (jqXHR, status, error: string) => {
+          // eslint-disable-next-line
+          console.error(error);
+        },
+      });
+
+      //login_footer
+      api.get({
+        url: "/static/customization/login_footer.htm",
+        successCallback: (data: string[]) => {
+          context.commit(rootPaths.mutations.CUSTOMIZATION.LOGIN_FOOTER, data);
+        },
+        errorCallback: (jqXHR, status, error: string) => {
+          // eslint-disable-next-line
+          console.error(error);
+        },
+      });
+
+      //portal_banner
+      api.get({
+        url: "/static/customization/portal_banner.htm",
+        successCallback: (data: string[]) => {
+          context.commit(rootPaths.mutations.CUSTOMIZATION.PORTAL_BANNER, data);
+        },
+        errorCallback: (jqXHR, status, error: string) => {
+          // eslint-disable-next-line
+          console.error(error);
+        },
+      });
+
+      //portal_footer
+      api.get({
+        url: "/static/customization/portal_footer.htm",
+        successCallback: (data: string[]) => {
+          context.commit(rootPaths.mutations.CUSTOMIZATION.PORTAL_FOOTER, data);
+        },
+        errorCallback: (jqXHR, status, error: string) => {
+          // eslint-disable-next-line
+          console.error(error);
+        },
+      });
+    },
+
     updateProviders(context) {
       const request: Request = {
         url: "/api/account/providers",
         successCallback: (data: string[]) => {
-          context.commit('providers', data);
+          context.commit(rootPaths.mutations.PROVIDERS, data);
           context.commit(rootPaths.mutations.API_STATE, api.states.READY);
         },
         errorCallback: (jqXHR, status, error: string) => {

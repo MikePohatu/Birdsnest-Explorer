@@ -43,15 +43,27 @@ import NotificationIcon from "@/components/NotificationIcon.vue";
 	},
 })
 export default class App extends Vue {
+	custom: HTMLLinkElement = null;
+	customPath = "/static/customization/custom.css";
+
 	created() {
 		this.$store.dispatch(rootPaths.actions.UPDATE_PROVIDERS);
 		const storedlocale = this.$cookies.get("locale");
 		if (storedlocale !== null) {
 			this.$store.commit(rootPaths.mutations.LOCALE, storedlocale);
 		}
+
+		//get the custom css element. This is already defined in index.html
+		Array.from(document.head.getElementsByTagName("LINK")).some((child: HTMLLinkElement) => {
+			if (child.href.endsWith(this.customPath)) {
+				this.custom = child;
+				return true;
+			}
+		});
 	}
 
 	mounted() {
+		this.resetCustom();
 		window.addEventListener("resize", () => {
 			this.updateHeight();
 		});
@@ -60,6 +72,28 @@ export default class App extends Vue {
 		});
 
 		this.updateHeight();
+	}
+
+	updated(): void {
+		this.resetCustom();
+	}
+
+	// Make sure the custom css is always last so it 'wins'
+	resetCustom(): void {
+		if (this.custom.parentElement.lastElementChild !== this.custom) {
+			const style = document.createElement("link");
+			style.type = "text/css";
+			style.rel = "stylesheet";
+			style.href = this.customPath;
+
+			document.head.appendChild(style);
+			if (this.custom !== null) {
+				document.head.removeChild(this.custom);
+			} else {
+				console.error("custom.css definition missing");
+			}
+			this.custom = style;
+		}
 	}
 
 	//this is to allow for mobile devices which don't deal with vh height.
