@@ -1,0 +1,18 @@
+Version 1.0.2.0
+Release date: 22 Feb 2021
+
+*New features
+	Created documentation viewer in console. All repository documentation is now available from Docs in the menu
+	Added customization options in console. See Console Customization documentation for more details
+
+*Fixes
+	Fixed ServerInfo block not loading immediately
+
+*Updates
+	Updates to dependent packages:
+		NLog 4.7.2 -> 4.7.7
+		NLog.Web.AspNetCore 4.9.2 -> 4.10.0
+		Novell.Directory.Ldap.NETStandard 3.2.0 -> 3.6.0
+
+*Known issues
+	Docs is not supported on IE

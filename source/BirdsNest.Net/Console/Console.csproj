@@ -12,7 +12,7 @@
     <Product>BirdsNest</Product>
     <Copyright>20Road Limited 2020</Copyright>
     <AspNetCoreHostingModel>OutOfProcess</AspNetCoreHostingModel>
-    <Version>1.0.1</Version>
+    <Version>1.0.2</Version>
   </PropertyGroup>
 
   <ItemGroup>
@@ -187,7 +187,7 @@
   </Target>
 
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">
-    <Exec Command="rmdir /s /q &quot;$(ProjectDir)wwwroot\static\documentation&quot;&#xD;&#xA;xcopy /i /e /h /y &quot;$(SolutionDir)..\..\documentation&quot; &quot;$(ProjectDir)wwwroot\static\documentation&quot;" />
+    <Exec Command="rmdir /s /q &quot;$(ProjectDir)wwwroot\static\documentation&quot;&#xD;&#xA;xcopy /i /e /h /y &quot;$(ProjectDir)..\..\..\documentation&quot; &quot;$(ProjectDir)wwwroot\static\documentation&quot;" />
   </Target>
 
 </Project>
