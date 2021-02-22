@@ -78,6 +78,8 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 				<a href="https://vuejs.org/" target="_blank">vuejs.org</a>
 				<br />vue-cookies - 
 				<a href="https://github.com/cmp-cc/vue-cookies" target="_blank">cmp-cc</a>
+				<br />vue-markdown -
+				<a href="https://github.com/adapttive/vue-markdown" target="_blank">@adapttive</a>
 			</p>
 		</div>
 		<div class="cell auto"></div>
