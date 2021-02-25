@@ -102,9 +102,10 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 
 									<ul class="menu vertical nested">
 										<li
-											class="menu nested"
 											v-for="labelledNode in getNodeSublistByLabel(labelledNodeList, label)"
 											:key="labelledNode.dbId"
+											class="menu nested"
+											:title="labelledNode.labels.join(', ')"
 										>
 											{{ labelledNode.name }}<a v-on:click="addNode(labelledNode)" class="plus">(+)</a>
 										</li>
@@ -132,6 +133,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 											v-for="labelledNode in getNodeSublistByLabel(labelledNodeList, label)"
 											:key="labelledNode.dbId"
 											class="menu nested"
+											:title="labelledNode.labels.join(', ')"
 										>
 											{{ labelledNode.name }}<a v-on:click="addNode(labelledNode)" class="plus">(+)</a>
 										</li>
