@@ -17,13 +17,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 -->
 <template>
 	<div>
-		<div
-			class="title-bar portrait-bar grid-x"
-			data-responsive-toggle="full-bar"
-			data-hide-for="medium"
-			style="display: none"
-		>
-			<!-- <div class="cell small-2"></div> -->
+		<div class="title-bar hide-for-medium portrait-bar grid-x">
 			<div id="smallcrumbs" class="cell small-9">
 				<router-link :to="routeDefs.portal.path">{{ $t("Birdsnest_Explorer") }}</router-link>
 				<div>
@@ -49,7 +43,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 			</div>
 		</div>
 
-		<div class="top-bar landscape-bar" id="full-bar">
+		<div class="top-bar show-for-medium landscape-bar" id="full-bar">
 			<div class="landscape-bar-left">
 				<nav aria-label="You are here:" role="navigation">
 					<ul class="breadcrumbs">
