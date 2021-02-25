@@ -15,14 +15,13 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 import { ApiNode } from "../ApiNode";
-import { Dictionary } from 'vue-router/types/router';
 import { VForLabelledNodeList } from "./VForLabelledNodeList";
 
 export interface RelatedDetails {
     node: ApiNode;
-    inNodesByEdgeLabel: VForLabelledNodeList; //related edges by label
-    outNodesByEdgeLabel: VForLabelledNodeList; //related nodes by label
-    inNodesByLabel: VForLabelledNodeList; //related edges by label
-    outNodesByLabel: VForLabelledNodeList; //related nodes by label
-    relatedNodes: Dictionary<ApiNode>;  //db_id for key
+    relatedCount: number;
+    inNodesByEdgeLabel: VForLabelledNodeList; //inbound related nodes by edge label
+    outNodesByEdgeLabel: VForLabelledNodeList; //outbound related nodes by edge label
+    inNodesByLabel: VForLabelledNodeList; //inbound related nodes by label
+    outNodesByLabel: VForLabelledNodeList; //outbound related nodes by label
 }

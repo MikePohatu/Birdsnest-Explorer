@@ -18,30 +18,27 @@
 #endregion
 using System.Collections.Generic;
 using Console.Vue;
+using System.Linq;
 
 namespace Console.neo4jProxy
 {
     public class RelatedDetail
     {
-
+        private Dictionary<long, BirdsNestNode> _relatedNodes = new Dictionary<long, BirdsNestNode>();
 
         public BirdsNestNode Node { get; private set; }
 
-        public VForLabelledNodeList InNodesByEdgeLabel { get; private set; }
-            = new VForLabelledNodeList("InNodesByEdgeLabel");
-        public VForLabelledNodeList OutNodesByEdgeLabel { get; private set; }
-            = new VForLabelledNodeList("OutNodesByEdgeLabel");
-        public VForLabelledNodeList InNodesByLabel { get; private set; }
-            = new VForLabelledNodeList("InNodesByLabel");
-        public VForLabelledNodeList OutNodesByLabel { get; private set; }
-            = new VForLabelledNodeList("OutNodesByLabel");
-        public Dictionary<string, BirdsNestNode> RelatedNodes { get; private set; } = new Dictionary<string, BirdsNestNode>();
+        public int RelatedCount { get { return this._relatedNodes.Count; } }
+
+        public VForLabelledNodeList InNodesByEdgeLabel { get; private set; } = new VForLabelledNodeList("InNodesByEdgeLabel");
+        public VForLabelledNodeList OutNodesByEdgeLabel { get; private set; } = new VForLabelledNodeList("OutNodesByEdgeLabel");
+        public VForLabelledNodeList InNodesByLabel { get; private set; } = new VForLabelledNodeList("InNodesByLabel");
+        public VForLabelledNodeList OutNodesByLabel { get; private set; } = new VForLabelledNodeList("OutNodesByLabel");
 
 
         public RelatedDetail(BirdsNestNode node, ResultSet set)
         {
             this.Node = node;
-
             foreach (BirdsNestNode newnode in set.Nodes)
             {
                 this.AddRelatedNode(newnode);
@@ -54,64 +51,42 @@ namespace Console.neo4jProxy
 
         public void AddRelatedNode(BirdsNestNode node)
         {
-            if (this.RelatedNodes.ContainsKey(node.DbId.ToString()) == false)
+            if (this._relatedNodes.ContainsKey(node.DbId) == false)
             {
-                this.RelatedNodes.Add(node.DbId.ToString(), node);
+                this._relatedNodes.Add(node.DbId, node);
             }
         }
 
         public void AddDirectEdge(BirdsNestRelationship edge)
         {
-            Dictionary<string, List<long>> workinglist;
-            List<long> edgelist;
-            BirdsNestNode relatednode;
-            string dir = string.Empty;
-            bool inbound = false;
+            BirdsNestNode workingnode;
+            VForLabelledNodeList nodelist;
 
             //figure out inbound or outbound edge
             if (edge.Source == this.Node.DbId)
             {
-                this.RelatedNodes.TryGetValue(edge.Target.ToString(), out relatednode);
-                workinglist = this.OutNodesByEdgeLabel.LabelledNodes;
+                if (this._relatedNodes.TryGetValue(edge.Target, out workingnode) == false)
+                {
+                    throw new System.Exception("Unable to resolve target node with DbId: " + edge.Target);
+                }
+                nodelist = this.OutNodesByLabel;
+                this.OutNodesByEdgeLabel.AddNode(workingnode, edge.Label);
+                
             }
             else
             {
-                this.RelatedNodes.TryGetValue(edge.Source.ToString(), out relatednode);
-                workinglist = this.InNodesByEdgeLabel.LabelledNodes;
-                inbound = true;
-            }
-
-            //look for existing list for edge label, create and add if not theref
-            if (workinglist.TryGetValue(edge.Label, out edgelist))
-            {
-                edgelist.Add(relatednode.DbId);
-            }
-            else
-            {
-                List<long> newlist = new List<long>();
-                newlist.Add(relatednode.DbId);
-                workinglist.Add(edge.Label, newlist);
-            }
-
-            foreach (string label in relatednode.Labels)
-            {
-                if (inbound) { workinglist = this.InNodesByLabel.LabelledNodes; }
-                else { workinglist = this.OutNodesByLabel.LabelledNodes; }
-
-                List<long> nodelist;
-                if (workinglist.TryGetValue(label, out nodelist))
+                if (this._relatedNodes.TryGetValue(edge.Source, out workingnode) == false)
                 {
-                    nodelist.Add(relatednode.DbId);
+                    throw new System.Exception("Unable to resolve source node with DbId: " + edge.Source);
                 }
-                else
-                {
-                    List<long> newlist = new List<long>();
-                    newlist.Add(relatednode.DbId);
-                    workinglist.Add(label, newlist);
-                }
-
-
+                nodelist = this.InNodesByLabel;
+                this.InNodesByEdgeLabel.AddNode(workingnode, edge.Label);
             }
+
+            foreach (string label in workingnode.Labels)
+            {
+                nodelist.AddNode(workingnode, label);
+            } 
         }
     }
 }

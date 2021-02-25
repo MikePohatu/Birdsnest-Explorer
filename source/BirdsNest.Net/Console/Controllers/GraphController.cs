@@ -56,6 +56,15 @@ namespace Console.Controllers
             return rs.Nodes.First();
         }
 
+        // GET api/graph/node/<id>/related
+        [HttpGet("node/{id}/related")]
+        public async Task<List<BirdsNestNode>> GetRelatedNodesAsync(long id)
+        {
+            ResultSet rs = await this._service.GetRelatedNodesAsync(id);
+            return rs.Nodes;
+        }
+
+
         // GET api/graph/node/related?id=1&id=2
         [HttpGet("node/related")]
         public async Task<List<RelatedDetail>> GetRelatedAsync([FromQuery(Name = "id")]List<long> ids)

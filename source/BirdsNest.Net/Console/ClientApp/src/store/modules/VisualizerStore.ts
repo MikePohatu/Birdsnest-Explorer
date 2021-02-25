@@ -89,6 +89,10 @@ export const VisualizerStorePaths = {
   },
   actions: {
     INIT: "visualizer/init",
+    Request: {
+      NODE_ID: "visualizer/requestNodeId",
+      RELATED_NODES: "visualizer/requestRelatedNodes"
+    }
   }
 }
 
@@ -167,6 +171,32 @@ export const VisualizerStore: Module<VisualizerState, RootState> = {
         }
       };
       api.get(subtyperequest);
+    },
+    requestNodeId(context, id: number) {
+      const request: Request = {
+        url: "api/graph/node/"+ id,
+        successCallback: (data?: ApiNode) => {
+          context.commit("addPendingNode", data);
+        },
+        errorCallback: (jqXHR?: JQueryXHR, status?: string, error?: string) => {
+          // eslint-disable-next-line
+          console.error(error);
+        }
+      };
+      api.get(request);
+    },
+    requestRelatedNodes(context, id: number) {
+      const request: Request = {
+        url: "api/graph/node/"+ id + "/related",
+        successCallback: (data?: ApiNode[]) => {
+          context.commit("addPendingNodes", data);
+        },
+        errorCallback: (jqXHR?: JQueryXHR, status?: string, error?: string) => {
+          // eslint-disable-next-line
+          console.error(error);
+        }
+      };
+      api.get(request);
     }
   }
 };

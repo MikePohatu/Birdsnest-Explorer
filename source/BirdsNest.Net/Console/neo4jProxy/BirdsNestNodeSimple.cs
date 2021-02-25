@@ -1,3 +1,4 @@
+﻿#region license
 // Copyright (c) 2019-2020 "20Road"
 // 20Road Limited [https://www.20road.com]
 //
@@ -14,14 +15,18 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
-import { Dictionary } from 'vue-router/types/router';
+#endregion
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
-//BirdsNestNode definition
-export interface ApiNode {
-    
-    dbId: string;
-    name: string;
-    labels: string[];
-    scope: number;
-    properties: Dictionary<string | number | boolean>;
+namespace Console.neo4jProxy
+{
+    public class BirdsNestNodeSimple
+    {
+        public long DbId { get; set; }
+        public string Name { get; set; }
+        public List<string> Labels { get; set; }
+    }
 }

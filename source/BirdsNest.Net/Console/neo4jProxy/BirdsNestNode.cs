@@ -54,5 +54,14 @@ namespace Console.neo4jProxy
 
             return newnode;
         }
+
+        public BirdsNestNodeSimple GetSimple()
+        {
+            var simple = new BirdsNestNodeSimple();
+            simple.Name = this.Name;
+            simple.DbId = this.DbId;
+            simple.Labels = this.Labels;
+            return simple;
+        }
     }
 }
