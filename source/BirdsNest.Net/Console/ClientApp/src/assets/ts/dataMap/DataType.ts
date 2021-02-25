@@ -21,7 +21,7 @@ export interface DataType {
         propertyNames: string [];
         properties: Dictionary<Property>;
         default: string;
-        SubType: string;
+        subTypes: string[];
         displayName: string;
         description: string;
         icon: string;

@@ -15,6 +15,9 @@
       "properties": {
         "mobile": {}
       }
+    },
+    "AD_Group": {
+      "subTypes": [ "domainid" ]
     }
   }
 }

@@ -42,7 +42,7 @@ namespace Console.Plugins
         public SortedDictionary<string,Property> Properties { get; set; } = new SortedDictionary<string, Property>();
 
         public string Default { get; set; } = string.Empty;
-        public string SubType { get; set; } = string.Empty;
+        public List<string> SubTypes { get; set; } = new List<string>();
         public string DisplayName { get; set; } = string.Empty;
         public string Description { get; set; } = string.Empty;
         public string Icon { get; set; } = string.Empty;

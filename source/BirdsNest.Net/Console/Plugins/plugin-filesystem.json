@@ -44,7 +44,7 @@
         "right": {}
       },
       "default": "accesstype",
-      "subType": "accesstype"
+      "subTypes": [ "accesstype" ]
     },
     "FS_APPLIES_INHERITANCE_TO": {
       "displayName": "File System - FS_APPLIES_INHERITANCE_TO"

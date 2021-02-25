@@ -55,7 +55,7 @@
         "scannerid": {},
         "type": {}
       },
-      "subType": "type",
+      "subTypes": [ "type" ],
       "Default": "name",
       "icon": "f500"
     },

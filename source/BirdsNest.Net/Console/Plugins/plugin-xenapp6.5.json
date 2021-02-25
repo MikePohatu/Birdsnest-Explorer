@@ -30,13 +30,13 @@
       "displayName": "Citrix - CTX_Farm",
       "description": "Citrix farm",
       "icon": "f233",
-      "subType": "farm"
+      "subTypes": [ "farm" ]
     },
     "CTX_Application": {
       "displayName": "Citrix - CTX_Application",
       "description": "Citrix application",
       "icon": "f24d",
-      "subType": "farm"
+      "subTypes": [ "farm" ]
     }
   }
 }

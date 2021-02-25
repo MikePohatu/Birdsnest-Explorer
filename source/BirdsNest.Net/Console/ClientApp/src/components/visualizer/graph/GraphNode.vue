@@ -17,8 +17,8 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 -->
 <template>
 	<g
-		:id="'node_'+node.dbId"
-		:class="['nodes', node.labels, subTypes, node.enabled ? 'enabled' : 'disabled', { 'selected' : node.selected }]"
+		:id="'node_' + node.dbId"
+		:class="['nodes', node.labels, subTypes, node.enabled ? 'enabled' : 'disabled', { selected: node.selected }]"
 		draggable="true"
 		cursor="pointer"
 		:transform="translate"
@@ -27,38 +27,31 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 		v-on:click.ctrl.exact.prevent="onNodeCtrlClicked"
 		v-on:contextmenu.prevent="onNodeCtrlClicked"
 	>
-		<circle
-			:id="'node_'+node.dbId + '_icon'"
-			class="nodecircle"
-			:r="radius"
-			:cx="radius"
-			:cy="radius"
-		></circle>
-		
+		<circle :id="'node_' + node.dbId + '_icon'" class="nodecircle" :r="radius" :cx="radius" :cy="radius"></circle>
+
 		<text
 			:font-size="radius"
 			:x="radius"
-			:y="radius*1.05"
+			:y="radius * 1.05"
 			dy="0.3em"
 			:class="[node.labels, subTypes, 'icon', 'noselect']"
 			v-html="icon"
 		></text>
+		<text class="nodetext noselect" text-anchor="middle" dominant-baseline="central" :transform="textTranslate">{{
+			node.name
+		}}</text>
 		<text
-			class="nodetext noselect"
+			class="tooltip nodetext noselect"
 			text-anchor="middle"
 			dominant-baseline="central"
-			:transform="textTranslate"
-		>{{node.name}}</text>
-		<text 
-			class="tooltip nodetext noselect" 
-			text-anchor="middle"
-			dominant-baseline="central"
-			:transform="tooltipTranslate" 
-			:font-size="radius">{{toolTip}}</text>
+			:transform="tooltipTranslate"
+			:font-size="radius"
+			>{{ toolTip }}</text
+		>
 
 		<g v-show="pinned" class="pin" v-on:click.stop="onPinClicked">
-			<circle :r="radius/2.5" :cx="radius/4" :cy="radius/4"></circle>
-			<text :x="radius/4" :y="radius/2.1" :font-size="radius/2" class="icon">&#xf08d;</text>
+			<circle :r="radius / 2.5" :cx="radius / 4" :cy="radius / 4"></circle>
+			<text :x="radius / 4" :y="radius / 2.1" :font-size="radius / 2" class="icon">&#xf08d;</text>
 		</g>
 	</g>
 </template>
@@ -70,12 +63,13 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 }
 
 .nodes:hover .tooltip {
-  opacity:1;
-  transition-delay:0.7s;
+	opacity: 1;
+	transition-delay: 0.7s;
 }
 </style>
 <script lang="ts">
 import { Component, Vue, Prop } from "vue-property-decorator";
+import { Dictionary } from "vue-router/types/router";
 import { SimNode } from "@/assets/ts/visualizer/SimNode";
 import { d3 } from "@/assets/ts/visualizer/d3";
 import { bus, events } from "@/bus";
@@ -94,29 +88,31 @@ export default class GraphNode extends Vue {
 	}
 
 	get subTypes(): string[] {
-		const subTypes: string[] = [];
-		const subTypeProps = this.$store.state.pluginManager.subTypeProperties;
+		const finalSubTypes: string[] = [];
+		const subTypeProps: Dictionary<string[]> = this.$store.state.pluginManager.subTypeProperties;
 
-		this.node.labels.forEach(label => {
+		this.node.labels.forEach((label) => {
 			if (Object.prototype.hasOwnProperty.call(subTypeProps, label)) {
-				const subProp = subTypeProps[label];
+				const subProps = subTypeProps[label];
 
-				if (Object.prototype.hasOwnProperty.call(this.node.properties, subProp)) {
-					const subType = this.node.properties[subProp].toString();
+				subProps.forEach((subProp: string) => {
+					if (Object.prototype.hasOwnProperty.call(this.node.properties, subProp)) {
+						const subType: string = webcrap.misc.cleanCssClassName(this.node.properties[subProp] as string);
 
-					if (webcrap.misc.isNullOrWhitespace(subType) === false) {
-						subTypes.push(label + "-" + subType);
+						if (webcrap.misc.isNullOrWhitespace(subType) === false) {
+							finalSubTypes.push(label + "-" + subType);
+						}
 					}
-				}
+				});
 			}
 		});
 
-		return subTypes;
+		return finalSubTypes;
 	}
 
 	get icon(): string {
 		const mappings = this.$store.state.visualizer.iconMappings;
-		return "&#x"+ mappings.getMappingFromArray(this.node.labels) + ";";
+		return "&#x" + mappings.getMappingFromArray(this.node.labels) + ";";
 	}
 
 	get pinned(): boolean {
@@ -145,7 +141,7 @@ export default class GraphNode extends Vue {
 	}
 
 	get toolTip(): string {
-		return this.node.labels.join(', ');
+		return this.node.labels.join(", ");
 	}
 
 	onPinClicked(): void {

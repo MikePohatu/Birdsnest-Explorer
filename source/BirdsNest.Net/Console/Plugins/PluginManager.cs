@@ -40,7 +40,7 @@ namespace Console.Plugins
         public int ExtensionCount { get { return this.Extensions.Count; } }
         public SortedDictionary<string, string> NodeDisplayNames { get; private set; } = new SortedDictionary<string, string>();
         public SortedDictionary<string, string> EdgeDisplayNames { get; private set; } = new SortedDictionary<string, string>();
-        public Dictionary<string, string> SubTypeProperties { get; private set; } = new Dictionary<string, string>();
+        public Dictionary<string, List<string>> SubTypeProperties { get; private set; } = new Dictionary<string, List<string>>();
         public Dictionary<string, string> Icons { get; private set; } = new Dictionary<string, string>();
         public SortedDictionary<string, DataType> NodeDataTypes { get; private set; } = new SortedDictionary<string, DataType>();
         public SortedDictionary<string, List<string>> NodeProperties { get; private set; } = new SortedDictionary<string, List<string>>();
@@ -66,7 +66,7 @@ namespace Console.Plugins
             var extensions = new SortedDictionary<string, Plugin>();
 
             var icons = new Dictionary<string, string>();
-            var subtypes = new Dictionary<string, string>();
+            var subtypes = new Dictionary<string, List<string>>();
             var nodedatatypes = new SortedDictionary<string, DataType>();
             var nodeprops = new SortedDictionary<string, List<string>>();
             var edgedatatypes = new SortedDictionary<string, DataType>();
@@ -185,7 +185,7 @@ namespace Console.Plugins
                 {
                     foreach (string key in plug.NodeDataTypes.Keys)
                     {
-                        var datatype = plug.NodeDataTypes[key];
+                        DataType datatype = plug.NodeDataTypes[key];
 
                         if (datatype != null)
                         {
@@ -204,11 +204,18 @@ namespace Console.Plugins
                                 this._logger.LogError("Error loading display name for label: " + key);
                             }
 
-                            if (string.IsNullOrWhiteSpace(datatype.SubType) == false)
+                            if (datatype.SubTypes.Count > 0)
                             {
-                                if (!subtypes.TryAdd(key, datatype.SubType))
+                                List<string> outsubs;
+                                if (subtypes.TryGetValue(key, out outsubs)) {
+                                    outsubs.AddRange(datatype.SubTypes);
+                                }
+                                else
                                 {
-                                    this._logger.LogError("Error loading subtype: " + key);
+                                    if (!subtypes.TryAdd(key, datatype.SubTypes))
+                                    {
+                                        this._logger.LogError("Error loading subtype: " + key);
+                                    }
                                 }
                             }
 
@@ -242,11 +249,19 @@ namespace Console.Plugins
                                 this._logger.LogError("Error loading properties for label: " + key);
                             }
 
-                            if (string.IsNullOrWhiteSpace(propdeets.SubType) == false)
+                            if (propdeets.SubTypes.Count > 0)
                             {
-                                if (!subtypes.TryAdd(key, propdeets.SubType))
+                                List<string> outsubs;
+                                if (subtypes.TryGetValue(key, out outsubs))
                                 {
-                                    this._logger.LogError("Error loading subtype: " + key);
+                                    outsubs.AddRange(propdeets.SubTypes);
+                                }
+                                else
+                                {
+                                    if (!subtypes.TryAdd(key, propdeets.SubTypes))
+                                    {
+                                        this._logger.LogError("Error loading subtype: " + key);
+                                    }
                                 }
                             }
                         }
@@ -269,17 +284,25 @@ namespace Console.Plugins
         }
 
 
-        public void Extend(DataType type, DataType extendingtype)
+        public void Extend(DataType datatype, DataType extendingtype)
         {
             foreach (string propname in extendingtype.Properties.Keys)
             {
-                if (type.Properties.ContainsKey(propname) == false)
+                if (datatype.Properties.ContainsKey(propname) == false)
                 {
-                    type.Properties.Add(propname, extendingtype.Properties[propname]);
+                    datatype.Properties.Add(propname, extendingtype.Properties[propname]);
                 }
                 else
                 {
                     this._logger.LogWarning($"Property definition already exists: {propname}");
+                }
+            }
+
+            foreach (string subtype in extendingtype.SubTypes)
+            {
+                if (datatype.SubTypes.Contains(subtype)==false)
+                {
+                    datatype.SubTypes.Add(subtype);
                 }
             }
         }

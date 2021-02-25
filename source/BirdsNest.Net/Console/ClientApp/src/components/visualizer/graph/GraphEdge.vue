@@ -19,21 +19,16 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 	<g
 		visibility="hidden"
 		:id="'edge_' + edge.dbId"
-		:class="['edges', edge.label, subType, {'selected': edge.selected}, [ edge.enabled ? 'enabled' : 'disabled' ]]"
+		:class="['edges', edge.label, subTypes, { selected: edge.selected }, [edge.enabled ? 'enabled' : 'disabled']]"
 		v-on:click.exact.prevent="onEdgeClicked"
 		v-on:click.ctrl.exact.prevent="onEdgeCtrlClicked"
 		v-on:contextmenu.prevent="onEdgeCtrlClicked"
 	>
-		<path
-			:class="['arrows', edge.label, subType]"
-		></path>
+		<path :class="['arrows', edge.label, subTypes]"></path>
 		<g class="edgelabel">
-			<text
-				class="noselect"
-				dominant-baseline="text-bottom"
-				text-anchor="middle"
-				transform="translate(0,-5)"
-			>{{edge.label}}</text>
+			<text class="noselect" dominant-baseline="text-bottom" text-anchor="middle" transform="translate(0,-5)">{{
+				edge.label
+			}}</text>
 		</g>
 	</g>
 </template>
@@ -41,8 +36,8 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 <script lang="ts">
 import { Component, Vue, Prop } from "vue-property-decorator";
 import { d3 } from "@/assets/ts/visualizer/d3";
-import { SimLink } from '@/assets/ts/visualizer/SimLink';
-import { SimNode } from '@/assets/ts/visualizer/SimNode';
+import { SimLink } from "@/assets/ts/visualizer/SimLink";
+import { SimNode } from "@/assets/ts/visualizer/SimNode";
 import { bus, events } from "@/bus";
 import webcrap from "@/assets/ts/webcrap/webcrap";
 
@@ -53,18 +48,20 @@ export default class GraphEdge extends Vue {
 
 	isSelected = false;
 
-	get subType(): string {
+	get subTypes(): string {
 		const subTypeProps = this.$store.state.pluginManager.subTypeProperties;
 
-		if (Object.prototype.hasOwnProperty.call(subTypeProps,this.edge.label)) {
-			const subProp: string = subTypeProps[this.edge.label];
-			const subType = String(this.edge.properties[subProp]);
+		if (Object.prototype.hasOwnProperty.call(subTypeProps, this.edge.label)) {
+			const subProps: string[] = subTypeProps[this.edge.label];
 
-			if (webcrap.misc.isNullOrWhitespace(subType) === false) {
-				return this.edge.label + '-'+ subType;
-			}
+			subProps.forEach((subType: string) => {
+				const sub = webcrap.misc.cleanCssClassName(subType);
+				if (webcrap.misc.isNullOrWhitespace(sub) === false) {
+					return this.edge.label + "-" + sub;
+				}
+			});
 		}
-		
+
 		return "";
 	}
 

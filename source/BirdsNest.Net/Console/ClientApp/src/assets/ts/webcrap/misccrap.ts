@@ -83,6 +83,12 @@ class MiscCrap {
     isIE(): boolean {
         return window.navigator.userAgent.match(/(MSIE|Trident)/) !== null;
     }
+
+    //strip css identifier tags from a string
+    cleanCssClassName(className: string): string {
+        return className.replace(".", "-").replace("#", "-").replace(":", "-").replace(" ", "-").replace(">", "-").replace("+", "-").replace(",", "-")
+            .replace("|=", "-").replace("^=", "-").replace("$=", "-").replace("*=", "-").replace("=", "-").replace("*", "-").replace("~", "-");
+    }
 }
 
 export default new MiscCrap();

@@ -23,7 +23,7 @@ export default interface PluginManager {
     extensionCount: number;
     nodeDisplayNames: Dictionary<string>;
     edgeDisplayNames: Dictionary<string>;
-    subTypeProperties: Dictionary<string>;
+    subTypeProperties: Dictionary<string[]>;
     icons: Dictionary<string>;
     nodeDataTypes: Dictionary<DataType>;
     nodeProperties: Dictionary<string[]>;

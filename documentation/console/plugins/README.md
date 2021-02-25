@@ -89,17 +89,19 @@ These classes can be used to apply [styling](#styling) to the items using the pl
 ### Sub-Types
 In some cases, it is useful to further break up a data-type into smaller groups. An example of this is Active Directory groups which can be Security or Distribution, and additionally Domain Local, Global, or Universal. 
 
-If a sub-type is required, a property is chosen as the 'sub-type property'. The value of this property will become the sub-type.
+If one or more sub-types are required, a property is chosen as a 'sub-type property'. The value of this property will become a sub-type. The plugin can define a list of sub-types.
 
-The data-type and the sub-type are joined together with a dash (-) and added as a CSS class on the HTML/SVG element. 
+The data-type and each sub-type are joined together with a dash (-) and added as a CSS class on the HTML/SVG element. 
 
 For example, on an AD_Group, the sub-type property is 'grouptype'. The value of the 'grouptype' property may have a value of 'security_global', 'security_domainlocal', etc. 
 
 An AD_Group node with a 'grouptype' of 'security_domainlocal' will have the following css class added:
 
 ```
-AD_Group-security_domainlocal
+AD_Group-security_domainlocal*
 ```
+
+_*Note: Any characters found in the sub-type value that are [css selectors](https://www.w3schools.com/cssref/css_selectors.asp), e.g. period, tilde, colon, will be automatically replaced with a '-' character. For example a value of 'demo.local' will be replaced in the css class name with 'demo-local'._
 
 This new css class allows the node or edge to be [styled](#styling) differently from the parent type or other sub-types. 
 
@@ -131,7 +133,7 @@ Fields denoted with a $ are items to be configured.
             }
         },
         "default": "$default_property_name_for_search",
-        "subType": "$sub-type-property",
+        "subTypes": ["$sub-type-property1", "$sub-type-property2"],
         "icon": "$font_awesome_icon_unicode"
     }
 }
@@ -168,7 +170,7 @@ Fields denoted with a $ are items to be configured.
                 }
             },
             "default": "samaccountname",
-            "subType": "grouptype",
+            "subTypes": ["grouptype"],
             "icon": "f500"
         }
     },
