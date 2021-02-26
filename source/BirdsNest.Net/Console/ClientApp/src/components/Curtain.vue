@@ -20,8 +20,8 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 	<div v-if="authorizationRequired">
 		<div id="curtain" />
 		<div id="curtainoverlay">
-      <!-- Avoid conflicts with ids. -->
-			<LoginCredentials v-if="!isPageAuthorized" class="xy-center" />
+      	<!-- Avoid conflicts with ids. -->
+			<LoginCredentials v-if="notLoginPage" class="xy-center" />
 		</div>
 	</div>
 </template>

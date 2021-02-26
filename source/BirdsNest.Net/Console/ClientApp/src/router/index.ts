@@ -197,8 +197,7 @@ const router = new VueRouter({
 });
 
 router.beforeEach((to, from, next) => {
-  if (to.meta.allowAnonymous === true) {
-    auth.softPing(); // do an auth ping to make sure all is OK e.g. menus stay current
+  if (to.meta.allowAnonymous === true) {    
     if (to.name === routeDefs.docs.name && webcrap.misc.isIE() === false) {
       const path = to.path.split("#")[0];
 
@@ -229,10 +228,11 @@ router.beforeEach((to, from, next) => {
             });
           });
         }
-
+        auth.softPing(); // do softPing after redirects 
         next();
       }
     } else {
+      auth.softPing(); // do an auth ping to make sure all is OK e.g. menus stay current
       next();
     }
   } else {
