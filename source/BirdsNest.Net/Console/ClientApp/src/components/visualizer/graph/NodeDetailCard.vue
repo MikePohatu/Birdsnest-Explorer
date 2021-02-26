@@ -260,11 +260,6 @@ export default class NodeDetailCard extends Vue {
 		}
 	}
 
-	beforeDestoyed() {
-		$("#relatedAccordion").foundation("_destroy");
-		$("#propsAccordion").foundation("_destroy");
-	}
-
 	//this function is primarily to provide logic based on the initRun variable
 	//which provides a delay when needed for rendering to happen in the right sequence
 	get details(): RelatedDetails {

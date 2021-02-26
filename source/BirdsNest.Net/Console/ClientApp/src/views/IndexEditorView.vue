@@ -203,10 +203,6 @@ export default class IndexEditorView extends Vue {
 		}
 	}
 
-	beforeDestoyed() {
-		$(this.$el).foundation("_destroy");
-	}
-
 	pluginHasProperties(plugin: Plugin) {
 		const dataTypeNames = Object.keys(plugin.nodeDataTypes);
 		for (let i = 0; i < dataTypeNames.length; i++) {
