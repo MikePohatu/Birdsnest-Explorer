@@ -38,7 +38,7 @@ class AuthCrap {
         }
 
         bus.$emit(events.Notifications.Processing, "Logging in");
-        
+
         const request: Request = {
             url: "/api/account/login",
             data: logindetails,

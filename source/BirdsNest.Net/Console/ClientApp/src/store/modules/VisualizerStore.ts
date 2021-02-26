@@ -20,7 +20,7 @@ import { RootState } from "../index";
 import Mappings from '@/assets/ts/visualizer/Mappings';
 import { api, Request } from "@/assets/ts/webcrap/apicrap";
 import { ResultSet } from '@/assets/ts/dataMap/ResultSet';
-import {ApiNode} from "@/assets/ts/dataMap/ApiNode";
+import { ApiNode } from "@/assets/ts/dataMap/ApiNode";
 //import { Dictionary } from 'vue-router/types/router';
 
 export interface VisualizerState {
@@ -61,7 +61,7 @@ const state: VisualizerState = {
 
 export const VisualizerStorePaths = {
   mutations: {
-    
+
 
     Add: {
       PENDING_RESULTS: "visualizer/addPendingResults",
@@ -174,7 +174,7 @@ export const VisualizerStore: Module<VisualizerState, RootState> = {
     },
     requestNodeId(context, id: number) {
       const request: Request = {
-        url: "api/graph/node/"+ id,
+        url: "api/graph/node/" + id,
         successCallback: (data?: ApiNode) => {
           context.commit("addPendingNode", data);
         },
@@ -187,7 +187,7 @@ export const VisualizerStore: Module<VisualizerState, RootState> = {
     },
     requestRelatedNodes(context, id: number) {
       const request: Request = {
-        url: "api/graph/node/"+ id + "/related",
+        url: "api/graph/node/" + id + "/related",
         successCallback: (data?: ApiNode[]) => {
           context.commit("addPendingNodes", data);
         },

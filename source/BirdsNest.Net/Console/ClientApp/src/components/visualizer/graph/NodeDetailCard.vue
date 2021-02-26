@@ -35,10 +35,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 							</span>
 						</a>
 					</div>
-					<div
-						class="cell small-1"
-						:title="$tc('visualizer.details.add_related', relatedNodeCount)"
-					>
+					<div class="cell small-1" :title="$tc('visualizer.details.add_related', relatedNodeCount)">
 						<a v-on:click="onExpandClicked()">
 							<i class="cell fas fa-expand-arrows-alt small-2"></i>
 						</a>
@@ -377,7 +374,7 @@ export default class NodeDetailCard extends Vue {
 			api.get(request);
 		});
 	}
-	
+
 	initDetails(): void {
 		const url = "/api/graph/node/related?id=" + this.node.dbId;
 		const request: Request = {
@@ -398,7 +395,6 @@ export default class NodeDetailCard extends Vue {
 		api.get(request);
 		this.initRun = true;
 	}
-
 
 	//Menu/list expansion code
 	getNodeSublistByLabel(list: VForLabelledNodeList, label: string): ApiNodeSimple[] {
@@ -426,7 +422,7 @@ export default class NodeDetailCard extends Vue {
 			console.error(expLabel + " not found in labelExpands list ");
 			console.log({
 				labelExpands: this.labelExpands,
-				expLabel: expLabel
+				expLabel: expLabel,
 			});
 			return false;
 		} else if (list.labelledNodes[label].length < 10) {

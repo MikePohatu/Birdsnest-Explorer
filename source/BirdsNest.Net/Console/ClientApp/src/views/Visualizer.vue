@@ -30,7 +30,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 		<EdgeEdit v-if="editEdge !== null" :source="editEdge" />
 		<ValueConditionEdit v-if="editValCond !== null" :source="editValCond" />
 		<AndOrConditionEdit v-if="editAndOrCondition !== null" :source="editAndOrCondition" />
-		<NewConditionSelect v-if="newConditionParent !== null " />
+		<NewConditionSelect v-if="newConditionParent !== null" />
 	</div>
 </template>
 
@@ -65,7 +65,7 @@ import { Route } from "vue-router";
 import webcrap from "@/assets/ts/webcrap/webcrap";
 import { SearchStorePaths } from "@/store/modules/SearchStore";
 import { ApiNode } from "@/assets/ts/dataMap/ApiNode";
-import { VisualizerStorePaths } from '../store/modules/VisualizerStore';
+import { VisualizerStorePaths } from "../store/modules/VisualizerStore";
 import LStore from "@/assets/ts/LocalStorageManager";
 
 @Component({

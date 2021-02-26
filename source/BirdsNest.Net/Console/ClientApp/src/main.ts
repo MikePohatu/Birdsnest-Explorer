@@ -14,13 +14,13 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
-import $ from 'jquery';
+import $ from "jquery";
 
-require('@fortawesome/fontawesome-free/css/all.min.css');
-import 'foundation-sites';
+require("@fortawesome/fontawesome-free/css/all.min.css");
+import "foundation-sites";
 
-import 'motion-ui/dist/motion-ui.css';
-import 'foundation-sites/dist/css/foundation.css';
+import "motion-ui/dist/motion-ui.css";
+import "foundation-sites/dist/css/foundation.css";
 
 import Vue from "vue";
 
@@ -28,9 +28,9 @@ import App from "./App.vue";
 import "./registerServiceWorker";
 import router from "./router";
 import store, { rootPaths } from "./store";
-import i18n from './i18n';
-import FlagIcon from 'vue-flag-icon';
-import VueCookies from 'vue-cookies';
+import i18n from "./i18n";
+import FlagIcon from "vue-flag-icon";
+import VueCookies from "vue-cookies";
 
 Vue.use(FlagIcon);
 Vue.use(VueCookies);
