@@ -98,7 +98,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 				<li>
 					<a href="#" v-on:click="bus.$emit(controlEvents.Export)">{{ $t('visualizer.menu.export_report') }}</a>
 				</li>
-				<li>
+				<li v-if="!isIE">
 					<a href="#" v-on:click="onSvgDownloadClicked()" :title="exportSvgTooltip">{{ $t('visualizer.menu.export_svg') }}</a>
 				</li>
 			</ul>
@@ -227,6 +227,10 @@ export default class ViewControls extends Vue {
 	bus = bus;
 	controlEvents = events.Visualizer.Controls;
 	searchVal = "";
+
+	get isIE(): boolean {
+		return webcrap.misc.isIE();
+	}
 
 	get exportSvgTooltip(): string {
 		const basemessage = "Export to Scalar Vector Graphics (SVG) file format. Files require FontAwesome Free fonts.";
