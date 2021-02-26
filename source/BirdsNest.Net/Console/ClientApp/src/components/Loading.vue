@@ -20,7 +20,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
         <div class="grid-x">
             <div class="cell auto" />
             <div class="cell shrink">
-                <img class="spinner" src="/img/icons/logo.svg" height="64px" width="64px" />
+                <img class="spinner" src="/img/icons/logo.svg" height="48px" width="48px" />
             </div>
             <div class="cell auto" />
         </div>

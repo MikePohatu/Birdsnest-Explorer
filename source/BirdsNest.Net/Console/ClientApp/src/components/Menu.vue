@@ -28,6 +28,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 							<router-link :to="routeDefs.portal.path">{{ $t('word_Home') }}</router-link>
 							<router-link v-if="isAdmin" :to="routeDefs.admin.path">{{ $t('word_Admin') }}</router-link>
 							<router-link :to="routeDefs.reports.path">{{ $t('word_Reports') }}</router-link>
+							<router-link :to="routeDefs.info.path">{{ $t('phrase_Server_Information') }}</router-link>
 							<router-link :to="routeDefs.visualizer.path">{{ $t('word_Visualizer') }}</router-link>
 							<hr>
 							<router-link :to="routeDefs.about.path">{{ $t('word_About') }}</router-link>
