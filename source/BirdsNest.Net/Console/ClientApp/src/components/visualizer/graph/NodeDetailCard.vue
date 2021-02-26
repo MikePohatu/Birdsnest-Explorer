@@ -222,7 +222,7 @@ import { RelatedDetails } from "@/assets/ts/dataMap/visualizer/RelatedDetails";
 import { VForLabelledNodeList } from "@/assets/ts/dataMap/visualizer/VForLabelledNodeList";
 import { Request, api } from "@/assets/ts/webcrap/apicrap";
 import $ from "jquery";
-import "foundation-sites/dist/js/foundation.es6";
+import "foundation-sites";
 import { SimNode } from "@/assets/ts/visualizer/SimNode";
 import { VisualizerStorePaths } from "@/store/modules/VisualizerStore";
 import { ApiNodeSimple } from "@/assets/ts/dataMap/ApiNodeSimple";
