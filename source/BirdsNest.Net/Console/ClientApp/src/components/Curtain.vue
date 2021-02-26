@@ -16,13 +16,14 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see http://www.gnu.org/licenses/.
 -->
 <template>
-  <!-- no curtain on login page please. Also avoid conflicts with ids. -->
-  <div v-if="notLoginPage" >
-    <div id="curtain" />
-    <div id="curtainoverlay">
-      <LoginCredentials v-if="!isAuthorized" class="xy-center" />
-    </div>
-  </div>
+	<!-- no curtain on allowanonymous pages please. -->
+	<div v-if="authorizationRequired">
+		<div id="curtain" />
+		<div id="curtainoverlay">
+      <!-- Avoid conflicts with ids. -->
+			<LoginCredentials v-if="!isPageAuthorized" class="xy-center" />
+		</div>
+	</div>
 </template>
 
 <script lang="ts">
@@ -32,74 +33,86 @@ import $ from "jquery";
 import { routeDefs } from "@/router/index";
 
 @Component({
-  components: { LoginCredentials }
+	components: { LoginCredentials },
 })
 export default class Curtain extends Vue {
+	get authorizationRequired(): boolean {
+		if (this.$route.meta && this.$route.meta.allowAnonymous) {
+			return false;
+		} else {
+			return true;
+		}
+	}
 
-  get notLoginPage(): boolean {
-    return this.$route.path !== routeDefs.login.path;
-  }
+	get notLoginPage(): boolean {
+		return this.$route.path !== routeDefs.login.path;
+	}
 
-  get isAuthorized(): boolean {
-    return this.$store.state.user.isAuthorized;
-  }
+	get isPageAuthorized(): boolean {
+		if (this.$route.meta.allowAnonymous === true) {
+			return true;
+		} else {
+			return this.$store.state.user.isAuthorized;
+		}
+	}
 
-  created(): void {
-    this.$store.watch(
-      () => {
-        return this.$store.state.user.isAuthorized;
-      },
-      (newval) => {
-        if (this.$route.path !== routeDefs.login.path) {
-          if (!newval) { this.showCurtain(); }
-          else { this.hideCurtain(); }
-        }
-      }
-    );
-  }
+	created(): void {
+		this.$store.watch(
+			() => {
+				return this.$store.state.user.isAuthorized;
+			},
+			() => {
+        //add a setTimeout in case the change is due to a 'softPing', in which case
+        //a route change might be coming. The setTimeout lets the route change happen
+        //first so this can be evaluated correctly
+				setTimeout(() => {
+					if (this.isPageAuthorized) {
+						this.hideCurtain();
+					} else {
+						this.showCurtain();
+					}
+				}, 500);
+			}
+		);
+	}
 
-  showCurtain() {
-    //console.log("showCurtain: " + $('#curtain').css('display'));
-    if ($("#curtain").css("display") === "none") {
-      //console.log("toggle");
-      $("#curtain").slideToggle();
-      $("#curtainoverlay").slideToggle();
-    }
-  }
+	showCurtain() {
+		if ($("#curtain").css("display") === "none") {
+			$("#curtain").slideToggle();
+			$("#curtainoverlay").slideToggle();
+		}
+	}
 
-  hideCurtain() {
-    //console.log("hideCurtain: " + $('#curtain').css('display'));
-
-    if ($("#curtain").css("display") !== "none") {
-      //console.log("toggle");
-      $("#curtain").slideToggle();
-      $("#curtainoverlay").slideToggle();
-    }
-  }
+	hideCurtain() {
+		if ($("#curtain").css("display") !== "none") {
+			$("#curtain").slideToggle();
+			$("#curtainoverlay").slideToggle();
+		}
+	}
 }
 </script>
 
 <style scoped>
 #curtain {
-  position: fixed;
-  background-color: lightgray;
-  opacity: 0.8;
-  top: 0;
-  bottom: 0;
-  right: 0;
-  left: 0;
-  display: none;
-  z-index: 4999 !important;
+	position: fixed;
+	background-color: lightgray;
+	opacity: 0.8;
+	top: 0;
+	bottom: 0;
+	right: 0;
+	left: 0;
+	display: none;
+	z-index: 4999 !important;
 }
 
 #curtainoverlay {
-  position: fixed;
-  opacity: 1;
-  top: 0;
-  bottom: 0;
-  right: 0;
-  left: 0;
-  display: none;
-  z-index: 5000 !important;
+	position: fixed;
+	opacity: 1;
+	top: 0;
+	bottom: 0;
+	right: 0;
+	left: 0;
+	display: none;
+	z-index: 5000 !important;
 }
 </style>

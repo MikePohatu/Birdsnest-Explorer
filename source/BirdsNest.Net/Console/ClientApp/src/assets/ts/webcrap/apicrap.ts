@@ -62,6 +62,9 @@ class ApiCrap {
         statusCode: {
           401: function () {
             store.commit(rootPaths.mutations.DEAUTH);
+          },
+          403: function () {
+            bus.$emit(events.Notifications.Error, "Access forbidden");
           }
         },
         success: function (data?, status?: string, jqXHR?: JQueryXHR) {
