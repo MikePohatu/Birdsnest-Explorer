@@ -70,11 +70,11 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 				<li>
 					<a href="#">{{ $t("word_Properties") }} ({{ propertyNames.length }}):</a>
 					<ul class="menu vertical nested">
-						<div class="menu nested" v-for="name in propertyNames" :key="name">
+						<li class="property" v-for="name in propertyNames" :key="name">
 							<b>{{ name }}:</b>
 							{{ node.properties[name] }}
 							<br />
-						</div>
+						</li>
 					</ul>
 				</li>
 			</ul>
@@ -177,13 +177,14 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 
 .detailcard .accordion-menu .nested.is-accordion-submenu {
 	margin-left: 5px;
+	margin-right: 5px;
 }
 
 .detailcard .accordion-menu .nested.is-accordion-submenu-item {
 	margin-left: 5px;
 	margin-top: 0px;
 	margin-bottom: 0px;
-	margin-right: 0px;
+	margin-right: 5px;
 	/*border: 0px;*/
 }
 
@@ -208,6 +209,11 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 
 .accordion-menu .is-accordion-submenu a.plus {
 	padding-top: 0.3em;
+}
+
+.property {
+	margin-left: 5px;	
+	margin-right: 5px;
 }
 </style>
 
