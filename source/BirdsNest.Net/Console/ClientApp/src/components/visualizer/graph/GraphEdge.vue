@@ -48,21 +48,24 @@ export default class GraphEdge extends Vue {
 
 	isSelected = false;
 
-	get subTypes(): string {
+	get subTypes(): string[] {
 		const subTypeProps = this.$store.state.pluginManager.subTypeProperties;
+		const subs = [];
 
 		if (Object.prototype.hasOwnProperty.call(subTypeProps, this.edge.label)) {
 			const subProps: string[] = subTypeProps[this.edge.label];
 
 			subProps.forEach((subType: string) => {
-				const sub = webcrap.misc.cleanCssClassName(subType);
-				if (webcrap.misc.isNullOrWhitespace(sub) === false) {
-					return this.edge.label + "-" + sub;
+				if (Object.prototype.hasOwnProperty.call(this.edge.properties, subType)) {
+					const sub = webcrap.misc.cleanCssClassName(String(this.edge.properties[subType]));
+					if (webcrap.misc.isNullOrWhitespace(sub) === false) {
+						subs.push(this.edge.label + "-" + sub);
+					}
 				}
 			});
 		}
 
-		return "";
+		return subs;
 	}
 
 	//assign the d3 datum to the element so simulation can use it

@@ -18,7 +18,7 @@ import { v4 as uuidv4 } from 'uuid';
 
 class MiscCrap {
     isNullOrWhitespace(input: string) {
-        if (typeof input === 'undefined' || input == null) return true;
+        if (typeof input === 'undefined' || input === null) return true;
         return input.replace(/\s/g, '').length < 1;
     }
 
@@ -86,8 +86,8 @@ class MiscCrap {
 
     //strip css identifier tags from a string
     cleanCssClassName(className: string): string {
-        return className.replace(".", "-").replace("#", "-").replace(":", "-").replace(" ", "-").replace(">", "-").replace("+", "-").replace(",", "-")
-            .replace("|=", "-").replace("^=", "-").replace("$=", "-").replace("*=", "-").replace("=", "-").replace("*", "-").replace("~", "-");
+        return className.replace(/\./g,'-').replace(/#/g, "-").replace(/:/g, "-").replace(/ /g, "-").replace(/>/g, "-").replace(/\+/g, "-").replace(/,/g, "-")
+            .replace(/\|=/g, "-").replace(/\^=/g, "-").replace(/\$=/g, "-").replace(/\*=/g, "-").replace(/=/g, "-").replace(/\*/g, "-").replace(/~/g, "-");
     }
 }
 
