@@ -1,3 +1,21 @@
+Version 1.0.3.1
+Release date: 27 Feb 2021
+
+*New features
+	Added ability to set multiple subtypes on a datatype in a plugin
+	Added refresh button to 'Details' box to refresh a node
+
+*Fixes
+	Fixed 'Details' box loading slowly if there are lots of related nodes. Now a subset will load with an option to load more
+	Moved server information refresh button to the top so it is more obvious and accessible
+	Minor code cleanup and fixing missing license headers
+
+*Known issues
+	Docs is not supported on IE
+	Export to SVG is not supported on IE
+
+===================================================================================================
+
 Version 1.0.2.0
 Release date: 22 Feb 2021
 
@@ -16,3 +34,6 @@ Release date: 22 Feb 2021
 
 *Known issues
 	Docs is not supported on IE
+	Export to SVG is not supported on IE
+
+===================================================================================================

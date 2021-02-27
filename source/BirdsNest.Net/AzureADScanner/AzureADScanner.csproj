@@ -9,6 +9,10 @@
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
   </PropertyGroup>
 
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <OutputPath>..\..\..\..\..\Release\birdsnest\output\Scanners\</OutputPath>
+  </PropertyGroup>
+
   <ItemGroup>
     <None Remove="config\example-aadconfig.json" />
   </ItemGroup>
