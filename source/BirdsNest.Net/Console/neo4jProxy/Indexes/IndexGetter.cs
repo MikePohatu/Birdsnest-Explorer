@@ -19,7 +19,7 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Neo4j.Driver.V1;
+using Neo4j.Driver;
 using Console.neo4jProxy;
 
 namespace Console.neo4jProxy.Indexes
@@ -29,7 +29,7 @@ namespace Console.neo4jProxy.Indexes
         public static async Task<object> GatherDbIndexes(Neo4jService service)
         {
             //get the index details from db
-            string query = "CALL db.indexes() yield indexName, tokenNames, properties, state, type";
+            string query = "CALL db.indexes() yield name, labelsOrTypes, properties, state, type, uniqueness";
             string labelName = string.Empty;
             string indexName = string.Empty;
             string propertyName = string.Empty;
@@ -42,14 +42,14 @@ namespace Console.neo4jProxy.Indexes
 
                 try
                 {
-                    var tokens = (List<object>)record["tokenNames"];
+                    var tokens = (List<object>)record["labelsOrTypes"];
                     labelName = (string)tokens[0];
                     var properties = (List<object>)record["properties"];
                     propertyName = (string)properties[0];
-                    indexName = (string)record["indexName"];
+                    indexName = (string)record["name"];
                     state = (string)record["state"];
-                    type = (string)record["type"];
-                    bool isconstraint = type == "node_unique_property" ? true : false;
+                    type = (string)record["uniqueness"];
+                    bool isconstraint = type == "UNIQUE" ? true : false;
 
                     SortedDictionary<string, Index> indexdic;
                     if (!indexes.TryGetValue(labelName, out indexdic))

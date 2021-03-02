@@ -18,8 +18,9 @@
 #endregion
 
 //generic class to record results from a database transaction
-using Neo4j.Driver.V1;
+using Neo4j.Driver;
 using System;
+using System.Collections.Generic;
 
 namespace common
 {
@@ -41,13 +42,25 @@ namespace common
             this.ElapsedMilliseconds = elapsedms;
         }
 
-        public TransactionResult(IStatementResult dbresult)
+        public TransactionResult(IResultSummary summary)
         {
-            this.CreatedNodeCount = dbresult.Summary.Counters.NodesCreated;
-            this.DeletedNodeCount = dbresult.Summary.Counters.NodesDeleted;
-            this.CreatedEdgeCount = dbresult.Summary.Counters.RelationshipsCreated;
-            this.DeletedEdgeCount = dbresult.Summary.Counters.RelationshipsDeleted;
-            this.ElapsedMilliseconds = dbresult.Summary.ResultConsumedAfter;
+            this.CreatedNodeCount = summary.Counters.NodesCreated;
+            this.DeletedNodeCount = summary.Counters.NodesDeleted;
+            this.CreatedEdgeCount = summary.Counters.RelationshipsCreated;
+            this.DeletedEdgeCount = summary.Counters.RelationshipsDeleted;
+            this.ElapsedMilliseconds = summary.ResultConsumedAfter;
+        }
+
+        public TransactionResult(List<IResultSummary> summaries)
+        {
+            foreach (IResultSummary summary in summaries)
+            {
+                this.CreatedNodeCount += summary.Counters.NodesCreated;
+                this.DeletedNodeCount += summary.Counters.NodesDeleted;
+                this.CreatedEdgeCount += summary.Counters.RelationshipsCreated;
+                this.DeletedEdgeCount += summary.Counters.RelationshipsDeleted;
+                this.ElapsedMilliseconds += summary.ResultConsumedAfter;
+            }
         }
     }
 }

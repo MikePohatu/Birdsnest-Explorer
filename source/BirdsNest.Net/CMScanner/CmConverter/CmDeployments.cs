@@ -18,7 +18,7 @@
 #endregion
 using common;
 using Microsoft.ConfigurationManagement.ManagementProvider;
-using Neo4j.Driver.V1;
+using Neo4j.Driver;
 using System.Collections.Generic;
 
 namespace CMScanner.CmConverter

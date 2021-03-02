@@ -17,7 +17,7 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #endregion
 using common;
-using Neo4j.Driver.V1;
+using Neo4j.Driver;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -166,20 +166,6 @@ namespace CMScanner
             Console.WriteLine();
             Console.WriteLine("Usage: CMScanner.exe /config:<configfile> /batch");
             Console.WriteLine("/batch makes scanner run in batch mode and does not wait before exit");
-        }
-
-        private delegate int MergeDelegate<T>(List<T> itemlist, ISession session);
-        private static int MergeList<T>(List<T> itemlist, MergeDelegate<T> method, IDriver driver)
-        {
-            int count = 0;
-            while (itemlist.Count > 1000)
-            {
-                count = count + method(ListExtensions.ListPop(itemlist, 1000), driver.Session());
-                Console.Write(".");
-            }
-            count = count + method(itemlist, driver.Session());
-            Console.WriteLine(".");
-            return count;
         }
     }
 }

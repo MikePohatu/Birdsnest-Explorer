@@ -16,7 +16,7 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #endregion
-using Neo4j.Driver.V1;
+using Neo4j.Driver;
 using System;
 using common;
 using CSharpVitamins;
@@ -98,51 +98,48 @@ namespace CustomImporter
 
             foreach (CustomItem item in config.Items)
             {
-                using (ISession session = driver.Session())
+                object prop;
+                if (item.Properties.TryGetValue(item.PrimaryProperty, out prop) == false)
                 {
-                    object prop;
-                    if (item.Properties.TryGetValue(item.PrimaryProperty, out prop) == false)
-                    {
-                        Console.WriteLine("Primary property does not have a value");
-                        Environment.Exit(10);
-                    }
-                    StringBuilder builder = new StringBuilder();
-                    builder.AppendLine($"MERGE (n:{item.PrimaryType} {{{item.PrimaryProperty}:\"{prop}\"}})");
-
-                    if (item.Types.Count > 1)
-                    {
-                        foreach (string type in item.Types)
-                        {
-                            if (type != item.PrimaryType)
-                            {
-                                builder.AppendLine($"SET n:{type}");
-                            }
-                        }
-                    }
-
-                    foreach (string key in item.Properties.Keys)
-                    {
-                        object o = item.Properties[key];
-                        string s = o as string;
-                        if (s == null)
-                        {
-                            builder.AppendLine($"SET n.{key}={o}");
-                        }
-                        else
-                        {
-                            builder.AppendLine($"SET n.{key}=\"{s}\"");
-                        }
-                        
-                    }
-                    builder.AppendLine("RETURN n");
-
-                    string query = builder.ToString();
-                    NeoQueryData data = new NeoQueryData();
-                    data.ScanID = scanid;
-                    data.ScannerID = config.ScannerID;
-                    data.Properties = config.Items;
-                    NeoWriter.RunQuery(query, data, driver, true);
+                    Console.WriteLine("Primary property does not have a value");
+                    Environment.Exit(10);
                 }
+                StringBuilder builder = new StringBuilder();
+                builder.AppendLine($"MERGE (n:{item.PrimaryType} {{{item.PrimaryProperty}:\"{prop}\"}})");
+
+                if (item.Types.Count > 1)
+                {
+                    foreach (string type in item.Types)
+                    {
+                        if (type != item.PrimaryType)
+                        {
+                            builder.AppendLine($"SET n:{type}");
+                        }
+                    }
+                }
+
+                foreach (string key in item.Properties.Keys)
+                {
+                    object o = item.Properties[key];
+                    string s = o as string;
+                    if (s == null)
+                    {
+                        builder.AppendLine($"SET n.{key}={o}");
+                    }
+                    else
+                    {
+                        builder.AppendLine($"SET n.{key}=\"{s}\"");
+                    }
+                        
+                }
+                builder.AppendLine("RETURN n");
+
+                string query = builder.ToString();
+                NeoQueryData data = new NeoQueryData();
+                data.ScanID = scanid;
+                data.ScannerID = config.ScannerID;
+                data.Properties = config.Items;
+                NeoWriter.RunQuery(query, data, driver, true);
             }
 
 

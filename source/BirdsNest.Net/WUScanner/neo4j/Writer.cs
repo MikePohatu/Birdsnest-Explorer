@@ -18,7 +18,7 @@
 #endregion
 using System.Collections.Generic;
 using System.Text;
-using Neo4j.Driver.V1;
+using Neo4j.Driver;
 using common;
 using Microsoft.UpdateServices.Administration;
 

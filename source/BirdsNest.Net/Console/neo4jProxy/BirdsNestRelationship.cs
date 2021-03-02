@@ -16,7 +16,7 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #endregion
-using Neo4j.Driver.V1;
+using Neo4j.Driver;
 using System;
 using System.Collections.Generic;
 using System.Linq;

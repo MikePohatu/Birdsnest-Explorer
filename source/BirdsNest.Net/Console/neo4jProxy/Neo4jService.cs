@@ -22,7 +22,7 @@ using System.Diagnostics;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Neo4j.Driver.V1;
+using Neo4j.Driver;
 using System.Text.RegularExpressions;
 using Microsoft.Extensions.Logging;
 using Console.Plugins;
@@ -59,58 +59,54 @@ namespace Console.neo4jProxy
         public delegate void ProcessIRecord(IRecord record);
         public async Task ProcessDelegatePerRecordFromQueryAsync(string query, object props, ProcessIRecord processor)
         {
-            using (ISession session = this._driver.Session())
+            IAsyncSession session = this._driver.AsyncSession();
+            try
             {
-                try
+                await session.ReadTransactionAsync(async (tx) =>
                 {
-                    await session.ReadTransactionAsync(async (tx) =>
+                    IResultCursor reader = await tx.RunAsync(query, props);
+                    while (await reader.FetchAsync())
                     {
-                        IStatementResultCursor reader = await tx.RunAsync(query, props);
-                        while (await reader.FetchAsync())
-                        {
-                            // Each current read in buffer can be reached via Current
-                            processor(reader.Current);
-                        }
-                    });
-                }
-                catch (Exception e)
-                {
-                    this._logger.LogError("Error running query from {0}: {1}", e.StackTrace, e.Message);
-                    this._logger.LogError("Query {0}", query);
-                }
-                finally
-                {
-                    await session.CloseAsync();
-                }
+                        // Each current read in buffer can be reached via Current
+                        processor(reader.Current);
+                    }
+                });
+            }
+            catch (Exception e)
+            {
+                this._logger.LogError("Error running query from {0}: {1}", e.StackTrace, e.Message);
+                this._logger.LogError("Query {0}", query);
+            }
+            finally
+            {
+                await session.CloseAsync();
             }
         }
 
         public async Task<ResultSet> GetResultSetFromQueryAsync(string query, object props)
         {
             ResultSet returnedresults = new ResultSet();
-            using (ISession session = this._driver.Session())
+            IAsyncSession session = this._driver.AsyncSession();
+            try
             {
-                try
+                await session.ReadTransactionAsync(async (tx) =>
                 {
-                    await session.ReadTransactionAsync(async (tx) =>
+                    IResultCursor reader = await tx.RunAsync(query, props);
+                    while (await reader.FetchAsync())
                     {
-                        IStatementResultCursor reader = await tx.RunAsync(query, props);
-                        while (await reader.FetchAsync())
-                        {
-                            // Each current read in buffer can be reached via Current
-                            returnedresults.Append(ParseRecord(reader.Current));
-                        }
-                    });
-                }
-                catch (Exception e)
-                {
-                    this._logger.LogError("Error running query from {0}: {1}", e.StackTrace, e.Message);
-                    this._logger.LogError("Query {0}", query);
-                }
-                finally
-                {
-                    await session.CloseAsync();
-                }
+                        // Each current read in buffer can be reached via Current
+                        returnedresults.Append(ParseRecord(reader.Current));
+                    }
+                });
+            }
+            catch (Exception e)
+            {
+                this._logger.LogError("Error running query from {0}: {1}", e.StackTrace, e.Message);
+                this._logger.LogError("Query {0}", query);
+            }
+            finally
+            {
+                await session.CloseAsync();
             }
 
             return returnedresults;
@@ -175,7 +171,7 @@ namespace Console.neo4jProxy
             string query = "UNWIND $ids AS nodeid " +
                             "MATCH (s) " +
                             "WHERE ID(s)=nodeid " +
-                            "RETURN DISTINCT s ORDER BY LOWER(s.name)";
+                            "RETURN DISTINCT s ORDER BY toLower(s.name)";
 
             return await this.GetResultSetFromQueryAsync(query, new { ids = nodeids });
         }
@@ -183,8 +179,8 @@ namespace Console.neo4jProxy
         public async Task<ResultSet> GetRelatedNodesAsync(long nodeid)
         {
             string query = "MATCH (n)-[]-(m) " +
-                            "WHERE ID(n)=$id " +
-                            "RETURN m ORDER BY LOWER(m.name)";
+                            "WHERE id(n) = $id " +
+                            "RETURN m ORDER BY toLower(m.name)";
 
             return await this.GetResultSetFromQueryAsync(query, new { id = nodeid });
         }
@@ -218,27 +214,25 @@ namespace Console.neo4jProxy
             ResultSet returnedresults = new ResultSet();
 
             //validate the types/labels 
-            using (ISession session = this._driver.Session())
+            IAsyncSession session = this._driver.AsyncSession();
+            try
             {
-                try
+                await session.ReadTransactionAsync(async (tx) =>
                 {
-                    await session.ReadTransactionAsync(async (tx) =>
+                    IResultCursor reader = await tx.RunAsync(query, search.Tokens.Properties);
+                    while (await reader.FetchAsync())
                     {
-                        IStatementResultCursor reader = await tx.RunAsync(query, search.Tokens.Properties);
-                        while (await reader.FetchAsync())
-                        {
-                            returnedresults.Append(ParseRecord(reader.Current));
-                        }
-                    });
-                }
-                catch (Exception e)
-                {
-                    this._logger.LogError("Error running advanced search: " + e.Message);
-                }
-                finally
-                {
-                    await session.CloseAsync();
-                }
+                        returnedresults.Append(ParseRecord(reader.Current));
+                    }
+                });
+            }
+            catch (Exception e)
+            {
+                this._logger.LogError("Error running advanced search: " + e.Message);
+            }
+            finally
+            {
+                await session.CloseAsync();
             }
 
             return returnedresults;
@@ -256,31 +250,31 @@ namespace Console.neo4jProxy
            
             List<string> results = new List<string>();
 
-            using (ISession session = this._driver.Session())
+            IAsyncSession session = this._driver.AsyncSession();
+            
+            try
             {
-                try
-                {
-                    string query = "MATCH (n) WHERE " + typequery + "n[{prop}]  =~ $regex RETURN DISTINCT n[{prop}] ORDER BY n[{prop}] LIMIT 20";
+                string query = "MATCH (n) WHERE " + typequery + "n[$prop]  =~ $regex RETURN DISTINCT n[$prop] ORDER BY n[$prop] LIMIT 20";
 
-                    await session.ReadTransactionAsync(async (tx) =>
+                await session.ReadTransactionAsync(async (tx) =>
+                {
+                    IResultCursor reader = await tx.RunAsync(query, new { type, prop = property, regex = regexterm });
+                    while (await reader.FetchAsync())
                     {
-                        IStatementResultCursor reader = await tx.RunAsync(query, new { type, prop = property, regex = regexterm });
-                        while (await reader.FetchAsync())
-                        {
-                            results.AddRange(ParseStringListRecord(reader.Current));
-                        }
+                        results.AddRange(ParseStringListRecord(reader.Current));
+                    }
 
-                    });
-                }
-                catch (Exception e)
-                {
-                    this._logger.LogError("Error querying SearchNodePropertyValues: " + e.Message);
-                }
-                finally
-                {
-                    await session.CloseAsync();
-                }
+                });
             }
+            catch (Exception e)
+            {
+                this._logger.LogError("Error querying SearchNodePropertyValues: " + e.Message);
+            }
+            finally
+            {
+                await session.CloseAsync();
+            }
+            
 
             return results;
         }
@@ -298,57 +292,32 @@ namespace Console.neo4jProxy
             
             List<string> results = new List<string>();
 
-            using (ISession session = this._driver.Session())
-            {
-                try
-                {
-                    string query = "MATCH ()-[r:" + type + "]->() WHERE r[{prop}] =~ $regex RETURN DISTINCT r[{prop}] ORDER BY r[{prop}] LIMIT 20";
-
-                    await session.ReadTransactionAsync(async (tx) =>
-                    {
-                        IStatementResultCursor reader = await tx.RunAsync(query, new { prop = property, regex = regexterm });
-                        while (await reader.FetchAsync())
-                        {
-                            results.AddRange(ParseStringListRecord(reader.Current));
-                        }
-
-                    });
-                }
-                catch (Exception e)
-                {
-                    this._logger.LogError("Error querying SearchNodePropertyValues: " + e.Message);
-                }
-                finally
-                {
-                    await session.CloseAsync();
-                }
-            }
-
-            return results;
-		}
-
-        private List<string> ParseStringListResults(IStatementResult neoresult)
-        {
-            List<string> results = new List<string>();
-            if (neoresult == null) { return results; };
-
+            IAsyncSession session = this._driver.AsyncSession();
             try
             {
-                foreach (IRecord record in neoresult)
+                string query = "MATCH ()-[r:" + type + "]->() WHERE r[{prop}] =~ $regex RETURN DISTINCT r[{prop}] ORDER BY r[{prop}] LIMIT 20";
+
+                await session.ReadTransactionAsync(async (tx) =>
                 {
-                    foreach (string key in record.Keys)
+                    IResultCursor reader = await tx.RunAsync(query, new { prop = property, regex = regexterm });
+                    while (await reader.FetchAsync())
                     {
-                        results.Add(record[key].ToString());
+                        results.AddRange(ParseStringListRecord(reader.Current));
                     }
-                }
+
+                });
             }
             catch (Exception e)
             {
-                this._logger.LogError("Error in ParseStringListResults: " + e.Message);
+                this._logger.LogError("Error querying SearchNodePropertyValues: " + e.Message);
             }
+            finally
+            {
+                await session.CloseAsync();
+            }            
 
             return results;
-        }
+		}
 
         private List<string> ParseStringListRecord(IRecord record)
         {
@@ -366,29 +335,6 @@ namespace Console.neo4jProxy
             {
                 this._logger.LogError("Error in ParseStringListRecord: " + e.Message);
             }
-
-            return results;
-        }
-
-        private ResultSet ParseResults(IStatementResult neoresult)
-        {
-            ResultSet results = new ResultSet();
-
-            try
-            {
-                foreach (IRecord record in neoresult)
-                {
-                    foreach (string key in record.Keys)
-                    {
-                        AddToResultSet(record[key], results);
-                    }
-                }
-            }
-            catch(Exception e)
-            {
-                this._logger.LogError("Error parsing results: " + e.Message);
-            }
-            
 
             return results;
         }
@@ -447,56 +393,78 @@ namespace Console.neo4jProxy
 
         public async Task<int> CreateIndexAsync(NewIndex newIndex)
         {
-            string query = $"CREATE INDEX ON :{newIndex.Label}({newIndex.Property})";
+            string query = $"CREATE INDEX {newIndex.Label}_{newIndex.Property} IF NOT EXISTS FOR (n:{newIndex.Label}) ON (n.{newIndex.Property})";
             int count = 0;
-            using (ISession session = this._driver.Session())
+            IAsyncSession session = this._driver.AsyncSession();
+            try
             {
-                try
+                await session.WriteTransactionAsync(async (tx) =>
                 {
-                    await session.ReadTransactionAsync(async (tx) =>
-                    {
-                        IStatementResultCursor reader = await tx.RunAsync(query);
-                        await reader.ConsumeAsync();
-                        IResultSummary summary = await reader.SummaryAsync();
-                        count = summary.Counters.IndexesAdded;
-                    });
-                }
-                catch (Exception e)
-                {
-                    this._logger.LogError(e, $"Error creating index for label {newIndex.Label} on property {newIndex.Property}");
-                }
-                finally
-                {
-                    await session.CloseAsync();
-                }
+                    IResultCursor reader = await tx.RunAsync(query);
+                    IResultSummary summary = await reader.ConsumeAsync();
+                    count = summary.Counters.IndexesAdded;
+                });
             }
+            catch (Exception e)
+            {
+                this._logger.LogError(e, $"Error creating index for label {newIndex.Label} on property {newIndex.Property}");
+            }
+            finally
+            {
+                await session.CloseAsync();
+            }
+            
             return count;
         }
 
         public async Task<int> DropIndexAsync(string label, string propertyname)
         {
-            string query = $"DROP INDEX ON :{label}({propertyname})";
+            string query = $"DROP INDEX {label}_{propertyname} IF EXISTS";
             int count = 0;
-            using (ISession session = this._driver.Session())
+            IAsyncSession session = this._driver.AsyncSession();
+            try
             {
-                try
+                await session.WriteTransactionAsync(async (tx) =>
                 {
-                    await session.ReadTransactionAsync(async (tx) =>
-                    {
-                        IStatementResultCursor reader = await tx.RunAsync(query);
-                        await reader.ConsumeAsync();
-                        IResultSummary summary = await reader.SummaryAsync();
-                        count = summary.Counters.IndexesRemoved;
-                    });
-                }
-                catch (Exception e)
+                    IResultCursor reader = await tx.RunAsync(query);
+                    await reader.ConsumeAsync();
+                    IResultSummary summary = await reader.ConsumeAsync();
+                    count = summary.Counters.IndexesRemoved;
+                });
+            }
+            catch (Exception e)
+            {
+                this._logger.LogError(e, $"Error dropping index for label {label} on property {propertyname}");
+            }
+            finally
+            {
+                await session.CloseAsync();
+            }
+            return count;
+        }
+
+        public async Task<int> DropIndexNameAsync(string name)
+        {
+            string query = $"DROP INDEX {name} IF EXISTS";
+            int count = 0;
+            IAsyncSession session = this._driver.AsyncSession();
+            try
+            {
+                await session.WriteTransactionAsync(async (tx) =>
                 {
-                    this._logger.LogError(e, $"Error dropping index for label {label} on property {propertyname}");
-                }
-                finally
-                {
-                    await session.CloseAsync();
-                }
+                    IResultCursor reader = await tx.RunAsync(query);
+                    await reader.ConsumeAsync();
+                    IResultSummary summary = await reader.ConsumeAsync();
+                    count = summary.Counters.IndexesRemoved;
+                });
+            }
+            catch (Exception e)
+            {
+                this._logger.LogError(e, $"Error dropping index {name}");
+            }
+            finally
+            {
+                await session.CloseAsync();
             }
             return count;
         }

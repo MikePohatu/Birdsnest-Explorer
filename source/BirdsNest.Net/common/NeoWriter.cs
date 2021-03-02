@@ -18,7 +18,8 @@
 #endregion
 using System;
 using System.Collections.Generic;
-using Neo4j.Driver.V1;
+using System.Threading.Tasks;
+using Neo4j.Driver;
 
 namespace common
 {
@@ -33,22 +34,59 @@ namespace common
         {
             string[] headervals = { "Description", string.Empty, "(n)+", "[r]+", "(n)-", "[r]-", "Properties set" };
             ConsoleWriter.WriteLine(Tabs, headervals);
-        } 
+        }
+
+
+        // ****************************************
+        // Synchronous calls of Async methods
+        // ****************************************
 
         public static List<IResultSummary> RunQuery(string query, NeoQueryData data, IDriver driver)
         {
-            return RunQuery(query, data, driver, false);
+            return RunQueryAsync(query, data, driver).Result;
         }
         public static List<IResultSummary> RunQuery(string query, NeoQueryData data, IDriver driver, bool showprogressdots)
         {
-            
-            return RunQuery(query, data, driver, false, showprogressdots);
+
+            return RunQueryAsync(query, data, driver, showprogressdots).Result;
         }
 
         public static List<IResultSummary> RunQuery(string query, NeoQueryData data, IDriver driver, bool showstats, bool showprogressdots)
         {
+            return RunQueryAsync(query, data, driver, showstats, showprogressdots).Result;
+        }
+
+        public static List<IResultSummary> WriteIDataCollector(IDataCollector collector, IDriver driver, bool showprogressdots)
+        {
+            return WriteIDataCollectorAsync(collector, driver, showprogressdots).Result;
+        }
+
+        public static List<IResultSummary> WriteIDataCollector(IDataCollector collector, IDriver driver)
+        {
+            return WriteIDataCollectorAsync(collector, driver).Result;
+        }
+
+        public static List<IResultSummary> WriteIDataCollector(IDataCollector collector, IDriver driver, bool showstats, bool showprogressdots)
+        {
+            return WriteIDataCollectorAsync(collector, driver, showstats, showprogressdots).Result;
+        }
+
+        // ****************************************
+        // Synchronous calls of Async methods
+        // ****************************************
+        public async static Task<List<IResultSummary>> RunQueryAsync(string query, NeoQueryData data, IDriver driver)
+        {
+            return await RunQueryAsync(query, data, driver, false);
+        }
+        public async static Task<List<IResultSummary>> RunQueryAsync(string query, NeoQueryData data, IDriver driver, bool showprogressdots)
+        {
+            return await RunQueryAsync(query, data, driver, false, showprogressdots);
+        }
+
+        public async static Task<List<IResultSummary>> RunQueryAsync(string query, NeoQueryData data, IDriver driver, bool showstats, bool showprogressdots)
+        {
             List<IResultSummary> summaries = new List<IResultSummary>();
-            ISession session;
+            IAsyncSession session = driver.AsyncSession();
             int itemscount = 0;
 
             if (string.IsNullOrWhiteSpace(data.ScanID))
@@ -61,35 +99,50 @@ namespace common
                 data.ScannerID = NeoWriter.ScannerID;
             }
 
-            if (data.Properties != null)
+            //main query
+            try
             {
-                while (data.Properties.Count > 1000)
+                if (data.Properties != null)
                 {
+                    while (data.Properties.Count > 0)
+                    {
 
+                        NeoQueryData subdata = new NeoQueryData();
+                        subdata.ScanID = data.ScanID;
+                        subdata.ScannerID = data.ScannerID;
+                        subdata.Properties = ListExtensions.ListPop<object>(data.Properties, 1000);
+
+                        itemscount += subdata.Properties.Count;
+
+                        await session.WriteTransactionAsync(async (tx) =>
+                        {
+                            IResultCursor reader = await tx.RunAsync(query, subdata);
+                            var summary = await reader.ConsumeAsync();
+                            if (summary != null) { summaries.Add(summary); }
+                            if (showprogressdots) { Console.Write("."); }
+                        });
+                    }
+                } else
+                {
                     NeoQueryData subdata = new NeoQueryData();
                     subdata.ScanID = data.ScanID;
                     subdata.ScannerID = data.ScannerID;
-                    subdata.Properties = ListExtensions.ListPop<object>(data.Properties, 1000);
 
-                    itemscount += subdata.Properties.Count;
-
-                    IStatementResult subresult;
-                    using (session = driver.Session())
+                    await session.WriteTransactionAsync(async (tx) =>
                     {
-                        subresult = session.WriteTransaction(tx => tx.Run(query, subdata));
-                    }
-                    if (subresult?.Summary != null) { summaries.Add(subresult.Summary); }
-                    if (showprogressdots) { Console.Write("."); }
+                        IResultCursor reader = await tx.RunAsync(query, subdata);
+                        var summary = await reader.ConsumeAsync();
+                        if (summary != null) { summaries.Add(summary); }
+                        if (showprogressdots) { Console.Write("."); }
+                    });
                 }
             }
-
-            IStatementResult result;
-            using (session = driver.Session())
+            finally
             {
-                if (data.Properties != null) { itemscount += data.Properties.Count; }
-                result = session.WriteTransaction(tx => tx.Run(query, data));
+                await session.CloseAsync();
             }
-            if (result?.Summary != null) { summaries.Add(result.Summary); }
+
+            
 
             Console.WriteLine();
 
@@ -133,23 +186,23 @@ namespace common
         /// <param name="collector"></param>
         /// <param name="driver"></param>
         /// <returns></returns>
-        public static List<IResultSummary> WriteIDataCollector(IDataCollector collector, IDriver driver, bool showprogressdots)
+        public async static Task<List<IResultSummary>> WriteIDataCollectorAsync(IDataCollector collector, IDriver driver, bool showprogressdots)
         {
             NeoQueryData collectionsdata = collector.CollectData();
-            List<IResultSummary> summaries = NeoWriter.RunQuery(collector.Query, collectionsdata, driver, showprogressdots);
+            List<IResultSummary> summaries = await NeoWriter.RunQueryAsync(collector.Query, collectionsdata, driver, showprogressdots);
             return summaries;
         }
 
-        public static List<IResultSummary> WriteIDataCollector(IDataCollector collector, IDriver driver)
+        public static async Task<List<IResultSummary>> WriteIDataCollectorAsync(IDataCollector collector, IDriver driver)
         {
-            return WriteIDataCollector(collector, driver, false);
+            return await WriteIDataCollectorAsync(collector, driver, false);
         }
 
-        public static List<IResultSummary> WriteIDataCollector(IDataCollector collector, IDriver driver, bool showstats, bool showprogressdots)
+        public static async Task<List<IResultSummary>> WriteIDataCollectorAsync(IDataCollector collector, IDriver driver, bool showstats, bool showprogressdots)
         {
             ConsoleWriter.Write(collector.ProgressMessage);
             NeoQueryData collectionsdata = collector.CollectData();
-            List<IResultSummary> summaries = NeoWriter.RunQuery(collector.Query, collectionsdata, driver, showstats, showprogressdots);
+            List<IResultSummary> summaries = await RunQueryAsync(collector.Query, collectionsdata, driver, showstats, showprogressdots);
             return summaries;
         }
     }
