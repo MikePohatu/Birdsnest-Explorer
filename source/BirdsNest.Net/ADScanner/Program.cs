@@ -18,7 +18,7 @@
 #endregion
 using System;
 using System.Diagnostics;
-using Neo4j.Driver.V1;
+using Neo4j.Driver;
 using ADScanner.ActiveDirectory;
 using common;
 using CSharpVitamins;
@@ -139,7 +139,7 @@ namespace ADScanner
 
             //create primary group mappings
             Console.Write("Setting primary groups");
-            NeoWriter.RunQuery(StandAloneQueries.SetPrimaryGroupRelationships, nopropsdata, driver, true, true);
+            NeoWriter.RunQueryAsync(StandAloneQueries.SetPrimaryGroupRelationships, nopropsdata, driver, true, true).Wait();
 
             Console.WriteLine();
             Console.WriteLine("*Cleaning up");

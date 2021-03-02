@@ -22,6 +22,7 @@ using System.Security.AccessControl;
 using System.Security.Principal;
 using common;
 using System.Threading;
+using System.Threading.Tasks;
 
 namespace FSScanner
 {
@@ -43,15 +44,18 @@ namespace FSScanner
             this.Depth = depth;
         }
 
+        public async Task CrawlAsync(object state)
+        { await this.CrawlAsync(); }
+
         public void Crawl(object state)
-        { this.Crawl(); }
+        { this.CrawlAsync().Wait(); }
 
         /// <summary>
         /// Crawl subdirectories recursively. permparent is the last parent folder that had new permissions set
         /// </summary>
         /// <param name="path"></param>
         /// <param name="permparent"></param>
-        public void Crawl()
+        public async Task CrawlAsync()
         {
             bool connected = false;
             string newpermparent = this.PermParent;
@@ -61,7 +65,7 @@ namespace FSScanner
                 if ((f.PermissionCount > 0) || this.IsRoot)
                 {
                     newpermparent = this.Path;
-                    this._parent.Writer.UpdateFolder(f, this._parent.Driver);
+                    await this._parent.Writer.UpdateFolderAsync(f, this._parent.Driver);
                 }
 
                 connected = true;
@@ -77,7 +81,7 @@ namespace FSScanner
                     InheritanceDisabled = true,
                     Depth = this.Depth
                 };
-                this._parent.Writer.UpdateFolder(f, this._parent.Driver);
+                await this._parent.Writer.UpdateFolderAsync(f, this._parent.Driver);
             }
 
             if (connected == true)
@@ -102,7 +106,7 @@ namespace FSScanner
                         else
                         {
                             subwrapper.ThreadNumber = this.ThreadNumber;
-                            subwrapper.Crawl();
+                            await subwrapper.CrawlAsync();
                         }
                     }
                 }

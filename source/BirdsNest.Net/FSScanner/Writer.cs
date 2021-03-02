@@ -17,11 +17,12 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #endregion
 using System.Collections.Generic;
-using Neo4j.Driver.V1;
+using Neo4j.Driver;
 using System;
 using System.Text;
 using common;
 using System.Collections.Concurrent;
+using System.Threading.Tasks;
 
 namespace FSScanner
 {
@@ -32,21 +33,19 @@ namespace FSScanner
         public int FolderCount { get; set; } = 0;
         public int PermissionCount { get; set; } = 0;
         public string FsID { get; private set; }
-        public string ScanID { get; private set; }
 
-        public Writer(string fsid, string scanid)
+        public Writer(string fsid)
         {
             this.FsID = fsid;
-            this.ScanID = scanid;
         }
 
-        public void UpdateFolder(Folder newfolder, IDriver driver)
+        public async Task UpdateFolderAsync(Folder newfolder, IDriver driver)
         {
             //try to send the folder first, queue it if not
             try
             {
                 this.FolderCount++;
-                SendFolder(newfolder, driver);
+                await this.SendFolderAsync(newfolder, driver);
             }
             catch (Exception e)
             {
@@ -55,228 +54,229 @@ namespace FSScanner
             }
         }
 
-        public void FlushFolderQueue(IDriver driver)
+        public async Task FlushFolderQueueAsync(IDriver driver)
         {
             foreach (Folder f in this._queuedfolders)
             {
                 try
                 {
-                    int nodecount = SendFolder(f, driver);
+                    int nodecount = await SendFolderAsync(f, driver);
                     this.FolderCount++;
                 }
                 catch (Exception e)
-                { ConsoleWriter.WriteError("Failed to send folder: " + f.Path + ": " + e.Message); }
+                { ConsoleWriter.WriteError("Failed to send queued folder: " + f.Path + ": " + e.Message); }
             }
         }
 
-        public int SendFolder(Folder folder, IDriver driver)
+        public async Task<int> SendFolderAsync(Folder folder, IDriver driver)
         {
-            string query = "MERGE(folder {path:$path}) " +
-                "SET folder:" + Types.Folder + ", " +
-                "folder.name=$name, " +
-                "folder.lastpermission=$lastfolder, " +
-                "folder.inheritancedisabled=$inheritancedisabled, " +
-                "folder.depth=$depth, " +
-                "folder.lastscan=$scanid, " +
-                "folder.fsid=$fsid, " +
-                "folder.blocked=$blocked, " +
-                "folder.layout='tree' " +
-                "RETURN folder";
+            string query = "UNWIND $Properties AS prop" +
+                " MERGE (folder:" + Types.Folder + " {path:prop.path})" +
+                " SET folder.name=prop.name," +
+                " folder.lastpermission=prop.lastfolder," +
+                " folder.inheritancedisabled=prop.inheritancedisabled," +
+                " folder.depth=prop.depth," +
+                " folder.lastscan=$ScanID," +
+                " folder.fsid=prop.fsid," +
+                " folder.blocked=prop.blocked," +
+                " folder.layout='tree'" +
+                " RETURN folder";
 
-            int nodescreated = 0;
-            using (ISession session = driver.Session())
+            NeoQueryData querydata = new NeoQueryData();
+            querydata.Properties = new List<object>();
+            querydata.Properties.Add(new
             {
-                IStatementResult result = session.WriteTransaction(tx => tx.Run(query, new
-                {
-                    path = folder.Path,
-                    lastfolder = folder.PermParent,
-                    inheritancedisabled = folder.InheritanceDisabled,
-                    blocked = folder.Blocked,
-                    name = folder.Name,
-                    depth = folder.Depth,
-                    scanid = this.ScanID,
-                    fsid = this.FsID
-                }));
-                nodescreated = result.Summary.Counters.NodesCreated;
-            }
+                path = folder.Path,
+                lastfolder = folder.PermParent,
+                inheritancedisabled = folder.InheritanceDisabled,
+                blocked = folder.Blocked,
+                name = folder.Name,
+                depth = folder.Depth,
+                fsid = this.FsID
+            });
+            TransactionResult<List<string>> result = new TransactionResult<List<string>>(await NeoWriter.RunQueryAsync(query, querydata, driver));
 
             if (string.IsNullOrEmpty(folder.PermParent) == false)
             {
-                ConnectFolderToParent(folder, driver);
+                await this.ConnectFolderToParentAsync(folder, driver);
             }
 
             //send the perms
             if (folder.PermissionCount > 0)
             {
-                this.SendFolderPermissions(folder, driver);
+                await this.SendFolderPermissionsAsync(folder, driver);
             }
 
-            return nodescreated;
+            return result.CreatedNodeCount;
         }
 
-        public int ConnectFolderToParent(Folder folder, IDriver driver)
+        public async Task<int> ConnectFolderToParentAsync(Folder folder, IDriver driver)
         {
             StringBuilder builder = new StringBuilder();
-            builder.AppendLine("MERGE(folder:" + Types.Folder + " {path:$path}) ");
-            builder.AppendLine("WITH folder ");
-            builder.AppendLine("MERGE(lastfolder:" + Types.Folder + " {path:$lastfolder}) ");
+            builder.AppendLine("UNWIND $Properties AS prop");
+            builder.AppendLine(" MERGE (folder:" + Types.Folder + " {path:prop.path})");
+            builder.AppendLine(" WITH folder, prop");
+            builder.AppendLine(" MERGE (lastfolder:" + Types.Folder + " {path:prop.lastfolder})");
 
-            if (folder.InheritanceDisabled) { builder.AppendLine("MERGE (lastfolder) -[r:" + Types.BlockedInheritance + "]->(folder) "); }
-            else { builder.AppendLine("MERGE (lastfolder) -[r:" + Types.AppliesInhertitanceTo + "]->(folder) "); }
+            if (folder.InheritanceDisabled) { builder.AppendLine(" MERGE (lastfolder) -[r:" + Types.BlockedInheritance + "]->(folder)"); }
+            else { builder.AppendLine(" MERGE (lastfolder) -[r:" + Types.AppliesInhertitanceTo + "]->(folder)"); }
 
-            builder.AppendLine("SET r.lastscan = $scanid ");
-            builder.AppendLine("SET r.fsid = $fsid ");
-            builder.AppendLine("WITH folder ");
-            builder.AppendLine($"MATCH (:{Types.Folder})-[r]->(folder) ");
-            builder.AppendLine($"WHERE (type(r)='{Types.AppliesInhertitanceTo}' OR type(r)='{Types.BlockedInheritance}') AND r.lastscan <> $scanid ");
-            builder.AppendLine("DELETE r ");
-            builder.AppendLine("RETURN folder.path");
+            builder.AppendLine(" SET r.lastscan = $ScanID");
+            builder.AppendLine(" SET r.fsid = prop.fsid");
+            builder.AppendLine(" WITH folder");
+            builder.AppendLine($" MATCH (:{Types.Folder})-[r]->(folder)");
+            builder.AppendLine($" WHERE (type(r)='{Types.AppliesInhertitanceTo}' OR type(r)='{Types.BlockedInheritance}') AND r.lastscan <> $ScanID");
+            builder.AppendLine(" DELETE r");
+            builder.AppendLine(" RETURN folder.path");
 
-            int relcreated = 0;
-            using (ISession session = driver.Session())
+            string query = builder.ToString();
+            NeoQueryData querydata = new NeoQueryData();
+            querydata.Properties = new List<object>();
+            querydata.Properties.Add(new
             {
-                IStatementResult result = session.WriteTransaction(tx => tx.Run(builder.ToString(), new
-                {
-                    path = folder.Path,
-                    lastfolder = folder.PermParent,
-                    scanid = this.ScanID,
-                    fsid = this.FsID
-                }));
-                relcreated = result.Summary.Counters.RelationshipsCreated;
-            }
-            return relcreated;
+                path = folder.Path,
+                lastfolder = folder.PermParent,
+                fsid = this.FsID
+            });
+
+            TransactionResult<List<string>> result = new TransactionResult<List<string>>( await NeoWriter.RunQueryAsync(query, querydata, driver));
+
+            return result.CreatedEdgeCount;
         }
 
-        public int SendFolderPermissions(Folder folder, IDriver driver)
+        public async Task<int> SendFolderPermissionsAsync(Folder folder, IDriver driver)
         {
-            string query = 
-                
-            "UNWIND $domainpermissions as domainperm" +
-            " MERGE(folderDom:" + Types.Folder + " {path:$path})" +
-            " WITH folderDom,domainperm" +
-            " MERGE(ndom:" + Types.ADObject + " {id:domainperm.ID})" +
-            " ON CREATE SET ndom:" + Types.Orphaned + ",ndom.lastscan = $scanid" +
+            string query =
+
+            "UNWIND $Properties AS prop" +
+            " MERGE (folderDom:" + Types.Folder + " {path:prop.path})" +
+            " WITH folderDom, prop" +
+            " UNWIND prop.domainpermissions as domainperm" +
+            " WITH folderDom,domainperm, prop" +
+            " MERGE (ndom:" + Types.ADObject + " {id:domainperm.ID})" +
+            " ON CREATE SET ndom:" + Types.Orphaned + ",ndom.lastscan = $ScanID" +
             " MERGE (ndom)-[r:" + Types.AppliesPermissionTo + "]->(folderDom)" +
             " SET r.right=domainperm.Right" +
             " SET r.accesstype=domainperm.AccessType" +
-            " SET r.lastscan=$scanid" +
-            " SET r.fsid=$fsid" +
+            " SET r.lastscan=$ScanID" +
+            " SET r.fsid=prop.fsid" +
 
-            " WITH folderDom" +
-            " UNWIND $builtinperms as builtinperm" +
-            " MERGE(folderBuiltin:" + Types.Folder + " {path:$path})" +
-            " MERGE(nbuiltin:" + Types.BuiltinObject + " {id:builtinperm.ID})" +
+            " WITH folderDom, prop" +
+            " UNWIND prop.builtinperms as builtinperm" +
+            " MERGE (folderBuiltin:" + Types.Folder + " {path:prop.path})" +
+            " MERGE (nbuiltin:" + Types.BuiltinObject + " {id:builtinperm.ID})" +
             " MERGE (nbuiltin)-[r:" + Types.AppliesPermissionTo + "]->(folderBuiltin)" +
             " SET r.right=builtinperm.Right" +
             " SET r.accesstype=builtinperm.AccessType" +
-            " SET r.lastscan=$scanid" +
-            " SET r.fsid=$fsid" +
+            " SET r.lastscan=$ScanID" +
+            " SET r.fsid=prop.fsid" +
 
-            " WITH folderDom, folderBuiltin" +
+            " WITH folderDom, folderBuiltin, prop" +
             " MATCH ()-[rdom:" + Types.AppliesPermissionTo + "]->(folderDom)" +
-            " WHERE rdom.lastscan <> $scanid" +
+            " WHERE rdom.lastscan <> $ScanID" +
             " DELETE rdom" +
 
-            " WITH folderDom, folderBuiltin" +
+            " WITH folderDom, folderBuiltin, prop" +
             " MATCH ()-[rbuiltin:" + Types.AppliesPermissionTo + "]->(folderBuiltin)" +
-            " WHERE rbuiltin.lastscan <> $scanid" +
+            " WHERE rbuiltin.lastscan <> $ScanID" +
             " DELETE rbuiltin" +
 
-            " RETURN $path";
+            " RETURN prop.path";
 
-            int relcreated = 0;
-            using (ISession session = driver.Session())
-            {
-                IStatementResult result = session.WriteTransaction(tx => tx.Run(query, new 
-                { 
-                    fsid = this.FsID, 
-                    scanid = this.ScanID, 
+
+            NeoQueryData querydata = new NeoQueryData();
+            querydata.Properties = new List<object>();
+            querydata.Properties.Add(new
+                {
+                fsid = this.FsID,
                     domainpermissions = folder.DomainPermissions, 
                     builtinperms = folder.BuiltinPermissions,
                     path = folder.Path
-                }));
-                relcreated = result.Summary.Counters.RelationshipsCreated;
-            }
-            return relcreated;
+                });
+
+            TransactionResult<List<string>> result = new TransactionResult<List<string>>(await NeoWriter.RunQueryAsync(query, querydata, driver));
+
+            return result.CreatedEdgeCount;
         }
 
-        public int SendDatastore(DataStore ds, IDriver driver)
+        public async Task<int> SendDatastoreAsync(DataStore ds, IDriver driver)
         {
-            string query = "MERGE(n:" + Types.Datastore + " {name:$Name}) " +           
-            "SET n.comment=$Comment " +
-            "SET n.host=$Host " +
-            "SET n.layout='tree' " +
-            "MERGE(host:" + Types.Device + " {name:$Host}) " +
-            "MERGE (n)-[r:" + Types.ConnectedTo + "]->(host) " +
-            "RETURN n ";
+            string query = "UNWIND $Properties AS prop" + 
+                " MERGE (n:" + Types.Datastore + " {name:prop.Name})" +
+                " SET n.comment=prop.Comment" +
+                " SET n.host=prop.Host" +
+                " SET n.layout='tree'" +
+                " MERGE(host:" + Types.Device + " {name:prop.Host})" +
+                " MERGE (n)-[r:" + Types.ConnectedTo + "]->(host)" +
+                " SET r.lastscan=$ScanID" +
+                " RETURN n";
 
-            int relcreated = 0;
-            using (ISession session = driver.Session())
+            NeoQueryData querydata = new NeoQueryData();
+            querydata.Properties = new List<object>();
+            querydata.Properties.Add(ds);
+
+            TransactionResult<List<string>> result = new TransactionResult<List<string>>(await NeoWriter.RunQueryAsync(query, querydata, driver));
+
+            return result.CreatedEdgeCount;
+        }
+
+        public async Task<int> AttachRootToDataStoreAsync(DataStore ds, string rootpath, IDriver driver)
+        {
+            string query = "UNWIND $Properties AS prop" + 
+                " MERGE (datastore:" + Types.Datastore + " {name:prop.dsname})" +
+                " MERGE (root:" + Types.Folder + " {path:prop.rootpath})" +
+                " MERGE (datastore)-[r:" + Types.Hosts + "]->(root)" +
+                " SET r.lastscan=$ScanID" +
+                " RETURN *";
+
+            NeoQueryData querydata = new NeoQueryData();
+            querydata.Properties = new List<object>();
+            querydata.Properties.Add(new
             {
-                IStatementResult result = session.WriteTransaction(tx => tx.Run(query, ds));
-                relcreated = result.Summary.Counters.RelationshipsCreated;
-            }
+                dsname = ds.Name,
+                rootpath = rootpath?.ToLower(),
+            });
 
-            return relcreated;
+            TransactionResult<List<string>> result = new TransactionResult<List<string>>(await NeoWriter.RunQueryAsync(query, querydata, driver));
+            return result.CreatedEdgeCount;
         }
 
-        public int AttachRootToDataStore(DataStore ds, string rootpath, IDriver driver)
+        public async Task<int> CleanupChangedFoldersAsync(string rootpath, IDriver driver)
         {
-            string query = "MERGE(datastore:" + Types.Datastore + " {name:$dsname}) " +
-            "MERGE(root:" + Types.Folder + " {path:$rootpath}) " +
-            "MERGE (datastore)-[r:" + Types.Hosts + "]->(root) " +
-            "RETURN * ";
+            string query = "UNWIND $Properties AS prop" + 
+                " MATCH (f:" + Types.Folder + ")" +
+                " WHERE f.fsid = prop.fsid AND f.lastscan<>$ScanID" +
+                " DETACH DELETE f";
 
-            int relcreated = 0;
-            using (ISession session = driver.Session())
+            NeoQueryData querydata = new NeoQueryData();
+            querydata.Properties = new List<object>();
+            querydata.Properties.Add(new
             {
-                IStatementResult result = session.WriteTransaction(tx => tx.Run(query, new { 
-                    dsname = ds.Name, 
-                    rootpath = rootpath?.ToLower(), 
-                    scanid = this.ScanID}));
-                relcreated = result.Summary.Counters.RelationshipsCreated;
-            }
+                rootpath,
+                fsid = this.FsID
+            });
 
-            return relcreated;
+            TransactionResult<List<string>> result = new TransactionResult<List<string>>(await NeoWriter.RunQueryAsync(query, querydata, driver));
+            return result.DeletedNodeCount;
         }
 
-        public int CleanupChangedFolders(string rootpath, IDriver driver)
+        public async Task<int> CleanupConnectionsAsync(string rootpath, IDriver driver)
         {
-            string query = "MATCH(f:" + Types.Folder + ") " +
-            "WHERE f.fsid = $fsid AND f.lastscan<>$scanid " +
-            "DETACH DELETE f ";
-
-            int nodesdeleted = 0;
-            using (ISession session = driver.Session())
-            {
-                IStatementResult result = session.WriteTransaction(tx => tx.Run(query, new {
-                    rootpath,
-                    scanid = this.ScanID,
-                    fsid = this.FsID
-                }));
-                nodesdeleted = result.Summary.Counters.NodesDeleted;
-            }
-
-            return nodesdeleted;
-        }
-
-        public int CleanupConnections(string rootpath, IDriver driver)
-        {
-            string query = "MATCH (:" + Types.Folder + " {fsid: $fsid})-[r]-()"+
-                " WHERE r.fsid = $fsid AND r.lastscan <> $scanid" +
+            string query = "UNWIND $Properties AS prop" + 
+                " MATCH (:" + Types.Folder + " {fsid: prop.fsid})-[r]-()"+
+                " WHERE r.fsid = prop.fsid AND r.lastscan <> $ScanID" +
                 " DELETE r ";
 
-            int nodesdeleted = 0;
-            using (ISession session = driver.Session())
+            NeoQueryData querydata = new NeoQueryData();
+            querydata.Properties = new List<object>();
+            querydata.Properties.Add(new
             {
-                IStatementResult result = session.WriteTransaction(tx => tx.Run(query, new {
-                    rootpath = rootpath,
-                    scanid = this.ScanID,
-                    fsid = this.FsID }));
-                nodesdeleted = result.Summary.Counters.NodesDeleted;
-            }
+                rootpath = rootpath,
+                fsid = this.FsID
+            });
 
-            return nodesdeleted;
+            TransactionResult<List<string>> result = new TransactionResult<List<string>>(await NeoWriter.RunQueryAsync(query, querydata, driver));
+            return result.DeletedNodeCount;
         }
     }
 }

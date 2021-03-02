@@ -19,7 +19,7 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Neo4j.Driver.V1;
+using Neo4j.Driver;
 
 namespace Console.neo4jProxy
 {

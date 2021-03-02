@@ -22,7 +22,7 @@ using System.Diagnostics;
 using common;
 using Microsoft.Graph;
 using Microsoft.Identity.Client;
-using Neo4j.Driver.V1;
+using Neo4j.Driver;
 using AzureADScanner.Azure;
 using CSharpVitamins;
 

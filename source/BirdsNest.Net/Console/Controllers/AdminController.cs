@@ -59,11 +59,11 @@ namespace Console.Controllers
                 if (dt.Properties.ContainsKey(index.PropertyName))
                 {
                     Property prop = dt.Properties[index.PropertyName];
-                    if (prop.IndexEnforced == false) { return await this._neoservice.DropIndexAsync(index.Label, index.PropertyName); }
+                    if (prop.IndexEnforced == false) { return await this._neoservice.DropIndexNameAsync(index.IndexName); }
                 }
             }
 
-            this._logger.LogError($"Invalid index drop request: {index.Label}:{index.PropertyName}");
+            this._logger.LogError($"Invalid index drop request: {index.IndexName}");
             return -1;
 
             

@@ -20,11 +20,12 @@ using System;
 using System.Collections.Generic;
 using System.Net;
 using System.Diagnostics;
-using Neo4j.Driver.V1;
+using Neo4j.Driver;
 using common;
 using Attributed;
 using System.Threading;
 using CSharpVitamins;
+using System.Threading.Tasks;
 
 namespace FSScanner
 {
@@ -32,19 +33,17 @@ namespace FSScanner
     {
         private Dictionary<string, Folder> _existingfolders;
         private Stopwatch _timer = new Stopwatch();
-        public string ScanId { get; private set; }
         public string FsID { get; private set; }
 
         public int FolderCount { get; set; } = 0;
         public IDriver Driver { get; private set; }
         public Writer Writer { get; private set; }
 
-        public Crawler(IDriver driver, FileSystem fs, string scanid)
+        public Crawler(IDriver driver, FileSystem fs)
         {
-            this.ScanId = scanid;
             this.FsID = fs.ID;
             this.Driver = driver;
-            this.Writer = new Writer(this.FsID, this.ScanId);
+            this.Writer = new Writer(this.FsID);
         }
 
         /// <summary>
@@ -54,7 +53,7 @@ namespace FSScanner
         /// <param name="rootpath"></param>
         /// <param name="cred"></param>
         /// <param name="driver"></param>
-        public void CrawlRoot(DataStore ds, string rootpath, NetworkCredential cred)
+        public async Task CrawlRootAsync(DataStore ds, string rootpath, NetworkCredential cred)
         {
 
             //create a connection to the root path using other credentials
@@ -69,7 +68,7 @@ namespace FSScanner
             }
 
             //now initiate the crawl
-            this.CrawlRoot(ds, rootpath);
+            await this.CrawlRootAsync(ds, rootpath);
         }
 
         /// <summary>
@@ -78,14 +77,14 @@ namespace FSScanner
         /// <param name="ds"></param>
         /// <param name="rootpath"></param>
         /// <param name="driver"></param>
-        public void CrawlRoot(DataStore ds, string rootpath)
+        public async Task CrawlRootAsync(DataStore ds, string rootpath)
         {
             ConsoleWriter.WriteInfo("Crawling " + rootpath);
 
             //get the existing folders for comparison
             try
             {
-                TransactionResult<Dictionary<string, Folder>> existfolderstx = Reader.GetAllFoldersAsDict(rootpath, this.Driver);
+                TransactionResult<Dictionary<string, Folder>> existfolderstx = await Reader.GetAllFoldersAsDict(rootpath, this.Driver);
                 this._existingfolders = existfolderstx.Result;
                 ConsoleWriter.WriteInfo("Found " + this._existingfolders.Count + " folders in database in " + existfolderstx.ElapsedMilliseconds.TotalMilliseconds + "ms");
             }
@@ -99,8 +98,8 @@ namespace FSScanner
             try
             {
                 _timer.Start();
-                Writer.SendDatastore(ds, this.Driver);
-                Writer.AttachRootToDataStore(ds, rootpath.ToLower(), this.Driver);                    
+                await Writer.SendDatastoreAsync(ds, this.Driver);
+                await Writer.AttachRootToDataStoreAsync(ds, rootpath.ToLower(), this.Driver);                    
             }
             catch (Exception e)
             {
@@ -129,7 +128,7 @@ namespace FSScanner
                     if (ThreadCounter.ActiveThreadCount == 0 ) { break; }
                 }
 
-                Writer.FlushFolderQueue(this.Driver);
+                await Writer.FlushFolderQueueAsync(this.Driver);
                 _timer.Stop();
                 ConsoleWriter.ClearProgress();
                 ConsoleWriter.WriteInfo("Crawled file system " + rootpath + " in " + _timer.Elapsed);
@@ -137,7 +136,7 @@ namespace FSScanner
             }
             catch (Exception e)
             {
-                Writer.FlushFolderQueue(this.Driver);
+                await Writer.FlushFolderQueueAsync(this.Driver);
                 _timer.Stop();
                 ConsoleWriter.WriteError("Error crawling file system " + rootpath + ": " + e.Message);
                 ConsoleWriter.WriteLine();
@@ -149,8 +148,8 @@ namespace FSScanner
             {
                 _timer.Restart();
                 ConsoleWriter.WriteInfo("Cleaning up ");
-                Writer.CleanupChangedFolders(rootpath, this.Driver);
-                Writer.CleanupConnections(rootpath, this.Driver);
+                await Writer.CleanupChangedFoldersAsync(rootpath, this.Driver);
+                await Writer.CleanupConnectionsAsync(rootpath, this.Driver);
                 _timer.Stop();
                 ConsoleWriter.WriteInfo("Clean finished in " + _timer.Elapsed);
                 ConsoleWriter.WriteLine();

@@ -87,7 +87,7 @@ namespace Console.neo4jProxy.AdvancedSearch
         public string ToSearchString()
         {
             StringBuilder builder = this.BuildBaseSearchString();
-            builder.Append(" UNWIND nodes(p) as bnest_nodes RETURN DISTINCT bnest_nodes ORDER BY LOWER(bnest_nodes.name)");
+            builder.Append(" UNWIND nodes(p) as bnest_nodes RETURN DISTINCT bnest_nodes ORDER BY toLower(bnest_nodes.name)");
             return builder.ToString();
         }
 
@@ -120,7 +120,7 @@ namespace Console.neo4jProxy.AdvancedSearch
                 string cond = this.Condition?.ToTokenizedSearchString();
                 if (string.IsNullOrWhiteSpace(cond) == false) { cond = " WHERE " + cond; }
                 builder.Append(cond);
-                builder.Append(" UNWIND nodes(p) as bnest_nodes RETURN DISTINCT bnest_nodes ORDER BY LOWER(bnest_nodes.name)");
+                builder.Append(" UNWIND nodes(p) as bnest_nodes RETURN DISTINCT bnest_nodes ORDER BY toLower(bnest_nodes.name)");
             }
             catch (Exception e)
             {

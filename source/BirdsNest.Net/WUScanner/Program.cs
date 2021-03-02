@@ -24,7 +24,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.UpdateServices.Administration;
 using common;
-using Neo4j.Driver.V1;
+using Neo4j.Driver;
 using WUScanner.Neo4j;
 using CSharpVitamins;
 

@@ -19,7 +19,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using Neo4j.Driver.V1;
+using Neo4j.Driver;
 using System.Linq;
 using common;
 using System.Net;
@@ -97,6 +97,7 @@ namespace FSScanner
                         credentials.Add(cred.ID, netcred);
                     }
                     datastores = config.Datastores;
+
                     ConsoleWriter.ShowProgress = config.ShowProgress;
                     ConsoleWriter.SetProgressLineCount(config.MaxThreads);
                 }
@@ -123,12 +124,15 @@ namespace FSScanner
             }
 
 
+            //********************
             ConsoleWriter.WriteInfo("Initialising file system scanner, scan ID: " + scanid);
+            NeoWriter.ScanID = scanid;
             foreach (DataStore ds in datastores)
             {
                 
                 foreach (FileSystem fs in ds.FileSystems)
                 {
+                    NeoWriter.ScannerID = fs.ID;
                     if (string.IsNullOrEmpty(fs.Path))
                     {
                         ConsoleWriter.WriteWarning("Filesystem missing \"path\" property");
@@ -145,16 +149,16 @@ namespace FSScanner
                         }
                         continue;
                     }
-                    Crawler crawler = new Crawler(driver, fs, scanid);
+                    Crawler crawler = new Crawler(driver, fs);
 
                     NetworkCredential fscred;
                     if (!string.IsNullOrEmpty(fs.CredentialID) && (credentials.TryGetValue(fs.CredentialID, out fscred)))
                     {
-                        crawler.CrawlRoot(ds, fs.Path, fscred);
+                        crawler.CrawlRootAsync(ds, fs.Path, fscred).Wait();
                     }
                     else
                     {
-                        crawler.CrawlRoot(ds, fs.Path);
+                        crawler.CrawlRootAsync(ds, fs.Path).Wait();
                     }
                 }
             }

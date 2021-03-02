@@ -24,7 +24,7 @@ using System.Threading.Tasks;
 using Microsoft.ConfigurationManagement.ManagementProvider;
 using Microsoft.ConfigurationManagement.ManagementProvider.WqlQueryEngine;
 using common;
-using Neo4j.Driver.V1;
+using Neo4j.Driver;
 
 namespace CMScanner.CmConverter
 {
