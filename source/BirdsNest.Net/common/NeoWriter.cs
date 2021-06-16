@@ -43,32 +43,32 @@ namespace common
 
         public static List<IResultSummary> RunQuery(string query, NeoQueryData data, IDriver driver)
         {
-            return RunQueryAsync(query, data, driver).Result;
+            return RunQueryAsync(query, data, driver).GetAwaiter().GetResult();
         }
         public static List<IResultSummary> RunQuery(string query, NeoQueryData data, IDriver driver, bool showprogressdots)
         {
 
-            return RunQueryAsync(query, data, driver, showprogressdots).Result;
+            return RunQueryAsync(query, data, driver, showprogressdots).GetAwaiter().GetResult();
         }
 
         public static List<IResultSummary> RunQuery(string query, NeoQueryData data, IDriver driver, bool showstats, bool showprogressdots)
         {
-            return RunQueryAsync(query, data, driver, showstats, showprogressdots).Result;
+            return RunQueryAsync(query, data, driver, showstats, showprogressdots).GetAwaiter().GetResult();
         }
 
         public static List<IResultSummary> WriteIDataCollector(IDataCollector collector, IDriver driver, bool showprogressdots)
         {
-            return WriteIDataCollectorAsync(collector, driver, showprogressdots).Result;
+            return WriteIDataCollectorAsync(collector, driver, showprogressdots).GetAwaiter().GetResult();
         }
 
         public static List<IResultSummary> WriteIDataCollector(IDataCollector collector, IDriver driver)
         {
-            return WriteIDataCollectorAsync(collector, driver).Result;
+            return WriteIDataCollectorAsync(collector, driver).GetAwaiter().GetResult();
         }
 
         public static List<IResultSummary> WriteIDataCollector(IDataCollector collector, IDriver driver, bool showstats, bool showprogressdots)
         {
-            return WriteIDataCollectorAsync(collector, driver, showstats, showprogressdots).Result;
+            return WriteIDataCollectorAsync(collector, driver, showstats, showprogressdots).GetAwaiter().GetResult();
         }
 
         // ****************************************
@@ -189,7 +189,7 @@ namespace common
         public async static Task<List<IResultSummary>> WriteIDataCollectorAsync(IDataCollector collector, IDriver driver, bool showprogressdots)
         {
             NeoQueryData collectionsdata = collector.CollectData();
-            List<IResultSummary> summaries = await NeoWriter.RunQueryAsync(collector.Query, collectionsdata, driver, showprogressdots);
+            List<IResultSummary> summaries = await RunQueryAsync(collector.Query, collectionsdata, driver, showprogressdots);
             return summaries;
         }
 

@@ -56,7 +56,7 @@ namespace Console.Plugins
 
         private bool Reload()
         {
-            return this.ReloadAsync().Result;
+            return this.ReloadAsync().GetAwaiter().GetResult();
         }
 
         public async Task<bool> ReloadAsync()

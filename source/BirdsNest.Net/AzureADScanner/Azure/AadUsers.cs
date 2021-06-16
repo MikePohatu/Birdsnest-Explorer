@@ -52,7 +52,7 @@ namespace AzureADScanner.Azure
 
         public NeoQueryData CollectData()
         {
-            return this.CollectDataAsync().Result;
+            return this.CollectDataAsync().GetAwaiter().GetResult();
         }
 
         public async Task<NeoQueryData> CollectDataAsync()
