@@ -139,7 +139,7 @@ namespace ADScanner
 
             //create primary group mappings
             Console.Write("Setting primary groups");
-            NeoWriter.RunQueryAsync(StandAloneQueries.SetPrimaryGroupRelationships, nopropsdata, driver, true, true).Wait();
+            NeoWriter.RunQueryAsync(StandAloneQueries.SetPrimaryGroupRelationships, nopropsdata, driver, true, true).GetAwaiter().GetResult();
 
             Console.WriteLine();
             Console.WriteLine("*Cleaning up");
