@@ -20,7 +20,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 	<div v-if="authorizationRequired">
 		<div id="curtain" />
 		<div id="curtainoverlay">
-      	<!-- Avoid conflicts with ids. -->
+			<!-- Avoid conflicts with ids. -->
 			<LoginCredentials v-if="notLoginPage" class="xy-center" />
 		</div>
 	</div>
@@ -62,9 +62,9 @@ export default class Curtain extends Vue {
 				return this.$store.state.user.isAuthorized;
 			},
 			() => {
-        //add a setTimeout in case the change is due to a 'softPing', in which case
-        //a route change might be coming. The setTimeout lets the route change happen
-        //first so this can be evaluated correctly
+				//add a setTimeout in case the change is due to a 'softPing', in which case
+				//a route change might be coming. The setTimeout lets the route change happen
+				//first so this can be evaluated correctly
 				setTimeout(() => {
 					if (this.isPageAuthorized) {
 						this.hideCurtain();
