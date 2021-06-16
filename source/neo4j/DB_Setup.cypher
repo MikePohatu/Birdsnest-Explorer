@@ -1,38 +1,44 @@
 :begin
 
-CREATE INDEX ON :BuiltinObject(id);
-CREATE INDEX ON :BuiltinUser(id);
-CREATE INDEX ON :BuiltinGroup(id);
+CREATE INDEX BuiltinObject_id IF NOT EXISTS FOR (n:BuiltinObject) ON (n.id);
+CREATE INDEX BuiltinUser_id IF NOT EXISTS FOR (n:BuiltinUser) ON (n.id);
+CREATE INDEX BuiltinGroup_id IF NOT EXISTS FOR (n:BuiltinGroup) ON (n.id);
 
-CREATE CONSTRAINT ON (u:AD_User) ASSERT u.id IS UNIQUE;
-CREATE CONSTRAINT ON (c:AD_Computer) ASSERT c.id IS UNIQUE;
+CREATE INDEX AD_ForeignSecurityPrincipal_dn IF NOT EXISTS FOR (n:AD_ForeignSecurityPrincipal) ON (n.dn);
+CREATE INDEX AD_ForeignSecurityPrincipal_id IF NOT EXISTS FOR (n:AD_ForeignSecurityPrincipal) ON (n.id);
+CREATE INDEX AD_ForeignSecurityPrincipal_domainid IF NOT EXISTS FOR (n:AD_ForeignSecurityPrincipal) ON (n.domainid);
 
-CREATE INDEX ON :AD_ForeignSecurityPrincipal(dn);
-CREATE INDEX ON :AD_ForeignSecurityPrincipal(id);
-CREATE INDEX ON :AD_ForeignSecurityPrincipal(domainid);
-CREATE INDEX ON :AD_Group(dn);
-CREATE INDEX ON :AD_Group(id);
-CREATE INDEX ON :AD_Object(id);
-CREATE INDEX ON :AD_Object(dn);
-CREATE INDEX ON :AD_Object(domainid);
-CREATE INDEX ON :AD_User(dn);
-CREATE INDEX ON :AD_Computer(dn);
+CREATE INDEX AD_ForeignSecurityPrincipal_dn IF NOT EXISTS FOR (n:AD_ForeignSecurityPrincipal) ON (n.dn);
+CREATE INDEX AD_ForeignSecurityPrincipal_id IF NOT EXISTS FOR (n:AD_ForeignSecurityPrincipal) ON (n.id);
+CREATE INDEX AD_Group_dn IF NOT EXISTS FOR (n:AD_Group) ON (n.dn);
+CREATE INDEX AD_Group_id IF NOT EXISTS FOR (n:AD_Group) ON (n.id);
+CREATE INDEX AD_Object_dn IF NOT EXISTS FOR (n:AD_Object) ON (n.dn);
+CREATE INDEX AD_Object_id IF NOT EXISTS FOR (n:AD_Object) ON (n.id);
+CREATE INDEX AD_Object_domainid IF NOT EXISTS FOR (n:AD_Object) ON (n.domainid);
+CREATE INDEX AD_User_dn IF NOT EXISTS FOR (n:AD_User) ON (n.dn);
+CREATE INDEX AD_Computer_dn IF NOT EXISTS FOR (n:AD_Computer) ON (n.dn);
 
-CREATE CONSTRAINT ON (f:FS_Folder) ASSERT f.path IS UNIQUE;
-CREATE INDEX ON :FS_Datastore(name);
-CREATE INDEX ON :FS_Folder(scannerid);
+CREATE CONSTRAINT AD_User_id ON (u:AD_User) ASSERT u.id IS UNIQUE;
+CREATE CONSTRAINT AD_Computer_id ON (c:AD_Computer) ASSERT c.id IS UNIQUE;
 
-CREATE CONSTRAINT ON (app:CTX_Application) ASSERT app.id IS UNIQUE;
-CREATE CONSTRAINT ON (farm:CTX_Farm) ASSERT farm.name IS UNIQUE;
+CREATE CONSTRAINT FS_Folder_path ON (f:FS_Folder) ASSERT f.path IS UNIQUE;
+CREATE INDEX FS_Datastore_name IF NOT EXISTS FOR (n:FS_Datastore) ON (n.name);
+CREATE INDEX FS_Folder_scannerid IF NOT EXISTS FOR (n:FS_Folder) ON (n.scannerid);
 
-CREATE INDEX ON :CM_Collection(id);
-CREATE INDEX ON :CM_Device(id);
-CREATE INDEX ON :CM_User(id);
-CREATE INDEX ON :CM_ConfigurationItem(id);
-CREATE INDEX ON: CM_SoftwareUpdate(id);
+CREATE CONSTRAINT CTX_Application_id ON (app:CTX_Application) ASSERT app.id IS UNIQUE;
+CREATE CONSTRAINT CTX_Farm_name ON (farm:CTX_Farm) ASSERT farm.name IS UNIQUE;
 
-CREATE INDEX ON :WU_Update(KB);
-CREATE INDEX ON :WU_Update(id);
+
+CREATE INDEX CM_Collection_id IF NOT EXISTS FOR (n:CM_Collection) ON (n.id);
+CREATE INDEX CM_Device_id IF NOT EXISTS FOR (n:CM_Device) ON (n.id);
+CREATE INDEX CM_User_id IF NOT EXISTS FOR (n:CM_User) ON (n.id);
+CREATE INDEX CM_ConfigurationItem_id IF NOT EXISTS FOR (n:CM_ConfigurationItem) ON (n.id);
+CREATE INDEX CM_SoftwareUpdate_id IF NOT EXISTS FOR (n:CM_SoftwareUpdate) ON (n.id);
+
+
+CREATE INDEX WU_Update_KB IF NOT EXISTS FOR (n:CM_SoftwareUpdate) ON (n.KB);
+CREATE INDEX CWU_Update_id IF NOT EXISTS FOR (n:CM_SoftwareUpdate) ON (n.id);
+
 
 
 :commit
