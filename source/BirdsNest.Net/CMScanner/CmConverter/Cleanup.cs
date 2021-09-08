@@ -61,7 +61,10 @@ namespace CMScanner.CmConverter
 
             //any remaining edges
             List<string> cmreltypes = new List<string> { 
-                Types.CMLimitingCollection,
+                Types.CMLimitingCollectionFor,
+                Types.CmExcludes,
+                Types.CmIncludes,
+                Types.CMUnknownCollectionRelationship,
                 Types.CMMemberOf,
                 Types.CMReferences,
                 Types.CMHasProgram,
