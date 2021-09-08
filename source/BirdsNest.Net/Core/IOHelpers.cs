@@ -1,0 +1,128 @@
+﻿#region license
+// Copyright (c) 2021 20Road Limited
+//
+// This file is part of Folders
+//
+// Folders is free software: with the exception of attributed regions of code,
+// you can redistribute it and/or modify it under the terms of the GNU
+// General Public License as published by the Free Software Foundation, 
+// version 3 of the License.
+//
+// Where attributed code is incompatible with the terms of the GPLv3, the 
+// license assigned to that code takes precedence.
+//
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with this program.  If not, see <http://www.gnu.org/licenses/>.
+//
+#endregion
+using Core.Logging;
+using System;
+using System.IO;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace Core
+{
+    public static class IOHelpers
+    {
+        public async static Task<string> ReadFileAsync(string path)
+        {
+            if (!File.Exists(path))
+            {
+                throw new FileNotFoundException("File not found: " + path);
+            }
+
+            string script = string.Empty;
+            try
+            {
+                Log.Trace("ReadFileAsync - Loading file: " + path);
+                byte[] result;
+                Encoding encoding = Encoding.UTF8;
+                using (var reader = new StreamReader(path, Encoding.UTF8, true))
+                {
+                    reader.Peek();
+                    encoding = reader.CurrentEncoding;
+                }
+
+                using (FileStream fs = new FileStream(path, FileMode.Open, FileAccess.Read))
+                {
+                    result = new byte[fs.Length];
+                    await fs.ReadAsync(result, 0, (int)fs.Length);
+                }
+                //get the string and strip the BOM
+                //script = encoding.GetString(result).Trim(new char[] { '\uFEFF', '\u200B' });
+                script = GetString(encoding, result);
+                return script;
+            }
+            catch (Exception e)
+            {
+                Log.Error(e, "Failed to load file: " + path);
+            }
+
+            return script;
+        }
+
+        #region Attribution https://stackoverflow.com/a/29176183
+        public static string GetString(Encoding encoding, byte[] bytes)
+        {
+            Log.Trace("GetString - processing: " + bytes.ToString());
+            byte[] preamble = encoding.GetPreamble();
+            if (bytes.StartsWith(preamble))
+            {
+                return encoding.GetString(bytes, preamble.Length, bytes.Length - preamble.Length);
+            }
+            else
+            {
+                return encoding.GetString(bytes);
+            }
+        }
+        #endregion
+
+        #region Attribution https://stackoverflow.com/a/29176183
+        public static bool StartsWith(this byte[] thisArray, byte[] otherArray)
+        {
+            // Handle invalid/unexpected input
+            // (nulls, thisArray.Length < otherArray.Length, etc.)
+
+            for (int i = 0; i < otherArray.Length; ++i)
+            {
+                if (thisArray[i] != otherArray[i])
+                {
+                    return false;
+                }
+            }
+
+            return true;
+        }
+        #endregion
+
+        /// <summary>
+        /// Write a text file with UTF-8 Encoding
+        /// </summary>
+        /// <param name="path"></param>
+        /// <param name="text"></param>
+        /// <returns></returns>
+        public async static Task WriteTextFileAsync(string path, string text)
+        {
+            try
+            {
+                DirectoryInfo parent = Directory.GetParent(path);
+                Directory.CreateDirectory(parent.FullName);
+
+                using (StreamWriter writer = File.CreateText(path))
+                {
+                    await writer.WriteAsync(text);
+                }
+            }
+            catch (Exception e)
+            {
+                Log.Error(e, "Failed to write file: " + path);
+            }
+        }
+    }
+}
