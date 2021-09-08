@@ -81,19 +81,17 @@ namespace CMScanner
                 using (Configuration config = Configuration.LoadConfiguration(configfile))
                 {
                     scannerid = config.ScannerID;
-                    if (string.IsNullOrEmpty(config.Username)) { 
-                        Connector.Instance.Connect(config.SiteServer);
-                    }
-                    else { 
-                        Connector.Instance.Connect(config.Username, config.Password, config.Domain, config.SiteServer);
-                    }
+                    Connector.Instance.Connect(config.Username, config.Password, config.Domain, config.SiteServer);
                 }
             }
             catch (Exception e)
             {
                 Console.WriteLine("There was an error connecting to the server with your configuration");
                 Console.WriteLine(e.Message);
-                if (batchmode == false) { Console.ReadLine(); }
+                if (batchmode == false)
+                {
+                    ConsolePressKeyToExit();
+                }
                 Environment.Exit(1);
             }
 
@@ -108,7 +106,10 @@ namespace CMScanner
             {
                 Console.WriteLine("There was an error loading your neo4j configuration");
                 Console.WriteLine(e.Message);
-                if (batchmode == false) { Console.ReadLine(); }
+                if (batchmode == false)
+                {
+                    ConsolePressKeyToExit();
+                }
                 Environment.Exit(2);
             }
 
@@ -117,7 +118,6 @@ namespace CMScanner
             List<IDataCollector> collectors = new List<IDataCollector>
             {
                 CmCollections.GetInstance(),
-                CmLimitingCollections.GetInstance(),
                 CmApplications.GetInstance(),
                 CmPackages.GetInstance(),
                 CmPackagePrograms.GetInstance(),
@@ -126,6 +126,7 @@ namespace CMScanner
                 CmDevices.GetInstance(),
                 CmDeviceAdConnections.GetInstance(),
                 CmUserAdConnections.GetInstance(),
+                CmCollectionRelationships.GetInstance(),
                 CmCollectionMemberships.GetInstance(),
                 CmApplicationsInTaskSequences.GetInstance(),
                 CmSoftwareUpdate.GetInstance(),
@@ -156,8 +157,7 @@ namespace CMScanner
             else
             {
                 Console.WriteLine();
-                Console.WriteLine("Press any key to exit");
-                Console.ReadLine();
+                ConsolePressKeyToExit();
             }
         }
 
@@ -166,6 +166,13 @@ namespace CMScanner
             Console.WriteLine();
             Console.WriteLine("Usage: CMScanner.exe /config:<configfile> /batch");
             Console.WriteLine("/batch makes scanner run in batch mode and does not wait before exit");
+        }
+
+        private static void ConsolePressKeyToExit()
+        {
+
+            Console.WriteLine("Press any key to exit");
+            Console.ReadLine();
         }
     }
 }
