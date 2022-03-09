@@ -23,25 +23,36 @@ import "motion-ui/dist/motion-ui.css";
 import "foundation-sites/dist/css/foundation.css";
 
 import Vue from "vue";
+import { createStore } from 'vuex';
 
-import App from "./App.vue";
 import "./registerServiceWorker";
-import router from "./router";
-import store, { rootPaths } from "./store";
 import i18n from "./i18n";
 import FlagIcon from "vue-flag-icon";
 import VueCookies from "vue-cookies";
 
-Vue.use(FlagIcon);
-Vue.use(VueCookies);
+import { createApp } from 'vue';
+import store, { rootPaths } from "./store";
+import router from "./router";
+import App from './App.vue';
+
+const app = createApp(App);
+
+app.config.globalProperties.$store = store;
+app.config.globalProperties.$t = i18n;
+app.use(FlagIcon);
+app.use(VueCookies);
+app.use(router);
+app.use(store);
+app.use(i18n);
+app.mount('#app');
 
 Vue.config.productionTip = false;
-new Vue({
-  router,
-  store,
-  i18n,
-  render: h => h(App)
-}).$mount("#app");
+// new Vue({
+//   router,
+//   store,
+//   i18n,
+//   render: h => h(App)
+// }).$mount("#app");
 
 $.ajaxSetup({ xhrFields: { withCredentials: true }, cache: false });
 $(document).foundation();

@@ -38,11 +38,7 @@ module.exports = {
         withCredentials: true
       }
     },
-    watchOptions: {
-      ignored: ['**/node_modules/**']
-    },
   },
-
   pwa: {
     iconPaths: {
       favicon32: 'img/icons/favicon-32x32.png',
