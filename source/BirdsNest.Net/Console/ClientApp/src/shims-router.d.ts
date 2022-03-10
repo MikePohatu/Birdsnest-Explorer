@@ -14,13 +14,20 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
-import { Store } from 'vuex';
-import { RootState } from './store';
 
-declare module '@vue/runtime-core' {
+import 'vue-router'
 
-  // provide typings for `this.$store`
-  interface ComponentCustomProperties {
-    $store: Store<RootState>
+declare module 'vue-router' {
+    
+    interface breadcrumb { 
+      name: string, 
+      link?: string 
+    }
+
+    interface RouteMeta {
+      // is optional
+      breadcrumbs?: breadcrumb[]
+      pagecrumbs?: breadcrumb[]
+      allowAnonymous?: boolean
+    }
   }
-}

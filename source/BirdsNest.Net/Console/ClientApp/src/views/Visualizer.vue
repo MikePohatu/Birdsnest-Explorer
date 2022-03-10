@@ -50,7 +50,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 </style>
 
 <script lang="ts">
-import { Component, Vue, Watch } from "vue-property-decorator";
+import { useStore } from "@/store";
 import Searches from "@/components/visualizer/search/Searches.vue";
 import NodeEdit from "@/components/visualizer/search/NodeEdit.vue";
 import EdgeEdit from "@/components/visualizer/search/EdgeEdit.vue";
@@ -61,14 +61,16 @@ import Graph from "@/components/visualizer/graph/Graph.vue";
 
 import { auth } from "@/assets/ts/webcrap/authcrap";
 import { SearchNode, SearchEdge, ValueCondition, AndOrCondition, Search } from "../assets/ts/visualizer/Search";
-import { Route } from "vue-router";
+import { RouteLocation, RouteLocationRaw, RouteRecordRaw, useRoute } from "vue-router";
 import webcrap from "@/assets/ts/webcrap/webcrap";
 import { SearchStorePaths } from "@/store/modules/SearchStore";
 import { ApiNode } from "@/assets/ts/dataMap/ApiNode";
 import { VisualizerStorePaths } from "../store/modules/VisualizerStore";
 import LStore from "@/assets/ts/LocalStorageManager";
+import { computed, defineComponent, watch } from "vue";
 
-@Component({
+
+export default defineComponent({
 	components: {
 		Searches,
 		NodeEdit,
@@ -78,9 +80,56 @@ import LStore from "@/assets/ts/LocalStorageManager";
 		NewConditionSelect,
 		Graph,
 	},
-})
-export default class Visualizer extends Vue {
-	selectedNodesList: number[] = []; // = [128, 118];
+	setup() {
+		const route = useRoute();
+		const store = useStore();
+		const selectedNodesList: number[] = []; // = [128, 118];
+
+		const loadSharedSearch = function (route: RouteLocation): void {
+			const encodedData = route.query.sharedsearch as string;
+			if (encodedData !== undefined) {
+				const decoded = JSON.parse(webcrap.misc.decodeUrlB64(encodedData)) as Search;
+				store.commit(SearchStorePaths.mutations.Update.SEARCH, decoded);
+			}
+		}
+
+		
+		const selectedNodes = computed(():  ApiNode[] =>{
+			return store.state.visualizer.selectedNodes;
+		})
+
+		const editNode = computed((): SearchNode => {
+			return store.state.visualizer.search.editNode;
+		})
+
+		const editEdge = computed(():  SearchEdge => {
+			return store.state.visualizer.search.editEdge;
+		})
+
+		const editValCond = computed(():  ValueCondition => {
+			return store.state.visualizer.search.editValCondition;
+		})
+
+		const editAndOrCondition = computed(():  AndOrCondition => {
+			return store.state.visualizer.search.editAndOrCondition;
+		})
+
+		const newCondition = computed((): AndOrCondition => {
+			return store.state.visualizer.search.newCondition;
+		});
+
+		const newConditionParent = computed((): AndOrCondition => {
+			return store.state.visualizer.search.newConditionParent;
+		});
+
+		watch(() => route, (to) => {
+				loadSharedSearch(to);
+		});
+
+		return {
+			selectedNodesList, selectedNodes, editNode, editEdge, editValCond, editAndOrCondition, newCondition, newConditionParent
+		}
+	},
 
 	mounted(): void {
 		auth.getValidationToken();
@@ -94,47 +143,10 @@ export default class Visualizer extends Vue {
 			this.$store.commit(SearchStorePaths.mutations.TOGGLE_SEARCH);
 			this.$store.commit(SearchStorePaths.mutations.TOGGLE_SEARCH_MODE);
 		}
+	},
+	
+	$route($route: any) {
+		throw new Error("Method not implemented.");
 	}
-
-	@Watch("$route")
-	onRouteChanged(to: Route) {
-		this.loadSharedSearch(to);
-	}
-
-	loadSharedSearch(route: Route): void {
-		const encodedData = route.query.sharedsearch as string;
-		if (encodedData !== undefined) {
-			const decoded = JSON.parse(webcrap.misc.decodeUrlB64(encodedData)) as Search;
-			this.$store.commit(SearchStorePaths.mutations.Update.SEARCH, decoded);
-		}
-	}
-
-	get selectedNodes(): ApiNode[] {
-		return this.$store.state.visualizer.selectedNodes;
-	}
-
-	get editNode(): SearchNode {
-		return this.$store.state.visualizer.search.editNode;
-	}
-
-	get editEdge(): SearchEdge {
-		return this.$store.state.visualizer.search.editEdge;
-	}
-
-	get editValCond(): ValueCondition {
-		return this.$store.state.visualizer.search.editValCondition;
-	}
-
-	get editAndOrCondition(): AndOrCondition {
-		return this.$store.state.visualizer.search.editAndOrCondition;
-	}
-
-	get newCondition(): AndOrCondition {
-		return this.$store.state.visualizer.search.newCondition;
-	}
-
-	get newConditionParent(): AndOrCondition {
-		return this.$store.state.visualizer.search.newConditionParent;
-	}
-}
+})
 </script>

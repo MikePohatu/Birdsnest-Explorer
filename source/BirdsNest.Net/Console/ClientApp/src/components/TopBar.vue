@@ -54,7 +54,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 							<router-link v-if="crumb.link" :to="crumb.link" class="crumb">{{ crumb.name }}</router-link>
 							<span v-else class="crumb">{{ crumb.name }}</span>
 						</li>
-						<li v-for="crumb in pagecrumbs" :key="crumb.name" class="bn-header-crumb">
+						<li v-for="crumb= in pagecrumbs" :key="crumb.name" class="bn-header-crumb">
 							<router-link v-if="crumb.link" :to="crumb.link" class="crumb">{{ crumb.name }}</router-link>
 							<span v-else class="crumb">{{ crumb.name }}</span>
 						</li>
@@ -69,28 +69,35 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 </template>
 
 <script lang="ts">
-import { Component, Vue } from "vue-property-decorator";
 import Menu from "@/components/Menu.vue";
+import {defineComponent, computed } from "vue";
+import { useRoute, breadcrumb } from "vue-router";
 import { routeDefs } from "@/router/index";
 
-@Component({
-	components: { Menu },
-})
-export default class TopBar extends Vue {
-	routeDefs = routeDefs;
+export default defineComponent({
+	components: {
+		Menu
+	},
+	setup () {
+    	const route = useRoute();
 
-	get breadcrumbs() {
-		return this.$route.meta.breadcrumbs;
-	}
+		return {
+			breadcrumbs: computed((): breadcrumb[] => {
+				return route.meta.breadcrumbs;
+			}),
 
-	get pagecrumbs() {
-		if (Object.prototype.hasOwnProperty.call(this.$route.meta, "pagecrumbs") && this.$route.meta.pagecrumbs !== null) {
-			return this.$route.meta.pagecrumbs;
-		} else {
-			return [];
+			pagecrumbs: computed((): breadcrumb[] => {
+				if (Object.prototype.hasOwnProperty.call(route.meta, "pagecrumbs") && route.meta.pagecrumbs !== null) {
+					return route.meta.pagecrumbs;
+				} else {
+					return [];
+				}
+			}),
+
+			routeDefs
 		}
 	}
-}
+});
 </script>
 
 <style scoped>

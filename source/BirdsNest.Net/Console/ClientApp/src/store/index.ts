@@ -14,8 +14,7 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
-import Vue from "vue";
-import Vuex from "vuex";
+import Vue,{ InjectionKey } from "vue";
 import { api, Request } from "../assets/ts/webcrap/apicrap";
 import { VisualizerStore } from "./modules/VisualizerStore";
 import PluginManager from '@/assets/ts/dataMap/PluginManager';
@@ -24,7 +23,7 @@ import i18n from '@/i18n';
 
 import { bus, events } from '@/bus';
 import { Dictionary } from 'vue-router/types/router';
-Vue.use(Vuex);
+import { createStore, useStore as baseUseStore, Store } from 'vuex';
 
 export const rootPaths = {
   mutations: {
@@ -128,7 +127,13 @@ const state: RootState = {
   apiState: api.states.NOTAUTHORIZED
 }
 
-export default new Vuex.Store({
+export const key: InjectionKey<Store<RootState>> = Symbol()
+
+export function useStore () {
+  return baseUseStore(key);
+}
+
+export const store = createStore({
   strict: process.env.NODE_ENV !== 'production',
   modules: {
     visualizer: VisualizerStore

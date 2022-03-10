@@ -15,12 +15,10 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 import { bus, events } from "@/bus";
-import Vue from "vue";
-import VueRouter, { RouteConfig } from "vue-router";
-import store, { rootPaths } from "../store";
+import { createRouter, createWebHistory, RouteRecordRaw, breadcrumb } from "vue-router";
+import { store, rootPaths } from "../store";
 import { auth } from "../assets/ts/webcrap/authcrap";
 import webcrap from "@/assets/ts/webcrap/webcrap";
-Vue.use(VueRouter);
 
 export const routeDefs = {
   portal: {
@@ -65,7 +63,7 @@ export const routeDefs = {
   }
 }
 
-const routes: Array<RouteConfig> = [
+const routes: Array<RouteRecordRaw> = [
   {
     path: routeDefs.portal.path,
     name: routeDefs.portal.name,
@@ -190,9 +188,8 @@ const routes: Array<RouteConfig> = [
   }
 ];
 
-const router = new VueRouter({
-  mode: "history",
-  base: process.env.BASE_URL,
+const router = createRouter({
+  history: createWebHistory(process.env.BASE_URL),
   routes
 });
 
@@ -266,7 +263,7 @@ router.beforeEach((to, from, next) => {
 });
 
 router.afterEach((to) => {
-  document.title = "Birdsnest Explorer - " + to.name;
+  document.title = "Birdsnest Explorer - " + to.name.toString();
 });
 
 export default router;

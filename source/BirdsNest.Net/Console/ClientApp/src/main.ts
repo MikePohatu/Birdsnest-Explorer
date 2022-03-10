@@ -23,7 +23,6 @@ import "motion-ui/dist/motion-ui.css";
 import "foundation-sites/dist/css/foundation.css";
 
 import Vue from "vue";
-import { createStore } from 'vuex';
 
 import "./registerServiceWorker";
 import i18n from "./i18n";
@@ -31,28 +30,20 @@ import FlagIcon from "vue-flag-icon";
 import VueCookies from "vue-cookies";
 
 import { createApp } from 'vue';
-import store, { rootPaths } from "./store";
+import { store, key, rootPaths } from "./store";
 import router from "./router";
 import App from './App.vue';
 
 const app = createApp(App);
 
-app.config.globalProperties.$store = store;
-app.config.globalProperties.$t = i18n;
-app.use(FlagIcon);
-app.use(VueCookies);
-app.use(router);
-app.use(store);
-app.use(i18n);
-app.mount('#app');
+app.use(FlagIcon)
+    //.use(VueCookies)
+    .use(router)
+    .use(store, key)
+    .use(i18n)
+    .mount('#app');
 
-Vue.config.productionTip = false;
-// new Vue({
-//   router,
-//   store,
-//   i18n,
-//   render: h => h(App)
-// }).$mount("#app");
+//Vue.config.productionTip = false;
 
 $.ajaxSetup({ xhrFields: { withCredentials: true }, cache: false });
 $(document).foundation();
