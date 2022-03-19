@@ -26,10 +26,12 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 					data-close-on-click-inside="false"
 				>
 					<li>
-						<a id="reportmenutext">{{ $t('phrase_Query_returned') }} {{ resultCount }} {{ $t('word_records') }}</a>
+						<a
+							id="reportmenutext"
+						>{{ $t('phrase_Query_returned') }} {{ resultCount }} {{ $t('word_records') }}</a>
 						<ul class="menu">
 							<li id="columnsli">
-								<a href="#">{{ $t('word_Columns')}}</a>
+								<a href="#">{{ $t('word_Columns') }}</a>
 								<ul class="vertical menu nested" id="columnstoggles">
 									<li v-for="name in propertyNames" :key="name">
 										<label class="toggleitem">
@@ -167,7 +169,6 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 
 <script lang="ts">
 import { routeDefs } from "@/router/index";
-import { Component, Vue } from "vue-property-decorator";
 import Loading from "@/components/Loading.vue";
 import { ResultSet } from "../assets/ts/dataMap/ResultSet";
 import { api, Request } from "@/assets/ts/webcrap/apicrap";
@@ -179,72 +180,102 @@ import { foundation } from "../mixins/foundation";
 import { Dictionary } from "vue-router/types/router";
 import LStore from "@/assets/ts/LocalStorageManager";
 import { bus, events } from "@/bus";
+import { useStore } from "@/store";
+import { computed, defineComponent, watch } from "vue";
 
-@Component({
-	components: { Loading },
-	mixins: [foundation],
-})
-export default class ReportView extends Vue {
-	results: ResultSet = null;
-	statusMessage = "";
-	maxRecords = 100;
-	pageNum = 1;
-	pageCount = 0;
-	query = "";
-	showQuery = false;
-	plugin: Plugin;
-	report: Report;
-	reportName = "";
-	resultsLoaded = false;
-	columnStates: Dictionary<boolean> = {}; //column name as supplied by report property name, and whether enabled
-	activePropertyNames: string[] = [];
+// @Component({
+// 	components: { Loading },
+// 	mixins: [foundation],
+// })
+export default defineComponent({
+	components: {
+		Loading
+	},
 
-	get nodesPage(): ApiNode[] {
-		const toprecord = this.pageNum * this.maxRecords;
-		const bottomrecord = (this.pageNum - 1) * this.maxRecords;
-		if (this.results === null) {
-			return [];
-		} else {
-			return this.results.nodes.slice(bottomrecord, toprecord);
-		}
-	}
+	setup() {
+		let results: ResultSet = null;
+		let statusMessage = "";
+		let maxRecords = 100;
+		let pageNum = 1;
+		let pageCount = 0;
+		let query = "";
+		let showQuery = false;
+		let plugin: Plugin;
+		let report: Report;
+		let reportName = "";
+		let resultsLoaded = false;
+		let columnStates: Dictionary<boolean> = {}; //column name as supplied by report property name, and whether enabled
+		let activePropertyNames: string[] = [];
 
-	get apiReady(): boolean {
-		return this.$store.state.apiState === api.states.READY;
-	}
+		const store = useStore();
 
-	get resultCount(): number {
-		if (this.results === null) {
-			return 0;
-		} else {
-			return this.results.nodes.length;
-		}
-	}
+		const nodesPage = computed((): ApiNode[] => {
+			const toprecord = pageNum * maxRecords;
+			const bottomrecord = (pageNum - 1) * maxRecords;
+			if (results === null) {
+				return [];
+			} else {
+				return results.nodes.slice(bottomrecord, toprecord);
+			}
+		});
 
-	get propertyNames(): string[] {
-		if (this.results !== null) {
-			return Object.keys(this.columnStates);
-		} else {
-			return null;
-		}
-	}
+		const apiReady = computed((): boolean => {
+			return store.state.apiState === api.states.READY;
+		});
 
-	get hasNextPage(): boolean {
-		return this.pageNum < this.pageCount;
-	}
+		const resultCount = computed((): number => {
+			if (results === null) {
+				return 0;
+			} else {
+				return results.nodes.length;
+			}
+		});
 
-	get hasPrevPage(): boolean {
-		return this.pageNum > 1;
-	}
+		const propertyNames = computed((): string[] => {
+			if (results !== null) {
+				return Object.keys(columnStates);
+			} else {
+				return null;
+			}
+		});
 
-	get nextBtnVisibility(): string {
-		return this.hasNextPage ? "visible" : "hidden";
-	}
+		const hasNextPage = computed((): boolean => {
+			return pageNum < pageCount;
+		});
 
-	get prevBtnVisibility(): string {
-		return this.hasPrevPage ? "visible" : "hidden";
-	}
+		const hasPrevPage = computed((): boolean => {
+			return pageNum > 1;
+		});
 
+		const nextBtnVisibility = computed((): string => {
+			return hasNextPage ? "visible" : "hidden";
+		});
+
+		const prevBtnVisibility = computed((): string => {
+			return hasPrevPage ? "visible" : "hidden";
+		});
+
+		return {
+			prevBtnVisibility, nextBtnVisibility, hasPrevPage, hasNextPage, propertyNames, resultCount, apiReady, nodesPage, 
+			showQuery,
+			statusMessage,
+			maxRecords,
+			pageNum,
+			pageCount,
+			query,
+			plugin,
+			report,
+			reportName,
+			resultsLoaded,
+			columnStates,
+			activePropertyNames
+
+		};
+	},
+	mounted() {
+		const contentPane = document.getElementById("contentPane");
+		contentPane.style.overflow = "scroll";
+	},
 	created(): void {
 		if (this.$store.state.pluginManager !== null) {
 			this.updateData();
@@ -261,7 +292,7 @@ export default class ReportView extends Vue {
 				}
 			);
 		}
-	}
+	},
 
 	updateActiveProperties(): void {
 		setTimeout(() => {
@@ -273,7 +304,7 @@ export default class ReportView extends Vue {
 				return null;
 			}
 		}, 1);
-	}
+	},
 
 	updateData() {
 		const pluginName = this.$route.query.pluginName as string;
@@ -295,7 +326,7 @@ export default class ReportView extends Vue {
 				this.resultsLoaded = true;
 			}
 		}
-	}
+	},
 
 	updateIdsData(ids: string[]) {
 		const url = "/api/reports/nodes";
@@ -314,7 +345,7 @@ export default class ReportView extends Vue {
 			},
 		};
 		api.post(request);
-	}
+	},
 
 	updatePluginReportData(reportName: string, pluginName: string) {
 		this.plugin = this.$store.state.pluginManager.plugins[pluginName] as Plugin;
@@ -335,7 +366,7 @@ export default class ReportView extends Vue {
 			},
 		};
 		api.get(request);
-	}
+	},
 
 	applyData(data: ResultSet) {
 		this.results = data;
@@ -365,25 +396,25 @@ export default class ReportView extends Vue {
 
 		this.resultsLoaded = true;
 		this.updateActiveProperties();
-	}
+	},
 
 	onVisualizerClicked() {
 		LStore.storePendingResultSet(this.results);
 		const route = this.$router.resolve({ path: routeDefs.visualizer.path });
 		window.open(route.href, "_blank");
-	}
+	},
 
 	onPageUpClicked() {
 		if (this.hasNextPage) {
 			this.pageNum++;
 		}
-	}
+	},
 
 	onPageDownClicked() {
 		if (this.hasPrevPage) {
 			this.pageNum--;
 		}
-	}
+	},
 
 	onDownloadClicked() {
 		this.statusMessage = "";
@@ -393,7 +424,7 @@ export default class ReportView extends Vue {
 		function createRowArray(record) {
 			const recordrow = [];
 			//console.log(node);
-			props.forEach(function(prop) {
+			props.forEach(function (prop) {
 				let celltext = "";
 				if (prop in record.properties) {
 					celltext = record.properties[prop];
@@ -413,25 +444,25 @@ export default class ReportView extends Vue {
 		text = text + props.join(",") + "\n";
 
 		//main content
-		this.results.nodes.forEach(function(node) {
+		this.results.nodes.forEach(function (node) {
 			const row = createRowArray(node);
 			text = text + row.join(",") + "\n";
 		});
 
-		this.results.edges.forEach(function(node) {
+		this.results.edges.forEach(function (node) {
 			const row = createRowArray(node);
 			text = text + row.join(",") + "\n";
 		});
 
 		webcrap.misc.download(text, "results.csv", "text/csv;encoding:utf-8");
-	}
+	},
 
 	onShowQueryClicked(): void {
 		this.showQuery = true;
-	}
+	},
 
 	onQueryCloseClicked(): void {
 		this.showQuery = false;
 	}
-}
+})
 </script>

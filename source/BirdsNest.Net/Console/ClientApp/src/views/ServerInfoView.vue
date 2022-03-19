@@ -25,9 +25,12 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 			<div id="infoHeader">
 				<h6>{{ $t("phrase_Server_Statistics") }}</h6>
 				<!-- Refresh button -->
-				<div id="refreshBtn" class="icon clickable" :title="$t('word_Refresh')" v-on:click="onRefreshClicked">
-					&#xf021;
-				</div>
+				<div
+					id="refreshBtn"
+					class="icon clickable"
+					:title="$t('word_Refresh')"
+					v-on:click="onRefreshClicked"
+				>&#xf021;</div>
 			</div>
 
 			<div id="statsWrapper">
@@ -172,7 +175,6 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 </template>
 
 <style>
-
 </style>
 
 <style scoped>
@@ -245,64 +247,66 @@ td {
 
 
 <script lang="ts">
-import { Component, Vue } from "vue-property-decorator";
+import { useStore } from "@/store";
+import { computed, defineComponent, watch } from "vue";
 import { api } from "@/assets/ts/webcrap/apicrap";
 import Loading from "@/components/Loading.vue";
 import PluginManager from "@/assets/ts/dataMap/PluginManager";
 import ServerInfo from "@/assets/ts/dataMap/ServerInfo";
 import { rootPaths } from "@/store/index";
-import { routeDefs } from "@/router/index";
 
-@Component({
+export default defineComponent({
 	components: {
-		Loading,
+		Loading
 	},
-})
-export default class ServerInfoView extends Vue {
-	api = api;
-	routeDefs = routeDefs;
+	setup() {
+		const store = useStore();
 
+		const beforeDestroy = computed(() => {
+			const contentPane = document.getElementById("contentPane");
+			contentPane.style.overflow = null;
+		});
+
+		const isAdmin = computed(() => {
+			return store.state.user.isAdmin;
+		});
+
+		const statsDataReady = computed((): boolean => {
+			return (
+				serverInfoState.value === api.states.READY &&
+				serverInfo.value !== null &&
+				apiState.value === api.states.READY &&
+				pluginManager.value !== null
+			);
+		});
+
+		const serverInfoState = computed(():  number => {
+			return store.state.serverInfoState;
+		});
+
+		const serverInfo = computed(():  ServerInfo => {
+			return store.state.serverInfo;
+		});
+
+		const apiState = computed(():  number => {
+			return store.state.apiState;
+		});
+
+		const pluginManager = computed(():  PluginManager => {
+			return store.state.pluginManager;
+		});
+
+		const onRefreshClicked = computed(():  void => {
+			store.dispatch(rootPaths.actions.UPDATE_SERVER_INFO);
+		});
+
+		return {
+			onRefreshClicked, pluginManager, apiState, serverInfo, serverInfoState, statsDataReady, isAdmin, beforeDestroy
+		}
+	},
 	mounted() {
 		const contentPane = document.getElementById("contentPane");
 		contentPane.style.overflow = "scroll";
 	}
-
-	beforeDestroy() {
-		const contentPane = document.getElementById("contentPane");
-		contentPane.style.overflow = null;
-	}
-
-	get isAdmin() {
-		return this.$store.state.user.isAdmin;
-	}
-
-	get statsDataReady(): boolean {
-		return (
-			this.serverInfoState === api.states.READY &&
-			this.serverInfo !== null &&
-			this.apiState === api.states.READY &&
-			this.pluginManager !== null
-		);
-	}
-
-	get serverInfoState(): number {
-		return this.$store.state.serverInfoState;
-	}
-
-	get serverInfo(): ServerInfo {
-		return this.$store.state.serverInfo;
-	}
-
-	get apiState(): number {
-		return this.$store.state.apiState;
-	}
-
-	get pluginManager(): PluginManager {
-		return this.$store.state.pluginManager;
-	}
-
-	onRefreshClicked(): void {
-		this.$store.dispatch(rootPaths.actions.UPDATE_SERVER_INFO);
-	}
-}
+})
 </script>
