@@ -32,15 +32,23 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 </style>
 
 <script lang="ts">
-import { Component, Vue } from "vue-property-decorator";
+import { useStore } from "@/store";
 import PluginReportList from "@/components/reports/PluginReportList.vue";
+import { computed, defineComponent, watch } from "vue";
 
-@Component({
-	components: { PluginReportList },
-})
-export default class Reports extends Vue {
-	get plugins(): Plugin[] {
-		return this.$store.state.pluginManager === null ? [] : this.$store.state.pluginManager.plugins;
+export default defineComponent({
+	components: {
+		PluginReportList
+	},
+
+	setup() {
+		const store = useStore();
+
+		const plugins = computed((): Plugin[] => {
+			return store.state.pluginManager === null ? [] : store.state.pluginManager.plugins;
+		});
+
+		return { plugins }
 	}
-}
+})
 </script>

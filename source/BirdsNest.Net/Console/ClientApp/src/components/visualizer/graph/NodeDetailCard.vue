@@ -231,7 +231,7 @@ import { VisualizerStorePaths } from "@/store/modules/VisualizerStore";
 import { ApiNodeSimple } from "@/assets/ts/dataMap/ApiNodeSimple";
 import { rootPaths } from "@/store";
 import Loading from "@/components/Loading.vue";
-import { Dictionary } from "vue-router/types/router";
+import { Dictionary } from "lodash";
 
 @Component({
 	components: { Loading },

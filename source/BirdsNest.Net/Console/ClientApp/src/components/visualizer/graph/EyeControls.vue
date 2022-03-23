@@ -109,7 +109,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 import { bus, events } from "@/bus";
 import { Component, Vue } from "vue-property-decorator";
 import { graphData } from "@/assets/ts/visualizer/GraphData";
-import { Dictionary } from "vue-router/types/router";
+import { Dictionary } from "lodash";
 
 @Component
 export default class EyeControls extends Vue {

@@ -15,7 +15,7 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 import webcrap from "../webcrap/webcrap"
-import { Dictionary } from 'vue-router/types/router';
+import { Dictionary } from 'lodash';
 
 export const ConditionOperators: Dictionary<string[]> = {
     "number": ["=", ">", "<", "<=", ">="],

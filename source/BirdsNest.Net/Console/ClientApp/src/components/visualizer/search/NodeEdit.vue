@@ -82,7 +82,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 
 <script lang="ts">
 import { Component, Vue, Prop } from "vue-property-decorator";
-import { Dictionary } from "vue-router/types/router";
+import { Dictionary } from "lodash";
 import { DataType } from "@/assets/ts/dataMap/DataType";
 import { SearchNode, copyNode, ValueCondition, ConditionType } from "@/assets/ts/visualizer/Search";
 import { SearchStorePaths } from "../../../store/modules/SearchStore";

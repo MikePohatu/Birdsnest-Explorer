@@ -28,15 +28,15 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 <style scoped>
 
 @media print, screen and (min-width: 40em) {
-	/deep/ h1, .h1 {
+	:deep h1, .h1 {
 		font-size: 2rem;
 	}
 
-	/deep/ h2, .h2 {
+	:deep h2, .h2 {
 		font-size: 1.7rem;
 	}
 
-	/deep/ h3, .h3 {
+	:deep h3, .h3 {
 		font-size: 1.3rem;
 	}
 }

@@ -135,11 +135,10 @@ p {
 
 <script lang="ts">
 import { bus, events } from "@/bus";
-import { Component, Vue } from "vue-property-decorator";
 import Loading from "@/components/Loading.vue";
 import { Index } from "@/assets/ts/dataMap/indexes/Index";
 import { api, Request } from "@/assets/ts/webcrap/apicrap";
-import { Dictionary } from "vue-router/types/router";
+import { Dictionary } from "lodash";
 import PluginManager from "@/assets/ts/dataMap/PluginManager";
 import { Plugin } from "@/assets/ts/dataMap/Plugin";
 import ServerInfo from "@/assets/ts/dataMap/ServerInfo";
@@ -148,36 +147,150 @@ import { Property } from "@/assets/ts/dataMap/Property";
 import { rootPaths } from "@/store/index";
 import $ from "jquery";
 import "foundation-sites";
+import { defineComponent } from "vue";
 
-@Component({
+export default defineComponent({
 	components: {
-		Loading,
+		Loading
 	},
-})
-export default class IndexEditorView extends Vue {
-	indexes: Dictionary<Index[]> = null;
-	api = api;
+	data() {
+		let indexes: Dictionary<Index[]> = null;
+		return {
+			indexes
+		};	
+	},
+	computed: {
+		apiState (): number {
+			return this.$store.state.apiState;
+		},
 
-	get apiState(): number {
-		return this.$store.state.apiState;
-	}
+		pluginManager (): PluginManager {
+			return this.$store.state.pluginManager;
+		},
 
-	get pluginManager(): PluginManager {
-		return this.$store.state.pluginManager;
-	}
+		serverInfoState (): number {
+			return this.$store.state.serverInfoState;
+		},
 
-	get serverInfoState(): number {
-		return this.$store.state.serverInfoState;
-	}
+		serverInfo (): ServerInfo {
+			return this.$store.state.serverInfo;
+		},
 
-	get serverInfo(): ServerInfo {
-		return this.$store.state.serverInfo;
-	}
+		statsDataReady (): boolean {
+			return this.serverInfo !== null && this.pluginManager !== null;
+		}
+	},
+	methods: {
+		pluginHasProperties (plugin: Plugin) {
+			const dataTypeNames = Object.keys(plugin.nodeDataTypes);
+			for (let i = 0; i < dataTypeNames.length; i++) {
+				const datatype = plugin.nodeDataTypes[dataTypeNames[i]];
+				if (datatype.propertyNames.length > 0) {
+					return true;
+				}
+			}
 
-	get statsDataReady(): boolean {
-		return this.serverInfo !== null && this.pluginManager !== null;
-	}
+			return false;
+		},
 
+		propertyHasIndex(label: string, propertyName: string): boolean  {
+			if (Object.prototype.hasOwnProperty.call(this.serverInfo.indexes, label)) {
+				if (Object.prototype.hasOwnProperty.call(this.serverInfo.indexes[label], propertyName)) {
+					return true;
+				}
+			}
+			return false;
+		},
+
+		propertyHasConstraint(label: string, propertyName: string): boolean {
+			if (Object.prototype.hasOwnProperty.call(this.serverInfo.indexes, label)) {
+				const indexes = this.serverInfo.indexes[label];
+
+				if (Object.prototype.hasOwnProperty.call(indexes, propertyName)) {
+					const index: Index = indexes[propertyName];
+					if (index.isConstraint) {
+						return true;
+					}
+				}
+			}
+			return false;
+		},
+
+		propertyIndexIsEnforced(label: string, propertyName: string): boolean {
+			if (Object.prototype.hasOwnProperty.call(this.pluginManager.nodeDataTypes, label)) {
+				const datatype: DataType = this.pluginManager.nodeDataTypes[label];
+
+				if (Object.prototype.hasOwnProperty.call(datatype.properties, propertyName)) {
+					const propertydef: Property = datatype.properties[propertyName];
+					if (propertydef.indexEnforced) {
+						return true;
+					}
+				}
+			}
+
+			if (Object.prototype.hasOwnProperty.call(this.pluginManager.edgeDataTypes, label)) {
+				const datatype: DataType = this.pluginManager.edgeDataTypes[label];
+
+				if (Object.prototype.hasOwnProperty.call(datatype.properties, propertyName)) {
+					const propertydef: Property = datatype.properties[propertyName];
+					if (propertydef.indexEnforced) {
+						return true;
+					}
+				}
+			}
+			return false;
+		},
+
+		onDeleteIndexClicked(label: string, property: string): void {
+			const message = this.$t('index_editor.confirm_index_delete', {label: label, property: property}).toString();
+			if (confirm(message)) {
+				const indexes: Dictionary<Index> = this.serverInfo.indexes[label];
+				const index = indexes[property];
+				const postdata = JSON.stringify(index);
+
+				const request: Request = {
+					url: "/api/admin/indexes/drop",
+					data: postdata,
+					postJson: true,
+					successCallback: () => {
+						this.$store.dispatch(rootPaths.actions.UPDATE_SERVER_INFO);
+					},
+					errorCallback: (jqXHR?: JQueryXHR, status?: string, error?: string) => {
+						// eslint-disable-next-line
+						console.error(error);
+						bus.$emit(events.Notifications.Error, this.$t('index_editor.error_delete', {label: label, property: property}).toString() + "\n" + error);
+					},
+				};
+
+				bus.$emit(events.Notifications.Processing, this.$t('word_Processing'));
+				api.post(request);
+			}
+		},
+
+		onCreateIndexClicked(label, property) {
+			const message = this.$t('index_editor.confirm_index_create', {label: label, property: property}).toString();
+			if (confirm(message)) {
+				const postdata = JSON.stringify({ label: label, property: property });
+
+				const request: Request = {
+					url: "/api/admin/indexes/create",
+					data: postdata,
+					postJson: true,
+					successCallback: () => {
+						this.$store.dispatch(rootPaths.actions.UPDATE_SERVER_INFO);
+					},
+					errorCallback: (jqXHR?: JQueryXHR, status?: string, error?: string) => {
+						// eslint-disable-next-line
+						console.error(error);
+						bus.$emit(events.Notifications.Error, this.$t('index_editor.error_create', {label: label, property:property}) + "\n" + error);
+					},
+				};
+
+				bus.$emit(events.Notifications.Processing, this.$t('word_Processing'));
+				api.post(request);
+			}
+		}
+	},
 	mounted() {
 		if (this.statsDataReady) {
 			//double requestAnimationFrame required primarily for IE
@@ -202,115 +315,5 @@ export default class IndexEditorView extends Vue {
 			);
 		}
 	}
-
-	pluginHasProperties(plugin: Plugin) {
-		const dataTypeNames = Object.keys(plugin.nodeDataTypes);
-		for (let i = 0; i < dataTypeNames.length; i++) {
-			const datatype = plugin.nodeDataTypes[dataTypeNames[i]];
-			if (datatype.propertyNames.length > 0) {
-				return true;
-			}
-		}
-
-		return false;
-	}
-
-	propertyHasIndex(label: string, propertyName: string): boolean {
-		if (Object.prototype.hasOwnProperty.call(this.serverInfo.indexes, label)) {
-			if (Object.prototype.hasOwnProperty.call(this.serverInfo.indexes[label], propertyName)) {
-				return true;
-			}
-		}
-		return false;
-	}
-
-	propertyHasConstraint(label: string, propertyName: string): boolean {
-		if (Object.prototype.hasOwnProperty.call(this.serverInfo.indexes, label)) {
-			const indexes = this.serverInfo.indexes[label];
-
-			if (Object.prototype.hasOwnProperty.call(indexes, propertyName)) {
-				const index: Index = indexes[propertyName];
-				if (index.isConstraint) {
-					return true;
-				}
-			}
-		}
-		return false;
-	}
-
-	propertyIndexIsEnforced(label: string, propertyName: string): boolean {
-		if (Object.prototype.hasOwnProperty.call(this.pluginManager.nodeDataTypes, label)) {
-			const datatype: DataType = this.pluginManager.nodeDataTypes[label];
-
-			if (Object.prototype.hasOwnProperty.call(datatype.properties, propertyName)) {
-				const propertydef: Property = datatype.properties[propertyName];
-				if (propertydef.indexEnforced) {
-					return true;
-				}
-			}
-		}
-
-		if (Object.prototype.hasOwnProperty.call(this.pluginManager.edgeDataTypes, label)) {
-			const datatype: DataType = this.pluginManager.edgeDataTypes[label];
-
-			if (Object.prototype.hasOwnProperty.call(datatype.properties, propertyName)) {
-				const propertydef: Property = datatype.properties[propertyName];
-				if (propertydef.indexEnforced) {
-					return true;
-				}
-			}
-		}
-		return false;
-	}
-
-	onDeleteIndexClicked(label: string, property: string): void {
-		const message = this.$t('index_editor.confirm_index_delete', {label: label, property: property}).toString();
-		if (confirm(message)) {
-			const indexes: Dictionary<Index> = this.serverInfo.indexes[label];
-			const index = indexes[property];
-			const postdata = JSON.stringify(index);
-
-			const request: Request = {
-				url: "/api/admin/indexes/drop",
-				data: postdata,
-				postJson: true,
-				successCallback: () => {
-					this.$store.dispatch(rootPaths.actions.UPDATE_SERVER_INFO);
-				},
-				errorCallback: (jqXHR?: JQueryXHR, status?: string, error?: string) => {
-					// eslint-disable-next-line
-					console.error(error);
-					bus.$emit(events.Notifications.Error, this.$t('index_editor.error_delete', {label: label, property: property}).toString() + "\n" + error);
-				},
-			};
-
-			bus.$emit(events.Notifications.Processing, this.$t('word_Processing'));
-			api.post(request);
-		}
-	}
-
-	onCreateIndexClicked(label, property) {
-		const message = this.$t('index_editor.confirm_index_create', {label: label, property: property}).toString();
-		if (confirm(message)) {
-			const postdata = JSON.stringify({ label: label, property: property });
-
-			const request: Request = {
-				url: "/api/admin/indexes/create",
-				data: postdata,
-				postJson: true,
-				successCallback: () => {
-					this.$store.dispatch(rootPaths.actions.UPDATE_SERVER_INFO);
-				},
-				errorCallback: (jqXHR?: JQueryXHR, status?: string, error?: string) => {
-					// eslint-disable-next-line
-					console.error(error);
-					bus.$emit(events.Notifications.Error, this.$t('index_editor.error_create', {label: label, property:property}) + "\n" + error);
-				},
-			};
-
-			bus.$emit(events.Notifications.Processing, this.$t('word_Processing'));
-			api.post(request);
-		}
-	}
-}
+})
 </script>

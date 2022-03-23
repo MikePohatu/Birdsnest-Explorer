@@ -69,7 +69,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 </style>
 <script lang="ts">
 import { Component, Vue, Prop } from "vue-property-decorator";
-import { Dictionary } from "vue-router/types/router";
+import { Dictionary } from "lodash";
 import { SimNode } from "@/assets/ts/visualizer/SimNode";
 import { d3 } from "@/assets/ts/visualizer/d3";
 import { bus, events } from "@/bus";

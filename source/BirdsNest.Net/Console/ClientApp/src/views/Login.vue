@@ -24,23 +24,29 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 </template>
 
 <script lang="ts">
-import { Component, Vue } from "vue-property-decorator";
+import { useStore } from "@/store";
+import { computed, defineComponent, watch } from "vue";
 import LoginCredentials from "@/components/LoginCredentials.vue";
-import { RawLocation } from "vue-router";
 import { routeDefs } from "@/router/index";
 
-@Component({
-  components: { LoginCredentials }
-})
-export default class Login extends Vue {
-  get bannerHtml(): string {
-    return this.$store.state.customization.login.banner;
-  }
 
-  get footerHtml(): string {
-    return this.$store.state.customization.login.footer;
-  }
+export default defineComponent({
+	components: {
+		LoginCredentials
+	},
+  setup () {
+    const store = useStore();
 
+    const bannerHtml = computed((): string => {
+      return store.state.customization.login.banner;
+    });
+
+    const footerHtml = computed((): string => {
+      return store.state.customization.login.footer;
+    });
+
+    return { bannerHtml, footerHtml };
+  },
 
   created(): void {
     const unwatch = this.$store.watch(
@@ -50,12 +56,12 @@ export default class Login extends Vue {
       () => {
         const redirect = {
           path: this.$route.query.redirect || routeDefs.portal.path
-        } as RawLocation;
+        };
         
         this.$router.replace(redirect);
         unwatch();
       }
     );
   }
-}
+})
 </script>

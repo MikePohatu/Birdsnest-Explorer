@@ -177,7 +177,7 @@ import { ApiNode } from "@/assets/ts/dataMap/ApiNode";
 import { Report } from "@/assets/ts/dataMap/Report";
 import { Plugin } from "@/assets/ts/dataMap/Plugin";
 import { foundation } from "../mixins/foundation";
-import { Dictionary } from "vue-router/types/router";
+import { Dictionary } from "lodash";
 import LStore from "@/assets/ts/LocalStorageManager";
 import { bus, events } from "@/bus";
 import { useStore } from "@/store";

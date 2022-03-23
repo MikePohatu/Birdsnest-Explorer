@@ -90,7 +90,7 @@ import { bus, events } from "@/bus";
 import { Component, Vue } from "vue-property-decorator";
 import { api, Request } from "../assets/ts/webcrap/apicrap";
 import { auth } from "../assets/ts/webcrap/authcrap";
-import { Dictionary } from "vue-router/types/router";
+import { Dictionary } from "lodash";
 import { rootPaths } from "@/store/index";
 import PluginManager from "@/assets/ts/dataMap/PluginManager";
 import { routeDefs } from "@/router/index";

@@ -216,7 +216,7 @@ input::-webkit-inner-spin-button {
 import { Component, Vue, Prop } from "vue-property-decorator";
 import { SearchEdge, copyEdge, ValueCondition, ConditionType } from "@/assets/ts/visualizer/Search";
 import { DataType } from "@/assets/ts/dataMap/DataType";
-import { Dictionary } from "vue-router/types/router";
+import { Dictionary } from "lodash";
 import { SearchStorePaths } from "@/store/modules/SearchStore";
 
 @Component
