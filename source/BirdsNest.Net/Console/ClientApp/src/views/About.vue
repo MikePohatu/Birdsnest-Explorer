@@ -103,11 +103,14 @@ p {
 </style>
 
 <script lang="ts">
-import { Component, Vue } from "vue-property-decorator";
 import webcrap from "@/assets/ts/webcrap/webcrap";
+import { defineComponent } from "vue";
 
-@Component
-export default class About extends Vue {
-	isIE = webcrap.misc.isIE();
-}
+export default defineComponent({
+	data() {
+		return {
+			isIE: webcrap.misc.isIE()
+		}
+	}	
+})
 </script>
