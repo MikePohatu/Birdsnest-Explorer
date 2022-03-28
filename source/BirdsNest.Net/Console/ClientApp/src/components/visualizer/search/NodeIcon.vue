@@ -23,40 +23,38 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 	>{{text}}</div>
 </template>
 
-<script lang="ts">
-import { Component, Prop, Vue } from "vue-property-decorator";
+<script setup lang="ts">
 import { SearchNode } from "@/assets/ts/visualizer/Search";
 import { SearchStorePaths } from "@/store/modules/SearchStore";
+import { computed } from "@vue/reactivity";
+import { useStore } from "vuex";
 import webcrap from '../../../assets/ts/webcrap/webcrap';
 
-@Component
-export default class NodeIcon extends Vue {
-	@Prop({ type: Object as () => SearchNode, required: true })
-	node: SearchNode;
+	const props = defineProps({node: { type: SearchNode, required: true }});
+	const store = useStore();
 
-	get text(): string {
-		if (webcrap.misc.isNullOrWhitespace(this.node.label)) {
-			return this.node.name;
+	const text = computed((): string => {
+		if (webcrap.misc.isNullOrWhitespace(props.node.label)) {
+			return props.node.name;
 		} else {
-			return this.node.name + " :" + this.node.label;
+			return props.node.name + " :" + props.node.label;
 		}
+	});
+
+	const label = computed((): string => {
+		return props.node.label;
+	});
+
+	const isSelectedItem  = computed((): boolean => {
+		return store.state.visualizer.search.selectedItem === props.node;
+	});
+
+	function onNodeClicked(): void {
+		store.commit(SearchStorePaths.mutations.Update.SELECTED_ITEM, props.node);
 	}
 
-	get label(): string {
-		return this.node.label;
+	function onNodeDblClicked(): void {
+		store.commit(SearchStorePaths.mutations.Update.SELECTED_ITEM, props.node);
+		store.commit(SearchStorePaths.mutations.Update.EDIT_ITEM);
 	}
-
-	get isSelectedItem(): boolean {
-		return this.$store.state.visualizer.search.selectedItem === this.node;
-	}
-
-	onNodeClicked(): void {
-		this.$store.commit(SearchStorePaths.mutations.Update.SELECTED_ITEM, this.node);
-	}
-
-	onNodeDblClicked(): void {
-		this.$store.commit(SearchStorePaths.mutations.Update.SELECTED_ITEM, this.node);
-		this.$store.commit(SearchStorePaths.mutations.Update.EDIT_ITEM);
-	}
-}
 </script>

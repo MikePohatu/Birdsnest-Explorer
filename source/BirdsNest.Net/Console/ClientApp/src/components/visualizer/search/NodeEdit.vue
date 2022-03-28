@@ -80,64 +80,59 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 	</div>
 </template>
 
-<script lang="ts">
-import { Component, Vue, Prop } from "vue-property-decorator";
+<script setup lang="ts">
 import { Dictionary } from "lodash";
 import { DataType } from "@/assets/ts/dataMap/DataType";
 import { SearchNode, copyNode, ValueCondition, ConditionType } from "@/assets/ts/visualizer/Search";
 import { SearchStorePaths } from "../../../store/modules/SearchStore";
+import { useStore } from "vuex";
+import { computed } from "vue";
 
-@Component
-export default class NodeEdit extends Vue {
-	@Prop({ type: Object as () => SearchNode, required: true })
-	source: SearchNode;
+	const props = defineProps({ source: {type: SearchNode, required: true}});
 
-	node: SearchNode = null;
+	let node: SearchNode = copyNode(props.source);
+	const store = useStore();
 
-	created(): void {
-		this.node = copyNode(this.source);
-	}
 
-	get nodeDisplayNames(): Dictionary<DataType> {
-		if (this.$store.state.pluginManager === null) {
+	const nodeDisplayNames = computed((): Dictionary<DataType> => {
+		if (store.state.pluginManager === null) {
 			return {};
 		} else {
-			return this.$store.state.pluginManager.nodeDisplayNames;
+			return store.state.pluginManager.nodeDisplayNames;
 		}
-	}
+	});
 
-	get nodeDataTypes(): Dictionary<DataType> {
-		if (this.$store.state.pluginManager === null) {
+	const nodeDataTypes = computed((): Dictionary<DataType> => {
+		if (store.state.pluginManager === null) {
 			return {};
 		} else {
-			return this.$store.state.pluginManager.nodeDataTypes;
+			return store.state.pluginManager.nodeDataTypes;
 		}
+	});
+
+	function saveNode(): void {
+		store.commit(SearchStorePaths.mutations.Save.EDIT_NODE, this.node);
 	}
 
-	saveNode(): void {
-		this.$store.commit(SearchStorePaths.mutations.Save.EDIT_NODE, this.node);
+	function onCloseClicked(): void {
+		store.commit(SearchStorePaths.mutations.CANCEL_ITEM_EDIT);
 	}
-
-	onCloseClicked(): void {
-		this.$store.commit(SearchStorePaths.mutations.CANCEL_ITEM_EDIT);
-	}
-	saveNodeAndCond(): void {
+	function saveNodeAndCond(): void {
 		const condition = new ValueCondition(ConditionType.String);
 		condition.name = this.node.name;
-		this.$store.commit(SearchStorePaths.mutations.Save.EDIT_NODE, this.node);
-		this.$store.commit(SearchStorePaths.mutations.Add.NEW_CONDITION, condition);
+		store.commit(SearchStorePaths.mutations.Save.EDIT_NODE, this.node);
+		store.commit(SearchStorePaths.mutations.Add.NEW_CONDITION, condition);
 	}
 
-	deleteNode(): void {
+	function deleteNode(): void {
 		if (
 			confirm(
 				"Are you sure you want to delete " +
-					this.$store.state.visualizer.search.selectedItem.name +
+					store.state.visualizer.search.selectedItem.name +
 					" and any associated conditions?"
 			)
 		) {
-			this.$store.commit(SearchStorePaths.mutations.Delete.EDIT_NODE);
+			store.commit(SearchStorePaths.mutations.Delete.EDIT_NODE);
 		}
 	}
-}
 </script>

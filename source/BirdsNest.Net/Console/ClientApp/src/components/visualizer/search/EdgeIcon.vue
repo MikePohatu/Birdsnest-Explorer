@@ -65,47 +65,46 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 }
 </style>
 
-<script lang="ts">
-import { Component, Vue, Prop } from "vue-property-decorator";
+<script setup lang="ts">
 import { SearchEdge } from "@/assets/ts/visualizer/Search";
 import { SearchStorePaths } from '../../../store/modules/SearchStore';
 import webcrap from '@/assets/ts/webcrap/webcrap';
+import { computed } from "@vue/reactivity";
+import { useStore } from "vuex";
+	const props = defineProps({
+		edge: {type: SearchEdge, required: true }
+	});
+	const store = useStore();
 
-@Component
-export default class EdgeIcon extends Vue {
-	@Prop({ type: Object as () => SearchEdge, required: true })
-	edge: SearchEdge;
+	const isDirRight = computed((): boolean => {
+		return props.edge.direction === ">";
+	});
 
-	get isDirRight(): boolean {
-		return this.edge.direction === ">";
-	}
-
-	get text(): string {
-		let outtext = this.edge.name;
-		if (webcrap.misc.isNullOrWhitespace(this.edge.label) === false) {
-			outtext += " :" + this.edge.label;
+	const text = computed((): string => {
+		let outtext = props.edge.name;
+		if (webcrap.misc.isNullOrWhitespace(props.edge.label) === false) {
+			outtext += " :" + props.edge.label;
 		} 
 
-		if (this.edge.min === -1) {
+		if (props.edge.min === -1) {
 			outtext += " *";
 		} else {
-			outtext += " " + this.edge.min + ".." + this.edge.max;
+			outtext += " " + props.edge.min + ".." + props.edge.max;
 		}
 
 		return outtext;
+	});
+
+	function onEdgeClicked(): void {
+		store.commit(SearchStorePaths.mutations.Update.SELECTED_ITEM, props.edge);
 	}
 
-	onEdgeClicked(): void {
-		this.$store.commit(SearchStorePaths.mutations.Update.SELECTED_ITEM, this.edge);
+	function onEdgeDblClicked(): void {
+		store.commit(SearchStorePaths.mutations.Update.SELECTED_ITEM, props.edge);
+		store.commit(SearchStorePaths.mutations.Update.EDIT_ITEM);
 	}
 
-	onEdgeDblClicked(): void {
-		this.$store.commit(SearchStorePaths.mutations.Update.SELECTED_ITEM, this.edge);
-		this.$store.commit(SearchStorePaths.mutations.Update.EDIT_ITEM);
-	}
-
-	get isSelectedItem(): boolean {
-		return this.$store.state.visualizer.search.selectedItem === this.edge;
-	}
-}
+	const isSelectedItem = computed((): boolean =>{
+		return store.state.visualizer.search.selectedItem === props.edge;
+	});
 </script>

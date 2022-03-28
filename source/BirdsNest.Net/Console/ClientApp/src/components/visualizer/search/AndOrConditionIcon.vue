@@ -23,8 +23,8 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 		v-on:dblclick.stop="onDblClicked"
 	>
 		<div v-for="(cond, index) in conditions" :key="cond.id">
-			<AndOrConditionIcon v-if="isAndOr(cond)" :condition="cond" />
-			<ValueConditionIcon v-else :condition="cond" />
+			<AndOrConditionIcon v-if="isAndOr(cond)" :condition="(cond as AndOrCondition)" />
+			<ValueConditionIcon v-else :condition="(cond as ValueCondition)" />
 			<div v-if="index < conditions.length - 1">{{ condition.type }}</div>
 		</div>
 
@@ -85,7 +85,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 
 
 <script setup lang="ts">
-import { Condition, ConditionType, AndOrCondition } from "@/assets/ts/visualizer/Search";
+import { Condition, ConditionType, AndOrCondition, ValueCondition } from "@/assets/ts/visualizer/Search";
 import ValueConditionIcon from "./ValueConditionIcon.vue";
 import { SearchStorePaths } from "@/store/modules/SearchStore";
 import { computed } from "@vue/reactivity";

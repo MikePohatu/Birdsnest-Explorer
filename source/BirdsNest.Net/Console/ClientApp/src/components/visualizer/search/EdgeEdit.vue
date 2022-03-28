@@ -212,83 +212,90 @@ input::-webkit-inner-spin-button {
 }
 </style>
 
-<script lang="ts">
-import { Component, Vue, Prop } from "vue-property-decorator";
+<script setup lang="ts">
 import { SearchEdge, copyEdge, ValueCondition, ConditionType } from "@/assets/ts/visualizer/Search";
 import { DataType } from "@/assets/ts/dataMap/DataType";
 import { Dictionary } from "lodash";
 import { SearchStorePaths } from "@/store/modules/SearchStore";
+import { computed, ref } from "@vue/reactivity";
+import { useStore } from "vuex";
 
-@Component
-export default class EdgeEdit extends Vue {
-	@Prop({ type: Object as () => SearchEdge, required: true })
-	source: SearchEdge;
 
-	edge: SearchEdge = copyEdge(this.source);
-	maxValue = 20;
+	const props = defineProps({ source: { type: SearchEdge, required: true }});
+	const store = useStore();
 
-	get edgeDisplayNames(): Dictionary<DataType> {
-		if (this.$store.state.pluginManager === null) {
+	let edge: SearchEdge = copyEdge(props.source);
+	let maxValue = ref(20);
+
+	const edgeDisplayNames = computed((): Dictionary<DataType> => {
+		if (store.state.pluginManager === null) {
 			return {};
 		} else {
-			return this.$store.state.pluginManager.edgeDisplayNames;
+			return store.state.pluginManager.edgeDisplayNames;
 		}
-	}
+	});
 
-	get edgeDataTypes(): Dictionary<DataType> {
-		if (this.$store.state.pluginManager === null) {
+	const edgeDataTypes = computed((): Dictionary<DataType> => {
+		if (store.state.pluginManager === null) {
 			return {};
 		} else {
-			return this.$store.state.pluginManager.edgeDataTypes;
+			return store.state.pluginManager.edgeDataTypes;
 		}
-	}
+	});
 
-	get edgeDirRight(): boolean {
-		if (this.edge.direction === ">") {
+	const edgeDirRight = computed((): boolean => {
+		if (edge.direction === ">") {
 			return true;
 		} else {
 			return false;
 		}
-	}
+	});
 
-	get limitHops(): boolean {
-		return this.edge.min !== -1 && this.edge.max !== -1;
-	}
-	set limitHops(newValue) {
-		if (!newValue) {
-			this.min = -1;
-			this.max = -1;
-		} else {
-			this.min = 1;
-			this.max = 1;
+	const limitHops = computed<boolean>({
+		get (): boolean {
+			return this.edge.min !== -1 && this.edge.max !== -1;
+		},
+		set (newValue) {
+			if (!newValue) {
+				this.min = -1;
+				this.max = -1;
+			} else {
+				this.min = 1;
+				this.max = 1;
+			}
 		}
-	}
+	});
 
-	get min(): number {
-		return this.edge.min;
-	}
-	set min(newValue) {
-		this.edge.min = newValue;
-		if (this.edge.min > this.edge.max) {
-			this.max = newValue;
+	const min = computed({
+		get (): number {
+			return this.edge.min;
+		},
+		set (newValue) {
+			this.edge.min = newValue;
+			if (this.edge.min > this.edge.max) {
+				this.max = newValue;
+			}
 		}
-	}
-
-	get max(): number {
-		return this.edge.max;
-	}
-	set max(newValue) {
-		this.edge.max = newValue;
-		if (this.edge.min > this.edge.max) {
-			this.min = newValue;
+	});
+	
+	const max = computed({
+		get (): number {
+			return this.edge.max;
+		},
+		set (newValue) {
+			this.edge.max = newValue;
+			if (this.edge.min > this.edge.max) {
+				this.min = newValue;
+			}
 		}
-	}
+	});
+	
 
-	onSaveEdge(): void {
+	function onSaveEdge(): void {
 		this.$store.commit(SearchStorePaths.mutations.Save.EDIT_EDGE, this.edge);
 	}
 
-	onDirectionClicked(): void {
+	function onDirectionClicked(): void {
 		if (this.edge.direction === ">") {
 			this.edge.direction = "<";
 		} else {
@@ -296,15 +303,14 @@ export default class EdgeEdit extends Vue {
 		}
 	}
 
-	onCloseClicked(): void {
+	function onCloseClicked(): void {
 		this.$store.commit(SearchStorePaths.mutations.CANCEL_ITEM_EDIT);
 	}
 
-	onSaveAndAddCondClicked(): void {	
+	function onSaveAndAddCondClicked(): void {	
 		const condition = new ValueCondition(ConditionType.String);
 		condition.name = this.edge.name;
 		this.$store.commit(SearchStorePaths.mutations.Save.EDIT_EDGE, this.edge);
 		this.$store.commit(SearchStorePaths.mutations.Add.NEW_CONDITION, condition);
 	}
-}
 </script>
