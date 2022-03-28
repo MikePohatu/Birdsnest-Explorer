@@ -67,34 +67,34 @@ td.small {
 }
 </style>
 
-<script lang="ts">
-import { Component, Vue } from "vue-property-decorator";
+<script setup lang="ts">
 import { api } from "@/assets/ts/webcrap/apicrap";
 import PluginManager from "@/assets/ts/dataMap/PluginManager";
+import { computed } from "vue";
+import { useStore } from "vuex";
+	const store = useStore();
 
-@Component
-export default class ReportsPortalBlock extends Vue {
-	get pluginManager(): PluginManager {
-		return this.$store.state.pluginManager as PluginManager;
-	}
+	const pluginManager = computed((): PluginManager => {
+		return store.state.pluginManager as PluginManager;
+	});
 
-	get apiState(): number {
-		return this.$store.state.apiState;
-	}
+	const apiState = computed((): number => {
+		return store.state.apiState;
+	});
 
-	get pluginManagerReady(): boolean {
-		return this.apiState === api.states.READY && this.pluginManager !== null;
-	}
+	const pluginManagerReady = computed((): boolean => {
+		return apiState.value === api.states.READY && pluginManager.value !== null;
+	});
 
-	get firstReports(): string[] {
+	const firstReports = computed((): string[] => {
 		const reportCount = 5;
 		const reportNameList = [];
 		let count = 0;
 
-		const pluginNames = Object.keys(this.pluginManager.plugins);
+		const pluginNames = Object.keys(pluginManager.value.plugins);
 		for (let i = 0; count < reportCount && i < pluginNames.length; i++) {
 			const pluginName: string = pluginNames[i];
-			const reports = this.pluginManager.plugins[pluginName].reports;
+			const reports = pluginManager.value.plugins[pluginName].reports;
 			const reportNames = Object.keys(reports);
 
 			for (let j = 0; count < reportCount && j < reportNames.length; j++) {
@@ -106,28 +106,27 @@ export default class ReportsPortalBlock extends Vue {
 		}
 
 		return reportNameList;
-	}
+	});
 
-	get reportCount(): number {
+	const reportCount = computed((): number => {
 		let count = 0;
-		Object.keys(this.pluginManager.plugins).forEach(key => {
-			const reports = this.pluginManager.plugins[key].reports;
+		Object.keys(pluginManager.value.plugins).forEach(key => {
+			const reports = pluginManager.value.plugins[key].reports;
 			count = count + Object.keys(reports).length;
 		});
 
 		return count;
-	}
+	});
 
-	get pluginCount(): number {
+	const pluginCount = computed((): number => {
 		let count = 0;
-		Object.keys(this.pluginManager.plugins).forEach(key => {
-			const reports = this.pluginManager.plugins[key].reports;
+		Object.keys(pluginManager.value.plugins).forEach(key => {
+			const reports = pluginManager.value.plugins[key].reports;
 			if (Object.keys(reports).length > 0) {
 				count++;
 			}
 		});
 
 		return count;
-	}
-}
+	});
 </script>

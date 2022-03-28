@@ -18,7 +18,7 @@ import { Dictionary } from "@/assets/ts/webcrap/misccrap";
 import { DataType } from "./DataType";
 import { Report } from "./Report";
 
-export interface Plugin {
+export class Plugin {
     name: string;
     displayName: string;
     extends: string;

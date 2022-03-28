@@ -24,27 +24,20 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
   </tr>
 </template>
 
-<script lang="ts">
-import { Component, Prop, Vue } from "vue-property-decorator";
-import { Report } from "@/assets/ts/dataMap/Report";
+<script setup lang="ts">
+  import { Report } from "@/assets/ts/dataMap/Report";
+  const props = defineProps({
+    report: { type: Report, required: true },
+    reportName: { type: String, required: true },
+    pluginName: { type: String, required: true }
+  });
 
-@Component
-export default class PluginReportListRow extends Vue {
-  @Prop({ type: Object as () => Report, required: true })
-  report: Report;
-
-  @Prop({ type: String, required: true })
-  reportName: string;
-
-  @Prop({ type: String, required: true })
-  pluginName: string;
-
-  openReport(): void {
+  function openReport(): void {
     //const reportPath = { path: '/report',  query: this.report } as RawLocation;
     this.$router.push({
       path: '/report',
       query: { reportName:this.reportName, pluginName:this.pluginName }
     });
   }
-}
+
 </script>

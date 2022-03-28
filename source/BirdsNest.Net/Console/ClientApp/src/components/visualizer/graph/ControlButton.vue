@@ -23,11 +23,9 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
     </div>
 </template>
 
-<script lang="ts">
-import { Component, Vue } from "vue-property-decorator";
+<script setup lang="ts">
 
-@Component({
-    props: {
+    const props = defineProps({
         title: String,
         icon: String,
         ishighlighted: {
@@ -38,11 +36,7 @@ import { Component, Vue } from "vue-property-decorator";
             type: Boolean,
             default: false
         }
-    }
-})
-export default class ControlButton extends Vue {
-
-}
+    });
 </script>
 
 <style>

@@ -33,12 +33,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 	</div>
 </template>
 
-<script lang="ts">
-import { Component, Vue } from "vue-property-decorator";
+<script setup lang="ts">
 import VisualizerPortalScreeny from "@/components/portal/VisualizerPortalScreeny.vue";
 
-@Component({
-	components: { VisualizerPortalScreeny },
-})
-export default class VisualizerPortalBlock extends Vue {}
 </script>

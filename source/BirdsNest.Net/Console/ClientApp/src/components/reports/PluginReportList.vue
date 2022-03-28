@@ -25,7 +25,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                 </tr>
             </thead>
             <tbody>
-                <PluginReportListRow v-for="(value, name) in reports" :key="name" :report="value" :reportName="name" :pluginName="plugin.name" />
+                <PluginReportListRow v-for="(value, name) in reports" :key="name" :report="value" :reportName="(name as string)" :pluginName="plugin.name" />
             </tbody>
         </table>
     </div>
@@ -36,20 +36,14 @@ table {
   table-layout: fixed;
 }
 </style>
-<script lang="ts">
-import { Component, Prop, Vue } from "vue-property-decorator";
+<script setup lang="ts">
 import PluginReportListRow from "@/components/reports/PluginReportListRow.vue";
 import { Plugin } from "@/assets/ts/dataMap/Plugin";
 
-@Component({
-  components: { PluginReportListRow }
-})
-export default class PluginReportList extends Vue {
-    @Prop({ type: Object as () => Plugin, required: true })
-    plugin: Plugin;
+    const props = defineProps({ plugin: { type: Plugin, required: true }})
 
-    pluginName = this.plugin.displayName;
-    reports = this.plugin.reports;
-    reportNames = Object.keys(this.plugin.reports);
-}
+    const pluginName = props.plugin.displayName;
+    const reports = props.plugin.reports;
+    const reportNames = Object.keys(props.plugin.reports);
+
 </script>

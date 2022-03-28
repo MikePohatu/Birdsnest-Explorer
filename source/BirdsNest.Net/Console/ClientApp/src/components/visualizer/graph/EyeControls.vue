@@ -34,7 +34,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 				<li v-for="(value, name) in graphNodeLabelStates" :key="name" class="eyeListItem" :label="name">
 					<div>
 						<span class="eye-icon">
-							<a v-on:click="onNodeLabelEyeClicked(name)">
+							<a v-on:click="onNodeLabelEyeClicked(name as string)">
 								<span v-show="value">
 									<i class="far fa-eye"></i>
 								</span>
@@ -63,7 +63,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 				<li v-for="(value, name) in graphEdgeLabelStates" :key="name" class="eyeListItem" :label="name">
 					<div>
 						<span class="eye-icon">
-							<a v-on:click="onEdgeLabelEyeClicked(name)">
+							<a v-on:click="onEdgeLabelEyeClicked(name as string)">
 								<span v-show="value">
 									<i class="far fa-eye"></i>
 								</span>
@@ -105,54 +105,51 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 }
 </style>
 
-<script lang="ts">
+<script setup lang="ts">
 import { bus, events } from "@/bus";
-import { Component, Vue } from "vue-property-decorator";
 import { graphData } from "@/assets/ts/visualizer/GraphData";
-import { Dictionary } from "lodash";
+import { Dictionary } from "@/assets/ts/webcrap/misccrap";
+import { computed } from "vue";
 
-@Component
-export default class EyeControls extends Vue {
-	graphData = graphData; //create hook to make it reactive
 
-	get graphNodeLabelStates(): Dictionary<boolean> {
-		return this.graphData.graphNodeLabelStates;
-	}
+	const graphNodeLabelStates = computed<Dictionary<boolean>>((): Dictionary<boolean> => {
+		return graphData.graphNodeLabelStates;
+	});
 
-	get graphEdgeLabelStates(): Dictionary<boolean> {
-		return this.graphData.graphEdgeLabelStates;
-	}
+	const graphEdgeLabelStates = computed<Dictionary<boolean>>((): Dictionary<boolean> => {
+		return graphData.graphEdgeLabelStates;
+	});
 
-	onNodeShowAllClicked(): void {
+	function onNodeShowAllClicked(): void {
 		bus.$emit(events.Visualizer.EyeControls.ShowAllNodeLabel, true);
 	}
 
-	onNodeHideAllClicked(): void {
+	function onNodeHideAllClicked(): void {
 		bus.$emit(events.Visualizer.EyeControls.ShowAllNodeLabel, false);
 	}
 
-	onNodeInvertClicked(): void {
+	function onNodeInvertClicked(): void {
 		bus.$emit(events.Visualizer.EyeControls.InvertNodeLabel);
 	}
 
-	onEdgeShowAllClicked(): void {
+	function onEdgeShowAllClicked(): void {
 		bus.$emit(events.Visualizer.EyeControls.ShowllEdgeLabel, true);
 	}
 
-	onEdgeHideAllClicked(): void {
+	function onEdgeHideAllClicked(): void {
 		bus.$emit(events.Visualizer.EyeControls.ShowllEdgeLabel, false);
 	}
 
-	onEdgeInvertClicked(): void {
+	function onEdgeInvertClicked(): void {
 		bus.$emit(events.Visualizer.EyeControls.InvertEdgeLabel);
 	}
 
-	onNodeLabelEyeClicked(label: string): void {
+	function onNodeLabelEyeClicked(label: string): void {
 		bus.$emit(events.Visualizer.EyeControls.ToggleNodeLabel, label);
 	}
 
-	onEdgeLabelEyeClicked(label: string): void {
+	function onEdgeLabelEyeClicked(label: string): void {
 		bus.$emit(events.Visualizer.EyeControls.ToggleEdgeLabel, label);
 	}
-}
+
 </script>

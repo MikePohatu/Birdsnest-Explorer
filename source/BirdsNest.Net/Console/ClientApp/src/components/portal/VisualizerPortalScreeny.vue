@@ -201,10 +201,3 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 		</svg>
 	</div>
 </template>
-
-<script lang="ts">
-import { Component, Vue } from "vue-property-decorator";
-
-@Component
-export default class VisualizerPortalScreeny extends Vue {}
-</script>

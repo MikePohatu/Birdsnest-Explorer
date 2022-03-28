@@ -109,29 +109,29 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 </style>
 
 
-<script lang="ts">
-import { Component, Prop, Vue } from "vue-property-decorator";
+<script setup lang="ts">
 import { foundation } from "@/mixins/foundation";
 import { SimNode } from "@/assets/ts/visualizer/SimNode";
 import { SimLink } from '@/assets/ts/visualizer/SimLink';
+import { computed } from "vue";
 
-@Component({
-	mixins: [ foundation ]
-})
-export default class EdgeDetailCard extends Vue {
-	@Prop({ type: Object, required: true })
-	edge: SimLink<SimNode>;
+// @Component({
+// 	mixins: [ foundation ]
+// })
 
-	get propertyNames(): string[] {
-		return Object.keys(this.edge.properties);
-	}
+	const props = defineProps({ edge: { type: Object, required: true }});
+	const edge = props.edge as SimLink<SimNode>;
+	
+	const propertyNames = computed((): string[] => {
+		return Object.keys(props.edge.properties);
+	});
 
-	get type(): string {
-		return this.edge.label;
-	}
+	const type = computed((): string => {
+		return props.edge.label;
+	});
 
-	onEyeClicked() {
+	function onEyeClicked() {
 		this.edge.enabled = !this.edge.enabled;
 	}
-}
+
 </script>
