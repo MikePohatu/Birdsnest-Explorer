@@ -47,6 +47,7 @@ export interface SearchItem {
     type: string;
     name: string;
     label: string;
+    id: string;
 }
 
 export class SearchNode implements SearchItem {

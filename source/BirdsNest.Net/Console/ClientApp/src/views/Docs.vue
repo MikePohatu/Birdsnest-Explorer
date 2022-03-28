@@ -42,23 +42,25 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 }
 </style>
 
-<script lang="ts">
-import { Component, Vue, Watch } from "vue-property-decorator";
-import { Route } from "vue-router";
-import VueMarkdown from "@adapttive/vue-markdown";
-import { api, Request } from "@/assets/ts/webcrap/apicrap";
-import { bus, events } from "@/bus";
-import i18n from "@/i18n";
-import ScrollToTop from "@/components/ScrollToTop.vue";
+<script setup lang="ts">
+	import { RouteLocationNormalized, useRoute, useRouter } from "vue-router";
+	import VueMarkdown from "@adapttive/vue-markdown";
+	import { api, Request } from "@/assets/ts/webcrap/apicrap";
+	import { bus, events } from "@/bus";
+	import i18n from "@/i18n";
+	import ScrollToTop from "@/components/ScrollToTop.vue";
+	import { onBeforeMount, onUpdated, watch } from "vue";
 
-@Component({
-	components: { VueMarkdown, ScrollToTop }
-})
-export default class Docs extends Vue {
-	defaultmd = "Loading";
-	markdown = this.defaultmd;
+// @Component({
+// 	components: { VueMarkdown, ScrollToTop }
+// })
+	const router = useRouter()
+    const route = useRoute()
+	
+	let defaultmd = "Loading";
+	let markdown = defaultmd;
 
-	updateMarkdown(route: Route): void {
+	function updateMarkdown(route: RouteLocationNormalized): void {
 		bus.$emit(events.Notifications.Processing);
 		this.markdown = this.defaultmd;
 		const docurl = route.path.replace("/docs/", "/");
@@ -74,14 +76,14 @@ export default class Docs extends Vue {
 				// eslint-disable-next-line
 				console.error(error);
 
-				bus.$emit(events.Notifications.Error, i18n.t("word_Error") + ": " + error);
+				bus.$emit(events.Notifications.Error, i18n.global.t("word_Error") + ": " + error);
 			},
 		};
 
 		api.get(request);
 	}
 
-	updateLinks(): void {
+	function updateLinks(): void {
 		//update the links with corrections for birdsnest setup
 		const docowrapper = document.querySelector("#docowrapper");
 		const links: NodeListOf<HTMLAnchorElement> = docowrapper.querySelectorAll("a");
@@ -114,7 +116,7 @@ export default class Docs extends Vue {
 
 	//Separate movetoanchor function is required because the links won't be created at page load. 
 	//This is requried to run separately after content has finished loading
-	moveToAnchor(): void {
+	function moveToAnchor(): void {
 		if (this.$route.hash) {
 			setTimeout(() => { //setTimeout so this will run after page has loaded and created id
 				const pathsplit = this.$route.hash.split("#");
@@ -126,28 +128,27 @@ export default class Docs extends Vue {
 		}
 	}
 
-	beforeMount(): void {
-		this.updateMarkdown(this.$route);
-	}
+	onBeforeMount((): void => {
+		updateMarkdown(route);
+	});
 
-	updated(): void {
-		this.updateLinks();
-		this.moveToAnchor();
-	}
+	onUpdated((): void => {
+		updateLinks();
+		moveToAnchor();
+	});
 
-	@Watch("$route", { immediate: true, deep: true })
-	onUrlChange(to: Route, from: Route) {
+	//@Watch("$route", { immediate: true, deep: true })
+	watch(route, (to: RouteLocationNormalized, from: RouteLocationNormalized) => {
 		const topathsplit = to.path.split("#");
 
 		if (from) {
 			const frompathsplit = from.path.split("#");
 
 			if (topathsplit[0] !== frompathsplit[0]) {
-				this.updateMarkdown(to);
+				updateMarkdown(to);
 			}
 		} else {
-			this.updateMarkdown(to);
+			updateMarkdown(to);
 		}
-	}
-}
+	});
 </script>

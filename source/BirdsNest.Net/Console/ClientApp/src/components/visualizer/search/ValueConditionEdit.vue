@@ -207,114 +207,114 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 }
 </style>
 
-<script lang="ts">
-import { Component, Vue, Prop } from "vue-property-decorator";
-import {
-	ValueCondition,
-	SearchItem,
-	GetNode,
-	GetEdge,
-	ConditionOperators,
-	copyCondition,
-} from "@/assets/ts/visualizer/Search";
-import { DataType } from "@/assets/ts/dataMap/DataType";
-import { SearchItemType } from "@/assets/ts/visualizer/Search";
-import webcrap from "@/assets/ts/webcrap/webcrap";
-import { SearchStorePaths } from "@/store/modules/SearchStore";
-import { api, Request } from "@/assets/ts/webcrap/apicrap";
-import { SearchEdge } from "../../../assets/ts/visualizer/Search";
+<script setup lang="ts">
+	import {
+		ValueCondition,
+		SearchItem,
+		GetNode,
+		GetEdge,
+		ConditionOperators,
+		copyCondition,
+	} from "@/assets/ts/visualizer/Search";
+	import { DataType } from "@/assets/ts/dataMap/DataType";
+	import { SearchItemType } from "@/assets/ts/visualizer/Search";
+	import webcrap from "@/assets/ts/webcrap/webcrap";
+	import { SearchStorePaths } from "@/store/modules/SearchStore";
+	import { api, Request } from "@/assets/ts/webcrap/apicrap";
+	import { SearchEdge } from "../../../assets/ts/visualizer/Search";
+	import { computed, Ref, ref } from "vue";
+	import { useStore } from "vuex";
 
-@Component
-export default class ValueConditionEdit extends Vue {
-	@Prop({ type: Object as () => ValueCondition, required: true })
-	source: ValueCondition;
+	const props = defineProps({
+		source: ValueCondition
+	})
 
-	condition: ValueCondition = null;
-	selectedItem: SearchItem = null;
+	const store = useStore();
+	let condition: Ref<ValueCondition> = ref(null);
+	let selectedItem: Ref<SearchItem> = ref(null);
 
-	autocompleteList: string[] = [];
-	alertMessage = "";
-	showAlert = false;
-	saveable = true;
+	let autocompleteList: Ref<string[]> = ref([]);
+	let alertMessage = ref("");
+	let showAlert = ref(false);
+	let saveable = ref(true);
 
-	created(): void {
-		this.condition = copyCondition(this.source);
-		this.onSelectedItemChanged();
-	}
+	condition.value = copyCondition(props.source);
+	onSelectedItemChanged();
 
-	get autocompleteDebounce(): Function {
-		return webcrap.misc.debounce(this.updateAutocomplete, 250);
-	}
-	get availableItems(): SearchItem[] {
-		const edges = this.$store.state.visualizer.search.search.edges;
-		const nodes = this.$store.state.visualizer.search.search.nodes;
+	const availableItems = computed((): SearchItem[] => {
+		const edges = store.state.visualizer.search.search.edges;
+		const nodes = store.state.visualizer.search.search.nodes;
 		return nodes.concat(edges);
-	}
+	});
 
-	get dataType(): DataType {
-		if (webcrap.misc.isNullOrWhitespace(this.condition.name)) {
+	const dataType = computed((): DataType => {
+		if (webcrap.misc.isNullOrWhitespace(condition.value.name)) {
 			return null;
 		}
-		if (this.selectedItem === null) {
+		if (selectedItem.value === null) {
 			return null;
 		}
-		if (webcrap.misc.isNullOrWhitespace(this.selectedItem.label)) {
+		if (webcrap.misc.isNullOrWhitespace(selectedItem.value.label)) {
 			return null;
 		}
-		const types = this.$store.state.pluginManager.nodeDataTypes[this.selectedItem.label];
+		const types = store.state.pluginManager.nodeDataTypes[selectedItem.value.label];
 		if (types) {
 			return types;
 		} else {
-			return this.$store.state.pluginManager.edgeDataTypes[this.selectedItem.label];
+			return store.state.pluginManager.edgeDataTypes[selectedItem.value.label];
 		}
-	}
+	});
 
-	get properties(): string[] {
-		if (this.dataType === null) {
+	const properties = computed((): string[] => {
+		if (dataType.value === null) {
 			return [];
 		} else {
-			return this.dataType.propertyNames;
+			return dataType.value.propertyNames;
 		}
-	}
+	});
 
-	get propertyType(): string {
-		if (this.dataType !== null && webcrap.misc.isNullOrWhitespace(this.condition.property) === false) {
-			if (Object.prototype.hasOwnProperty.call(this.dataType.properties, [this.condition.property])) {
-				this.condition.type = this.dataType.properties[this.condition.property].type;
+	const propertyType = computed((): string => {
+		if (dataType.value !== null && webcrap.misc.isNullOrWhitespace(condition.value.property) === false) {
+			if (Object.prototype.hasOwnProperty.call(dataType.value.properties, [condition.value.property])) {
+				condition.value.type = dataType.value.properties[condition.value.property].type;
 			} else {
-				const firstkey = Object.keys(this.dataType.properties)[0];
-				this.condition.type = this.dataType.properties[firstkey].type;
+				const firstkey = Object.keys(dataType.value.properties)[0];
+				condition.value.type = dataType.value.properties[firstkey].type;
 			}
 
 			
-			return this.condition.type;
+			return condition.value.type;
 		} else {
 			return null;
 		}
-	}
+	});
 
-	get operators(): string[] {
-		if (webcrap.misc.isNullOrWhitespace(this.propertyType)) {
+	const operators = computed((): string[] => {
+		if (webcrap.misc.isNullOrWhitespace(propertyType.value)) {
 			return [];
 		} else {
-			return ConditionOperators[this.propertyType];
+			return ConditionOperators[propertyType.value];
 		}
-	}
+	});
 
-	get isLabelSet(): boolean {
-		if (this.selectedItem === null || webcrap.misc.isNullOrWhitespace(this.selectedItem.label)) {
+	const isLabelSet = computed((): boolean => {
+		if (selectedItem.value === null || webcrap.misc.isNullOrWhitespace(selectedItem.value.label)) {
 			return false;
 		} else {
 			return true;
 		}
+	});
+
+	function autocompleteDebounce(): Function {
+		return webcrap.misc.debounce(updateAutocomplete, 250);
 	}
 
-	onSelectedItemChanged(): void {
+	function onSelectedItemChanged(): void {
 		let item: SearchItem = null;
 		let isNode = true;
-		item = GetNode(this.condition.name, this.$store.state.visualizer.search.search);
+		item = GetNode(condition.value.name, this.$store.state.visualizer.search.search);
 		if (item === null) {
-			item = GetEdge(this.condition.name, this.$store.state.visualizer.search.search);
+			item = GetEdge(condition.value.name, this.$store.state.visualizer.search.search);
 			isNode = false;
 		}
 		if (item !== null) {
@@ -344,37 +344,37 @@ export default class ValueConditionEdit extends Vue {
 		this.selectedItem = item;
 
 		//if selected item type has changed, properties need to be re-checked
-		if (this.dataType === null) {
-			this.condition.property = "";	
+		if (dataType.value === null) {
+			condition.value.property = "";	
 		}
-		else if (webcrap.misc.isNullOrWhitespace(this.condition.property)) {
-			this.condition.property = this.dataType.default;
+		else if (webcrap.misc.isNullOrWhitespace(condition.value.property)) {
+			condition.value.property = dataType.value.default;
 		}
 		else {
-			if (this.dataType.propertyNames.includes(this.condition.property) === false) {
-				this.condition.property = this.dataType.default;
+			if (dataType.value.propertyNames.includes(condition.value.property) === false) {
+				condition.value.property = dataType.value.default;
 			}
 		}
 	}
 
-	updateAutocomplete(): void {
+	function updateAutocomplete(): void {
 		let url: string;
 		if (this.selectedItem.type === SearchItemType.SearchNode) {
 			url =
 				"/api/graph/node/values?type=" +
 				this.selectedItem.label +
 				"&property=" +
-				this.condition.property +
+				condition.value.property +
 				"&searchterm=" +
-				this.condition.value;
+				condition.value.value;
 		} else {
 			url =
 				"/api/graph/edge/values?type=" +
 				this.selectedItem.label +
 				"&property=" +
-				this.condition.property +
+				condition.value.property +
 				"&searchterm=" +
-				this.condition.value;
+				condition.value.value;
 		}
 		
 		const newrequest: Request = {
@@ -391,18 +391,17 @@ export default class ValueConditionEdit extends Vue {
 		api.get(newrequest);
 	}
 
-	onCloseClicked(): void {
+	function onCloseClicked(): void {
 		this.$store.commit(SearchStorePaths.mutations.CANCEL_CONDITION_EDIT);
 	}
 
-	onSaveClicked(): void {
-		this.$store.commit(SearchStorePaths.mutations.Save.EDIT_VALUE_CONDITION, this.condition);
+	function onSaveClicked(): void {
+		this.$store.commit(SearchStorePaths.mutations.Save.EDIT_VALUE_CONDITION, condition.value);
 	}
 
-	onDeleteClicked(): void {
+	function onDeleteClicked(): void {
 		if (confirm(this.$t('confirm_value_condition_delete').toString())) {
 			this.$store.commit(SearchStorePaths.mutations.Delete.EDIT_VALUE_CONDITION);
 		}
 	}
-}
 </script>

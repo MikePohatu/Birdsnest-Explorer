@@ -26,32 +26,34 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 	</div>
 </template>
 
-<script lang="ts">
-import { Component, Vue, Prop } from "vue-property-decorator";
-import { ValueCondition, ConditionType } from "@/assets/ts/visualizer/Search";
+<script setup lang="ts">
+	import { ValueCondition, ConditionType } from "@/assets/ts/visualizer/Search";
+	import { SearchStorePaths } from "@/store/modules/SearchStore";
+	import { useStore } from "vuex";
+	import { computed } from "vue";
+	
+	const store = useStore();
+	const props = defineProps({
+		condition: {
+			type: ValueCondition,
+			required: true
+		}
+	});
 
-import { SearchStorePaths } from "@/store/modules/SearchStore";
+	const isSelected = computed((): boolean => {
+		return store.state.visualizer.search.selectedCondition === props.condition;
+	});
 
-@Component
-export default class ValueConditionIcon extends Vue {
-	@Prop({ type: Object as () => ValueCondition, required: true })
-	condition: ValueCondition;
+	const searchDeets = computed((): string => {
+		return (props.condition.not ? "Not " : "") + props.condition.operator + " " + props.condition.value + (props.condition.type === ConditionType.String && props.condition.caseSensitive ? "*" : "");
+	});
 
-	get isSelected(): boolean {
-		return this.$store.state.visualizer.search.selectedCondition === this.condition;
-	}
-
-	get searchDeets(): string {
-		return (this.condition.not ? "Not " : "") + this.condition.operator + " " + this.condition.value + (this.condition.type === ConditionType.String && this.condition.caseSensitive ? "*" : "");
-	}
-
-	onClicked(): void {
+	function onClicked(): void {
 		this.$store.commit(SearchStorePaths.mutations.Update.SELECTED_CONDITION, this.condition);
 	}
 
-	onDblClicked(): void {
+	function onDblClicked(): void {
 		this.$store.commit(SearchStorePaths.mutations.Update.SELECTED_CONDITION, this.condition);
 		this.$store.commit(SearchStorePaths.mutations.Update.EDIT_CONDITION);
 	}
-}
 </script>

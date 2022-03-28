@@ -53,7 +53,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 						<transition-group name="path" tag="div">
 							<div v-for="item in fullPath" :key="item.id">
 								<NodeIcon v-if="item.type === 'SearchNode'" :node="item" :key="item.id" />
-								<EdgeIcon v-else :edge="item" :key="item.id" />
+								<EdgeIcon v-else :edge="item" />
 							</div>
 						</transition-group>
 					</div>
@@ -231,8 +231,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 }
 </style>
 
-<script lang="ts">
-import { Component, Vue } from "vue-property-decorator";
+<script setup lang="ts">
 import NodeIcon from "./NodeIcon.vue";
 import EdgeIcon from "./EdgeIcon.vue";
 import SearchResults from "./SearchResults.vue";
@@ -242,42 +241,45 @@ import { Search, SearchItem, ConditionType } from "@/assets/ts/visualizer/Search
 import AdvancedSearchButtons from "./AdvancedSearchButtons.vue";
 import { ResultSet } from "@/assets/ts/dataMap/ResultSet";
 import { SearchStorePaths } from "../../../store/modules/SearchStore";
+import { useStore } from "vuex";
+import { computed } from "vue";
 
-@Component({
-	components: {
-		NodeIcon,
-		EdgeIcon,
-		AndOrConditionIcon,
-		AdvancedSearchButtons,
-		SearchResults,
-		ShareDialog,
-	},
-})
-export default class AdvancedSearch extends Vue {
-	get editDisabled(): boolean {
-		return this.$store.state.visualizer.search.selectedItem === null;
-	}
+// @Component({
+// 	components: {
+// 		NodeIcon,
+// 		EdgeIcon,
+// 		AndOrConditionIcon,
+// 		AdvancedSearchButtons,
+// 		SearchResults,
+// 		ShareDialog,
+// 	},
+// })
+	const store = useStore();
 
-	get condEditDisabled(): boolean {
-		return this.$store.state.visualizer.search.selectedCondition === null;
-	}
+	const editDisabled = computed((): boolean => {
+		return store.state.visualizer.search.selectedItem === null;
+	});
 
-	get search(): Search {
-		return this.$store.state.visualizer.search.search;
-	}
+	const condEditDisabled = computed((): boolean => {
+		return store.state.visualizer.search.selectedCondition === null;
+	});
 
-	get isDeleteDisabled(): boolean {
-		if (this.$store.state.visualizer.search.selectedItem === null) {
+	const search = computed((): Search => {
+		return store.state.visualizer.search.search;
+	});
+
+	const isDeleteDisabled = computed((): boolean => {
+		if (store.state.visualizer.search.selectedItem === null) {
 			return true;
 		}
-		if (this.$store.state.visualizer.search.selectedItem.type !== "SearchNode") {
+		if (store.state.visualizer.search.selectedItem.type !== "SearchNode") {
 			return true;
 		}
 		return false;
-	}
+	});
 
-	get fullPath(): SearchItem[] {
-		const search: Search = this.$store.state.visualizer.search.search;
+	const fullPath = computed((): SearchItem[] => {
+		const search: Search = store.state.visualizer.search.search;
 		const path: SearchItem[] = [];
 		for (let i = 0; i < search.edges.length; i++) {
 			path.push(search.nodes[i]);
@@ -285,56 +287,63 @@ export default class AdvancedSearch extends Vue {
 		}
 		path.push(search.nodes[search.nodes.length - 1]);
 		return path;
+	});
+
+	const results = computed((): ResultSet => {
+		return store.state.visualizer.search.results;
+	});
+
+	const searchHasNodes = computed((): boolean => {
+		return store.state.visualizer.search.search.nodes.length > 0;
+	});
+
+	function onPaneClicked(): void {
+		store.commit(SearchStorePaths.mutations.Update.SELECTED_ITEM, null);
+		store.commit(SearchStorePaths.mutations.Update.SELECTED_CONDITION, null);
 	}
 
-	get results(): ResultSet {
-		return this.$store.state.visualizer.search.results;
+	function onSearchNodeAddClicked(): void {
+		store.commit(SearchStorePaths.mutations.Add.NEW_NODE);
 	}
 
-	get searchHasNodes(): boolean {
-		return this.$store.state.visualizer.search.search.nodes.length > 0;
+	function onItemUpClicked(): void {
+		store.commit(SearchStorePaths.mutations.Update.SELECTED_ITEM_UP);
 	}
-
-	onPaneClicked(): void {
-		this.$store.commit(SearchStorePaths.mutations.Update.SELECTED_ITEM, null);
-		this.$store.commit(SearchStorePaths.mutations.Update.SELECTED_CONDITION, null);
+	
+	function onItemDownClicked(): void {
+		store.commit(SearchStorePaths.mutations.Update.SELECTED_ITEM_DOWN);
 	}
-
-	onSearchNodeAddClicked(): void {
-		this.$store.commit(SearchStorePaths.mutations.Add.NEW_NODE);
-	}
-	onItemUpClicked(): void {
-		this.$store.commit(SearchStorePaths.mutations.Update.SELECTED_ITEM_UP);
-	}
-	onItemDownClicked(): void {
-		this.$store.commit(SearchStorePaths.mutations.Update.SELECTED_ITEM_DOWN);
-	}
-	onItemDeleteClicked(): void {
-		const confirmed = confirm(this.$t('visualizer.search.confirm_item_delete', {name: this.$store.state.visualizer.search.selectedItem.name}).toString());
+	
+	function onItemDeleteClicked(): void {
+		const confirmed = confirm(this.$t('visualizer.search.confirm_item_delete', {name: store.state.visualizer.search.selectedItem.name}).toString());
 
 		if (confirmed) {
-			this.$store.commit(SearchStorePaths.mutations.Delete.SELECTED_ITEM);
+			store.commit(SearchStorePaths.mutations.Delete.SELECTED_ITEM);
 		}
 	}
-	onItemEditClicked(): void {
-		this.$store.commit(SearchStorePaths.mutations.Update.EDIT_ITEM);
+	
+	function onItemEditClicked(): void {
+		store.commit(SearchStorePaths.mutations.Update.EDIT_ITEM);
 	}
 
-	onCondAddClicked(): void {
-		this.$store.commit(SearchStorePaths.mutations.Add.NEW_CONDITION_PARENT, null);
+	function onCondAddClicked(): void {
+		store.commit(SearchStorePaths.mutations.Add.NEW_CONDITION_PARENT, null);
 	}
 
-	onCondEditClicked(): void {
-		this.$store.commit(SearchStorePaths.mutations.Update.EDIT_CONDITION);
+	function onCondEditClicked(): void {
+		store.commit(SearchStorePaths.mutations.Update.EDIT_CONDITION);
 	}
-	onCondUpClicked(): void {
-		this.$store.commit(SearchStorePaths.mutations.Update.SELECTED_CONDITION_UP);
+	
+	function onCondUpClicked(): void {
+		store.commit(SearchStorePaths.mutations.Update.SELECTED_CONDITION_UP);
 	}
-	onCondDownClicked(): void {
-		this.$store.commit(SearchStorePaths.mutations.Update.SELECTED_CONDITION_DOWN);
+	
+	function onCondDownClicked(): void {
+		store.commit(SearchStorePaths.mutations.Update.SELECTED_CONDITION_DOWN);
 	}
-	onCondDeleteClicked(): void {
-		const cond = this.$store.state.visualizer.search.selectedCondition;
+	
+	function onCondDeleteClicked(): void {
+		const cond = store.state.visualizer.search.selectedCondition;
 		let message: string; 
 		if (cond.type === ConditionType.And || cond.type === ConditionType.Or) {
 			message = this.$t('visualizer.search.confirm_andor_condition_delete').toString();
@@ -342,8 +351,7 @@ export default class AdvancedSearch extends Vue {
 			message = this.$t('visualizer.search.confirm_value_condition_delete').toString()
 		}
 		if (confirm(message)) {
-			this.$store.commit(SearchStorePaths.mutations.Delete.SELECTED_CONDITION);
+			store.commit(SearchStorePaths.mutations.Delete.SELECTED_CONDITION);
 		}
 	}
-}
 </script>

@@ -36,6 +36,7 @@ import { useStore } from "@/store";
 import PluginReportList from "@/components/reports/PluginReportList.vue";
 import { computed, defineComponent, watch } from "vue";
 import { Plugin } from "@/assets/ts/dataMap/Plugin";
+import { Dictionary } from "@/assets/ts/webcrap/misccrap";
 
 export default defineComponent({
 	components: {
@@ -45,8 +46,8 @@ export default defineComponent({
 	setup() {
 		const store = useStore();
 
-		const plugins = computed((): Plugin[] => {
-			return store.state.pluginManager === null ? [] : store.state.pluginManager.plugins;
+		const plugins = computed((): Dictionary<Plugin> => {
+			return store.state.pluginManager === null ? {} : store.state.pluginManager.plugins;
 		});
 
 		return { plugins }

@@ -82,34 +82,33 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 }
 </style>
 
-<script lang="ts">
-import { Component, Vue } from "vue-property-decorator";
+<script setup lang="ts">
 import { foundation } from "@/mixins/foundation";
 import { SearchStorePaths } from "@/store/modules/SearchStore";
+import { ref } from "vue";
 
-@Component({
-	mixins: [foundation],
-})
-export default class AdvancedSearchButtons extends Vue {
-	cypherquery = "";
-	shareUrl = "";
-	searchRetry = 0;
+// @Component({
+// 	mixins: [foundation],
+// })
+	let cypherquery = ref("");
+	let shareUrl = ref("");
+	let searchRetry = ref(0);
 
-	onMinimizeClicked(): void {
+	function onMinimizeClicked(): void {
 		this.$store.commit(SearchStorePaths.mutations.TOGGLE_SEARCH);
 	}
 
-	onModeToggleClicked(): void {
+	function onModeToggleClicked(): void {
 		this.$store.commit(SearchStorePaths.mutations.TOGGLE_SEARCH_MODE);
 	}
 
-	onClearClicked(): void {
+	function onClearClicked(): void {
 		if (confirm("Are you sure you want to clear the search?")) {
 			this.$store.commit(SearchStorePaths.mutations.RESET);
 		}
 	}
 
-	onSearchClicked(): void {
+	function onSearchClicked(): void {
 		const search = this.$store.state.visualizer.search.search;
 		if (search.nodes.length > 0) {
 			this.$store.dispatch(SearchStorePaths.actions.SEARCH);
@@ -122,11 +121,10 @@ export default class AdvancedSearchButtons extends Vue {
 		}
 	}
 
-	onShareClicked(): void {
+	function onShareClicked(): void {
 		const search = this.$store.state.visualizer.search.search;
 		if (search.nodes.length > 0) {
 			this.$store.dispatch(SearchStorePaths.actions.UPDATE_SHARE);
 		}
 	}
-}
 </script>

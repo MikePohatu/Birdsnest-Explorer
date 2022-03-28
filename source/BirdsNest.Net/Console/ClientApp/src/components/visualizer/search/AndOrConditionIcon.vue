@@ -84,55 +84,54 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 </style>
 
 
-<script lang="ts">
-import { Component, Vue, Prop } from "vue-property-decorator";
+<script setup lang="ts">
 import { Condition, ConditionType, AndOrCondition } from "@/assets/ts/visualizer/Search";
 import ValueConditionIcon from "./ValueConditionIcon.vue";
 import { SearchStorePaths } from "@/store/modules/SearchStore";
+import { computed } from "@vue/reactivity";
+import { useStore } from "vuex";
 
-@Component({
-	name: "AndOrConditionIcon",
-	components: { ValueConditionIcon },
-})
-export default class AndOrConditionIcon extends Vue {
-	@Prop({ type: Object as () => AndOrCondition, required: true })
-	condition: AndOrCondition;
+// @Component({
+// 	name: "AndOrConditionIcon",
+// 	components: { ValueConditionIcon },
+// })
+	const props = defineProps({condition: { type: AndOrCondition, required: true }});
+	const store = useStore();
+	
+	const name = computed((): string => {
+		return props.condition.id;
+	});
 
-	get name(): string {
-		return this.condition.id;
-	}
+	const conditions = computed((): Condition[] => {
+		return props.condition.conditions;
+	});
 
-	get conditions(): Condition[] {
-		return this.condition.conditions;
-	}
+	const isSelected = computed((): boolean => {
+		return store.state.visualizer.search.selectedCondition === props.condition;
+	});
 
-	get isSelected(): boolean {
-		return this.$store.state.visualizer.search.selectedCondition === this.condition;
-	}
+	const isRoot = computed((): boolean => {
+		return props.condition === store.state.visualizer.search.search.condition;
+	});
 
-	get isRoot(): boolean {
-		return this.condition === this.$store.state.visualizer.search.search.condition;
-	}
+	const isEmptyRoot = computed((): boolean => {
+		return isRoot.value && props.condition.conditions.length === 0;
+	});
 
-	get isEmptyRoot(): boolean {
-		return this.isRoot && this.condition.conditions.length === 0;
-	}
-
-	isAndOr(cond: Condition): boolean {
+	function isAndOr(cond: Condition): boolean {
 		return cond.type === ConditionType.And || cond.type === ConditionType.Or;
 	}
 
-	onClicked(): void {
+	function onClicked(): void {
 		this.$store.commit(SearchStorePaths.mutations.Update.SELECTED_CONDITION, this.condition);
 	}
 
-	onDblClicked(): void {
+	function onDblClicked(): void {
 		this.$store.commit(SearchStorePaths.mutations.Update.SELECTED_CONDITION, this.condition);
 		this.$store.commit(SearchStorePaths.mutations.Update.EDIT_CONDITION);
 	}
 
-	onAddClicked(): void {
+	function onAddClicked(): void {
 		this.$store.commit(SearchStorePaths.mutations.Add.NEW_CONDITION_PARENT, this.condition);
 	}
-}
 </script>

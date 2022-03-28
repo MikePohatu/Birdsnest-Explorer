@@ -49,22 +49,22 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 									<!-- <td>{{ index.indexName }}</td> -->
 									<!-- <td>{{ index.state }}</td> -->
 									<td>
-										<div v-if="propertyHasIndex(label, propname)">
+										<div v-if="propertyHasIndex(label as string, propname as string)">
 											<span
-												v-if="propertyHasConstraint(label, propname)"
+												v-if="propertyHasConstraint(label as string, propname as string)"
 												class="inactive"
 												:title="$t('index_editor.constraints_not_supported')"
 											>{{ $t('word_Constraint') }}</span>
 											<span
-												v-else-if="propertyIndexIsEnforced(label, propname)"
+												v-else-if="propertyIndexIsEnforced(label as string, propname as string)"
 												class="inactive delete"
 												:title="$t('index_editor.index_enforced')"
 											>{{ $t('word_Delete') }}</span>
-											<a v-else v-on:click="onDeleteIndexClicked(label, propname)" class="delete">{{ $t('word_Delete')}}</a>
+											<a v-else v-on:click="onDeleteIndexClicked(label as string, propname as string)" class="delete">{{ $t('word_Delete')}}</a>
 										</div>
 										<div v-else>
 											<a
-												v-if="propertyIndexIsEnforced(label, propname)"
+												v-if="propertyIndexIsEnforced(label as string, propname as string)"
 												v-on:click="onCreateIndexClicked(label, propname)"
 												class="create warning"
 												:title="$t('index_editor.enforced_missing')"

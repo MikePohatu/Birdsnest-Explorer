@@ -16,6 +16,13 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 import { v4 as uuidv4 } from 'uuid';
 
+//https://stackoverflow.com/a/69491367
+declare global {
+    interface Navigator {
+        msSaveBlob?: (blob: any, defaultName?: string) => boolean
+    }
+}
+
 class MiscCrap {
     isNullOrWhitespace(input: string) {
         if (typeof input === 'undefined' || input === null) return true;

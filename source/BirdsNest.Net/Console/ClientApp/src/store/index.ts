@@ -14,16 +14,20 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
-import Vue,{ InjectionKey } from "vue";
+import { InjectionKey } from "vue";
 import { api, Request } from "../assets/ts/webcrap/apicrap";
 import { VisualizerStore } from "./modules/VisualizerStore";
 import PluginManager from '@/assets/ts/dataMap/PluginManager';
 import ServerInfo from '@/assets/ts/dataMap/ServerInfo';
-import i18n from '@/i18n';
 
 import { bus, events } from '@/bus';
 import { Dictionary } from "@/assets/ts/webcrap/misccrap";
 import { createStore, useStore as baseUseStore, Store } from 'vuex';
+import { useI18n } from "vue-i18n";
+import { useCookies } from "vue3-cookies";
+
+const i18n = useI18n();
+const { cookies } = useCookies();
 
 export const rootPaths = {
   mutations: {
@@ -144,9 +148,9 @@ export const store = createStore({
       state.auth.message = message;
     },
     locale(state, locale: string) {
-      i18n.locale = locale;
-      state.locale = i18n.locale;
-      Vue.prototype.$cookies.set("locale", i18n.locale);
+      i18n.locale.value = locale;
+      state.locale = i18n.locale.value;
+      cookies.set("locale", i18n.locale.value);
     },
     loginBanner(state, bannerHtml: string) {
       state.customization.login.banner = bannerHtml;

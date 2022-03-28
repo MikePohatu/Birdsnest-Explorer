@@ -61,33 +61,33 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 </template>
 
 
-<script lang="ts">
-import { Component, Vue, Prop } from "vue-property-decorator";
+<script setup lang="ts">
 import { AndOrCondition } from "@/assets/ts/visualizer/Search";
 import { SearchStorePaths } from "@/store/modules/SearchStore";
+import { ref } from "vue";
+import { useStore } from "vuex";
 
-@Component
-export default class AndOrConditionEdit extends Vue {
-	@Prop({ type: Object as () => AndOrCondition, required: true })
-	source: AndOrCondition;
-	type = "AND";
-	
-	created(): void {
-		this.type = this.source.type;
-	}	
+	const props = defineProps({
+		source: {
+			type: AndOrCondition,
+			required: true
+		}
+	});
+	const store = useStore();
 
-	onSaveClicked(): void {
-		this.$store.commit(SearchStorePaths.mutations.Save.EDIT_ANDOR_CONDITION, this.type);
+	let type = ref(props.source.type);
+
+	function onSaveClicked(): void {
+		store.commit(SearchStorePaths.mutations.Save.EDIT_ANDOR_CONDITION, this.type);
 	}
 
-	onDeleteClicked(): void {
+	function onDeleteClicked(): void {
 		if (confirm(this.$t('visualizer.search.confirm_andor_condition_delete').toString())) {
 			this.$store.commit(SearchStorePaths.mutations.Delete.EDIT_ANDOR_CONDITION);
 		}
 	}
 
-	onCloseClicked(): void {
-		this.$store.commit(SearchStorePaths.mutations.CANCEL_ANDOR_EDIT);
+	function onCloseClicked(): void {
+		store.commit(SearchStorePaths.mutations.CANCEL_ANDOR_EDIT);
 	}
-}
 </script>

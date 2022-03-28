@@ -28,58 +28,52 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 </template>
 
 
-<script lang="ts">
-import TopBar from "@/components/TopBar.vue";
-import Curtain from "@/components/Curtain.vue";
-import { Component, Vue } from "vue-property-decorator";
-import { rootPaths } from "./store";
-import NotificationIcon from "@/components/NotificationIcon.vue";
+<script setup lang="ts">
+	import TopBar from "@/components/TopBar.vue";
+	import Curtain from "@/components/Curtain.vue";
+	import { rootPaths } from "./store";
+	import NotificationIcon from "@/components/NotificationIcon.vue";
+	import { useStore } from "vuex";
+	import { useCookies } from "vue3-cookies";
+	import { ref, onMounted, onUpdated } from "vue";
 
-@Component({
-	components: {
-		TopBar,
-		Curtain,
-		NotificationIcon,
-	},
-})
-export default class App extends Vue {
-	custom: HTMLLinkElement = null;
-	customPath = "/static/customization/custom.css";
+	const store = useStore();
+	const { cookies } = useCookies();
+	const custom = ref();
+	const customPath = "/static/customization/custom.css";
 
-	created() {
-		this.$store.dispatch(rootPaths.actions.UPDATE_PROVIDERS);
-		const storedlocale = this.$cookies.get("locale");
-		if (storedlocale !== null) {
-			this.$store.commit(rootPaths.mutations.LOCALE, storedlocale);
-		}
-
-		//get the custom css element. This is already defined in index.html
-		Array.from(document.head.getElementsByTagName("LINK")).some((child: HTMLLinkElement) => {
-			if (child.href.endsWith(this.customPath)) {
-				this.custom = child;
-				return true;
-			}
-		});
+	store.dispatch(rootPaths.actions.UPDATE_PROVIDERS);
+	const storedlocale = cookies.get("locale");
+	if (storedlocale !== null) {
+		store.commit(rootPaths.mutations.LOCALE, storedlocale);
 	}
 
-	mounted() {
-		this.resetCustom();
+	//get the custom css element. This is already defined in index.html
+	Array.from(document.head.getElementsByTagName("LINK")).some((child: HTMLLinkElement) => {
+		if (child.href.endsWith(customPath)) {
+			custom.value = child;
+			return true;
+		}
+	});
+
+	onMounted(() => {
+		resetCustom();
 		window.addEventListener("resize", () => {
-			this.updateHeight();
+			updateHeight();
 		});
 		window.addEventListener("orientationchange", () => {
-			this.updateHeight();
+			updateHeight();
 		});
 
-		this.updateHeight();
-	}
+		updateHeight();
+	})
 
-	updated(): void {
-		this.resetCustom();
-	}
+	onUpdated((): void => {
+		resetCustom();
+	})
 
 	// Make sure the custom css is always last so it 'wins'
-	resetCustom(): void {
+	function resetCustom(): void {
 		if (this.custom.parentElement.lastElementChild !== this.custom) {
 			const style = document.createElement("link");
 			style.type = "text/css";
@@ -99,7 +93,7 @@ export default class App extends Vue {
 	//this is to allow for mobile devices which don't deal with vh height.
 	//The address bar will appear and disappear based on what the browser thinks is
 	//the right thing to do
-	updateHeight(): void {
+	function updateHeight(): void {
 		document.getElementById("app").style.height = window.innerHeight.toString() + "px";
 	}
 }

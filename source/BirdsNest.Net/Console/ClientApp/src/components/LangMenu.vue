@@ -24,7 +24,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 				</a>
 				<ul>
 					<li v-for="(lang, name) in languages" :key="name">
-						<a href="#" @click="changeLocale(name)">
+						<a href="#" @click="changeLocale(name as string)">
 							<flag :iso="lang.flag" v-bind:squared="false" />
 							{{lang.title}}
 						</a>
@@ -54,23 +54,26 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 }
 </style>
 
-<script lang="ts">
-import { Component, Vue } from "vue-property-decorator";
-import { LanguageSelector, rootPaths } from "@/store";
-import { Dictionary } from "@/assets/ts/webcrap/misccrap";
+<script setup lang="ts">
+	import { LanguageSelector, rootPaths } from "@/store";
+	import { Dictionary } from "@/assets/ts/webcrap/misccrap";
+	import { computed, defineComponent } from "vue";
+	import { useStore } from "vuex";
+	import { useI18n } from "vue-i18n";
 
-@Component
-export default class LangMenu extends Vue {
-	get currentLang(): LanguageSelector {
-		return this.languages[this.$i18n.locale];
+	const i18n = useI18n();
+	const store = useStore();
+
+	const currentLang = computed((): LanguageSelector => {
+		return languages[i18n.locale.value];
+	})
+
+	const languages = computed((): Dictionary<LanguageSelector> => {
+		return store.state.languages;
+	})
+
+	function changeLocale(locale: string) {
+		store.commit(rootPaths.mutations.LOCALE, locale);
 	}
 
-	get languages(): Dictionary<LanguageSelector> {
-		return this.$store.state.languages;
-	}
-
-	changeLocale(locale: string) {
-		this.$store.commit(rootPaths.mutations.LOCALE, locale);
-	}
-}
 </script>

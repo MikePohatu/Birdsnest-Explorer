@@ -27,7 +27,7 @@ import Vue from "vue";
 import "./registerServiceWorker";
 import i18n from "./i18n";
 import FlagIcon from "vue-flag-icon";
-import VueCookies from "vue-cookies";
+//import VueCookies from "vue3-cookies";
 
 import { createApp } from 'vue';
 import { store, key, rootPaths } from "./store";

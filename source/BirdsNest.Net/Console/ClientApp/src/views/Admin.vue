@@ -85,30 +85,27 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 </style>
 
 
-<script lang="ts">
-import { bus, events } from "@/bus";
-import { Component, Vue } from "vue-property-decorator";
-import { api, Request } from "../assets/ts/webcrap/apicrap";
-import { auth } from "../assets/ts/webcrap/authcrap";
-import { Dictionary } from "lodash";
-import { rootPaths } from "@/store/index";
-import PluginManager from "@/assets/ts/dataMap/PluginManager";
-import { routeDefs } from "@/router/index";
+<script setup lang="ts">
+	import { bus, events } from "@/bus";
+	import { api, Request } from "../assets/ts/webcrap/apicrap";
+	import { auth } from "../assets/ts/webcrap/authcrap";
+	import { Dictionary } from "lodash";
+	import { rootPaths } from "@/store/index";
+	import PluginManager from "@/assets/ts/dataMap/PluginManager";
+	import { routeDefs } from "@/router/index";
+	import {computed} from 'vue';
+	import { useStore } from "vuex";
 
-@Component
-export default class Admin extends Vue {
-	reloadMessage = "";
-	routeDefs = routeDefs;
+	const store = useStore();
+	let reloadMessage = "";
 
-	get pluginManager(): PluginManager {
-		return this.$store.state.pluginManager;
-	}
+	auth.getValidationToken();
+	
+	const pluginManager = computed((): PluginManager => {
+		return store.state.pluginManager;
+	});
 
-	created(): void {
-		auth.getValidationToken();
-	}
-
-	onReloadPlugins() {
+	function onReloadPlugins() {
 		const request: Request = {
 			url: "/api/admin/reloadplugins",
 			postJson: true,
@@ -124,5 +121,4 @@ export default class Admin extends Vue {
 		api.post(request);
 		return false;
 	}
-}
 </script>
