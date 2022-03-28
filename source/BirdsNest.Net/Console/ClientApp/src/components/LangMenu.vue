@@ -57,7 +57,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
 import { LanguageSelector, rootPaths } from "@/store";
-import { Dictionary } from 'lodash';
+import { Dictionary } from "@/assets/ts/webcrap/misccrap";
 
 @Component
 export default class LangMenu extends Vue {

@@ -22,7 +22,7 @@ import ServerInfo from '@/assets/ts/dataMap/ServerInfo';
 import i18n from '@/i18n';
 
 import { bus, events } from '@/bus';
-import { Dictionary } from 'lodash';
+import { Dictionary } from "@/assets/ts/webcrap/misccrap";
 import { createStore, useStore as baseUseStore, Store } from 'vuex';
 
 export const rootPaths = {

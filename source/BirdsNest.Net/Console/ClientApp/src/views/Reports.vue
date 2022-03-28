@@ -35,6 +35,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 import { useStore } from "@/store";
 import PluginReportList from "@/components/reports/PluginReportList.vue";
 import { computed, defineComponent, watch } from "vue";
+import { Plugin } from "@/assets/ts/dataMap/Plugin";
 
 export default defineComponent({
 	components: {

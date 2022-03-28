@@ -93,7 +93,4 @@ class MiscCrap {
 
 export default new MiscCrap();
 
-
-
-
-
+export interface Dictionary<T> { [key: string]: T }

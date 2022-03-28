@@ -15,7 +15,7 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 import { SimulationLinkDatum } from "./d3";
-import { Dictionary } from 'lodash';
+import { Dictionary } from "@/assets/ts/webcrap/misccrap";
 
 export interface SimLink<T> extends SimulationLinkDatum<T> {
     dbId: string;

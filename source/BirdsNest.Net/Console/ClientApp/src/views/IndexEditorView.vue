@@ -138,7 +138,7 @@ import { bus, events } from "@/bus";
 import Loading from "@/components/Loading.vue";
 import { Index } from "@/assets/ts/dataMap/indexes/Index";
 import { api, Request } from "@/assets/ts/webcrap/apicrap";
-import { Dictionary } from "lodash";
+import { Dictionary } from "@/assets/ts/webcrap/misccrap";
 import PluginManager from "@/assets/ts/dataMap/PluginManager";
 import { Plugin } from "@/assets/ts/dataMap/Plugin";
 import ServerInfo from "@/assets/ts/dataMap/ServerInfo";

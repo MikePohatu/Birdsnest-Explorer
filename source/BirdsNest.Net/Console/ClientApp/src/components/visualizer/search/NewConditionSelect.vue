@@ -61,7 +61,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 import { Component, Vue } from "vue-property-decorator";
 import { NewConditionType, Condition, AndOrCondition, ValueCondition, ConditionType } from "@/assets/ts/visualizer/Search";
 import { SearchStorePaths } from "../../../store/modules/SearchStore";
-import { Dictionary } from 'lodash';
+import { Dictionary } from "@/assets/ts/webcrap/misccrap";
 
 @Component
 export default class NewConditionSelect extends Vue {

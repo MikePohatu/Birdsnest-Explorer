@@ -167,134 +167,109 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 }
 </style>
 
-<script lang="ts">
-import { routeDefs } from "@/router/index";
-import Loading from "@/components/Loading.vue";
-import { ResultSet } from "../assets/ts/dataMap/ResultSet";
-import { api, Request } from "@/assets/ts/webcrap/apicrap";
-import webcrap from "@/assets/ts/webcrap/webcrap";
-import { ApiNode } from "@/assets/ts/dataMap/ApiNode";
-import { Report } from "@/assets/ts/dataMap/Report";
-import { Plugin } from "@/assets/ts/dataMap/Plugin";
-import { foundation } from "../mixins/foundation";
-import { Dictionary } from "lodash";
-import LStore from "@/assets/ts/LocalStorageManager";
-import { bus, events } from "@/bus";
-import { useStore } from "@/store";
-import { computed, defineComponent, watch } from "vue";
+<script setup lang="ts">
+	import { routeDefs } from "@/router/index";
+	import Loading from "@/components/Loading.vue";
+	import { ResultSet } from "../assets/ts/dataMap/ResultSet";
+	import { api, Request } from "@/assets/ts/webcrap/apicrap";
+	import webcrap from "@/assets/ts/webcrap/webcrap";
+	import { ApiNode } from "@/assets/ts/dataMap/ApiNode";
+	import { Report } from "@/assets/ts/dataMap/Report";
+	import { Plugin } from "@/assets/ts/dataMap/Plugin";
+	import { foundation } from "../mixins/foundation";
+	import { Dictionary } from "@/assets/ts/webcrap/misccrap";
+	import LStore from "@/assets/ts/LocalStorageManager";
+	import { bus, events } from "@/bus";
+	import { useStore } from "@/store";
+	import { computed, onMounted, ref } from "vue";
 
-// @Component({
-// 	components: { Loading },
-// 	mixins: [foundation],
-// })
-export default defineComponent({
-	components: {
-		Loading
-	},
 
-	setup() {
-		let results: ResultSet = null;
-		let statusMessage = "";
-		let maxRecords = 100;
-		let pageNum = 1;
-		let pageCount = 0;
-		let query = "";
-		let showQuery = false;
-		let plugin: Plugin;
-		let report: Report;
-		let reportName = "";
-		let resultsLoaded = false;
-		let columnStates: Dictionary<boolean> = {}; //column name as supplied by report property name, and whether enabled
-		let activePropertyNames: string[] = [];
+	let results: ResultSet = null;
+	let statusMessage = ref("");
+	let maxRecords = ref(100);
+	let pageNum = ref(1);
+	let pageCount = ref(0);
+	let query = ref("");
+	let showQuery = ref(false);
+	let plugin: Plugin;
+	let report: Report;
+	let reportName = ref("");
+	let resultsLoaded = ref(false);
+	let columnStates: Dictionary<boolean> = {}; //column name as supplied by report property name, and whether enabled
+	let activePropertyNames: string[] = [];
 
-		const store = useStore();
+	const store = useStore();
 
-		const nodesPage = computed((): ApiNode[] => {
-			const toprecord = pageNum * maxRecords;
-			const bottomrecord = (pageNum - 1) * maxRecords;
-			if (results === null) {
-				return [];
-			} else {
-				return results.nodes.slice(bottomrecord, toprecord);
+	//#region init code
+	if (store.state.pluginManager !== null) {
+		updateData();
+	} else {
+		const unwatch = store.watch(
+			() => {
+				return store.state.pluginManager;
+			},
+			newval => {
+				if (newval !== null) {
+					updateData();
+					unwatch();
+				}
 			}
-		});
+		);
+		}
 
-		const apiReady = computed((): boolean => {
-			return store.state.apiState === api.states.READY;
-		});
-
-		const resultCount = computed((): number => {
-			if (results === null) {
-				return 0;
-			} else {
-				return results.nodes.length;
-			}
-		});
-
-		const propertyNames = computed((): string[] => {
-			if (results !== null) {
-				return Object.keys(columnStates);
-			} else {
-				return null;
-			}
-		});
-
-		const hasNextPage = computed((): boolean => {
-			return pageNum < pageCount;
-		});
-
-		const hasPrevPage = computed((): boolean => {
-			return pageNum > 1;
-		});
-
-		const nextBtnVisibility = computed((): string => {
-			return hasNextPage ? "visible" : "hidden";
-		});
-
-		const prevBtnVisibility = computed((): string => {
-			return hasPrevPage ? "visible" : "hidden";
-		});
-
-		return {
-			prevBtnVisibility, nextBtnVisibility, hasPrevPage, hasNextPage, propertyNames, resultCount, apiReady, nodesPage, 
-			showQuery,
-			statusMessage,
-			maxRecords,
-			pageNum,
-			pageCount,
-			query,
-			plugin,
-			report,
-			reportName,
-			resultsLoaded,
-			columnStates,
-			activePropertyNames
-
-		};
-	},
-	mounted() {
+	onMounted(() => {
 		const contentPane = document.getElementById("contentPane");
 		contentPane.style.overflow = "scroll";
-	},
-	created(): void {
-		if (this.$store.state.pluginManager !== null) {
-			this.updateData();
-		} else {
-			const unwatch = this.$store.watch(
-				() => {
-					return this.$store.state.pluginManager;
-				},
-				newval => {
-					if (newval !== null) {
-						this.updateData();
-						unwatch();
-					}
-				}
-			);
-		}
-	},
+	});
+	//#endregion
 
-	updateActiveProperties(): void {
+	const nodesPage = computed((): ApiNode[] => {
+		const toprecord = pageNum.value * maxRecords.value;
+		const bottomrecord = (pageNum.value - 1) * maxRecords.value;
+		if (results === null) {
+			return [];
+		} else {
+			return results.nodes.slice(bottomrecord, toprecord);
+		}
+	});
+
+	const apiReady = computed((): boolean => {
+		return store.state.apiState === api.states.READY;
+	});
+
+	const resultCount = computed((): number => {
+		if (results === null) {
+			return 0;
+		} else {
+			return results.nodes.length;
+		}
+	});
+
+	const propertyNames = computed((): string[] => {
+		if (results !== null) {
+			return Object.keys(columnStates);
+		} else {
+			return null;
+		}
+	});
+
+	const hasNextPage = computed((): boolean => {
+		return pageNum.value < pageCount.value;
+	});
+
+	const hasPrevPage = computed((): boolean => {
+		return pageNum.value > 1;
+	});
+
+	const nextBtnVisibility = computed((): string => {
+		return hasNextPage ? "visible" : "hidden";
+	});
+
+	const prevBtnVisibility = computed((): string => {
+		return hasPrevPage ? "visible" : "hidden";
+	});
+
+	function updateActiveProperties(): void {
 		setTimeout(() => {
 			if (this.results !== null) {
 				this.activePropertyNames = Object.keys(this.columnStates).filter(name => {
@@ -304,16 +279,16 @@ export default defineComponent({
 				return null;
 			}
 		}, 1);
-	},
+	}
 
-	updateData() {
+	function updateData() {
 		const pluginName = this.$route.query.pluginName as string;
 		const reportName = this.$route.query.reportName as string;
 
 		//check if we're looking for a defined report, or importing from the
 		//browser local storage
 		if (pluginName) {
-			this.updatePluginReportData(reportName, pluginName);
+			updatePluginReportData(reportName, pluginName);
 		} else {
 			const nodes: ApiNode[] = LStore.popPendingNodeList();
 			if (nodes !== null) {
@@ -321,14 +296,14 @@ export default defineComponent({
 				nodes.forEach(node => {
 					nodeids.push(node.dbId);
 				});
-				this.updateIdsData(nodeids);
+				updateIdsData(nodeids);
 			} else {
 				this.resultsLoaded = true;
 			}
 		}
-	},
+	}
 
-	updateIdsData(ids: string[]) {
+	function updateIdsData(ids: string[]) {
 		const url = "/api/reports/nodes";
 		const postData = JSON.stringify({ ids: ids, propertyfilters: ["name", "type", "id"] });
 
@@ -345,9 +320,9 @@ export default defineComponent({
 			},
 		};
 		api.post(request);
-	},
+	}
 
-	updatePluginReportData(reportName: string, pluginName: string) {
+	function updatePluginReportData(reportName: string, pluginName: string) {
 		this.plugin = this.$store.state.pluginManager.plugins[pluginName] as Plugin;
 		this.report = this.plugin.reports[reportName] as Report;
 		this.query = this.report.query;
@@ -366,9 +341,9 @@ export default defineComponent({
 			},
 		};
 		api.get(request);
-	},
+	}
 
-	applyData(data: ResultSet) {
+	function applyData(data: ResultSet) {
 		this.results = data;
 
 		if (data !== null) {
@@ -396,27 +371,27 @@ export default defineComponent({
 
 		this.resultsLoaded = true;
 		this.updateActiveProperties();
-	},
+	}
 
-	onVisualizerClicked() {
+	function onVisualizerClicked() {
 		LStore.storePendingResultSet(this.results);
 		const route = this.$router.resolve({ path: routeDefs.visualizer.path });
 		window.open(route.href, "_blank");
-	},
+	}
 
-	onPageUpClicked() {
+	function onPageUpClicked() {
 		if (this.hasNextPage) {
 			this.pageNum++;
 		}
-	},
+	}
 
-	onPageDownClicked() {
+	function onPageDownClicked() {
 		if (this.hasPrevPage) {
 			this.pageNum--;
 		}
-	},
+	}
 
-	onDownloadClicked() {
+	function onDownloadClicked() {
 		this.statusMessage = "";
 		let text = "";
 		const props = [];
@@ -455,14 +430,13 @@ export default defineComponent({
 		});
 
 		webcrap.misc.download(text, "results.csv", "text/csv;encoding:utf-8");
-	},
+	}
 
-	onShowQueryClicked(): void {
+	function onShowQueryClicked(): void {
 		this.showQuery = true;
-	},
+	}
 
-	onQueryCloseClicked(): void {
+	function onQueryCloseClicked(): void {
 		this.showQuery = false;
 	}
-})
 </script>

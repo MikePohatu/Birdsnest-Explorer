@@ -19,7 +19,7 @@ import { ApiNode } from '../dataMap/ApiNode';
 import Spiral from "./Spiral";
 import { ResultSet } from '../dataMap/ResultSet';
 import { ApiEdge } from '../dataMap/ApiEdge';
-import { Dictionary } from 'lodash';
+import { Dictionary } from "@/assets/ts/webcrap/misccrap";
 import { SimNode } from './SimNode';
 import { SimLink } from './SimLink';
 import Slope from "./Slope";
