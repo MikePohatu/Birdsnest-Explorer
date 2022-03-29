@@ -204,7 +204,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 	}
 }
 
-#advPane >>> .advsearchbutton {
+#advPane :deep(.advsearchbutton) {
 	position: relative;
 	border-width: 2px;
 	border-style: solid;
@@ -216,17 +216,17 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 	margin-bottom: 0;
 }
 
-#advPane >>> .advsearchbutton.selected {
+#advPane :deep(.advsearchbutton.selected) {
 	border-width: 4px;
 	padding: 2px 0;
 }
 
-#advPane >>> .nodebutton {
+#advPane :deep(.nodebutton) {
 	border-radius: 999px;
 	margin: 5px 0;
 }
 
-#advPane >>> .edgebutton {
+#advPane :deep(.edgebutton) {
 	border-radius: 2px;
 }
 </style>
