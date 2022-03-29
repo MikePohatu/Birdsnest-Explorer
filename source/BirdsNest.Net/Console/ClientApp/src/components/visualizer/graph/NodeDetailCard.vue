@@ -231,7 +231,6 @@ import { SimNode } from "@/assets/ts/visualizer/SimNode";
 import { VisualizerStorePaths } from "@/store/modules/VisualizerStore";
 import { ApiNodeSimple } from "@/assets/ts/dataMap/ApiNodeSimple";
 import { rootPaths } from "@/store";
-import Loading from "@/components/Loading.vue";
 import { Dictionary } from "@/assets/ts/webcrap/misccrap";
 import { computed, nextTick, onMounted, ref } from "vue";
 import { useStore } from "vuex";
@@ -373,7 +372,7 @@ function onRefreshClicked(): void {
 			refreshExapnds(updateddata);
 			reInitAccordions();
 		},
-		errorCallback: (jqXHR?: JQueryXHR, status?: string, error?: string) => {
+		errorCallback: (jqXHR, status?: string, error?: string) => {
 			store.commit(rootPaths.mutations.SERVER_INFO_STATE, api.states.ERROR);
 			bus.emit(events.Notifications.Error, "Error refreshing node info: " + error);
 		},
@@ -396,7 +395,7 @@ function initDetails(): void {
 			refreshExapnds(updateddata);
 			reInitAccordions();
 		},
-		errorCallback: (jqXHR?: JQueryXHR, status?: string, error?: string) => {
+		errorCallback: (jqXHR?, status?: string, error?: string) => {
 			// eslint-disable-next-line
 			store.commit(rootPaths.mutations.SERVER_INFO_STATE, api.states.ERROR);
 			bus.emit(events.Notifications.Error, "Error updating node related details: " + error);

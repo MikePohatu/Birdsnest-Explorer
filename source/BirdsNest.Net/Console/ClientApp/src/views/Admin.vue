@@ -113,7 +113,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 				this.reloadMessage = data.message;
 				store.dispatch(rootPaths.actions.UPDATE_PLUGINS);
 			},
-			errorCallback: (jqXHR: JQueryXHR, status: string, error: string) => {
+			errorCallback: (jqXHR, status: string, error: string) => {
 				this.reloadMessage = error;
 			},
 		};

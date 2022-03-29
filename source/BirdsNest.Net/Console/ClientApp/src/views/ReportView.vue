@@ -81,7 +81,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 		</div>
 
 		<!-- Main output area -->
-		<Loading v-if="!resultsLoaded">Loading</Loading>
+		<LoadingLogo v-if="!resultsLoaded">Loading</LoadingLogo>
 		<div v-else id="output">
 			<table id="outputtable" class="hover">
 				<thead>
@@ -169,7 +169,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 
 <script setup lang="ts">
 	import { routeDefs } from "@/router/index";
-	import Loading from "@/components/Loading.vue";
+	import LoadingLogo from "@/components/LoadingLogo.vue";
 	import { ResultSet } from "../assets/ts/dataMap/ResultSet";
 	import { api, Request } from "@/assets/ts/webcrap/apicrap";
 	import webcrap from "@/assets/ts/webcrap/webcrap";

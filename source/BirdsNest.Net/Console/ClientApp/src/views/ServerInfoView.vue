@@ -34,7 +34,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 			</div>
 
 			<div id="statsWrapper">
-				<Loading v-if="!statsDataReady" />
+				<LoadingLogo v-if="!statsDataReady" />
 				<div v-else>
 					<div class="grid-x grid-margin-x">
 						<div class="cell shrink medium-cell-block-y large-3">
@@ -251,7 +251,7 @@ import { routeDefs } from "@/router";
 import { useStore } from "@/store";
 import { computed, defineComponent, onMounted, onBeforeUnmount, watch } from "vue";
 import { api } from "@/assets/ts/webcrap/apicrap";
-import Loading from "@/components/Loading.vue";
+import LoadingLogo from "@/components/LoadingLogo.vue";
 import PluginManager from "@/assets/ts/dataMap/PluginManager";
 import ServerInfo from "@/assets/ts/dataMap/ServerInfo";
 import { rootPaths } from "@/store/index";

@@ -18,7 +18,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 <template>
 	<div ref="root" class="page" id="indexEditor">
 		<h6>{{ $t('phrase_Indexes_by_Plugin') }}</h6>
-		<Loading v-if="!statsDataReady" />
+		<LoadingLogo v-if="!statsDataReady" />
 		<div v-else>
 			<ul class="accordion" data-accordion data-allow-all-closed="true" data-multi-expand="true">
 				<li
@@ -144,7 +144,7 @@ p {
 
 <script setup lang="ts">
 import { bus, events } from "@/bus";
-import Loading from "@/components/Loading.vue";
+import LoadingLogo from "@/components/LoadingLogo.vue";
 import { Index } from "@/assets/ts/dataMap/indexes/Index";
 import { api, Request } from "@/assets/ts/webcrap/apicrap";
 import { Dictionary } from "@/assets/ts/webcrap/misccrap";
@@ -258,7 +258,7 @@ function onDeleteIndexClicked(label: string, property: string): void {
 			successCallback: () => {
 				store.dispatch(rootPaths.actions.UPDATE_SERVER_INFO);
 			},
-			errorCallback: (jqXHR?: JQueryXHR, status?: string, error?: string) => {
+			errorCallback: (jqXHR?, status?: string, error?: string) => {
 				// eslint-disable-next-line
 				console.error(error);
 				bus.emit(events.Notifications.Error, this.$t('index_editor.error_delete', { label: label, property: property }).toString() + "\n" + error);
@@ -282,7 +282,7 @@ function onCreateIndexClicked(label, property) {
 			successCallback: () => {
 				store.dispatch(rootPaths.actions.UPDATE_SERVER_INFO);
 			},
-			errorCallback: (jqXHR?: JQueryXHR, status?: string, error?: string) => {
+			errorCallback: (jqXHR?, status?: string, error?: string) => {
 				// eslint-disable-next-line
 				console.error(error);
 				bus.emit(events.Notifications.Error, this.$t('index_editor.error_create', { label: label, property: property }) + "\n" + error);

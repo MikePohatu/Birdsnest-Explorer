@@ -72,7 +72,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 				this.markdown = data;
 				bus.emit(events.Notifications.Clear);
 			},
-			errorCallback: (jqXHR?: JQueryXHR, status?: string, error?: string) => {
+			errorCallback: (jqXHR?, status?: string, error?: string) => {
 				// eslint-disable-next-line
 				console.error(error);
 

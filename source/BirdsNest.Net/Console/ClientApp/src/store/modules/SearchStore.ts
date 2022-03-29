@@ -123,7 +123,7 @@ const state: SearchState = {
 }
 
 export const SearchStore: Module<SearchState, RootState> = {
-    namespaced: true as true,
+    namespaced: true,
     state: state,
     mutations: {
         //main bits

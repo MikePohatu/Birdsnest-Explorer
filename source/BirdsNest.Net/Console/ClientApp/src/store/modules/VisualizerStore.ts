@@ -98,7 +98,7 @@ export const VisualizerStorePaths = {
 
 
 export const VisualizerStore: Module<VisualizerState, RootState> = {
-  namespaced: true as true,
+  namespaced: true,
   modules: {
     search: SearchStore
   },
