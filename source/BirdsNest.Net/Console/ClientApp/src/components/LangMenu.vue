@@ -55,10 +55,9 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 </style>
 
 <script setup lang="ts">
-	import { LanguageSelector, rootPaths } from "@/store";
+	import { LanguageSelector, rootPaths, useStore } from "@/store";
 	import { Dictionary } from "@/assets/ts/webcrap/misccrap";
 	import { computed, defineComponent } from "vue";
-	import { useStore } from "vuex";
 	import { useI18n } from "vue-i18n";
 
 	const i18n = useI18n();

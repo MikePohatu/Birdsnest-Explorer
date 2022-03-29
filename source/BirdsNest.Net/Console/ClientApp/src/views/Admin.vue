@@ -94,7 +94,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 	import PluginManager from "@/assets/ts/dataMap/PluginManager";
 	import { routeDefs } from "@/router/index";
 	import {computed} from 'vue';
-	import { useStore } from "vuex";
+	import { useStore } from "@/store";
 
 	const store = useStore();
 	let reloadMessage = "";

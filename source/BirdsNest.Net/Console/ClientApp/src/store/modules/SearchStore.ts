@@ -22,6 +22,7 @@ import { RootState } from '../index';
 import { ResultSet } from '@/assets/ts/dataMap/ResultSet';
 import i18n from '@/i18n';
 
+const t = i18n.global.t;
 
 export const SearchStorePaths = {
     mutations: {
@@ -357,7 +358,7 @@ export const SearchStore: Module<SearchState, RootState> = {
     actions: {
         search(context): void {
             context.commit('results', null);
-            context.commit('setStatusMessage', i18n.global.t('word_Searching'));
+            context.commit('setStatusMessage', t('word_Searching'));
             context.commit('setIsSearching', true);
 
             const postdata = JSON.stringify(context.state.search);
@@ -371,7 +372,7 @@ export const SearchStore: Module<SearchState, RootState> = {
                 successCallback: (data?: ResultSet) => {
                     //console.log(data);
                     if (data.nodes.length === 0) {
-                        context.commit('setStatusMessage', i18n.global.t('phrase_Found_no_results'));
+                        context.commit('setStatusMessage', t('phrase_Found_no_results'));
                     } else {
                         context.commit('clearStatusMessage');
                     }
@@ -379,7 +380,7 @@ export const SearchStore: Module<SearchState, RootState> = {
                     context.commit('results', data);
                 },
                 errorCallback: (jqXHR?: JQueryXHR, status?: string, error?: string) => {
-                    context.commit('setStatusMessage', i18n.global.t('word_Error'));
+                    context.commit('setStatusMessage', t('word_Error'));
                     context.commit('setIsSearching', false);
                     // eslint-disable-next-line
                     console.error(error);
@@ -390,14 +391,14 @@ export const SearchStore: Module<SearchState, RootState> = {
         simpleSearch(context, term): void {
             context.commit('results', null);
             context.commit('setIsSearching', true);
-            context.commit('setStatusMessage', i18n.global.t('word_Searching'));
+            context.commit('setStatusMessage', t('word_Searching'));
 
             const request: Request = {
                 url: "/api/search/?searchterm=" + term,
                 postJson: true,
                 successCallback: (data?: ResultSet) => {
                     if (data.nodes.length === 0) {
-                        context.commit('setStatusMessage', i18n.global.t('phrase_Found_no_results'));
+                        context.commit('setStatusMessage', t('phrase_Found_no_results'));
                     } else {
                         context.commit('clearStatusMessage');
                     }
@@ -406,7 +407,7 @@ export const SearchStore: Module<SearchState, RootState> = {
                 },
                 errorCallback: (jqXHR?: JQueryXHR, status?: string, error?: string) => {
                     context.commit('setIsSearching', false);
-                    context.commit('setStatusMessage', i18n.global.t('word_Error'));
+                    context.commit('setStatusMessage', t('word_Error'));
                     // eslint-disable-next-line
                     console.error(error);
                 }

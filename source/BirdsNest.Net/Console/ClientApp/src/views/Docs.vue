@@ -56,6 +56,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 // })
 	const router = useRouter()
     const route = useRoute()
+	const { t } = i18n.global
 	
 	let defaultmd = "Loading";
 	let markdown = defaultmd;
@@ -76,7 +77,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 				// eslint-disable-next-line
 				console.error(error);
 
-				bus.emit(events.Notifications.Error, i18n.global.t("word_Error") + ": " + error);
+				bus.emit(events.Notifications.Error, t("word_Error") + ": " + error);
 			},
 		};
 

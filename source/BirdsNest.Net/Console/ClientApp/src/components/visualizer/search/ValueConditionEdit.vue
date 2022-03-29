@@ -223,7 +223,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 	import { api, Request } from "@/assets/ts/webcrap/apicrap";
 	import { SearchEdge } from "../../../assets/ts/visualizer/Search";
 	import { computed, Ref, ref } from "vue";
-	import { useStore } from "vuex";
+	import { useStore } from "@/store";
 
 	const props = defineProps({
 		source: ValueCondition

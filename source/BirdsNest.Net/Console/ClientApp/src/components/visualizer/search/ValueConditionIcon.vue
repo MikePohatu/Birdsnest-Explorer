@@ -29,7 +29,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 <script setup lang="ts">
 	import { ValueCondition, ConditionType } from "@/assets/ts/visualizer/Search";
 	import { SearchStorePaths } from "@/store/modules/SearchStore";
-	import { useStore } from "vuex";
+	import { useStore } from "@/store";
 	import { computed } from "vue";
 	
 	const store = useStore();
