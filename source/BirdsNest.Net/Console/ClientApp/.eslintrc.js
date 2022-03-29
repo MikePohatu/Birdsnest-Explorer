@@ -17,12 +17,14 @@
 module.exports = {
   root: true,
   env: {
-    node: true
+    node: true,
+    'vue/setup-compiler-macros': true
   },
   extends: [
     "plugin:vue/essential",
     "eslint:recommended",
     "@vue/typescript/recommended",
+    'plugin:vue/base'
     //"@vue/prettier",
     //"@vue/prettier/@typescript-eslint"
   ],
@@ -32,7 +34,8 @@ module.exports = {
   rules: {
     "no-console": process.env.NODE_ENV === "production" ? "warn" : "off",
     "no-debugger": process.env.NODE_ENV === "production" ? "warn" : "off",
-    "consistent-this": [2, "me", "vm"]
+    "consistent-this": [2, "me", "vm"],
+    'vue/script-setup-uses-vars': 'error',
   },
   overrides: [
     {

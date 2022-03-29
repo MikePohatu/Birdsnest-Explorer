@@ -54,7 +54,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 							<router-link v-if="crumb.link" :to="crumb.link" class="crumb">{{ crumb.name }}</router-link>
 							<span v-else class="crumb">{{ crumb.name }}</span>
 						</li>
-						<li v-for="crumb = in pagecrumbs" :key="crumb.name" class="bn-header-crumb">
+						<li v-for="crumb in pagecrumbs" :key="crumb.name" class="bn-header-crumb">
 							<router-link v-if="crumb.link" :to="crumb.link" class="crumb">{{ crumb.name }}</router-link>
 							<span v-else class="crumb">{{ crumb.name }}</span>
 						</li>
