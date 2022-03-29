@@ -102,15 +102,8 @@ p {
 }
 </style>
 
-<script lang="ts">
+<script setup lang="ts">
 import webcrap from "@/assets/ts/webcrap/webcrap";
-import { defineComponent } from "vue";
 
-export default defineComponent({
-	data() {
-		return {
-			isIE: webcrap.misc.isIE()
-		}
-	}	
-})
+const isIE = webcrap.misc.isIE();
 </script>

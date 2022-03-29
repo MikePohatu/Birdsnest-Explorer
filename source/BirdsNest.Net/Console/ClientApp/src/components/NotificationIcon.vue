@@ -188,43 +188,43 @@ function init(): void {
 		processing.value = false;
 	});
 
-	bus.$on(events.Notifications.Processing, (message?: string) => {
+	bus.$on(events.Notifications.Processing, (newmessage?: string) => {
 		state.value = notificationStates.INFO;
-		if (message) {
-			message = message;
+		if (newmessage) {
+			message.value = newmessage;
 		}
 
 		processing.value = true;
 	});
 
-	bus.$on(events.Notifications.Info, (message?: string) => {
+	bus.$on(events.Notifications.Info, (newmessage?: string) => {
 		state.value = notificationStates.INFO;
-		if (message) {
-			message = message;
+		if (newmessage) {
+			message.value = newmessage;
 		}
 		processing.value = false;
 	});
 
-	bus.$on(events.Notifications.Warn, (message?: string) => {
+	bus.$on(events.Notifications.Warn, (newmessage?: string) => {
 		state.value = notificationStates.WARN;
-		if (message) {
-			message = message;
+		if (newmessage) {
+			message.value = newmessage;
 		}
 		processing.value = false;
 	});
 
-	bus.$on(events.Notifications.Error, (message?: string) => {
+	bus.$on(events.Notifications.Error, (newmessage?: string) => {
 		state.value = notificationStates.ERROR;
-		if (message) {
-			message = message;
+		if (newmessage) {
+			message.value = newmessage;
 		}
 		processing.value = false;
 	});
 
-	bus.$on(events.Notifications.Fatal, (message?: string) => {
+	bus.$on(events.Notifications.Fatal, (newmessage?: string) => {
 		state.value = notificationStates.FATAL;
-		if (message) {
-			message = message;
+		if (newmessage) {
+			message.value = newmessage;
 		}
 		processing.value = false;
 	});

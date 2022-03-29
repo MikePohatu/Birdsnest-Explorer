@@ -237,7 +237,7 @@ import { useRouter } from "vue-router";
 	let onResize = webcrap.misc.debounce(centerView, 500);
 	let controlEvents = events.Visualizer.Controls;
 
-	let watchers: Function[] = [];
+	let watchers = [];
 
 	const graphNodes = computed<SimNode[]>(() => {
 		return graphData.graphNodes.GetArray();
