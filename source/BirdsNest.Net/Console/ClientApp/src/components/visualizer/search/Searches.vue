@@ -95,29 +95,30 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 }
 </style>
 
-<script lang="ts">
-import { Component, Vue } from "vue-property-decorator";
+<script setup lang="ts">
 import SimpleSearch from "./SimpleSearch.vue";
 import AdvancedSearch from "./AdvancedSearch.vue";
 import { SearchStorePaths } from "@/store/modules/SearchStore";
+import { computed } from "vue";
+import { useStore } from "vuex";
 
-@Component({
-	components: { SimpleSearch, AdvancedSearch },
-})
+// @Component({
+// 	components: { SimpleSearch, AdvancedSearch },
+// })
 // ({
 //   mixins: [foundation]
 // })
-export default class Searches extends Vue {
-	get searchEnabled(): boolean {
-		return this.$store.state.visualizer.search.searchEnabled;
-	}
+const store = useStore();
 
-	get simpleSearchMode(): boolean {
-		return this.$store.state.visualizer.search.simpleSearchMode;
-	}
+const searchEnabled = computed<boolean>(() => {
+	return store.state.visualizer.search.searchEnabled;
+});
 
-	onExpandClicked(): void {
-		this.$store.commit(SearchStorePaths.mutations.TOGGLE_SEARCH);
-	}
+const simpleSearchMode = computed<boolean>(() => {
+	return store.state.visualizer.search.simpleSearchMode;
+});
+
+function onExpandClicked(): void {
+	store.commit(SearchStorePaths.mutations.TOGGLE_SEARCH);
 }
 </script>

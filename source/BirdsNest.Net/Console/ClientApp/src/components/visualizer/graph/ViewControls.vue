@@ -23,7 +23,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 					icon="fas fa-sync-alt"
 					:title="$t('visualizer.menu.refresh')"
 					v-on:click.native="bus.$emit(controlEvents.RefreshLayout)"
-					:class="[{ spinner: simRunning}, { 'button-active': simRunning}]"
+					:class="[{ spinner: simRunning }, { 'button-active': simRunning }]"
 				/>
 				<ControlButton
 					v-show="!playMode"
@@ -41,14 +41,18 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 					icon="fas fa-expand"
 					:title="$t('visualizer.menu.select')"
 					v-on:click.native="bus.$emit(controlEvents.Select)"
-					:class="{ 'button-active': selectActive}"
+					:class="{ 'button-active': selectActive }"
 				/>
 				<ControlButton
 					icon="fas fa-random"
 					:title="$t('visualizer.menu.invert')"
 					v-on:click.native="bus.$emit(controlEvents.Invert)"
 				/>
-				<ControlButton icon="far fa-eye" :title="$t('visualizer.menu.hide_show_items')" data-toggle="eyeLabelListWrapper" />
+				<ControlButton
+					icon="far fa-eye"
+					:title="$t('visualizer.menu.hide_show_items')"
+					data-toggle="eyeLabelListWrapper"
+				/>
 				<ControlButton
 					icon="fas fa-trash-alt"
 					:title="$t('visualizer.menu.remove_node')"
@@ -58,7 +62,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 					icon="fas fa-crop-alt"
 					:title="$t('visualizer.menu.crop')"
 					v-on:click.native="bus.$emit(controlEvents.Crop)"
-					:class="{ 'button-active': cropActive}"
+					:class="{ 'button-active': cropActive }"
 				/>
 				<ControlButton
 					icon="fas fa-crosshairs"
@@ -96,10 +100,17 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 		>
 			<ul class="vertical dropdown menu">
 				<li>
-					<a href="#" v-on:click="bus.$emit(controlEvents.Export)">{{ $t('visualizer.menu.export_report') }}</a>
+					<a
+						href="#"
+						v-on:click="bus.$emit(controlEvents.Export)"
+					>{{ $t('visualizer.menu.export_report') }}</a>
 				</li>
 				<li v-if="!isIE">
-					<a href="#" v-on:click="onSvgDownloadClicked()" :title="exportSvgTooltip">{{ $t('visualizer.menu.export_svg') }}</a>
+					<a
+						href="#"
+						v-on:click="onSvgDownloadClicked()"
+						:title="exportSvgTooltip"
+					>{{ $t('visualizer.menu.export_svg') }}</a>
 				</li>
 			</ul>
 		</div>
@@ -210,88 +221,89 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 }
 </style>
 
-<script lang="ts">
+<script setup lang="ts">
 import webcrap from "@/assets/ts/webcrap/webcrap";
 import { bus, events } from "@/bus";
-import { Component, Vue } from "vue-property-decorator";
 import ControlButton from "./ControlButton.vue";
 import EyeControls from "./EyeControls.vue";
 import { VisualizerStorePaths } from "@/store/modules/VisualizerStore";
 import { foundation } from "@/mixins/foundation";
+import { computed, ref } from "vue";
+import { useStore } from "vuex";
 
-@Component({
-	components: { ControlButton, EyeControls },
-	mixins: [foundation],
-})
-export default class ViewControls extends Vue {
-	bus = bus;
-	controlEvents = events.Visualizer.Controls;
-	searchVal = "";
+// @Component({
+// 	components: { ControlButton, EyeControls },
+// 	mixins: [foundation],
+// })
+const store = useStore();
+const controlEvents = events.Visualizer.Controls;
+let searchVal = ref("");
 
-	get isIE(): boolean {
-		return webcrap.misc.isIE();
+const isIE = computed<boolean>(() => {
+	return webcrap.misc.isIE();
+});
+
+const exportSvgTooltip = computed<string>(() => {
+	const basemessage = "Export to Scalar Vector Graphics (SVG) file format. Files require FontAwesome Free fonts.";
+	return webcrap.misc.isIE()
+		? basemessage +
+		"\n\nNote that exporting from Internet Explorer may result in some inconsistencies. Edge or Chrome is recommended"
+		: basemessage;
+});
+const simRunning = computed<boolean>(() => {
+	return store.state.visualizer.simRunning;
+});
+
+const progressWidth = computed<string>(() => {
+	return store.state.visualizer.simProgress + "%";
+});
+
+const playMode = computed<boolean>({
+	get() {
+		return store.state.visualizer.playMode;
+	},
+	set(value) {
+		store.commit(VisualizerStorePaths.mutations.Update.PLAY_MODE, value);
+	}
+});
+
+const selectActive = computed<boolean>(() => {
+	return store.state.visualizer.selectModeActive;
+});
+
+const cropActive = computed<boolean>(() => {
+	return store.state.visualizer.cropModeActive;
+});
+
+function onSearchClicked(): void {
+	bus.$emit(events.Visualizer.Controls.Search, this.searchVal);
+}
+
+function applyComputedStyle(element, sourceElement) {
+	const computedStyle = window.getComputedStyle(sourceElement);
+	Array.from(computedStyle).forEach(key => {
+		element.style.setProperty(key, computedStyle.getPropertyValue(key), computedStyle.getPropertyPriority(key));
+	});
+}
+
+function onSvgDownloadClicked(): void {
+	const root = document.getElementById("drawingSvg");
+	const rootClone = root.cloneNode(true) as HTMLElement;
+
+	const allRootElements = root.getElementsByTagName("*");
+	const allCloneElements = rootClone.getElementsByTagName("*");
+
+	this.applyComputedStyle(rootClone, root);
+
+	//reset the translation values on top two root svg elements
+	rootClone.setAttribute("transform", "translate(0,0)");
+	rootClone.querySelector("#zoomlayer").setAttribute("transform", "translate(0,0)");
+
+	for (let i = 0; i < allCloneElements.length; i++) {
+		this.applyComputedStyle(allCloneElements.item(i), allRootElements.item(i));
 	}
 
-	get exportSvgTooltip(): string {
-		const basemessage = "Export to Scalar Vector Graphics (SVG) file format. Files require FontAwesome Free fonts.";
-		return webcrap.misc.isIE()
-			? basemessage +
-					"\n\nNote that exporting from Internet Explorer may result in some inconsistencies. Edge or Chrome is recommended"
-			: basemessage;
-	}
-	get simRunning(): boolean {
-		return this.$store.state.visualizer.simRunning;
-	}
-
-	get progressWidth(): string {
-		return this.$store.state.visualizer.simProgress + "%";
-	}
-
-	get playMode(): boolean {
-		return this.$store.state.visualizer.playMode;
-	}
-	set playMode(value) {
-		this.$store.commit(VisualizerStorePaths.mutations.Update.PLAY_MODE, value);
-	}
-
-	get selectActive(): boolean {
-		return this.$store.state.visualizer.selectModeActive;
-	}
-
-	get cropActive(): boolean {
-		return this.$store.state.visualizer.cropModeActive;
-	}
-
-	onSearchClicked(): void {
-		bus.$emit(events.Visualizer.Controls.Search, this.searchVal);
-	}
-
-	applyComputedStyle(element, sourceElement) {
-		const computedStyle = window.getComputedStyle(sourceElement);
-		Array.from(computedStyle).forEach(key => {
-			element.style.setProperty(key, computedStyle.getPropertyValue(key), computedStyle.getPropertyPriority(key));
-		});
-	}
-
-	onSvgDownloadClicked(): void {
-		const root = document.getElementById("drawingSvg");
-		const rootClone = root.cloneNode(true) as HTMLElement;
-
-		const allRootElements = root.getElementsByTagName("*");
-		const allCloneElements = rootClone.getElementsByTagName("*");
-
-		this.applyComputedStyle(rootClone, root);
-
-		//reset the translation values on top two root svg elements
-		rootClone.setAttribute("transform", "translate(0,0)");
-		rootClone.querySelector("#zoomlayer").setAttribute("transform", "translate(0,0)");
-
-		for (let i = 0; i < allCloneElements.length; i++) {
-			this.applyComputedStyle(allCloneElements.item(i), allRootElements.item(i));
-		}
-
-		const data = new XMLSerializer().serializeToString(rootClone);
-		webcrap.misc.download(data, "graph.svg", "image/svg+xml;charset=utf-8");
-	}
+	const data = new XMLSerializer().serializeToString(rootClone);
+	webcrap.misc.download(data, "graph.svg", "image/svg+xml;charset=utf-8");
 }
 </script>

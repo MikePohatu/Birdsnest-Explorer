@@ -26,68 +26,71 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 	</div>
 </template>
 
-<script lang="ts">
-import { Component, Vue } from "vue-property-decorator";
+<script setup lang="ts">
 import LoginCredentials from "@/components/LoginCredentials.vue";
 import $ from "jquery";
 import { routeDefs } from "@/router/index";
+import { computed } from "vue";
+import { useRoute } from "vue-router";
+import { useStore } from "vuex";
 
-@Component({
-	components: { LoginCredentials },
-})
-export default class Curtain extends Vue {
-	get authorizationRequired(): boolean {
-		if (this.$route.meta && this.$route.meta.allowAnonymous) {
-			return false;
-		} else {
-			return true;
-		}
-	}
+const route = useRoute();
+const store = useStore();
+// @Component({
+// 	components: { LoginCredentials },
+// })
 
-	get notLoginPage(): boolean {
-		return this.$route.path !== routeDefs.login.path;
-	}
-
-	get isPageAuthorized(): boolean {
-		if (this.$route.meta.allowAnonymous === true) {
-			return true;
-		} else {
-			return this.$store.state.user.isAuthorized;
-		}
-	}
-
-	created(): void {
-		this.$store.watch(
-			() => {
-				return this.$store.state.user.isAuthorized;
-			},
-			() => {
-				//add a setTimeout in case the change is due to a 'softPing', in which case
-				//a route change might be coming. The setTimeout lets the route change happen
-				//first so this can be evaluated correctly
-				setTimeout(() => {
-					if (this.isPageAuthorized) {
-						this.hideCurtain();
-					} else {
-						this.showCurtain();
-					}
-				}, 500);
+//setup watchers
+store.watch(
+	() => {
+		return store.state.user.isAuthorized;
+	},
+	() => {
+		//add a setTimeout in case the change is due to a 'softPing', in which case
+		//a route change might be coming. The setTimeout lets the route change happen
+		//first so this can be evaluated correctly
+		setTimeout(() => {
+			if (isPageAuthorized.value) {
+				hideCurtain();
+			} else {
+				showCurtain();
 			}
-		);
+		}, 500);
 	}
+);
 
-	showCurtain() {
-		if ($("#curtain").css("display") === "none") {
-			$("#curtain").slideToggle();
-			$("#curtainoverlay").slideToggle();
-		}
+
+const authorizationRequired = computed<boolean>(() => {
+	if (route.meta && route.meta.allowAnonymous) {
+		return false;
+	} else {
+		return true;
 	}
+});
 
-	hideCurtain() {
-		if ($("#curtain").css("display") !== "none") {
-			$("#curtain").slideToggle();
-			$("#curtainoverlay").slideToggle();
-		}
+const notLoginPage = computed<boolean>(() => {
+	return route.path !== routeDefs.login.path;
+});
+
+const isPageAuthorized = computed<boolean>(() => {
+	if (route.meta.allowAnonymous === true) {
+		return true;
+	} else {
+		return store.state.user.isAuthorized;
+	}
+});
+
+function showCurtain() {
+	if ($("#curtain").css("display") === "none") {
+		$("#curtain").slideToggle();
+		$("#curtainoverlay").slideToggle();
+	}
+}
+
+function hideCurtain() {
+	if ($("#curtain").css("display") !== "none") {
+		$("#curtain").slideToggle();
+		$("#curtainoverlay").slideToggle();
 	}
 }
 </script>

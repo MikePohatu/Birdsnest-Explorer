@@ -54,8 +54,10 @@ export class SearchNode implements SearchItem {
     type = SearchItemType.SearchNode;
     name = "";
     label = "";
+    labels = [];
     index = 0;
     id = "";
+    dbId = "";
 
     constructor() {
         this.id = webcrap.misc.generateUID();

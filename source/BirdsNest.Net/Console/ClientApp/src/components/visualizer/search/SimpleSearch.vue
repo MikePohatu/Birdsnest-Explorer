@@ -31,7 +31,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 					:placeholder="$t('word_Search')"
 				/>
 				<datalist id="simplecompletes">
-					<option v-for="opt in autocompleteList" :key="opt">{{opt}}</option>
+					<option v-for="opt in autocompleteList" :key="opt">{{ opt }}</option>
 				</datalist>
 				<div class="input-group-button">
 					<button
@@ -82,50 +82,49 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 }
 </style>
 
-<script lang="ts">
-import { Component, Vue } from "vue-property-decorator";
+<script setup lang="ts">
 import SearchResults from "./SearchResults.vue";
 import webcrap from "@/assets/ts/webcrap/webcrap";
 import { Request, api } from "@/assets/ts/webcrap/apicrap";
 import { SearchStorePaths } from "@/store/modules/SearchStore";
+import { computed, ref } from "vue";
 
-@Component({
-	components: { SearchResults },
-})
-export default class SimpleSearch extends Vue {
-	searchNotification = "";
-	autocompleteList: string[] = [];
-	term = "";
+// @Component({
+// 	components: { SearchResults },
+// })
 
-	updateAutocomplete(): void {
-		const url = "/api/graph/node/namevalues?searchterm=" + this.term;
-		const newrequest: Request = {
-			url: url,
-			successCallback: data => {
-				this.autocompleteList = data;
-			},
-			errorCallback: () => {
-				this.autocompleteList = [];
-			},
-		};
-		api.get(newrequest);
-	}
+let searchNotification = ref("");
+let autocompleteList = ref<string[]>([]);
+let term = ref("");
 
-	get autocompleteDebounce(): Function {
-		return webcrap.misc.debounce(this.updateAutocomplete, 250);
-	}
-
-	onMinimizeClicked(): void {
-		this.$store.commit(SearchStorePaths.mutations.TOGGLE_SEARCH);
-	}
-
-	onModeToggleClicked(): void {
-		this.$store.commit(SearchStorePaths.mutations.TOGGLE_SEARCH_MODE);
-	}
-
-	onSearchClicked(): void {
-		this.$store.dispatch(SearchStorePaths.actions.SIMPLE_SEARCH, this.term);
-		this.autocompleteList = [];  //reset the autocomplete list to get it out of the users face
-	}
+function updateAutocomplete(): void {
+	const url = "/api/graph/node/namevalues?searchterm=" + this.term;
+	const newrequest: Request = {
+		url: url,
+		successCallback: data => {
+			this.autocompleteList = data;
+		},
+		errorCallback: () => {
+			this.autocompleteList = [];
+		},
+	};
+	api.get(newrequest);
 }
+
+const autocompleteDebounce = webcrap.misc.debounce(updateAutocomplete, 250);
+
+
+function onMinimizeClicked(): void {
+	this.$store.commit(SearchStorePaths.mutations.TOGGLE_SEARCH);
+}
+
+function onModeToggleClicked(): void {
+	this.$store.commit(SearchStorePaths.mutations.TOGGLE_SEARCH_MODE);
+}
+
+function onSearchClicked(): void {
+	this.$store.dispatch(SearchStorePaths.actions.SIMPLE_SEARCH, this.term);
+	this.autocompleteList = [];  //reset the autocomplete list to get it out of the users face
+}
+
 </script>

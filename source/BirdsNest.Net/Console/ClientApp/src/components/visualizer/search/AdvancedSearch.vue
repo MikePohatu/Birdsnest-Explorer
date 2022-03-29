@@ -52,8 +52,8 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 					<div v-if="search.nodes.length > 0">
 						<transition-group name="path" tag="div">
 							<div v-for="item in fullPath" :key="item.id">
-								<NodeIcon v-if="item.type === 'SearchNode'" :node="item" :key="item.id" />
-								<EdgeIcon v-else :edge="item" />
+								<NodeIcon v-if="item.type === 'SearchNode'" :node="(item as SearchNode)" :key="item.id" />
+								<EdgeIcon v-else :edge="(item as SearchEdge)" />
 							</div>
 						</transition-group>
 					</div>
@@ -243,6 +243,7 @@ import { ResultSet } from "@/assets/ts/dataMap/ResultSet";
 import { SearchStorePaths } from "../../../store/modules/SearchStore";
 import { useStore } from "vuex";
 import { computed } from "vue";
+import { SearchNode, SearchEdge } from "@/assets/ts/visualizer/Search";
 
 // @Component({
 // 	components: {
@@ -254,104 +255,104 @@ import { computed } from "vue";
 // 		ShareDialog,
 // 	},
 // })
-	const store = useStore();
+const store = useStore();
 
-	const editDisabled = computed((): boolean => {
-		return store.state.visualizer.search.selectedItem === null;
-	});
+const editDisabled = computed((): boolean => {
+	return store.state.visualizer.search.selectedItem === null;
+});
 
-	const condEditDisabled = computed((): boolean => {
-		return store.state.visualizer.search.selectedCondition === null;
-	});
+const condEditDisabled = computed((): boolean => {
+	return store.state.visualizer.search.selectedCondition === null;
+});
 
-	const search = computed((): Search => {
-		return store.state.visualizer.search.search;
-	});
+const search = computed((): Search => {
+	return store.state.visualizer.search.search;
+});
 
-	const isDeleteDisabled = computed((): boolean => {
-		if (store.state.visualizer.search.selectedItem === null) {
-			return true;
-		}
-		if (store.state.visualizer.search.selectedItem.type !== "SearchNode") {
-			return true;
-		}
-		return false;
-	});
-
-	const fullPath = computed((): SearchItem[] => {
-		const search: Search = store.state.visualizer.search.search;
-		const path: SearchItem[] = [];
-		for (let i = 0; i < search.edges.length; i++) {
-			path.push(search.nodes[i]);
-			path.push(search.edges[i]);
-		}
-		path.push(search.nodes[search.nodes.length - 1]);
-		return path;
-	});
-
-	const results = computed((): ResultSet => {
-		return store.state.visualizer.search.results;
-	});
-
-	const searchHasNodes = computed((): boolean => {
-		return store.state.visualizer.search.search.nodes.length > 0;
-	});
-
-	function onPaneClicked(): void {
-		store.commit(SearchStorePaths.mutations.Update.SELECTED_ITEM, null);
-		store.commit(SearchStorePaths.mutations.Update.SELECTED_CONDITION, null);
+const isDeleteDisabled = computed((): boolean => {
+	if (store.state.visualizer.search.selectedItem === null) {
+		return true;
 	}
+	if (store.state.visualizer.search.selectedItem.type !== "SearchNode") {
+		return true;
+	}
+	return false;
+});
 
-	function onSearchNodeAddClicked(): void {
-		store.commit(SearchStorePaths.mutations.Add.NEW_NODE);
+const fullPath = computed((): SearchItem[] => {
+	const search: Search = store.state.visualizer.search.search;
+	const path: SearchItem[] = [];
+	for (let i = 0; i < search.edges.length; i++) {
+		path.push(search.nodes[i]);
+		path.push(search.edges[i]);
 	}
+	path.push(search.nodes[search.nodes.length - 1]);
+	return path;
+});
 
-	function onItemUpClicked(): void {
-		store.commit(SearchStorePaths.mutations.Update.SELECTED_ITEM_UP);
-	}
-	
-	function onItemDownClicked(): void {
-		store.commit(SearchStorePaths.mutations.Update.SELECTED_ITEM_DOWN);
-	}
-	
-	function onItemDeleteClicked(): void {
-		const confirmed = confirm(this.$t('visualizer.search.confirm_item_delete', {name: store.state.visualizer.search.selectedItem.name}).toString());
+const results = computed<ResultSet>(() => {
+	return store.state.visualizer.search.results;
+});
 
-		if (confirmed) {
-			store.commit(SearchStorePaths.mutations.Delete.SELECTED_ITEM);
-		}
-	}
-	
-	function onItemEditClicked(): void {
-		store.commit(SearchStorePaths.mutations.Update.EDIT_ITEM);
-	}
+const searchHasNodes = computed((): boolean => {
+	return store.state.visualizer.search.search.nodes.length > 0;
+});
 
-	function onCondAddClicked(): void {
-		store.commit(SearchStorePaths.mutations.Add.NEW_CONDITION_PARENT, null);
-	}
+function onPaneClicked(): void {
+	store.commit(SearchStorePaths.mutations.Update.SELECTED_ITEM, null);
+	store.commit(SearchStorePaths.mutations.Update.SELECTED_CONDITION, null);
+}
 
-	function onCondEditClicked(): void {
-		store.commit(SearchStorePaths.mutations.Update.EDIT_CONDITION);
+function onSearchNodeAddClicked(): void {
+	store.commit(SearchStorePaths.mutations.Add.NEW_NODE);
+}
+
+function onItemUpClicked(): void {
+	store.commit(SearchStorePaths.mutations.Update.SELECTED_ITEM_UP);
+}
+
+function onItemDownClicked(): void {
+	store.commit(SearchStorePaths.mutations.Update.SELECTED_ITEM_DOWN);
+}
+
+function onItemDeleteClicked(): void {
+	const confirmed = confirm(this.$t('visualizer.search.confirm_item_delete', { name: store.state.visualizer.search.selectedItem.name }).toString());
+
+	if (confirmed) {
+		store.commit(SearchStorePaths.mutations.Delete.SELECTED_ITEM);
 	}
-	
-	function onCondUpClicked(): void {
-		store.commit(SearchStorePaths.mutations.Update.SELECTED_CONDITION_UP);
+}
+
+function onItemEditClicked(): void {
+	store.commit(SearchStorePaths.mutations.Update.EDIT_ITEM);
+}
+
+function onCondAddClicked(): void {
+	store.commit(SearchStorePaths.mutations.Add.NEW_CONDITION_PARENT, null);
+}
+
+function onCondEditClicked(): void {
+	store.commit(SearchStorePaths.mutations.Update.EDIT_CONDITION);
+}
+
+function onCondUpClicked(): void {
+	store.commit(SearchStorePaths.mutations.Update.SELECTED_CONDITION_UP);
+}
+
+function onCondDownClicked(): void {
+	store.commit(SearchStorePaths.mutations.Update.SELECTED_CONDITION_DOWN);
+}
+
+function onCondDeleteClicked(): void {
+	const cond = store.state.visualizer.search.selectedCondition;
+	let message: string;
+	if (cond.type === ConditionType.And || cond.type === ConditionType.Or) {
+		message = this.$t('visualizer.search.confirm_andor_condition_delete').toString();
+	} else {
+		message = this.$t('visualizer.search.confirm_value_condition_delete').toString()
 	}
-	
-	function onCondDownClicked(): void {
-		store.commit(SearchStorePaths.mutations.Update.SELECTED_CONDITION_DOWN);
+	if (confirm(message)) {
+		store.commit(SearchStorePaths.mutations.Delete.SELECTED_CONDITION);
 	}
-	
-	function onCondDeleteClicked(): void {
-		const cond = store.state.visualizer.search.selectedCondition;
-		let message: string; 
-		if (cond.type === ConditionType.And || cond.type === ConditionType.Or) {
-			message = this.$t('visualizer.search.confirm_andor_condition_delete').toString();
-		} else {
-			message = this.$t('visualizer.search.confirm_value_condition_delete').toString()
-		}
-		if (confirm(message)) {
-			store.commit(SearchStorePaths.mutations.Delete.SELECTED_CONDITION);
-		}
-	}
+}
 </script>

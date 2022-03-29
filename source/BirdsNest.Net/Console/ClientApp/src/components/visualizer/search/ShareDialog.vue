@@ -32,7 +32,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 					<div>
 						<b>{{ $t('phrase_Cypher_query') }}</b>
 					</div>
-					<div class="share-code">{{cypherquery}}</div>
+					<div class="share-code">{{ cypherquery }}</div>
 				</div>
 			</div>
 
@@ -61,28 +61,31 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 }
 </style>
 
-<script lang="ts">
-import { Component, Vue } from "vue-property-decorator";
+<script setup lang="ts">
 import { SearchStorePaths } from "@/store/modules/SearchStore";
+import { computed, ref } from "vue";
+import { useRoute } from "vue-router";
+import { useStore } from "vuex";
 
-@Component
-export default class ShareDialog extends Vue {
-	searchNotification = "";
-	get cypherquery() {
-		return this.$store.state.visualizer.search.shareCypher;
-	}
+const store = useStore();
+const route = useRoute();
 
-	get sharedUrlDisplay(): string {
-		return this.$route.path + this.shareUrl.substring(0, 40) + "....";
-	}
+let searchNotification = ref("");
 
-	get shareUrl(): string {
-		return this.$store.state.visualizer.search.shareUrl;
-	}
+const cypherquery = computed(() => {
+	return store.state.visualizer.search.shareCypher;
+});
 
-	onShareOkClicked(): void {
-		this.$store.commit(SearchStorePaths.mutations.Update.SHARE_CYPHER, "");
-		this.$store.commit(SearchStorePaths.mutations.Update.SHARE_URL, "");
-	}
+const sharedUrlDisplay = computed(() => {
+	return route.path + shareUrl.value.substring(0, 40) + "....";
+});
+
+const shareUrl = computed(() => {
+	return store.state.visualizer.search.shareUrl;
+});
+
+function onShareOkClicked(): void {
+	this.$store.commit(SearchStorePaths.mutations.Update.SHARE_CYPHER, "");
+	this.$store.commit(SearchStorePaths.mutations.Update.SHARE_URL, "");
 }
 </script>
