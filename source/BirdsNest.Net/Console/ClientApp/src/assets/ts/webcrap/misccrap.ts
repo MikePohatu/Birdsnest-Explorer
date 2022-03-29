@@ -52,7 +52,7 @@ class MiscCrap {
 
     //return a function that can be called multiple times, and will only run the
     //callback after no duplicate calls for the specified delay period.
-    debounce(callback: Function, delay: number): () => void {
+    debounce(callback: () => void, delay: number): () => void {
         let timer;
 
         return function () {

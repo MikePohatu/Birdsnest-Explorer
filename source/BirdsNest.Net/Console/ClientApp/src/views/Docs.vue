@@ -28,15 +28,15 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 <style scoped>
 
 @media print, screen and (min-width: 40em) {
-	:deep h1, .h1 {
+	:deep(h1, .h1) {
 		font-size: 2rem;
 	}
 
-	:deep h2, .h2 {
+	:deep(h2, .h2) {
 		font-size: 1.7rem;
 	}
 
-	:deep h3, .h3 {
+	:deep(h3, .h3) {
 		font-size: 1.3rem;
 	}
 }
@@ -86,7 +86,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 	function updateLinks(): void {
 		//update the links with corrections for birdsnest setup
 		const docowrapper = document.querySelector("#docowrapper");
-		const links: NodeListOf<HTMLAnchorElement> = docowrapper.querySelectorAll("a");
+		const links: Array<HTMLAnchorElement> = Array.from(docowrapper.querySelectorAll("a"));
 		links.forEach((link) => {
 			if (link.href.startsWith(location.origin + "/documentation")) {
 				const newpath = link.href.replace(location.origin + "/documentation", "/docs/static/documentation");
@@ -100,14 +100,14 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 			}
 		});
 
-		const imgs: NodeListOf<HTMLImageElement> = docowrapper.querySelectorAll("img");
+		const imgs: Array<HTMLImageElement> = Array.from(docowrapper.querySelectorAll("img"));
 		imgs.forEach((img) => {
 			if (img.src.startsWith(location.origin + "/documentation")) {
 				img.src = img.src.replace("/documentation", "/static/documentation");
 			}
 		});
 
-		const headings: NodeListOf<HTMLHeadingElement> = docowrapper.querySelectorAll("h1, h2, h3, h4, h5, h6");
+		const headings: Array<HTMLHeadingElement> = Array.from(docowrapper.querySelectorAll("h1, h2, h3, h4, h5, h6"));
 		headings.forEach((h) => {
 			const id = h.innerText.replace(/ /g, "-").replace(/\./g, "").toLowerCase();
 			h.id = id;

@@ -230,7 +230,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 	})
 
 	const store = useStore();
-	let condition: Ref<ValueCondition> = ref(null);
+	let condition: Ref<ValueCondition> = ref(copyCondition(props.source));
 	let selectedItem: Ref<SearchItem> = ref(null);
 
 	let autocompleteList: Ref<string[]> = ref([]);
@@ -238,7 +238,6 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 	let showAlert = ref(false);
 	let saveable = ref(true);
 
-	condition.value = copyCondition(props.source);
 	onSelectedItemChanged();
 
 	const availableItems = computed((): SearchItem[] => {
@@ -275,14 +274,6 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 
 	const propertyType = computed((): string => {
 		if (dataType.value !== null && webcrap.misc.isNullOrWhitespace(condition.value.property) === false) {
-			if (Object.prototype.hasOwnProperty.call(dataType.value.properties, [condition.value.property])) {
-				condition.value.type = dataType.value.properties[condition.value.property].type;
-			} else {
-				const firstkey = Object.keys(dataType.value.properties)[0];
-				condition.value.type = dataType.value.properties[firstkey].type;
-			}
-
-			
 			return condition.value.type;
 		} else {
 			return null;
@@ -305,7 +296,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 		}
 	});
 
-	function autocompleteDebounce(): Function {
+	function autocompleteDebounce(): () => void {
 		return webcrap.misc.debounce(updateAutocomplete, 250);
 	}
 
@@ -354,6 +345,13 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 			if (dataType.value.propertyNames.includes(condition.value.property) === false) {
 				condition.value.property = dataType.value.default;
 			}
+		}
+
+		if (Object.prototype.hasOwnProperty.call(dataType.value.properties, [condition.value.property])) {
+			condition.value.type = dataType.value.properties[condition.value.property].type;
+		} else {
+			const firstkey = Object.keys(dataType.value.properties)[0];
+			condition.value.type = dataType.value.properties[firstkey].type;
 		}
 	}
 

@@ -89,31 +89,31 @@ span {
 	margin-bottom: 20px;
 	width: 250px;
 }
-:deep .portalBoxHeading {
+:deep(.portalBoxHeading) {
 	margin-bottom: 0.8rem;
 }
 
-:deep td {
+:deep(td) {
 	width: min-content;
 	font-size: 0.8em;
 	padding: 0.625em 0.625em;
 }
 
-:deep .left {
+:deep(.left) {
 	text-align: left;
 }
 
-:deep .right {
+:deep(.right) {
 	text-align: right;
 }
 
-:deep .portalBoxWrapper .description {
+:deep(.portalBoxWrapper .description) {
 	margin-top: 0.8rem;
 	margin-bottom: 1.5rem;
 	font-size: 0.8em;
 }
 
-:deep .portalBox {
+:deep(.portalBox) {
 	border-radius: 7px;
 	-moz-border-radius: 7px;
 	border-width: 2px;
@@ -125,29 +125,29 @@ span {
 	color: black;
 }
 
-:deep .portalBox table {
+:deep(.portalBox table) {
 	border-collapse: separate;
 	margin-bottom: 0;
 	margin-left: auto;
 	margin-right: auto;
 }
 
-:deep .portalBox table tr:last-child td:first-child {
+:deep(.portalBox table tr:last-child td:first-child) {
 	-moz-border-radius: 0 0 0 4px;
 	border-radius: 0 0 0 4px;
 }
 
-:deep .portalBox table tr:last-child td:last-child {
+:deep(.portalBox table tr:last-child td:last-child) {
 	-moz-border-radius: 0 0 4px 0;
 	border-radius: 0 0 4px 0;
 }
 
-:deep .portalBox table tr:first-child td:first-child {
+:deep(.portalBox table tr:first-child td:first-child) {
 	-moz-border-radius: 4px 0 0 0;
 	border-radius: 4px 0 0 0;
 }
 
-:deep .portalBox table tr:first-child td:last-child {
+:deep(.portalBox table tr:first-child td:last-child) {
 	-moz-border-radius: 0 4px 0 0;
 	border-radius: 0 4px 0 0;
 }

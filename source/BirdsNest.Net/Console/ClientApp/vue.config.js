@@ -14,10 +14,13 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
-module.exports = {
+
+const { defineConfig } = require('@vue/cli-service')
+
+
+module.exports = module.exports = defineConfig({
   devServer: {
     host: '0.0.0.0',
-    https: true,
     proxy: {
       '^/api': {
         changeOrigin: true,
@@ -66,4 +69,4 @@ module.exports = {
         return args;
       })
   }
-}
+})

@@ -74,7 +74,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 	padding: 0;
 }
 
-#drawingpane >>> .cropBox {
+#drawingpane :deep(.cropBox) {
 	border: 1px dotted dodgerblue;
 	fill: dodgerblue;
 	fill-opacity: 0.1;
@@ -257,36 +257,36 @@ import { useRouter } from "vue-router";
 
 		//eventbus and event registrations. All registrations MUST be deregistered in the
 		//beforeDestroy method. 
-		bus.$on(events.Visualizer.Controls.RefreshLayout, () => {
+		bus.on(events.Visualizer.Controls.RefreshLayout, () => {
 			simController.RestartSimulation();
 		});
-		bus.$on(events.Visualizer.Controls.Select, () => {
+		bus.on(events.Visualizer.Controls.Select, () => {
 			toggleNodeSelectMode();
 		});
-		bus.$on(events.Visualizer.Controls.Invert, () => {
+		bus.on(events.Visualizer.Controls.Invert, () => {
 			graphData.invertSelectedItems();
 			graphData.detailsItems.Clear();
 		});
-		bus.$on(events.Visualizer.Controls.Crop, () => {
+		bus.on(events.Visualizer.Controls.Crop, () => {
 			toggleCropMode();
 		});
-		bus.$on(events.Visualizer.Controls.CenterView, () => {
+		bus.on(events.Visualizer.Controls.CenterView, () => {
 			centerView();
 		});
-		bus.$on(events.Visualizer.Controls.Export, () => {
+		bus.on(events.Visualizer.Controls.Export, () => {
 			LStore.storePendingNodeList(graphData.graphNodes.GetArray());
 			const routeData = router.resolve({ path: routeDefs.report.path });
 			window.open(routeData.href, "_blank");
 		});
-		bus.$on(events.Visualizer.Controls.Search, value => {
-			searchGraph(value);
+		bus.on(events.Visualizer.Controls.Search, value => {
+			searchGraph(value as string);
 		});
-		bus.$on(events.Visualizer.Controls.ClearView, () => {
+		bus.on(events.Visualizer.Controls.ClearView, () => {
 			if (confirm("Are you sure you want to clear the current view?")) {
 				graphData.reset();
 			}
 		});
-		bus.$on(events.Visualizer.Controls.RemoveNodes, () => {
+		bus.on(events.Visualizer.Controls.RemoveNodes, () => {
 			const selNodeIds = graphData.getSelectedNodeIds();
 			if (selNodeIds.length === 0) {
 				return;
@@ -296,18 +296,18 @@ import { useRouter } from "vue-router";
 		//#endregion
 
 		//#region node events
-		bus.$on(events.Visualizer.Node.NodePinClicked, id => {
-			const node = graphData.graphNodes.GetDatum(id);
+		bus.on(events.Visualizer.Node.NodePinClicked, id => {
+			const node = graphData.graphNodes.GetDatum(id as string);
 			unpinNode(node);
 		});
-		bus.$on(events.Visualizer.Node.NodeClicked, (node: SimNode) => {
+		bus.on(events.Visualizer.Node.NodeClicked, (node: SimNode) => {
 			graphData.clearSelectedItems();
 			graphData.detailsItems.Clear();
 			graphData.addSelection(node);
 			graphData.detailsItems.Add(node);
 			node.selected = true;
 		});
-		bus.$on(events.Visualizer.Node.NodeCtrlClicked, (node: SimNode) => {
+		bus.on(events.Visualizer.Node.NodeCtrlClicked, (node: SimNode) => {
 			if (node.selected) {
 				graphData.removeSelection(node);
 				graphData.detailsItems.Remove(node);
@@ -319,14 +319,14 @@ import { useRouter } from "vue-router";
 		//#endregion
 
 		//#region edge events
-		bus.$on(events.Visualizer.Edge.EdgeClicked, (edge: SimLink<SimNode>) => {
+		bus.on(events.Visualizer.Edge.EdgeClicked, (edge: SimLink<SimNode>) => {
 			graphData.clearSelectedItems();
 			graphData.detailsItems.Clear();
 			graphData.addSelection(edge);
 			graphData.detailsItems.Add(edge);
 			edge.selected = true;
 		});
-		bus.$on(events.Visualizer.Edge.EdgeCtrlClicked, (edge: SimLink<SimNode>) => {
+		bus.on(events.Visualizer.Edge.EdgeCtrlClicked, (edge: SimLink<SimNode>) => {
 			if (edge.selected) {
 				graphData.removeSelection(edge);
 				graphData.detailsItems.Remove(edge);
@@ -338,30 +338,30 @@ import { useRouter } from "vue-router";
 		//#endregion
 
 		//#region detail card events
-		bus.$on(events.Visualizer.RelatedDetails.DeleteNodeClicked, (node: SimNode) => {
+		bus.on(events.Visualizer.RelatedDetails.DeleteNodeClicked, (node: SimNode) => {
 			removeNode(node);
 		});
 		//#endregion
 
 		//#region eye control events
-		bus.$on(events.Visualizer.EyeControls.ToggleNodeLabel, label => {
-			const current = graphData.graphNodeLabelStates[label];
+		bus.on(events.Visualizer.EyeControls.ToggleNodeLabel, label => {
+			const current = graphData.graphNodeLabelStates[label as string];
 
 			nodesLayer.selectAll(".nodes." + label).each((d: SimNode) => {
 				d.enabled = !current;
 			});
-			graphData.graphNodeLabelStates[label] = !current;
+			graphData.graphNodeLabelStates[label as string] = !current;
 		});
 
-		bus.$on(events.Visualizer.EyeControls.ToggleEdgeLabel, label => {
-			const current = graphData.graphEdgeLabelStates[label];
+		bus.on(events.Visualizer.EyeControls.ToggleEdgeLabel, label => {
+			const current = graphData.graphEdgeLabelStates[label as string];
 			edgesLayer.selectAll(".edges." + label).each((d: SimLink<SimNode>) => {
 				d.enabled = !current;
 			});
-			graphData.graphEdgeLabelStates[label] = !current;
+			graphData.graphEdgeLabelStates[label as string] = !current;
 		});
 
-		bus.$on(events.Visualizer.EyeControls.ShowAllNodeLabel, (enabled: boolean) => {
+		bus.on(events.Visualizer.EyeControls.ShowAllNodeLabel, (enabled: boolean) => {
 			Object.keys(graphData.graphNodeLabelStates).forEach((key: string) => {
 				graphData.graphNodeLabelStates[key] = enabled;
 			});
@@ -371,17 +371,17 @@ import { useRouter } from "vue-router";
 			});
 		});
 
-		bus.$on(events.Visualizer.EyeControls.ShowllEdgeLabel, enabled => {
+		bus.on(events.Visualizer.EyeControls.ShowllEdgeLabel, enabled => {
 			Object.keys(graphData.graphEdgeLabelStates).forEach((key: string) => {
-				graphData.graphEdgeLabelStates[key] = enabled;
+				graphData.graphEdgeLabelStates[key] = enabled as boolean;
 			});
 
 			edgesLayer.selectAll(".edges").each((d: SimNode) => {
-				d.enabled = enabled;
+				d.enabled = enabled as boolean;
 			});
 		});
 
-		bus.$on(events.Visualizer.EyeControls.InvertNodeLabel, () => {
+		bus.on(events.Visualizer.EyeControls.InvertNodeLabel, () => {
 			Object.keys(graphData.graphNodeLabelStates).forEach((label: string) => {
 				const enabled = graphData.graphNodeLabelStates[label];
 				graphData.graphNodeLabelStates[label] = !enabled;
@@ -392,7 +392,7 @@ import { useRouter } from "vue-router";
 			});
 		});
 
-		bus.$on(events.Visualizer.EyeControls.InvertEdgeLabel, () => {
+		bus.on(events.Visualizer.EyeControls.InvertEdgeLabel, () => {
 			Object.keys(graphData.graphEdgeLabelStates).forEach((label: string) => {
 				const enabled = graphData.graphEdgeLabelStates[label];
 				graphData.graphEdgeLabelStates[label] = !enabled;
@@ -416,39 +416,39 @@ import { useRouter } from "vue-router";
 		watchers = [];
 		window.removeEventListener("resize", onResize);
 
-		bus.$off(events.Visualizer.Controls.RefreshLayout);
-		bus.$off(events.Visualizer.Controls.Select);
-		bus.$off(events.Visualizer.Controls.Invert);
-		bus.$off(events.Visualizer.Controls.Crop);
-		bus.$off(events.Visualizer.Controls.CenterView);
-		bus.$off(events.Visualizer.Controls.Export);
-		bus.$off(events.Visualizer.Controls.Search);
-		bus.$off(events.Visualizer.Controls.ClearView);
-		bus.$off(events.Visualizer.Controls.RemoveNodes);
+		bus.off(events.Visualizer.Controls.RefreshLayout);
+		bus.off(events.Visualizer.Controls.Select);
+		bus.off(events.Visualizer.Controls.Invert);
+		bus.off(events.Visualizer.Controls.Crop);
+		bus.off(events.Visualizer.Controls.CenterView);
+		bus.off(events.Visualizer.Controls.Export);
+		bus.off(events.Visualizer.Controls.Search);
+		bus.off(events.Visualizer.Controls.ClearView);
+		bus.off(events.Visualizer.Controls.RemoveNodes);
 		//#endregion
 
 		//#region node events
-		bus.$off(events.Visualizer.Node.NodePinClicked);
-		bus.$off(events.Visualizer.Node.NodeClicked);
-		bus.$off(events.Visualizer.Node.NodeCtrlClicked);
+		bus.off(events.Visualizer.Node.NodePinClicked);
+		bus.off(events.Visualizer.Node.NodeClicked);
+		bus.off(events.Visualizer.Node.NodeCtrlClicked);
 		//#endregion
 
 		//#region edge events
-		bus.$off(events.Visualizer.Edge.EdgeClicked);
-		bus.$off(events.Visualizer.Edge.EdgeCtrlClicked);
+		bus.off(events.Visualizer.Edge.EdgeClicked);
+		bus.off(events.Visualizer.Edge.EdgeCtrlClicked);
 		//#endregion
 
 		//#region detail card events
-		bus.$off(events.Visualizer.RelatedDetails.DeleteNodeClicked);
+		bus.off(events.Visualizer.RelatedDetails.DeleteNodeClicked);
 		//#endregion
 
 		//#region eye control events
-		bus.$off(events.Visualizer.EyeControls.ToggleNodeLabel);
-		bus.$off(events.Visualizer.EyeControls.ToggleEdgeLabel);
-		bus.$off(events.Visualizer.EyeControls.ShowAllNodeLabel);
-		bus.$off(events.Visualizer.EyeControls.ShowllEdgeLabel);
-		bus.$off(events.Visualizer.EyeControls.InvertNodeLabel);
-		bus.$off(events.Visualizer.EyeControls.InvertEdgeLabel);
+		bus.off(events.Visualizer.EyeControls.ToggleNodeLabel);
+		bus.off(events.Visualizer.EyeControls.ToggleEdgeLabel);
+		bus.off(events.Visualizer.EyeControls.ShowAllNodeLabel);
+		bus.off(events.Visualizer.EyeControls.ShowllEdgeLabel);
+		bus.off(events.Visualizer.EyeControls.InvertNodeLabel);
+		bus.off(events.Visualizer.EyeControls.InvertEdgeLabel);
 	});
 
 	onMounted(() => {
