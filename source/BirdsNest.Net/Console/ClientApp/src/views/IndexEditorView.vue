@@ -261,11 +261,11 @@ function onDeleteIndexClicked(label: string, property: string): void {
 			errorCallback: (jqXHR?: JQueryXHR, status?: string, error?: string) => {
 				// eslint-disable-next-line
 				console.error(error);
-				bus.$emit(events.Notifications.Error, this.$t('index_editor.error_delete', { label: label, property: property }).toString() + "\n" + error);
+				bus.emit(events.Notifications.Error, this.$t('index_editor.error_delete', { label: label, property: property }).toString() + "\n" + error);
 			},
 		};
 
-		bus.$emit(events.Notifications.Processing, this.$t('word_Processing'));
+		bus.emit(events.Notifications.Processing, this.$t('word_Processing'));
 		api.post(request);
 	}
 }
@@ -285,11 +285,11 @@ function onCreateIndexClicked(label, property) {
 			errorCallback: (jqXHR?: JQueryXHR, status?: string, error?: string) => {
 				// eslint-disable-next-line
 				console.error(error);
-				bus.$emit(events.Notifications.Error, this.$t('index_editor.error_create', { label: label, property: property }) + "\n" + error);
+				bus.emit(events.Notifications.Error, this.$t('index_editor.error_create', { label: label, property: property }) + "\n" + error);
 			},
 		};
 
-		bus.$emit(events.Notifications.Processing, this.$t('word_Processing'));
+		bus.emit(events.Notifications.Processing, this.$t('word_Processing'));
 		api.post(request);
 	}
 }

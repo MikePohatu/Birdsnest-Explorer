@@ -252,7 +252,7 @@ router.beforeEach((to, from, next) => {
         if (to.name === routeDefs.admin.name && !store.state.user.isAdmin) {
           // eslint-disable-next-line
           console.error("Access forbidden. Redirecting to portal.");
-          bus.$emit(events.Notifications.Error, "Access to admin page forbidden");
+          bus.emit(events.Notifications.Error, "Access to admin page forbidden");
           next(from);
         } else {
           next();

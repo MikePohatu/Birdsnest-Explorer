@@ -132,7 +132,7 @@ function onAddToViewClicked(): void {
 	}
 
 	if (proceed && store.state.visualizer.search.results.nodes.length > 0) {
-		bus.$emit(events.Notifications.Processing, this.$t('visualizer.search.adding_results').toString());
+		bus.emit(events.Notifications.Processing, this.$t('visualizer.search.adding_results').toString());
 		store.commit(VisualizerStorePaths.mutations.Add.PENDING_RESULTS, store.state.visualizer.search.results);
 		store.commit(SearchStorePaths.mutations.Delete.RESULTS);
 	}

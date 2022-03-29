@@ -61,7 +61,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 	let markdown = defaultmd;
 
 	function updateMarkdown(route: RouteLocationNormalized): void {
-		bus.$emit(events.Notifications.Processing);
+		bus.emit(events.Notifications.Processing);
 		this.markdown = this.defaultmd;
 		const docurl = route.path.replace("/docs/", "/");
 
@@ -70,13 +70,13 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 			postJson: false,
 			successCallback: (data?: string) => {
 				this.markdown = data;
-				bus.$emit(events.Notifications.Clear);
+				bus.emit(events.Notifications.Clear);
 			},
 			errorCallback: (jqXHR?: JQueryXHR, status?: string, error?: string) => {
 				// eslint-disable-next-line
 				console.error(error);
 
-				bus.$emit(events.Notifications.Error, i18n.global.t("word_Error") + ": " + error);
+				bus.emit(events.Notifications.Error, i18n.global.t("word_Error") + ": " + error);
 			},
 		};
 

@@ -147,14 +147,14 @@ import { useStore } from "vuex";
 	});
 
 	function onPinClicked(): void {
-		bus.$emit(events.Visualizer.Node.NodePinClicked, node.dbId);
+		bus.emit(events.Visualizer.Node.NodePinClicked, node.dbId);
 	}
 
 	function onNodeClicked(): void {
-		bus.$emit(events.Visualizer.Node.NodeClicked, node);
+		bus.emit(events.Visualizer.Node.NodeClicked, node);
 	}
 
 	function onNodeCtrlClicked(): void {
-		bus.$emit(events.Visualizer.Node.NodeCtrlClicked, node);
+		bus.emit(events.Visualizer.Node.NodeCtrlClicked, node);
 	}
 </script>

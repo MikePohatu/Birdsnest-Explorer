@@ -22,7 +22,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 				<ControlButton
 					icon="fas fa-sync-alt"
 					:title="$t('visualizer.menu.refresh')"
-					v-on:click.native="bus.$emit(controlEvents.RefreshLayout)"
+					v-on:click.native="bus.emit(controlEvents.RefreshLayout)"
 					:class="[{ spinner: simRunning }, { 'button-active': simRunning }]"
 				/>
 				<ControlButton
@@ -40,13 +40,13 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 				<ControlButton
 					icon="fas fa-expand"
 					:title="$t('visualizer.menu.select')"
-					v-on:click.native="bus.$emit(controlEvents.Select)"
+					v-on:click.native="bus.emit(controlEvents.Select)"
 					:class="{ 'button-active': selectActive }"
 				/>
 				<ControlButton
 					icon="fas fa-random"
 					:title="$t('visualizer.menu.invert')"
-					v-on:click.native="bus.$emit(controlEvents.Invert)"
+					v-on:click.native="bus.emit(controlEvents.Invert)"
 				/>
 				<ControlButton
 					icon="far fa-eye"
@@ -56,18 +56,18 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 				<ControlButton
 					icon="fas fa-trash-alt"
 					:title="$t('visualizer.menu.remove_node')"
-					v-on:click.native="bus.$emit(controlEvents.RemoveNodes)"
+					v-on:click.native="bus.emit(controlEvents.RemoveNodes)"
 				/>
 				<ControlButton
 					icon="fas fa-crop-alt"
 					:title="$t('visualizer.menu.crop')"
-					v-on:click.native="bus.$emit(controlEvents.Crop)"
+					v-on:click.native="bus.emit(controlEvents.Crop)"
 					:class="{ 'button-active': cropActive }"
 				/>
 				<ControlButton
 					icon="fas fa-crosshairs"
 					:title="$t('visualizer.menu.center')"
-					v-on:click.native="bus.$emit(controlEvents.CenterView)"
+					v-on:click.native="bus.emit(controlEvents.CenterView)"
 				/>
 				<ControlButton
 					icon="fas fa-file-export"
@@ -83,7 +83,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 					icon="fas fa-ban"
 					:title="$t('visualizer.menu.clear')"
 					:ishighlighted="true"
-					v-on:click.native="bus.$emit(controlEvents.ClearView)"
+					v-on:click.native="bus.emit(controlEvents.ClearView)"
 				/>
 			</div>
 			<div id="progress" :style="{ width: progressWidth }"></div>
@@ -102,7 +102,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 				<li>
 					<a
 						href="#"
-						v-on:click="bus.$emit(controlEvents.Export)"
+						v-on:click="bus.emit(controlEvents.Export)"
 					>{{ $t('visualizer.menu.export_report') }}</a>
 				</li>
 				<li v-if="!isIE">
@@ -276,7 +276,7 @@ const cropActive = computed<boolean>(() => {
 });
 
 function onSearchClicked(): void {
-	bus.$emit(events.Visualizer.Controls.Search, this.searchVal);
+	bus.emit(events.Visualizer.Controls.Search, this.searchVal);
 }
 
 function applyComputedStyle(element, sourceElement) {

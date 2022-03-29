@@ -39,7 +39,7 @@ class ApiCrap {
             store.commit(rootPaths.mutations.DEAUTH);
           },
           403: function () {
-            bus.$emit(events.Notifications.Error, "Access forbidden");
+            bus.emit(events.Notifications.Error, "Access forbidden");
           },
         },
         success: function (data?, status?: string, jqXHR?: JQueryXHR) {
@@ -64,7 +64,7 @@ class ApiCrap {
             store.commit(rootPaths.mutations.DEAUTH);
           },
           403: function () {
-            bus.$emit(events.Notifications.Error, "Access forbidden");
+            bus.emit(events.Notifications.Error, "Access forbidden");
           }
         },
         success: function (data?, status?: string, jqXHR?: JQueryXHR) {

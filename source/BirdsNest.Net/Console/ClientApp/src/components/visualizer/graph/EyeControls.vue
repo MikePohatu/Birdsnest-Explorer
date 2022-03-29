@@ -121,35 +121,35 @@ import { computed } from "vue";
 	});
 
 	function onNodeShowAllClicked(): void {
-		bus.$emit(events.Visualizer.EyeControls.ShowAllNodeLabel, true);
+		bus.emit(events.Visualizer.EyeControls.ShowAllNodeLabel, true);
 	}
 
 	function onNodeHideAllClicked(): void {
-		bus.$emit(events.Visualizer.EyeControls.ShowAllNodeLabel, false);
+		bus.emit(events.Visualizer.EyeControls.ShowAllNodeLabel, false);
 	}
 
 	function onNodeInvertClicked(): void {
-		bus.$emit(events.Visualizer.EyeControls.InvertNodeLabel);
+		bus.emit(events.Visualizer.EyeControls.InvertNodeLabel);
 	}
 
 	function onEdgeShowAllClicked(): void {
-		bus.$emit(events.Visualizer.EyeControls.ShowllEdgeLabel, true);
+		bus.emit(events.Visualizer.EyeControls.ShowllEdgeLabel, true);
 	}
 
 	function onEdgeHideAllClicked(): void {
-		bus.$emit(events.Visualizer.EyeControls.ShowllEdgeLabel, false);
+		bus.emit(events.Visualizer.EyeControls.ShowllEdgeLabel, false);
 	}
 
 	function onEdgeInvertClicked(): void {
-		bus.$emit(events.Visualizer.EyeControls.InvertEdgeLabel);
+		bus.emit(events.Visualizer.EyeControls.InvertEdgeLabel);
 	}
 
 	function onNodeLabelEyeClicked(label: string): void {
-		bus.$emit(events.Visualizer.EyeControls.ToggleNodeLabel, label);
+		bus.emit(events.Visualizer.EyeControls.ToggleNodeLabel, label);
 	}
 
 	function onEdgeLabelEyeClicked(label: string): void {
-		bus.$emit(events.Visualizer.EyeControls.ToggleEdgeLabel, label);
+		bus.emit(events.Visualizer.EyeControls.ToggleEdgeLabel, label);
 	}
 
 </script>

@@ -111,13 +111,13 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 			postJson: true,
 			successCallback: (data: Dictionary<string>) => {
 				this.reloadMessage = data.message;
-				this.$store.dispatch(rootPaths.actions.UPDATE_PLUGINS);
+				store.dispatch(rootPaths.actions.UPDATE_PLUGINS);
 			},
 			errorCallback: (jqXHR: JQueryXHR, status: string, error: string) => {
 				this.reloadMessage = error;
 			},
 		};
-		bus.$emit(events.Notifications.Processing, "Processing");
+		bus.emit(events.Notifications.Processing, "Processing");
 		api.post(request);
 		return false;
 	}

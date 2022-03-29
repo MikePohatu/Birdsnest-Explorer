@@ -188,7 +188,7 @@ export const store = createStore({
     apiState(state, newstate: number) {
       state.apiState = newstate;
       if (newstate === api.states.READY) {
-        bus.$emit(events.Notifications.Clear);
+        bus.emit(events.Notifications.Clear);
       }
     },
     deAuth(state) {
@@ -277,11 +277,11 @@ export const store = createStore({
         successCallback: (data: PluginManager) => {
           context.commit(rootPaths.mutations.PLUGIN_MANAGER, data);
           context.commit(rootPaths.mutations.API_STATE, api.states.READY);
-          bus.$emit(events.Notifications.Clear);
+          bus.emit(events.Notifications.Clear);
         },
         errorCallback: (jqXHR?: JQueryXHR, status?: string, error?: string) => {
           context.commit(rootPaths.mutations.API_STATE, api.states.ERROR);
-          bus.$emit(events.Notifications.Error, "Error updating plugins: " + error);
+          bus.emit(events.Notifications.Error, "Error updating plugins: " + error);
         }
       }
       api.get(request);
@@ -296,11 +296,11 @@ export const store = createStore({
         successCallback: (data: PluginManager) => {
           context.commit(rootPaths.mutations.SERVER_INFO, data);
           context.commit(rootPaths.mutations.SERVER_INFO_STATE, api.states.READY);
-          bus.$emit(events.Notifications.Clear);
+          bus.emit(events.Notifications.Clear);
         },
         errorCallback: (jqXHR?: JQueryXHR, status?: string, error?: string) => {
           context.commit(rootPaths.mutations.SERVER_INFO_STATE, api.states.ERROR);
-          bus.$emit(events.Notifications.Error, "Error updating server info: " + error);
+          bus.emit(events.Notifications.Error, "Error updating server info: " + error);
         }
       }
       api.get(request);

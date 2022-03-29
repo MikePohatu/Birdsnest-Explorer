@@ -332,7 +332,7 @@ function labels(labelledNodeList: VForLabelledNodeList): string[] {
 }
 
 function addNode(node: ApiNodeSimple): void {
-	bus.$emit(events.Notifications.Processing, "Adding node to view");
+	bus.emit(events.Notifications.Processing, "Adding node to view");
 	store.dispatch(VisualizerStorePaths.actions.Request.NODE_ID, node.dbId);
 }
 
@@ -341,12 +341,12 @@ function onEyeClicked(): void {
 }
 
 function onExpandClicked(): void {
-	bus.$emit(events.Notifications.Processing, "Adding related nodes to view");
+	bus.emit(events.Notifications.Processing, "Adding related nodes to view");
 	store.dispatch(VisualizerStorePaths.actions.Request.RELATED_NODES, node.dbId);
 }
 
 function onRemoveClicked(): void {
-	bus.$emit(events.Visualizer.RelatedDetails.DeleteNodeClicked, node);
+	bus.emit(events.Visualizer.RelatedDetails.DeleteNodeClicked, node);
 }
 
 function reInitAccordions(): void {
@@ -375,7 +375,7 @@ function onRefreshClicked(): void {
 		},
 		errorCallback: (jqXHR?: JQueryXHR, status?: string, error?: string) => {
 			store.commit(rootPaths.mutations.SERVER_INFO_STATE, api.states.ERROR);
-			bus.$emit(events.Notifications.Error, "Error refreshing node info: " + error);
+			bus.emit(events.Notifications.Error, "Error refreshing node info: " + error);
 		},
 	};
 
@@ -399,7 +399,7 @@ function initDetails(): void {
 		errorCallback: (jqXHR?: JQueryXHR, status?: string, error?: string) => {
 			// eslint-disable-next-line
 			store.commit(rootPaths.mutations.SERVER_INFO_STATE, api.states.ERROR);
-			bus.$emit(events.Notifications.Error, "Error updating node related details: " + error);
+			bus.emit(events.Notifications.Error, "Error updating node related details: " + error);
 		},
 	};
 	api.get(request);

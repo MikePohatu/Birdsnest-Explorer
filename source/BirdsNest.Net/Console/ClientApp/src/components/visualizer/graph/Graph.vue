@@ -481,13 +481,13 @@ import { useRouter } from "vue-router";
 			},
 			webcrap.misc.debounce(() => {
 				if (store.state.visualizer.pendingNodes.length > 0) {
-					bus.$emit(events.Notifications.Processing, "Loading nodes");
+					bus.emit(events.Notifications.Processing, "Loading nodes");
 					setTimeout(() => {
 						graphData.addNodes(store.state.visualizer.pendingNodes);
 						store.commit(VisualizerStorePaths.mutations.Delete.PENDING_NODES);
 						updateNodeSizes();
 						refreshNodeConnections();
-						bus.$emit(events.Notifications.Clear);
+						bus.emit(events.Notifications.Clear);
 					}, 1000);
 				}
 			}, 1000)
@@ -500,7 +500,7 @@ import { useRouter } from "vue-router";
 			},
 			webcrap.misc.debounce(() => {
 				if (store.state.visualizer.pendingResults.length > 0) {
-					bus.$emit(events.Notifications.Processing, "Loading results");
+					bus.emit(events.Notifications.Processing, "Loading results");
 					setTimeout(() => {
 						store.state.visualizer.pendingResults.forEach((result: ResultSet) => {
 							graphData.addResultSet(result);
@@ -508,7 +508,7 @@ import { useRouter } from "vue-router";
 						store.commit(VisualizerStorePaths.mutations.Delete.PENDING_RESULTS);
 						updateNodeSizes();
 						refreshNodeConnections();
-						bus.$emit(events.Notifications.Clear);
+						bus.emit(events.Notifications.Clear);
 					}, 1000);
 				}
 			}, 500)
@@ -795,7 +795,7 @@ import { useRouter } from "vue-router";
 
 	function onGraphDeletePressed() {
 		//console.log("onGraphDeletePressed");
-		bus.$emit(controlEvents.RemoveNodes)
+		bus.emit(controlEvents.RemoveNodes)
 	}
 
 	function onLayoutFinished() {

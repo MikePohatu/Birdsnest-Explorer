@@ -316,7 +316,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 			},
 			errorCallback: () => {
 				this.resultsLoaded = true;
-				bus.$emit(events.Notifications.Error, "Error downloading report data");
+				bus.emit(events.Notifications.Error, "Error downloading report data");
 			},
 		};
 		api.post(request);

@@ -46,10 +46,10 @@ import { onMounted, ref } from "vue";
 	});
 
 	function onEdgeClicked() {
-		bus.$emit(events.Visualizer.Edge.EdgeClicked, edge);
+		bus.emit(events.Visualizer.Edge.EdgeClicked, edge);
 	}
 
 	function onEdgeCtrlClicked() {
-		bus.$emit(events.Visualizer.Edge.EdgeCtrlClicked, edge);
+		bus.emit(events.Visualizer.Edge.EdgeCtrlClicked, edge);
 	}
 </script>
