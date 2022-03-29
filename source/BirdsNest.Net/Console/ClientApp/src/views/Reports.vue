@@ -31,26 +31,17 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 }
 </style>
 
-<script lang="ts">
+<script setup lang="ts">
 import { useStore } from "@/store";
 import PluginReportList from "@/components/reports/PluginReportList.vue";
 import { computed, defineComponent, watch } from "vue";
 import { Plugin } from "@/assets/ts/dataMap/Plugin";
 import { Dictionary } from "@/assets/ts/webcrap/misccrap";
 
-export default defineComponent({
-	components: {
-		PluginReportList
-	},
+const store = useStore();
 
-	setup() {
-		const store = useStore();
+const plugins = computed((): Dictionary<Plugin> => {
+	return store.state.pluginManager === null ? {} : store.state.pluginManager.plugins;
+});
 
-		const plugins = computed((): Dictionary<Plugin> => {
-			return store.state.pluginManager === null ? {} : store.state.pluginManager.plugins;
-		});
-
-		return { plugins }
-	}
-})
 </script>

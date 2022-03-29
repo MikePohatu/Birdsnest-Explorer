@@ -54,7 +54,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 							<router-link v-if="crumb.link" :to="crumb.link" class="crumb">{{ crumb.name }}</router-link>
 							<span v-else class="crumb">{{ crumb.name }}</span>
 						</li>
-						<li v-for="crumb= in pagecrumbs" :key="crumb.name" class="bn-header-crumb">
+						<li v-for="crumb = in pagecrumbs" :key="crumb.name" class="bn-header-crumb">
 							<router-link v-if="crumb.link" :to="crumb.link" class="crumb">{{ crumb.name }}</router-link>
 							<span v-else class="crumb">{{ crumb.name }}</span>
 						</li>
@@ -68,36 +68,27 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 	</div>
 </template>
 
-<script lang="ts">
+<script setup lang="ts">
 import Menu from "@/components/Menu.vue";
-import {defineComponent, computed } from "vue";
+import { computed } from "vue";
 import { useRoute, breadcrumb } from "vue-router";
 import { routeDefs } from "@/router/index";
 
-export default defineComponent({
-	components: {
-		Menu
-	},
-	setup () {
-    	const route = useRoute();
+const route = useRoute();
 
-		return {
-			breadcrumbs: computed((): breadcrumb[] => {
-				return route.meta.breadcrumbs;
-			}),
+const breadcrumbs = computed((): breadcrumb[] => {
+	return route.meta.breadcrumbs;
+});
 
-			pagecrumbs: computed((): breadcrumb[] => {
-				if (Object.prototype.hasOwnProperty.call(route.meta, "pagecrumbs") && route.meta.pagecrumbs !== null) {
-					return route.meta.pagecrumbs;
-				} else {
-					return [];
-				}
-			}),
-
-			routeDefs
-		}
+const pagecrumbs = computed((): breadcrumb[] => {
+	if (Object.prototype.hasOwnProperty.call(route.meta, "pagecrumbs") && route.meta.pagecrumbs !== null) {
+		return route.meta.pagecrumbs;
+	} else {
+		return [];
 	}
 });
+
+
 </script>
 
 <style scoped>

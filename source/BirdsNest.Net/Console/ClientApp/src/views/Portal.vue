@@ -29,17 +29,23 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 			<ServerInfoPortalBlock class="cell large-4 medium-6 portalBoxWrapper" />
 		</div>
 
-		<p class="text-center">{{ $t('portal.usage_info_1') }}
+		<p class="text-center">
+			{{ $t('portal.usage_info_1') }}
 			<router-link v-if="!isIE" :to="routeDefs.docs.path">{{ $t('word_documentation') }}</router-link>
-			<a v-else href="https://github.com/MikePohatu/Birdsnest-Explorer" target="_blank">{{ $t('phrase_source_repository') }}</a>. {{ $t('portal.usage_info_2') }}
+			<a
+				v-else
+				href="https://github.com/MikePohatu/Birdsnest-Explorer"
+				target="_blank"
+			>{{ $t('phrase_source_repository') }}</a>
+			. {{ $t('portal.usage_info_2') }}
 			<a
 				href="https://support.20road.com"
 				target="_blank"
-			>{{ $t('20road')}} {{ $t('portal.usage_info_3') }}</a>
+			>{{ $t('20road') }} {{ $t('portal.usage_info_3') }}</a>
 		</p>
 
 		<p class="text-center">
-			{{ $t('portal.license_attribution')}}
+			{{ $t('portal.license_attribution') }}
 			<router-link to="about">{{ $t('word_About') }}</router-link>
 			{{ $t('word_page') }}
 		</p>
@@ -148,7 +154,7 @@ span {
 </style>
 
 
-<script lang="ts">
+<script setup lang="ts">
 import { computed, defineComponent, watch } from "vue";
 import { useStore } from "@/store";
 import VisualizerPortalBlock from "@/components/portal/VisualizerPortalBlock.vue";
@@ -158,32 +164,22 @@ import { routeDefs } from "@/router/index";
 import webcrap from "@/assets/ts/webcrap/webcrap";
 
 
-export default defineComponent({
-	components: {
-		VisualizerPortalBlock, ReportsPortalBlock, ServerInfoPortalBlock
-	},
+const isIE = webcrap.misc.isIE();
+const store = useStore();
 
-	setup() {
-		const isIE = webcrap.misc.isIE();
-		const store = useStore();
-
-		const userName = computed(() => {
-			if (store.state.user.name !== "") {
-				return " " + store.state.user.name;
-			} else {
-				return "";
-			}
-		});
-
-		const bannerHtml = computed((): string => {
-			return store.state.customization.portal.banner;
-		});
-
-		const footerHtml = computed((): string => {
-			return store.state.customization.portal.footer;
-		});
-
-		return { userName, bannerHtml, footerHtml, routeDefs, isIE };
+const userName = computed(() => {
+	if (store.state.user.name !== "") {
+		return " " + store.state.user.name;
+	} else {
+		return "";
 	}
-})
+});
+
+const bannerHtml = computed((): string => {
+	return store.state.customization.portal.banner;
+});
+
+const footerHtml = computed((): string => {
+	return store.state.customization.portal.footer;
+});
 </script>

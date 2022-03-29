@@ -246,67 +246,59 @@ td {
 </style>
 
 
-<script lang="ts">
+<script setup lang="ts">
+import { routeDefs } from "@/router";
 import { useStore } from "@/store";
-import { computed, defineComponent, watch } from "vue";
+import { computed, defineComponent, onMounted, onBeforeUnmount, watch } from "vue";
 import { api } from "@/assets/ts/webcrap/apicrap";
 import Loading from "@/components/Loading.vue";
 import PluginManager from "@/assets/ts/dataMap/PluginManager";
 import ServerInfo from "@/assets/ts/dataMap/ServerInfo";
 import { rootPaths } from "@/store/index";
 
-export default defineComponent({
-	components: {
-		Loading
-	},
-	setup() {
-		const store = useStore();
 
-		const beforeDestroy = computed(() => {
-			const contentPane = document.getElementById("contentPane");
-			contentPane.style.overflow = null;
-		});
+const store = useStore();
 
-		const isAdmin = computed(() => {
-			return store.state.user.isAdmin;
-		});
+onMounted(() => {
+	const contentPane = document.getElementById("contentPane");
+	contentPane.style.overflow = "scroll";
+});
 
-		const statsDataReady = computed((): boolean => {
-			return (
-				serverInfoState.value === api.states.READY &&
-				serverInfo.value !== null &&
-				apiState.value === api.states.READY &&
-				pluginManager.value !== null
-			);
-		});
+onBeforeUnmount(() => {
+	const contentPane = document.getElementById("contentPane");
+	contentPane.style.overflow = null;
+});
 
-		const serverInfoState = computed(():  number => {
-			return store.state.serverInfoState;
-		});
+const isAdmin = computed(() => {
+	return store.state.user.isAdmin;
+});
 
-		const serverInfo = computed(():  ServerInfo => {
-			return store.state.serverInfo;
-		});
+const statsDataReady = computed((): boolean => {
+	return (
+		serverInfoState.value === api.states.READY &&
+		serverInfo.value !== null &&
+		apiState.value === api.states.READY &&
+		pluginManager.value !== null
+	);
+});
 
-		const apiState = computed(():  number => {
-			return store.state.apiState;
-		});
+const serverInfoState = computed((): number => {
+	return store.state.serverInfoState;
+});
 
-		const pluginManager = computed(():  PluginManager => {
-			return store.state.pluginManager;
-		});
+const serverInfo = computed((): ServerInfo => {
+	return store.state.serverInfo;
+});
 
-		const onRefreshClicked = computed(():  void => {
-			store.dispatch(rootPaths.actions.UPDATE_SERVER_INFO);
-		});
+const apiState = computed((): number => {
+	return store.state.apiState;
+});
 
-		return {
-			onRefreshClicked, pluginManager, apiState, serverInfo, serverInfoState, statsDataReady, isAdmin, beforeDestroy
-		}
-	},
-	mounted() {
-		const contentPane = document.getElementById("contentPane");
-		contentPane.style.overflow = "scroll";
-	}
-})
+const pluginManager = computed((): PluginManager => {
+	return store.state.pluginManager;
+});
+
+function onRefreshClicked(): void {
+	store.dispatch(rootPaths.actions.UPDATE_SERVER_INFO);
+}
 </script>

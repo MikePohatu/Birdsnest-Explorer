@@ -17,7 +17,12 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 -->
 <template>
 	<div>
-		<ul class="dropdown menu align-right" data-dropdown-menu data-click-open="true" data-disable-hover="true">
+		<ul
+			class="dropdown menu align-right"
+			data-dropdown-menu
+			data-click-open="true"
+			data-disable-hover="true"
+		>
 			<li>
 				<a href="#">
 					<img id="menuicon" src="/img/icons/logo.svg" height="24px" width="24px" />
@@ -30,7 +35,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 							<router-link :to="routeDefs.reports.path">{{ $t('word_Reports') }}</router-link>
 							<router-link :to="routeDefs.info.path">{{ $t('phrase_Server_Information') }}</router-link>
 							<router-link :to="routeDefs.visualizer.path">{{ $t('word_Visualizer') }}</router-link>
-							<hr>
+							<hr />
 							<router-link :to="routeDefs.about.path">{{ $t('word_About') }}</router-link>
 							<router-link v-if="!isIE" :to="routeDefs.docs.path">{{ $t('word_Docs') }}</router-link>
 							<!-- <LangMenu /> -->
@@ -49,32 +54,37 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 	</div>
 </template>
 
-<script lang="ts">
-import { Component, Vue } from "vue-property-decorator";
+<script setup lang="ts">
 import { auth } from "../assets/ts/webcrap/authcrap";
 import { routeDefs } from "@/router/index";
 import LangMenu from "@/components/LangMenu.vue";
 import webcrap from "@/assets/ts/webcrap/webcrap";
+import { useStore } from "vuex";
+import { useRouter } from "vue-router";
+import { computed } from "vue";
 
-@Component({
-	components: { LangMenu },
-})
-export default class Menu extends Vue {
-	routeDefs = routeDefs;
-	isIE = webcrap.misc.isIE();
+// @Component({
+// 	components: { LangMenu },
+// })
+const store = useStore();
+const router = useRouter();
 
-	get isAdmin() {
-		return this.$store.state.user.isAdmin;
-	}
-	get isAuthorized() {
-		return this.$store.state.user.isAuthorized;
-	}
-	logout() {
-		auth.logout(() => {
-			this.$router.push(routeDefs.login.path);
-		});
-	}
+let isIE = webcrap.misc.isIE();
+
+const isAdmin = computed(() => {
+	return store.state.user.isAdmin;
+});
+
+const isAuthorized = computed(() => {
+	return store.state.user.isAuthorized;
+});
+
+function logout() {
+	auth.logout(() => {
+		router.push(routeDefs.login.path);
+	});
 }
+
 </script>
 
 <style scoped>

@@ -16,9 +16,14 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see http://www.gnu.org/licenses/.
 -->
 <template>
-	<div id="graphNotification" :class="{disabled: isHidden}" :title="tooltipmessage" v-on:click="onNotificationClicked()">
+	<div
+		id="graphNotification"
+		:class="{ disabled: isHidden }"
+		:title="tooltipmessage"
+		v-on:click="onNotificationClicked()"
+	>
 		<div style="position: relative">
-			<svg viewBox="-32 -32 64 64" width="64" height="64" :class="{spinner: processing}">
+			<svg viewBox="-32 -32 64 64" width="64" height="64" :class="{ spinner: processing }">
 				<g>
 					<circle id="notificationCircle" r="24" :class="stateClass" />
 					<path v-show="processing" id="spinnerIcon" d="M 0 -18 a 18 18 0 1 1 -12.78 5.22" />
@@ -114,9 +119,10 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 </style>
 
 
-<script lang="ts">
+<script setup lang="ts">
 import { bus, events } from "@/bus";
-import { Component, Vue } from "vue-property-decorator";
+import { computed, onBeforeUnmount, ref } from "vue";
+import { useI18n } from "vue-i18n";
 
 const notificationStates = {
 	HIDDEN: -1,
@@ -128,114 +134,117 @@ const notificationStates = {
 	FATAL: 5,
 };
 
-@Component
-export default class NotificationIcon extends Vue {
-	message = "";
-	state = notificationStates.HIDDEN;
-	states = notificationStates;
-	processing = false;
+let message = ref("");
+let state = ref(notificationStates.HIDDEN);
+let states = notificationStates;
+let processing = ref(false);
+const i18n = useI18n();
 
-	get tooltipmessage(): string {
-		if (this.processing) {
-			return this.message;
-		} else {
-			return this.message + '\n'+ this.$t('notifications.click_to_close');
+
+const tooltipmessage = computed<string>(() => {
+	if (processing.value) {
+		return message.value;
+	} else {
+		return message.value + '\n' + i18n.t('notifications.click_to_close');
+	}
+});
+
+const icon = computed<string>(() => {
+	return state.value < notificationStates.WARN ? "&#xf129;" : "&#xf12a;";
+});
+
+const iconSize = computed<number>(() => {
+	if (processing) {
+		return 20;
+	} else {
+		return 22;
+	}
+});
+
+const iconXY = computed<number>(() => {
+	if (processing) {
+		return 12;
+	} else {
+		return 10;
+	}
+});
+
+const isHidden = computed<boolean>(() => {
+	return state.value === notificationStates.HIDDEN;
+});
+
+const stateClass = computed<string>(() => {
+	return "state" + state;
+});
+
+init();
+function init(): void {
+	bus.$on(events.Notifications.Clear, () => {
+		if (state.value < notificationStates.WARN) {
+			state.value = notificationStates.HIDDEN;
+			message.value = "";
 		}
-	}
-	get icon(): string {
-		return this.state < notificationStates.WARN ? "&#xf129;" : "&#xf12a;";
-	}
-	get iconSize(): number {
-		if (this.processing) {
-			return 20;
-		} else {
-			return 22;
+
+		processing.value = false;
+	});
+
+	bus.$on(events.Notifications.Processing, (message?: string) => {
+		state.value = notificationStates.INFO;
+		if (message) {
+			message = message;
 		}
-	}
 
-	get iconXY(): number {
-		if (this.processing) {
-			return 12;
-		} else {
-			return 10;
+		processing.value = true;
+	});
+
+	bus.$on(events.Notifications.Info, (message?: string) => {
+		state.value = notificationStates.INFO;
+		if (message) {
+			message = message;
 		}
-	}
+		processing.value = false;
+	});
 
-	get isHidden(): boolean {
-		return this.state === notificationStates.HIDDEN;
-	}
-
-	get stateClass(): string {
-		return "state" + this.state;
-	}
-
-	created() {
-		bus.$on(events.Notifications.Clear, () => {
-			if (this.state < notificationStates.WARN) {
-				this.state = notificationStates.HIDDEN;
-				this.message = "";
-			}
-
-			this.processing = false;
-		});
-
-		bus.$on(events.Notifications.Processing, (message?: string) => {
-			this.state = notificationStates.INFO;
-			if (message) {
-				this.message = message;
-			}
-
-			this.processing = true;
-		});
-
-		bus.$on(events.Notifications.Info, (message?: string) => {
-			this.state = notificationStates.INFO;
-			if (message) {
-				this.message = message;
-			}
-			this.processing = false;
-		});
-
-		bus.$on(events.Notifications.Warn, (message?: string) => {
-			this.state = notificationStates.WARN;
-			if (message) {
-				this.message = message;
-			}
-			this.processing = false;
-		});
-
-		bus.$on(events.Notifications.Error, (message?: string) => {
-			this.state = notificationStates.ERROR;
-			if (message) {
-				this.message = message;
-			}
-			this.processing = false;
-		});
-
-		bus.$on(events.Notifications.Fatal, (message?: string) => {
-			this.state = notificationStates.FATAL;
-			if (message) {
-				this.message = message;
-			}
-			this.processing = false;
-		});
-	}
-
-	beforeDestroy() {
-		bus.$off(events.Notifications.Clear);
-		bus.$off(events.Notifications.Processing);
-		bus.$off(events.Notifications.Info);
-		bus.$off(events.Notifications.Warn);
-		bus.$off(events.Notifications.Error);
-		bus.$off(events.Notifications.Fatal);
-	}
-
-	onNotificationClicked() {
-		if (this.processing === false) {
-			this.state = notificationStates.HIDDEN;
-		this.message = "";
-		this.processing = false;
+	bus.$on(events.Notifications.Warn, (message?: string) => {
+		state.value = notificationStates.WARN;
+		if (message) {
+			message = message;
 		}
+		processing.value = false;
+	});
+
+	bus.$on(events.Notifications.Error, (message?: string) => {
+		state.value = notificationStates.ERROR;
+		if (message) {
+			message = message;
+		}
+		processing.value = false;
+	});
+
+	bus.$on(events.Notifications.Fatal, (message?: string) => {
+		state.value = notificationStates.FATAL;
+		if (message) {
+			message = message;
+		}
+		processing.value = false;
+	});
+}
+
+onBeforeUnmount(() => {
+	bus.$off(events.Notifications.Clear);
+	bus.$off(events.Notifications.Processing);
+	bus.$off(events.Notifications.Info);
+	bus.$off(events.Notifications.Warn);
+	bus.$off(events.Notifications.Error);
+	bus.$off(events.Notifications.Fatal);
+});
+
+function onNotificationClicked() {
+	if (processing.value === false) {
+		state.value = notificationStates.HIDDEN;
+		message.value = "";
+		processing.value = false;
 	}
 }
+
 </script>

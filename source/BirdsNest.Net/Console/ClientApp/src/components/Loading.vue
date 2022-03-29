@@ -30,14 +30,6 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
     </div>
 </template>
 
-<script lang="ts">
-import { Component, Vue } from "vue-property-decorator";
-
-@Component
-export default class Loading extends Vue { }
-
-</script>
-
 <style scoped>
 p {
   color: #606060;

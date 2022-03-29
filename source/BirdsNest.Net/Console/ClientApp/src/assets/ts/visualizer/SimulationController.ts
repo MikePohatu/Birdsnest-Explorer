@@ -19,12 +19,12 @@ import { SimLink } from "./SimLink";
 import { SimNode } from "./SimNode";
 import { graphData } from './GraphData';
 import { VisualizerStorePaths } from "@/store/modules/VisualizerStore";
-import store from "@/store/index";
+import { useStore } from "vuex";
 
-
-
+const store = useStore();
 
 export default class SimulationController {
+    
     onFinishSimulation: () => void;
     private graphsimulation;
     private connectsimulation;

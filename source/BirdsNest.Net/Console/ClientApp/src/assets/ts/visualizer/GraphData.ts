@@ -24,8 +24,10 @@ import { SimNode } from './SimNode';
 import { SimLink } from './SimLink';
 import Slope from "./Slope";
 import Vue from 'vue';
-import store from '@/store';
 import { VisualizerStorePaths } from '@/store/modules/VisualizerStore';
+import { useStore } from "vuex";
+
+const store = useStore();
 
 class GraphData {
     defaultNodeSize = 40;
@@ -93,7 +95,7 @@ class GraphData {
             simnode.labels.forEach((label) => {
                 if (this.graphNodeLabelStates[label] === undefined) {
                     //this.graphNodeLabelStates[label] = true;
-                    Vue.set(this.graphNodeLabelStates, label, true);
+                    this.graphNodeLabelStates[label] = true;  //previously used set....
                 } else if (this.graphEdgeLabelStates[label] === false) {
                     simnode.enabled = false;
                 }
@@ -148,7 +150,7 @@ class GraphData {
 
             if (this.graphEdgeLabelStates[edge.label] === undefined) {
                 //this.graphEdgeLabelStates[edge.label] = true;
-                Vue.set(this.graphEdgeLabelStates, edge.label, true);
+                this.graphEdgeLabelStates[edge.label] = true; //previously used vue.set
             } else {
                 simlink.enabled = this.graphEdgeLabelStates[edge.label];
             }
@@ -280,15 +282,15 @@ class GraphData {
         
         Object.keys(this.graphNodeLabelStates).forEach(label => {
             if (Object.prototype.hasOwnProperty.call(currNodeLabels, label) === false) {
-                //delete this.graphNodeLabelStates[label];
-                Vue.delete(this.graphNodeLabelStates, label);
+                delete this.graphNodeLabelStates[label];
+                //Vue.delete(this.graphNodeLabelStates,label); //previously use vue.delete
             }
         });
 
         Object.keys(this.graphEdgeLabelStates).forEach(label => {
             if (Object.prototype.hasOwnProperty.call(currEdgeLabels, label) === false) {
-                //delete this.graphEdgeLabelStates[label];
-                Vue.delete(this.graphEdgeLabelStates, label);
+                delete this.graphEdgeLabelStates[label];
+                //Vue.delete(this.graphEdgeLabelStates, label); //previously use vue.delete
             }
         });
 

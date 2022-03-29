@@ -96,7 +96,6 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 	function updateHeight(): void {
 		document.getElementById("app").style.height = window.innerHeight.toString() + "px";
 	}
-}
 </script>
 
 <style lang="scss">

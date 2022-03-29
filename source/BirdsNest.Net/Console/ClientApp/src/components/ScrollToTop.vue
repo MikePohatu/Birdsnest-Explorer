@@ -19,7 +19,12 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 	<div>
 		<transition name="scroll-transition">
 			<div id="scrolltotop" v-show="show">
-				<button v-on:click="topFunction" id="scrollbtn" title="Go to top" class="icon clickable">&#xf102;</button>
+				<button
+					v-on:click="topFunction"
+					id="scrollbtn"
+					title="Go to top"
+					class="icon clickable"
+				>&#xf102;</button>
 			</div>
 		</transition>
 	</div>
@@ -75,40 +80,38 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 }
 </style>
 
-<script lang="ts">
-import { Component, Vue } from "vue-property-decorator";
+<script setup lang="ts">
 import webcrap from "@/assets/ts/webcrap/webcrap";
+import { onMounted, onUnmounted, ref } from "vue";
 
-@Component
-export default class ScrollToTop extends Vue {
-	debouncedScroll;
-	contentarea = document.getElementById("contentPane");
-	show = false;
+let debouncedScroll;
+let contentarea = document.getElementById("contentPane");
+let show = ref(false);
 
-	mounted(): void {
-		this.debouncedScroll = webcrap.misc.debounce(this.scrollFunction, 100);
-		this.contentarea.addEventListener("scroll", this.debouncedScroll);
-	}
+onMounted((): void => {
+	debouncedScroll = webcrap.misc.debounce(scrollFunction, 100);
+	contentarea.addEventListener("scroll", debouncedScroll);
+});
 
-	destroyed(): void {
-		this.contentarea.removeEventListener("scroll", this.debouncedScroll);
-	}
+onUnmounted((): void => {
+	contentarea.removeEventListener("scroll", debouncedScroll);
+});
 
-	scrollFunction() {
-		if (this.contentarea.scrollTop > 20) {
-			this.show = true;
-		} else {
-			this.show = false;
-		}
-	}
-
-	// When the user clicks on the button, scroll to the top of the document
-	topFunction() {
-		this.contentarea.scrollTo({
-			top: 0,
-			left: 0,
-			behavior: "smooth",
-		});
+function scrollFunction() {
+	if (contentarea.scrollTop > 20) {
+		show.value = true;
+	} else {
+		show.value = false;
 	}
 }
+
+// When the user clicks on the button, scroll to the top of the document
+function topFunction() {
+	contentarea.scrollTo({
+		top: 0,
+		left: 0,
+		behavior: "smooth",
+	});
+}
+
 </script>

@@ -23,45 +23,37 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
   </div>
 </template>
 
-<script lang="ts">
+<script setup lang="ts">
 import { useStore } from "@/store";
 import { computed, defineComponent, watch } from "vue";
 import LoginCredentials from "@/components/LoginCredentials.vue";
 import { routeDefs } from "@/router/index";
+import { RouteLocationRaw, RouteRecordRaw, useRoute, useRouter } from "vue-router";
 
+const store = useStore();
+const route = useRoute();
+const router = useRouter();
 
-export default defineComponent({
-	components: {
-		LoginCredentials
-	},
-  setup () {
-    const store = useStore();
+const bannerHtml = computed((): string => {
+  return store.state.customization.login.banner;
+});
 
-    const bannerHtml = computed((): string => {
-      return store.state.customization.login.banner;
-    });
+const footerHtml = computed((): string => {
+  return store.state.customization.login.footer;
+});
 
-    const footerHtml = computed((): string => {
-      return store.state.customization.login.footer;
-    });
-
-    return { bannerHtml, footerHtml };
+const unwatch = store.watch(
+  () => {
+    return store.state.user.isAuthorized;
   },
+  () => {
+    const redirect: RouteLocationRaw = {
+      path: route.query.redirect as string || routeDefs.portal.path
+    };
 
-  created(): void {
-    const unwatch = this.$store.watch(
-      () => {
-        return this.$store.state.user.isAuthorized;
-      },
-      () => {
-        const redirect = {
-          path: this.$route.query.redirect || routeDefs.portal.path
-        };
-        
-        this.$router.replace(redirect);
-        unwatch();
-      }
-    );
+    router.replace(redirect);
+    unwatch();
   }
-})
+);
+
 </script>
