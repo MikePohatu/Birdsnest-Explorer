@@ -49,11 +49,11 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 	});
 
 	function onClicked(): void {
-		this.$store.commit(SearchStorePaths.mutations.Update.SELECTED_CONDITION, this.condition);
+		store.commit(SearchStorePaths.mutations.Update.SELECTED_CONDITION, this.condition);
 	}
 
 	function onDblClicked(): void {
-		this.$store.commit(SearchStorePaths.mutations.Update.SELECTED_CONDITION, this.condition);
-		this.$store.commit(SearchStorePaths.mutations.Update.EDIT_CONDITION);
+		store.commit(SearchStorePaths.mutations.Update.SELECTED_CONDITION, this.condition);
+		store.commit(SearchStorePaths.mutations.Update.EDIT_CONDITION);
 	}
 </script>

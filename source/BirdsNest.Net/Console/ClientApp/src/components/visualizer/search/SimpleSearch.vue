@@ -88,10 +88,13 @@ import webcrap from "@/assets/ts/webcrap/webcrap";
 import { Request, api } from "@/assets/ts/webcrap/apicrap";
 import { SearchStorePaths } from "@/store/modules/SearchStore";
 import { computed, ref } from "vue";
+import { useStore } from "vuex";
 
 // @Component({
 // 	components: { SearchResults },
 // })
+
+const store = useStore();
 
 let searchNotification = ref("");
 let autocompleteList = ref<string[]>([]);
@@ -115,15 +118,15 @@ const autocompleteDebounce = webcrap.misc.debounce(updateAutocomplete, 250);
 
 
 function onMinimizeClicked(): void {
-	this.$store.commit(SearchStorePaths.mutations.TOGGLE_SEARCH);
+	store.commit(SearchStorePaths.mutations.TOGGLE_SEARCH);
 }
 
 function onModeToggleClicked(): void {
-	this.$store.commit(SearchStorePaths.mutations.TOGGLE_SEARCH_MODE);
+	store.commit(SearchStorePaths.mutations.TOGGLE_SEARCH_MODE);
 }
 
 function onSearchClicked(): void {
-	this.$store.dispatch(SearchStorePaths.actions.SIMPLE_SEARCH, this.term);
+	store.dispatch(SearchStorePaths.actions.SIMPLE_SEARCH, this.term);
 	this.autocompleteList = [];  //reset the autocomplete list to get it out of the users face
 }
 

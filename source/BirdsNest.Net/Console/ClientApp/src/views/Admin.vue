@@ -93,11 +93,11 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 	import { rootPaths } from "@/store/index";
 	import PluginManager from "@/assets/ts/dataMap/PluginManager";
 	import { routeDefs } from "@/router/index";
-	import {computed} from 'vue';
+	import {computed, ref} from 'vue';
 	import { useStore } from "@/store";
 
 	const store = useStore();
-	let reloadMessage = "";
+	let reloadMessage = ref("");
 
 	auth.getValidationToken();
 	
@@ -110,11 +110,11 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 			url: "/api/admin/reloadplugins",
 			postJson: true,
 			successCallback: (data: Dictionary<string>) => {
-				this.reloadMessage = data.message;
+				reloadMessage.value = data.message;
 				store.dispatch(rootPaths.actions.UPDATE_PLUGINS);
 			},
 			errorCallback: (jqXHR, status: string, error: string) => {
-				this.reloadMessage = error;
+				reloadMessage.value = error;
 			},
 		};
 		bus.emit(events.Notifications.Processing, "Processing");

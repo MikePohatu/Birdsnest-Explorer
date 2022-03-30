@@ -83,7 +83,7 @@ import { useStore } from "@/store";
 
 	function onDeleteClicked(): void {
 		if (confirm(this.$t('visualizer.search.confirm_andor_condition_delete').toString())) {
-			this.$store.commit(SearchStorePaths.mutations.Delete.EDIT_ANDOR_CONDITION);
+			store.commit(SearchStorePaths.mutations.Delete.EDIT_ANDOR_CONDITION);
 		}
 	}
 

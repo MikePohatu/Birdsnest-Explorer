@@ -303,9 +303,9 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 	function onSelectedItemChanged(): void {
 		let item: SearchItem = null;
 		let isNode = true;
-		item = GetNode(condition.value.name, this.$store.state.visualizer.search.search);
+		item = GetNode(condition.value.name, store.state.visualizer.search.search);
 		if (item === null) {
-			item = GetEdge(condition.value.name, this.$store.state.visualizer.search.search);
+			item = GetEdge(condition.value.name, store.state.visualizer.search.search);
 			isNode = false;
 		}
 		if (item !== null) {
@@ -390,16 +390,16 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 	}
 
 	function onCloseClicked(): void {
-		this.$store.commit(SearchStorePaths.mutations.CANCEL_CONDITION_EDIT);
+		store.commit(SearchStorePaths.mutations.CANCEL_CONDITION_EDIT);
 	}
 
 	function onSaveClicked(): void {
-		this.$store.commit(SearchStorePaths.mutations.Save.EDIT_VALUE_CONDITION, condition.value);
+		store.commit(SearchStorePaths.mutations.Save.EDIT_VALUE_CONDITION, condition.value);
 	}
 
 	function onDeleteClicked(): void {
 		if (confirm(this.$t('confirm_value_condition_delete').toString())) {
-			this.$store.commit(SearchStorePaths.mutations.Delete.EDIT_VALUE_CONDITION);
+			store.commit(SearchStorePaths.mutations.Delete.EDIT_VALUE_CONDITION);
 		}
 	}
 </script>

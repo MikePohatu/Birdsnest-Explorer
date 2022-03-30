@@ -35,7 +35,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 						<table class="hover">
 							<thead>
 								<tr>
-									<th>{{ $tc('word_Type') }}</th>
+									<th>{{ $t('word_Type') }}</th>
 									<th>{{ $t('word_Property') }}</th>
 									<!-- <th>Index Name</th> -->
 									<th></th>
@@ -158,7 +158,9 @@ import $ from "jquery";
 import "foundation-sites";
 import { computed, defineComponent, onMounted, ref } from "vue";
 import { useStore } from "@/store";
+import { useI18n } from 'vue-i18n';
 
+const { t } = useI18n();
 const root = ref(null);
 const store = useStore();
 
@@ -197,8 +199,8 @@ function pluginHasProperties(plugin: Plugin) {
 }
 
 function propertyHasIndex(label: string, propertyName: string): boolean {
-	if (Object.prototype.hasOwnProperty.call(this.serverInfo.value.indexes, label)) {
-		if (Object.prototype.hasOwnProperty.call(this.serverInfo.value.indexes[label], propertyName)) {
+	if (Object.prototype.hasOwnProperty.call(serverInfo.value.indexes, label)) {
+		if (Object.prototype.hasOwnProperty.call(serverInfo.value.indexes[label], propertyName)) {
 			return true;
 		}
 	}
@@ -206,8 +208,8 @@ function propertyHasIndex(label: string, propertyName: string): boolean {
 }
 
 function propertyHasConstraint(label: string, propertyName: string): boolean {
-	if (Object.prototype.hasOwnProperty.call(this.serverInfo.value.indexes, label)) {
-		const indexes = this.serverInfo.value.indexes[label];
+	if (Object.prototype.hasOwnProperty.call(serverInfo.value.indexes, label)) {
+		const indexes = serverInfo.value.indexes[label];
 
 		if (Object.prototype.hasOwnProperty.call(indexes, propertyName)) {
 			const index: Index = indexes[propertyName];
@@ -220,8 +222,8 @@ function propertyHasConstraint(label: string, propertyName: string): boolean {
 }
 
 function propertyIndexIsEnforced(label: string, propertyName: string): boolean {
-	if (Object.prototype.hasOwnProperty.call(this.pluginManager.nodeDataTypes, label)) {
-		const datatype: DataType = this.pluginManager.nodeDataTypes[label];
+	if (Object.prototype.hasOwnProperty.call(pluginManager.value.nodeDataTypes, label)) {
+		const datatype: DataType = pluginManager.value.nodeDataTypes[label];
 
 		if (Object.prototype.hasOwnProperty.call(datatype.properties, propertyName)) {
 			const propertydef: Property = datatype.properties[propertyName];
@@ -231,8 +233,8 @@ function propertyIndexIsEnforced(label: string, propertyName: string): boolean {
 		}
 	}
 
-	if (Object.prototype.hasOwnProperty.call(this.pluginManager.edgeDataTypes, label)) {
-		const datatype: DataType = this.pluginManager.edgeDataTypes[label];
+	if (Object.prototype.hasOwnProperty.call(pluginManager.value.edgeDataTypes, label)) {
+		const datatype: DataType = pluginManager.value.edgeDataTypes[label];
 
 		if (Object.prototype.hasOwnProperty.call(datatype.properties, propertyName)) {
 			const propertydef: Property = datatype.properties[propertyName];
@@ -245,9 +247,9 @@ function propertyIndexIsEnforced(label: string, propertyName: string): boolean {
 }
 
 function onDeleteIndexClicked(label: string, property: string): void {
-	const message = this.$t('index_editor.confirm_index_delete', { label: label, property: property }).toString();
+	const message = t('index_editor.confirm_index_delete', { label: label, property: property }).toString();
 	if (confirm(message)) {
-		const indexes: Dictionary<Index> = this.serverInfo.value.indexes[label];
+		const indexes: Dictionary<Index> = serverInfo.value.indexes[label];
 		const index = indexes[property];
 		const postdata = JSON.stringify(index);
 
@@ -261,17 +263,17 @@ function onDeleteIndexClicked(label: string, property: string): void {
 			errorCallback: (jqXHR?, status?: string, error?: string) => {
 				// eslint-disable-next-line
 				console.error(error);
-				bus.emit(events.Notifications.Error, this.$t('index_editor.error_delete', { label: label, property: property }).toString() + "\n" + error);
+				bus.emit(events.Notifications.Error, t('index_editor.error_delete', { label: label, property: property }).toString() + "\n" + error);
 			},
 		};
 
-		bus.emit(events.Notifications.Processing, this.$t('word_Processing'));
+		bus.emit(events.Notifications.Processing, t('word_Processing'));
 		api.post(request);
 	}
 }
 
 function onCreateIndexClicked(label, property) {
-	const message = this.$t('index_editor.confirm_index_create', { label: label, property: property }).toString();
+	const message = t('index_editor.confirm_index_create', { label: label, property: property }).toString();
 	if (confirm(message)) {
 		const postdata = JSON.stringify({ label: label, property: property });
 
@@ -285,11 +287,11 @@ function onCreateIndexClicked(label, property) {
 			errorCallback: (jqXHR?, status?: string, error?: string) => {
 				// eslint-disable-next-line
 				console.error(error);
-				bus.emit(events.Notifications.Error, this.$t('index_editor.error_create', { label: label, property: property }) + "\n" + error);
+				bus.emit(events.Notifications.Error, t('index_editor.error_create', { label: label, property: property }) + "\n" + error);
 			},
 		};
 
-		bus.emit(events.Notifications.Processing, this.$t('word_Processing'));
+		bus.emit(events.Notifications.Processing, t('word_Processing'));
 		api.post(request);
 	}
 }

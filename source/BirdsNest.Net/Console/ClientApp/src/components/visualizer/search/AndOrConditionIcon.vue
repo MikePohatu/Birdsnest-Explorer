@@ -123,15 +123,15 @@ import { useStore } from "@/store";
 	}
 
 	function onClicked(): void {
-		this.$store.commit(SearchStorePaths.mutations.Update.SELECTED_CONDITION, this.condition);
+		store.commit(SearchStorePaths.mutations.Update.SELECTED_CONDITION, this.condition);
 	}
 
 	function onDblClicked(): void {
-		this.$store.commit(SearchStorePaths.mutations.Update.SELECTED_CONDITION, this.condition);
-		this.$store.commit(SearchStorePaths.mutations.Update.EDIT_CONDITION);
+		store.commit(SearchStorePaths.mutations.Update.SELECTED_CONDITION, this.condition);
+		store.commit(SearchStorePaths.mutations.Update.EDIT_CONDITION);
 	}
 
 	function onAddClicked(): void {
-		this.$store.commit(SearchStorePaths.mutations.Add.NEW_CONDITION_PARENT, this.condition);
+		store.commit(SearchStorePaths.mutations.Add.NEW_CONDITION_PARENT, this.condition);
 	}
 </script>

@@ -95,23 +95,23 @@ import { ref } from "vue";
 	let searchRetry = ref(0);
 
 	function onMinimizeClicked(): void {
-		this.$store.commit(SearchStorePaths.mutations.TOGGLE_SEARCH);
+		store.commit(SearchStorePaths.mutations.TOGGLE_SEARCH);
 	}
 
 	function onModeToggleClicked(): void {
-		this.$store.commit(SearchStorePaths.mutations.TOGGLE_SEARCH_MODE);
+		store.commit(SearchStorePaths.mutations.TOGGLE_SEARCH_MODE);
 	}
 
 	function onClearClicked(): void {
 		if (confirm("Are you sure you want to clear the search?")) {
-			this.$store.commit(SearchStorePaths.mutations.RESET);
+			store.commit(SearchStorePaths.mutations.RESET);
 		}
 	}
 
 	function onSearchClicked(): void {
-		const search = this.$store.state.visualizer.search.search;
+		const search = store.state.visualizer.search.search;
 		if (search.nodes.length > 0) {
-			this.$store.dispatch(SearchStorePaths.actions.SEARCH);
+			store.dispatch(SearchStorePaths.actions.SEARCH);
 			this.searchRetry = 0;
 		} else {
 			this.searchRetry++;
@@ -122,9 +122,9 @@ import { ref } from "vue";
 	}
 
 	function onShareClicked(): void {
-		const search = this.$store.state.visualizer.search.search;
+		const search = store.state.visualizer.search.search;
 		if (search.nodes.length > 0) {
-			this.$store.dispatch(SearchStorePaths.actions.UPDATE_SHARE);
+			store.dispatch(SearchStorePaths.actions.UPDATE_SHARE);
 		}
 	}
 </script>

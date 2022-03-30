@@ -121,8 +121,8 @@ onActivated(():void => {
 });
 
 function login(): void {
-	auth.login(this.username, this.password, this.provider, () => {
-		this.password = "";
+	auth.login(username.value, password.value, provider.value, () => {
+		password.value = "";
 	});
 }
 </script>

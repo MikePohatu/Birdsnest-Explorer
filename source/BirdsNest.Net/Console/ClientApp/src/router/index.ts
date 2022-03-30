@@ -263,7 +263,9 @@ router.beforeEach((to, from, next) => {
 });
 
 router.afterEach((to) => {
-  document.title = "Birdsnest Explorer - " + to.name.toString();
+  if (to) { document.title = "Birdsnest Explorer - " + to.name.toString(); }
+  else { console.error({error: "Router: to undefined", to: to}); }
+  
 });
 
 export default router;

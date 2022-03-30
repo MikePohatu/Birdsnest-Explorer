@@ -323,7 +323,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 	}
 
 	function updatePluginReportData(reportName: string, pluginName: string) {
-		this.plugin = this.$store.state.pluginManager.plugins[pluginName] as Plugin;
+		this.plugin = store.state.pluginManager.plugins[pluginName] as Plugin;
 		this.report = this.plugin.reports[reportName] as Report;
 		this.query = this.report.query;
 		this.reportName = this.report.displayName;

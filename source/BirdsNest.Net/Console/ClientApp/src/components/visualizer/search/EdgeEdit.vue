@@ -292,7 +292,7 @@ import { useStore } from "@/store";
 	
 
 	function onSaveEdge(): void {
-		this.$store.commit(SearchStorePaths.mutations.Save.EDIT_EDGE, this.edge);
+		store.commit(SearchStorePaths.mutations.Save.EDIT_EDGE, this.edge);
 	}
 
 	function onDirectionClicked(): void {
@@ -304,13 +304,13 @@ import { useStore } from "@/store";
 	}
 
 	function onCloseClicked(): void {
-		this.$store.commit(SearchStorePaths.mutations.CANCEL_ITEM_EDIT);
+		store.commit(SearchStorePaths.mutations.CANCEL_ITEM_EDIT);
 	}
 
 	function onSaveAndAddCondClicked(): void {	
 		const condition = new ValueCondition(ConditionType.String);
 		condition.name = this.edge.name;
-		this.$store.commit(SearchStorePaths.mutations.Save.EDIT_EDGE, this.edge);
-		this.$store.commit(SearchStorePaths.mutations.Add.NEW_CONDITION, condition);
+		store.commit(SearchStorePaths.mutations.Save.EDIT_EDGE, this.edge);
+		store.commit(SearchStorePaths.mutations.Add.NEW_CONDITION, condition);
 	}
 </script>

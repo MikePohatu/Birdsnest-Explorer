@@ -19,7 +19,7 @@ import { RootState } from './store';
 
 declare module '@vue/runtime-core' {
 
-  // provide typings for `this.$store`
+  // provide typings for `store`
   interface ComponentCustomProperties {
     $store: Store<RootState>
   }

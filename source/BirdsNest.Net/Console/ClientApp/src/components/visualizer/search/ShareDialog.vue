@@ -85,7 +85,7 @@ const shareUrl = computed(() => {
 });
 
 function onShareOkClicked(): void {
-	this.$store.commit(SearchStorePaths.mutations.Update.SHARE_CYPHER, "");
-	this.$store.commit(SearchStorePaths.mutations.Update.SHARE_URL, "");
+	store.commit(SearchStorePaths.mutations.Update.SHARE_CYPHER, "");
+	store.commit(SearchStorePaths.mutations.Update.SHARE_URL, "");
 }
 </script>
