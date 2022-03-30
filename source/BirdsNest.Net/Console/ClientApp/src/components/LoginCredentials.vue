@@ -85,8 +85,8 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 
 
 <script setup lang="ts">
-import { computed, onMounted, ref } from "vue";
-import { useStore } from "vuex";
+import { computed, onActivated, onMounted, ref } from "vue";
+import { useStore } from "@/store";
 import { auth } from "../assets/ts/webcrap/authcrap";
 import { rootPaths } from "../store";
 
@@ -95,7 +95,7 @@ const store = useStore();
 let username = ref("");
 let password = ref("");
 let provider = ref("");
-
+const usernameEl = ref(null);
 
 
 const message = computed((): string => {
@@ -103,18 +103,20 @@ const message = computed((): string => {
 });
 
 const providers = computed((): string[] => {
-	const provs = store.state.session.providers;
-	provider = provs[0];
-	return provs;
+	return store.state.session.providers;
 });
 
-store.commit(rootPaths.mutations.SESSION_STATUS, "");
-if (providers.value && providers.value.length > 0) {
-	provider.value = providers.value[0];
-}
+
 
 onMounted((): void => {
-	const usernameEl = ref(null);
+	if (providers.value && providers.value.length > 0) {
+		provider.value = providers.value[0];
+	}
+	
+	store.commit(rootPaths.mutations.SESSION_STATUS, "");
+});
+
+onActivated(():void => {
 	(usernameEl as HTMLElement).focus();
 });
 

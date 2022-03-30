@@ -157,7 +157,7 @@ import { rootPaths } from "@/store/index";
 import $ from "jquery";
 import "foundation-sites";
 import { computed, defineComponent, onMounted, ref } from "vue";
-import { useStore } from "vuex";
+import { useStore } from "@/store";
 
 const root = ref(null);
 const store = useStore();

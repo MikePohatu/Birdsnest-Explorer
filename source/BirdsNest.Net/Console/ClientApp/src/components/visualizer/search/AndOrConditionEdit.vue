@@ -65,7 +65,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 import { AndOrCondition } from "@/assets/ts/visualizer/Search";
 import { SearchStorePaths } from "@/store/modules/SearchStore";
 import { ref } from "vue";
-import { useStore } from "vuex";
+import { useStore } from "@/store";
 
 	const props = defineProps({
 		source: {

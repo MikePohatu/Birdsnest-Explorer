@@ -229,7 +229,7 @@ import EyeControls from "./EyeControls.vue";
 import { VisualizerStorePaths } from "@/store/modules/VisualizerStore";
 import { foundation } from "@/mixins/foundation";
 import { computed, ref } from "vue";
-import { useStore } from "vuex";
+import { useStore } from "@/store";
 
 // @Component({
 // 	components: { ControlButton, EyeControls },

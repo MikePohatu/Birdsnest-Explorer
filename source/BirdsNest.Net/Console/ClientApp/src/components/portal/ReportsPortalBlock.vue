@@ -71,7 +71,7 @@ td.small {
 import { api } from "@/assets/ts/webcrap/apicrap";
 import PluginManager from "@/assets/ts/dataMap/PluginManager";
 import { computed } from "vue";
-import { useStore } from "vuex";
+import { useStore } from "@/store";
 	const store = useStore();
 
 	const pluginManager = computed((): PluginManager => {

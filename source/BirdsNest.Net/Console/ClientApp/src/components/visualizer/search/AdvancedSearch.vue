@@ -241,7 +241,7 @@ import { Search, SearchItem, ConditionType } from "@/assets/ts/visualizer/Search
 import AdvancedSearchButtons from "./AdvancedSearchButtons.vue";
 import { ResultSet } from "@/assets/ts/dataMap/ResultSet";
 import { SearchStorePaths } from "../../../store/modules/SearchStore";
-import { useStore } from "vuex";
+import { useStore } from "@/store";
 import { computed } from "vue";
 import { SearchNode, SearchEdge } from "@/assets/ts/visualizer/Search";
 

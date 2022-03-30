@@ -70,7 +70,7 @@ import { SearchEdge } from "@/assets/ts/visualizer/Search";
 import { SearchStorePaths } from '../../../store/modules/SearchStore';
 import webcrap from '@/assets/ts/webcrap/webcrap';
 import { computed } from "@vue/reactivity";
-import { useStore } from "vuex";
+import { useStore } from "@/store";
 	const props = defineProps({
 		edge: {type: SearchEdge, required: true }
 	});

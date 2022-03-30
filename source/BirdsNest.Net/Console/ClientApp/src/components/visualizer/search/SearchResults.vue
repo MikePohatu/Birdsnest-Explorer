@@ -81,7 +81,7 @@ import { SearchStorePaths } from "../../../store/modules/SearchStore";
 
 import { bus, events } from "@/bus";
 import { computed } from "vue";
-import { useStore } from "vuex";
+import { useStore } from "@/store";
 
 // @Component({
 // 	mixins: [foundation],

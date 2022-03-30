@@ -65,7 +65,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 import { SearchStorePaths } from "@/store/modules/SearchStore";
 import { computed, ref } from "vue";
 import { useRoute } from "vue-router";
-import { useStore } from "vuex";
+import { useStore } from "@/store";
 
 const store = useStore();
 const route = useRoute();

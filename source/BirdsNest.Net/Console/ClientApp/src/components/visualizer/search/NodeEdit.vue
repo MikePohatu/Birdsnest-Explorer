@@ -85,7 +85,7 @@ import { Dictionary } from "lodash";
 import { DataType } from "@/assets/ts/dataMap/DataType";
 import { SearchNode, copyNode, ValueCondition, ConditionType } from "@/assets/ts/visualizer/Search";
 import { SearchStorePaths } from "../../../store/modules/SearchStore";
-import { useStore } from "vuex";
+import { useStore } from "@/store";
 import { computed } from "vue";
 
 	const props = defineProps({ source: {type: SearchNode, required: true}});

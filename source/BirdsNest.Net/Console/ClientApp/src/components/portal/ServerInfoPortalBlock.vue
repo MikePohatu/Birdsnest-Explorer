@@ -64,7 +64,7 @@ import { api } from "@/assets/ts/webcrap/apicrap";
 import ServerInfo from "@/assets/ts/dataMap/ServerInfo";
 import PluginManager from "@/assets/ts/dataMap/PluginManager";
 import { computed } from "vue";
-import { useStore } from "vuex";
+import { useStore } from "@/store";
 
 const store = useStore();
 

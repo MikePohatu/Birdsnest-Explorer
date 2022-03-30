@@ -19,7 +19,7 @@ import { SimLink } from "./SimLink";
 import { SimNode } from "./SimNode";
 import { graphData } from './GraphData';
 import { VisualizerStorePaths } from "@/store/modules/VisualizerStore";
-import { useStore } from "vuex";
+import { useStore } from "@/store";
 
 const store = useStore();
 

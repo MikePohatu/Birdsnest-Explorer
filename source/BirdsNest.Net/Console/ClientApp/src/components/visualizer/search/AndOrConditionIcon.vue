@@ -89,7 +89,7 @@ import { Condition, ConditionType, AndOrCondition, ValueCondition } from "@/asse
 import ValueConditionIcon from "./ValueConditionIcon.vue";
 import { SearchStorePaths } from "@/store/modules/SearchStore";
 import { computed } from "@vue/reactivity";
-import { useStore } from "vuex";
+import { useStore } from "@/store";
 
 // @Component({
 // 	name: "AndOrConditionIcon",

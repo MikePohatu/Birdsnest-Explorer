@@ -73,19 +73,19 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 
 	// Make sure the custom css is always last so it 'wins'
 	function resetCustom(): void {
-		if (this.custom.parentElement.lastElementChild !== this.custom) {
+		if (custom.value.parentElement.lastElementChild !== custom.value) {
 			const style = document.createElement("link");
 			style.type = "text/css";
 			style.rel = "stylesheet";
-			style.href = this.customPath;
+			style.href = customPath;
 
 			document.head.appendChild(style);
-			if (this.custom !== null) {
-				document.head.removeChild(this.custom);
+			if (custom.value !== null) {
+				document.head.removeChild(custom.value);
 			} else {
 				console.error("custom.css definition missing");
 			}
-			this.custom = style;
+			custom.value = style;
 		}
 	}
 

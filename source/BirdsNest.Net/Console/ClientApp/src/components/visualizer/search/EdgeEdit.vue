@@ -218,7 +218,7 @@ import { DataType } from "@/assets/ts/dataMap/DataType";
 import { Dictionary } from "lodash";
 import { SearchStorePaths } from "@/store/modules/SearchStore";
 import { computed, ref } from "@vue/reactivity";
-import { useStore } from "vuex";
+import { useStore } from "@/store";
 
 
 	const props = defineProps({ source: { type: SearchEdge, required: true }});

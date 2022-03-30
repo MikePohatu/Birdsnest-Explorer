@@ -100,7 +100,7 @@ import SimpleSearch from "./SimpleSearch.vue";
 import AdvancedSearch from "./AdvancedSearch.vue";
 import { SearchStorePaths } from "@/store/modules/SearchStore";
 import { computed } from "vue";
-import { useStore } from "vuex";
+import { useStore } from "@/store";
 
 // @Component({
 // 	components: { SimpleSearch, AdvancedSearch },

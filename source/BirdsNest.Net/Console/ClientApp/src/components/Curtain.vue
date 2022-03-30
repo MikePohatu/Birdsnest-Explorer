@@ -32,7 +32,7 @@ import $ from "jquery";
 import { routeDefs } from "@/router/index";
 import { computed } from "vue";
 import { useRoute } from "vue-router";
-import { useStore } from "vuex";
+import { useStore } from "@/store";
 
 const route = useRoute();
 const store = useStore();
@@ -41,6 +41,7 @@ const store = useStore();
 // })
 
 //setup watchers
+console.log({store: store});
 store.watch(
 	() => {
 		return store.state.user.isAuthorized;

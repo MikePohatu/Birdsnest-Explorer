@@ -27,7 +27,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 import { SearchNode } from "@/assets/ts/visualizer/Search";
 import { SearchStorePaths } from "@/store/modules/SearchStore";
 import { computed } from "@vue/reactivity";
-import { useStore } from "vuex";
+import { useStore } from "@/store";
 import webcrap from '../../../assets/ts/webcrap/webcrap';
 
 	const props = defineProps({node: { type: SearchNode, required: true }});

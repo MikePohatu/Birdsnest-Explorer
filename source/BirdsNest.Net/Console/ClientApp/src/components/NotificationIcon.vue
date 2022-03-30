@@ -179,7 +179,7 @@ const stateClass = computed<string>(() => {
 
 init();
 function init(): void {
-	bus.$on(events.Notifications.Clear, () => {
+	bus.on(events.Notifications.Clear, () => {
 		if (state.value < notificationStates.WARN) {
 			state.value = notificationStates.HIDDEN;
 			message.value = "";
@@ -188,7 +188,7 @@ function init(): void {
 		processing.value = false;
 	});
 
-	bus.$on(events.Notifications.Processing, (newmessage?: string) => {
+	bus.on(events.Notifications.Processing, (newmessage?: string) => {
 		state.value = notificationStates.INFO;
 		if (newmessage) {
 			message.value = newmessage;
@@ -197,7 +197,7 @@ function init(): void {
 		processing.value = true;
 	});
 
-	bus.$on(events.Notifications.Info, (newmessage?: string) => {
+	bus.on(events.Notifications.Info, (newmessage?: string) => {
 		state.value = notificationStates.INFO;
 		if (newmessage) {
 			message.value = newmessage;
@@ -205,7 +205,7 @@ function init(): void {
 		processing.value = false;
 	});
 
-	bus.$on(events.Notifications.Warn, (newmessage?: string) => {
+	bus.on(events.Notifications.Warn, (newmessage?: string) => {
 		state.value = notificationStates.WARN;
 		if (newmessage) {
 			message.value = newmessage;
@@ -213,7 +213,7 @@ function init(): void {
 		processing.value = false;
 	});
 
-	bus.$on(events.Notifications.Error, (newmessage?: string) => {
+	bus.on(events.Notifications.Error, (newmessage?: string) => {
 		state.value = notificationStates.ERROR;
 		if (newmessage) {
 			message.value = newmessage;
@@ -221,7 +221,7 @@ function init(): void {
 		processing.value = false;
 	});
 
-	bus.$on(events.Notifications.Fatal, (newmessage?: string) => {
+	bus.on(events.Notifications.Fatal, (newmessage?: string) => {
 		state.value = notificationStates.FATAL;
 		if (newmessage) {
 			message.value = newmessage;
