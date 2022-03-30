@@ -41,7 +41,7 @@ const store = useStore();
 // })
 
 //setup watchers
-console.log({store: store});
+
 store.watch(
 	() => {
 		return store.state.user.isAuthorized;

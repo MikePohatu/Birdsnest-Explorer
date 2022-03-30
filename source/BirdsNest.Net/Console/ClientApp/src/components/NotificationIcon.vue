@@ -231,12 +231,12 @@ function init(): void {
 }
 
 onBeforeUnmount(() => {
-	bus.$off(events.Notifications.Clear);
-	bus.$off(events.Notifications.Processing);
-	bus.$off(events.Notifications.Info);
-	bus.$off(events.Notifications.Warn);
-	bus.$off(events.Notifications.Error);
-	bus.$off(events.Notifications.Fatal);
+	bus.off(events.Notifications.Clear);
+	bus.off(events.Notifications.Processing);
+	bus.off(events.Notifications.Info);
+	bus.off(events.Notifications.Warn);
+	bus.off(events.Notifications.Error);
+	bus.off(events.Notifications.Fatal);
 });
 
 function onNotificationClicked() {
