@@ -31,7 +31,7 @@ export const routeDefs = {
   },
   docs: {
     name: "Docs",
-    path: "/docs"
+    path: "/:docs*"
   },
   report: {
     name: "Report Viewer",
@@ -175,7 +175,7 @@ const routes: Array<RouteRecordRaw> = [
       import(/* webpackChunkName: "admin" */ "../views/IndexEditorView.vue")
   },
   {
-    path: routeDefs.docs.path + "*",
+    path: routeDefs.docs.path,
     name: routeDefs.docs.name,
     meta: {
       allowAnonymous: true,

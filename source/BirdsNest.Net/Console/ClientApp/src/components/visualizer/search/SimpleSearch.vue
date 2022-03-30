@@ -88,7 +88,7 @@ import webcrap from "@/assets/ts/webcrap/webcrap";
 import { Request, api } from "@/assets/ts/webcrap/apicrap";
 import { SearchStorePaths } from "@/store/modules/SearchStore";
 import { computed, ref } from "vue";
-import { useStore } from "vuex";
+import { useStore } from "@/store";
 
 // @Component({
 // 	components: { SearchResults },
@@ -101,14 +101,14 @@ let autocompleteList = ref<string[]>([]);
 let term = ref("");
 
 function updateAutocomplete(): void {
-	const url = "/api/graph/node/namevalues?searchterm=" + this.term;
+	const url = "/api/graph/node/namevalues?searchterm=" + term.value;
 	const newrequest: Request = {
 		url: url,
 		successCallback: data => {
-			this.autocompleteList = data;
+			autocompleteList = data;
 		},
 		errorCallback: () => {
-			this.autocompleteList = [];
+			autocompleteList.value = [];
 		},
 	};
 	api.get(newrequest);
@@ -126,8 +126,8 @@ function onModeToggleClicked(): void {
 }
 
 function onSearchClicked(): void {
-	store.dispatch(SearchStorePaths.actions.SIMPLE_SEARCH, this.term);
-	this.autocompleteList = [];  //reset the autocomplete list to get it out of the users face
+	store.dispatch(SearchStorePaths.actions.SIMPLE_SEARCH, term);
+	autocompleteList.value = [];  //reset the autocomplete list to get it out of the users face
 }
 
 </script>

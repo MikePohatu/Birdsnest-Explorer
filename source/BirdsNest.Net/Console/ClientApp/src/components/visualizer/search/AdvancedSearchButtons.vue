@@ -86,48 +86,48 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 import { foundation } from "@/mixins/foundation";
 import { SearchStorePaths } from "@/store/modules/SearchStore";
 import { ref } from "vue";
-import { useStore } from "vuex";
+import { useStore } from "@/store";
 
 const store = useStore();
 
 // @Component({
 // 	mixins: [foundation],
 // })
-	let cypherquery = ref("");
-	let shareUrl = ref("");
-	let searchRetry = ref(0);
+// let cypherquery = ref("");
+// let shareUrl = ref("");
+// let searchRetry = ref(0);
 
-	function onMinimizeClicked(): void {
-		store.commit(SearchStorePaths.mutations.TOGGLE_SEARCH);
+function onMinimizeClicked(): void {
+	store.commit(SearchStorePaths.mutations.TOGGLE_SEARCH);
+}
+
+function onModeToggleClicked(): void {
+	store.commit(SearchStorePaths.mutations.TOGGLE_SEARCH_MODE);
+}
+
+function onClearClicked(): void {
+	if (confirm("Are you sure you want to clear the search?")) {
+		store.commit(SearchStorePaths.mutations.RESET);
 	}
+}
 
-	function onModeToggleClicked(): void {
-		store.commit(SearchStorePaths.mutations.TOGGLE_SEARCH_MODE);
-	}
-
-	function onClearClicked(): void {
-		if (confirm("Are you sure you want to clear the search?")) {
-			store.commit(SearchStorePaths.mutations.RESET);
+function onSearchClicked(): void {
+	const search = store.state.visualizer.search.search;
+	if (search.nodes.length > 0) {
+		store.dispatch(SearchStorePaths.actions.SEARCH);
+		this.searchRetry = 0;
+	} else {
+		this.searchRetry++;
+		if (this.searchRetry > 2) {
+			alert("You haven't added any items to the search");
 		}
 	}
+}
 
-	function onSearchClicked(): void {
-		const search = store.state.visualizer.search.search;
-		if (search.nodes.length > 0) {
-			store.dispatch(SearchStorePaths.actions.SEARCH);
-			this.searchRetry = 0;
-		} else {
-			this.searchRetry++;
-			if (this.searchRetry > 2) {
-				alert("You haven't added any items to the search");
-			}
-		}
+function onShareClicked(): void {
+	const search = store.state.visualizer.search.search;
+	if (search.nodes.length > 0) {
+		store.dispatch(SearchStorePaths.actions.UPDATE_SHARE);
 	}
-
-	function onShareClicked(): void {
-		const search = store.state.visualizer.search.search;
-		if (search.nodes.length > 0) {
-			store.dispatch(SearchStorePaths.actions.UPDATE_SHARE);
-		}
-	}
+}
 </script>
