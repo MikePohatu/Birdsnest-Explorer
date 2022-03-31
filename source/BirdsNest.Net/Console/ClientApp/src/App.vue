@@ -17,7 +17,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 -->
 <template>
 	<!-- See updateHeight function for why height is set -->
-	<div id="app" class="grid-y" style="height: 400px">
+	<div id="app" class="appRoot grid-y" style="height: 400px">
 		<Curtain />
 		<TopBar class="cell shrink" />
 		<div id="contentPane" class="cell auto">
@@ -93,7 +93,10 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 	//The address bar will appear and disappear based on what the browser thinks is
 	//the right thing to do
 	function updateHeight(): void {
-		document.getElementById("app").style.height = window.innerHeight.toString() + "px";
+		//console.log({source:"updateHeight", height: window.innerHeight.toString() + "px"});
+		document.querySelectorAll(".appRoot").forEach((node)=> {
+			(node as HTMLElement).style.height = window.innerHeight.toString() + "px";
+		});
 	}
 </script>
 
