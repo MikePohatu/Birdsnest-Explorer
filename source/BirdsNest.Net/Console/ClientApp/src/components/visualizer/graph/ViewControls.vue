@@ -276,7 +276,7 @@ const cropActive = computed<boolean>(() => {
 });
 
 function onSearchClicked(): void {
-	bus.emit(events.Visualizer.Controls.Search, this.searchVal);
+	bus.emit(events.Visualizer.Controls.Search, searchVal);
 }
 
 function applyComputedStyle(element, sourceElement) {
@@ -293,14 +293,14 @@ function onSvgDownloadClicked(): void {
 	const allRootElements = root.getElementsByTagName("*");
 	const allCloneElements = rootClone.getElementsByTagName("*");
 
-	this.applyComputedStyle(rootClone, root);
+	applyComputedStyle(rootClone, root);
 
 	//reset the translation values on top two root svg elements
 	rootClone.setAttribute("transform", "translate(0,0)");
 	rootClone.querySelector("#zoomlayer").setAttribute("transform", "translate(0,0)");
 
 	for (let i = 0; i < allCloneElements.length; i++) {
-		this.applyComputedStyle(allCloneElements.item(i), allRootElements.item(i));
+		applyComputedStyle(allCloneElements.item(i), allRootElements.item(i));
 	}
 
 	const data = new XMLSerializer().serializeToString(rootClone);

@@ -93,9 +93,9 @@ const store = useStore();
 // @Component({
 // 	mixins: [foundation],
 // })
-// let cypherquery = ref("");
-// let shareUrl = ref("");
-// let searchRetry = ref(0);
+//let cypherquery = ref("");
+//let shareUrl = ref("");
+let searchRetry = ref(0);
 
 function onMinimizeClicked(): void {
 	store.commit(SearchStorePaths.mutations.TOGGLE_SEARCH);
@@ -115,10 +115,10 @@ function onSearchClicked(): void {
 	const search = store.state.visualizer.search.search;
 	if (search.nodes.length > 0) {
 		store.dispatch(SearchStorePaths.actions.SEARCH);
-		this.searchRetry = 0;
+		searchRetry.value = 0;
 	} else {
-		this.searchRetry++;
-		if (this.searchRetry > 2) {
+		searchRetry.value++;
+		if (searchRetry.value > 2) {
 			alert("You haven't added any items to the search");
 		}
 	}

@@ -21,7 +21,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 			<fieldset class="fieldset">
 				<legend>{{ $t('phrase_And_Or') }}</legend>
 				<div class="input-group">
-					<span class="input-group-label small-4">{{ $tc('word_Type') }}</span>
+					<span class="input-group-label small-4">{{ $t('word_Type') }}</span>
 					<select v-model="type" class="small-8 input-group-field">
 						<option value="AND">{{ $t('word_AND') }}</option>
 						<option value="OR">{{ $t('word_OR') }}</option>
@@ -66,28 +66,31 @@ import { AndOrCondition } from "@/assets/ts/visualizer/Search";
 import { SearchStorePaths } from "@/store/modules/SearchStore";
 import { ref } from "vue";
 import { useStore } from "@/store";
+import { useI18n } from "vue-i18n";
 
-	const props = defineProps({
-		source: {
-			type: AndOrCondition,
-			required: true
-		}
-	});
-	const store = useStore();
-
-	let type = ref(props.source.type);
-
-	function onSaveClicked(): void {
-		store.commit(SearchStorePaths.mutations.Save.EDIT_ANDOR_CONDITION, this.type);
+const { t } = useI18n();
+const props = defineProps({
+	source: {
+		type: Object,
+		required: true
 	}
+});
+const source = props.source as AndOrCondition;
+const store = useStore();
 
-	function onDeleteClicked(): void {
-		if (confirm(this.$t('visualizer.search.confirm_andor_condition_delete').toString())) {
-			store.commit(SearchStorePaths.mutations.Delete.EDIT_ANDOR_CONDITION);
-		}
-	}
+let type = ref(source.type);
 
-	function onCloseClicked(): void {
-		store.commit(SearchStorePaths.mutations.CANCEL_ANDOR_EDIT);
+function onSaveClicked(): void {
+	store.commit(SearchStorePaths.mutations.Save.EDIT_ANDOR_CONDITION, type);
+}
+
+function onDeleteClicked(): void {
+	if (confirm(t('visualizer.search.confirm_andor_condition_delete').toString())) {
+		store.commit(SearchStorePaths.mutations.Delete.EDIT_ANDOR_CONDITION);
 	}
+}
+
+function onCloseClicked(): void {
+	store.commit(SearchStorePaths.mutations.CANCEL_ANDOR_EDIT);
+}
 </script>

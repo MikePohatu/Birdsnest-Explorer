@@ -83,10 +83,10 @@ onMounted(() => {
 });
 
 function onEdgeClicked() {
-	bus.emit(events.Visualizer.Edge.EdgeClicked, this.edge);
+	bus.emit(events.Visualizer.Edge.EdgeClicked, edge);
 }
 
 function onEdgeCtrlClicked() {
-	bus.emit(events.Visualizer.Edge.EdgeCtrlClicked, this.edge);
+	bus.emit(events.Visualizer.Edge.EdgeCtrlClicked, edge);
 }
 </script>

@@ -22,12 +22,10 @@ import "foundation-sites";
 import "motion-ui/dist/motion-ui.css";
 import "foundation-sites/dist/css/foundation.css";
 
-import Vue from "vue";
-
 import "./registerServiceWorker";
 import i18n from "./i18n";
 import FlagIcon from "vue-flag-icon";
-//import VueCookies from "vue3-cookies";
+import VueCookies from "vue3-cookies";
 
 import { createApp } from 'vue';
 import { store, key, rootPaths } from "./store";
@@ -37,7 +35,7 @@ import App from './App.vue';
 const app = createApp(App);
 
 app.use(FlagIcon)
-    //.use(VueCookies)
+    .use(VueCookies)
     .use(router)
     .use(store, key)
     .use(i18n)

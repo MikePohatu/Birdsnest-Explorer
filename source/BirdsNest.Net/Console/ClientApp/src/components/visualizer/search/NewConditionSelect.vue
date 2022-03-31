@@ -21,7 +21,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 			<fieldset class="fieldset">
 				<legend>{{ $t('word_New') }}</legend>
 				<div class="input-group">
-					<span class="input-group-label small-4">{{ $tc('word_Type') }}</span>
+					<span class="input-group-label small-4">{{ $t('word_Type') }}</span>
 					<select v-model="type" class="small-8 input-group-field">
                         <option v-for="(value, name) in newTypes" :key="name" :value="value">{{ name }}</option>
 					</select>
@@ -64,25 +64,25 @@ import { Dictionary } from "@/assets/ts/webcrap/misccrap";
 import { useStore } from "@/store";
 import { computed } from "vue";
 
-    let type = NewConditionType.Value;
-    const store = useStore();
+let type = NewConditionType.Value;
+const store = useStore();
 
-    const newTypes = computed((): Dictionary<string> => {
-        return NewConditionType;
-    });
+const newTypes = computed((): Dictionary<string> => {
+	return NewConditionType;
+});
 
-	function onCancelClicked(): void {
-		store.commit(SearchStorePaths.mutations.CANCEL_NEW_CONDITION);
+function onCancelClicked(): void {
+	store.commit(SearchStorePaths.mutations.CANCEL_NEW_CONDITION);
+}
+
+function onOkClicked(): void {
+	let newcond: Condition;
+
+	if (type === NewConditionType.Value) {
+		newcond = new ValueCondition(ConditionType.String);
+	} else {
+		newcond = new AndOrCondition(this.type);
 	}
-
-	function onOkClicked(): void {
-		let newcond: Condition;
-
-        if (this.type === NewConditionType.Value) {
-            newcond = new ValueCondition(ConditionType.String);
-        } else {
-            newcond = new AndOrCondition(this.type);
-        }
-		store.commit(SearchStorePaths.mutations.Add.NEW_CONDITION, newcond);
-	}
+	store.commit(SearchStorePaths.mutations.Add.NEW_CONDITION, newcond);
+}
 </script>

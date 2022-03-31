@@ -34,7 +34,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 			<b>dbId:</b>
 			{{edge.dbId}}
 			<br />
-			<b>{{ $tc('word_Type') }}:</b>
+			<b>{{ $t('word_Type') }}:</b>
 			{{type}}
 			<br />
 		</div>
@@ -131,7 +131,7 @@ import { computed } from "vue";
 	});
 
 	function onEyeClicked() {
-		this.edge.enabled = !this.edge.enabled;
+		edge.enabled = !edge.enabled;
 	}
 
 </script>

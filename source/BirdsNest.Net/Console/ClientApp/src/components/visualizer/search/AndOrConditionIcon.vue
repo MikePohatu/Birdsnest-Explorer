@@ -95,27 +95,28 @@ import { useStore } from "@/store";
 // 	name: "AndOrConditionIcon",
 // 	components: { ValueConditionIcon },
 // })
-	const props = defineProps({condition: { type: AndOrCondition, required: true }});
+	const props = defineProps({condition: { type: Object, required: true }});
 	const store = useStore();
+	const condition = props.condition as AndOrCondition;
 	
 	const name = computed((): string => {
-		return props.condition.id;
+		return condition.id;
 	});
 
 	const conditions = computed((): Condition[] => {
-		return props.condition.conditions;
+		return condition.conditions;
 	});
 
 	const isSelected = computed((): boolean => {
-		return store.state.visualizer.search.selectedCondition === props.condition;
+		return store.state.visualizer.search.selectedCondition === condition;
 	});
 
 	const isRoot = computed((): boolean => {
-		return props.condition === store.state.visualizer.search.search.condition;
+		return condition === store.state.visualizer.search.search.condition;
 	});
 
 	const isEmptyRoot = computed((): boolean => {
-		return isRoot.value && props.condition.conditions.length === 0;
+		return isRoot.value && condition.conditions.length === 0;
 	});
 
 	function isAndOr(cond: Condition): boolean {
@@ -123,15 +124,15 @@ import { useStore } from "@/store";
 	}
 
 	function onClicked(): void {
-		store.commit(SearchStorePaths.mutations.Update.SELECTED_CONDITION, this.condition);
+		store.commit(SearchStorePaths.mutations.Update.SELECTED_CONDITION, condition);
 	}
 
 	function onDblClicked(): void {
-		store.commit(SearchStorePaths.mutations.Update.SELECTED_CONDITION, this.condition);
+		store.commit(SearchStorePaths.mutations.Update.SELECTED_CONDITION, condition);
 		store.commit(SearchStorePaths.mutations.Update.EDIT_CONDITION);
 	}
 
 	function onAddClicked(): void {
-		store.commit(SearchStorePaths.mutations.Add.NEW_CONDITION_PARENT, this.condition);
+		store.commit(SearchStorePaths.mutations.Add.NEW_CONDITION_PARENT, condition);
 	}
 </script>

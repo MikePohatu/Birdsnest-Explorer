@@ -244,6 +244,7 @@ import { SearchStorePaths } from "../../../store/modules/SearchStore";
 import { useStore } from "@/store";
 import { computed } from "vue";
 import { SearchNode, SearchEdge } from "@/assets/ts/visualizer/Search";
+import { useI18n } from "vue-i18n";
 
 // @Component({
 // 	components: {
@@ -256,6 +257,7 @@ import { SearchNode, SearchEdge } from "@/assets/ts/visualizer/Search";
 // 	},
 // })
 const store = useStore();
+const { t } = useI18n();
 
 const editDisabled = computed((): boolean => {
 	return store.state.visualizer.search.selectedItem === null;
@@ -316,7 +318,7 @@ function onItemDownClicked(): void {
 }
 
 function onItemDeleteClicked(): void {
-	const confirmed = confirm(this.$t('visualizer.search.confirm_item_delete', { name: store.state.visualizer.search.selectedItem.name }).toString());
+	const confirmed = confirm(t('visualizer.search.confirm_item_delete', { name: store.state.visualizer.search.selectedItem.name }).toString());
 
 	if (confirmed) {
 		store.commit(SearchStorePaths.mutations.Delete.SELECTED_ITEM);
@@ -347,9 +349,9 @@ function onCondDeleteClicked(): void {
 	const cond = store.state.visualizer.search.selectedCondition;
 	let message: string;
 	if (cond.type === ConditionType.And || cond.type === ConditionType.Or) {
-		message = this.$t('visualizer.search.confirm_andor_condition_delete').toString();
+		message = t('visualizer.search.confirm_andor_condition_delete').toString();
 	} else {
-		message = this.$t('visualizer.search.confirm_value_condition_delete').toString()
+		message = t('visualizer.search.confirm_value_condition_delete').toString()
 	}
 	if (confirm(message)) {
 		store.commit(SearchStorePaths.mutations.Delete.SELECTED_CONDITION);

@@ -82,6 +82,7 @@ import { SearchStorePaths } from "../../../store/modules/SearchStore";
 import { bus, events } from "@/bus";
 import { computed } from "vue";
 import { useStore } from "@/store";
+import { useI18n } from "vue-i18n";
 
 // @Component({
 // 	mixins: [foundation],
@@ -90,6 +91,7 @@ import { useStore } from "@/store";
 //It will be trying to work on same id
 const props = defineProps({ id: { type: String, required: true } });
 const store = useStore();
+const { t } = useI18n();
 
 const dropdownId = computed<string>(() => {
 	return "dropdown-" + props.id;
@@ -128,11 +130,11 @@ function onAddToViewClicked(): void {
 	let proceed = true;
 
 	if (store.state.visualizer.search.results.nodes.length > 300) {
-		proceed = confirm(this.$t('visualizer.search.count_warning').toString());
+		proceed = confirm(t('visualizer.search.count_warning').toString());
 	}
 
 	if (proceed && store.state.visualizer.search.results.nodes.length > 0) {
-		bus.emit(events.Notifications.Processing, this.$t('visualizer.search.adding_results').toString());
+		bus.emit(events.Notifications.Processing, t('visualizer.search.adding_results').toString());
 		store.commit(VisualizerStorePaths.mutations.Add.PENDING_RESULTS, store.state.visualizer.search.results);
 		store.commit(SearchStorePaths.mutations.Delete.RESULTS);
 	}

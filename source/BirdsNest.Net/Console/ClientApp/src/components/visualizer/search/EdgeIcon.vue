@@ -72,39 +72,40 @@ import webcrap from '@/assets/ts/webcrap/webcrap';
 import { computed } from "@vue/reactivity";
 import { useStore } from "@/store";
 	const props = defineProps({
-		edge: {type: SearchEdge, required: true }
+		edge: {type: Object, required: true }
 	});
+	const edge = props.edge as SearchEdge;
 	const store = useStore();
 
 	const isDirRight = computed((): boolean => {
-		return props.edge.direction === ">";
+		return edge.direction === ">";
 	});
 
 	const text = computed((): string => {
-		let outtext = props.edge.name;
-		if (webcrap.misc.isNullOrWhitespace(props.edge.label) === false) {
-			outtext += " :" + props.edge.label;
+		let outtext = edge.name;
+		if (webcrap.misc.isNullOrWhitespace(edge.label) === false) {
+			outtext += " :" + edge.label;
 		} 
 
-		if (props.edge.min === -1) {
+		if (edge.min === -1) {
 			outtext += " *";
 		} else {
-			outtext += " " + props.edge.min + ".." + props.edge.max;
+			outtext += " " + edge.min + ".." + edge.max;
 		}
 
 		return outtext;
 	});
 
 	function onEdgeClicked(): void {
-		store.commit(SearchStorePaths.mutations.Update.SELECTED_ITEM, props.edge);
+		store.commit(SearchStorePaths.mutations.Update.SELECTED_ITEM, edge);
 	}
 
 	function onEdgeDblClicked(): void {
-		store.commit(SearchStorePaths.mutations.Update.SELECTED_ITEM, props.edge);
+		store.commit(SearchStorePaths.mutations.Update.SELECTED_ITEM, edge);
 		store.commit(SearchStorePaths.mutations.Update.EDIT_ITEM);
 	}
 
 	const isSelectedItem = computed((): boolean =>{
-		return store.state.visualizer.search.selectedItem === props.edge;
+		return store.state.visualizer.search.selectedItem === edge;
 	});
 </script>

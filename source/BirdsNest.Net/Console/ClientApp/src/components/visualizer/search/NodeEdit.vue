@@ -34,7 +34,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 				</div>
 
 				<div class="input-group">
-					<span class="input-group-label">{{ $tc('word_Type') }}</span>
+					<span class="input-group-label">{{ $t('word_Type') }}</span>
 					<select id="nodeType" class="input-group-field" v-model="node.label">
 						<option value="">*</option>
 						<option
@@ -88,9 +88,10 @@ import { SearchStorePaths } from "../../../store/modules/SearchStore";
 import { useStore } from "@/store";
 import { computed } from "vue";
 
-	const props = defineProps({ source: {type: SearchNode, required: true}});
+	const props = defineProps({ source: {type: Object, required: true}});
+	const source = props.source as SearchNode;
 
-	let node: SearchNode = copyNode(props.source);
+	let node: SearchNode = copyNode(source);
 	const store = useStore();
 
 
@@ -111,7 +112,7 @@ import { computed } from "vue";
 	});
 
 	function saveNode(): void {
-		store.commit(SearchStorePaths.mutations.Save.EDIT_NODE, this.node);
+		store.commit(SearchStorePaths.mutations.Save.EDIT_NODE, node);
 	}
 
 	function onCloseClicked(): void {
@@ -119,8 +120,8 @@ import { computed } from "vue";
 	}
 	function saveNodeAndCond(): void {
 		const condition = new ValueCondition(ConditionType.String);
-		condition.name = this.node.name;
-		store.commit(SearchStorePaths.mutations.Save.EDIT_NODE, this.node);
+		condition.name = node.name;
+		store.commit(SearchStorePaths.mutations.Save.EDIT_NODE, node);
 		store.commit(SearchStorePaths.mutations.Add.NEW_CONDITION, condition);
 	}
 

@@ -30,31 +30,32 @@ import { computed } from "@vue/reactivity";
 import { useStore } from "@/store";
 import webcrap from '../../../assets/ts/webcrap/webcrap';
 
-	const props = defineProps({node: { type: SearchNode, required: true }});
+	const props = defineProps({node: { type: Object, required: true }});
+	const node = props.node as SearchNode;
 	const store = useStore();
 
 	const text = computed((): string => {
-		if (webcrap.misc.isNullOrWhitespace(props.node.label)) {
-			return props.node.name;
+		if (webcrap.misc.isNullOrWhitespace(node.label)) {
+			return node.name;
 		} else {
-			return props.node.name + " :" + props.node.label;
+			return node.name + " :" + node.label;
 		}
 	});
 
 	const label = computed((): string => {
-		return props.node.label;
+		return node.label;
 	});
 
 	const isSelectedItem  = computed((): boolean => {
-		return store.state.visualizer.search.selectedItem === props.node;
+		return store.state.visualizer.search.selectedItem === node;
 	});
 
 	function onNodeClicked(): void {
-		store.commit(SearchStorePaths.mutations.Update.SELECTED_ITEM, props.node);
+		store.commit(SearchStorePaths.mutations.Update.SELECTED_ITEM, node);
 	}
 
 	function onNodeDblClicked(): void {
-		store.commit(SearchStorePaths.mutations.Update.SELECTED_ITEM, props.node);
+		store.commit(SearchStorePaths.mutations.Update.SELECTED_ITEM, node);
 		store.commit(SearchStorePaths.mutations.Update.EDIT_ITEM);
 	}
 </script>
