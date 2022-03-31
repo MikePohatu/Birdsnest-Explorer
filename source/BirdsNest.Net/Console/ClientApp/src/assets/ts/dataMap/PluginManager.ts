@@ -17,10 +17,10 @@
 
 import { Dictionary } from "@/assets/ts/webcrap/misccrap";
 import { DataType } from "./DataType";
-import { Plugin } from "./Plugin";
+import { ConsolePlugin } from "./ConsolePlugin";
 
 export default interface PluginManager {
-    plugins: Dictionary<Plugin>;
+    plugins: Dictionary<ConsolePlugin>;
     extensionCount: number;
     nodeDisplayNames: Dictionary<string>;
     edgeDisplayNames: Dictionary<string>;

@@ -52,19 +52,18 @@ import { useI18n } from 'vue-i18n';
 
 const { t } = useI18n();
 
-
 // @Component({
 // 	components: { VueMarkdown, ScrollToTop }
 // })
 const router = useRouter();
 const route = useRoute();
 
-let defaultmd = "Loading";
+let defaultmd = ref("Loading");
 let markdown = ref(defaultmd);
 
 function updateMarkdown(route: RouteLocationNormalized): void {
 	bus.emit(events.Notifications.Processing);
-	markdown.value = defaultmd;
+	markdown.value = defaultmd.value;
 	const docurl = route.path.replace("/docs/", "/");
 
 	const request: Request = {

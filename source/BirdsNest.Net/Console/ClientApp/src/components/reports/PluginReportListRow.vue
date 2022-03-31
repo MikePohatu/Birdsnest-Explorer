@@ -24,19 +24,24 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
   </tr>
 </template>
 
-<script setup lang="ts">
+<script setup lang="ts">import { useRouter } from 'vue-router';
   import { Report } from "@/assets/ts/dataMap/Report";
+
+  const router = useRouter();  
   const props = defineProps({
-    report: { type: Report, required: true },
+    report: { type: Object, required: true },
     reportName: { type: String, required: true },
     pluginName: { type: String, required: true }
   });
 
+  const report = props.report as Report;
+
   function openReport(): void {
     //const reportPath = { path: '/report',  query: this.report } as RawLocation;
-    this.$router.push({
+    //console.log({source: "openReport", reportName: props.reportName, pluginName:props.pluginName });
+    router.push({
       path: '/report',
-      query: { reportName:this.reportName, pluginName:this.pluginName }
+      query: { reportName:props.reportName, pluginName:props.pluginName }
     });
   }
 

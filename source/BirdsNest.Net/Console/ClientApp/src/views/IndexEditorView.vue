@@ -149,14 +149,14 @@ import { Index } from "@/assets/ts/dataMap/indexes/Index";
 import { api, Request } from "@/assets/ts/webcrap/apicrap";
 import { Dictionary } from "@/assets/ts/webcrap/misccrap";
 import PluginManager from "@/assets/ts/dataMap/PluginManager";
-import { Plugin } from "@/assets/ts/dataMap/Plugin";
+import { ConsolePlugin } from "@/assets/ts/dataMap/ConsolePlugin";
 import ServerInfo from "@/assets/ts/dataMap/ServerInfo";
 import { DataType } from "@/assets/ts/dataMap/DataType";
 import { Property } from "@/assets/ts/dataMap/Property";
 import { rootPaths } from "@/store/index";
 import $ from "jquery";
 import "foundation-sites";
-import { computed, defineComponent, onMounted, ref } from "vue";
+import { computed, onMounted, ref } from "vue";
 import { useStore } from "@/store";
 import { useI18n } from 'vue-i18n';
 
@@ -186,7 +186,7 @@ const statsDataReady = computed((): boolean => {
 	return serverInfo.value !== null && pluginManager.value !== null;
 });
 
-function pluginHasProperties(plugin: Plugin) {
+function pluginHasProperties(plugin: ConsolePlugin) {
 	const dataTypeNames = Object.keys(plugin.nodeDataTypes);
 	for (let i = 0; i < dataTypeNames.length; i++) {
 		const datatype = plugin.nodeDataTypes[dataTypeNames[i]];
