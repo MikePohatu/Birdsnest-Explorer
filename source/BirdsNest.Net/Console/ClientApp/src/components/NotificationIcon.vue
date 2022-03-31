@@ -121,7 +121,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 
 <script setup lang="ts">
 import { bus, events } from "@/bus";
-import { computed, onBeforeUnmount, ref } from "vue";
+import { computed, onBeforeUnmount, onMounted, ref } from "vue";
 import { useI18n } from "vue-i18n";
 
 const notificationStates = {
@@ -136,7 +136,6 @@ const notificationStates = {
 
 let message = ref("");
 let state = ref(notificationStates.HIDDEN);
-let states = notificationStates;
 let processing = ref(false);
 const i18n = useI18n();
 
@@ -174,11 +173,10 @@ const isHidden = computed<boolean>(() => {
 });
 
 const stateClass = computed<string>(() => {
-	return "state" + state;
+	return "state" + state.value;
 });
 
-init();
-function init(): void {
+onMounted((): void => {
 	bus.on(events.Notifications.Clear, () => {
 		if (state.value < notificationStates.WARN) {
 			state.value = notificationStates.HIDDEN;
@@ -228,7 +226,7 @@ function init(): void {
 		}
 		processing.value = false;
 	});
-}
+});
 
 onBeforeUnmount(() => {
 	bus.off(events.Notifications.Clear);
