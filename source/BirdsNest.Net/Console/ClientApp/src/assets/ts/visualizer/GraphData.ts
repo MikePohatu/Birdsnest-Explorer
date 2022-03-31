@@ -25,9 +25,7 @@ import { SimLink } from './SimLink';
 import Slope from "./Slope";
 import Vue from 'vue';
 import { VisualizerStorePaths } from '@/store/modules/VisualizerStore';
-import { useStore } from "@/store";
-
-const store = useStore();
+import { store } from "@/store";
 
 class GraphData {
     defaultNodeSize = 40;
