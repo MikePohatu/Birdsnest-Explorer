@@ -16,13 +16,13 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 import { Module } from "vuex";
 import { api, Request } from "../../assets/ts/webcrap/apicrap";
-import { Search, SearchItem, SearchEdge, SearchNode, Condition, moveCondition, ConditionType, AndOrCondition, ValueCondition, ReplaceCondition, DeleteCondition } from "../../assets/ts/visualizer/Search";
+import { Search, SearchItem, SearchEdge, SearchNode, Condition, moveCondition, ConditionType, AndOrCondition, ValueCondition, ReplaceCondition, DeleteCondition, importNode } from "../../assets/ts/visualizer/Search";
 import webcrap from "@/assets/ts/webcrap/webcrap";
 import { RootState } from '../index';
 import { ResultSet } from '@/assets/ts/dataMap/ResultSet';
 import i18n from '@/i18n';
 
-const t = i18n.global.t;
+const { t } = i18n.global.t;
 
 export const SearchStorePaths = {
     mutations: {
@@ -181,8 +181,7 @@ export const SearchStore: Module<SearchState, RootState> = {
             if (state.editNode === null) {
                 webcrap.array.pushItem<SearchNode>(state.search.nodes, value);
             } else {
-                value.id = state.editNode.id;
-                webcrap.array.replaceItem<SearchNode>(state.search.nodes, state.editNode, value);
+                importNode(value, state.editNode);
                 state.editNode = null;
             }
         },

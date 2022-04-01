@@ -86,12 +86,12 @@ import { DataType } from "@/assets/ts/dataMap/DataType";
 import { SearchNode, copyNode, ValueCondition, ConditionType } from "@/assets/ts/visualizer/Search";
 import { SearchStorePaths } from "../../../store/modules/SearchStore";
 import { useStore } from "@/store";
-import { computed } from "vue";
+import { computed, reactive } from "vue";
 
 	const props = defineProps({ source: {type: Object, required: true}});
 	const source = props.source as SearchNode;
 
-	let node: SearchNode = copyNode(source);
+	const node: SearchNode = reactive(copyNode(source));
 	const store = useStore();
 
 

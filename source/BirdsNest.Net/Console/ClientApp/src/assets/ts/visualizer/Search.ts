@@ -72,6 +72,14 @@ export function copyNode(node: SearchNode): SearchNode {
     return newNode;
 }
 
+export function importNode(sourceNode: SearchNode, destNode: SearchNode): void {
+    destNode.name = sourceNode.name;
+    destNode.label = sourceNode.label;
+    destNode.index = sourceNode.index;
+    destNode.dbId = sourceNode.dbId;
+    destNode.labels = Array.from(sourceNode.labels);
+}
+
 export class SearchEdge implements SearchItem {
     type = SearchItemType.SearchEdge;
     name = "";
