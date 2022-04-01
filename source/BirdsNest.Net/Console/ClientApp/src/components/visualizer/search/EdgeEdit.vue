@@ -217,14 +217,14 @@ import { SearchEdge, copyEdge, ValueCondition, ConditionType } from "@/assets/ts
 import { DataType } from "@/assets/ts/dataMap/DataType";
 import { Dictionary } from "lodash";
 import { SearchStorePaths } from "@/store/modules/SearchStore";
-import { computed, ref } from "@vue/reactivity";
+import { computed, reactive, ref } from "@vue/reactivity";
 import { useStore } from "@/store";
 
 
 	const props = defineProps({ source: { type: Object, required: true }});
 	const store = useStore();
 
-	const edge = ref<SearchEdge>(copyEdge(props.source as SearchEdge));
+	const edge = reactive<SearchEdge>(copyEdge(props.source as SearchEdge));
 	let maxValue = ref(20);
 
 	const edgeDisplayNames = computed((): Dictionary<DataType> => {
@@ -244,7 +244,7 @@ import { useStore } from "@/store";
 	});
 
 	const edgeDirRight = computed((): boolean => {
-		if (edge.value.direction === ">") {
+		if (edge.direction === ">") {
 			return true;
 		} else {
 			return false;
@@ -253,7 +253,7 @@ import { useStore } from "@/store";
 
 	const limitHops = computed<boolean>({
 		get (): boolean {
-			return edge.value.min !== -1 && edge.value.max !== -1;
+			return edge.min !== -1 && edge.max !== -1;
 		},
 		set (newValue) {
 			if (!newValue) {
@@ -268,11 +268,11 @@ import { useStore } from "@/store";
 
 	const min = computed<number>({
 		get (): number {
-			return edge.value.min;
+			return edge.min;
 		},
 		set (newValue) {
-			edge.value.min = newValue;
-			if (edge.value.min > edge.value.max) {
+			edge.min = newValue;
+			if (edge.min > edge.max) {
 				max.value = newValue;
 			}
 		}
@@ -280,11 +280,11 @@ import { useStore } from "@/store";
 	
 	const max = computed<number>({
 		get (): number {
-			return edge.value.max;
+			return edge.max;
 		},
 		set (newValue) {
-			edge.value.max = newValue;
-			if (edge.value.min > edge.value.max) {
+			edge.max = newValue;
+			if (edge.min > edge.max) {
 				min.value = newValue;
 			}
 		}
@@ -296,10 +296,10 @@ import { useStore } from "@/store";
 	}
 
 	function onDirectionClicked(): void {
-		if (edge.value.direction === ">") {
-			edge.value.direction = "<";
+		if (edge.direction === ">") {
+			edge.direction = "<";
 		} else {
-			edge.value.direction = ">";
+			edge.direction = ">";
 		}
 	}
 
@@ -309,7 +309,7 @@ import { useStore } from "@/store";
 
 	function onSaveAndAddCondClicked(): void {	
 		const condition = new ValueCondition(ConditionType.String);
-		condition.name = edge.value.name;
+		condition.name = edge.name;
 		store.commit(SearchStorePaths.mutations.Save.EDIT_EDGE, edge);
 		store.commit(SearchStorePaths.mutations.Add.NEW_CONDITION, condition);
 	}

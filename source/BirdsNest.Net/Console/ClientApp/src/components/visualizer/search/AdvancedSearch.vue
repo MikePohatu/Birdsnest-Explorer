@@ -259,19 +259,19 @@ import { useI18n } from "vue-i18n";
 const store = useStore();
 const { t } = useI18n();
 
-const editDisabled = computed((): boolean => {
+const editDisabled = computed<boolean>(() => {
 	return store.state.visualizer.search.selectedItem === null;
 });
 
-const condEditDisabled = computed((): boolean => {
+const condEditDisabled = computed<boolean>(() => {
 	return store.state.visualizer.search.selectedCondition === null;
 });
 
-const search = computed((): Search => {
+const search = computed<Search>(() => {
 	return store.state.visualizer.search.search;
 });
 
-const isDeleteDisabled = computed((): boolean => {
+const isDeleteDisabled = computed<boolean>(() => {
 	if (store.state.visualizer.search.selectedItem === null) {
 		return true;
 	}
@@ -281,7 +281,7 @@ const isDeleteDisabled = computed((): boolean => {
 	return false;
 });
 
-const fullPath = computed((): SearchItem[] => {
+const fullPath = computed<SearchItem[]>(() => {
 	const search: Search = store.state.visualizer.search.search;
 	const path: SearchItem[] = [];
 	for (let i = 0; i < search.edges.length; i++) {
@@ -296,7 +296,7 @@ const results = computed<ResultSet>(() => {
 	return store.state.visualizer.search.results;
 });
 
-const searchHasNodes = computed((): boolean => {
+const searchHasNodes = computed<boolean>(() => {
 	return store.state.visualizer.search.search.nodes.length > 0;
 });
 
