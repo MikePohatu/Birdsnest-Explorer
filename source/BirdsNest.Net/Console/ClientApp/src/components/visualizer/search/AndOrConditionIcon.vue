@@ -88,7 +88,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 import { Condition, ConditionType, AndOrCondition, ValueCondition } from "@/assets/ts/visualizer/Search";
 import ValueConditionIcon from "./ValueConditionIcon.vue";
 import { SearchStorePaths } from "@/store/modules/SearchStore";
-import { computed } from "@vue/reactivity";
+import { computed, reactive } from "@vue/reactivity";
 import { useStore } from "@/store";
 
 // @Component({
@@ -97,7 +97,7 @@ import { useStore } from "@/store";
 // })
 	const props = defineProps({condition: { type: Object, required: true }});
 	const store = useStore();
-	const condition = props.condition as AndOrCondition;
+	const condition = reactive(props.condition as AndOrCondition);
 	
 	const name = computed((): string => {
 		return condition.id;

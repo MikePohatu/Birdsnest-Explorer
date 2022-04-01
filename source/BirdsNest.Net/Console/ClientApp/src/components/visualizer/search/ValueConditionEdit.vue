@@ -16,7 +16,7 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see http://www.gnu.org/licenses/.
 -->
 <template>
-	<div v-if="condition !== null" class="dialogWrapper">
+	<div v-if="condition.value !== null" class="dialogWrapper">
 		<div id="conditionEdit" class="dialog">
 			<fieldset class="fieldset">
 				<legend>{{ $t('word_Condition') }}</legend>
@@ -26,7 +26,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 						<span class="input-group-label">{{ $t('phrase_Referenced_Item') }}</span>
 						<select
 							class="input-group-field"
-							v-model="condition.name"
+							v-model="condition"
 							v-on:change="onSelectedItemChanged"
 						>
 							<option v-for="item in availableItems" :value="item.name" :key="item.name">{{ item.name }}</option>
@@ -66,7 +66,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 						</div>
 						<input
 							id="searchStringInput"
-							v-model="condition"
+							v-model="condition.value"
 							class="input-group-field"
 							autocomplete="on"
 							type="search"
@@ -236,8 +236,8 @@ const props = defineProps({
 })
 
 const store = useStore();
-const condition = reactive<ValueCondition>(copyCondition(props.source));
-let selectedItem = ref<SearchItem>();
+const condition = ref<ValueCondition>(copyCondition(props.source));
+const selectedItem = ref<SearchItem>(null);
 
 const autocompleteList = ref<string[]>([]);
 const alertMessage = ref("");
@@ -257,8 +257,8 @@ const availableItems = computed((): SearchItem[] => {
 });
 
 const dataType = computed((): DataType => {
-	//console.log({source:"dataType", conditionName: condition.name, selectedItem.valueValue: selectedItem.value});
-	if (webcrap.misc.isNullOrWhitespace(condition.name)) {
+	//console.log({source:"dataType", conditionName: condition.value.name, selectedItem.valueValue: selectedItem.value});
+	if (webcrap.misc.isNullOrWhitespace(condition.value.name)) {
 		return null;
 	}
 	if (selectedItem.value === null) {
@@ -285,18 +285,18 @@ const properties = computed((): string[] => {
 
 function onPropertyChanged() {
 	//console.log({source:"onPropertyChanged"});
-	if (Object.prototype.hasOwnProperty.call(dataType.value.properties, [condition.property])) {
-		condition.type = dataType.value.properties[condition.property].type;
+	if (Object.prototype.hasOwnProperty.call(dataType.value.properties, [condition.value.property])) {
+		condition.value.type = dataType.value.properties[condition.value.property].type;
 	} else {
 		const firstkey = Object.keys(dataType.value.properties)[0];
-		condition.type = dataType.value.properties[firstkey].type;
+		condition.value.type = dataType.value.properties[firstkey].type;
 	}
 }
 
 const propertyType = computed((): string => {
-	//console.log({source: "propertyType", dataType: dataType.value, condition: condition});
-	if (dataType.value !== null && webcrap.misc.isNullOrWhitespace(condition.property) === false) {
-		return condition.type;
+	//console.log({source: "propertyType", dataType: dataType.value, condition.value: condition.value});
+	if (dataType.value !== null && webcrap.misc.isNullOrWhitespace(condition.value.property) === false) {
+		return condition.value.type;
 	} else {
 		return null;
 	}
@@ -311,6 +311,7 @@ const operators = computed((): string[] => {
 });
 
 const isLabelSet = computed((): boolean => {
+	//console.log({source: "isLabelSet", selectedItemValue: selectedItem.value});
 	if (selectedItem.value === null || webcrap.misc.isNullOrWhitespace(selectedItem.value.label)) {
 		return false;
 	} else {
@@ -325,9 +326,9 @@ function autocompleteDebounce(): () => void {
 function onSelectedItemChanged(): void {
 	let item: SearchItem = null;
 	let isNode = true;
-	item = GetNode(condition.name, store.state.visualizer.search.search);
+	item = GetNode(condition.value.name, store.state.visualizer.search.search);
 	if (item === null) {
-		item = GetEdge(condition.name, store.state.visualizer.search.search);
+		item = GetEdge(condition.value.name, store.state.visualizer.search.search);
 		isNode = false;
 	}
 	if (item !== null) {
@@ -359,14 +360,14 @@ function onSelectedItemChanged(): void {
 	//if selected item type has changed, properties need to be re-checked
 	//console.log({source: "onselectedItem.valueChanged", dataType: dataType.value});
 	if (dataType.value === null) {
-		condition.property = "";
+		condition.value.property = "";
 	}
-	else if (webcrap.misc.isNullOrWhitespace(condition.property)) {
-		condition.property = dataType.value.default;
+	else if (webcrap.misc.isNullOrWhitespace(condition.value.property)) {
+		condition.value.property = dataType.value.default;
 	}
 	else {
-		if (dataType.value.propertyNames.includes(condition.property) === false) {
-			condition.property = dataType.value.default;
+		if (dataType.value.propertyNames.includes(condition.value.property) === false) {
+			condition.value.property = dataType.value.default;
 		}
 	}
 }
@@ -378,17 +379,17 @@ function updateAutocomplete(): void {
 			"/api/graph/node/values?type=" +
 			selectedItem.value.label +
 			"&property=" +
-			condition.property +
+			condition.value.property +
 			"&searchterm=" +
-			condition.value;
+			condition.value.value;
 	} else {
 		url =
 			"/api/graph/edge/values?type=" +
 			selectedItem.value.label +
 			"&property=" +
-			condition.property +
+			condition.value.property +
 			"&searchterm=" +
-			condition.value;
+			condition.value.value;
 	}
 
 	const newrequest: Request = {
@@ -410,7 +411,7 @@ function onCloseClicked(): void {
 }
 
 function onSaveClicked(): void {
-	store.commit(SearchStorePaths.mutations.Save.EDIT_VALUE_CONDITION, condition);
+	store.commit(SearchStorePaths.mutations.Save.EDIT_VALUE_CONDITION, condition.value);
 }
 
 function onDeleteClicked(): void {

@@ -43,7 +43,7 @@ const text = computed((): string => {
 });
 
 const label = computed((): string => {
-	console.log({source: "NodeIcon", node: node, label: node.label});
+	//console.log({source: "NodeIcon", node: node, label: node.label});
 	return node.label;
 });
 
