@@ -319,10 +319,6 @@ const isLabelSet = computed((): boolean => {
 	}
 });
 
-function autocompleteDebounce(): () => void {
-	return webcrap.misc.debounce(updateAutocomplete, 250);
-}
-
 function onSelectedItemChanged(): void {
 	let item: SearchItem = null;
 	let isNode = true;
@@ -372,8 +368,11 @@ function onSelectedItemChanged(): void {
 	}
 }
 
+const autocompleteDebounce: () => void = webcrap.misc.debounce(updateAutocomplete, 250);
+
 function updateAutocomplete(): void {
 	let url: string;
+
 	if (selectedItem.value.type === SearchItemType.SearchNode) {
 		url =
 			"/api/graph/node/values?type=" +
@@ -395,11 +394,10 @@ function updateAutocomplete(): void {
 	const newrequest: Request = {
 		url: url,
 		successCallback: data => {
-			//console.log(data);
 			autocompleteList.value = data;
 		},
-		errorCallback: () => {
-			//console.error(error);
+		errorCallback: (error) => {
+			console.error(error);
 			autocompleteList.value = [];
 		},
 	};
