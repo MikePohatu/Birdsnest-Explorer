@@ -69,21 +69,8 @@ import { VisualizerStorePaths } from "../store/modules/VisualizerStore";
 import LStore from "@/assets/ts/LocalStorageManager";
 import { computed, onMounted, watch } from "vue";
 
-
-// export default defineComponent({
-// 	components: {
-// 		Searches,
-// 		NodeEdit,
-// 		EdgeEdit,
-// 		ValueConditionEdit,
-// 		AndOrConditionEdit,
-// 		NewConditionSelect,
-// 		Graph,
-// 	},
-// 	setup() {
 const route = useRoute();
 const store = useStore();
-//const selectedNodesList = ref<number[]>([]); // = [128, 118];
 
 const loadSharedSearch = function (route: RouteLocation): void {
 	const encodedData = route.query.sharedsearch as string;
@@ -92,11 +79,6 @@ const loadSharedSearch = function (route: RouteLocation): void {
 		store.commit(SearchStorePaths.mutations.Update.SEARCH, decoded);
 	}
 }
-
-
-const selectedNodes = computed<ApiNode[]>(() => {
-	return store.state.visualizer.selectedNodes;
-});
 
 const editNode = computed<SearchNode>(() => {
 	return store.state.visualizer.search.editNode;
@@ -112,10 +94,6 @@ const editValCond = computed<ValueCondition>(() => {
 
 const editAndOrCondition = computed<AndOrCondition>(() => {
 	return store.state.visualizer.search.editAndOrCondition;
-});
-
-const newCondition = computed<AndOrCondition>(() => {
-	return store.state.visualizer.search.newCondition;
 });
 
 const newConditionParent = computed<AndOrCondition>(() => {
@@ -139,9 +117,4 @@ onMounted((): void => {
 		store.commit(SearchStorePaths.mutations.TOGGLE_SEARCH_MODE);
 	}
 });
-
-	// $route($route: any) {
-	// 	throw new Error("Method not implemented.");
-	// }
-//})
 </script>

@@ -111,15 +111,15 @@ export default class SimulationController {
         this.StopSimulations();
 
         this.SetNodes(
-            graphData.graphNodes.GetArray(),
-            graphData.meshNodes.GetArray(),
-            graphData.treeNodes.GetArray(),
-            graphData.connectNodes.GetArray()
+            graphData.graphNodes.Array,
+            graphData.meshNodes.Array,
+            graphData.treeNodes.Array,
+            graphData.connectNodes.Array
         );
         this.SetEdges(
-            graphData.meshEdges.GetArray(),
-            graphData.treeEdges.GetArray(),
-            graphData.connectEdges.GetArray()
+            graphData.meshEdges.Array,
+            graphData.treeEdges.Array,
+            graphData.connectEdges.Array
         );
     }
 

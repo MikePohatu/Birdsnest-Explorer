@@ -23,7 +23,6 @@ import { Dictionary } from "@/assets/ts/webcrap/misccrap";
 import { SimNode } from './SimNode';
 import { SimLink } from './SimLink';
 import Slope from "./Slope";
-import Vue from 'vue';
 import { VisualizerStorePaths } from '@/store/modules/VisualizerStore';
 import { store } from "@/store";
 
@@ -196,7 +195,7 @@ class GraphData {
     }
 
     clearSelectedItems() {
-        this.selectedItems.GetArray().forEach(d => {
+        this.selectedItems.Array.forEach(d => {
             d.selected = false;
         });
         this.selectedItems.Clear();
@@ -204,7 +203,7 @@ class GraphData {
     }
 
     invertSelectedItems() {
-        this.graphNodes.GetArray().forEach(d => {
+        this.graphNodes.Array.forEach(d => {
             if (d.selected) {
                 this.selectedItems.Remove(d);
                 d.selected = false;
@@ -219,7 +218,7 @@ class GraphData {
     }
 
     getSelectedNodeIds(): string[] {
-        return this.selectedItems.GetIDs();
+        return this.selectedItems.IDs;
     }
 
     removeIds(nodeIds: string[], edgeIds: string[]): void {
@@ -269,12 +268,12 @@ class GraphData {
         //check the current labels in the graph and remove any that have been removed
         const currNodeLabels: Dictionary<boolean> = {};
         const currEdgeLabels: Dictionary<boolean> = {};
-        this.graphNodes.GetArray().forEach(node => {
+        this.graphNodes.Array.forEach(node => {
             node.labels.forEach(label => {
                 currNodeLabels[label] = true;
             });
         });
-        this.graphEdges.GetArray().forEach(edge => {
+        this.graphEdges.Array.forEach(edge => {
             currEdgeLabels[edge.label] = true;
         });
         
@@ -335,7 +334,7 @@ class GraphData {
         const maxScaling = 3;
         let maxScope = 20;
 
-        this.graphNodes.GetArray().forEach((node) => {
+        this.graphNodes.Array.forEach((node) => {
             if (node.scope > maxScope) {
                 maxScope = node.scope;
             }
@@ -343,7 +342,7 @@ class GraphData {
 
         const scalingRange = new Slope(minScope, minScaling, maxScope, maxScaling);
 
-        this.graphNodes.GetArray().forEach((d) => {
+        this.graphNodes.Array.forEach((d) => {
             d.scale = scalingRange.getYFromX(d.scope);
             d.size = this.defaultNodeSize * d.scale;
             d.radius = d.size / 2;
@@ -353,7 +352,7 @@ class GraphData {
     }
 
     private updatePerfMode() {
-        if (this.graphNodes.GetArray().length > 300) {
+        if (this.graphNodes.Array.length > 300) {
             store.commit(VisualizerStorePaths.mutations.Update.PERF_MODE, true);
         } else {
             store.commit(VisualizerStorePaths.mutations.Update.PERF_MODE, false);

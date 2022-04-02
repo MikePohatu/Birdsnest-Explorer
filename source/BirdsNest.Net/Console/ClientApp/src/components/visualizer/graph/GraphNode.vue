@@ -73,20 +73,18 @@ import { SimNode } from "@/assets/ts/visualizer/SimNode";
 import { d3 } from "@/assets/ts/visualizer/d3";
 import { bus, events } from "@/bus";
 import webcrap from "@/assets/ts/webcrap/webcrap";
-import { computed, onMounted, ref } from "vue";
+import { computed, onMounted, ref, reactive } from "vue";
 import { useStore } from "@/store";
 
 	const props = defineProps({ node: { type: Object, required: true }});
-	const node = props.node as SimNode;
+	const node = reactive(props.node as SimNode);
 	const store = useStore();
 	const root = ref(null);
 
-	let isSelected = ref(false);
-
 	//assign the d3 datum to the element so simulation can use it
 	onMounted(() => {
-		//console.log(node);
 		d3.select(root).datum(node);
+		//console.log({source:"GraphNode", node: node, root:root});
 	});
 
 	const subTypes = computed((): string[] => {

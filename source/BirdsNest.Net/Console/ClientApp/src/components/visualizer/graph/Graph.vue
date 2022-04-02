@@ -238,17 +238,18 @@ import { useRouter } from "vue-router";
 	let controlEvents = events.Visualizer.Controls;
 
 	let watchers = [];
-
+	
 	const graphNodes = computed<SimNode[]>(() => {
-		return graphData.graphNodes.GetArray();
+		console.log({source:"graphNodes", graphNodes: graphData.graphNodes.Array});
+		return graphData.graphNodes.Array;
 	});
 
 	const graphEdges = computed<SimLink<SimNode>[]>(() => {
-		return graphData.graphEdges.GetArray();
+		return graphData.graphEdges.Array;
 	});
 
 	const detailsItems = computed<(SimNode | SimLink<SimNode>)[]>(() => {
-		return graphData.detailsItems.GetArray();
+		return graphData.detailsItems.Array;
 	});
 
 	onCreated();
@@ -274,7 +275,7 @@ import { useRouter } from "vue-router";
 			centerView();
 		});
 		bus.on(events.Visualizer.Controls.Export, () => {
-			LStore.storePendingNodeList(graphData.graphNodes.GetArray());
+			LStore.storePendingNodeList(graphData.graphNodes.Array);
 			const routeData = router.resolve({ path: routeDefs.report.path });
 			window.open(routeData.href, "_blank");
 		});
@@ -475,6 +476,7 @@ import { useRouter } from "vue-router";
 
 	function initWatchers(): void {
 		//pending nodes
+		//console.log({source:"initWatchers"});
 		const pendingNodesWatch = store.watch(
 			() => {
 				return store.state.visualizer.pendingNodes;
@@ -490,7 +492,9 @@ import { useRouter } from "vue-router";
 						bus.emit(events.Notifications.Clear);
 					}, 1000);
 				}
-			}, 1000)
+			}, 1000),{
+				deep:true
+			}
 		);
 
 		//pending result set
@@ -509,9 +513,15 @@ import { useRouter } from "vue-router";
 						updateNodeSizes();
 						refreshNodeConnections();
 						bus.emit(events.Notifications.Clear);
+						console.log({source: "pendingResultsWatch", 
+							message: "debounce finished", 
+							pendingResults: store.state.visualizer.pendingResults,
+							graphData: graphData});
 					}, 1000);
 				}
-			}, 500)
+			}, 500),{
+				deep:true
+			}
 		);
 
 		watchers.push(pendingNodesWatch);
@@ -529,7 +539,7 @@ import { useRouter } from "vue-router";
 	}
 
 	function refreshNodeConnections(): void {
-		const postData = JSON.stringify(graphData.graphNodes.GetIDs());
+		const postData = JSON.stringify(graphData.graphNodes.IDs);
 
 		const loopsrequest: Request = {
 			url: "/api/graph/directloops",
@@ -574,7 +584,7 @@ import { useRouter } from "vue-router";
 	function searchGraph(value: string) {
 		const lowerVal = value.toLowerCase();
 		graphData.clearSelectedItems();
-		graphData.graphNodes.GetArray().forEach(node => {
+		graphData.graphNodes.Array.forEach(node => {
 			if (node.name.toLowerCase().includes(lowerVal)) {
 				graphData.addSelection(node);
 			}
@@ -923,7 +933,7 @@ import { useRouter } from "vue-router";
 
 	function updateLocationsEdges() {
 		//console.log("updateLocationsEdges");
-		const alledges = edgesLayer.selectAll(".edges").data(graphData.graphEdges.GetArray());
+		const alledges = edgesLayer.selectAll(".edges").data(graphData.graphEdges.Array);
 		const defaultshift = graphData.defaultNodeSize / 2.5;
 
 		alledges.each((d: SimLink<SimNode>, i, nodes) => {
