@@ -26,7 +26,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 						<span class="input-group-label">{{ $t('phrase_Referenced_Item') }}</span>
 						<select
 							class="input-group-field"
-							v-model="condition"
+							v-model="condition.name"
 							v-on:change="onSelectedItemChanged"
 						>
 							<option v-for="item in availableItems" :value="item.name" :key="item.name">{{ item.name }}</option>
@@ -50,7 +50,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 					<div v-if="condition.property !== null && propertyType === 'boolean'" class="input-group">
 						<span class="input-group-label">=</span>
 						<div class="input-group-button">
-							<select class="input-group-field" v-model="condition">
+							<select class="input-group-field" v-model="condition.value">
 								<option value="TRUE">{{ $t('word_true') }}</option>
 								<option value="FALSE">{{ $t('word_false') }}</option>
 							</select>
@@ -87,7 +87,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 							</select>
 						</div>
 						<input
-							v-model.number="condition"
+							v-model.number="condition.value"
 							class="input-group-field"
 							type="search"
 							autocomplete="off"
@@ -226,7 +226,7 @@ import webcrap from "@/assets/ts/webcrap/webcrap";
 import { SearchStorePaths } from "@/store/modules/SearchStore";
 import { api, Request } from "@/assets/ts/webcrap/apicrap";
 import { SearchEdge } from "../../../assets/ts/visualizer/Search";
-import { computed, onMounted, ref, reactive } from "vue";
+import { computed, onMounted, ref } from "vue";
 import { useStore } from "@/store";
 import { useI18n } from "vue-i18n";
 
@@ -246,7 +246,7 @@ const saveable = ref(true);
 
 onMounted(()=> {
 	onSelectedItemChanged();
-	onPropertyChanged();
+	//onPropertyChanged();
 });
 
 
@@ -284,10 +284,14 @@ const properties = computed((): string[] => {
 });
 
 function onPropertyChanged() {
-	//console.log({source:"onPropertyChanged"});
-	if (Object.prototype.hasOwnProperty.call(dataType.value.properties, [condition.value.property])) {
+	//console.log({source:"onPropertyChanged", dataType: dataType.value, condition: condition.value});
+	if (dataType.value === null) {
+		condition.value.type = null;
+	} 
+	else if (Object.prototype.hasOwnProperty.call(dataType.value.properties, [condition.value.property])) {
 		condition.value.type = dataType.value.properties[condition.value.property].type;
-	} else {
+	} 
+	else {
 		const firstkey = Object.keys(dataType.value.properties)[0];
 		condition.value.type = dataType.value.properties[firstkey].type;
 	}
@@ -323,10 +327,12 @@ function onSelectedItemChanged(): void {
 	let item: SearchItem = null;
 	let isNode = true;
 	item = GetNode(condition.value.name, store.state.visualizer.search.search);
+
 	if (item === null) {
 		item = GetEdge(condition.value.name, store.state.visualizer.search.search);
 		isNode = false;
 	}
+	
 	if (item !== null) {
 		if (webcrap.misc.isNullOrWhitespace(item.label)) {
 			alertMessage.value = t('visualizer.search.error_no_selected_type_set').toString();
@@ -351,10 +357,10 @@ function onSelectedItemChanged(): void {
 		showAlert.value = true;
 		saveable.value = false;
 	}
+
 	selectedItem.value = item;
 
 	//if selected item type has changed, properties need to be re-checked
-	//console.log({source: "onselectedItem.valueChanged", dataType: dataType.value});
 	if (dataType.value === null) {
 		condition.value.property = "";
 	}

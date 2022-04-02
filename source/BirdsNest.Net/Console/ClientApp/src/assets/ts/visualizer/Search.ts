@@ -232,20 +232,38 @@ export function RemoveConditionsForName(root: AndOrCondition, name: string): voi
     //console.log("finished");
 }
 
-export function ReplaceCondition(root: AndOrCondition, oldcondition: ValueCondition, newcondition: ValueCondition): void {
-    for (let i = 0; i < root.conditions.length; i++) {
-        const cond: Condition = root.conditions[i];
-
-        if (cond.type === ConditionType.Or || cond.type === ConditionType.And) {
-            ReplaceCondition((cond as AndOrCondition), oldcondition, newcondition);
-        }
-        else {
-            if (cond === oldcondition) {
-                root.conditions.splice(i, 1, newcondition);
-                return;
+export function UpdateCondition(root: AndOrCondition, oldcondition: ValueCondition, newcondition: ValueCondition): void {
+    if (oldcondition === null) {
+        root.conditions.push(newcondition);
+    } else {
+        for (let i = 0; i < root.conditions.length; i++) {
+            const cond: Condition = root.conditions[i];
+    
+            if (cond.type === ConditionType.Or || cond.type === ConditionType.And) {
+                //console.log({source:"updateCondition", message: "nested call"});
+                UpdateCondition((cond as AndOrCondition), oldcondition, newcondition);
+            }
+            else {
+                if (cond === oldcondition) {
+                    //root.conditions.splice(i, 1, newcondition);
+                    importValueCondition(newcondition, oldcondition);
+                    //console.log({source:"updateCondition", oldcondition: oldcondition, newcondition: newcondition});
+                    return;
+                }
             }
         }
     }
+    
+}
+
+function importValueCondition(source: ValueCondition, dest: ValueCondition) {
+    dest.type = source.type;
+    dest.name = source.name;
+    dest.property = source.property;
+    dest.not = source.not;
+    dest.caseSensitive = source.caseSensitive;
+    dest.value = source.value;
+    dest.operator = source.operator;
 }
 
 export function DeleteCondition(root: AndOrCondition, oldcondition: Condition): void {

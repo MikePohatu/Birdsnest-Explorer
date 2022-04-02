@@ -88,7 +88,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 import { Condition, ConditionType, AndOrCondition, ValueCondition } from "@/assets/ts/visualizer/Search";
 import ValueConditionIcon from "./ValueConditionIcon.vue";
 import { SearchStorePaths } from "@/store/modules/SearchStore";
-import { computed, reactive } from "@vue/reactivity";
+import { computed, reactive, toRaw } from "@vue/reactivity";
 import { useStore } from "@/store";
 
 // @Component({
@@ -112,7 +112,12 @@ import { useStore } from "@/store";
 	});
 
 	const isRoot = computed((): boolean => {
-		return condition === store.state.visualizer.search.search.condition;
+		// console.log({
+		// 	condition: toRaw(condition), 
+		// 	storeCondition: toRaw(store.state.visualizer.search.search.condition),
+		// 	result: toRaw(condition) === toRaw(store.state.visualizer.search.search.condition)
+		// 	});
+		return toRaw(condition) === toRaw(store.state.visualizer.search.search.condition);
 	});
 
 	const isEmptyRoot = computed((): boolean => {

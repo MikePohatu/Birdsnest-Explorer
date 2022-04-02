@@ -30,7 +30,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 	import { ValueCondition, ConditionType } from "@/assets/ts/visualizer/Search";
 	import { SearchStorePaths } from "@/store/modules/SearchStore";
 	import { useStore } from "@/store";
-	import { computed } from "vue";
+	import { computed, reactive, ref } from "vue";
 	
 	const store = useStore();
 	const props = defineProps({
@@ -40,20 +40,23 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 		}
 	});
 
+	const condition = reactive<ValueCondition>(props.condition);
+
 	const isSelected = computed((): boolean => {
-		return store.state.visualizer.search.selectedCondition === props.condition;
+		return store.state.visualizer.search.selectedCondition === condition;
 	});
 
 	const searchDeets = computed((): string => {
-		return (props.condition.not ? "Not " : "") + props.condition.operator + " " + props.condition.value + (props.condition.type === ConditionType.String && props.condition.caseSensitive ? "*" : "");
+		//console.log({source: "searchDeets", condition: condition});
+		return (condition.not ? "Not " : "") + condition.operator + " " + condition.value + (condition.type === ConditionType.String && condition.caseSensitive ? "*" : "");
 	});
 
 	function onClicked(): void {
-		store.commit(SearchStorePaths.mutations.Update.SELECTED_CONDITION, props.condition);
+		store.commit(SearchStorePaths.mutations.Update.SELECTED_CONDITION, condition);
 	}
 
 	function onDblClicked(): void {
-		store.commit(SearchStorePaths.mutations.Update.SELECTED_CONDITION, props.condition);
+		store.commit(SearchStorePaths.mutations.Update.SELECTED_CONDITION, condition);
 		store.commit(SearchStorePaths.mutations.Update.EDIT_CONDITION);
 	}
 </script>

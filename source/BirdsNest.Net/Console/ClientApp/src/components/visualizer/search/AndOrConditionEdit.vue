@@ -69,6 +69,8 @@ import { useStore } from "@/store";
 import { useI18n } from "vue-i18n";
 
 const { t } = useI18n();
+const store = useStore();
+
 const props = defineProps({
 	source: {
 		type: Object,
@@ -76,12 +78,11 @@ const props = defineProps({
 	}
 });
 const source = props.source as AndOrCondition;
-const store = useStore();
 
-let type = ref(source.type);
+const type = ref(source.type);
 
 function onSaveClicked(): void {
-	store.commit(SearchStorePaths.mutations.Save.EDIT_ANDOR_CONDITION, type);
+	store.commit(SearchStorePaths.mutations.Save.EDIT_ANDOR_CONDITION, type.value);
 }
 
 function onDeleteClicked(): void {

@@ -67,7 +67,7 @@ import { SearchStorePaths } from "@/store/modules/SearchStore";
 import { ApiNode } from "@/assets/ts/dataMap/ApiNode";
 import { VisualizerStorePaths } from "../store/modules/VisualizerStore";
 import LStore from "@/assets/ts/LocalStorageManager";
-import { computed, onMounted, ref, watch } from "vue";
+import { computed, onMounted, watch } from "vue";
 
 
 // export default defineComponent({
@@ -83,7 +83,7 @@ import { computed, onMounted, ref, watch } from "vue";
 // 	setup() {
 const route = useRoute();
 const store = useStore();
-const selectedNodesList = ref<number[]>([]); // = [128, 118];
+//const selectedNodesList = ref<number[]>([]); // = [128, 118];
 
 const loadSharedSearch = function (route: RouteLocation): void {
 	const encodedData = route.query.sharedsearch as string;
