@@ -22,7 +22,7 @@ import { RootState } from '../index';
 import { ResultSet } from '@/assets/ts/dataMap/ResultSet';
 import i18n from '@/i18n';
 
-const { t } = i18n.global.t;
+const { t } = i18n.global;
 
 export const SearchStorePaths = {
     mutations: {

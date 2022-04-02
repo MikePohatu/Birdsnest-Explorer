@@ -105,7 +105,7 @@ function updateAutocomplete(): void {
 	const newrequest: Request = {
 		url: url,
 		successCallback: data => {
-			autocompleteList = data;
+			autocompleteList.value = data;
 		},
 		errorCallback: () => {
 			autocompleteList.value = [];
@@ -126,7 +126,7 @@ function onModeToggleClicked(): void {
 }
 
 function onSearchClicked(): void {
-	store.dispatch(SearchStorePaths.actions.SIMPLE_SEARCH, term);
+	store.dispatch(SearchStorePaths.actions.SIMPLE_SEARCH, term.value);
 	autocompleteList.value = [];  //reset the autocomplete list to get it out of the users face
 }
 
