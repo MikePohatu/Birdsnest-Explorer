@@ -25,6 +25,7 @@ import { SimLink } from './SimLink';
 import Slope from "./Slope";
 import { VisualizerStorePaths } from '@/store/modules/VisualizerStore';
 import { store } from "@/store";
+import { reactive } from "vue";
 
 class GraphData {
     defaultNodeSize = 40;
@@ -99,13 +100,14 @@ class GraphData {
             });
 
             this.graphNodes.Add(simnode);
+
             return simnode;
         } else {
             return null;
         }
     }
 
-    addNodes(nodes: ApiNode[]): void {
+    addNodes(nodes: ApiNode[]): GraphData {
         const spiral = new Spiral(this.defaultNodeSize * 2);
         nodes.forEach(node => {
             const simnode = this.addNode(node);
@@ -117,11 +119,13 @@ class GraphData {
                 spiral.Step();
             }
         });
-
+        
         this.updatePerfMode();
+
+        return this;
     }
 
-    addEdge(edge: ApiEdge): void {
+    private addEdge(edge: ApiEdge): void {
         // console.log("addEdge");
         // console.log(edge);
         if (this.graphEdges.KeyExists(edge.dbId) === false) {
@@ -169,7 +173,7 @@ class GraphData {
         }
     }
 
-    addResultSet(result: ResultSet) {
+    addResultSet(result: ResultSet): GraphData {
         // console.log("addResultSet");
         // console.log(result.edges);
         // console.log(result.nodes);
@@ -179,30 +183,54 @@ class GraphData {
         result.edges.forEach((edge: ApiEdge) => {
             this.addEdge(edge);
         });
+
         this.updatePerfMode();
 
         //console.log(this);
+        return this;
     }
 
-    addSelection(item: SimNode | SimLink<SimNode>) {
+    commitAll(): void {
+        this.commitNodes();
+        this.commitEdges();
+    }
+
+    commitNodes(): void {
+        this.graphNodes.Commit();
+        this.treeNodes.Commit();
+        this.meshNodes.Commit();
+        this.connectNodes.Commit();
+    }
+
+    commitEdges(): void {
+        this.graphEdges.Commit();
+        this.treeEdges.Commit();
+        this.meshEdges.Commit();
+        this.connectEdges.Commit();
+    }
+
+    addSelection(item: SimNode | SimLink<SimNode>): GraphData {
         this.selectedItems.Add(item);
         item.selected = true;
+        return this;
     }
 
-    removeSelection(item: SimNode | SimLink<SimNode>) {
+    removeSelection(item: SimNode | SimLink<SimNode>): GraphData {
         this.selectedItems.Remove(item);
         item.selected = false;
+        return this;
     }
 
-    clearSelectedItems() {
+    clearSelectedItems(): GraphData {
         this.selectedItems.Array.forEach(d => {
             d.selected = false;
         });
         this.selectedItems.Clear();
         this.detailsItems.Clear();
+        return this;
     }
 
-    invertSelectedItems() {
+    invertSelectedItems(): GraphData {
         this.graphNodes.Array.forEach(d => {
             if (d.selected) {
                 this.selectedItems.Remove(d);
@@ -215,6 +243,8 @@ class GraphData {
             }
             //d.selected = !d.selected;
         });
+        this.selectedItems.Commit();
+        return this;
     }
 
     getSelectedNodeIds(): string[] {
@@ -230,6 +260,7 @@ class GraphData {
             this.removeEdgeId(id);
         });
 
+        this.commitAll();
         this.cleanupLabelStates();
         this.updatePerfMode();
     }
@@ -239,6 +270,7 @@ class GraphData {
         if (node !== null) {
             this.removeNode(node);
         }
+        this.commitAll();
     }
 
     
@@ -260,6 +292,7 @@ class GraphData {
             this.removeEdge(edge);
         });
 
+        this.commitAll();
         this.cleanupLabelStates();
         this.updatePerfMode();
     }
@@ -301,6 +334,7 @@ class GraphData {
         this.graphNodes.Remove(node);
         this.detailsItems.Remove(node);
         this.selectedItems.Remove(node);
+        this.commitNodes();
     }
 
     private removeEdge(edge: SimLink<SimNode>) {
@@ -308,6 +342,7 @@ class GraphData {
         this.treeEdges.Remove(edge);
         this.connectEdges.Remove(edge);
         this.graphEdges.Remove(edge);
+        this.commitEdges();
     }
 
     reset() {
@@ -360,4 +395,4 @@ class GraphData {
     }
 }
 
-export const graphData = new GraphData();
+export const graphData = reactive(new GraphData());

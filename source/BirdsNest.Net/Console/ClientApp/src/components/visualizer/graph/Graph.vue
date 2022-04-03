@@ -240,7 +240,7 @@ import { useRouter } from "vue-router";
 	let watchers = [];
 	
 	const graphNodes = computed<SimNode[]>(() => {
-		console.log({source:"graphNodes", graphNodes: graphData.graphNodes.Array});
+		//console.log({source:"graphNodes", graphNodes: graphData.graphNodes.Array});
 		return graphData.graphNodes.Array;
 	});
 
@@ -485,7 +485,7 @@ import { useRouter } from "vue-router";
 				if (store.state.visualizer.pendingNodes.length > 0) {
 					bus.emit(events.Notifications.Processing, "Loading nodes");
 					setTimeout(() => {
-						graphData.addNodes(store.state.visualizer.pendingNodes);
+						graphData.addNodes(store.state.visualizer.pendingNodes).commitAll();
 						store.commit(VisualizerStorePaths.mutations.Delete.PENDING_NODES);
 						updateNodeSizes();
 						refreshNodeConnections();
@@ -509,14 +509,11 @@ import { useRouter } from "vue-router";
 						store.state.visualizer.pendingResults.forEach((result: ResultSet) => {
 							graphData.addResultSet(result);
 						});
+						graphData.commitAll();
 						store.commit(VisualizerStorePaths.mutations.Delete.PENDING_RESULTS);
 						updateNodeSizes();
 						refreshNodeConnections();
 						bus.emit(events.Notifications.Clear);
-						console.log({source: "pendingResultsWatch", 
-							message: "debounce finished", 
-							pendingResults: store.state.visualizer.pendingResults,
-							graphData: graphData});
 					}, 1000);
 				}
 			}, 500),{
