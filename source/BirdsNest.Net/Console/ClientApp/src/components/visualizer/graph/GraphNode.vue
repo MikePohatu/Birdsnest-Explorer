@@ -84,7 +84,7 @@ import { useStore } from "@/store";
 	//assign the d3 datum to the element so simulation can use it
 	onMounted(() => {
 		//use props.node so you don't have to use toRaw() to unwrap the SimNode
-		d3.select(root.value).datum(props.node);
+		d3.select(root.value).datum(node);
 	});
 
 	const subTypes = computed((): string[] => {

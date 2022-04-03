@@ -47,7 +47,7 @@ import { SimLink } from "@/assets/ts/visualizer/SimLink";
 import { SimNode } from "@/assets/ts/visualizer/SimNode";
 import { bus, events } from "@/bus";
 import webcrap from "@/assets/ts/webcrap/webcrap";
-import { computed, onMounted, ref } from "vue";
+import { computed, onMounted, reactive, ref } from "vue";
 import { useStore } from "@/store";
 
 const props = defineProps({
@@ -79,7 +79,7 @@ const subTypes = computed((): string[] => {
 
 //assign the d3 datum to the element so simulation can use it
 onMounted(() => {
-	d3.select(root).datum(props.edge);
+	d3.select(root.value).datum(edge);
 });
 
 function onEdgeClicked() {

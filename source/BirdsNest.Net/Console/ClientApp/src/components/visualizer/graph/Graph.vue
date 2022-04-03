@@ -265,7 +265,7 @@ import { useRouter } from "vue-router";
 			toggleNodeSelectMode();
 		});
 		bus.on(events.Visualizer.Controls.Invert, () => {
-			graphData.invertSelectedItems();
+			graphData.invertSelectedItems().Commit();
 			graphData.detailsItems.Clear();
 		});
 		bus.on(events.Visualizer.Controls.Crop, () => {
@@ -304,17 +304,17 @@ import { useRouter } from "vue-router";
 		bus.on(events.Visualizer.Node.NodeClicked, (node: SimNode) => {
 			graphData.clearSelectedItems();
 			graphData.detailsItems.Clear();
-			graphData.addSelection(node);
-			graphData.detailsItems.Add(node);
+			graphData.addSelection(node).Commit();
+			graphData.detailsItems.Add(node).Commit();
 			node.selected = true;
 		});
 		bus.on(events.Visualizer.Node.NodeCtrlClicked, (node: SimNode) => {
 			if (node.selected) {
-				graphData.removeSelection(node);
-				graphData.detailsItems.Remove(node);
+				graphData.removeSelection(node).Commit();
+				graphData.detailsItems.Remove(node).Commit();
 			} else {
-				graphData.addSelection(node);
-				graphData.detailsItems.Add(node);
+				graphData.addSelection(node).Commit();
+				graphData.detailsItems.Add(node).Commit();
 			}
 		});
 		//#endregion
@@ -323,17 +323,17 @@ import { useRouter } from "vue-router";
 		bus.on(events.Visualizer.Edge.EdgeClicked, (edge: SimLink<SimNode>) => {
 			graphData.clearSelectedItems();
 			graphData.detailsItems.Clear();
-			graphData.addSelection(edge);
-			graphData.detailsItems.Add(edge);
+			graphData.addSelection(edge).Commit();
+			graphData.detailsItems.Add(edge).Commit();
 			edge.selected = true;
 		});
 		bus.on(events.Visualizer.Edge.EdgeCtrlClicked, (edge: SimLink<SimNode>) => {
 			if (edge.selected) {
-				graphData.removeSelection(edge);
-				graphData.detailsItems.Remove(edge);
+				graphData.removeSelection(edge).Commit();
+				graphData.detailsItems.Remove(edge).Commit();
 			} else {
-				graphData.addSelection(edge);
-				graphData.detailsItems.Add(edge);
+				graphData.addSelection(edge).Commit();
+				graphData.detailsItems.Add(edge).Commit();
 			}
 		});
 		//#endregion
@@ -526,6 +526,7 @@ import { useRouter } from "vue-router";
 	}
 
 	function resetDrawingEvents() {
+		//console.log({source:"resetDrawingEvents", drawingSvg: drawingSvg});
 		drawingSvg
 			.on("click", onPageClicked)
 			.on("mousedown", null)
@@ -544,8 +545,10 @@ import { useRouter } from "vue-router";
 			postJson: true,
 			successCallback: (data: ResultSet) => {
 				data.edges.forEach(edge => {
-					graphData.graphEdges.GetDatum(edge.dbId).shift = true;
+					const exist = graphData.graphEdges.GetDatum(edge.dbId)
+					if (exist !==null) { exist.shift = true; }
 				});
+				graphData.addResultSet(data).commitEdges();
 				simController.RefreshData();
 				simController.RestartSimulation();
 			},

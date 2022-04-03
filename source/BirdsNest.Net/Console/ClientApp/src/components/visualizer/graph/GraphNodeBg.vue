@@ -45,7 +45,7 @@ import { computed, onMounted, ref } from "vue";
 	const node = props.node as SimNode;
 
 	onMounted(() => {
-		d3.select(root).datum(node);
+		d3.select(root.value).datum(node);
 	});
 
 	const translate = computed((): string => {

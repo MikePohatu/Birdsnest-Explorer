@@ -35,7 +35,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 							</span>
 						</a>
 					</div>
-					<div class="cell small-1" :title="$tc('visualizer.details.add_related', relatedNodeCount)">
+					<div class="cell small-1" :title="$t('visualizer.details.add_related', relatedNodeCount)">
 						<a v-on:click="onExpandClicked()">
 							<i class="cell fas fa-expand-arrows-alt small-2"></i>
 						</a>
@@ -57,7 +57,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 				<b>dbId:</b>
 				{{ node.dbId }}
 				<br />
-				<b>{{ $tc("word_Type", node.labels.length) }}:</b>
+				<b>{{ $t("word_Type", node.labels.length) }}:</b>
 				{{ types }}
 				<br />
 				<b>{{ $t("word_Scope") }}:</b>
@@ -232,7 +232,7 @@ import { VisualizerStorePaths } from "@/store/modules/VisualizerStore";
 import { ApiNodeSimple } from "@/assets/ts/dataMap/ApiNodeSimple";
 import { rootPaths } from "@/store";
 import { Dictionary } from "@/assets/ts/webcrap/misccrap";
-import { computed, nextTick, onMounted, ref } from "vue";
+import { computed, nextTick, onMounted, reactive, ref } from "vue";
 import { useStore } from "@/store";
 
 // @Component({
@@ -268,36 +268,36 @@ onMounted(() => {
 
 //this function is primarily to provide logic based on the initRun variable
 //which provides a delay when needed for rendering to happen in the right sequence
-const details = computed((): RelatedDetails => {
-	if (initRun) {
+const details = computed<RelatedDetails>(() => {
+	if (initRun.value) {
 		return node.relatedDetails;
 	} else {
 		return null;
 	}
 });
 
-const detailsLoaded = computed((): boolean => {
+const detailsLoaded = computed<boolean>(() => {
 	return details !== null;
 });
 
-const propertyNames = computed((): string[] => {
+const propertyNames = computed<string[]>(() => {
 	return Object.keys(node.properties);
 });
 
-const types = computed((): string => {
+const types = computed<string>(() => {
 	return node.labels.join(", ");
 });
 
-const inLabelledNodeLists = computed((): VForLabelledNodeList[] => {
-	if (details === null) {
+const inLabelledNodeLists = computed<VForLabelledNodeList[]>(() => {
+	if (details.value === null) {
 		return [];
 	} else {
 		return [details.value.inNodesByLabel, details.value.inNodesByEdgeLabel];
 	}
 });
 
-const inCount = computed((): number => {
-	if (details === null) {
+const inCount = computed<number>(() => {
+	if (details.value === null) {
 		return 0;
 	} else {
 		return (
@@ -307,16 +307,16 @@ const inCount = computed((): number => {
 	}
 });
 
-const outLabelledNodeLists = computed((): VForLabelledNodeList[] => {
-	if (details === null) {
+const outLabelledNodeLists = computed<VForLabelledNodeList[]>(() => {
+	if (details.value === null) {
 		return [];
 	} else {
 		return [details.value.outNodesByLabel, details.value.outNodesByEdgeLabel];
 	}
 });
 
-const outCount = computed((): number => {
-	if (details === null) {
+const outCount = computed<number>(() => {
+	if (details.value === null) {
 		return 0;
 	} else {
 		return (
@@ -429,10 +429,6 @@ function isExpanded(list: VForLabelledNodeList, label: string): boolean {
 
 	if (Object.prototype.hasOwnProperty.call(labelExpands.value, expLabel) == false) {
 		console.error(expLabel + " not found in labelExpands list ");
-		console.log({
-			labelExpands: labelExpands.value,
-			expLabel: expLabel,
-		});
 		return false;
 	} else if (list.labelledNodes[label].length < 10) {
 		return true;

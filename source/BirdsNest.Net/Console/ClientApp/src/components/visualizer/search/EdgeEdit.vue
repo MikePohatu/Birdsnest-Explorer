@@ -34,7 +34,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 				</div>
 
 				<div class="input-group">
-					<span class="input-group-label small-3">{{ $tc('word_Type') }}</span>
+					<span class="input-group-label small-3">{{ $t('word_Type') }}</span>
 					<select id="edgeType" class="small-9 input-group-field" v-model="edge.label">
 						<option value selected>*</option>
 						<option

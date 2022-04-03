@@ -193,6 +193,8 @@ class GraphData {
     commitAll(): void {
         this.commitNodes();
         this.commitEdges();
+        this.selectedItems.Commit();
+        this.detailsItems.Commit();
     }
 
     commitNodes(): void {
@@ -209,16 +211,16 @@ class GraphData {
         this.connectEdges.Commit();
     }
 
-    addSelection(item: SimNode | SimLink<SimNode>): GraphData {
+    addSelection(item: SimNode | SimLink<SimNode>): DatumStore<SimNode | SimLink<SimNode>> {
         this.selectedItems.Add(item);
         item.selected = true;
-        return this;
+        return this.selectedItems;
     }
 
-    removeSelection(item: SimNode | SimLink<SimNode>): GraphData {
+    removeSelection(item: SimNode | SimLink<SimNode>): DatumStore<SimNode | SimLink<SimNode>> {
         this.selectedItems.Remove(item);
         item.selected = false;
-        return this;
+        return this.selectedItems;
     }
 
     clearSelectedItems(): GraphData {
@@ -227,10 +229,11 @@ class GraphData {
         });
         this.selectedItems.Clear();
         this.detailsItems.Clear();
+
         return this;
     }
 
-    invertSelectedItems(): GraphData {
+    invertSelectedItems(): DatumStore<SimNode | SimLink<SimNode>> {
         this.graphNodes.Array.forEach(d => {
             if (d.selected) {
                 this.selectedItems.Remove(d);
@@ -243,8 +246,7 @@ class GraphData {
             }
             //d.selected = !d.selected;
         });
-        this.selectedItems.Commit();
-        return this;
+        return this.selectedItems;
     }
 
     getSelectedNodeIds(): string[] {
@@ -259,8 +261,6 @@ class GraphData {
         edgeIds.forEach(id => {
             this.removeEdgeId(id);
         });
-
-        this.commitAll();
         this.cleanupLabelStates();
         this.updatePerfMode();
     }
@@ -270,7 +270,6 @@ class GraphData {
         if (node !== null) {
             this.removeNode(node);
         }
-        this.commitAll();
     }
 
     
@@ -292,7 +291,6 @@ class GraphData {
             this.removeEdge(edge);
         });
 
-        this.commitAll();
         this.cleanupLabelStates();
         this.updatePerfMode();
     }
@@ -327,7 +325,7 @@ class GraphData {
         // console.log("cleanupLabelStates");
         // console.log(this);
     }
-    private removeNode(node: SimNode) {
+    private removeNode(node: SimNode): GraphData {
         this.meshNodes.Remove(node);
         this.treeNodes.Remove(node);
         this.connectNodes.Remove(node);
@@ -335,14 +333,16 @@ class GraphData {
         this.detailsItems.Remove(node);
         this.selectedItems.Remove(node);
         this.commitNodes();
+        return this;
     }
 
-    private removeEdge(edge: SimLink<SimNode>) {
+    private removeEdge(edge: SimLink<SimNode>): GraphData {
         this.meshEdges.Remove(edge);
         this.treeEdges.Remove(edge);
         this.connectEdges.Remove(edge);
         this.graphEdges.Remove(edge);
         this.commitEdges();
+        return this;
     }
 
     reset() {

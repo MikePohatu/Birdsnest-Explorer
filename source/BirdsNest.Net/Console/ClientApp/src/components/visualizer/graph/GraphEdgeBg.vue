@@ -42,7 +42,7 @@ import { onMounted, ref } from "vue";
 	
 	//assign the d3 datum to the element so simulation can use it
 	onMounted(() => {
-		d3.select(root).datum(edge);
+		d3.select(root.value).datum(edge);
 	});
 
 	function onEdgeClicked() {
