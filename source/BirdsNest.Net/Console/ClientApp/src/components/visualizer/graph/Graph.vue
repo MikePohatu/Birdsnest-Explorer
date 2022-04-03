@@ -747,9 +747,11 @@ import { useRouter } from "vue-router";
 						areaBoxEl.bottom > elem.bottom &&
 						areaBoxEl.left < elem.left &&
 						areaBoxEl.right > elem.right
-					) {
+					) 
+					{
 						updateNodeSelection(d, true, false);
-					} else {
+					} 
+					else {
 						if (d3.event.ctrlKey === false) {
 							updateNodeSelection(d, false, false);
 						}
@@ -801,6 +803,9 @@ import { useRouter } from "vue-router";
 			return;
 		} // dragged
 		graphData.clearSelectedItems();
+		if (areaBox !== undefined) {
+			areaBox.remove();
+		}
 	}
 
 	function onGraphDeletePressed() {
@@ -1077,16 +1082,17 @@ import { useRouter } from "vue-router";
 		alledges.attr("visibility", "visible");
 	}
 
-	function updateNodeSelection(d, isselected, showdetails) {
+	function updateNodeSelection(d:SimNode, isselected: boolean, showdetails: boolean) {
+		//console.log({source: "updateNodeSelection", d: d});
 		d.selected = isselected;
 		if (isselected) {
-			graphData.addSelection(d);
+			graphData.addSelection(d).Commit();
 			if (showdetails) {
-				graphData.detailsItems.Add(d);
+				graphData.detailsItems.Add(d).Commit();
 			}
 		} else {
-			graphData.removeSelection(d);
-			graphData.detailsItems.Remove(d);
+			graphData.removeSelection(d).Commit();
+			graphData.detailsItems.Remove(d).Commit();
 		}
 	}
 

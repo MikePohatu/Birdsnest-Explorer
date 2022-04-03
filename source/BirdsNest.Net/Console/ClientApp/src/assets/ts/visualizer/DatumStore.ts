@@ -54,7 +54,7 @@ export default class DatumStore<T> {
         this.datumObject = new Object();
         this.Array = [];
         this.IDs = [];
-        this.Updated = true;
+        this.Updated = false;
         return this;
     }
 
