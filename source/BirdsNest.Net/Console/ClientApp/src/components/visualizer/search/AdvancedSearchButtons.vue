@@ -16,7 +16,7 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see http://www.gnu.org/licenses/.
 -->
 <template>
-	<div>
+	<div ref="root">
 		<div class="grid-x align-left">
 			<div id="advSearchcButtons" class="searchContainer">
 				<button
@@ -83,18 +83,15 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 </style>
 
 <script setup lang="ts">
-import { foundation } from "@/mixins/foundation";
 import { SearchStorePaths } from "@/store/modules/SearchStore";
-import { ref } from "vue";
 import { useStore } from "@/store";
+import { ref } from "vue";
+import { foundation } from "@/mixins/foundation";
+
+const root = ref();
+foundation(root);
 
 const store = useStore();
-
-// @Component({
-// 	mixins: [foundation],
-// })
-//let cypherquery = ref("");
-//let shareUrl = ref("");
 let searchRetry = ref(0);
 
 function onMinimizeClicked(): void {

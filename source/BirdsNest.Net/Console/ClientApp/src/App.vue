@@ -65,11 +65,11 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 		});
 
 		updateHeight();
-	})
+	});
 
 	onUpdated((): void => {
 		resetCustom();
-	})
+	});
 
 	// Make sure the custom css is always last so it 'wins'
 	function resetCustom(): void {

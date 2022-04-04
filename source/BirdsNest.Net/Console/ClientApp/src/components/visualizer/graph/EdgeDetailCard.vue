@@ -16,7 +16,7 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see http://www.gnu.org/licenses/.
 -->
 <template>
-	<div :id="'details-'+edge.DbId" class="detailcard pane">
+	<div ref="root" :id="'details-'+edge.DbId" class="detailcard pane">
 		<div class="detaillist">
 			<div class="grid-x align-middle">
 				<div class="cell small-3">
@@ -110,28 +110,26 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 
 
 <script setup lang="ts">
-import { foundation } from "@/mixins/foundation";
 import { SimNode } from "@/assets/ts/visualizer/SimNode";
 import { SimLink } from '@/assets/ts/visualizer/SimLink';
-import { computed } from "vue";
+import { computed, onMounted, ref } from "vue";
+import { foundation } from "@/mixins/foundation";
 
-// @Component({
-// 	mixins: [ foundation ]
-// })
+const root = ref();
+foundation(root);
 
-	const props = defineProps({ edge: { type: Object, required: true }});
-	const edge = props.edge as SimLink<SimNode>;
-	
-	const propertyNames = computed((): string[] => {
-		return Object.keys(props.edge.properties);
-	});
+const props = defineProps({ edge: { type: Object, required: true }});
+const edge = props.edge as SimLink<SimNode>;
 
-	const type = computed((): string => {
-		return props.edge.label;
-	});
+const propertyNames = computed((): string[] => {
+	return Object.keys(props.edge.properties);
+});
 
-	function onEyeClicked() {
-		edge.enabled = !edge.enabled;
-	}
+const type = computed((): string => {
+	return props.edge.label;
+});
 
+function onEyeClicked() {
+	edge.enabled = !edge.enabled;
+}
 </script>

@@ -16,7 +16,7 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see http://www.gnu.org/licenses/.
 -->
 <template>
-	<div id="results" v-bind:class="{ hidden: !showResults }">
+	<div ref="root" id="results" v-bind:class="{ hidden: !showResults }">
 		<div v-bind:class="{ hidden: zeroResults }">
 			<div>
 				{{ $t('word_Found') }}
@@ -74,24 +74,22 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 </style>
 
 <script setup lang="ts">
-import { foundation } from "../../../mixins/foundation";
 import { SearchNode } from "../../../assets/ts/visualizer/Search";
 import { VisualizerStorePaths } from "@/store/modules/VisualizerStore";
 import { SearchStorePaths } from "../../../store/modules/SearchStore";
 
 import { bus, events } from "@/bus";
-import { computed } from "vue";
+import { computed, onMounted, ref } from "vue";
 import { useStore } from "@/store";
 import { useI18n } from "vue-i18n";
-
-// @Component({
-// 	mixins: [foundation],
-// })
-//The id be unique, or the foundation dropdown won't work.
-//It will be trying to work on same id
+import { foundation
+ } from "@/mixins/foundation";
 const props = defineProps({ id: { type: String, required: true } });
 const store = useStore();
 const { t } = useI18n();
+
+const root = ref();
+foundation(root);
 
 const dropdownId = computed<string>(() => {
 	return "dropdown-" + props.id;

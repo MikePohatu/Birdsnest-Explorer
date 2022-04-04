@@ -16,7 +16,7 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see http://www.gnu.org/licenses/.
 -->
 <template>
-	<div id="reportView">
+	<div ref="root" id="reportView">
 		<div id="reportHeader" class="grid-x">
 			<div class="cell shrink headerItem" id="reportmenu">
 				<ul
@@ -176,13 +176,16 @@ import webcrap from "@/assets/ts/webcrap/webcrap";
 import { ApiNode } from "@/assets/ts/dataMap/ApiNode";
 import { Report } from "@/assets/ts/dataMap/Report";
 import { ConsolePlugin } from "@/assets/ts/dataMap/ConsolePlugin";
-import { foundation } from "../mixins/foundation";
 import { Dictionary } from "@/assets/ts/webcrap/misccrap";
 import LStore from "@/assets/ts/LocalStorageManager";
 import { bus, events } from "@/bus";
 import { useStore } from "@/store";
 import { computed, onMounted, ref } from "vue";
 import { useRoute, useRouter } from "vue-router";
+import { foundation } from "@/mixins/foundation";
+
+const root = ref();
+foundation(root);
 
 const store = useStore();
 const route = useRoute();

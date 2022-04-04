@@ -102,12 +102,6 @@ import { SearchStorePaths } from "@/store/modules/SearchStore";
 import { computed } from "vue";
 import { useStore } from "@/store";
 
-// @Component({
-// 	components: { SimpleSearch, AdvancedSearch },
-// })
-// ({
-//   mixins: [foundation]
-// })
 const store = useStore();
 
 const searchEnabled = computed<boolean>(() => {

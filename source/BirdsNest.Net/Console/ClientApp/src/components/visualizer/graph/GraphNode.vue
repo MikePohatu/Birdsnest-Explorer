@@ -73,7 +73,7 @@ import { SimNode } from "@/assets/ts/visualizer/SimNode";
 import { d3 } from "@/assets/ts/visualizer/d3";
 import { bus, events } from "@/bus";
 import webcrap from "@/assets/ts/webcrap/webcrap";
-import { computed, onMounted, ref, reactive, toRaw } from "vue";
+import { computed, onMounted, ref, reactive } from "vue";
 import { useStore } from "@/store";
 
 	const props = defineProps({ node: { type: Object, required: true }});
