@@ -586,7 +586,7 @@ import { useRouter } from "vue-router";
 		graphData.clearSelectedItems();
 		graphData.graphNodes.Array.forEach(node => {
 			if (node.name.toLowerCase().includes(lowerVal)) {
-				graphData.addSelection(node);
+				graphData.addSelection(node).Commit();
 			}
 		});
 	}

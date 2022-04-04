@@ -275,7 +275,7 @@ const cropActive = computed<boolean>(() => {
 });
 
 function onSearchClicked(): void {
-	bus.emit(events.Visualizer.Controls.Search, searchVal);
+	bus.emit(events.Visualizer.Controls.Search, searchVal.value);
 }
 
 function applyComputedStyle(element, sourceElement) {
