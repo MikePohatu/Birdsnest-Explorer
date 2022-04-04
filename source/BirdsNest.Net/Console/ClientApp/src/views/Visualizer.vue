@@ -60,7 +60,7 @@ import NewConditionSelect from "@/components/visualizer/search/NewConditionSelec
 import Graph from "@/components/visualizer/graph/Graph.vue";
 
 import { auth } from "@/assets/ts/webcrap/authcrap";
-import { SearchNode, SearchEdge, ValueCondition, AndOrCondition, Search } from "../assets/ts/visualizer/Search";
+import { SearchNode, SearchEdge, ValueCondition, AndOrCondition, Search, copySearch } from "../assets/ts/visualizer/Search";
 import { RouteLocation, useRoute } from "vue-router";
 import webcrap from "@/assets/ts/webcrap/webcrap";
 import { SearchStorePaths } from "@/store/modules/SearchStore";
@@ -76,7 +76,7 @@ const loadSharedSearch = function (route: RouteLocation): void {
 	const encodedData = route.query.sharedsearch as string;
 	if (encodedData !== undefined) {
 		const decoded = JSON.parse(webcrap.misc.decodeUrlB64(encodedData)) as Search;
-		store.commit(SearchStorePaths.mutations.Update.SEARCH, decoded);
+		store.commit(SearchStorePaths.mutations.Update.SEARCH, copySearch(decoded));
 	}
 }
 

@@ -91,7 +91,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 						</button>
 					</div>
 				</legend>
-				<AndOrConditionIcon v-if="search.condition !== null" :condition="search.condition" />
+				<AndOrConditionIcon :condition="rootCondition" :key="rootCondition.id" />
 			</fieldset>
 		</div>
 
@@ -237,9 +237,9 @@ import EdgeIcon from "./EdgeIcon.vue";
 import SearchResults from "./SearchResults.vue";
 import AndOrConditionIcon from "./AndOrConditionIcon.vue";
 import ShareDialog from "./ShareDialog.vue";
-import { Search, SearchItem, ConditionType } from "@/assets/ts/visualizer/Search";
+import { Search, SearchItem, ConditionType, AndOrCondition } from "@/assets/ts/visualizer/Search";
 import AdvancedSearchButtons from "./AdvancedSearchButtons.vue";
-import { SearchStorePaths } from "../../../store/modules/SearchStore";
+import { SearchStorePaths } from "@/store/modules/SearchStore";
 import { useStore } from "@/store";
 import { computed } from "vue";
 import { SearchNode, SearchEdge } from "@/assets/ts/visualizer/Search";
@@ -257,7 +257,13 @@ const condEditDisabled = computed<boolean>(() => {
 });
 
 const search = computed<Search>(() => {
+	//console.log({source: "computedSearch", storeSearch: store.state.visualizer.search.search});
 	return store.state.visualizer.search.search;
+});
+
+const rootCondition = computed<AndOrCondition>(() => {
+	//console.log({source: "rootCondition", result: search.value.condition});
+	return search.value.condition as AndOrCondition;
 });
 
 const isDeleteDisabled = computed<boolean>(() => {
@@ -271,13 +277,12 @@ const isDeleteDisabled = computed<boolean>(() => {
 });
 
 const fullPath = computed<SearchItem[]>(() => {
-	const search: Search = store.state.visualizer.search.search;
 	const path: SearchItem[] = [];
-	for (let i = 0; i < search.edges.length; i++) {
-		path.push(search.nodes[i]);
-		path.push(search.edges[i]);
+	for (let i = 0; i < search.value.edges.length; i++) {
+		path.push(search.value.nodes[i]);
+		path.push(search.value.edges[i]);
 	}
-	path.push(search.nodes[search.nodes.length - 1]);
+	path.push(search.value.nodes[search.value.nodes.length - 1]);
 	return path;
 });
 

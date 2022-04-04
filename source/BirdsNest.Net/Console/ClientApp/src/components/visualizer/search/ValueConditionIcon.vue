@@ -40,7 +40,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 		}
 	});
 
-	const condition = reactive<ValueCondition>(props.condition);
+	const condition = ref<ValueCondition>(props.condition);
 
 	const isSelected = computed((): boolean => {
 		return store.state.visualizer.search.selectedCondition === condition;
@@ -48,7 +48,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 
 	const searchDeets = computed((): string => {
 		//console.log({source: "searchDeets", condition: condition});
-		return (condition.not ? "Not " : "") + condition.operator + " " + condition.value + (condition.type === ConditionType.String && condition.caseSensitive ? "*" : "");
+		return (condition.value.not ? "Not " : "") + condition.value.operator + " " + condition.value.value + (condition.value.type === ConditionType.String && condition.value.caseSensitive ? "*" : "");
 	});
 
 	function onClicked(): void {

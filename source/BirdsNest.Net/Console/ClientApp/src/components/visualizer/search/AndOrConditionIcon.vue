@@ -91,49 +91,51 @@ import { SearchStorePaths } from "@/store/modules/SearchStore";
 import { computed, ref, toRaw } from "@vue/reactivity";
 import { useStore } from "@/store";
 
-	const props = defineProps({condition: { type: Object, required: true }});
-	const store = useStore();
-	const condition = ref(props.condition as AndOrCondition);
-	
-	const name = computed((): string => {
-		return condition.value.id;
-	});
+const store = useStore();
+const props = defineProps({condition: { type: Object, required: true }});
+const condition = ref(props.condition as AndOrCondition);
 
-	const conditions = computed((): Condition[] => {
-		return condition.value.conditions;
-	});
+//console.log({source: "AndOrConditionIcon", propsCondition: props.condition, condition: condition.value});
 
-	const isSelected = computed((): boolean => {
-		return store.state.visualizer.search.selectedCondition === condition.value;
-	});
+const name = computed((): string => {
+	return condition.value.id;
+});
 
-	const isRoot = computed((): boolean => {
-		// console.log({
-		// 	condition: toRaw(condition), 
-		// 	storeCondition: toRaw(store.state.visualizer.search.search.condition),
-		// 	result: toRaw(condition) === toRaw(store.state.visualizer.search.search.condition)
-		// 	});
-		return toRaw(condition.value) === toRaw(store.state.visualizer.search.search.condition);
-	});
+const conditions = computed((): Condition[] => {
+	return condition.value.conditions;
+});
 
-	const isEmptyRoot = computed((): boolean => {
-		return isRoot.value && condition.value.conditions.length === 0;
-	});
+const isSelected = computed((): boolean => {
+	return store.state.visualizer.search.selectedCondition === condition.value;
+});
 
-	function isAndOr(cond: Condition): boolean {
-		return cond.type === ConditionType.And || cond.type === ConditionType.Or;
-	}
+const isRoot = computed((): boolean => {
+	// console.log({
+	// 	condition: toRaw(condition), 
+	// 	storeCondition: toRaw(store.state.visualizer.search.search.condition),
+	// 	result: toRaw(condition) === toRaw(store.state.visualizer.search.search.condition)
+	// 	});
+	return toRaw(condition.value) === toRaw(store.state.visualizer.search.search.condition);
+});
 
-	function onClicked(): void {
-		store.commit(SearchStorePaths.mutations.Update.SELECTED_CONDITION, condition.value);
-	}
+const isEmptyRoot = computed((): boolean => {
+	return isRoot.value && condition.value.conditions.length === 0;
+});
 
-	function onDblClicked(): void {
-		store.commit(SearchStorePaths.mutations.Update.SELECTED_CONDITION, condition.value);
-		store.commit(SearchStorePaths.mutations.Update.EDIT_CONDITION);
-	}
+function isAndOr(cond: Condition): boolean {
+	return cond.type === ConditionType.And || cond.type === ConditionType.Or;
+}
 
-	function onAddClicked(): void {
-		store.commit(SearchStorePaths.mutations.Add.NEW_CONDITION_PARENT, condition.value);
-	}
+function onClicked(): void {
+	store.commit(SearchStorePaths.mutations.Update.SELECTED_CONDITION, condition.value);
+}
+
+function onDblClicked(): void {
+	store.commit(SearchStorePaths.mutations.Update.SELECTED_CONDITION, condition.value);
+	store.commit(SearchStorePaths.mutations.Update.EDIT_CONDITION);
+}
+
+function onAddClicked(): void {
+	store.commit(SearchStorePaths.mutations.Add.NEW_CONDITION_PARENT, condition.value);
+}
 </script>

@@ -138,6 +138,12 @@ export const SearchStore: Module<SearchState, RootState> = {
         reset(state): void {
             state.selectedItem = null;
             state.selectedCondition = null;
+            state.editAndOrCondition = null;
+            state.editEdge = null;
+            state.editNode = null;
+            state.shareCypher = "";
+            state.shareUrl = "";
+            state.lastIndex = 0;
             state.search = new Search();
         },
         toggleSearch(state): void {

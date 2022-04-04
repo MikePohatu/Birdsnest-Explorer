@@ -147,6 +147,32 @@ export class Search {
     addedNodes = 0;
 }
 
+export function copySearch(search: Search): Search {
+    const newsearch = new Search();
+    const oldsearch = search as Search;
+    newsearch.addedNodes = oldsearch.addedNodes;
+    newsearch.condition = copyAndOrCondition(oldsearch.condition as AndOrCondition)
+    oldsearch.nodes.forEach((n) => {
+        newsearch.nodes.push(copyNode(n));
+    });
+    oldsearch.edges.forEach((e) => {
+        newsearch.edges.push(copyEdge(e));
+    });
+    return newsearch;
+}
+
+export function copyAndOrCondition(cond: AndOrCondition): AndOrCondition {
+    const newcond = new AndOrCondition(cond.type);
+    cond.conditions.forEach((c) => {
+        if (c.type === ConditionType.And || c.type === ConditionType.Or) {
+            newcond.conditions.push(copyAndOrCondition(c as AndOrCondition));
+        } else {
+            newcond.conditions.push(copyCondition(c as ValueCondition));
+        }
+    });
+    return newcond;
+}
+
 export function copyCondition(cond: ValueCondition): ValueCondition {
     const newCond = new ValueCondition(cond.type);
     newCond.name = cond.name;
