@@ -23,7 +23,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 					id="simpleSearchTerm"
 					v-model="term"
 					@keyup.enter="onSearchClicked"
-					v-on:input="autocompleteDebounce"
+					v-on:input="onSearchChanged"
 					list="simplecompletes"
 					autocomplete="on"
 					type="search"
@@ -90,22 +90,30 @@ import { SearchStorePaths } from "@/store/modules/SearchStore";
 import { computed, ref } from "vue";
 import { useStore } from "@/store";
 
-// @Component({
-// 	components: { SearchResults },
-// })
-
+const debounceTimeout = 250;
 const store = useStore();
 
 let searchNotification = ref("");
 let autocompleteList = ref<string[]>([]);
 let term = ref("");
+let autoCompleteCancelled = false;
+
+const onSearchChanged = () => {
+	autoCompleteCancelled = false;
+	autocompleteDebounce();
+};
+
+const autocompleteDebounce = webcrap.misc.debounce(updateAutocomplete, debounceTimeout);
 
 function updateAutocomplete(): void {
+	if (autoCompleteCancelled) { return; }
 	const url = "/api/graph/node/namevalues?searchterm=" + term.value;
 	const newrequest: Request = {
 		url: url,
 		successCallback: data => {
-			autocompleteList.value = data;
+			if (autoCompleteCancelled === false) {
+				autocompleteList.value = data;
+			}
 		},
 		errorCallback: () => {
 			autocompleteList.value = [];
@@ -113,9 +121,6 @@ function updateAutocomplete(): void {
 	};
 	api.get(newrequest);
 }
-
-const autocompleteDebounce = webcrap.misc.debounce(updateAutocomplete, 250);
-
 
 function onMinimizeClicked(): void {
 	store.commit(SearchStorePaths.mutations.TOGGLE_SEARCH);
@@ -127,7 +132,10 @@ function onModeToggleClicked(): void {
 
 function onSearchClicked(): void {
 	store.dispatch(SearchStorePaths.actions.SIMPLE_SEARCH, term.value);
-	autocompleteList.value = [];  //reset the autocomplete list to get it out of the users face
+
+	//cancel the debounce & reset the autocomplete list to get it out of the users face
+	autoCompleteCancelled = true;
+	autocompleteList.value = [];
 }
 
 </script>
