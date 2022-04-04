@@ -15,26 +15,22 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-import { onMounted, onBeforeUnmount, Ref } from "vue";
 import $ from 'jquery';
 
-export const foundation = (ref: Ref) => { 
-    onMounted(()=>{
-      if (ref.value) {
-        $(ref.value).foundation();
-      } else {
-        console.error('onMounted: ref not defined');
-      }
-    });
-  
-    // onBeforeUnmount(()=> {
-    //   if (ref.value) {
-    //     $(ref.value).foundation('_destroy');
-    //   } else {
-    //     console.error('onBeforeUnmount: ref not defined');
-    //   }
-    // });
-  
+export const vFoundation = { 
+    mounted: (el)=>{
+      $(el).foundation();
+    }
+};
+
+export const vFoundationWithDestory = { 
+  mounted: (el)=>{
+    $(el).foundation();
+  },
+
+  beforeUnmount: (el)=> {
+    $(el).foundation('_destroy');
+  }  
 };
 
 

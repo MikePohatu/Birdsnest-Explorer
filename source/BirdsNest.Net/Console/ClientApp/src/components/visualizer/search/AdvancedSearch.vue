@@ -239,23 +239,12 @@ import AndOrConditionIcon from "./AndOrConditionIcon.vue";
 import ShareDialog from "./ShareDialog.vue";
 import { Search, SearchItem, ConditionType } from "@/assets/ts/visualizer/Search";
 import AdvancedSearchButtons from "./AdvancedSearchButtons.vue";
-import { ResultSet } from "@/assets/ts/dataMap/ResultSet";
 import { SearchStorePaths } from "../../../store/modules/SearchStore";
 import { useStore } from "@/store";
 import { computed } from "vue";
 import { SearchNode, SearchEdge } from "@/assets/ts/visualizer/Search";
 import { useI18n } from "vue-i18n";
 
-// @Component({
-// 	components: {
-// 		NodeIcon,
-// 		EdgeIcon,
-// 		AndOrConditionIcon,
-// 		AdvancedSearchButtons,
-// 		SearchResults,
-// 		ShareDialog,
-// 	},
-// })
 const store = useStore();
 const { t } = useI18n();
 
@@ -290,10 +279,6 @@ const fullPath = computed<SearchItem[]>(() => {
 	}
 	path.push(search.nodes[search.nodes.length - 1]);
 	return path;
-});
-
-const results = computed<ResultSet>(() => {
-	return store.state.visualizer.search.results;
 });
 
 const searchHasNodes = computed<boolean>(() => {

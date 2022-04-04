@@ -88,27 +88,23 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 import { Condition, ConditionType, AndOrCondition, ValueCondition } from "@/assets/ts/visualizer/Search";
 import ValueConditionIcon from "./ValueConditionIcon.vue";
 import { SearchStorePaths } from "@/store/modules/SearchStore";
-import { computed, reactive, toRaw } from "@vue/reactivity";
+import { computed, ref, toRaw } from "@vue/reactivity";
 import { useStore } from "@/store";
 
-// @Component({
-// 	name: "AndOrConditionIcon",
-// 	components: { ValueConditionIcon },
-// })
 	const props = defineProps({condition: { type: Object, required: true }});
 	const store = useStore();
-	const condition = reactive(props.condition as AndOrCondition);
+	const condition = ref(props.condition as AndOrCondition);
 	
 	const name = computed((): string => {
-		return condition.id;
+		return condition.value.id;
 	});
 
 	const conditions = computed((): Condition[] => {
-		return condition.conditions;
+		return condition.value.conditions;
 	});
 
 	const isSelected = computed((): boolean => {
-		return store.state.visualizer.search.selectedCondition === condition;
+		return store.state.visualizer.search.selectedCondition === condition.value;
 	});
 
 	const isRoot = computed((): boolean => {
@@ -117,11 +113,11 @@ import { useStore } from "@/store";
 		// 	storeCondition: toRaw(store.state.visualizer.search.search.condition),
 		// 	result: toRaw(condition) === toRaw(store.state.visualizer.search.search.condition)
 		// 	});
-		return toRaw(condition) === toRaw(store.state.visualizer.search.search.condition);
+		return toRaw(condition.value) === toRaw(store.state.visualizer.search.search.condition);
 	});
 
 	const isEmptyRoot = computed((): boolean => {
-		return isRoot.value && condition.conditions.length === 0;
+		return isRoot.value && condition.value.conditions.length === 0;
 	});
 
 	function isAndOr(cond: Condition): boolean {
@@ -129,15 +125,15 @@ import { useStore } from "@/store";
 	}
 
 	function onClicked(): void {
-		store.commit(SearchStorePaths.mutations.Update.SELECTED_CONDITION, condition);
+		store.commit(SearchStorePaths.mutations.Update.SELECTED_CONDITION, condition.value);
 	}
 
 	function onDblClicked(): void {
-		store.commit(SearchStorePaths.mutations.Update.SELECTED_CONDITION, condition);
+		store.commit(SearchStorePaths.mutations.Update.SELECTED_CONDITION, condition.value);
 		store.commit(SearchStorePaths.mutations.Update.EDIT_CONDITION);
 	}
 
 	function onAddClicked(): void {
-		store.commit(SearchStorePaths.mutations.Add.NEW_CONDITION_PARENT, condition);
+		store.commit(SearchStorePaths.mutations.Add.NEW_CONDITION_PARENT, condition.value);
 	}
 </script>

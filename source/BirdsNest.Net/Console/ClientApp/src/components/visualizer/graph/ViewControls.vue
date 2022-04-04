@@ -16,7 +16,7 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see http://www.gnu.org/licenses/.
 -->
 <template>
-	<div ref="root">
+	<div v-foundation>
 		<div id="viewcontrols">
 			<div id="viewcontrolbtns" class="grid-x">
 				<ControlButton
@@ -229,10 +229,8 @@ import EyeControls from "./EyeControls.vue";
 import { VisualizerStorePaths } from "@/store/modules/VisualizerStore";
 import { computed, ref } from "vue";
 import { useStore } from "@/store";
-import { foundation } from "@/mixins/foundation";
+import { vFoundation } from "@/mixins/foundation";
 
-const root = ref();
-foundation(root);
 const store = useStore();
 const controlEvents = events.Visualizer.Controls;
 let searchVal = ref("");

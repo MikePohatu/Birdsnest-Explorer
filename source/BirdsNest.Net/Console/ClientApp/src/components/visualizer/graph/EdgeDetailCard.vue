@@ -16,7 +16,7 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see http://www.gnu.org/licenses/.
 -->
 <template>
-	<div ref="root" :id="'details-'+edge.DbId" class="detailcard pane">
+	<div v-foundation :id="'details-'+edge.DbId" class="detailcard pane">
 		<div class="detaillist">
 			<div class="grid-x align-middle">
 				<div class="cell small-3">
@@ -113,10 +113,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 import { SimNode } from "@/assets/ts/visualizer/SimNode";
 import { SimLink } from '@/assets/ts/visualizer/SimLink';
 import { computed, onMounted, ref } from "vue";
-import { foundation } from "@/mixins/foundation";
-
-const root = ref();
-foundation(root);
+import { vFoundation } from "@/mixins/foundation";
 
 const props = defineProps({ edge: { type: Object, required: true }});
 const edge = props.edge as SimLink<SimNode>;

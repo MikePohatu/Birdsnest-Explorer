@@ -16,7 +16,7 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see http://www.gnu.org/licenses/.
 -->
 <template>
-	<div ref="root">
+	<div v-foundation>
 		<div class="grid-x align-left">
 			<div id="advSearchcButtons" class="searchContainer">
 				<button
@@ -86,10 +86,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 import { SearchStorePaths } from "@/store/modules/SearchStore";
 import { useStore } from "@/store";
 import { ref } from "vue";
-import { foundation } from "@/mixins/foundation";
-
-const root = ref();
-foundation(root);
+import { vFoundation } from "@/mixins/foundation";
 
 const store = useStore();
 let searchRetry = ref(0);

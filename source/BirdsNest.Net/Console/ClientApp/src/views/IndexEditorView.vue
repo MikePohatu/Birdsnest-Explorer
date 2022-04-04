@@ -301,7 +301,7 @@ onMounted(() => {
 		//double requestAnimationFrame required primarily for IE
 		requestAnimationFrame(() => {
 			requestAnimationFrame(() => {
-				$(root).foundation();
+				$(root.value).foundation();
 			});
 		});
 	} else {
@@ -313,7 +313,7 @@ onMounted(() => {
 				requestAnimationFrame(() => {
 					requestAnimationFrame(() => {
 						unwatch();
-						$(root).foundation();
+						$(root.value).foundation();
 					});
 				});
 			}
