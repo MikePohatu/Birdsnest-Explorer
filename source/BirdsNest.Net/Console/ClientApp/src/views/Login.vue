@@ -47,10 +47,7 @@ const unwatch = store.watch(
     return store.state.user.isAuthorized;
   },
   () => {
-    const redirect: RouteLocationRaw = {
-      path: route.query.redirect as string || routeDefs.portal.path
-    };
-
+    const redirect: RouteLocationRaw = route.query.redirect as string || routeDefs.portal.path;
     router.replace(redirect);
     unwatch();
   }
