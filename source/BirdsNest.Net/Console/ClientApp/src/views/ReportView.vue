@@ -180,7 +180,7 @@ import { Dictionary } from "@/assets/ts/webcrap/misccrap";
 import LStore from "@/assets/ts/LocalStorageManager";
 import { bus, events } from "@/bus";
 import { useStore } from "@/store";
-import { computed, onMounted, ref } from "vue";
+import { computed, onMounted, Ref, ref } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import { vFoundation } from "@/mixins/foundation";
 
@@ -199,8 +199,8 @@ let plugin: ConsolePlugin;
 let report: Report;
 let reportName = ref("");
 let resultsLoaded = ref(false);
-let columnStates: Dictionary<boolean> = {}; //column name as supplied by report property name, and whether enabled
-let activePropertyNames: string[] = [];
+let columnStates =  ref<Dictionary<boolean>>({}); //column name as supplied by report property name, and whether enabled
+let activePropertyNames = ref<string[]>([]);
 
 
 
@@ -252,7 +252,7 @@ const resultCount = computed((): number => {
 
 const propertyNames = computed((): string[] => {
 	if (results.value !== null) {
-		return Object.keys(columnStates);
+		return Object.keys(columnStates.value);
 	} else {
 		return null;
 	}
@@ -277,8 +277,8 @@ const prevBtnVisibility = computed((): string => {
 function updateActiveProperties(): void {
 	setTimeout(() => {
 		if (results.value !== null) {
-			activePropertyNames = Object.keys(columnStates).filter(name => {
-				return columnStates[name];
+			activePropertyNames.value = Object.keys(columnStates.value).filter(name => {
+				return columnStates.value[name];
 			});
 		} else {
 			return null;
@@ -359,16 +359,16 @@ function applyData(data: ResultSet) {
 	// if property filters list is empty, show everything
 	if (results.value.propertyFilters.length === 0) {
 		results.value.propertyNames.forEach(name => {
-			columnStates[name] = true;
+			columnStates.value[name] = true;
 		});
 	} else {
 		results.value.propertyFilters.forEach(name => {
-			columnStates[name] = true;
+			columnStates.value[name] = true;
 		});
 
 		results.value.propertyNames.forEach(name => {
-			if (!columnStates[name]) {
-				columnStates[name] = false;
+			if (!columnStates.value[name]) {
+				columnStates.value[name] = false;
 			}
 		});
 	}
@@ -417,7 +417,7 @@ function onDownloadClicked() {
 	}
 
 	//header
-	activePropertyNames.forEach(name => {
+	activePropertyNames.value.forEach(name => {
 		props.push(name);
 	});
 	text = text + props.join(",") + "\n";
