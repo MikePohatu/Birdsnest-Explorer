@@ -17,9 +17,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 -->
 <template>
 	<div id="docowrapper" class="page">
-		<div v-if="markdown !== defaultmd" class="page">
-			<vue-markdown :source="markdown" />
-		</div>
+		<div v-if="markdown !== defaultmd" class="page" v-html="markdown" />
 
 		<ScrollToTop />
 	</div>
@@ -42,26 +40,40 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 </style>
 
 <script setup lang="ts">
-import { RouteLocationNormalized, useRoute, useRouter } from "vue-router";
-import VueMarkdown from "@adapttive/vue-markdown";
+import { onBeforeRouteUpdate, RouteLocationNormalized, RouteLocationNormalizedLoaded, useRoute, useRouter } from "vue-router";
 import { api, Request } from "@/assets/ts/webcrap/apicrap";
 import { bus, events } from "@/bus";
 import ScrollToTop from "@/components/ScrollToTop.vue";
-import { onBeforeMount, onUpdated, watch, ref } from "vue";
+import { onBeforeMount, onUpdated, watch, ref, nextTick } from "vue";
 import { useI18n } from 'vue-i18n';
+import MarkdownIt from 'markdown-it';
 
 const { t } = useI18n();
+const md = new MarkdownIt();
 
-// @Component({
-// 	components: { VueMarkdown, ScrollToTop }
-// })
 const router = useRouter();
 const route = useRoute();
 
 let defaultmd = ref("Loading");
-let markdown = ref(defaultmd);
+let markdown = ref(defaultmd.value);
 
-function updateMarkdown(route: RouteLocationNormalized): void {
+onBeforeMount((): void => {
+	updateMarkdown();
+	moveToAnchor();
+});
+
+onUpdated(()=> {
+	updateLinks();
+});
+
+watch(
+	()=>route.path,
+	()=>{
+		updateMarkdown();
+	}
+);
+
+function updateMarkdown(): void {
 	bus.emit(events.Notifications.Processing);
 	markdown.value = defaultmd.value;
 	const docurl = route.path.replace("/docs/", "/");
@@ -70,13 +82,12 @@ function updateMarkdown(route: RouteLocationNormalized): void {
 		url: docurl,
 		postJson: false,
 		successCallback: (data?: string) => {
-			markdown.value = data;
+			markdown.value = md.render(data);
 			bus.emit(events.Notifications.Clear);
 		},
 		errorCallback: (jqXHR?, status?: string, error?: string) => {
 			// eslint-disable-next-line
 			console.error(error);
-
 			bus.emit(events.Notifications.Error, t("word_Error") + ": " + error);
 		},
 	};
@@ -87,6 +98,7 @@ function updateMarkdown(route: RouteLocationNormalized): void {
 function updateLinks(): void {
 	//update the links with corrections for birdsnest setup
 	const docowrapper = document.querySelector("#docowrapper");
+
 	const links: Array<HTMLAnchorElement> = Array.from(docowrapper.querySelectorAll("a"));
 	links.forEach((link) => {
 		if (link.href.startsWith(location.origin + "/documentation")) {
@@ -128,28 +140,4 @@ function moveToAnchor(): void {
 		}, 500);
 	}
 }
-
-onBeforeMount((): void => {
-	updateMarkdown(route);
-});
-
-onUpdated((): void => {
-	updateLinks();
-	moveToAnchor();
-});
-
-//@Watch("$route", { immediate: true, deep: true })
-watch(route, (to: RouteLocationNormalized, from: RouteLocationNormalized) => {
-	const topathsplit = to.path.split("#");
-
-	if (from) {
-		const frompathsplit = from.path.split("#");
-
-		if (topathsplit[0] !== frompathsplit[0]) {
-			updateMarkdown(to);
-		}
-	} else {
-		updateMarkdown(to);
-	}
-});
 </script>
