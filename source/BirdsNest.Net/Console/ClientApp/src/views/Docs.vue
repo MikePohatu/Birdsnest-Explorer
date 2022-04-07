@@ -40,11 +40,11 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 </style>
 
 <script setup lang="ts">
-import { onBeforeRouteUpdate, RouteLocationNormalized, RouteLocationNormalizedLoaded, useRoute, useRouter } from "vue-router";
+import { onBeforeRouteLeave, useRoute, useRouter } from "vue-router";
 import { api, Request } from "@/assets/ts/webcrap/apicrap";
 import { bus, events } from "@/bus";
 import ScrollToTop from "@/components/ScrollToTop.vue";
-import { onBeforeMount, onUpdated, watch, ref, nextTick } from "vue";
+import { onBeforeMount, onUpdated, watch, ref } from "vue";
 import { useI18n } from 'vue-i18n';
 import MarkdownIt from 'markdown-it';
 
@@ -66,10 +66,14 @@ onUpdated(()=> {
 	updateLinks();
 });
 
-watch(
+onBeforeRouteLeave(()=>{
+	unwatch();
+})
+
+const unwatch = watch(
 	()=>route.path,
 	()=>{
-		updateMarkdown();
+		updateMarkdown();	
 	}
 );
 
