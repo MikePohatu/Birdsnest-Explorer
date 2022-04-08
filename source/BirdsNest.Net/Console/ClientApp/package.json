@@ -56,10 +56,11 @@
     "foundation-sites": "^6.7.1",
     "jest": "^27.1.0",
     "jquery": "^3.6.0",
+    "mini-css-extract-plugin": "2.4.7",
     "minimist": "^1.2.5",
     "motion-ui": "^2.0.3",
     "node-sass": "^7.0.1",
-    "npm-force-resolutions": "0.0.3",
+    "npm-force-resolutions": "^0.0.10",
     "prettier": "^2.5.1",
     "sass-loader": "^12.6.0",
     "ts-jest": "^27.0.4",
@@ -68,5 +69,6 @@
     "vue-cli-plugin-i18n": "~2.3.1",
     "what-input": "^5.2.10"
   },
-  "resolutions": {}
+  "resolutions": {
+  }
 }
