@@ -37,8 +37,3 @@ export const d3 = {
     easeCubicInOut, easeCubic,
     interpolateNumber
 }
-
-
-/* eslint-disable */
-import { SimulationNodeDatum, SimulationLinkDatum } from "d3-force";
-export { SimulationNodeDatum, SimulationLinkDatum, }
