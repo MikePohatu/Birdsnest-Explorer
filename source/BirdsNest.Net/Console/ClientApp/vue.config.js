@@ -14,7 +14,11 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
-module.exports = {
+
+const { defineConfig } = require('@vue/cli-service')
+
+
+module.exports = defineConfig({
   devServer: {
     host: '0.0.0.0',
     https: true,
@@ -38,11 +42,7 @@ module.exports = {
         withCredentials: true
       }
     },
-    watchOptions: {
-      ignored: ['**/node_modules/**']
-    },
   },
-
   pwa: {
     iconPaths: {
       favicon32: 'img/icons/favicon-32x32.png',
@@ -70,4 +70,4 @@ module.exports = {
         return args;
       })
   }
-}
+})

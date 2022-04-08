@@ -17,6 +17,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 -->
 <template>
 	<path
+		ref="root"
 		:id="'edgebg_' + edge.dbId"
 		visibility="visible"
 		:class="['edgebg', {'selected': edge.selected }, {'edgebg-loop': edge.isLoop }]"
@@ -26,31 +27,29 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 	></path>
 </template>
 
-<script lang="ts">
-import { Component, Vue, Prop } from "vue-property-decorator";
+<script setup lang="ts">
 import { d3 } from "@/assets/ts/visualizer/d3";
 import { SimLink } from '@/assets/ts/visualizer/SimLink';
 import { SimNode } from '@/assets/ts/visualizer/SimNode';
 import { bus, events } from "@/bus";
+import { onMounted, ref } from "vue";
 
 
+	const props = defineProps({ edge: { type: Object, required: true }});
+	let edge = props.edge as SimLink<SimNode>;
 
-@Component
-export default class GraphEdgeBg extends Vue {
-	@Prop({ type: Object, required: true })
-	edge: SimLink<SimNode>;
-
+	const root = ref(null);
+	
 	//assign the d3 datum to the element so simulation can use it
-	mounted() {
-		d3.select(this.$el).datum(this.edge);
+	onMounted(() => {
+		d3.select(root.value).datum(edge);
+	});
+
+	function onEdgeClicked() {
+		bus.emit(events.Visualizer.Edge.EdgeClicked, edge);
 	}
 
-	onEdgeClicked() {
-		bus.$emit(events.Visualizer.Edge.EdgeClicked, this.edge);
+	function onEdgeCtrlClicked() {
+		bus.emit(events.Visualizer.Edge.EdgeCtrlClicked, edge);
 	}
-
-	onEdgeCtrlClicked() {
-		bus.$emit(events.Visualizer.Edge.EdgeCtrlClicked, this.edge);
-	}
-}
 </script>

@@ -63,6 +63,8 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 				<a href="https://jquery.com/" target="_blank">jquery.com</a>
 				<br />Json.Net -
 				<a href="https://www.newtonsoft.com/" target="_blank">NewtonSoft</a>
+				<br />Markdown it! -
+				<a href="https://github.com/markdown-it/markdown-it" target="_blank">markdown-it</a>
 				<br />neo4j -
 				<a href="https://neo4j.com/" target="_blank">neo4j.com</a>
 				<br />NLog -
@@ -76,10 +78,8 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 				<a href="https://github.com/uuidjs/uuid" target="_blank">uuidjs</a>
 				<br />Vue -
 				<a href="https://vuejs.org/" target="_blank">vuejs.org</a>
-				<br />vue-cookies - 
-				<a href="https://github.com/cmp-cc/vue-cookies" target="_blank">cmp-cc</a>
-				<br />vue-markdown -
-				<a href="https://github.com/adapttive/vue-markdown" target="_blank">@adapttive</a>
+				<br />vue3-cookies - 
+				<a href="https://github.com/KanHarI/vue3-cookies" target="_blank">KanHarI</a>
 			</p>
 		</div>
 		<div class="cell auto"></div>
@@ -102,12 +102,8 @@ p {
 }
 </style>
 
-<script lang="ts">
-import { Component, Vue } from "vue-property-decorator";
+<script setup lang="ts">
 import webcrap from "@/assets/ts/webcrap/webcrap";
 
-@Component
-export default class About extends Vue {
-	isIE = webcrap.misc.isIE();
-}
+const isIE = webcrap.misc.isIE();
 </script>

@@ -15,13 +15,17 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 import { Dictionary } from "@/assets/ts/webcrap/misccrap";
+import { DataType } from "./DataType";
+import { Report } from "./Report";
 
-//BirdsNestNode definition
-export interface ApiNode {
-    
-    dbId: string;
+export interface ConsolePlugin {
     name: string;
-    labels: string[];
-    scope: number;
-    properties: Dictionary<string | number | boolean>;
+    displayName: string;
+    extends: string;
+    extendedBy: string[];
+    nodeDataTypes: Dictionary<DataType>;
+    edgeDataTypes: Dictionary<DataType>;
+    reports: Dictionary<Report>;
+    link: string;
 }
+

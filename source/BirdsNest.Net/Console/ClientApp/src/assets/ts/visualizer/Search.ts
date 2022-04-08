@@ -15,7 +15,7 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 import webcrap from "../webcrap/webcrap"
-import { Dictionary } from 'vue-router/types/router';
+import { Dictionary } from "@/assets/ts/webcrap/misccrap";
 
 export const ConditionOperators: Dictionary<string[]> = {
     "number": ["=", ">", "<", "<=", ">="],
@@ -47,14 +47,17 @@ export interface SearchItem {
     type: string;
     name: string;
     label: string;
+    id: string;
 }
 
 export class SearchNode implements SearchItem {
     type = SearchItemType.SearchNode;
     name = "";
     label = "";
+    labels = [];
     index = 0;
     id = "";
+    dbId = "";
 
     constructor() {
         this.id = webcrap.misc.generateUID();
@@ -67,6 +70,14 @@ export function copyNode(node: SearchNode): SearchNode {
     newNode.label = node.label;
     newNode.index = node.index;
     return newNode;
+}
+
+export function importNode(sourceNode: SearchNode, destNode: SearchNode): void {
+    destNode.name = sourceNode.name;
+    destNode.label = sourceNode.label;
+    destNode.index = sourceNode.index;
+    destNode.dbId = sourceNode.dbId;
+    destNode.labels = Array.from(sourceNode.labels);
 }
 
 export class SearchEdge implements SearchItem {
@@ -134,6 +145,32 @@ export class Search {
     nodes: SearchNode[] = [];
     edges: SearchEdge[] = [];
     addedNodes = 0;
+}
+
+export function copySearch(search: Search): Search {
+    const newsearch = new Search();
+    const oldsearch = search as Search;
+    newsearch.addedNodes = oldsearch.addedNodes;
+    newsearch.condition = copyAndOrCondition(oldsearch.condition as AndOrCondition)
+    oldsearch.nodes.forEach((n) => {
+        newsearch.nodes.push(copyNode(n));
+    });
+    oldsearch.edges.forEach((e) => {
+        newsearch.edges.push(copyEdge(e));
+    });
+    return newsearch;
+}
+
+export function copyAndOrCondition(cond: AndOrCondition): AndOrCondition {
+    const newcond = new AndOrCondition(cond.type);
+    cond.conditions.forEach((c) => {
+        if (c.type === ConditionType.And || c.type === ConditionType.Or) {
+            newcond.conditions.push(copyAndOrCondition(c as AndOrCondition));
+        } else {
+            newcond.conditions.push(copyCondition(c as ValueCondition));
+        }
+    });
+    return newcond;
 }
 
 export function copyCondition(cond: ValueCondition): ValueCondition {
@@ -221,20 +258,38 @@ export function RemoveConditionsForName(root: AndOrCondition, name: string): voi
     //console.log("finished");
 }
 
-export function ReplaceCondition(root: AndOrCondition, oldcondition: ValueCondition, newcondition: ValueCondition): void {
-    for (let i = 0; i < root.conditions.length; i++) {
-        const cond: Condition = root.conditions[i];
-
-        if (cond.type === ConditionType.Or || cond.type === ConditionType.And) {
-            ReplaceCondition((cond as AndOrCondition), oldcondition, newcondition);
-        }
-        else {
-            if (cond === oldcondition) {
-                root.conditions.splice(i, 1, newcondition);
-                return;
+export function UpdateCondition(root: AndOrCondition, oldcondition: ValueCondition, newcondition: ValueCondition): void {
+    if (oldcondition === null) {
+        root.conditions.push(newcondition);
+    } else {
+        for (let i = 0; i < root.conditions.length; i++) {
+            const cond: Condition = root.conditions[i];
+    
+            if (cond.type === ConditionType.Or || cond.type === ConditionType.And) {
+                //console.log({source:"updateCondition", message: "nested call"});
+                UpdateCondition((cond as AndOrCondition), oldcondition, newcondition);
+            }
+            else {
+                if (cond === oldcondition) {
+                    //root.conditions.splice(i, 1, newcondition);
+                    importValueCondition(newcondition, oldcondition);
+                    //console.log({source:"updateCondition", oldcondition: oldcondition, newcondition: newcondition});
+                    return;
+                }
             }
         }
     }
+    
+}
+
+function importValueCondition(source: ValueCondition, dest: ValueCondition) {
+    dest.type = source.type;
+    dest.name = source.name;
+    dest.property = source.property;
+    dest.not = source.not;
+    dest.caseSensitive = source.caseSensitive;
+    dest.value = source.value;
+    dest.operator = source.operator;
 }
 
 export function DeleteCondition(root: AndOrCondition, oldcondition: Condition): void {

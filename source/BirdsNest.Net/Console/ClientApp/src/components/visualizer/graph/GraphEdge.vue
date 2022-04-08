@@ -17,6 +17,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 -->
 <template>
 	<g
+		ref="root"
 		visibility="hidden"
 		:id="'edge_' + edge.dbId"
 		:class="['edges', edge.label, subTypes, { selected: edge.selected }, [edge.enabled ? 'enabled' : 'disabled']]"
@@ -26,59 +27,66 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 	>
 		<path :class="['arrows', edge.label, subTypes]"></path>
 		<g class="edgelabel">
-			<text class="noselect" dominant-baseline="text-bottom" text-anchor="middle" transform="translate(0,-5)">{{
-				edge.label
-			}}</text>
+			<text
+				class="noselect"
+				dominant-baseline="text-bottom"
+				text-anchor="middle"
+				transform="translate(0,-5)"
+			>
+				{{
+					edge.label
+				}}
+			</text>
 		</g>
 	</g>
 </template>
 
-<script lang="ts">
-import { Component, Vue, Prop } from "vue-property-decorator";
+<script setup lang="ts">
 import { d3 } from "@/assets/ts/visualizer/d3";
 import { SimLink } from "@/assets/ts/visualizer/SimLink";
 import { SimNode } from "@/assets/ts/visualizer/SimNode";
 import { bus, events } from "@/bus";
 import webcrap from "@/assets/ts/webcrap/webcrap";
+import { computed, onMounted, reactive, ref } from "vue";
+import { useStore } from "@/store";
 
-@Component
-export default class GraphEdge extends Vue {
-	@Prop({ type: Object, required: true })
-	edge: SimLink<SimNode>;
+const props = defineProps({
+	edge: { type: Object, required: true }
+});
+const edge = props.edge as SimLink<SimNode>;
+const store = useStore();
+const root = ref(null);
 
-	isSelected = false;
+const subTypes = computed((): string[] => {
+	const subTypeProps = store.state.pluginManager.subTypeProperties;
+	const subs = [];
 
-	get subTypes(): string[] {
-		const subTypeProps = this.$store.state.pluginManager.subTypeProperties;
-		const subs = [];
+	if (Object.prototype.hasOwnProperty.call(subTypeProps, edge.label)) {
+		const subProps: string[] = subTypeProps[edge.label];
 
-		if (Object.prototype.hasOwnProperty.call(subTypeProps, this.edge.label)) {
-			const subProps: string[] = subTypeProps[this.edge.label];
-
-			subProps.forEach((subType: string) => {
-				if (Object.prototype.hasOwnProperty.call(this.edge.properties, subType)) {
-					const sub = webcrap.misc.cleanCssClassName(String(this.edge.properties[subType]));
-					if (webcrap.misc.isNullOrWhitespace(sub) === false) {
-						subs.push(this.edge.label + "-" + sub);
-					}
+		subProps.forEach((subType: string) => {
+			if (Object.prototype.hasOwnProperty.call(edge.properties, subType)) {
+				const sub = webcrap.misc.cleanCssClassName(String(edge.properties[subType]));
+				if (webcrap.misc.isNullOrWhitespace(sub) === false) {
+					subs.push(edge.label + "-" + sub);
 				}
-			});
-		}
-
-		return subs;
+			}
+		});
 	}
 
-	//assign the d3 datum to the element so simulation can use it
-	mounted() {
-		d3.select(this.$el).datum(this.edge);
-	}
+	return subs;
+});
 
-	onEdgeClicked() {
-		bus.$emit(events.Visualizer.Edge.EdgeClicked, this.edge);
-	}
+//assign the d3 datum to the element so simulation can use it
+onMounted(() => {
+	d3.select(root.value).datum(edge);
+});
 
-	onEdgeCtrlClicked() {
-		bus.$emit(events.Visualizer.Edge.EdgeCtrlClicked, this.edge);
-	}
+function onEdgeClicked() {
+	bus.emit(events.Visualizer.Edge.EdgeClicked, edge);
+}
+
+function onEdgeCtrlClicked() {
+	bus.emit(events.Visualizer.Edge.EdgeCtrlClicked, edge);
 }
 </script>

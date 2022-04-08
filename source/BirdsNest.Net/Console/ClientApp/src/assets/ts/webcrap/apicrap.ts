@@ -15,7 +15,7 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 import { bus, events } from "@/bus";
-import store, { rootPaths } from "@/store";
+import { store, rootPaths } from "@/store";
 import { auth } from "./authcrap";
 import $ from 'jquery';
 
@@ -39,7 +39,7 @@ class ApiCrap {
             store.commit(rootPaths.mutations.DEAUTH);
           },
           403: function () {
-            bus.$emit(events.Notifications.Error, "Access forbidden");
+            bus.emit(events.Notifications.Error, "Access forbidden");
           },
         },
         success: function (data?, status?: string, jqXHR?: JQueryXHR) {
@@ -64,7 +64,7 @@ class ApiCrap {
             store.commit(rootPaths.mutations.DEAUTH);
           },
           403: function () {
-            bus.$emit(events.Notifications.Error, "Access forbidden");
+            bus.emit(events.Notifications.Error, "Access forbidden");
           }
         },
         success: function (data?, status?: string, jqXHR?: JQueryXHR) {

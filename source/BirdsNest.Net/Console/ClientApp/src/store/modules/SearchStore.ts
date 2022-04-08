@@ -16,12 +16,13 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 import { Module } from "vuex";
 import { api, Request } from "../../assets/ts/webcrap/apicrap";
-import { Search, SearchItem, SearchEdge, SearchNode, Condition, moveCondition, ConditionType, AndOrCondition, ValueCondition, ReplaceCondition, DeleteCondition } from "../../assets/ts/visualizer/Search";
+import { Search, SearchItem, SearchEdge, SearchNode, Condition, moveCondition, ConditionType, AndOrCondition, ValueCondition, UpdateCondition, DeleteCondition, importNode } from "../../assets/ts/visualizer/Search";
 import webcrap from "@/assets/ts/webcrap/webcrap";
 import { RootState } from '../index';
 import { ResultSet } from '@/assets/ts/dataMap/ResultSet';
 import i18n from '@/i18n';
 
+const { t } = i18n.global;
 
 export const SearchStorePaths = {
     mutations: {
@@ -123,7 +124,7 @@ const state: SearchState = {
 }
 
 export const SearchStore: Module<SearchState, RootState> = {
-    namespaced: true as true,
+    namespaced: true,
     state: state,
     mutations: {
         //main bits
@@ -137,6 +138,12 @@ export const SearchStore: Module<SearchState, RootState> = {
         reset(state): void {
             state.selectedItem = null;
             state.selectedCondition = null;
+            state.editAndOrCondition = null;
+            state.editEdge = null;
+            state.editNode = null;
+            state.shareCypher = "";
+            state.shareUrl = "";
+            state.lastIndex = 0;
             state.search = new Search();
         },
         toggleSearch(state): void {
@@ -180,8 +187,7 @@ export const SearchStore: Module<SearchState, RootState> = {
             if (state.editNode === null) {
                 webcrap.array.pushItem<SearchNode>(state.search.nodes, value);
             } else {
-                value.id = state.editNode.id;
-                webcrap.array.replaceItem<SearchNode>(state.search.nodes, state.editNode, value);
+                importNode(value, state.editNode);
                 state.editNode = null;
             }
         },
@@ -280,7 +286,8 @@ export const SearchStore: Module<SearchState, RootState> = {
             state.newCondition = null;
         },
         saveEditingCondition(state, condition: ValueCondition) {
-            ReplaceCondition(state.search.condition, state.editValCondition, condition);
+            //console.log({source:"saveEditingCondition", condition: condition, state: state});
+            UpdateCondition(state.search.condition, state.editValCondition, condition);
             state.newCondition = null;
             state.editValCondition = null;
         },
@@ -357,7 +364,7 @@ export const SearchStore: Module<SearchState, RootState> = {
     actions: {
         search(context): void {
             context.commit('results', null);
-            context.commit('setStatusMessage', i18n.t('word_Searching'));
+            context.commit('setStatusMessage', t('word_Searching'));
             context.commit('setIsSearching', true);
 
             const postdata = JSON.stringify(context.state.search);
@@ -371,7 +378,7 @@ export const SearchStore: Module<SearchState, RootState> = {
                 successCallback: (data?: ResultSet) => {
                     //console.log(data);
                     if (data.nodes.length === 0) {
-                        context.commit('setStatusMessage', i18n.t('phrase_Found_no_results'));
+                        context.commit('setStatusMessage', t('phrase_Found_no_results'));
                     } else {
                         context.commit('clearStatusMessage');
                     }
@@ -379,7 +386,7 @@ export const SearchStore: Module<SearchState, RootState> = {
                     context.commit('results', data);
                 },
                 errorCallback: (jqXHR?: JQueryXHR, status?: string, error?: string) => {
-                    context.commit('setStatusMessage', i18n.t('word_Error'));
+                    context.commit('setStatusMessage', t('word_Error'));
                     context.commit('setIsSearching', false);
                     // eslint-disable-next-line
                     console.error(error);
@@ -390,14 +397,14 @@ export const SearchStore: Module<SearchState, RootState> = {
         simpleSearch(context, term): void {
             context.commit('results', null);
             context.commit('setIsSearching', true);
-            context.commit('setStatusMessage', i18n.t('word_Searching'));
+            context.commit('setStatusMessage', t('word_Searching'));
 
             const request: Request = {
                 url: "/api/search/?searchterm=" + term,
                 postJson: true,
                 successCallback: (data?: ResultSet) => {
                     if (data.nodes.length === 0) {
-                        context.commit('setStatusMessage', i18n.t('phrase_Found_no_results'));
+                        context.commit('setStatusMessage', t('phrase_Found_no_results'));
                     } else {
                         context.commit('clearStatusMessage');
                     }
@@ -406,7 +413,7 @@ export const SearchStore: Module<SearchState, RootState> = {
                 },
                 errorCallback: (jqXHR?: JQueryXHR, status?: string, error?: string) => {
                     context.commit('setIsSearching', false);
-                    context.commit('setStatusMessage', i18n.t('word_Error'));
+                    context.commit('setStatusMessage', t('word_Error'));
                     // eslint-disable-next-line
                     console.error(error);
                 }

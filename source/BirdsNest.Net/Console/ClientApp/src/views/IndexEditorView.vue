@@ -16,9 +16,9 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see http://www.gnu.org/licenses/.
 -->
 <template>
-	<div class="page" id="indexEditor">
+	<div ref="root" class="page" id="indexEditor">
 		<h6>{{ $t('phrase_Indexes_by_Plugin') }}</h6>
-		<Loading v-if="!statsDataReady" />
+		<LoadingLogo v-if="!statsDataReady" />
 		<div v-else>
 			<ul class="accordion" data-accordion data-allow-all-closed="true" data-multi-expand="true">
 				<li
@@ -28,14 +28,14 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 					:key="pluginname"
 				>
 					<a href="#" class="pluginHeader accordion-title">{{ plugin.displayName }}</a>
-					<div v-if="pluginHasProperties(plugin)===false" class="accordion-content" data-tab-content>
+					<div v-if="pluginHasProperties(plugin) === false" class="accordion-content" data-tab-content>
 						<p class="noPropsMessage">{{ $t('index_editor.plugin_no_datatypes') }}</p>
 					</div>
 					<div v-else class="accordion-content" data-tab-content>
 						<table class="hover">
 							<thead>
 								<tr>
-									<th>{{ $tc('word_Type') }}</th>
+									<th>{{ $t('word_Type') }}</th>
 									<th>{{ $t('word_Property') }}</th>
 									<!-- <th>Index Name</th> -->
 									<th></th>
@@ -49,27 +49,35 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 									<!-- <td>{{ index.indexName }}</td> -->
 									<!-- <td>{{ index.state }}</td> -->
 									<td>
-										<div v-if="propertyHasIndex(label, propname)">
+										<div v-if="propertyHasIndex(label as string, propname as string)">
 											<span
-												v-if="propertyHasConstraint(label, propname)"
+												v-if="propertyHasConstraint(label as string, propname as string)"
 												class="inactive"
 												:title="$t('index_editor.constraints_not_supported')"
 											>{{ $t('word_Constraint') }}</span>
 											<span
-												v-else-if="propertyIndexIsEnforced(label, propname)"
+												v-else-if="propertyIndexIsEnforced(label as string, propname as string)"
 												class="inactive delete"
 												:title="$t('index_editor.index_enforced')"
 											>{{ $t('word_Delete') }}</span>
-											<a v-else v-on:click="onDeleteIndexClicked(label, propname)" class="delete">{{ $t('word_Delete')}}</a>
+											<a
+												v-else
+												v-on:click="onDeleteIndexClicked(label as string, propname as string)"
+												class="delete"
+											>{{ $t('word_Delete') }}</a>
 										</div>
 										<div v-else>
 											<a
-												v-if="propertyIndexIsEnforced(label, propname)"
+												v-if="propertyIndexIsEnforced(label as string, propname as string)"
 												v-on:click="onCreateIndexClicked(label, propname)"
 												class="create warning"
 												:title="$t('index_editor.enforced_missing')"
 											>{{ $t('word_Create') }}</a>
-											<a v-else v-on:click="onCreateIndexClicked(label, propname)" class="create">{{ $t('word_Create') }}</a>
+											<a
+												v-else
+												v-on:click="onCreateIndexClicked(label, propname)"
+												class="create"
+											>{{ $t('word_Create') }}</a>
 										</div>
 									</td>
 								</tr>
@@ -120,7 +128,8 @@ h6 {
 	color: pink;
 }
 
-tr, .noPropsMessage {
+tr,
+.noPropsMessage {
 	font-size: 0.8rem;
 }
 
@@ -133,184 +142,182 @@ p {
 }
 </style>
 
-<script lang="ts">
+<script setup lang="ts">
 import { bus, events } from "@/bus";
-import { Component, Vue } from "vue-property-decorator";
-import Loading from "@/components/Loading.vue";
+import LoadingLogo from "@/components/LoadingLogo.vue";
 import { Index } from "@/assets/ts/dataMap/indexes/Index";
 import { api, Request } from "@/assets/ts/webcrap/apicrap";
-import { Dictionary } from "vue-router/types/router";
+import { Dictionary } from "@/assets/ts/webcrap/misccrap";
 import PluginManager from "@/assets/ts/dataMap/PluginManager";
-import { Plugin } from "@/assets/ts/dataMap/Plugin";
+import { ConsolePlugin } from "@/assets/ts/dataMap/ConsolePlugin";
 import ServerInfo from "@/assets/ts/dataMap/ServerInfo";
 import { DataType } from "@/assets/ts/dataMap/DataType";
 import { Property } from "@/assets/ts/dataMap/Property";
 import { rootPaths } from "@/store/index";
 import $ from "jquery";
 import "foundation-sites";
+import { computed, onMounted, ref } from "vue";
+import { useStore } from "@/store";
+import { useI18n } from 'vue-i18n';
 
-@Component({
-	components: {
-		Loading,
-	},
-})
-export default class IndexEditorView extends Vue {
-	indexes: Dictionary<Index[]> = null;
-	api = api;
+const { t } = useI18n();
+const root = ref(null);
+const store = useStore();
 
-	get apiState(): number {
-		return this.$store.state.apiState;
-	}
+let indexes: Dictionary<Index[]> = null;
 
-	get pluginManager(): PluginManager {
-		return this.$store.state.pluginManager;
-	}
+const apiState = computed((): number => {
+	return store.state.apiState;
+});
 
-	get serverInfoState(): number {
-		return this.$store.state.serverInfoState;
-	}
+const pluginManager = computed((): PluginManager => {
+	return store.state.pluginManager;
+});
 
-	get serverInfo(): ServerInfo {
-		return this.$store.state.serverInfo;
-	}
+const serverInfoState = computed((): number => {
+	return store.state.serverInfoState;
+});
 
-	get statsDataReady(): boolean {
-		return this.serverInfo !== null && this.pluginManager !== null;
-	}
+const serverInfo = computed((): ServerInfo => {
+	return store.state.serverInfo;
+});
 
-	mounted() {
-		if (this.statsDataReady) {
-			//double requestAnimationFrame required primarily for IE
-			requestAnimationFrame(() => {
-				requestAnimationFrame(() => {
-					$(this.$el).foundation();
-				});
-			});
-		} else {
-			const unwatch = this.$store.watch(
-				() => {
-					return this.$store.state.serverInfo;
-				},
-				() => {
-					requestAnimationFrame(() => {
-						requestAnimationFrame(() => {
-							unwatch();
-							$(this.$el).foundation();
-						});
-					});
-				}
-			);
+const statsDataReady = computed((): boolean => {
+	return serverInfo.value !== null && pluginManager.value !== null;
+});
+
+function pluginHasProperties(plugin: ConsolePlugin) {
+	const dataTypeNames = Object.keys(plugin.nodeDataTypes);
+	for (let i = 0; i < dataTypeNames.length; i++) {
+		const datatype = plugin.nodeDataTypes[dataTypeNames[i]];
+		if (datatype.propertyNames.length > 0) {
+			return true;
 		}
 	}
 
-	pluginHasProperties(plugin: Plugin) {
-		const dataTypeNames = Object.keys(plugin.nodeDataTypes);
-		for (let i = 0; i < dataTypeNames.length; i++) {
-			const datatype = plugin.nodeDataTypes[dataTypeNames[i]];
-			if (datatype.propertyNames.length > 0) {
+	return false;
+}
+
+function propertyHasIndex(label: string, propertyName: string): boolean {
+	if (Object.prototype.hasOwnProperty.call(serverInfo.value.indexes, label)) {
+		if (Object.prototype.hasOwnProperty.call(serverInfo.value.indexes[label], propertyName)) {
+			return true;
+		}
+	}
+	return false;
+}
+
+function propertyHasConstraint(label: string, propertyName: string): boolean {
+	if (Object.prototype.hasOwnProperty.call(serverInfo.value.indexes, label)) {
+		const indexes = serverInfo.value.indexes[label];
+
+		if (Object.prototype.hasOwnProperty.call(indexes, propertyName)) {
+			const index: Index = indexes[propertyName];
+			if (index.isConstraint) {
 				return true;
 			}
 		}
-
-		return false;
 	}
+	return false;
+}
 
-	propertyHasIndex(label: string, propertyName: string): boolean {
-		if (Object.prototype.hasOwnProperty.call(this.serverInfo.indexes, label)) {
-			if (Object.prototype.hasOwnProperty.call(this.serverInfo.indexes[label], propertyName)) {
+function propertyIndexIsEnforced(label: string, propertyName: string): boolean {
+	if (Object.prototype.hasOwnProperty.call(pluginManager.value.nodeDataTypes, label)) {
+		const datatype: DataType = pluginManager.value.nodeDataTypes[label];
+
+		if (Object.prototype.hasOwnProperty.call(datatype.properties, propertyName)) {
+			const propertydef: Property = datatype.properties[propertyName];
+			if (propertydef.indexEnforced) {
 				return true;
 			}
 		}
-		return false;
 	}
 
-	propertyHasConstraint(label: string, propertyName: string): boolean {
-		if (Object.prototype.hasOwnProperty.call(this.serverInfo.indexes, label)) {
-			const indexes = this.serverInfo.indexes[label];
+	if (Object.prototype.hasOwnProperty.call(pluginManager.value.edgeDataTypes, label)) {
+		const datatype: DataType = pluginManager.value.edgeDataTypes[label];
 
-			if (Object.prototype.hasOwnProperty.call(indexes, propertyName)) {
-				const index: Index = indexes[propertyName];
-				if (index.isConstraint) {
-					return true;
-				}
+		if (Object.prototype.hasOwnProperty.call(datatype.properties, propertyName)) {
+			const propertydef: Property = datatype.properties[propertyName];
+			if (propertydef.indexEnforced) {
+				return true;
 			}
 		}
-		return false;
 	}
+	return false;
+}
 
-	propertyIndexIsEnforced(label: string, propertyName: string): boolean {
-		if (Object.prototype.hasOwnProperty.call(this.pluginManager.nodeDataTypes, label)) {
-			const datatype: DataType = this.pluginManager.nodeDataTypes[label];
+function onDeleteIndexClicked(label: string, property: string): void {
+	const message = t('index_editor.confirm_index_delete', { label: label, property: property }).toString();
+	if (confirm(message)) {
+		const indexes: Dictionary<Index> = serverInfo.value.indexes[label];
+		const index = indexes[property];
+		const postdata = JSON.stringify(index);
 
-			if (Object.prototype.hasOwnProperty.call(datatype.properties, propertyName)) {
-				const propertydef: Property = datatype.properties[propertyName];
-				if (propertydef.indexEnforced) {
-					return true;
-				}
-			}
-		}
+		const request: Request = {
+			url: "/api/admin/indexes/drop",
+			data: postdata,
+			postJson: true,
+			successCallback: () => {
+				store.dispatch(rootPaths.actions.UPDATE_SERVER_INFO);
+			},
+			errorCallback: (jqXHR?, status?: string, error?: string) => {
+				// eslint-disable-next-line
+				console.error(error);
+				bus.emit(events.Notifications.Error, t('index_editor.error_delete', { label: label, property: property }).toString() + "\n" + error);
+			},
+		};
 
-		if (Object.prototype.hasOwnProperty.call(this.pluginManager.edgeDataTypes, label)) {
-			const datatype: DataType = this.pluginManager.edgeDataTypes[label];
-
-			if (Object.prototype.hasOwnProperty.call(datatype.properties, propertyName)) {
-				const propertydef: Property = datatype.properties[propertyName];
-				if (propertydef.indexEnforced) {
-					return true;
-				}
-			}
-		}
-		return false;
-	}
-
-	onDeleteIndexClicked(label: string, property: string): void {
-		const message = this.$t('index_editor.confirm_index_delete', {label: label, property: property}).toString();
-		if (confirm(message)) {
-			const indexes: Dictionary<Index> = this.serverInfo.indexes[label];
-			const index = indexes[property];
-			const postdata = JSON.stringify(index);
-
-			const request: Request = {
-				url: "/api/admin/indexes/drop",
-				data: postdata,
-				postJson: true,
-				successCallback: () => {
-					this.$store.dispatch(rootPaths.actions.UPDATE_SERVER_INFO);
-				},
-				errorCallback: (jqXHR?: JQueryXHR, status?: string, error?: string) => {
-					// eslint-disable-next-line
-					console.error(error);
-					bus.$emit(events.Notifications.Error, this.$t('index_editor.error_delete', {label: label, property: property}).toString() + "\n" + error);
-				},
-			};
-
-			bus.$emit(events.Notifications.Processing, this.$t('word_Processing'));
-			api.post(request);
-		}
-	}
-
-	onCreateIndexClicked(label, property) {
-		const message = this.$t('index_editor.confirm_index_create', {label: label, property: property}).toString();
-		if (confirm(message)) {
-			const postdata = JSON.stringify({ label: label, property: property });
-
-			const request: Request = {
-				url: "/api/admin/indexes/create",
-				data: postdata,
-				postJson: true,
-				successCallback: () => {
-					this.$store.dispatch(rootPaths.actions.UPDATE_SERVER_INFO);
-				},
-				errorCallback: (jqXHR?: JQueryXHR, status?: string, error?: string) => {
-					// eslint-disable-next-line
-					console.error(error);
-					bus.$emit(events.Notifications.Error, this.$t('index_editor.error_create', {label: label, property:property}) + "\n" + error);
-				},
-			};
-
-			bus.$emit(events.Notifications.Processing, this.$t('word_Processing'));
-			api.post(request);
-		}
+		bus.emit(events.Notifications.Processing, t('word_Processing'));
+		api.post(request);
 	}
 }
+
+function onCreateIndexClicked(label, property) {
+	const message = t('index_editor.confirm_index_create', { label: label, property: property }).toString();
+	if (confirm(message)) {
+		const postdata = JSON.stringify({ label: label, property: property });
+
+		const request: Request = {
+			url: "/api/admin/indexes/create",
+			data: postdata,
+			postJson: true,
+			successCallback: () => {
+				store.dispatch(rootPaths.actions.UPDATE_SERVER_INFO);
+			},
+			errorCallback: (jqXHR?, status?: string, error?: string) => {
+				// eslint-disable-next-line
+				console.error(error);
+				bus.emit(events.Notifications.Error, t('index_editor.error_create', { label: label, property: property }) + "\n" + error);
+			},
+		};
+
+		bus.emit(events.Notifications.Processing, t('word_Processing'));
+		api.post(request);
+	}
+}
+
+onMounted(() => {
+	if (statsDataReady) {
+		//double requestAnimationFrame required primarily for IE
+		requestAnimationFrame(() => {
+			requestAnimationFrame(() => {
+				$(root.value).foundation();
+			});
+		});
+	} else {
+		const unwatch = store.watch(
+			() => {
+				return store.state.serverInfo;
+			},
+			() => {
+				requestAnimationFrame(() => {
+					requestAnimationFrame(() => {
+						unwatch();
+						$(root.value).foundation();
+					});
+				});
+			}
+		);
+	}
+});
 </script>

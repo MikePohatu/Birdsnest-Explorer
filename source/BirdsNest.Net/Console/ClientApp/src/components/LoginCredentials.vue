@@ -25,7 +25,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 					<div class="input-group">
 						<input
 							required
-							ref="username"
+							ref="usernameEl"
 							v-model="username"
 							tabindex="1"
 							type="text"
@@ -47,7 +47,13 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 					</div>
 
 					<div class="input-group">
-						<select id="provider" tabindex="3" v-model="provider" class="small-8 input-group-field" required>
+						<select
+							id="provider"
+							tabindex="3"
+							v-model="provider"
+							class="small-8 input-group-field"
+							required
+						>
 							<option v-for="prov in providers" :key="prov" :value="prov">{{ prov }}</option>
 						</select>
 					</div>
@@ -78,43 +84,46 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 </style>
 
 
-<script lang="ts">
-import { Component, Vue } from "vue-property-decorator";
+<script setup lang="ts">
+import { computed, onActivated, onMounted, ref } from "vue";
+import { useStore } from "@/store";
 import { auth } from "../assets/ts/webcrap/authcrap";
 import { rootPaths } from "../store";
 
-@Component
-export default class LoginCredentials extends Vue {
-	username = "";
-	password = "";
-	provider = "";
+const store = useStore();
 
-	get message(): string {
-		return this.$store.state.auth.message;
-	}
+let username = ref("");
+let password = ref("");
+let provider = ref("");
+const usernameEl = ref(null);
 
-	get providers(): string[] {
-		const provs = this.$store.state.session.providers;
-		this.provider = provs[0];
-		return provs;
-	}
 
-	created(): void {
-		this.$store.commit(rootPaths.mutations.SESSION_STATUS, "");
-		if (this.providers && this.providers.length > 0) {
-			this.provider = this.providers[0];
-		}
-	}
+const message = computed((): string => {
+	return store.state.auth.message;
+});
 
-	mounted(): void {
-		(this.$refs.username as HTMLElement).focus();
-	}
+const providers = computed((): string[] => {
+	return store.state.session.providers;
+});
 
-	login(): void {
-		auth.login(this.username, this.password, this.provider, () => {
-			this.password = "";
-		});
+
+
+onMounted((): void => {
+	if (providers.value && providers.value.length > 0) {
+		provider.value = providers.value[0];
 	}
+	
+	store.commit(rootPaths.mutations.SESSION_STATUS, "");
+});
+
+onActivated(():void => {
+	(usernameEl as HTMLElement).focus();
+});
+
+function login(): void {
+	auth.login(username.value, password.value, provider.value, () => {
+		password.value = "";
+	});
 }
 </script>
 

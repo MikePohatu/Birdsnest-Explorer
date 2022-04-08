@@ -74,7 +74,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 	padding: 0;
 }
 
-#drawingpane >>> .cropBox {
+#drawingpane :deep(.cropBox) {
 	border: 1px dotted dodgerblue;
 	fill: dodgerblue;
 	fill-opacity: 0.1;
@@ -181,11 +181,10 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 </style>
 
 
-<script lang="ts">
+<script setup lang="ts">
 import { bus, events } from "@/bus";
 import { routeDefs } from "@/router/index";
 import { graphData } from "@/assets/ts/visualizer/GraphData";
-import { Component, Vue } from "vue-property-decorator";
 
 import { VisualizerStorePaths } from "@/store/modules/VisualizerStore";
 import { d3 } from "@/assets/ts/visualizer/d3";
@@ -206,196 +205,200 @@ import { SimLink } from "@/assets/ts/visualizer/SimLink";
 import Slope from "@/assets/ts/visualizer/Slope";
 import { api, Request } from "@/assets/ts/webcrap/apicrap";
 import LStore from "../../../assets/ts/LocalStorageManager";
+import { computed, nextTick, onBeforeUnmount, onMounted } from "vue";
+import { useStore } from "@/store";
+import { useRouter } from "vue-router";
 
 //import {VisualizerStorePaths} from "@/store/modules/VisualizerStore";
 
-@Component({
-	components: {
-		GraphNode,
-		GraphNodeBg,
-		GraphEdge,
-		GraphEdgeBg,
-		ViewControls,
-		NodeDetailCard,
-		EdgeDetailCard,
-	},
-})
-export default class Graph extends Vue {
-	routeDefs = routeDefs;
-	drawingPane;
-	drawingSvg;
-	zoomLayer;
-	graphBgLayer;
-	edgesLayer;
-	nodesLayer;
-	areaBox;
-	simController = new SimulationController();
-	graphData = graphData; //create hook to make it reactive
-	zoomer;
-	onResize = webcrap.misc.debounce(this.centerView, 500);
-	bus = bus;
-	controlEvents = events.Visualizer.Controls;
+// @Component({
+// 	components: {
+// 		GraphNode,
+// 		GraphNodeBg,
+// 		GraphEdge,
+// 		GraphEdgeBg,
+// 		ViewControls,
+// 		NodeDetailCard,
+// 		EdgeDetailCard,
+// 	},
+// })
+	const store = useStore();
+	const router = useRouter();
 
-	watchers: Function[] = [];
+	let drawingPane;
+	let drawingSvg;
+	let zoomLayer;
+	let graphBgLayer;
+	let edgesLayer;
+	let nodesLayer;
+	let areaBox;
+	let simController = new SimulationController();
+	let zoomer;
+	let onResize = webcrap.misc.debounce(centerView, 500);
+	let controlEvents = events.Visualizer.Controls;
 
-	get graphNodes(): SimNode[] {
-		return this.graphData.graphNodes.GetArray();
-	}
+	let watchers = [];
+	
+	const graphNodes = computed<SimNode[]>(() => {
+		//console.log({source:"graphNodes", graphNodes: graphData.graphNodes.Array});
+		return graphData.graphNodes.Array;
+	});
 
-	get graphEdges(): SimLink<SimNode>[] {
-		return this.graphData.graphEdges.GetArray();
-	}
+	const graphEdges = computed<SimLink<SimNode>[]>(() => {
+		return graphData.graphEdges.Array;
+	});
 
-	get detailsItems(): (SimNode | SimLink<SimNode>)[] {
-		return this.graphData.detailsItems.GetArray();
-	}
+	const detailsItems = computed<(SimNode | SimLink<SimNode>)[]>(() => {
+		return graphData.detailsItems.Array;
+	});
 
-	created() {
+	onCreated();
+	function onCreated() {
 		//#region control events
 
 		//eventbus and event registrations. All registrations MUST be deregistered in the
 		//beforeDestroy method. 
-		bus.$on(events.Visualizer.Controls.RefreshLayout, () => {
-			this.simController.RestartSimulation();
+		bus.on(events.Visualizer.Controls.RefreshLayout, () => {
+			simController.RestartSimulation();
 		});
-		bus.$on(events.Visualizer.Controls.Select, () => {
-			this.toggleNodeSelectMode();
+		bus.on(events.Visualizer.Controls.Select, () => {
+			toggleNodeSelectMode();
 		});
-		bus.$on(events.Visualizer.Controls.Invert, () => {
-			this.graphData.invertSelectedItems();
-			this.graphData.detailsItems.Clear();
+		bus.on(events.Visualizer.Controls.Invert, () => {
+			graphData.invertSelectedItems().Commit();
+			graphData.detailsItems.Clear();
 		});
-		bus.$on(events.Visualizer.Controls.Crop, () => {
-			this.toggleCropMode();
+		bus.on(events.Visualizer.Controls.Crop, () => {
+			toggleCropMode();
 		});
-		bus.$on(events.Visualizer.Controls.CenterView, () => {
-			this.centerView();
+		bus.on(events.Visualizer.Controls.CenterView, () => {
+			centerView();
 		});
-		bus.$on(events.Visualizer.Controls.Export, () => {
-			LStore.storePendingNodeList(graphData.graphNodes.GetArray());
-			const routeData = this.$router.resolve({ path: routeDefs.report.path });
+		bus.on(events.Visualizer.Controls.Export, () => {
+			LStore.storePendingNodeList(graphData.graphNodes.Array);
+			const routeData = router.resolve({ path: routeDefs.report.path });
 			window.open(routeData.href, "_blank");
 		});
-		bus.$on(events.Visualizer.Controls.Search, value => {
-			this.searchGraph(value);
+		bus.on(events.Visualizer.Controls.Search, value => {
+			searchGraph(value as string);
 		});
-		bus.$on(events.Visualizer.Controls.ClearView, () => {
+		bus.on(events.Visualizer.Controls.ClearView, () => {
 			if (confirm("Are you sure you want to clear the current view?")) {
-				this.graphData.reset();
+				graphData.reset();
 			}
 		});
-		bus.$on(events.Visualizer.Controls.RemoveNodes, () => {
-			const selNodeIds = this.graphData.getSelectedNodeIds();
+		bus.on(events.Visualizer.Controls.RemoveNodes, () => {
+			const selNodeIds = graphData.getSelectedNodeIds();
 			if (selNodeIds.length === 0) {
 				return;
 			}
-			this.removeNodeIds(selNodeIds);
+			removeNodeIds(selNodeIds);
 		});
 		//#endregion
 
 		//#region node events
-		bus.$on(events.Visualizer.Node.NodePinClicked, id => {
-			const node = this.graphData.graphNodes.GetDatum(id);
-			this.unpinNode(node);
+		bus.on(events.Visualizer.Node.NodePinClicked, id => {
+			const node = graphData.graphNodes.GetDatum(id as string);
+			unpinNode(node);
 		});
-		bus.$on(events.Visualizer.Node.NodeClicked, (node: SimNode) => {
-			this.graphData.clearSelectedItems();
-			this.graphData.detailsItems.Clear();
-			this.graphData.addSelection(node);
-			this.graphData.detailsItems.Add(node);
+		bus.on(events.Visualizer.Node.NodeClicked, (node: SimNode) => {
+			graphData.clearSelectedItems();
+			graphData.detailsItems.Clear();
+			graphData.addSelection(node).Commit();
+			graphData.detailsItems.Add(node).Commit();
 			node.selected = true;
 		});
-		bus.$on(events.Visualizer.Node.NodeCtrlClicked, (node: SimNode) => {
+		bus.on(events.Visualizer.Node.NodeCtrlClicked, (node: SimNode) => {
 			if (node.selected) {
-				this.graphData.removeSelection(node);
-				this.graphData.detailsItems.Remove(node);
+				graphData.removeSelection(node).Commit();
+				graphData.detailsItems.Remove(node).Commit();
 			} else {
-				this.graphData.addSelection(node);
-				this.graphData.detailsItems.Add(node);
+				graphData.addSelection(node).Commit();
+				graphData.detailsItems.Add(node).Commit();
 			}
 		});
 		//#endregion
 
 		//#region edge events
-		bus.$on(events.Visualizer.Edge.EdgeClicked, (edge: SimLink<SimNode>) => {
-			this.graphData.clearSelectedItems();
-			this.graphData.detailsItems.Clear();
-			this.graphData.addSelection(edge);
-			this.graphData.detailsItems.Add(edge);
+		bus.on(events.Visualizer.Edge.EdgeClicked, (edge: SimLink<SimNode>) => {
+			graphData.clearSelectedItems();
+			graphData.detailsItems.Clear();
+			graphData.addSelection(edge).Commit();
+			graphData.detailsItems.Add(edge).Commit();
 			edge.selected = true;
 		});
-		bus.$on(events.Visualizer.Edge.EdgeCtrlClicked, (edge: SimLink<SimNode>) => {
+		bus.on(events.Visualizer.Edge.EdgeCtrlClicked, (edge: SimLink<SimNode>) => {
 			if (edge.selected) {
-				this.graphData.removeSelection(edge);
-				this.graphData.detailsItems.Remove(edge);
+				graphData.removeSelection(edge).Commit();
+				graphData.detailsItems.Remove(edge).Commit();
 			} else {
-				this.graphData.addSelection(edge);
-				this.graphData.detailsItems.Add(edge);
+				graphData.addSelection(edge).Commit();
+				graphData.detailsItems.Add(edge).Commit();
 			}
 		});
 		//#endregion
 
 		//#region detail card events
-		bus.$on(events.Visualizer.RelatedDetails.DeleteNodeClicked, (node: SimNode) => {
-			this.removeNode(node);
+		bus.on(events.Visualizer.RelatedDetails.DeleteNodeClicked, (node: SimNode) => {
+			removeNode(node);
 		});
 		//#endregion
 
 		//#region eye control events
-		bus.$on(events.Visualizer.EyeControls.ToggleNodeLabel, label => {
-			const current = this.graphData.graphNodeLabelStates[label];
+		bus.on(events.Visualizer.EyeControls.ToggleNodeLabel, label => {
+			const current = graphData.graphNodeLabelStates[label as string];
 
-			this.nodesLayer.selectAll(".nodes." + label).each((d: SimNode) => {
+			nodesLayer.selectAll(".nodes." + label).each((d: SimNode) => {
 				d.enabled = !current;
 			});
-			this.graphData.graphNodeLabelStates[label] = !current;
+			graphData.graphNodeLabelStates[label as string] = !current;
 		});
 
-		bus.$on(events.Visualizer.EyeControls.ToggleEdgeLabel, label => {
-			const current = this.graphData.graphEdgeLabelStates[label];
-			this.edgesLayer.selectAll(".edges." + label).each((d: SimLink<SimNode>) => {
+		bus.on(events.Visualizer.EyeControls.ToggleEdgeLabel, label => {
+			const current = graphData.graphEdgeLabelStates[label as string];
+			edgesLayer.selectAll(".edges." + label).each((d: SimLink<SimNode>) => {
 				d.enabled = !current;
 			});
-			this.graphData.graphEdgeLabelStates[label] = !current;
+			graphData.graphEdgeLabelStates[label as string] = !current;
 		});
 
-		bus.$on(events.Visualizer.EyeControls.ShowAllNodeLabel, (enabled: boolean) => {
-			Object.keys(this.graphData.graphNodeLabelStates).forEach((key: string) => {
-				this.graphData.graphNodeLabelStates[key] = enabled;
+		bus.on(events.Visualizer.EyeControls.ShowAllNodeLabel, (enabled: boolean) => {
+			Object.keys(graphData.graphNodeLabelStates).forEach((key: string) => {
+				graphData.graphNodeLabelStates[key] = enabled;
 			});
 
-			this.nodesLayer.selectAll(".nodes").each((d: SimNode) => {
+			nodesLayer.selectAll(".nodes").each((d: SimNode) => {
 				d.enabled = enabled;
 			});
 		});
 
-		bus.$on(events.Visualizer.EyeControls.ShowllEdgeLabel, enabled => {
-			Object.keys(this.graphData.graphEdgeLabelStates).forEach((key: string) => {
-				this.graphData.graphEdgeLabelStates[key] = enabled;
+		bus.on(events.Visualizer.EyeControls.ShowllEdgeLabel, enabled => {
+			Object.keys(graphData.graphEdgeLabelStates).forEach((key: string) => {
+				graphData.graphEdgeLabelStates[key] = enabled as boolean;
 			});
 
-			this.edgesLayer.selectAll(".edges").each((d: SimNode) => {
-				d.enabled = enabled;
+			edgesLayer.selectAll(".edges").each((d: SimNode) => {
+				d.enabled = enabled as boolean;
 			});
 		});
 
-		bus.$on(events.Visualizer.EyeControls.InvertNodeLabel, () => {
-			Object.keys(this.graphData.graphNodeLabelStates).forEach((label: string) => {
-				const enabled = this.graphData.graphNodeLabelStates[label];
-				this.graphData.graphNodeLabelStates[label] = !enabled;
+		bus.on(events.Visualizer.EyeControls.InvertNodeLabel, () => {
+			Object.keys(graphData.graphNodeLabelStates).forEach((label: string) => {
+				const enabled = graphData.graphNodeLabelStates[label];
+				graphData.graphNodeLabelStates[label] = !enabled;
 
-				this.nodesLayer.selectAll(".nodes." + label).each((d: SimNode) => {
+				nodesLayer.selectAll(".nodes." + label).each((d: SimNode) => {
 					d.enabled = !enabled;
 				});
 			});
 		});
 
-		bus.$on(events.Visualizer.EyeControls.InvertEdgeLabel, () => {
-			Object.keys(this.graphData.graphEdgeLabelStates).forEach((label: string) => {
-				const enabled = this.graphData.graphEdgeLabelStates[label];
-				this.graphData.graphEdgeLabelStates[label] = !enabled;
+		bus.on(events.Visualizer.EyeControls.InvertEdgeLabel, () => {
+			Object.keys(graphData.graphEdgeLabelStates).forEach((label: string) => {
+				const enabled = graphData.graphEdgeLabelStates[label];
+				graphData.graphEdgeLabelStates[label] = !enabled;
 
-				this.edgesLayer.selectAll(".edges." + label).each((d: SimNode) => {
+				edgesLayer.selectAll(".edges." + label).each((d: SimNode) => {
 					d.enabled = !enabled;
 				});
 			});
@@ -403,131 +406,138 @@ export default class Graph extends Vue {
 		//#endregion
 	}
 
-	beforeDestroy() {
+	onBeforeUnmount(() => {
 		//console.log("Graph destroyed");
 		graphData.reset();
-		this.simController = null;
-		this.watchers.forEach(unwatcher => {
+		simController = null;
+		watchers.forEach(unwatcher => {
 			unwatcher();
 		});
 
-		this.watchers = [];
-		window.removeEventListener("resize", this.onResize);
+		watchers = [];
+		window.removeEventListener("resize", onResize);
 
-		bus.$off(events.Visualizer.Controls.RefreshLayout);
-		bus.$off(events.Visualizer.Controls.Select);
-		bus.$off(events.Visualizer.Controls.Invert);
-		bus.$off(events.Visualizer.Controls.Crop);
-		bus.$off(events.Visualizer.Controls.CenterView);
-		bus.$off(events.Visualizer.Controls.Export);
-		bus.$off(events.Visualizer.Controls.Search);
-		bus.$off(events.Visualizer.Controls.ClearView);
-		bus.$off(events.Visualizer.Controls.RemoveNodes);
+		bus.off(events.Visualizer.Controls.RefreshLayout);
+		bus.off(events.Visualizer.Controls.Select);
+		bus.off(events.Visualizer.Controls.Invert);
+		bus.off(events.Visualizer.Controls.Crop);
+		bus.off(events.Visualizer.Controls.CenterView);
+		bus.off(events.Visualizer.Controls.Export);
+		bus.off(events.Visualizer.Controls.Search);
+		bus.off(events.Visualizer.Controls.ClearView);
+		bus.off(events.Visualizer.Controls.RemoveNodes);
 		//#endregion
 
 		//#region node events
-		bus.$off(events.Visualizer.Node.NodePinClicked);
-		bus.$off(events.Visualizer.Node.NodeClicked);
-		bus.$off(events.Visualizer.Node.NodeCtrlClicked);
+		bus.off(events.Visualizer.Node.NodePinClicked);
+		bus.off(events.Visualizer.Node.NodeClicked);
+		bus.off(events.Visualizer.Node.NodeCtrlClicked);
 		//#endregion
 
 		//#region edge events
-		bus.$off(events.Visualizer.Edge.EdgeClicked);
-		bus.$off(events.Visualizer.Edge.EdgeCtrlClicked);
+		bus.off(events.Visualizer.Edge.EdgeClicked);
+		bus.off(events.Visualizer.Edge.EdgeCtrlClicked);
 		//#endregion
 
 		//#region detail card events
-		bus.$off(events.Visualizer.RelatedDetails.DeleteNodeClicked);
+		bus.off(events.Visualizer.RelatedDetails.DeleteNodeClicked);
 		//#endregion
 
 		//#region eye control events
-		bus.$off(events.Visualizer.EyeControls.ToggleNodeLabel);
-		bus.$off(events.Visualizer.EyeControls.ToggleEdgeLabel);
-		bus.$off(events.Visualizer.EyeControls.ShowAllNodeLabel);
-		bus.$off(events.Visualizer.EyeControls.ShowllEdgeLabel);
-		bus.$off(events.Visualizer.EyeControls.InvertNodeLabel);
-		bus.$off(events.Visualizer.EyeControls.InvertEdgeLabel);
-	}
+		bus.off(events.Visualizer.EyeControls.ToggleNodeLabel);
+		bus.off(events.Visualizer.EyeControls.ToggleEdgeLabel);
+		bus.off(events.Visualizer.EyeControls.ShowAllNodeLabel);
+		bus.off(events.Visualizer.EyeControls.ShowllEdgeLabel);
+		bus.off(events.Visualizer.EyeControls.InvertNodeLabel);
+		bus.off(events.Visualizer.EyeControls.InvertEdgeLabel);
+	});
 
-	mounted() {
-		this.drawingPane = d3.select<HTMLElement, null>("#drawingpane");
-		this.drawingSvg = d3.select<SVGGraphicsElement, null>("#drawingSvg");
-		this.zoomLayer = d3.select<SVGGraphicsElement, null>("#zoomlayer");
-		this.graphBgLayer = d3.select<SVGGraphicsElement, null>("#graphBgLayer");
-		this.edgesLayer = d3.select<SVGGraphicsElement, null>("#edgesLayer");
-		this.nodesLayer = d3.select<SVGGraphicsElement, null>("#nodesLayer");
+	onMounted(() => {
+		drawingPane = d3.select<HTMLElement, null>("#drawingpane");
+		drawingSvg = d3.select<SVGGraphicsElement, null>("#drawingSvg");
+		zoomLayer = d3.select<SVGGraphicsElement, null>("#zoomlayer");
+		graphBgLayer = d3.select<SVGGraphicsElement, null>("#graphBgLayer");
+		edgesLayer = d3.select<SVGGraphicsElement, null>("#edgesLayer");
+		nodesLayer = d3.select<SVGGraphicsElement, null>("#nodesLayer");
 
-		this.$store.dispatch(VisualizerStorePaths.actions.INIT);
-		this.zoomer = d3
+		store.dispatch(VisualizerStorePaths.actions.INIT);
+		zoomer = d3
 			.zoom()
 			.scaleExtent([0.05, 5])
 			.on("zoom", () => {
-				this.zoomLayer.attr("transform", d3.event.transform);
+				zoomLayer.attr("transform", d3.event.transform);
 			});
-		this.resetDrawingEvents();
-		this.centerView();
-		window.addEventListener("resize", this.onResize);
-		this.initWatchers();
-		this.simController.onFinishSimulation = this.onLayoutFinished;
-	}
+		resetDrawingEvents();
+		centerView();
+		window.addEventListener("resize", onResize);
+		initWatchers();
+		simController.onFinishSimulation = onLayoutFinished;
+	});
 
-	initWatchers(): void {
+	function initWatchers(): void {
 		//pending nodes
-		const pendingNodesWatch = this.$store.watch(
+		//console.log({source:"initWatchers"});
+		const pendingNodesWatch = store.watch(
 			() => {
-				return this.$store.state.visualizer.pendingNodes;
+				return store.state.visualizer.pendingNodes;
 			},
 			webcrap.misc.debounce(() => {
-				if (this.$store.state.visualizer.pendingNodes.length > 0) {
-					bus.$emit(events.Notifications.Processing, "Loading nodes");
+				if (store.state.visualizer.pendingNodes.length > 0) {
+					bus.emit(events.Notifications.Processing, "Loading nodes");
 					setTimeout(() => {
-						this.graphData.addNodes(this.$store.state.visualizer.pendingNodes);
-						this.$store.commit(VisualizerStorePaths.mutations.Delete.PENDING_NODES);
-						this.updateNodeSizes();
-						this.refreshNodeConnections();
-						bus.$emit(events.Notifications.Clear);
+						graphData.addNodes(store.state.visualizer.pendingNodes).commitAll();
+						store.commit(VisualizerStorePaths.mutations.Delete.PENDING_NODES);
+						updateNodeSizes();
+						refreshNodeConnections();
+						bus.emit(events.Notifications.Clear);
 					}, 1000);
 				}
-			}, 1000)
+			}, 1000),{
+				deep:true
+			}
 		);
 
 		//pending result set
-		const pendingResultsWatch = this.$store.watch(
+		const pendingResultsWatch = store.watch(
 			() => {
-				return this.$store.state.visualizer.pendingResults;
+				return store.state.visualizer.pendingResults;
 			},
 			webcrap.misc.debounce(() => {
-				if (this.$store.state.visualizer.pendingResults.length > 0) {
-					bus.$emit(events.Notifications.Processing, "Loading results");
+				if (store.state.visualizer.pendingResults.length > 0) {
+					bus.emit(events.Notifications.Processing, "Loading results");
 					setTimeout(() => {
-						this.$store.state.visualizer.pendingResults.forEach((result: ResultSet) => {
-							this.graphData.addResultSet(result);
+						store.state.visualizer.pendingResults.forEach((result: ResultSet) => {
+							graphData.addResultSet(result);
 						});
-						this.$store.commit(VisualizerStorePaths.mutations.Delete.PENDING_RESULTS);
-						this.updateNodeSizes();
-						this.refreshNodeConnections();
-						bus.$emit(events.Notifications.Clear);
+						graphData.commitAll();
+						store.commit(VisualizerStorePaths.mutations.Delete.PENDING_RESULTS);
+						updateNodeSizes();
+						refreshNodeConnections();
+						bus.emit(events.Notifications.Clear);
 					}, 1000);
 				}
-			}, 500)
+			}, 500),{
+				deep:true
+			}
 		);
 
-		this.watchers.push(pendingNodesWatch);
-		this.watchers.push(pendingResultsWatch);
+		watchers.push(pendingNodesWatch);
+		watchers.push(pendingResultsWatch);
 	}
 
-	resetDrawingEvents() {
-		this.drawingSvg
-			.on("click", this.onPageClicked)
+	function resetDrawingEvents() {
+		//console.log({source:"resetDrawingEvents", drawingSvg: drawingSvg});
+		drawingSvg
+			.on("click", onPageClicked)
 			.on("mousedown", null)
 			.on("touchstart", null)
 			.on("touchend", null)
 			.on("mouseup", null)
-			.call(this.zoomer);
+			.call(zoomer);
 	}
 
-	refreshNodeConnections(): void {
-		const postData = JSON.stringify(this.graphData.graphNodes.GetIDs());
+	function refreshNodeConnections(): void {
+		const postData = JSON.stringify(graphData.graphNodes.IDs);
 
 		const loopsrequest: Request = {
 			url: "/api/graph/directloops",
@@ -535,10 +545,12 @@ export default class Graph extends Vue {
 			postJson: true,
 			successCallback: (data: ResultSet) => {
 				data.edges.forEach(edge => {
-					this.graphData.graphEdges.GetDatum(edge.dbId).shift = true;
+					const exist = graphData.graphEdges.GetDatum(edge.dbId)
+					if (exist !==null) { exist.shift = true; }
 				});
-				this.simController.RefreshData();
-				this.simController.RestartSimulation();
+				graphData.addResultSet(data).commitEdges();
+				simController.RefreshData();
+				simController.RestartSimulation();
 			},
 			errorCallback: () => {
 				// eslint-disable-next-line
@@ -551,13 +563,13 @@ export default class Graph extends Vue {
 			data: postData,
 			postJson: true,
 			successCallback: (data: ResultSet) => {
-				this.graphData.addResultSet(data);
-				this.nodesLayer.selectAll(".nodes").call(
+				graphData.addResultSet(data);
+				nodesLayer.selectAll(".nodes").call(
 					d3
 						.drag()
-						.on("start", this.onNodeDragStart)
-						.on("drag", this.onNodeDragged)
-						.on("end", this.onNodeDragFinished)
+						.on("start", onNodeDragStart)
+						.on("drag", onNodeDragged)
+						.on("end", onNodeDragFinished)
 				);
 				api.post(loopsrequest);
 			},
@@ -569,18 +581,18 @@ export default class Graph extends Vue {
 		api.post(newrequest);
 	}
 
-	searchGraph(value: string) {
+	function searchGraph(value: string) {
 		const lowerVal = value.toLowerCase();
-		this.graphData.clearSelectedItems();
-		this.graphData.graphNodes.GetArray().forEach(node => {
+		graphData.clearSelectedItems();
+		graphData.graphNodes.Array.forEach(node => {
 			if (node.name.toLowerCase().includes(lowerVal)) {
-				this.graphData.addSelection(node);
+				graphData.addSelection(node).Commit();
 			}
 		});
 	}
 
 	//#region node dragged functions
-	onNodeDragged(d) {
+	function onNodeDragged(d) {
 		if (d3.event.dx === 0 && 0 === d3.event.dy) {
 			return;
 		}
@@ -591,49 +603,49 @@ export default class Graph extends Vue {
 		//if (playMode === true) { pauseLayout(); }
 		//if the node is selected the move it and all other selected nodes
 		if (d.selected) {
-			nodes = this.nodesLayer.selectAll(".selected").each((seld: SimNode) => {
+			nodes = nodesLayer.selectAll(".selected").each((seld: SimNode) => {
 				seld.x += d3.event.dx;
 				seld.y += d3.event.dy;
 				seld.startx = seld.x;
 				seld.starty = seld.y;
 				seld.currentX = seld.x;
 				seld.currentY = seld.y;
-				this.pinNode(d);
+				pinNode(d);
 			});
 		} else {
-			nodes = this.nodesLayer.select("#node_" + d.dbId);
+			nodes = nodesLayer.select("#node_" + d.dbId);
 			d.x += d3.event.dx;
 			d.y += d3.event.dy;
 			d.startx = d.x;
 			d.starty = d.y;
 			d.currentX = d.x;
 			d.currentY = d.y;
-			this.pinNode(d);
+			pinNode(d);
 		}
 
-		this.updateNodeLocations(nodes, false);
+		updateNodeLocations(nodes, false);
 	}
 
-	onNodeDragStart() {
-		this.simController.StopSimulations();
+	function onNodeDragStart() {
+		simController.StopSimulations();
 	}
 
-	onNodeDragFinished(d) {
+	function onNodeDragFinished(d) {
 		//console.log("onNodeDragFinished");
 		d3.event.sourceEvent.stopPropagation();
-		if (this.$store.state.visualizer.playMode === true && d.dragged === true) {
-			this.simController.RestartSimulation();
+		if (store.state.visualizer.playMode === true && d.dragged === true) {
+			simController.RestartSimulation();
 		}
 		d.dragged = false;
 	}
 
-	pinNode(d) {
+	function pinNode(d) {
 		d.fx = d.x;
 		d.fy = d.y;
 		d.pinned = true;
 	}
 
-	unpinNode(d) {
+	function unpinNode(d) {
 		delete d.fx;
 		delete d.fy;
 		d.pinned = false;
@@ -643,15 +655,15 @@ export default class Graph extends Vue {
 
 	//#region crop and select
 
-	startSelector() {
-		this.drawingSvg
-			.on("click", this.onDrawAreaBoxClick, true)
-			.on("mousedown", this.onSelectorMouseDown, true)
-			.on("touchstart", this.onSelectorMouseDown, true)
+	function startSelector() {
+		drawingSvg
+			.on("click", onDrawAreaBoxClick, true)
+			.on("mousedown", onSelectorMouseDown, true)
+			.on("touchstart", onSelectorMouseDown, true)
 			.on(".zoom", null);
 	}
 
-	drawAreaBox(areaBoxEl, oriCoords, newCoords) {
+	function drawAreaBox(areaBoxEl, oriCoords, newCoords) {
 		areaBoxEl
 			.attr("x", Math.min(oriCoords[0], newCoords[0]))
 			.attr("y", Math.min(newCoords[1], oriCoords[1]))
@@ -659,18 +671,18 @@ export default class Graph extends Vue {
 			.attr("height", Math.abs(newCoords[1] - oriCoords[1]));
 	}
 
-	onDrawAreaBoxClick() {
+	function onDrawAreaBoxClick() {
 		d3.event.stopPropagation();
 	}
 
-	onSelectorMouseDown(d, i, n) {
+	function onSelectorMouseDown(d, i, n) {
 		//console.log("onSelectMouseDown");
 		d3.event.stopPropagation();
-		if (this.areaBox !== undefined) {
-			this.areaBox.remove();
+		if (areaBox !== undefined) {
+			areaBox.remove();
 		}
 
-		this.areaBox = this.drawingSvg
+		areaBox = drawingSvg
 			.append("rect")
 			.attr("id", "areaBox")
 			.attr("class", "cropBox");
@@ -679,7 +691,7 @@ export default class Graph extends Vue {
 		const oriMouseY = d3.mouse(n[i])[1];
 
 		const mousemove = (d, i, n) => {
-			this.drawAreaBox(this.areaBox, [oriMouseX, oriMouseY], d3.mouse(n[i]));
+			drawAreaBox(areaBox, [oriMouseX, oriMouseY], d3.mouse(n[i]));
 		};
 		const mouseup = (d, i, n) => {
 			//console.log("onSelectMouseDown mouseup");
@@ -687,23 +699,23 @@ export default class Graph extends Vue {
 			const newMouseY = d3.mouse(n[i])[1];
 
 			if (newMouseX !== oriMouseX && newMouseY !== oriMouseY) {
-				this.selectMouseUpFunction();
+				selectMouseUpFunction();
 			}
 
-			if (this.areaBox !== undefined) {
-				this.areaBox.remove();
+			if (areaBox !== undefined) {
+				areaBox.remove();
 			}
 
-			this.$store.commit(VisualizerStorePaths.mutations.Update.CROP_ACTIVE, false);
-			this.$store.commit(VisualizerStorePaths.mutations.Update.SELECT_ACTIVE, false);
+			store.commit(VisualizerStorePaths.mutations.Update.CROP_ACTIVE, false);
+			store.commit(VisualizerStorePaths.mutations.Update.SELECT_ACTIVE, false);
 
 			//delay the re-register so any mouseup doesn't trigger a pageClick when it gets re-registered
 			setTimeout(() => {
-				this.resetDrawingEvents();
+				resetDrawingEvents();
 			}, 50);
 		};
 
-		this.drawingSvg
+		drawingSvg
 			.on("mousemove", mousemove)
 			.on("mouseup", mouseup)
 			.on("touchmove", mousemove)
@@ -712,20 +724,20 @@ export default class Graph extends Vue {
 
 	//These are the functions to run after the selector has finished selecting. selectMouseUpFunction is called
 	//from the mouseup function. Set this function, then call startSelector
-	selectMouseUpFunction: () => void;
+	let selectMouseUpFunction: () => void;
 
-	toggleNodeSelectMode() {
-		if (this.$store.state.visualizer.selectModeActive) {
-			this.resetDrawingEvents();
-			this.$store.commit(VisualizerStorePaths.mutations.Update.SELECT_ACTIVE, false);
+	function toggleNodeSelectMode() {
+		if (store.state.visualizer.selectModeActive) {
+			resetDrawingEvents();
+			store.commit(VisualizerStorePaths.mutations.Update.SELECT_ACTIVE, false);
 		} else {
-			this.$store.commit(VisualizerStorePaths.mutations.Update.SELECT_ACTIVE, true);
-			this.$store.commit(VisualizerStorePaths.mutations.Update.CROP_ACTIVE, false);
+			store.commit(VisualizerStorePaths.mutations.Update.SELECT_ACTIVE, true);
+			store.commit(VisualizerStorePaths.mutations.Update.CROP_ACTIVE, false);
 
-			this.selectMouseUpFunction = () => {
-				const areaBoxEl = this.areaBox.node().getBoundingClientRect();
+			selectMouseUpFunction = () => {
+				const areaBoxEl = areaBox.node().getBoundingClientRect();
 				d3.selectAll(".nodes.enabled").each((d: SimNode) => {
-					const elem = this.drawingPane
+					const elem = drawingPane
 						.select("#node_" + d.dbId + "_icon")
 						.node()
 						.getBoundingClientRect();
@@ -735,81 +747,86 @@ export default class Graph extends Vue {
 						areaBoxEl.bottom > elem.bottom &&
 						areaBoxEl.left < elem.left &&
 						areaBoxEl.right > elem.right
-					) {
-						this.updateNodeSelection(d, true, false);
-					} else {
+					) 
+					{
+						updateNodeSelection(d, true, false);
+					} 
+					else {
 						if (d3.event.ctrlKey === false) {
-							this.updateNodeSelection(d, false, false);
+							updateNodeSelection(d, false, false);
 						}
 					}
 				});
 			};
-			this.startSelector();
+			startSelector();
 		}
 	}
 
-	toggleCropMode() {
-		if (this.$store.state.visualizer.cropModeActive) {
-			this.resetDrawingEvents();
-			this.$store.commit(VisualizerStorePaths.mutations.Update.CROP_ACTIVE, false);
+	function toggleCropMode() {
+		if (store.state.visualizer.cropModeActive) {
+			resetDrawingEvents();
+			store.commit(VisualizerStorePaths.mutations.Update.CROP_ACTIVE, false);
 		} else {
-			this.$store.commit(VisualizerStorePaths.mutations.Update.CROP_ACTIVE, true);
-			this.$store.commit(VisualizerStorePaths.mutations.Update.SELECT_ACTIVE, false);
+			store.commit(VisualizerStorePaths.mutations.Update.CROP_ACTIVE, true);
+			store.commit(VisualizerStorePaths.mutations.Update.SELECT_ACTIVE, false);
 
-			this.selectMouseUpFunction = () => {
-				const box = this.drawingPane.node().getBoundingClientRect();
-				const areaBoxEl = this.areaBox.node().getBBox();
-				const currentk = d3.zoomTransform(this.drawingSvg.node()).k;
+			selectMouseUpFunction = () => {
+				const box = drawingPane.node().getBoundingClientRect();
+				const areaBoxEl = areaBox.node().getBBox();
+				const currentk = d3.zoomTransform(drawingSvg.node()).k;
 				const k = Math.min(box.width / areaBoxEl.width, box.height / areaBoxEl.height);
 				const areaBoxElCenterX = areaBoxEl.x + areaBoxEl.width / 2;
 				const areaBoxElCenterY = areaBoxEl.y + areaBoxEl.height / 2;
 				const movex = (box.width / 2 - areaBoxElCenterX) / currentk;
 				const movey = (box.height / 2 - areaBoxElCenterY) / currentk;
 
-				this.drawingSvg
+				drawingSvg
 					.transition()
 					.duration(500)
 					.ease(d3.easeCubicInOut)
-					.call(this.zoomer.translateBy, movex, movey)
+					.call(zoomer.translateBy, movex, movey)
 					.on("end", () => {
-						this.drawingSvg
+						drawingSvg
 							.transition()
 							.duration(500)
 							.ease(d3.easeCubicInOut)
-							.call(this.zoomer.scaleBy, k);
+							.call(zoomer.scaleBy, k);
 					});
 			};
-			this.startSelector();
+			startSelector();
 		}
 	}
 	//#endregion
 
-	onPageClicked() {
+	function onPageClicked() {
 		if (d3.event.defaultPrevented) {
 			return;
 		} // dragged
-		this.graphData.clearSelectedItems();
-	}
-
-	onGraphDeletePressed() {
-		//console.log("onGraphDeletePressed");
-		this.bus.$emit(this.controlEvents.RemoveNodes)
-	}
-
-	onLayoutFinished() {
-		//console.log("onLayoutFinished");
-		const animate = !this.$store.state.visualizer.perfMode;
-		this.updateAllNodeLocations(animate);
-
-		if (this.isScreenEmpty() === true) {
-			this.centerView();
+		graphData.clearSelectedItems();
+		if (areaBox !== undefined) {
+			areaBox.remove();
 		}
 	}
 
-	isScreenEmpty() {
+	function onGraphDeletePressed() {
+		//console.log("onGraphDeletePressed");
+		bus.emit(controlEvents.RemoveNodes)
+	}
+
+	function onLayoutFinished() {
+		//console.log("onLayoutFinished");
+		const animate = !store.state.visualizer.perfMode;
+		updateAllNodeLocations(animate);
+
+		if (isScreenEmpty() === true) {
+			centerView();
+		}
+	}
+
+	function isScreenEmpty() {
 		//console.log("isScreenEmpty");
-		const box = this.drawingPane.node().getBoundingClientRect();
-		const svgbox = this.drawingSvg.node().getBBox();
+		const box = drawingPane.node().getBoundingClientRect();
+		const svgbox = drawingSvg.node().getBBox();
 		//console.log(box);
 		//console.log(svgbox);
 
@@ -827,19 +844,19 @@ export default class Graph extends Vue {
 	}
 
 	//#region d3 stuff
-	updateNodeSizes() {
-		this.graphData.updateScale();
-		this.simController.RefreshData();
-		if (this.$store.state.visualizer.perfMode === true) {
-			this.graphNodes.forEach(node => {
+	function updateNodeSizes() {
+		graphData.updateScale();
+		simController.RefreshData();
+		if (store.state.visualizer.perfMode === true) {
+			graphNodes.value.forEach(node => {
 				node.currentSize = node.size;
 			});
-			this.updateLocationsEdges();
+			updateLocationsEdges();
 		} else {
 			//animated node size update. has to happen on next tick so DOM is updated
-			Vue.nextTick(() => {
-				const nodes = this.nodesLayer.selectAll(".nodes");
-				const nodecount = this.nodesLayer.size();
+			nextTick(() => {
+				const nodes = nodesLayer.selectAll(".nodes");
+				const nodecount = nodesLayer.size();
 				nodes
 					.transition()
 					.duration(500)
@@ -852,7 +869,7 @@ export default class Graph extends Vue {
 							//update the edge locations when you get to the end of the nodes list
 							//don't run on the first 'tick'
 							if (i === nodecount && t !== 0) {
-								this.updateLocationsEdges();
+								updateLocationsEdges();
 							}
 							return "";
 						};
@@ -861,27 +878,27 @@ export default class Graph extends Vue {
 		}
 	}
 
-	centerView() {
+	function centerView() {
 		//console.log("centerView");
-		const box = this.drawingPane.node().getBoundingClientRect();
-		const svgbox = this.drawingSvg.node().getBBox();
-		const k = d3.zoomTransform(this.zoomLayer.node()).k;
+		const box = drawingPane.node().getBoundingClientRect();
+		const svgbox = drawingSvg.node().getBBox();
+		const k = d3.zoomTransform(zoomLayer.node()).k;
 		const movex = (box.width / 2 - svgbox.x - svgbox.width / 2) / k;
 		const movey = (box.height / 2 - svgbox.y - svgbox.height / 2) / k;
 
-		this.drawingSvg
+		drawingSvg
 			.transition()
 			.duration(1000)
 			.ease(d3.easeCubicInOut)
-			.call(this.zoomer.translateBy, movex, movey);
+			.call(zoomer.translateBy, movex, movey);
 	}
 
-	updateAllNodeLocations(animate: boolean) {
-		const nodes = this.nodesLayer.selectAll(".nodes");
-		this.updateNodeLocations(nodes, animate);
+	function updateAllNodeLocations(animate: boolean) {
+		const nodes = nodesLayer.selectAll(".nodes");
+		updateNodeLocations(nodes, animate);
 	}
 
-	updateNodeLocations(nodes, animate: boolean) {
+	function updateNodeLocations(nodes, animate: boolean) {
 		//console.log("updateNodeLocations");
 		//console.log(nodes);
 		const duration = 750;
@@ -904,7 +921,7 @@ export default class Graph extends Vue {
 						//update the edge locations when you get to the end of the nodes list
 						//don't run on the first 'tick'
 						if (i === nodecount && t !== 0) {
-							this.updateLocationsEdges();
+							updateLocationsEdges();
 						}
 					};
 				});
@@ -915,14 +932,14 @@ export default class Graph extends Vue {
 				d.cx = d.x + d.radius;
 				d.cy = d.y + d.radius;
 			});
-			this.updateLocationsEdges();
+			updateLocationsEdges();
 		}
 	}
 
-	updateLocationsEdges() {
+	function updateLocationsEdges() {
 		//console.log("updateLocationsEdges");
-		const alledges = this.edgesLayer.selectAll(".edges").data(this.graphData.graphEdges.GetArray());
-		const defaultshift = this.graphData.defaultNodeSize / 2.5;
+		const alledges = edgesLayer.selectAll(".edges").data(graphData.graphEdges.Array);
+		const defaultshift = graphData.defaultNodeSize / 2.5;
 
 		alledges.each((d: SimLink<SimNode>, i, nodes) => {
 			//console.log(d);
@@ -984,7 +1001,7 @@ export default class Graph extends Vue {
 					return "translate(" + src.cx + "," + (src.currentY - 40) + ")";
 				});
 
-				this.graphBgLayer
+				graphBgLayer
 					.select("#edgebg_" + d.dbId)
 					.attr("d", looppath)
 					.each((d: SimLink<SimNode>) => {
@@ -1053,7 +1070,7 @@ export default class Graph extends Vue {
 					});
 
 				//do the bg as well
-				this.graphBgLayer
+				graphBgLayer
 					.select("#edgebg_" + d.dbId)
 					.attr("transform", () => {
 						return transform;
@@ -1065,24 +1082,25 @@ export default class Graph extends Vue {
 		alledges.attr("visibility", "visible");
 	}
 
-	updateNodeSelection(d, isselected, showdetails) {
+	function updateNodeSelection(d:SimNode, isselected: boolean, showdetails: boolean) {
+		//console.log({source: "updateNodeSelection", d: d});
 		d.selected = isselected;
 		if (isselected) {
-			this.graphData.addSelection(d);
+			graphData.addSelection(d).Commit();
 			if (showdetails) {
-				this.graphData.detailsItems.Add(d);
+				graphData.detailsItems.Add(d).Commit();
 			}
 		} else {
-			this.graphData.removeSelection(d);
-			this.graphData.detailsItems.Remove(d);
+			graphData.removeSelection(d).Commit();
+			graphData.detailsItems.Remove(d).Commit();
 		}
 	}
 
-	removeNode(node: SimNode) {
-		this.removeNodeIds([node.dbId]);
+	function removeNode(node: SimNode) {
+		removeNodeIds([node.dbId]);
 	}
 
-	removeNodeIds(ids: string[]) {
+	function removeNodeIds(ids: string[]) {
 		let message;
 		if (ids.length === 1) {
 			message = "Are you sure you want to remove this node?";
@@ -1091,20 +1109,20 @@ export default class Graph extends Vue {
 		}
 
 		if (confirm(message)) {
-			this.getDirectEdgesForNodeList(ids, (data: ResultSet) => {
+			getDirectEdgesForNodeList(ids, (data: ResultSet) => {
 				const edgeids: string[] = [];
 				data.edges.forEach(edge => {
 					edgeids.push(edge.dbId);
 				});
 
-				this.graphData.removeIds(ids, edgeids);
+				graphData.removeIds(ids, edgeids);
 
-				this.updateNodeSizes();
+				updateNodeSizes();
 			});
 		}
 	}
 
-	getEdgesForNodes(nodelist, callback) {
+	function getEdgesForNodes(nodelist, callback) {
 		const postdata = JSON.stringify(nodelist);
 		const url = "/api/graph/edges";
 		const newrequest: Request = {
@@ -1120,7 +1138,7 @@ export default class Graph extends Vue {
 		api.post(newrequest);
 	}
 
-	getDirectLoopsForNodes(nodelist, callback) {
+	function getDirectLoopsForNodes(nodelist, callback) {
 		const postdata = JSON.stringify(nodelist);
 		const url = "/api/graph/directloop";
 		const newrequest: Request = {
@@ -1136,7 +1154,7 @@ export default class Graph extends Vue {
 		api.post(newrequest);
 	}
 
-	getDirectEdgesForNodeList(nodelist, callback) {
+	function getDirectEdgesForNodeList(nodelist, callback) {
 		const url = "/api/graph/edges/direct";
 		const newrequest: Request = {
 			url: url,
@@ -1151,5 +1169,4 @@ export default class Graph extends Vue {
 		api.post(newrequest);
 	}
 	//#endregion
-}
 </script>

@@ -16,7 +16,7 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see http://www.gnu.org/licenses/.
 -->
 <template>
-	<div id="reportView">
+	<div v-foundation id="reportView">
 		<div id="reportHeader" class="grid-x">
 			<div class="cell shrink headerItem" id="reportmenu">
 				<ul
@@ -26,10 +26,12 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 					data-close-on-click-inside="false"
 				>
 					<li>
-						<a id="reportmenutext">{{ $t('phrase_Query_returned') }} {{ resultCount }} {{ $t('word_records') }}</a>
+						<a
+							id="reportmenutext"
+						>{{ $t('phrase_Query_returned') }} {{ resultCount }} {{ $t('word_records') }}</a>
 						<ul class="menu">
 							<li id="columnsli">
-								<a href="#">{{ $t('word_Columns')}}</a>
+								<a href="#">{{ $t('word_Columns') }}</a>
 								<ul class="vertical menu nested" id="columnstoggles">
 									<li v-for="name in propertyNames" :key="name">
 										<label class="toggleitem">
@@ -79,7 +81,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 		</div>
 
 		<!-- Main output area -->
-		<Loading v-if="!resultsLoaded">Loading</Loading>
+		<LoadingLogo v-if="!resultsLoaded">Loading</LoadingLogo>
 		<div v-else id="output">
 			<table id="outputtable" class="hover">
 				<thead>
@@ -165,273 +167,280 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 }
 </style>
 
-<script lang="ts">
+<script setup lang="ts">
 import { routeDefs } from "@/router/index";
-import { Component, Vue } from "vue-property-decorator";
-import Loading from "@/components/Loading.vue";
+import LoadingLogo from "@/components/LoadingLogo.vue";
 import { ResultSet } from "../assets/ts/dataMap/ResultSet";
 import { api, Request } from "@/assets/ts/webcrap/apicrap";
 import webcrap from "@/assets/ts/webcrap/webcrap";
 import { ApiNode } from "@/assets/ts/dataMap/ApiNode";
 import { Report } from "@/assets/ts/dataMap/Report";
-import { Plugin } from "@/assets/ts/dataMap/Plugin";
-import { foundation } from "../mixins/foundation";
-import { Dictionary } from "vue-router/types/router";
+import { ConsolePlugin } from "@/assets/ts/dataMap/ConsolePlugin";
+import { Dictionary } from "@/assets/ts/webcrap/misccrap";
 import LStore from "@/assets/ts/LocalStorageManager";
 import { bus, events } from "@/bus";
+import { useStore } from "@/store";
+import { computed, onMounted, Ref, ref } from "vue";
+import { useRoute, useRouter } from "vue-router";
+import { vFoundation } from "@/mixins/foundation";
 
-@Component({
-	components: { Loading },
-	mixins: [foundation],
-})
-export default class ReportView extends Vue {
-	results: ResultSet = null;
-	statusMessage = "";
-	maxRecords = 100;
-	pageNum = 1;
-	pageCount = 0;
-	query = "";
-	showQuery = false;
-	plugin: Plugin;
-	report: Report;
-	reportName = "";
-	resultsLoaded = false;
-	columnStates: Dictionary<boolean> = {}; //column name as supplied by report property name, and whether enabled
-	activePropertyNames: string[] = [];
+const store = useStore();
+const route = useRoute();
+const router = useRouter();
 
-	get nodesPage(): ApiNode[] {
-		const toprecord = this.pageNum * this.maxRecords;
-		const bottomrecord = (this.pageNum - 1) * this.maxRecords;
-		if (this.results === null) {
-			return [];
-		} else {
-			return this.results.nodes.slice(bottomrecord, toprecord);
-		}
+let results = ref<ResultSet>(null);
+let statusMessage = ref("");
+let maxRecords = ref(100);
+let pageNum = ref(1);
+let pageCount = ref(0);
+let query = ref("");
+let showQuery = ref(false);
+let plugin: ConsolePlugin;
+let report: Report;
+let reportName = ref("");
+let resultsLoaded = ref(false);
+let columnStates =  ref<Dictionary<boolean>>({}); //column name as supplied by report property name, and whether enabled
+let activePropertyNames = ref<string[]>([]);
+
+
+
+
+onMounted(() => {
+	const contentPane = document.getElementById("contentPane");
+	contentPane.style.overflow = "scroll";
+	//#region init code
+	if (store.state.pluginManager !== null) {
+		updateData();
+	} else {
+		const unwatch = store.watch(
+			() => {
+				return store.state.pluginManager;
+			},
+			newval => {
+				if (newval !== null) {
+					updateData();
+					unwatch();
+				}
+			}
+		);
 	}
+	//#endregion
+});
 
-	get apiReady(): boolean {
-		return this.$store.state.apiState === api.states.READY;
+const nodesPage = computed((): ApiNode[] => {
+	const toprecord = pageNum.value * maxRecords.value;
+	const bottomrecord = (pageNum.value - 1) * maxRecords.value;
+	if (results.value === null) {
+		return [];
+	} else {
+		return results.value.nodes.slice(bottomrecord, toprecord);
 	}
+});
 
-	get resultCount(): number {
-		if (this.results === null) {
-			return 0;
-		} else {
-			return this.results.nodes.length;
-		}
+const apiReady = computed((): boolean => {
+	return store.state.apiState === api.states.READY;
+});
+
+const resultCount = computed((): number => {
+	//console.log({source:"resultCount", results: results.value});
+	if (results.value === null) {
+		return 0;
+	} else {
+		return results.value.nodes.length;
 	}
+});
 
-	get propertyNames(): string[] {
-		if (this.results !== null) {
-			return Object.keys(this.columnStates);
+const propertyNames = computed((): string[] => {
+	if (results.value !== null) {
+		return Object.keys(columnStates.value);
+	} else {
+		return null;
+	}
+});
+
+const hasNextPage = computed((): boolean => {
+	return pageNum.value < pageCount.value;
+});
+
+const hasPrevPage = computed((): boolean => {
+	return pageNum.value > 1;
+});
+
+const nextBtnVisibility = computed((): string => {
+	return hasNextPage ? "visible" : "hidden";
+});
+
+const prevBtnVisibility = computed((): string => {
+	return hasPrevPage ? "visible" : "hidden";
+});
+
+function updateActiveProperties(): void {
+	setTimeout(() => {
+		if (results.value !== null) {
+			activePropertyNames.value = Object.keys(columnStates.value).filter(name => {
+				return columnStates.value[name];
+			});
 		} else {
 			return null;
 		}
-	}
+	}, 1);
+}
 
-	get hasNextPage(): boolean {
-		return this.pageNum < this.pageCount;
-	}
+function updateData() {
+	const pluginName = route.query.pluginName as string;
+	const reportName = route.query.reportName as string;
 
-	get hasPrevPage(): boolean {
-		return this.pageNum > 1;
-	}
-
-	get nextBtnVisibility(): string {
-		return this.hasNextPage ? "visible" : "hidden";
-	}
-
-	get prevBtnVisibility(): string {
-		return this.hasPrevPage ? "visible" : "hidden";
-	}
-
-	created(): void {
-		if (this.$store.state.pluginManager !== null) {
-			this.updateData();
+	//check if we're looking for a defined report, or importing from the
+	//browser local storage
+	if (pluginName) {
+		updatePluginReportData(reportName, pluginName);
+	} else {
+		const nodes: ApiNode[] = LStore.popPendingNodeList();
+		if (nodes !== null) {
+			const nodeids: string[] = [];
+			nodes.forEach(node => {
+				nodeids.push(node.dbId);
+			});
+			updateIdsData(nodeids);
 		} else {
-			const unwatch = this.$store.watch(
-				() => {
-					return this.$store.state.pluginManager;
-				},
-				newval => {
-					if (newval !== null) {
-						this.updateData();
-						unwatch();
-					}
-				}
-			);
+			resultsLoaded.value = true;
 		}
 	}
+}
 
-	updateActiveProperties(): void {
-		setTimeout(() => {
-			if (this.results !== null) {
-				this.activePropertyNames = Object.keys(this.columnStates).filter(name => {
-					return this.columnStates[name];
-				});
-			} else {
-				return null;
+function updateIdsData(ids: string[]) {
+	const url = "/api/reports/nodes";
+	const postData = JSON.stringify({ ids: ids, propertyfilters: ["name", "type", "id"] });
+
+	const request: Request = {
+		url: url,
+		postJson: true,
+		data: postData,
+		successCallback: (data: ResultSet) => {
+			applyData(data);
+		},
+		errorCallback: () => {
+			resultsLoaded.value = true;
+			bus.emit(events.Notifications.Error, "Error downloading report data");
+		},
+	};
+	api.post(request);
+}
+
+function updatePluginReportData(reportName: string, pluginName: string) {
+	plugin = store.state.pluginManager.plugins[pluginName] as ConsolePlugin;
+	report = plugin.reports[reportName] as Report;
+	query.value = report.query;
+
+	const url = "/api/reports/report/?pluginname=" + pluginName + "&reportname=" + reportName;
+
+	const request: Request = {
+		url: url,
+		successCallback: (data: ResultSet) => {
+			applyData(data);
+		},
+		errorCallback: () => {
+			// eslint-disable-next-line
+			console.error("Error downloading report data");
+		},
+	};
+	api.get(request);
+}
+
+function applyData(data: ResultSet) {
+	results.value = data;
+
+	if (results.value !== null) {
+		pageCount.value = Math.ceil(results.value.nodes.length / maxRecords.value);
+	} else {
+		pageCount.value = 0;
+	}
+
+	// if property filters list is empty, show everything
+	if (results.value.propertyFilters.length === 0) {
+		results.value.propertyNames.forEach(name => {
+			columnStates.value[name] = true;
+		});
+	} else {
+		results.value.propertyFilters.forEach(name => {
+			columnStates.value[name] = true;
+		});
+
+		results.value.propertyNames.forEach(name => {
+			if (!columnStates.value[name]) {
+				columnStates.value[name] = false;
 			}
-		}, 1);
+		});
 	}
 
-	updateData() {
-		const pluginName = this.$route.query.pluginName as string;
-		const reportName = this.$route.query.reportName as string;
+	resultsLoaded.value = true;
+	updateActiveProperties();
+}
 
-		//check if we're looking for a defined report, or importing from the
-		//browser local storage
-		if (pluginName) {
-			this.updatePluginReportData(reportName, pluginName);
-		} else {
-			const nodes: ApiNode[] = LStore.popPendingNodeList();
-			if (nodes !== null) {
-				const nodeids: string[] = [];
-				nodes.forEach(node => {
-					nodeids.push(node.dbId);
-				});
-				this.updateIdsData(nodeids);
-			} else {
-				this.resultsLoaded = true;
+function onVisualizerClicked() {
+	LStore.storePendingResultSet(results.value);
+	const route = router.resolve({ path: routeDefs.visualizer.path });
+	window.open(route.href, "_blank");
+}
+
+function onPageUpClicked() {
+	if (hasNextPage) {
+		pageNum.value++;
+	}
+}
+
+function onPageDownClicked() {
+	if (hasPrevPage) {
+		pageNum.value--;
+	}
+}
+
+function onDownloadClicked() {
+	statusMessage.value = "";
+	let text = "";
+	const props = [];
+
+	function createRowArray(record) {
+		const recordrow = [];
+		//console.log(node);
+		props.forEach(function (prop) {
+			let celltext = "";
+			if (prop in record.properties) {
+				celltext = record.properties[prop];
+				celltext = celltext.toString().replace('"', '""');
+				celltext = '"' + celltext + '"';
 			}
-		}
-	}
 
-	updateIdsData(ids: string[]) {
-		const url = "/api/reports/nodes";
-		const postData = JSON.stringify({ ids: ids, propertyfilters: ["name", "type", "id"] });
-
-		const request: Request = {
-			url: url,
-			postJson: true,
-			data: postData,
-			successCallback: (data: ResultSet) => {
-				this.applyData(data);
-			},
-			errorCallback: () => {
-				this.resultsLoaded = true;
-				bus.$emit(events.Notifications.Error, "Error downloading report data");
-			},
-		};
-		api.post(request);
-	}
-
-	updatePluginReportData(reportName: string, pluginName: string) {
-		this.plugin = this.$store.state.pluginManager.plugins[pluginName] as Plugin;
-		this.report = this.plugin.reports[reportName] as Report;
-		this.query = this.report.query;
-		this.reportName = this.report.displayName;
-
-		const url = "/api/reports/report/?pluginname=" + pluginName + "&reportname=" + reportName;
-
-		const request: Request = {
-			url: url,
-			successCallback: (data: ResultSet) => {
-				this.applyData(data);
-			},
-			errorCallback: () => {
-				// eslint-disable-next-line
-				console.error("Error downloading report data");
-			},
-		};
-		api.get(request);
-	}
-
-	applyData(data: ResultSet) {
-		this.results = data;
-
-		if (data !== null) {
-			this.pageCount = Math.ceil(this.results.nodes.length / this.maxRecords);
-		} else {
-			this.pageCount = 0;
-		}
-
-		// if property filters list is empty, show everything
-		if (this.results.propertyFilters.length === 0) {
-			this.results.propertyNames.forEach(name => {
-				this.columnStates[name] = true;
-			});
-		} else {
-			this.results.propertyFilters.forEach(name => {
-				this.columnStates[name] = true;
-			});
-
-			this.results.propertyNames.forEach(name => {
-				if (!this.columnStates[name]) {
-					this.columnStates[name] = false;
-				}
-			});
-		}
-
-		this.resultsLoaded = true;
-		this.updateActiveProperties();
-	}
-
-	onVisualizerClicked() {
-		LStore.storePendingResultSet(this.results);
-		const route = this.$router.resolve({ path: routeDefs.visualizer.path });
-		window.open(route.href, "_blank");
-	}
-
-	onPageUpClicked() {
-		if (this.hasNextPage) {
-			this.pageNum++;
-		}
-	}
-
-	onPageDownClicked() {
-		if (this.hasPrevPage) {
-			this.pageNum--;
-		}
-	}
-
-	onDownloadClicked() {
-		this.statusMessage = "";
-		let text = "";
-		const props = [];
-
-		function createRowArray(record) {
-			const recordrow = [];
-			//console.log(node);
-			props.forEach(function(prop) {
-				let celltext = "";
-				if (prop in record.properties) {
-					celltext = record.properties[prop];
-					celltext = celltext.toString().replace('"', '""');
-					celltext = '"' + celltext + '"';
-				}
-
-				recordrow.push(celltext);
-			});
-			return recordrow;
-		}
-
-		//header
-		this.activePropertyNames.forEach(name => {
-			props.push(name);
+			recordrow.push(celltext);
 		});
-		text = text + props.join(",") + "\n";
-
-		//main content
-		this.results.nodes.forEach(function(node) {
-			const row = createRowArray(node);
-			text = text + row.join(",") + "\n";
-		});
-
-		this.results.edges.forEach(function(node) {
-			const row = createRowArray(node);
-			text = text + row.join(",") + "\n";
-		});
-
-		webcrap.misc.download(text, "results.csv", "text/csv;encoding:utf-8");
+		return recordrow;
 	}
 
-	onShowQueryClicked(): void {
-		this.showQuery = true;
-	}
+	//header
+	activePropertyNames.value.forEach(name => {
+		props.push(name);
+	});
+	text = text + props.join(",") + "\n";
 
-	onQueryCloseClicked(): void {
-		this.showQuery = false;
-	}
+	//main content
+	results.value.nodes.forEach(function (node) {
+		const row = createRowArray(node);
+		text = text + row.join(",") + "\n";
+	});
+
+	results.value.edges.forEach(function (node) {
+		const row = createRowArray(node);
+		text = text + row.join(",") + "\n";
+	});
+
+	webcrap.misc.download(text, "results.value.csv", "text/csv;encoding:utf-8");
+}
+
+function onShowQueryClicked(): void {
+	showQuery.value = true;
+}
+
+function onQueryCloseClicked(): void {
+	showQuery.value = false;
 }
 </script>

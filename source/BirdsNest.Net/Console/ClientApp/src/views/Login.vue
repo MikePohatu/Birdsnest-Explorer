@@ -23,39 +23,34 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
   </div>
 </template>
 
-<script lang="ts">
-import { Component, Vue } from "vue-property-decorator";
+<script setup lang="ts">
+import { useStore } from "@/store";
+import { computed, defineComponent, watch } from "vue";
 import LoginCredentials from "@/components/LoginCredentials.vue";
-import { RawLocation } from "vue-router";
 import { routeDefs } from "@/router/index";
+import { RouteLocationRaw, RouteRecordRaw, useRoute, useRouter } from "vue-router";
 
-@Component({
-  components: { LoginCredentials }
-})
-export default class Login extends Vue {
-  get bannerHtml(): string {
-    return this.$store.state.customization.login.banner;
+const store = useStore();
+const route = useRoute();
+const router = useRouter();
+
+const bannerHtml = computed((): string => {
+  return store.state.customization.login.banner;
+});
+
+const footerHtml = computed((): string => {
+  return store.state.customization.login.footer;
+});
+
+const unwatch = store.watch(
+  () => {
+    return store.state.user.isAuthorized;
+  },
+  () => {
+    const redirect: RouteLocationRaw = route.query.redirect as string || routeDefs.portal.path;
+    router.replace(redirect);
+    unwatch();
   }
+);
 
-  get footerHtml(): string {
-    return this.$store.state.customization.login.footer;
-  }
-
-
-  created(): void {
-    const unwatch = this.$store.watch(
-      () => {
-        return this.$store.state.user.isAuthorized;
-      },
-      () => {
-        const redirect = {
-          path: this.$route.query.redirect || routeDefs.portal.path
-        } as RawLocation;
-        
-        this.$router.replace(redirect);
-        unwatch();
-      }
-    );
-  }
-}
 </script>

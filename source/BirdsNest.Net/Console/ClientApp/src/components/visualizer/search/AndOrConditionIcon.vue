@@ -23,8 +23,8 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 		v-on:dblclick.stop="onDblClicked"
 	>
 		<div v-for="(cond, index) in conditions" :key="cond.id">
-			<AndOrConditionIcon v-if="isAndOr(cond)" :condition="cond" />
-			<ValueConditionIcon v-else :condition="cond" />
+			<AndOrConditionIcon v-if="isAndOr(cond)" :condition="(cond as AndOrCondition)" />
+			<ValueConditionIcon v-else :condition="(cond as ValueCondition)" />
 			<div v-if="index < conditions.length - 1">{{ condition.type }}</div>
 		</div>
 
@@ -84,55 +84,58 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 </style>
 
 
-<script lang="ts">
-import { Component, Vue, Prop } from "vue-property-decorator";
-import { Condition, ConditionType, AndOrCondition } from "@/assets/ts/visualizer/Search";
+<script setup lang="ts">
+import { Condition, ConditionType, AndOrCondition, ValueCondition } from "@/assets/ts/visualizer/Search";
 import ValueConditionIcon from "./ValueConditionIcon.vue";
 import { SearchStorePaths } from "@/store/modules/SearchStore";
+import { computed, ref, toRaw } from "@vue/reactivity";
+import { useStore } from "@/store";
 
-@Component({
-	name: "AndOrConditionIcon",
-	components: { ValueConditionIcon },
-})
-export default class AndOrConditionIcon extends Vue {
-	@Prop({ type: Object as () => AndOrCondition, required: true })
-	condition: AndOrCondition;
+const store = useStore();
+const props = defineProps({condition: { type: Object, required: true }});
+const condition = ref(props.condition as AndOrCondition);
 
-	get name(): string {
-		return this.condition.id;
-	}
+//console.log({source: "AndOrConditionIcon", propsCondition: props.condition, condition: condition.value});
 
-	get conditions(): Condition[] {
-		return this.condition.conditions;
-	}
+const name = computed((): string => {
+	return condition.value.id;
+});
 
-	get isSelected(): boolean {
-		return this.$store.state.visualizer.search.selectedCondition === this.condition;
-	}
+const conditions = computed((): Condition[] => {
+	return condition.value.conditions;
+});
 
-	get isRoot(): boolean {
-		return this.condition === this.$store.state.visualizer.search.search.condition;
-	}
+const isSelected = computed((): boolean => {
+	return store.state.visualizer.search.selectedCondition === condition.value;
+});
 
-	get isEmptyRoot(): boolean {
-		return this.isRoot && this.condition.conditions.length === 0;
-	}
+const isRoot = computed((): boolean => {
+	// console.log({
+	// 	condition: toRaw(condition), 
+	// 	storeCondition: toRaw(store.state.visualizer.search.search.condition),
+	// 	result: toRaw(condition) === toRaw(store.state.visualizer.search.search.condition)
+	// 	});
+	return toRaw(condition.value) === toRaw(store.state.visualizer.search.search.condition);
+});
 
-	isAndOr(cond: Condition): boolean {
-		return cond.type === ConditionType.And || cond.type === ConditionType.Or;
-	}
+const isEmptyRoot = computed((): boolean => {
+	return isRoot.value && condition.value.conditions.length === 0;
+});
 
-	onClicked(): void {
-		this.$store.commit(SearchStorePaths.mutations.Update.SELECTED_CONDITION, this.condition);
-	}
+function isAndOr(cond: Condition): boolean {
+	return cond.type === ConditionType.And || cond.type === ConditionType.Or;
+}
 
-	onDblClicked(): void {
-		this.$store.commit(SearchStorePaths.mutations.Update.SELECTED_CONDITION, this.condition);
-		this.$store.commit(SearchStorePaths.mutations.Update.EDIT_CONDITION);
-	}
+function onClicked(): void {
+	store.commit(SearchStorePaths.mutations.Update.SELECTED_CONDITION, condition.value);
+}
 
-	onAddClicked(): void {
-		this.$store.commit(SearchStorePaths.mutations.Add.NEW_CONDITION_PARENT, this.condition);
-	}
+function onDblClicked(): void {
+	store.commit(SearchStorePaths.mutations.Update.SELECTED_CONDITION, condition.value);
+	store.commit(SearchStorePaths.mutations.Update.EDIT_CONDITION);
+}
+
+function onAddClicked(): void {
+	store.commit(SearchStorePaths.mutations.Add.NEW_CONDITION_PARENT, condition.value);
 }
 </script>

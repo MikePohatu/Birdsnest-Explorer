@@ -16,7 +16,7 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see http://www.gnu.org/licenses/.
 -->
 <template>
-	<g
+	<g ref="root"
 		:id="'node_' + node.dbId"
 		:class="['nodes', node.labels, subTypes, node.enabled ? 'enabled' : 'disabled', { selected: node.selected }]"
 		draggable="true"
@@ -67,37 +67,37 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 	transition-delay: 0.7s;
 }
 </style>
-<script lang="ts">
-import { Component, Vue, Prop } from "vue-property-decorator";
-import { Dictionary } from "vue-router/types/router";
+<script setup lang="ts">
+import { Dictionary } from "lodash";
 import { SimNode } from "@/assets/ts/visualizer/SimNode";
 import { d3 } from "@/assets/ts/visualizer/d3";
 import { bus, events } from "@/bus";
 import webcrap from "@/assets/ts/webcrap/webcrap";
+import { computed, onMounted, ref, reactive } from "vue";
+import { useStore } from "@/store";
 
-@Component
-export default class GraphNode extends Vue {
-	@Prop({ type: Object, required: true })
-	node: SimNode;
-	isSelected = false;
+	const props = defineProps({ node: { type: Object, required: true }});
+	const node = reactive(props.node as SimNode);
+	const store = useStore();
+	const root = ref(null);
 
 	//assign the d3 datum to the element so simulation can use it
-	mounted() {
-		//console.log(this.node);
-		d3.select(this.$el).datum(this.node);
-	}
+	onMounted(() => {
+		//use props.node so you don't have to use toRaw() to unwrap the SimNode
+		d3.select(root.value).datum(node);
+	});
 
-	get subTypes(): string[] {
+	const subTypes = computed((): string[] => {
 		const finalSubTypes: string[] = [];
-		const subTypeProps: Dictionary<string[]> = this.$store.state.pluginManager.subTypeProperties;
+		const subTypeProps: Dictionary<string[]> = store.state.pluginManager.subTypeProperties;
 
-		this.node.labels.forEach((label) => {
+		node.labels.forEach((label) => {
 			if (Object.prototype.hasOwnProperty.call(subTypeProps, label)) {
 				const subProps = subTypeProps[label];
 
 				subProps.forEach((subProp: string) => {
-					if (Object.prototype.hasOwnProperty.call(this.node.properties, subProp)) {
-						const subType: string = webcrap.misc.cleanCssClassName(this.node.properties[subProp] as string);
+					if (Object.prototype.hasOwnProperty.call(node.properties, subProp)) {
+						const subType: string = webcrap.misc.cleanCssClassName(node.properties[subProp] as string);
 
 						if (webcrap.misc.isNullOrWhitespace(subType) === false) {
 							finalSubTypes.push(label + "-" + subType);
@@ -108,52 +108,51 @@ export default class GraphNode extends Vue {
 		});
 
 		return finalSubTypes;
+	});
+
+	const icon = computed((): string => {
+		const mappings = store.state.visualizer.iconMappings;
+		return "&#x" + mappings.getMappingFromArray(node.labels) + ";";
+	});
+
+	const pinned = computed((): boolean => {
+		return node.pinned;
+	});
+
+	const size = computed((): number => {
+		return node.currentSize;
+	});
+
+	const radius = computed((): number => {
+		return node.currentSize / 2;
+	});
+
+	const translate = computed((): string => {
+		//console.log("translate(" + node.x + "," + node.y + ")");
+		return "translate(" + node.currentX + "," + node.currentY + ")";
+	});
+
+	const textTranslate = computed((): string => {
+		return "translate(" + radius.value + "," + (size.value + 10) + ")";
+	});
+
+	const tooltipTranslate = computed((): string => {
+		return "translate(" + radius.value + "," + (size.value + 22) + ")";
+	});
+
+	const toolTip = computed((): string => {
+		return node.labels.join(", ");
+	});
+
+	function onPinClicked(): void {
+		bus.emit(events.Visualizer.Node.NodePinClicked, node.dbId);
 	}
 
-	get icon(): string {
-		const mappings = this.$store.state.visualizer.iconMappings;
-		return "&#x" + mappings.getMappingFromArray(this.node.labels) + ";";
+	function onNodeClicked(): void {
+		bus.emit(events.Visualizer.Node.NodeClicked, node);
 	}
 
-	get pinned(): boolean {
-		return this.node.pinned;
+	function onNodeCtrlClicked(): void {
+		bus.emit(events.Visualizer.Node.NodeCtrlClicked, node);
 	}
-
-	get size(): number {
-		return this.node.currentSize;
-	}
-
-	get radius(): number {
-		return this.node.currentSize / 2;
-	}
-
-	get translate(): string {
-		//console.log("translate(" + this.node.x + "," + this.node.y + ")");
-		return "translate(" + this.node.currentX + "," + this.node.currentY + ")";
-	}
-
-	get textTranslate(): string {
-		return "translate(" + this.radius + "," + (this.size + 10) + ")";
-	}
-
-	get tooltipTranslate(): string {
-		return "translate(" + this.radius + "," + (this.size + 22) + ")";
-	}
-
-	get toolTip(): string {
-		return this.node.labels.join(", ");
-	}
-
-	onPinClicked(): void {
-		bus.$emit(events.Visualizer.Node.NodePinClicked, this.node.dbId);
-	}
-
-	onNodeClicked(): void {
-		bus.$emit(events.Visualizer.Node.NodeClicked, this.node);
-	}
-
-	onNodeCtrlClicked(): void {
-		bus.$emit(events.Visualizer.Node.NodeCtrlClicked, this.node);
-	}
-}
 </script>

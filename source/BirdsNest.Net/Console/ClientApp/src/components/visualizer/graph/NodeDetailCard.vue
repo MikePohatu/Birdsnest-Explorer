@@ -16,7 +16,7 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see http://www.gnu.org/licenses/.
 -->
 <template>
-	<div>
+	<div v-foundation>
 		<div :id="'related' + node.DbId" class="detailcard pane">
 			<div class="detaillist">
 				<div class="grid-x align-middle">
@@ -35,7 +35,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 							</span>
 						</a>
 					</div>
-					<div class="cell small-1" :title="$tc('visualizer.details.add_related', relatedNodeCount)">
+					<div class="cell small-1" :title="$t('visualizer.details.add_related', relatedNodeCount)">
 						<a v-on:click="onExpandClicked()">
 							<i class="cell fas fa-expand-arrows-alt small-2"></i>
 						</a>
@@ -57,7 +57,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 				<b>dbId:</b>
 				{{ node.dbId }}
 				<br />
-				<b>{{ $tc("word_Type", node.labels.length) }}:</b>
+				<b>{{ $t("word_Type", node.labels.length) }}:</b>
 				{{ types }}
 				<br />
 				<b>{{ $t("word_Scope") }}:</b>
@@ -104,7 +104,8 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 											class="menu nested"
 											:title="labelledNode.labels.join(', ')"
 										>
-											{{ labelledNode.name }}<a v-on:click="addNode(labelledNode)" class="plus">(+)</a>
+											{{ labelledNode.name }}
+											<a v-on:click="addNode(labelledNode)" class="plus">(+)</a>
 										</li>
 										<li v-if="isExpanded(labelledNodeList, label) === false" class="menu nested">
 											<a href="#" v-on:click="expandLabel(labelledNodeList, label)">{{ $t("word_More...") }}</a>
@@ -132,7 +133,8 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 											class="menu nested"
 											:title="labelledNode.labels.join(', ')"
 										>
-											{{ labelledNode.name }}<a v-on:click="addNode(labelledNode)" class="plus">(+)</a>
+											{{ labelledNode.name }}
+											<a v-on:click="addNode(labelledNode)" class="plus">(+)</a>
 										</li>
 										<li v-if="isExpanded(labelledNodeList, label) === false" class="menu nested">
 											<a href="#" v-on:click="expandLabel(labelledNodeList, label)">{{ $t("word_More...") }}</a>
@@ -212,15 +214,14 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 }
 
 .property {
-	margin-left: 5px;	
+	margin-left: 5px;
 	margin-right: 5px;
 }
 </style>
 
 
-<script lang="ts">
+<script setup lang="ts">
 import { bus, events } from "@/bus";
-import { Component, Prop, Vue } from "vue-property-decorator";
 import { RelatedDetails } from "@/assets/ts/dataMap/visualizer/RelatedDetails";
 import { VForLabelledNodeList } from "@/assets/ts/dataMap/visualizer/VForLabelledNodeList";
 import { Request, api } from "@/assets/ts/webcrap/apicrap";
@@ -230,234 +231,231 @@ import { SimNode } from "@/assets/ts/visualizer/SimNode";
 import { VisualizerStorePaths } from "@/store/modules/VisualizerStore";
 import { ApiNodeSimple } from "@/assets/ts/dataMap/ApiNodeSimple";
 import { rootPaths } from "@/store";
-import Loading from "@/components/Loading.vue";
-import { Dictionary } from "vue-router/types/router";
+import { Dictionary } from "@/assets/ts/webcrap/misccrap";
+import { computed, nextTick, onMounted, reactive, ref } from "vue";
+import { useStore } from "@/store";
+import { vFoundation } from "@/mixins/foundation";
 
-@Component({
-	components: { Loading },
-})
-export default class NodeDetailCard extends Vue {
-	@Prop({ type: Object, required: true })
-	node: SimNode;
-	relatedNodeCount = 0;
-	initRun = false;
-	labelExpands: Dictionary<boolean> = {};
+const props = defineProps({ node: { type: Object, required: true } });
+const node = props.node as SimNode;
+const store = useStore();
 
-	mounted() {
-		if (this.node.relatedDetails === null) {
-			$("#relatedAccordion").foundation();
-			$("#propsAccordion").foundation();
-			this.initDetails();
-		} else {
-			this.relatedNodeCount = this.node.relatedDetails.relatedCount;
-			this.refreshExapnds(this.node.relatedDetails);
-			$("#relatedAccordion").foundation();
-			$("#propsAccordion").foundation();
+let relatedNodeCount = ref(0);
+let initRun = ref(false);
+let labelExpands = ref<Dictionary<boolean>>({});
 
-			//If you don't delay here, the full accordion will build before the
-			//detail card will display
-			setTimeout(() => {
-				this.initRun = true;
-				this.reInitAccordions();
-			}, 500);
-		}
+onMounted(() => {
+	if (node.relatedDetails === null) {
+		$("#relatedAccordion").foundation();
+		$("#propsAccordion").foundation();
+		initDetails();
+	} else {
+		relatedNodeCount.value = node.relatedDetails.relatedCount;
+		refreshExapnds(node.relatedDetails);
+		$("#relatedAccordion").foundation();
+		$("#propsAccordion").foundation();
+
+		//If you don't delay here, the full accordion will build before the
+		//detail card will display
+		setTimeout(() => {
+			initRun.value = true;
+			reInitAccordions();
+		}, 500);
 	}
+});
 
-	//this function is primarily to provide logic based on the initRun variable
-	//which provides a delay when needed for rendering to happen in the right sequence
-	get details(): RelatedDetails {
-		if (this.initRun) {
-			return this.node.relatedDetails;
-		} else {
-			return null;
-		}
+//this function is primarily to provide logic based on the initRun variable
+//which provides a delay when needed for rendering to happen in the right sequence
+const details = computed<RelatedDetails>(() => {
+	if (initRun.value) {
+		return node.relatedDetails;
+	} else {
+		return null;
 	}
+});
 
-	get detailsLoaded(): boolean {
-		return this.details !== null;
+const detailsLoaded = computed<boolean>(() => {
+	return details !== null;
+});
+
+const propertyNames = computed<string[]>(() => {
+	return Object.keys(node.properties);
+});
+
+const types = computed<string>(() => {
+	return node.labels.join(", ");
+});
+
+const inLabelledNodeLists = computed<VForLabelledNodeList[]>(() => {
+	if (details.value === null) {
+		return [];
+	} else {
+		return [details.value.inNodesByLabel, details.value.inNodesByEdgeLabel];
 	}
+});
 
-	get propertyNames(): string[] {
-		return Object.keys(this.node.properties);
+const inCount = computed<number>(() => {
+	if (details.value === null) {
+		return 0;
+	} else {
+		return (
+			Object.keys(details.value.inNodesByLabel.labelledNodes).length +
+			Object.keys(details.value.inNodesByEdgeLabel.labelledNodes).length
+		);
 	}
+});
 
-	get types(): string {
-		return this.node.labels.join(", ");
+const outLabelledNodeLists = computed<VForLabelledNodeList[]>(() => {
+	if (details.value === null) {
+		return [];
+	} else {
+		return [details.value.outNodesByLabel, details.value.outNodesByEdgeLabel];
 	}
+});
 
-	get inLabelledNodeLists(): VForLabelledNodeList[] {
-		if (this.details === null) {
-			return [];
-		} else {
-			return [this.details.inNodesByLabel, this.details.inNodesByEdgeLabel];
-		}
+const outCount = computed<number>(() => {
+	if (details.value === null) {
+		return 0;
+	} else {
+		return (
+			Object.keys(details.value.outNodesByLabel.labelledNodes).length +
+			Object.keys(details.value.outNodesByEdgeLabel.labelledNodes).length
+		);
 	}
+});
 
-	get inCount(): number {
-		if (this.details === null) {
-			return 0;
-		} else {
-			return (
-				Object.keys(this.details.inNodesByLabel.labelledNodes).length +
-				Object.keys(this.details.inNodesByEdgeLabel.labelledNodes).length
-			);
-		}
-	}
+function labels(labelledNodeList: VForLabelledNodeList): string[] {
+	return Object.keys(labelledNodeList.labelledNodes);
+}
 
-	get outLabelledNodeLists(): VForLabelledNodeList[] {
-		if (this.details === null) {
-			return [];
-		} else {
-			return [this.details.outNodesByLabel, this.details.outNodesByEdgeLabel];
-		}
-	}
+function addNode(node: ApiNodeSimple): void {
+	bus.emit(events.Notifications.Processing, "Adding node to view");
+	store.dispatch(VisualizerStorePaths.actions.Request.NODE_ID, node.dbId);
+}
 
-	get outCount(): number {
-		if (this.details === null) {
-			return 0;
-		} else {
-			return (
-				Object.keys(this.details.outNodesByLabel.labelledNodes).length +
-				Object.keys(this.details.outNodesByEdgeLabel.labelledNodes).length
-			);
-		}
-	}
+function onEyeClicked(): void {
+	node.enabled = !node.enabled;
+}
 
-	labels(labelledNodeList: VForLabelledNodeList): string[] {
-		return Object.keys(labelledNodeList.labelledNodes);
-	}
+function onExpandClicked(): void {
+	bus.emit(events.Notifications.Processing, "Adding related nodes to view");
+	store.dispatch(VisualizerStorePaths.actions.Request.RELATED_NODES, node.dbId);
+}
 
-	addNode(node: ApiNodeSimple): void {
-		bus.$emit(events.Notifications.Processing, "Adding node to view");
-		this.$store.dispatch(VisualizerStorePaths.actions.Request.NODE_ID, node.dbId);
-	}
+function onRemoveClicked(): void {
+	bus.emit(events.Visualizer.RelatedDetails.DeleteNodeClicked, node);
+}
 
-	onEyeClicked(): void {
-		this.node.enabled = !this.node.enabled;
-	}
+function reInitAccordions(): void {
+	nextTick(() => {
+		// eslint-disable-next-line
+		// @ts-ignore
+		Foundation.reInit($("#relatedAccordion")); // eslint-disable-line no-undef
+	});
+}
 
-	onExpandClicked(): void {
-		bus.$emit(events.Notifications.Processing, "Adding related nodes to view");
-		this.$store.dispatch(VisualizerStorePaths.actions.Request.RELATED_NODES, this.node.dbId);
-	}
+function onRefreshClicked(): void {
+	const url = "/api/graph/node/related?id=" + node.dbId;
 
-	onRemoveClicked(): void {
-		bus.$emit(events.Visualizer.RelatedDetails.DeleteNodeClicked, this.node);
-	}
+	const request: Request = {
+		url: url,
+		successCallback: (data: RelatedDetails[]) => {
+			const updateddata = data[0];
+			node.name = updateddata.node.name;
+			node.properties = updateddata.node.properties;
+			node.scope = updateddata.node.scope;
+			node.labels = updateddata.node.labels;
+			relatedNodeCount.value = updateddata.relatedCount;
+			node.relatedDetails = updateddata;
+			refreshExapnds(updateddata);
+			reInitAccordions();
+		},
+		errorCallback: (jqXHR, status?: string, error?: string) => {
+			store.commit(rootPaths.mutations.SERVER_INFO_STATE, api.states.ERROR);
+			bus.emit(events.Notifications.Error, "Error refreshing node info: " + error);
+		},
+	};
 
-	reInitAccordions(): void {
-		this.$nextTick(() => {
-			// eslint-disable-next-line
-			// @ts-ignore
-			Foundation.reInit($("#relatedAccordion")); // eslint-disable-line no-undef
-		});
-	}
-
-	onRefreshClicked(): void {
-		const url = "/api/graph/node/related?id=" + this.node.dbId;
-
-		const request: Request = {
-			url: url,
-			successCallback: (data: RelatedDetails[]) => {
-				const updateddata = data[0];
-				this.node.name = updateddata.node.name;
-				this.node.properties = updateddata.node.properties;
-				this.node.scope = updateddata.node.scope;
-				this.node.labels = updateddata.node.labels;
-				this.relatedNodeCount = updateddata.relatedCount;
-				this.node.relatedDetails = updateddata;
-				this.refreshExapnds(updateddata);
-				this.reInitAccordions();
-			},
-			errorCallback: (jqXHR?: JQueryXHR, status?: string, error?: string) => {
-				this.$store.commit(rootPaths.mutations.SERVER_INFO_STATE, api.states.ERROR);
-				bus.$emit(events.Notifications.Error, "Error refreshing node info: " + error);
-			},
-		};
-
-		this.$nextTick(() => {
-			this.node.relatedDetails = null;
-			api.get(request);
-		});
-	}
-
-	initDetails(): void {
-		const url = "/api/graph/node/related?id=" + this.node.dbId;
-		const request: Request = {
-			url: url,
-			successCallback: (data: RelatedDetails[]) => {
-				const updateddata = data[0];
-				this.node.relatedDetails = updateddata;
-				this.relatedNodeCount = updateddata.relatedCount;
-				this.refreshExapnds(updateddata);
-				this.reInitAccordions();
-			},
-			errorCallback: (jqXHR?: JQueryXHR, status?: string, error?: string) => {
-				// eslint-disable-next-line
-				this.$store.commit(rootPaths.mutations.SERVER_INFO_STATE, api.states.ERROR);
-				bus.$emit(events.Notifications.Error, "Error updating node related details: " + error);
-			},
-		};
+	nextTick(() => {
+		node.relatedDetails = null;
 		api.get(request);
-		this.initRun = true;
+	});
+}
+
+function initDetails(): void {
+	const url = "/api/graph/node/related?id=" + node.dbId;
+	const request: Request = {
+		url: url,
+		successCallback: (data: RelatedDetails[]) => {
+			const updateddata = data[0];
+			node.relatedDetails = updateddata;
+			relatedNodeCount.value = updateddata.relatedCount;
+			refreshExapnds(updateddata);
+			reInitAccordions();
+		},
+		errorCallback: (jqXHR?, status?: string, error?: string) => {
+			// eslint-disable-next-line
+			store.commit(rootPaths.mutations.SERVER_INFO_STATE, api.states.ERROR);
+			bus.emit(events.Notifications.Error, "Error updating node related details: " + error);
+		},
+	};
+	api.get(request);
+	initRun.value = true;
+}
+
+//Menu/list expansion code
+function getNodeSublistByLabel(list: VForLabelledNodeList, label: string): ApiNodeSimple[] {
+	if (Object.prototype.hasOwnProperty.call(list.labelledNodes, label) == false) {
+		console.error(label + " not found in list " + list.name);
+		return [];
 	}
 
-	//Menu/list expansion code
-	getNodeSublistByLabel(list: VForLabelledNodeList, label: string): ApiNodeSimple[] {
-		if (Object.prototype.hasOwnProperty.call(list.labelledNodes, label) == false) {
-			console.error(label + " not found in list " + list.name);
-			return [];
-		}
-
-		const array = list.labelledNodes[label];
-		if (this.isExpanded(list, label) || array.length < 10) {
-			return array;
-		} else {
-			return array.slice(0, 9);
-		}
+	const array = list.labelledNodes[label];
+	if (isExpanded(list, label) || array.length < 10) {
+		return array;
+	} else {
+		return array.slice(0, 9);
 	}
+}
 
-	getExpandName(list: VForLabelledNodeList, label: string): string {
-		return list.name + label;
+function getExpandName(list: VForLabelledNodeList, label: string): string {
+	return list.name + label;
+}
+
+function isExpanded(list: VForLabelledNodeList, label: string): boolean {
+	const expLabel = getExpandName(list, label);
+
+	if (Object.prototype.hasOwnProperty.call(labelExpands.value, expLabel) == false) {
+		console.error(expLabel + " not found in labelExpands list ");
+		return false;
+	} else if (list.labelledNodes[label].length < 10) {
+		return true;
+	} else {
+		return labelExpands.value[expLabel];
 	}
+}
 
-	isExpanded(list: VForLabelledNodeList, label: string): boolean {
-		const expLabel = this.getExpandName(list, label);
+function expandLabel(list: VForLabelledNodeList, label: string) {
+	labelExpands.value[getExpandName(list, label)] = true;
+	reInitAccordions();
+}
 
-		if (Object.prototype.hasOwnProperty.call(this.labelExpands, expLabel) == false) {
-			console.error(expLabel + " not found in labelExpands list ");
-			console.log({
-				labelExpands: this.labelExpands,
-				expLabel: expLabel,
-			});
-			return false;
-		} else if (list.labelledNodes[label].length < 10) {
-			return true;
-		} else {
-			return this.labelExpands[expLabel];
-		}
-	}
+function refreshExapnds(updateddata: RelatedDetails) {
+	labelExpands.value = {};
 
-	expandLabel(list: VForLabelledNodeList, label: string) {
-		this.labelExpands[this.getExpandName(list, label)] = true;
-		this.reInitAccordions();
-	}
+	const lists: VForLabelledNodeList[] = [
+		updateddata.inNodesByEdgeLabel,
+		updateddata.outNodesByEdgeLabel,
+		updateddata.inNodesByLabel,
+		updateddata.outNodesByLabel,
+	];
 
-	refreshExapnds(updateddata: RelatedDetails) {
-		this.labelExpands = {};
+	lists.forEach((list: VForLabelledNodeList) => {
+		Object.keys(list.labelledNodes).forEach((label: string) => {
+			//$set(labelExpands.value, getExpandName(list, label), false);
 
-		const lists: VForLabelledNodeList[] = [
-			updateddata.inNodesByEdgeLabel,
-			updateddata.outNodesByEdgeLabel,
-			updateddata.inNodesByLabel,
-			updateddata.outNodesByLabel,
-		];
-
-		lists.forEach((list: VForLabelledNodeList) => {
-			Object.keys(list.labelledNodes).forEach((label: string) => {
-				this.$set(this.labelExpands, this.getExpandName(list, label), false);
-			});
+			labelExpands.value[getExpandName(list, label)] = false;
 		});
-	}
+	});
 }
 </script>

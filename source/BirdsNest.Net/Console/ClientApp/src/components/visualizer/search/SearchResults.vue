@@ -16,11 +16,12 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see http://www.gnu.org/licenses/.
 -->
 <template>
-	<div id="results" v-bind:class="{hidden: !showResults}" >
-		<div v-bind:class="{hidden: zeroResults}">
+	<div v-foundation id="results" v-bind:class="{ hidden: !showResults }">
+		<div v-bind:class="{ hidden: zeroResults }">
 			<div>
 				{{ $t('word_Found') }}
-				<a :data-toggle="dropdownId">{{nodes.length}}</a> {{ $t('word_results') }}.
+				<a :data-toggle="dropdownId">{{ nodes.length }}</a>
+				{{ $t('word_results') }}.
 				<a v-on:click="onAddToViewClicked">{{ $t('phrase_Add_to_view') }}</a>
 			</div>
 
@@ -33,11 +34,14 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 			>
 				<div v-for="node in nodes" :key="node.dbId" class="listing" :title="node.labels.join(', ')">
 					<a v-on:click="onAddClicked(node)">(+)</a>
-					<span>{{node.name}}</span>
+					<span>{{ node.name }}</span>
 				</div>
 			</div>
 		</div>
-		<div v-if="(searchNotification !== null)" v-bind:class="{loading: isSearching}">{{searchNotification}}</div>
+		<div
+			v-if="(searchNotification !== null)"
+			v-bind:class="{ loading: isSearching }"
+		>{{ searchNotification }}</div>
 	</div>
 </template>
 
@@ -69,68 +73,64 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 }
 </style>
 
-<script lang="ts">
-import { Component, Vue, Prop } from "vue-property-decorator";
-import { foundation } from "../../../mixins/foundation";
+<script setup lang="ts">
 import { SearchNode } from "../../../assets/ts/visualizer/Search";
 import { VisualizerStorePaths } from "@/store/modules/VisualizerStore";
 import { SearchStorePaths } from "../../../store/modules/SearchStore";
 
 import { bus, events } from "@/bus";
+import { computed, onMounted, ref } from "vue";
+import { useStore } from "@/store";
+import { useI18n } from "vue-i18n";
+import { vFoundation } from "@/mixins/foundation";
+const props = defineProps({ id: { type: String, required: true } });
+const store = useStore();
+const { t } = useI18n();
 
-@Component({
-	mixins: [foundation],
-})
-export default class SearchResults extends Vue {
-	//The id be unique, or the foundation dropdown won't work.
-	//It will be trying to work on same id
-	@Prop({ type: String, required: true })
-	id: string;
+const dropdownId = computed<string>(() => {
+	return "dropdown-" + props.id;
+});
 
-	get dropdownId(): string {
-		return "dropdown-" + this.id;
+const nodes = computed<SearchNode[]>(() => {
+	const results = store.state.visualizer.search.results;
+	return results === null ? [] : results.nodes;
+});
+
+const showResults = computed<boolean>(() => {
+	return (store.state.visualizer.search.results !== null) || (searchNotification.value !== null);
+});
+
+const zeroResults = computed<boolean>(() => {
+	const results = store.state.visualizer.search.results;
+	if (results === null) {
+		return true;
 	}
-	get nodes(): SearchNode[] {
-		const results = this.$store.state.visualizer.search.results;
-		return results === null ? [] : results.nodes;
+	return results.nodes.length === 0;
+});
+
+const searchNotification = computed<string>(() => {
+	return store.state.visualizer.search.statusMessage;
+});
+
+const isSearching = computed<boolean>(() => {
+	return store.state.visualizer.search.isSearching;
+});
+
+function onAddClicked(node: SearchNode): void {
+	store.commit(VisualizerStorePaths.mutations.Add.PENDING_NODE, node);
+}
+
+function onAddToViewClicked(): void {
+	let proceed = true;
+
+	if (store.state.visualizer.search.results.nodes.length > 300) {
+		proceed = confirm(t('visualizer.search.count_warning').toString());
 	}
 
-	get showResults(): boolean {
-		return (this.$store.state.visualizer.search.results !== null) || (this.searchNotification !== null);
-	}
-
-	get zeroResults(): boolean {
-		const results = this.$store.state.visualizer.search.results;
-		if (results === null) {
-			return true;
-		}
-		return results.nodes.length === 0;
-	}
-
-	get searchNotification(): string {
-		return this.$store.state.visualizer.search.statusMessage;
-	}
-
-	get isSearching(): boolean {
-		return this.$store.state.visualizer.search.isSearching;
-	}
-
-	onAddClicked(node: SearchNode): void {
-		this.$store.commit(VisualizerStorePaths.mutations.Add.PENDING_NODE, node);
-	}
-
-	onAddToViewClicked(): void {
-		let proceed = true;
-
-		if (this.$store.state.visualizer.search.results.nodes.length > 300) {
-			proceed = confirm(this.$t('visualizer.search.count_warning').toString());
-		}
-					
-		if (proceed && this.$store.state.visualizer.search.results.nodes.length > 0) {
-			bus.$emit(events.Notifications.Processing, this.$t('visualizer.search.adding_results').toString());
-			this.$store.commit(VisualizerStorePaths.mutations.Add.PENDING_RESULTS, this.$store.state.visualizer.search.results);
-			this.$store.commit(SearchStorePaths.mutations.Delete.RESULTS);
-		}
+	if (proceed && store.state.visualizer.search.results.nodes.length > 0) {
+		bus.emit(events.Notifications.Processing, t('visualizer.search.adding_results'));
+		store.commit(VisualizerStorePaths.mutations.Add.PENDING_RESULTS, store.state.visualizer.search.results);
+		store.commit(SearchStorePaths.mutations.Delete.RESULTS);
 	}
 }
 </script>

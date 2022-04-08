@@ -16,7 +16,7 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see http://www.gnu.org/licenses/.
 -->
 <template>
-	<div :id="'details-'+edge.DbId" class="detailcard pane">
+	<div v-foundation :id="'details-'+edge.DbId" class="detailcard pane">
 		<div class="detaillist">
 			<div class="grid-x align-middle">
 				<div class="cell small-3">
@@ -34,7 +34,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 			<b>dbId:</b>
 			{{edge.dbId}}
 			<br />
-			<b>{{ $tc('word_Type') }}:</b>
+			<b>{{ $t('word_Type') }}:</b>
 			{{type}}
 			<br />
 		</div>
@@ -109,29 +109,24 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 </style>
 
 
-<script lang="ts">
-import { Component, Prop, Vue } from "vue-property-decorator";
-import { foundation } from "@/mixins/foundation";
+<script setup lang="ts">
 import { SimNode } from "@/assets/ts/visualizer/SimNode";
 import { SimLink } from '@/assets/ts/visualizer/SimLink';
+import { computed, onMounted, ref } from "vue";
+import { vFoundation } from "@/mixins/foundation";
 
-@Component({
-	mixins: [ foundation ]
-})
-export default class EdgeDetailCard extends Vue {
-	@Prop({ type: Object, required: true })
-	edge: SimLink<SimNode>;
+const props = defineProps({ edge: { type: Object, required: true }});
+const edge = props.edge as SimLink<SimNode>;
 
-	get propertyNames(): string[] {
-		return Object.keys(this.edge.properties);
-	}
+const propertyNames = computed((): string[] => {
+	return Object.keys(props.edge.properties);
+});
 
-	get type(): string {
-		return this.edge.label;
-	}
+const type = computed((): string => {
+	return props.edge.label;
+});
 
-	onEyeClicked() {
-		this.edge.enabled = !this.edge.enabled;
-	}
+function onEyeClicked() {
+	edge.enabled = !edge.enabled;
 }
 </script>

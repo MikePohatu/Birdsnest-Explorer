@@ -16,7 +16,7 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see http://www.gnu.org/licenses/.
 -->
 <template>
-	<div>
+	<div v-foundation>
 		<div class="grid-x align-left">
 			<div id="advSearchcButtons" class="searchContainer">
 				<button
@@ -82,51 +82,46 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 }
 </style>
 
-<script lang="ts">
-import { Component, Vue } from "vue-property-decorator";
-import { foundation } from "@/mixins/foundation";
+<script setup lang="ts">
 import { SearchStorePaths } from "@/store/modules/SearchStore";
+import { useStore } from "@/store";
+import { ref } from "vue";
+import { vFoundation } from "@/mixins/foundation";
 
-@Component({
-	mixins: [foundation],
-})
-export default class AdvancedSearchButtons extends Vue {
-	cypherquery = "";
-	shareUrl = "";
-	searchRetry = 0;
+const store = useStore();
+let searchRetry = ref(0);
 
-	onMinimizeClicked(): void {
-		this.$store.commit(SearchStorePaths.mutations.TOGGLE_SEARCH);
+function onMinimizeClicked(): void {
+	store.commit(SearchStorePaths.mutations.TOGGLE_SEARCH);
+}
+
+function onModeToggleClicked(): void {
+	store.commit(SearchStorePaths.mutations.TOGGLE_SEARCH_MODE);
+}
+
+function onClearClicked(): void {
+	if (confirm("Are you sure you want to clear the search?")) {
+		store.commit(SearchStorePaths.mutations.RESET);
 	}
+}
 
-	onModeToggleClicked(): void {
-		this.$store.commit(SearchStorePaths.mutations.TOGGLE_SEARCH_MODE);
-	}
-
-	onClearClicked(): void {
-		if (confirm("Are you sure you want to clear the search?")) {
-			this.$store.commit(SearchStorePaths.mutations.RESET);
+function onSearchClicked(): void {
+	const search = store.state.visualizer.search.search;
+	if (search.nodes.length > 0) {
+		store.dispatch(SearchStorePaths.actions.SEARCH);
+		searchRetry.value = 0;
+	} else {
+		searchRetry.value++;
+		if (searchRetry.value > 2) {
+			alert("You haven't added any items to the search");
 		}
 	}
+}
 
-	onSearchClicked(): void {
-		const search = this.$store.state.visualizer.search.search;
-		if (search.nodes.length > 0) {
-			this.$store.dispatch(SearchStorePaths.actions.SEARCH);
-			this.searchRetry = 0;
-		} else {
-			this.searchRetry++;
-			if (this.searchRetry > 2) {
-				alert("You haven't added any items to the search");
-			}
-		}
-	}
-
-	onShareClicked(): void {
-		const search = this.$store.state.visualizer.search.search;
-		if (search.nodes.length > 0) {
-			this.$store.dispatch(SearchStorePaths.actions.UPDATE_SHARE);
-		}
+function onShareClicked(): void {
+	const search = store.state.visualizer.search.search;
+	if (search.nodes.length > 0) {
+		store.dispatch(SearchStorePaths.actions.UPDATE_SHARE);
 	}
 }
 </script>

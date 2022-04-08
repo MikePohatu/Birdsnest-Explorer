@@ -25,13 +25,16 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 			<div id="infoHeader">
 				<h6>{{ $t("phrase_Server_Statistics") }}</h6>
 				<!-- Refresh button -->
-				<div id="refreshBtn" class="icon clickable" :title="$t('word_Refresh')" v-on:click="onRefreshClicked">
-					&#xf021;
-				</div>
+				<div
+					id="refreshBtn"
+					class="icon clickable"
+					:title="$t('word_Refresh')"
+					v-on:click="onRefreshClicked"
+				>&#xf021;</div>
 			</div>
 
 			<div id="statsWrapper">
-				<Loading v-if="!statsDataReady" />
+				<LoadingLogo v-if="!statsDataReady" />
 				<div v-else>
 					<div class="grid-x grid-margin-x">
 						<div class="cell shrink medium-cell-block-y large-3">
@@ -172,7 +175,6 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 </template>
 
 <style>
-
 </style>
 
 <style scoped>
@@ -244,65 +246,59 @@ td {
 </style>
 
 
-<script lang="ts">
-import { Component, Vue } from "vue-property-decorator";
+<script setup lang="ts">
+import { routeDefs } from "@/router";
+import { useStore } from "@/store";
+import { computed, defineComponent, onMounted, onBeforeUnmount, watch } from "vue";
 import { api } from "@/assets/ts/webcrap/apicrap";
-import Loading from "@/components/Loading.vue";
+import LoadingLogo from "@/components/LoadingLogo.vue";
 import PluginManager from "@/assets/ts/dataMap/PluginManager";
 import ServerInfo from "@/assets/ts/dataMap/ServerInfo";
 import { rootPaths } from "@/store/index";
-import { routeDefs } from "@/router/index";
 
-@Component({
-	components: {
-		Loading,
-	},
-})
-export default class ServerInfoView extends Vue {
-	api = api;
-	routeDefs = routeDefs;
 
-	mounted() {
-		const contentPane = document.getElementById("contentPane");
-		contentPane.style.overflow = "scroll";
-	}
+const store = useStore();
 
-	beforeDestroy() {
-		const contentPane = document.getElementById("contentPane");
-		contentPane.style.overflow = null;
-	}
+onMounted(() => {
+	const contentPane = document.getElementById("contentPane");
+	contentPane.style.overflow = "scroll";
+});
 
-	get isAdmin() {
-		return this.$store.state.user.isAdmin;
-	}
+onBeforeUnmount(() => {
+	const contentPane = document.getElementById("contentPane");
+	contentPane.style.overflow = null;
+});
 
-	get statsDataReady(): boolean {
-		return (
-			this.serverInfoState === api.states.READY &&
-			this.serverInfo !== null &&
-			this.apiState === api.states.READY &&
-			this.pluginManager !== null
-		);
-	}
+const isAdmin = computed(() => {
+	return store.state.user.isAdmin;
+});
 
-	get serverInfoState(): number {
-		return this.$store.state.serverInfoState;
-	}
+const statsDataReady = computed((): boolean => {
+	return (
+		serverInfoState.value === api.states.READY &&
+		serverInfo.value !== null &&
+		apiState.value === api.states.READY &&
+		pluginManager.value !== null
+	);
+});
 
-	get serverInfo(): ServerInfo {
-		return this.$store.state.serverInfo;
-	}
+const serverInfoState = computed((): number => {
+	return store.state.serverInfoState;
+});
 
-	get apiState(): number {
-		return this.$store.state.apiState;
-	}
+const serverInfo = computed((): ServerInfo => {
+	return store.state.serverInfo;
+});
 
-	get pluginManager(): PluginManager {
-		return this.$store.state.pluginManager;
-	}
+const apiState = computed((): number => {
+	return store.state.apiState;
+});
 
-	onRefreshClicked(): void {
-		this.$store.dispatch(rootPaths.actions.UPDATE_SERVER_INFO);
-	}
+const pluginManager = computed((): PluginManager => {
+	return store.state.pluginManager;
+});
+
+function onRefreshClicked(): void {
+	store.dispatch(rootPaths.actions.UPDATE_SERVER_INFO);
 }
 </script>

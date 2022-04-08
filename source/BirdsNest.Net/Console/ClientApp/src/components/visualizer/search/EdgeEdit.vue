@@ -34,7 +34,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 				</div>
 
 				<div class="input-group">
-					<span class="input-group-label small-3">{{ $tc('word_Type') }}</span>
+					<span class="input-group-label small-3">{{ $t('word_Type') }}</span>
 					<select id="edgeType" class="small-9 input-group-field" v-model="edge.label">
 						<option value selected>*</option>
 						<option
@@ -212,99 +212,105 @@ input::-webkit-inner-spin-button {
 }
 </style>
 
-<script lang="ts">
-import { Component, Vue, Prop } from "vue-property-decorator";
+<script setup lang="ts">
 import { SearchEdge, copyEdge, ValueCondition, ConditionType } from "@/assets/ts/visualizer/Search";
 import { DataType } from "@/assets/ts/dataMap/DataType";
-import { Dictionary } from "vue-router/types/router";
+import { Dictionary } from "lodash";
 import { SearchStorePaths } from "@/store/modules/SearchStore";
+import { computed, reactive, ref } from "@vue/reactivity";
+import { useStore } from "@/store";
 
-@Component
-export default class EdgeEdit extends Vue {
-	@Prop({ type: Object as () => SearchEdge, required: true })
-	source: SearchEdge;
 
-	edge: SearchEdge = copyEdge(this.source);
-	maxValue = 20;
+	const props = defineProps({ source: { type: Object, required: true }});
+	const store = useStore();
 
-	get edgeDisplayNames(): Dictionary<DataType> {
-		if (this.$store.state.pluginManager === null) {
+	const edge = reactive<SearchEdge>(copyEdge(props.source as SearchEdge));
+	let maxValue = ref(20);
+
+	const edgeDisplayNames = computed((): Dictionary<DataType> => {
+		if (store.state.pluginManager === null) {
 			return {};
 		} else {
-			return this.$store.state.pluginManager.edgeDisplayNames;
+			return store.state.pluginManager.edgeDisplayNames;
 		}
-	}
+	});
 
-	get edgeDataTypes(): Dictionary<DataType> {
-		if (this.$store.state.pluginManager === null) {
+	const edgeDataTypes = computed((): Dictionary<DataType> => {
+		if (store.state.pluginManager === null) {
 			return {};
 		} else {
-			return this.$store.state.pluginManager.edgeDataTypes;
+			return store.state.pluginManager.edgeDataTypes;
 		}
-	}
+	});
 
-	get edgeDirRight(): boolean {
-		if (this.edge.direction === ">") {
+	const edgeDirRight = computed((): boolean => {
+		if (edge.direction === ">") {
 			return true;
 		} else {
 			return false;
 		}
+	});
+
+	const limitHops = computed<boolean>({
+		get (): boolean {
+			return edge.min !== -1 && edge.max !== -1;
+		},
+		set (newValue) {
+			if (!newValue) {
+				min.value = -1;
+				max.value = -1;
+			} else {
+				min.value = 1;
+				max.value = 1;
+			}
+		}
+	});
+
+	const min = computed<number>({
+		get (): number {
+			return edge.min;
+		},
+		set (newValue) {
+			edge.min = newValue;
+			if (edge.min > edge.max) {
+				max.value = newValue;
+			}
+		}
+	});
+	
+	const max = computed<number>({
+		get (): number {
+			return edge.max;
+		},
+		set (newValue) {
+			edge.max = newValue;
+			if (edge.min > edge.max) {
+				min.value = newValue;
+			}
+		}
+	});
+	
+
+	function onSaveEdge(): void {
+		store.commit(SearchStorePaths.mutations.Save.EDIT_EDGE, edge);
 	}
 
-	get limitHops(): boolean {
-		return this.edge.min !== -1 && this.edge.max !== -1;
-	}
-	set limitHops(newValue) {
-		if (!newValue) {
-			this.min = -1;
-			this.max = -1;
+	function onDirectionClicked(): void {
+		if (edge.direction === ">") {
+			edge.direction = "<";
 		} else {
-			this.min = 1;
-			this.max = 1;
+			edge.direction = ">";
 		}
 	}
 
-	get min(): number {
-		return this.edge.min;
-	}
-	set min(newValue) {
-		this.edge.min = newValue;
-		if (this.edge.min > this.edge.max) {
-			this.max = newValue;
-		}
+	function onCloseClicked(): void {
+		store.commit(SearchStorePaths.mutations.CANCEL_ITEM_EDIT);
 	}
 
-	get max(): number {
-		return this.edge.max;
-	}
-	set max(newValue) {
-		this.edge.max = newValue;
-		if (this.edge.min > this.edge.max) {
-			this.min = newValue;
-		}
-	}
-
-	onSaveEdge(): void {
-		this.$store.commit(SearchStorePaths.mutations.Save.EDIT_EDGE, this.edge);
-	}
-
-	onDirectionClicked(): void {
-		if (this.edge.direction === ">") {
-			this.edge.direction = "<";
-		} else {
-			this.edge.direction = ">";
-		}
-	}
-
-	onCloseClicked(): void {
-		this.$store.commit(SearchStorePaths.mutations.CANCEL_ITEM_EDIT);
-	}
-
-	onSaveAndAddCondClicked(): void {	
+	function onSaveAndAddCondClicked(): void {	
 		const condition = new ValueCondition(ConditionType.String);
-		condition.name = this.edge.name;
-		this.$store.commit(SearchStorePaths.mutations.Save.EDIT_EDGE, this.edge);
-		this.$store.commit(SearchStorePaths.mutations.Add.NEW_CONDITION, condition);
+		condition.name = edge.name;
+		store.commit(SearchStorePaths.mutations.Save.EDIT_EDGE, edge);
+		store.commit(SearchStorePaths.mutations.Add.NEW_CONDITION, condition);
 	}
-}
 </script>

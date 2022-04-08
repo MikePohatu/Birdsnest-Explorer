@@ -26,32 +26,37 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 	</div>
 </template>
 
-<script lang="ts">
-import { Component, Vue, Prop } from "vue-property-decorator";
-import { ValueCondition, ConditionType } from "@/assets/ts/visualizer/Search";
+<script setup lang="ts">
+	import { ValueCondition, ConditionType } from "@/assets/ts/visualizer/Search";
+	import { SearchStorePaths } from "@/store/modules/SearchStore";
+	import { useStore } from "@/store";
+	import { computed, reactive, ref } from "vue";
+	
+	const store = useStore();
+	const props = defineProps({
+		condition: {
+			type: ValueCondition,
+			required: true
+		}
+	});
 
-import { SearchStorePaths } from "@/store/modules/SearchStore";
+	const condition = ref<ValueCondition>(props.condition);
 
-@Component
-export default class ValueConditionIcon extends Vue {
-	@Prop({ type: Object as () => ValueCondition, required: true })
-	condition: ValueCondition;
+	const isSelected = computed((): boolean => {
+		return store.state.visualizer.search.selectedCondition === condition;
+	});
 
-	get isSelected(): boolean {
-		return this.$store.state.visualizer.search.selectedCondition === this.condition;
+	const searchDeets = computed((): string => {
+		//console.log({source: "searchDeets", condition: condition});
+		return (condition.value.not ? "Not " : "") + condition.value.operator + " " + condition.value.value + (condition.value.type === ConditionType.String && condition.value.caseSensitive ? "*" : "");
+	});
+
+	function onClicked(): void {
+		store.commit(SearchStorePaths.mutations.Update.SELECTED_CONDITION, condition);
 	}
 
-	get searchDeets(): string {
-		return (this.condition.not ? "Not " : "") + this.condition.operator + " " + this.condition.value + (this.condition.type === ConditionType.String && this.condition.caseSensitive ? "*" : "");
+	function onDblClicked(): void {
+		store.commit(SearchStorePaths.mutations.Update.SELECTED_CONDITION, condition);
+		store.commit(SearchStorePaths.mutations.Update.EDIT_CONDITION);
 	}
-
-	onClicked(): void {
-		this.$store.commit(SearchStorePaths.mutations.Update.SELECTED_CONDITION, this.condition);
-	}
-
-	onDblClicked(): void {
-		this.$store.commit(SearchStorePaths.mutations.Update.SELECTED_CONDITION, this.condition);
-		this.$store.commit(SearchStorePaths.mutations.Update.EDIT_CONDITION);
-	}
-}
 </script>

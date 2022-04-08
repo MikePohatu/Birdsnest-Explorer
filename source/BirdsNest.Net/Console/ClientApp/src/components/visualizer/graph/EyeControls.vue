@@ -34,7 +34,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 				<li v-for="(value, name) in graphNodeLabelStates" :key="name" class="eyeListItem" :label="name">
 					<div>
 						<span class="eye-icon">
-							<a v-on:click="onNodeLabelEyeClicked(name)">
+							<a v-on:click="onNodeLabelEyeClicked(name as string)">
 								<span v-show="value">
 									<i class="far fa-eye"></i>
 								</span>
@@ -63,7 +63,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 				<li v-for="(value, name) in graphEdgeLabelStates" :key="name" class="eyeListItem" :label="name">
 					<div>
 						<span class="eye-icon">
-							<a v-on:click="onEdgeLabelEyeClicked(name)">
+							<a v-on:click="onEdgeLabelEyeClicked(name as string)">
 								<span v-show="value">
 									<i class="far fa-eye"></i>
 								</span>
@@ -105,54 +105,51 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 }
 </style>
 
-<script lang="ts">
+<script setup lang="ts">
 import { bus, events } from "@/bus";
-import { Component, Vue } from "vue-property-decorator";
 import { graphData } from "@/assets/ts/visualizer/GraphData";
-import { Dictionary } from "vue-router/types/router";
+import { Dictionary } from "@/assets/ts/webcrap/misccrap";
+import { computed } from "vue";
 
-@Component
-export default class EyeControls extends Vue {
-	graphData = graphData; //create hook to make it reactive
 
-	get graphNodeLabelStates(): Dictionary<boolean> {
-		return this.graphData.graphNodeLabelStates;
+	const graphNodeLabelStates = computed<Dictionary<boolean>>((): Dictionary<boolean> => {
+		return graphData.graphNodeLabelStates;
+	});
+
+	const graphEdgeLabelStates = computed<Dictionary<boolean>>((): Dictionary<boolean> => {
+		return graphData.graphEdgeLabelStates;
+	});
+
+	function onNodeShowAllClicked(): void {
+		bus.emit(events.Visualizer.EyeControls.ShowAllNodeLabel, true);
 	}
 
-	get graphEdgeLabelStates(): Dictionary<boolean> {
-		return this.graphData.graphEdgeLabelStates;
+	function onNodeHideAllClicked(): void {
+		bus.emit(events.Visualizer.EyeControls.ShowAllNodeLabel, false);
 	}
 
-	onNodeShowAllClicked(): void {
-		bus.$emit(events.Visualizer.EyeControls.ShowAllNodeLabel, true);
+	function onNodeInvertClicked(): void {
+		bus.emit(events.Visualizer.EyeControls.InvertNodeLabel);
 	}
 
-	onNodeHideAllClicked(): void {
-		bus.$emit(events.Visualizer.EyeControls.ShowAllNodeLabel, false);
+	function onEdgeShowAllClicked(): void {
+		bus.emit(events.Visualizer.EyeControls.ShowllEdgeLabel, true);
 	}
 
-	onNodeInvertClicked(): void {
-		bus.$emit(events.Visualizer.EyeControls.InvertNodeLabel);
+	function onEdgeHideAllClicked(): void {
+		bus.emit(events.Visualizer.EyeControls.ShowllEdgeLabel, false);
 	}
 
-	onEdgeShowAllClicked(): void {
-		bus.$emit(events.Visualizer.EyeControls.ShowllEdgeLabel, true);
+	function onEdgeInvertClicked(): void {
+		bus.emit(events.Visualizer.EyeControls.InvertEdgeLabel);
 	}
 
-	onEdgeHideAllClicked(): void {
-		bus.$emit(events.Visualizer.EyeControls.ShowllEdgeLabel, false);
+	function onNodeLabelEyeClicked(label: string): void {
+		bus.emit(events.Visualizer.EyeControls.ToggleNodeLabel, label);
 	}
 
-	onEdgeInvertClicked(): void {
-		bus.$emit(events.Visualizer.EyeControls.InvertEdgeLabel);
+	function onEdgeLabelEyeClicked(label: string): void {
+		bus.emit(events.Visualizer.EyeControls.ToggleEdgeLabel, label);
 	}
 
-	onNodeLabelEyeClicked(label: string): void {
-		bus.$emit(events.Visualizer.EyeControls.ToggleNodeLabel, label);
-	}
-
-	onEdgeLabelEyeClicked(label: string): void {
-		bus.$emit(events.Visualizer.EyeControls.ToggleEdgeLabel, label);
-	}
-}
 </script>

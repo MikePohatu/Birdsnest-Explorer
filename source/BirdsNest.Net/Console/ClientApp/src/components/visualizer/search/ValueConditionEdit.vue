@@ -16,7 +16,7 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see http://www.gnu.org/licenses/.
 -->
 <template>
-	<div v-if="condition !== null" class="dialogWrapper">
+	<div v-if="condition.value !== null" class="dialogWrapper">
 		<div id="conditionEdit" class="dialog">
 			<fieldset class="fieldset">
 				<legend>{{ $t('word_Condition') }}</legend>
@@ -24,7 +24,11 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 					<!-- Reference -->
 					<div class="input-group">
 						<span class="input-group-label">{{ $t('phrase_Referenced_Item') }}</span>
-						<select class="input-group-field" v-model="condition.name" v-on:change="onSelectedItemChanged">
+						<select
+							class="input-group-field"
+							v-model="condition.name"
+							v-on:change="onSelectedItemChanged"
+						>
 							<option v-for="item in availableItems" :value="item.name" :key="item.name">{{ item.name }}</option>
 						</select>
 					</div>
@@ -36,8 +40,9 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 							class="small-8 input-group-field"
 							v-model="condition.property"
 							:disabled="!isLabelSet"
+							v-on:change="onPropertyChanged"
 						>
-							<option v-for="prop in properties" :key="prop" :value="prop">{{prop}}</option>
+							<option v-for="prop in properties" :key="prop" :value="prop">{{ prop }}</option>
 						</select>
 					</div>
 
@@ -56,7 +61,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 					<div v-if="condition.property !== null && propertyType === 'string'" class="input-group">
 						<div class="input-group-button">
 							<select v-model="condition.operator" class="input-group-field">
-								<option v-for="op in operators" :key="op" :value="op">{{op}}</option>
+								<option v-for="op in operators" :key="op" :value="op">{{ op }}</option>
 							</select>
 						</div>
 						<input
@@ -70,7 +75,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 							list="completes"
 						/>
 						<datalist id="completes">
-							<option v-for="opt in autocompleteList" :key="opt">{{opt}}</option>
+							<option v-for="opt in autocompleteList" :key="opt">{{ opt }}</option>
 						</datalist>
 					</div>
 
@@ -78,7 +83,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 					<div v-if="condition.property !== null && propertyType === 'number'" class="input-group">
 						<div class="input-group-button">
 							<select v-model="condition.operator" class="input-group-field">
-								<option v-for="op in operators" :key="op" :value="op">{{op}}</option>
+								<option v-for="op in operators" :key="op" :value="op">{{ op }}</option>
 							</select>
 						</div>
 						<input
@@ -140,7 +145,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 					<!-- alerts -->
 					<div v-if="showAlert" id="alert">
 						<i id="alertIcon" class="fas fa-exclamation-triangle"></i>
-						<span id="alertMessage">{{alertMessage}}</span>
+						<span id="alertMessage">{{ alertMessage }}</span>
 					</div>
 				</div>
 				<!-- close  -->
@@ -183,7 +188,6 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 
 
 <style scoped>
-
 #alert {
 	padding: 5px;
 }
@@ -207,8 +211,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 }
 </style>
 
-<script lang="ts">
-import { Component, Vue, Prop } from "vue-property-decorator";
+<script setup lang="ts">
 import {
 	ValueCondition,
 	SearchItem,
@@ -223,186 +226,201 @@ import webcrap from "@/assets/ts/webcrap/webcrap";
 import { SearchStorePaths } from "@/store/modules/SearchStore";
 import { api, Request } from "@/assets/ts/webcrap/apicrap";
 import { SearchEdge } from "../../../assets/ts/visualizer/Search";
+import { computed, onMounted, ref } from "vue";
+import { useStore } from "@/store";
+import { useI18n } from "vue-i18n";
 
-@Component
-export default class ValueConditionEdit extends Vue {
-	@Prop({ type: Object as () => ValueCondition, required: true })
-	source: ValueCondition;
+const { t } = useI18n();
+const props = defineProps({
+	source: ValueCondition
+})
 
-	condition: ValueCondition = null;
-	selectedItem: SearchItem = null;
+const store = useStore();
+const condition = ref<ValueCondition>(copyCondition(props.source));
+const selectedItem = ref<SearchItem>(null);
 
-	autocompleteList: string[] = [];
-	alertMessage = "";
-	showAlert = false;
-	saveable = true;
+const autocompleteList = ref<string[]>([]);
+const alertMessage = ref("");
+const showAlert = ref(false);
+const saveable = ref(true);
 
-	created(): void {
-		this.condition = copyCondition(this.source);
-		this.onSelectedItemChanged();
+onMounted(()=> {
+	onSelectedItemChanged();
+	//onPropertyChanged();
+});
+
+
+const availableItems = computed((): SearchItem[] => {
+	const edges = store.state.visualizer.search.search.edges;
+	const nodes = store.state.visualizer.search.search.nodes;
+	return nodes.concat(edges);
+});
+
+const dataType = computed((): DataType => {
+	//console.log({source:"dataType", conditionName: condition.value.name, selectedItem.valueValue: selectedItem.value});
+	if (webcrap.misc.isNullOrWhitespace(condition.value.name)) {
+		return null;
 	}
-
-	get autocompleteDebounce(): Function {
-		return webcrap.misc.debounce(this.updateAutocomplete, 250);
+	if (selectedItem.value === null) {
+		return null;
 	}
-	get availableItems(): SearchItem[] {
-		const edges = this.$store.state.visualizer.search.search.edges;
-		const nodes = this.$store.state.visualizer.search.search.nodes;
-		return nodes.concat(edges);
+	if (webcrap.misc.isNullOrWhitespace(selectedItem.value.label)) {
+		return null;
 	}
-
-	get dataType(): DataType {
-		if (webcrap.misc.isNullOrWhitespace(this.condition.name)) {
-			return null;
-		}
-		if (this.selectedItem === null) {
-			return null;
-		}
-		if (webcrap.misc.isNullOrWhitespace(this.selectedItem.label)) {
-			return null;
-		}
-		const types = this.$store.state.pluginManager.nodeDataTypes[this.selectedItem.label];
-		if (types) {
-			return types;
-		} else {
-			return this.$store.state.pluginManager.edgeDataTypes[this.selectedItem.label];
-		}
+	const types = store.state.pluginManager.nodeDataTypes[selectedItem.value.label];
+	if (types) {
+		return types;
+	} else {
+		return store.state.pluginManager.edgeDataTypes[selectedItem.value.label];
 	}
+});
 
-	get properties(): string[] {
-		if (this.dataType === null) {
-			return [];
-		} else {
-			return this.dataType.propertyNames;
-		}
+const properties = computed((): string[] => {
+	if (dataType.value === null) {
+		return [];
+	} else {
+		return dataType.value.propertyNames;
 	}
+});
 
-	get propertyType(): string {
-		if (this.dataType !== null && webcrap.misc.isNullOrWhitespace(this.condition.property) === false) {
-			if (Object.prototype.hasOwnProperty.call(this.dataType.properties, [this.condition.property])) {
-				this.condition.type = this.dataType.properties[this.condition.property].type;
-			} else {
-				const firstkey = Object.keys(this.dataType.properties)[0];
-				this.condition.type = this.dataType.properties[firstkey].type;
-			}
-
-			
-			return this.condition.type;
-		} else {
-			return null;
-		}
+function onPropertyChanged() {
+	//console.log({source:"onPropertyChanged", dataType: dataType.value, condition: condition.value});
+	if (dataType.value === null) {
+		condition.value.type = null;
+	} 
+	else if (Object.prototype.hasOwnProperty.call(dataType.value.properties, [condition.value.property])) {
+		condition.value.type = dataType.value.properties[condition.value.property].type;
+	} 
+	else {
+		const firstkey = Object.keys(dataType.value.properties)[0];
+		condition.value.type = dataType.value.properties[firstkey].type;
 	}
+}
 
-	get operators(): string[] {
-		if (webcrap.misc.isNullOrWhitespace(this.propertyType)) {
-			return [];
-		} else {
-			return ConditionOperators[this.propertyType];
-		}
+const propertyType = computed((): string => {
+	//console.log({source: "propertyType", dataType: dataType.value, condition.value: condition.value});
+	if (dataType.value !== null && webcrap.misc.isNullOrWhitespace(condition.value.property) === false) {
+		return condition.value.type;
+	} else {
+		return null;
 	}
+});
 
-	get isLabelSet(): boolean {
-		if (this.selectedItem === null || webcrap.misc.isNullOrWhitespace(this.selectedItem.label)) {
-			return false;
-		} else {
-			return true;
-		}
+const operators = computed((): string[] => {
+	if (webcrap.misc.isNullOrWhitespace(propertyType.value)) {
+		return [];
+	} else {
+		return ConditionOperators[propertyType.value];
 	}
+});
 
-	onSelectedItemChanged(): void {
-		let item: SearchItem = null;
-		let isNode = true;
-		item = GetNode(this.condition.name, this.$store.state.visualizer.search.search);
-		if (item === null) {
-			item = GetEdge(this.condition.name, this.$store.state.visualizer.search.search);
-			isNode = false;
-		}
-		if (item !== null) {
-			if ( webcrap.misc.isNullOrWhitespace(item.label)) {
-				this.alertMessage = this.$t('visualizer.search.error_no_selected_type_set').toString();
-				this.saveable = false;
-				this.showAlert = true;
-			} else if ( isNode === false) {
-				const edge = item as SearchEdge;
-				if ((edge.min === 1 && edge.max === 1) === false) {
-					this.alertMessage = this.$t('visualizer.search.multi_hop_cond_not_supported').toString();
-					this.saveable = false;
-					this.showAlert = true;
-				}	
-			}
-			else {
-				this.alertMessage = "";
-				this.showAlert = false;
-				this.saveable = true;
+const isLabelSet = computed((): boolean => {
+	//console.log({source: "isLabelSet", selectedItemValue: selectedItem.value});
+	if (selectedItem.value === null || webcrap.misc.isNullOrWhitespace(selectedItem.value.label)) {
+		return false;
+	} else {
+		return true;
+	}
+});
+
+function onSelectedItemChanged(): void {
+	let item: SearchItem = null;
+	let isNode = true;
+	item = GetNode(condition.value.name, store.state.visualizer.search.search);
+
+	if (item === null) {
+		item = GetEdge(condition.value.name, store.state.visualizer.search.search);
+		isNode = false;
+	}
+	
+	if (item !== null) {
+		if (webcrap.misc.isNullOrWhitespace(item.label)) {
+			alertMessage.value = t('visualizer.search.error_no_selected_type_set').toString();
+			saveable.value = false;
+			showAlert.value = true;
+		} else if (isNode === false) {
+			const edge = item as SearchEdge;
+			if ((edge.min === 1 && edge.max === 1) === false) {
+				alertMessage.value = t('visualizer.search.multi_hop_cond_not_supported').toString();
+				saveable.value = false;
+				showAlert.value = true;
 			}
 		}
 		else {
-				this.alertMessage = this.$t('visualizer.search.error_getting_named_item').toString();
-				this.showAlert = true;
-				this.saveable = false;
-			}
-		this.selectedItem = item;
-
-		//if selected item type has changed, properties need to be re-checked
-		if (this.dataType === null) {
-			this.condition.property = "";	
-		}
-		else if (webcrap.misc.isNullOrWhitespace(this.condition.property)) {
-			this.condition.property = this.dataType.default;
-		}
-		else {
-			if (this.dataType.propertyNames.includes(this.condition.property) === false) {
-				this.condition.property = this.dataType.default;
-			}
+			alertMessage.value = "";
+			showAlert.value = false;
+			saveable.value = true;
 		}
 	}
+	else {
+		alertMessage.value = t('visualizer.search.error_getting_named_item').toString();
+		showAlert.value = true;
+		saveable.value = false;
+	}
 
-	updateAutocomplete(): void {
-		let url: string;
-		if (this.selectedItem.type === SearchItemType.SearchNode) {
-			url =
-				"/api/graph/node/values?type=" +
-				this.selectedItem.label +
-				"&property=" +
-				this.condition.property +
-				"&searchterm=" +
-				this.condition.value;
-		} else {
-			url =
-				"/api/graph/edge/values?type=" +
-				this.selectedItem.label +
-				"&property=" +
-				this.condition.property +
-				"&searchterm=" +
-				this.condition.value;
+	selectedItem.value = item;
+
+	//if selected item type has changed, properties need to be re-checked
+	if (dataType.value === null) {
+		condition.value.property = "";
+	}
+	else if (webcrap.misc.isNullOrWhitespace(condition.value.property)) {
+		condition.value.property = dataType.value.default;
+	}
+	else {
+		if (dataType.value.propertyNames.includes(condition.value.property) === false) {
+			condition.value.property = dataType.value.default;
 		}
-		
-		const newrequest: Request = {
-			url: url,
-			successCallback: data => {
-				//console.log(data);
-				this.autocompleteList = data;
-			},
-			errorCallback: () => {
-				//console.error(error);
-				this.autocompleteList = [];
-			},
-		};
-		api.get(newrequest);
+	}
+}
+
+const autocompleteDebounce: () => void = webcrap.misc.debounce(updateAutocomplete, 250);
+
+function updateAutocomplete(): void {
+	let url: string;
+
+	if (selectedItem.value.type === SearchItemType.SearchNode) {
+		url =
+			"/api/graph/node/values?type=" +
+			selectedItem.value.label +
+			"&property=" +
+			condition.value.property +
+			"&searchterm=" +
+			condition.value.value;
+	} else {
+		url =
+			"/api/graph/edge/values?type=" +
+			selectedItem.value.label +
+			"&property=" +
+			condition.value.property +
+			"&searchterm=" +
+			condition.value.value;
 	}
 
-	onCloseClicked(): void {
-		this.$store.commit(SearchStorePaths.mutations.CANCEL_CONDITION_EDIT);
-	}
+	const newrequest: Request = {
+		url: url,
+		successCallback: data => {
+			autocompleteList.value = data;
+		},
+		errorCallback: (error) => {
+			console.error(error);
+			autocompleteList.value = [];
+		},
+	};
+	api.get(newrequest);
+}
 
-	onSaveClicked(): void {
-		this.$store.commit(SearchStorePaths.mutations.Save.EDIT_VALUE_CONDITION, this.condition);
-	}
+function onCloseClicked(): void {
+	store.commit(SearchStorePaths.mutations.CANCEL_CONDITION_EDIT);
+}
 
-	onDeleteClicked(): void {
-		if (confirm(this.$t('confirm_value_condition_delete').toString())) {
-			this.$store.commit(SearchStorePaths.mutations.Delete.EDIT_VALUE_CONDITION);
-		}
+function onSaveClicked(): void {
+	store.commit(SearchStorePaths.mutations.Save.EDIT_VALUE_CONDITION, condition.value);
+}
+
+function onDeleteClicked(): void {
+	if (confirm(t('confirm_value_condition_delete').toString())) {
+		store.commit(SearchStorePaths.mutations.Delete.EDIT_VALUE_CONDITION);
 	}
 }
 </script>

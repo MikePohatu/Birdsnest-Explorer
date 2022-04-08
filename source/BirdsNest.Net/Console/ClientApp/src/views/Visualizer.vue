@@ -49,8 +49,8 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 }
 </style>
 
-<script lang="ts">
-import { Component, Vue, Watch } from "vue-property-decorator";
+<script setup lang="ts">
+import { useStore } from "@/store";
 import Searches from "@/components/visualizer/search/Searches.vue";
 import NodeEdit from "@/components/visualizer/search/NodeEdit.vue";
 import EdgeEdit from "@/components/visualizer/search/EdgeEdit.vue";
@@ -60,81 +60,61 @@ import NewConditionSelect from "@/components/visualizer/search/NewConditionSelec
 import Graph from "@/components/visualizer/graph/Graph.vue";
 
 import { auth } from "@/assets/ts/webcrap/authcrap";
-import { SearchNode, SearchEdge, ValueCondition, AndOrCondition, Search } from "../assets/ts/visualizer/Search";
-import { Route } from "vue-router";
+import { SearchNode, SearchEdge, ValueCondition, AndOrCondition, Search, copySearch } from "../assets/ts/visualizer/Search";
+import { RouteLocation, useRoute } from "vue-router";
 import webcrap from "@/assets/ts/webcrap/webcrap";
 import { SearchStorePaths } from "@/store/modules/SearchStore";
 import { ApiNode } from "@/assets/ts/dataMap/ApiNode";
 import { VisualizerStorePaths } from "../store/modules/VisualizerStore";
 import LStore from "@/assets/ts/LocalStorageManager";
+import { computed, onMounted, watch } from "vue";
 
-@Component({
-	components: {
-		Searches,
-		NodeEdit,
-		EdgeEdit,
-		ValueConditionEdit,
-		AndOrConditionEdit,
-		NewConditionSelect,
-		Graph,
-	},
-})
-export default class Visualizer extends Vue {
-	selectedNodesList: number[] = []; // = [128, 118];
+const route = useRoute();
+const store = useStore();
 
-	mounted(): void {
-		auth.getValidationToken();
-		this.loadSharedSearch(this.$route);
-		const pending = LStore.popPendingResultSet();
-		if (pending !== null) {
-			this.$store.commit(VisualizerStorePaths.mutations.Add.PENDING_RESULTS, pending);
-		}
-
-		if (this.$store.state.visualizer.search.search.nodes.length > 0) {
-			this.$store.commit(SearchStorePaths.mutations.TOGGLE_SEARCH);
-			this.$store.commit(SearchStorePaths.mutations.TOGGLE_SEARCH_MODE);
-		}
-	}
-
-	@Watch("$route")
-	onRouteChanged(to: Route) {
-		this.loadSharedSearch(to);
-	}
-
-	loadSharedSearch(route: Route): void {
-		const encodedData = route.query.sharedsearch as string;
-		if (encodedData !== undefined) {
-			const decoded = JSON.parse(webcrap.misc.decodeUrlB64(encodedData)) as Search;
-			this.$store.commit(SearchStorePaths.mutations.Update.SEARCH, decoded);
-		}
-	}
-
-	get selectedNodes(): ApiNode[] {
-		return this.$store.state.visualizer.selectedNodes;
-	}
-
-	get editNode(): SearchNode {
-		return this.$store.state.visualizer.search.editNode;
-	}
-
-	get editEdge(): SearchEdge {
-		return this.$store.state.visualizer.search.editEdge;
-	}
-
-	get editValCond(): ValueCondition {
-		return this.$store.state.visualizer.search.editValCondition;
-	}
-
-	get editAndOrCondition(): AndOrCondition {
-		return this.$store.state.visualizer.search.editAndOrCondition;
-	}
-
-	get newCondition(): AndOrCondition {
-		return this.$store.state.visualizer.search.newCondition;
-	}
-
-	get newConditionParent(): AndOrCondition {
-		return this.$store.state.visualizer.search.newConditionParent;
+const loadSharedSearch = function (route: RouteLocation): void {
+	const encodedData = route.query.sharedsearch as string;
+	if (encodedData !== undefined) {
+		const decoded = JSON.parse(webcrap.misc.decodeUrlB64(encodedData)) as Search;
+		store.commit(SearchStorePaths.mutations.Update.SEARCH, copySearch(decoded));
 	}
 }
+
+const editNode = computed<SearchNode>(() => {
+	return store.state.visualizer.search.editNode;
+});
+
+const editEdge = computed<SearchEdge>(() => {
+	return store.state.visualizer.search.editEdge;
+});
+
+const editValCond = computed<ValueCondition>(() => {
+	return store.state.visualizer.search.editValCondition;
+});
+
+const editAndOrCondition = computed<AndOrCondition>(() => {
+	return store.state.visualizer.search.editAndOrCondition;
+});
+
+const newConditionParent = computed<AndOrCondition>(() => {
+	return store.state.visualizer.search.newConditionParent;
+});
+
+watch(() => route, (to) => {
+	loadSharedSearch(to);
+});
+
+onMounted((): void => {
+	auth.getValidationToken();
+	loadSharedSearch(route);
+	const pending = LStore.popPendingResultSet();
+	if (pending !== null) {
+		store.commit(VisualizerStorePaths.mutations.Add.PENDING_RESULTS, pending);
+	}
+
+	if (store.state.visualizer.search.search.nodes.length > 0) {
+		store.commit(SearchStorePaths.mutations.TOGGLE_SEARCH);
+		store.commit(SearchStorePaths.mutations.TOGGLE_SEARCH_MODE);
+	}
+});
 </script>

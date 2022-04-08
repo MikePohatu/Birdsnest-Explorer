@@ -25,7 +25,13 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                 </tr>
             </thead>
             <tbody>
-                <PluginReportListRow v-for="(value, name) in reports" :key="name" :report="value" :reportName="name" :pluginName="plugin.name" />
+                <PluginReportListRow
+                    v-for="(report, name) in reports"
+                    :key="name"
+                    :report="report"
+                    :reportName="(name as string)"
+                    :pluginName="plugin.name"
+                />
             </tbody>
         </table>
     </div>
@@ -33,23 +39,23 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 
 <style scoped>
 table {
-  table-layout: fixed;
+    table-layout: fixed;
 }
 </style>
-<script lang="ts">
-import { Component, Prop, Vue } from "vue-property-decorator";
+<script setup lang="ts">
 import PluginReportListRow from "@/components/reports/PluginReportListRow.vue";
-import { Plugin } from "@/assets/ts/dataMap/Plugin";
+import { ConsolePlugin } from "@/assets/ts/dataMap/ConsolePlugin";
+import { computed } from "vue";
+import { Dictionary } from "@/assets/ts/webcrap/misccrap";
+import { Report } from "@/assets/ts/dataMap/Report";
 
-@Component({
-  components: { PluginReportListRow }
-})
-export default class PluginReportList extends Vue {
-    @Prop({ type: Object as () => Plugin, required: true })
-    plugin: Plugin;
+const props = defineProps({ plugin: { type: Object, required: true } })
+const plugin = props.plugin as ConsolePlugin;
 
-    pluginName = this.plugin.displayName;
-    reports = this.plugin.reports;
-    reportNames = Object.keys(this.plugin.reports);
-}
+const pluginName = computed<string>(() => { return plugin.displayName; });
+const reports = computed<Dictionary<Report>>(() => { return plugin.reports; });
+const reportNames = Object.keys(plugin.reports);
+
+//console.log({source:"PluginReportList", pluginName: pluginName.value, reportNames:reportNames, reports: reports.value, plugin: plugin});
+
 </script>

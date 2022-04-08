@@ -21,7 +21,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 			<fieldset class="fieldset">
 				<legend>{{ $t('phrase_And_Or') }}</legend>
 				<div class="input-group">
-					<span class="input-group-label small-4">{{ $tc('word_Type') }}</span>
+					<span class="input-group-label small-4">{{ $t('word_Type') }}</span>
 					<select v-model="type" class="small-8 input-group-field">
 						<option value="AND">{{ $t('word_AND') }}</option>
 						<option value="OR">{{ $t('word_OR') }}</option>
@@ -61,33 +61,37 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 </template>
 
 
-<script lang="ts">
-import { Component, Vue, Prop } from "vue-property-decorator";
+<script setup lang="ts">
 import { AndOrCondition } from "@/assets/ts/visualizer/Search";
 import { SearchStorePaths } from "@/store/modules/SearchStore";
+import { ref } from "vue";
+import { useStore } from "@/store";
+import { useI18n } from "vue-i18n";
 
-@Component
-export default class AndOrConditionEdit extends Vue {
-	@Prop({ type: Object as () => AndOrCondition, required: true })
-	source: AndOrCondition;
-	type = "AND";
-	
-	created(): void {
-		this.type = this.source.type;
-	}	
+const { t } = useI18n();
+const store = useStore();
 
-	onSaveClicked(): void {
-		this.$store.commit(SearchStorePaths.mutations.Save.EDIT_ANDOR_CONDITION, this.type);
+const props = defineProps({
+	source: {
+		type: Object,
+		required: true
 	}
+});
+const source = props.source as AndOrCondition;
 
-	onDeleteClicked(): void {
-		if (confirm(this.$t('visualizer.search.confirm_andor_condition_delete').toString())) {
-			this.$store.commit(SearchStorePaths.mutations.Delete.EDIT_ANDOR_CONDITION);
-		}
-	}
+const type = ref(source.type);
 
-	onCloseClicked(): void {
-		this.$store.commit(SearchStorePaths.mutations.CANCEL_ANDOR_EDIT);
+function onSaveClicked(): void {
+	store.commit(SearchStorePaths.mutations.Save.EDIT_ANDOR_CONDITION, type.value);
+}
+
+function onDeleteClicked(): void {
+	if (confirm(t('visualizer.search.confirm_andor_condition_delete').toString())) {
+		store.commit(SearchStorePaths.mutations.Delete.EDIT_ANDOR_CONDITION);
 	}
+}
+
+function onCloseClicked(): void {
+	store.commit(SearchStorePaths.mutations.CANCEL_ANDOR_EDIT);
 }
 </script>

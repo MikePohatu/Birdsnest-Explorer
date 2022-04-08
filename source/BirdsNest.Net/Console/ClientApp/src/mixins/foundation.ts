@@ -14,27 +14,23 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 import $ from 'jquery';
-import 'foundation-sites';
 
-export const foundationMount = {
-  mounted() {
-    $(this.$el).foundation();
-  }
-}
+export const vFoundation = { 
+    mounted: (el)=>{
+      $(el).foundation();
+    }
+};
 
-export const foundationDestroy = {
-  beforeDestory() {
-    $(this.$el).foundation('_destroy');
-  }
-}
-
-export const foundation = {
-  mounted() {
-    $(this.$el).foundation();
+export const vFoundationWithDestory = { 
+  mounted: (el)=>{
+    $(el).foundation();
   },
-  beforeDestory() {
-    $(this.$el).foundation('_destroy');
-  }
-}
+
+  beforeUnmount: (el)=> {
+    $(el).foundation('_destroy');
+  }  
+};
+
 

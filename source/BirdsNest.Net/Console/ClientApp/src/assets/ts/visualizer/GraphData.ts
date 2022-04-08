@@ -19,13 +19,13 @@ import { ApiNode } from '../dataMap/ApiNode';
 import Spiral from "./Spiral";
 import { ResultSet } from '../dataMap/ResultSet';
 import { ApiEdge } from '../dataMap/ApiEdge';
-import { Dictionary } from 'vue-router/types/router';
+import { Dictionary } from "@/assets/ts/webcrap/misccrap";
 import { SimNode } from './SimNode';
 import { SimLink } from './SimLink';
 import Slope from "./Slope";
-import Vue from 'vue';
-import store from '@/store';
 import { VisualizerStorePaths } from '@/store/modules/VisualizerStore';
+import { store } from "@/store";
+import { reactive } from "vue";
 
 class GraphData {
     defaultNodeSize = 40;
@@ -93,20 +93,21 @@ class GraphData {
             simnode.labels.forEach((label) => {
                 if (this.graphNodeLabelStates[label] === undefined) {
                     //this.graphNodeLabelStates[label] = true;
-                    Vue.set(this.graphNodeLabelStates, label, true);
+                    this.graphNodeLabelStates[label] = true;  //previously used set....
                 } else if (this.graphEdgeLabelStates[label] === false) {
                     simnode.enabled = false;
                 }
             });
 
             this.graphNodes.Add(simnode);
+
             return simnode;
         } else {
             return null;
         }
     }
 
-    addNodes(nodes: ApiNode[]): void {
+    addNodes(nodes: ApiNode[]): GraphData {
         const spiral = new Spiral(this.defaultNodeSize * 2);
         nodes.forEach(node => {
             const simnode = this.addNode(node);
@@ -118,11 +119,13 @@ class GraphData {
                 spiral.Step();
             }
         });
-
+        
         this.updatePerfMode();
+
+        return this;
     }
 
-    addEdge(edge: ApiEdge): void {
+    private addEdge(edge: ApiEdge): void {
         // console.log("addEdge");
         // console.log(edge);
         if (this.graphEdges.KeyExists(edge.dbId) === false) {
@@ -148,7 +151,7 @@ class GraphData {
 
             if (this.graphEdgeLabelStates[edge.label] === undefined) {
                 //this.graphEdgeLabelStates[edge.label] = true;
-                Vue.set(this.graphEdgeLabelStates, edge.label, true);
+                this.graphEdgeLabelStates[edge.label] = true; //previously used vue.set
             } else {
                 simlink.enabled = this.graphEdgeLabelStates[edge.label];
             }
@@ -170,7 +173,7 @@ class GraphData {
         }
     }
 
-    addResultSet(result: ResultSet) {
+    addResultSet(result: ResultSet): GraphData {
         // console.log("addResultSet");
         // console.log(result.edges);
         // console.log(result.nodes);
@@ -180,31 +183,58 @@ class GraphData {
         result.edges.forEach((edge: ApiEdge) => {
             this.addEdge(edge);
         });
+
         this.updatePerfMode();
 
         //console.log(this);
+        return this;
     }
 
-    addSelection(item: SimNode | SimLink<SimNode>) {
+    commitAll(): void {
+        this.commitNodes();
+        this.commitEdges();
+        this.selectedItems.Commit();
+        this.detailsItems.Commit();
+    }
+
+    commitNodes(): void {
+        this.graphNodes.Commit();
+        this.treeNodes.Commit();
+        this.meshNodes.Commit();
+        this.connectNodes.Commit();
+    }
+
+    commitEdges(): void {
+        this.graphEdges.Commit();
+        this.treeEdges.Commit();
+        this.meshEdges.Commit();
+        this.connectEdges.Commit();
+    }
+
+    addSelection(item: SimNode | SimLink<SimNode>): DatumStore<SimNode | SimLink<SimNode>> {
         this.selectedItems.Add(item);
         item.selected = true;
+        return this.selectedItems;
     }
 
-    removeSelection(item: SimNode | SimLink<SimNode>) {
+    removeSelection(item: SimNode | SimLink<SimNode>): DatumStore<SimNode | SimLink<SimNode>> {
         this.selectedItems.Remove(item);
         item.selected = false;
+        return this.selectedItems;
     }
 
-    clearSelectedItems() {
-        this.selectedItems.GetArray().forEach(d => {
+    clearSelectedItems(): GraphData {
+        this.selectedItems.Array.forEach(d => {
             d.selected = false;
         });
         this.selectedItems.Clear();
         this.detailsItems.Clear();
+
+        return this;
     }
 
-    invertSelectedItems() {
-        this.graphNodes.GetArray().forEach(d => {
+    invertSelectedItems(): DatumStore<SimNode | SimLink<SimNode>> {
+        this.graphNodes.Array.forEach(d => {
             if (d.selected) {
                 this.selectedItems.Remove(d);
                 d.selected = false;
@@ -216,10 +246,11 @@ class GraphData {
             }
             //d.selected = !d.selected;
         });
+        return this.selectedItems;
     }
 
     getSelectedNodeIds(): string[] {
-        return this.selectedItems.GetIDs();
+        return this.selectedItems.IDs;
     }
 
     removeIds(nodeIds: string[], edgeIds: string[]): void {
@@ -230,7 +261,6 @@ class GraphData {
         edgeIds.forEach(id => {
             this.removeEdgeId(id);
         });
-
         this.cleanupLabelStates();
         this.updatePerfMode();
     }
@@ -269,46 +299,50 @@ class GraphData {
         //check the current labels in the graph and remove any that have been removed
         const currNodeLabels: Dictionary<boolean> = {};
         const currEdgeLabels: Dictionary<boolean> = {};
-        this.graphNodes.GetArray().forEach(node => {
+        this.graphNodes.Array.forEach(node => {
             node.labels.forEach(label => {
                 currNodeLabels[label] = true;
             });
         });
-        this.graphEdges.GetArray().forEach(edge => {
+        this.graphEdges.Array.forEach(edge => {
             currEdgeLabels[edge.label] = true;
         });
         
         Object.keys(this.graphNodeLabelStates).forEach(label => {
             if (Object.prototype.hasOwnProperty.call(currNodeLabels, label) === false) {
-                //delete this.graphNodeLabelStates[label];
-                Vue.delete(this.graphNodeLabelStates, label);
+                delete this.graphNodeLabelStates[label];
+                //Vue.delete(this.graphNodeLabelStates,label); //previously use vue.delete
             }
         });
 
         Object.keys(this.graphEdgeLabelStates).forEach(label => {
             if (Object.prototype.hasOwnProperty.call(currEdgeLabels, label) === false) {
-                //delete this.graphEdgeLabelStates[label];
-                Vue.delete(this.graphEdgeLabelStates, label);
+                delete this.graphEdgeLabelStates[label];
+                //Vue.delete(this.graphEdgeLabelStates, label); //previously use vue.delete
             }
         });
 
         // console.log("cleanupLabelStates");
         // console.log(this);
     }
-    private removeNode(node: SimNode) {
+    private removeNode(node: SimNode): GraphData {
         this.meshNodes.Remove(node);
         this.treeNodes.Remove(node);
         this.connectNodes.Remove(node);
         this.graphNodes.Remove(node);
         this.detailsItems.Remove(node);
         this.selectedItems.Remove(node);
+        this.commitNodes();
+        return this;
     }
 
-    private removeEdge(edge: SimLink<SimNode>) {
+    private removeEdge(edge: SimLink<SimNode>): GraphData {
         this.meshEdges.Remove(edge);
         this.treeEdges.Remove(edge);
         this.connectEdges.Remove(edge);
         this.graphEdges.Remove(edge);
+        this.commitEdges();
+        return this;
     }
 
     reset() {
@@ -335,7 +369,7 @@ class GraphData {
         const maxScaling = 3;
         let maxScope = 20;
 
-        this.graphNodes.GetArray().forEach((node) => {
+        this.graphNodes.Array.forEach((node) => {
             if (node.scope > maxScope) {
                 maxScope = node.scope;
             }
@@ -343,7 +377,7 @@ class GraphData {
 
         const scalingRange = new Slope(minScope, minScaling, maxScope, maxScaling);
 
-        this.graphNodes.GetArray().forEach((d) => {
+        this.graphNodes.Array.forEach((d) => {
             d.scale = scalingRange.getYFromX(d.scope);
             d.size = this.defaultNodeSize * d.scale;
             d.radius = d.size / 2;
@@ -353,7 +387,7 @@ class GraphData {
     }
 
     private updatePerfMode() {
-        if (this.graphNodes.GetArray().length > 300) {
+        if (this.graphNodes.Array.length > 300) {
             store.commit(VisualizerStorePaths.mutations.Update.PERF_MODE, true);
         } else {
             store.commit(VisualizerStorePaths.mutations.Update.PERF_MODE, false);
@@ -361,4 +395,4 @@ class GraphData {
     }
 }
 
-export const graphData = new GraphData();
+export const graphData = reactive(new GraphData());

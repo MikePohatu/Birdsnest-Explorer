@@ -19,20 +19,21 @@ import { SimLink } from "./SimLink";
 import { SimNode } from "./SimNode";
 import { graphData } from './GraphData';
 import { VisualizerStorePaths } from "@/store/modules/VisualizerStore";
-import store from "@/store/index";
-
+import { useStore } from "@/store";
 
 
 
 export default class SimulationController {
+    
     onFinishSimulation: () => void;
+    private store = useStore();
     private graphsimulation;
     private connectsimulation;
     private meshsimulation;
     private treesimulation;
 
     constructor() {
-        store.commit(VisualizerStorePaths.mutations.Update.SIM_RUNNING, false);
+        this.store.commit(VisualizerStorePaths.mutations.Update.SIM_RUNNING, false);
 
 
         this.graphsimulation = d3.forceSimulation();
@@ -70,7 +71,7 @@ export default class SimulationController {
         //console.log("SimulationController.onGraphTick");       
         const k = this.graphsimulation.alpha();
         //console.log(k);
-        store.commit(VisualizerStorePaths.mutations.Update.SIM_PROGRESS, 100 - k * 100);
+        this.store.commit(VisualizerStorePaths.mutations.Update.SIM_PROGRESS, 100 - k * 100);
 
 
         //check the tree nodes and shunt up or down to get into a tree layout. Exit the function if 
@@ -100,8 +101,8 @@ export default class SimulationController {
 
     onSimulationFinished() {
         //console.log("SimulationController.onSimulationFinished");
-        store.commit(VisualizerStorePaths.mutations.Update.SIM_RUNNING, false);
-        store.commit(VisualizerStorePaths.mutations.Update.SIM_PROGRESS, 100);
+        this.store.commit(VisualizerStorePaths.mutations.Update.SIM_RUNNING, false);
+        this.store.commit(VisualizerStorePaths.mutations.Update.SIM_PROGRESS, 100);
 
         this.onFinishSimulation(); //callback
     }
@@ -110,25 +111,25 @@ export default class SimulationController {
         this.StopSimulations();
 
         this.SetNodes(
-            graphData.graphNodes.GetArray(),
-            graphData.meshNodes.GetArray(),
-            graphData.treeNodes.GetArray(),
-            graphData.connectNodes.GetArray()
+            graphData.graphNodes.Array,
+            graphData.meshNodes.Array,
+            graphData.treeNodes.Array,
+            graphData.connectNodes.Array
         );
         this.SetEdges(
-            graphData.meshEdges.GetArray(),
-            graphData.treeEdges.GetArray(),
-            graphData.connectEdges.GetArray()
+            graphData.meshEdges.Array,
+            graphData.treeEdges.Array,
+            graphData.connectEdges.Array
         );
     }
 
 
     RestartSimulation() {
-        if (store.state.visualizer.simRunning === true) {
+        if (this.store.state.visualizer.simRunning === true) {
             this.StopSimulations();
         }
 
-        store.commit(VisualizerStorePaths.mutations.Update.SIM_RUNNING, true);
+        this.store.commit(VisualizerStorePaths.mutations.Update.SIM_RUNNING, true);
 
         this.graphsimulation.nodes().forEach((d: SimNode) => {
             d.startx = d.x;
@@ -144,7 +145,7 @@ export default class SimulationController {
 
     StopSimulations() {
         //console.trace("StopSimulations");
-        if (store.state.visualizer.simRunning === true) {
+        if (this.store.state.visualizer.simRunning === true) {
             this.meshsimulation.stop();
             this.graphsimulation.stop();
             this.treesimulation.stop();
@@ -159,7 +160,7 @@ export default class SimulationController {
             });
         }
         
-        store.commit(VisualizerStorePaths.mutations.Update.SIM_RUNNING, false);
+        this.store.commit(VisualizerStorePaths.mutations.Update.SIM_RUNNING, false);
     }
 
     private SetNodes(graphs, meshes, trees, connects) {

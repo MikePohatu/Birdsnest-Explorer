@@ -22,26 +22,26 @@ import "foundation-sites";
 import "motion-ui/dist/motion-ui.css";
 import "foundation-sites/dist/css/foundation.css";
 
-import Vue from "vue";
-
-import App from "./App.vue";
 import "./registerServiceWorker";
-import router from "./router";
-import store, { rootPaths } from "./store";
 import i18n from "./i18n";
 import FlagIcon from "vue-flag-icon";
-import VueCookies from "vue-cookies";
+import VueCookies from "vue3-cookies";
 
-Vue.use(FlagIcon);
-Vue.use(VueCookies);
+import { createApp } from 'vue';
+import { store, key, rootPaths } from "./store";
+import router from "./router";
+import App from './App.vue';
 
-Vue.config.productionTip = false;
-new Vue({
-  router,
-  store,
-  i18n,
-  render: h => h(App)
-}).$mount("#app");
+const app = createApp(App);
+
+app.use(FlagIcon)
+    .use(VueCookies)
+    .use(router)
+    .use(store, key)
+    .use(i18n)
+    .mount('#app');
+
+//Vue.config.productionTip = false;
 
 $.ajaxSetup({ xhrFields: { withCredentials: true }, cache: false });
 $(document).foundation();

@@ -23,7 +23,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 					id="simpleSearchTerm"
 					v-model="term"
 					@keyup.enter="onSearchClicked"
-					v-on:input="autocompleteDebounce"
+					v-on:input="onSearchChanged"
 					list="simplecompletes"
 					autocomplete="on"
 					type="search"
@@ -31,7 +31,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 					:placeholder="$t('word_Search')"
 				/>
 				<datalist id="simplecompletes">
-					<option v-for="opt in autocompleteList" :key="opt">{{opt}}</option>
+					<option v-for="opt in autocompleteList" :key="opt">{{ opt }}</option>
 				</datalist>
 				<div class="input-group-button">
 					<button
@@ -82,50 +82,60 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 }
 </style>
 
-<script lang="ts">
-import { Component, Vue } from "vue-property-decorator";
+<script setup lang="ts">
 import SearchResults from "./SearchResults.vue";
 import webcrap from "@/assets/ts/webcrap/webcrap";
 import { Request, api } from "@/assets/ts/webcrap/apicrap";
 import { SearchStorePaths } from "@/store/modules/SearchStore";
+import { computed, ref } from "vue";
+import { useStore } from "@/store";
 
-@Component({
-	components: { SearchResults },
-})
-export default class SimpleSearch extends Vue {
-	searchNotification = "";
-	autocompleteList: string[] = [];
-	term = "";
+const debounceTimeout = 250;
+const store = useStore();
 
-	updateAutocomplete(): void {
-		const url = "/api/graph/node/namevalues?searchterm=" + this.term;
-		const newrequest: Request = {
-			url: url,
-			successCallback: data => {
-				this.autocompleteList = data;
-			},
-			errorCallback: () => {
-				this.autocompleteList = [];
-			},
-		};
-		api.get(newrequest);
-	}
+let searchNotification = ref("");
+let autocompleteList = ref<string[]>([]);
+let term = ref("");
+let autoCompleteCancelled = false;
 
-	get autocompleteDebounce(): Function {
-		return webcrap.misc.debounce(this.updateAutocomplete, 250);
-	}
+const onSearchChanged = () => {
+	autoCompleteCancelled = false;
+	autocompleteDebounce();
+};
 
-	onMinimizeClicked(): void {
-		this.$store.commit(SearchStorePaths.mutations.TOGGLE_SEARCH);
-	}
+const autocompleteDebounce = webcrap.misc.debounce(updateAutocomplete, debounceTimeout);
 
-	onModeToggleClicked(): void {
-		this.$store.commit(SearchStorePaths.mutations.TOGGLE_SEARCH_MODE);
-	}
-
-	onSearchClicked(): void {
-		this.$store.dispatch(SearchStorePaths.actions.SIMPLE_SEARCH, this.term);
-		this.autocompleteList = [];  //reset the autocomplete list to get it out of the users face
-	}
+function updateAutocomplete(): void {
+	if (autoCompleteCancelled) { return; }
+	const url = "/api/graph/node/namevalues?searchterm=" + term.value;
+	const newrequest: Request = {
+		url: url,
+		successCallback: data => {
+			if (autoCompleteCancelled === false) {
+				autocompleteList.value = data;
+			}
+		},
+		errorCallback: () => {
+			autocompleteList.value = [];
+		},
+	};
+	api.get(newrequest);
 }
+
+function onMinimizeClicked(): void {
+	store.commit(SearchStorePaths.mutations.TOGGLE_SEARCH);
+}
+
+function onModeToggleClicked(): void {
+	store.commit(SearchStorePaths.mutations.TOGGLE_SEARCH_MODE);
+}
+
+function onSearchClicked(): void {
+	store.dispatch(SearchStorePaths.actions.SIMPLE_SEARCH, term.value);
+
+	//cancel the debounce & reset the autocomplete list to get it out of the users face
+	autoCompleteCancelled = true;
+	autocompleteList.value = [];
+}
+
 </script>

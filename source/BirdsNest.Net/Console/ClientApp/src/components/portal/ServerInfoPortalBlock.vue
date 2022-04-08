@@ -59,34 +59,32 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 	</div>
 </template>
 
-<script lang="ts">
-import { Component, Vue } from "vue-property-decorator";
+<script setup lang="ts">
 import { api } from "@/assets/ts/webcrap/apicrap";
 import ServerInfo from "@/assets/ts/dataMap/ServerInfo";
 import PluginManager from "@/assets/ts/dataMap/PluginManager";
+import { computed } from "vue";
+import { useStore } from "@/store";
 
-@Component
-export default class ServerInfoPortalBlock extends Vue {
-	api = api;
+const store = useStore();
 
-	get serverInfoReady(): boolean {
-		return this.serverInfoState === api.states.READY && this.serverInfo !== null;
-	}
+const serverInfoReady = computed((): boolean => {
+	return serverInfoState.value === api.states.READY && serverInfo.value !== null;
+});
 
-	get serverInfoState(): number {
-		return this.$store.state.serverInfoState;
-	}
+const serverInfoState= computed((): number => {
+	return store.state.serverInfoState;
+});
 
-	get serverInfo(): ServerInfo {
-		return this.$store.state.serverInfo;
-	}
+const serverInfo= computed((): ServerInfo => {
+	return store.state.serverInfo;
+});
 
-	get apiState(): number {
-		return this.$store.state.apiState;
-	}
+const apiState= computed((): number => {
+	return store.state.apiState;
+});
 
-	get pluginManager(): PluginManager {
-		return this.$store.state.pluginManager;
-	}
-}
+const pluginManager= computed((): PluginManager => {
+	return store.state.pluginManager;
+});
 </script>

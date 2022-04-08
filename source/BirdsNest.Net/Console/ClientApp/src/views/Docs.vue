@@ -17,137 +17,131 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 -->
 <template>
 	<div id="docowrapper" class="page">
-		<div v-if="markdown !== defaultmd" class="page">
-			<vue-markdown :source="markdown"/>
-		</div>
+		<div v-if="markdown !== defaultmd" class="page" v-html="markdown" />
 
 		<ScrollToTop />
 	</div>
 </template>
 
 <style scoped>
-
 @media print, screen and (min-width: 40em) {
-	/deep/ h1, .h1 {
+	:deep(h1, .h1) {
 		font-size: 2rem;
 	}
 
-	/deep/ h2, .h2 {
+	:deep(h2, .h2) {
 		font-size: 1.7rem;
 	}
 
-	/deep/ h3, .h3 {
+	:deep(h3, .h3) {
 		font-size: 1.3rem;
 	}
 }
 </style>
 
-<script lang="ts">
-import { Component, Vue, Watch } from "vue-property-decorator";
-import { Route } from "vue-router";
-import VueMarkdown from "@adapttive/vue-markdown";
+<script setup lang="ts">
+import { onBeforeRouteLeave, useRoute, useRouter } from "vue-router";
 import { api, Request } from "@/assets/ts/webcrap/apicrap";
 import { bus, events } from "@/bus";
-import i18n from "@/i18n";
 import ScrollToTop from "@/components/ScrollToTop.vue";
+import { onBeforeMount, onUpdated, watch, ref } from "vue";
+import { useI18n } from 'vue-i18n';
+import MarkdownIt from 'markdown-it';
 
-@Component({
-	components: { VueMarkdown, ScrollToTop }
+const { t } = useI18n();
+const md = new MarkdownIt();
+
+const router = useRouter();
+const route = useRoute();
+
+let defaultmd = ref("Loading");
+let markdown = ref(defaultmd.value);
+
+onBeforeMount((): void => {
+	updateMarkdown();
+	moveToAnchor();
+});
+
+onUpdated(()=> {
+	updateLinks();
+});
+
+onBeforeRouteLeave(()=>{
+	unwatch();
 })
-export default class Docs extends Vue {
-	defaultmd = "Loading";
-	markdown = this.defaultmd;
 
-	updateMarkdown(route: Route): void {
-		bus.$emit(events.Notifications.Processing);
-		this.markdown = this.defaultmd;
-		const docurl = route.path.replace("/docs/", "/");
-
-		const request: Request = {
-			url: docurl,
-			postJson: false,
-			successCallback: (data?: string) => {
-				this.markdown = data;
-				bus.$emit(events.Notifications.Clear);
-			},
-			errorCallback: (jqXHR?: JQueryXHR, status?: string, error?: string) => {
-				// eslint-disable-next-line
-				console.error(error);
-
-				bus.$emit(events.Notifications.Error, i18n.t("word_Error") + ": " + error);
-			},
-		};
-
-		api.get(request);
+const unwatch = watch(
+	()=>route.path,
+	()=>{
+		updateMarkdown();	
 	}
+);
 
-	updateLinks(): void {
-		//update the links with corrections for birdsnest setup
-		const docowrapper = document.querySelector("#docowrapper");
-		const links: NodeListOf<HTMLAnchorElement> = docowrapper.querySelectorAll("a");
-		links.forEach((link) => {
-			if (link.href.startsWith(location.origin + "/documentation")) {
-				const newpath = link.href.replace(location.origin + "/documentation", "/docs/static/documentation");
-				link.addEventListener("click", (e) => {
-					e.preventDefault();
-					this.$router.push({ path: newpath });
-				});
-				link.href = newpath;
-			} else if (link.href.startsWith(location.origin) === false) {
-				link.target = "_blank";
-			}
-		});
+function updateMarkdown(): void {
+	bus.emit(events.Notifications.Processing);
+	markdown.value = defaultmd.value;
+	const docurl = route.path.replace("/docs/", "/");
 
-		const imgs: NodeListOf<HTMLImageElement> = docowrapper.querySelectorAll("img");
-		imgs.forEach((img) => {
-			if (img.src.startsWith(location.origin + "/documentation")) {
-				img.src = img.src.replace("/documentation", "/static/documentation");
-			}
-		});
+	const request: Request = {
+		url: docurl,
+		postJson: false,
+		successCallback: (data?: string) => {
+			markdown.value = md.render(data);
+			bus.emit(events.Notifications.Clear);
+		},
+		errorCallback: (jqXHR?, status?: string, error?: string) => {
+			// eslint-disable-next-line
+			console.error(error);
+			bus.emit(events.Notifications.Error, t("word_Error") + ": " + error);
+		},
+	};
 
-		const headings: NodeListOf<HTMLHeadingElement> = docowrapper.querySelectorAll("h1, h2, h3, h4, h5, h6");
-		headings.forEach((h) => {
-			const id = h.innerText.replace(/ /g, "-").replace(/\./g, "").toLowerCase();
-			h.id = id;
-		});
-	}
+	api.get(request);
+}
 
-	//Separate movetoanchor function is required because the links won't be created at page load. 
-	//This is requried to run separately after content has finished loading
-	moveToAnchor(): void {
-		if (this.$route.hash) {
-			setTimeout(() => { //setTimeout so this will run after page has loaded and created id
-				const pathsplit = this.$route.hash.split("#");
-				if (pathsplit.length > 1) {
-					const id = document.getElementById(pathsplit[1]);
-					if (id !== null) { id.scrollIntoView({behavior: "smooth"}); } //check in case there is an invalid link
-				}
-			}, 500);
+function updateLinks(): void {
+	//update the links with corrections for birdsnest setup
+	const docowrapper = document.querySelector("#docowrapper");
+
+	const links: Array<HTMLAnchorElement> = Array.from(docowrapper.querySelectorAll("a"));
+	links.forEach((link) => {
+		if (link.href.startsWith(location.origin + "/documentation")) {
+			const newpath = link.href.replace(location.origin + "/documentation", "/docs/static/documentation");
+			link.addEventListener("click", (e) => {
+				e.preventDefault();
+				router.push({ path: newpath });
+			});
+			link.href = newpath;
+		} else if (link.href.startsWith(location.origin) === false) {
+			link.target = "_blank";
 		}
-	}
+	});
 
-	beforeMount(): void {
-		this.updateMarkdown(this.$route);
-	}
-
-	updated(): void {
-		this.updateLinks();
-		this.moveToAnchor();
-	}
-
-	@Watch("$route", { immediate: true, deep: true })
-	onUrlChange(to: Route, from: Route) {
-		const topathsplit = to.path.split("#");
-
-		if (from) {
-			const frompathsplit = from.path.split("#");
-
-			if (topathsplit[0] !== frompathsplit[0]) {
-				this.updateMarkdown(to);
-			}
-		} else {
-			this.updateMarkdown(to);
+	const imgs: Array<HTMLImageElement> = Array.from(docowrapper.querySelectorAll("img"));
+	imgs.forEach((img) => {
+		if (img.src.startsWith(location.origin + "/documentation")) {
+			img.src = img.src.replace("/documentation", "/static/documentation");
 		}
+	});
+
+	const headings: Array<HTMLHeadingElement> = Array.from(docowrapper.querySelectorAll("h1, h2, h3, h4, h5, h6"));
+	headings.forEach((h) => {
+		const id = h.innerText.replace(/ /g, "-").replace(/\./g, "").toLowerCase();
+		h.id = id;
+	});
+}
+
+//Separate movetoanchor function is required because the links won't be created at page load. 
+//This is requried to run separately after content has finished loading
+function moveToAnchor(): void {
+	if (route.hash) {
+		setTimeout(() => { //setTimeout so this will run after page has loaded and created id
+			const pathsplit = route.hash.split("#");
+			if (pathsplit.length > 1) {
+				const id = document.getElementById(pathsplit[1]);
+				if (id !== null) { id.scrollIntoView({ behavior: "smooth" }); } //check in case there is an invalid link
+			}
+		}, 500);
 	}
 }
 </script>

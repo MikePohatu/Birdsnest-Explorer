@@ -68,29 +68,27 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 	</div>
 </template>
 
-<script lang="ts">
-import { Component, Vue } from "vue-property-decorator";
+<script setup lang="ts">
 import Menu from "@/components/Menu.vue";
+import { computed } from "vue";
+import { useRoute, breadcrumb } from "vue-router";
 import { routeDefs } from "@/router/index";
 
-@Component({
-	components: { Menu },
-})
-export default class TopBar extends Vue {
-	routeDefs = routeDefs;
+const route = useRoute();
 
-	get breadcrumbs() {
-		return this.$route.meta.breadcrumbs;
-	}
+const breadcrumbs = computed((): breadcrumb[] => {
+	return route.meta.breadcrumbs;
+});
 
-	get pagecrumbs() {
-		if (Object.prototype.hasOwnProperty.call(this.$route.meta, "pagecrumbs") && this.$route.meta.pagecrumbs !== null) {
-			return this.$route.meta.pagecrumbs;
-		} else {
-			return [];
-		}
+const pagecrumbs = computed((): breadcrumb[] => {
+	if (Object.prototype.hasOwnProperty.call(route.meta, "pagecrumbs") && route.meta.pagecrumbs !== null) {
+		return route.meta.pagecrumbs;
+	} else {
+		return [];
 	}
-}
+});
+
+
 </script>
 
 <style scoped>

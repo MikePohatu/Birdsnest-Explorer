@@ -16,7 +16,7 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see http://www.gnu.org/licenses/.
 -->
 <template>
-	<g :id="'nodebg_' + node.dbId" :transform="translate">
+	<g ref="root" :id="'nodebg_' + node.dbId" :transform="translate">
 		<circle
 			:r="radius + 10"
 			:cx="radius"
@@ -35,34 +35,32 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 	</g>
 </template>
 
-<script lang="ts">
-import { Component, Vue, Prop } from "vue-property-decorator";
+<script setup lang="ts">
 import { d3 } from "@/assets/ts/visualizer/d3";
 import { SimNode } from "@/assets/ts/visualizer/SimNode";
+import { computed, onMounted, ref } from "vue";
 
-@Component
-export default class GraphNodeBg extends Vue {
-	@Prop({ type: Object, required: true })
-	node: SimNode;
+	const props = defineProps({ node: { type: Object, required: true }});
+	const root = ref(null);
+	const node = props.node as SimNode;
 
-	mounted() {
-		d3.select(this.$el).datum(this.node);
-	}
+	onMounted(() => {
+		d3.select(root.value).datum(node);
+	});
 
-	get translate(): string {
-		return "translate(" + this.node.currentX + "," + this.node.currentY + ")";
-	}
+	const translate = computed((): string => {
+		return "translate(" + node.currentX + "," + node.currentY + ")";
+	});
 
-	get pinned(): boolean {
-		return this.node.pinned;
-	}
+	const pinned = computed((): boolean => {
+		return node.pinned;
+	});
 
-	get size(): number {
-		return this.node.currentSize;
-	}
+	const size = computed(():  number => {
+		return node.currentSize;
+	});
 
-	get radius(): number {
-		return this.node.currentSize / 2;
-	}
-}
+	const radius = computed((): number => {
+		return node.currentSize / 2;
+	});
 </script>

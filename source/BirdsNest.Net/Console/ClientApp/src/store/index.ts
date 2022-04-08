@@ -14,17 +14,19 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
-import Vue from "vue";
-import Vuex from "vuex";
+import { InjectionKey } from "vue";
 import { api, Request } from "../assets/ts/webcrap/apicrap";
 import { VisualizerStore } from "./modules/VisualizerStore";
 import PluginManager from '@/assets/ts/dataMap/PluginManager';
 import ServerInfo from '@/assets/ts/dataMap/ServerInfo';
-import i18n from '@/i18n';
 
 import { bus, events } from '@/bus';
-import { Dictionary } from 'vue-router/types/router';
-Vue.use(Vuex);
+import { Dictionary } from "@/assets/ts/webcrap/misccrap";
+import { createStore, useStore as baseUseStore, Store } from 'vuex';
+import i18n from "@/i18n";
+import { useCookies } from "vue3-cookies";
+
+const { cookies } = useCookies();
 
 export const rootPaths = {
   mutations: {
@@ -128,7 +130,13 @@ const state: RootState = {
   apiState: api.states.NOTAUTHORIZED
 }
 
-export default new Vuex.Store({
+export const key: InjectionKey<Store<RootState>> = Symbol();
+
+export function useStore () {
+  return baseUseStore(key);
+}
+
+export const store = createStore({
   strict: process.env.NODE_ENV !== 'production',
   modules: {
     visualizer: VisualizerStore
@@ -139,9 +147,9 @@ export default new Vuex.Store({
       state.auth.message = message;
     },
     locale(state, locale: string) {
-      i18n.locale = locale;
-      state.locale = i18n.locale;
-      Vue.prototype.$cookies.set("locale", i18n.locale);
+      i18n.global.locale.value = locale;
+      state.locale = i18n.global.locale.value;
+      cookies.set("locale", i18n.global.locale.value);
     },
     loginBanner(state, bannerHtml: string) {
       state.customization.login.banner = bannerHtml;
@@ -179,7 +187,7 @@ export default new Vuex.Store({
     apiState(state, newstate: number) {
       state.apiState = newstate;
       if (newstate === api.states.READY) {
-        bus.$emit(events.Notifications.Clear);
+        bus.emit(events.Notifications.Clear);
       }
     },
     deAuth(state) {
@@ -268,11 +276,11 @@ export default new Vuex.Store({
         successCallback: (data: PluginManager) => {
           context.commit(rootPaths.mutations.PLUGIN_MANAGER, data);
           context.commit(rootPaths.mutations.API_STATE, api.states.READY);
-          bus.$emit(events.Notifications.Clear);
+          bus.emit(events.Notifications.Clear);
         },
         errorCallback: (jqXHR?: JQueryXHR, status?: string, error?: string) => {
           context.commit(rootPaths.mutations.API_STATE, api.states.ERROR);
-          bus.$emit(events.Notifications.Error, "Error updating plugins: " + error);
+          bus.emit(events.Notifications.Error, "Error updating plugins: " + error);
         }
       }
       api.get(request);
@@ -287,11 +295,11 @@ export default new Vuex.Store({
         successCallback: (data: PluginManager) => {
           context.commit(rootPaths.mutations.SERVER_INFO, data);
           context.commit(rootPaths.mutations.SERVER_INFO_STATE, api.states.READY);
-          bus.$emit(events.Notifications.Clear);
+          bus.emit(events.Notifications.Clear);
         },
         errorCallback: (jqXHR?: JQueryXHR, status?: string, error?: string) => {
           context.commit(rootPaths.mutations.SERVER_INFO_STATE, api.states.ERROR);
-          bus.$emit(events.Notifications.Error, "Error updating server info: " + error);
+          bus.emit(events.Notifications.Error, "Error updating server info: " + error);
         }
       }
       api.get(request);

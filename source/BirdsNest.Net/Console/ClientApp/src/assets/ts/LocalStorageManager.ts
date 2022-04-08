@@ -33,12 +33,12 @@ export default class LStore {
                 localStorage.setItem(types.PendingResults, JSON.stringify(results));
             }
             catch {
-                bus.$emit(events.Notifications.Error, "Error saving results to local store");
+                bus.emit(events.Notifications.Error, "Error saving results to local store");
             }
         } else {
             // eslint-disable-next-line
             console.log("No Web Storage support..");
-            bus.$emit(events.Notifications.Error, "No Web Storage support");
+            bus.emit(events.Notifications.Error, "No Web Storage support");
         }
     }
 
@@ -51,12 +51,12 @@ export default class LStore {
                 return results;
             }
             catch {
-                bus.$emit(events.Notifications.Error, "Error retrieving results from local store");
+                bus.emit(events.Notifications.Error, "Error retrieving results from local store");
             }
         } else {
             // eslint-disable-next-line
             console.log("No Web Storage support..");
-            bus.$emit(events.Notifications.Error, "No Web Storage support");
+            bus.emit(events.Notifications.Error, "No Web Storage support");
         }
 
         return results;
@@ -69,12 +69,12 @@ export default class LStore {
                 localStorage.setItem(types.PendingNodeList, JSON.stringify(nodes));
             }
             catch {
-                bus.$emit(events.Notifications.Error, "Error saving node list to local store");
+                bus.emit(events.Notifications.Error, "Error saving node list to local store");
             }
         } else {
             // eslint-disable-next-line
             console.log("No Web Storage support..");
-            bus.$emit(events.Notifications.Error, "No Web Storage support");
+            bus.emit(events.Notifications.Error, "No Web Storage support");
         }
     }
 
@@ -87,12 +87,12 @@ export default class LStore {
                 return results;
             }
             catch {
-                bus.$emit(events.Notifications.Error, "Error retrieving results from local store");
+                bus.emit(events.Notifications.Error, "Error retrieving results from local store");
             }
         } else {
             // eslint-disable-next-line
             console.log("No Web Storage support..");
-            bus.$emit(events.Notifications.Error, "No Web Storage support");
+            bus.emit(events.Notifications.Error, "No Web Storage support");
         }
 
         return results;
@@ -106,12 +106,12 @@ export default class LStore {
                 localStorage.setItem(types.AppendResults, JSON.stringify(results));
             }
             catch {
-                bus.$emit(events.Notifications.Error, "Error saving results to local store");
+                bus.emit(events.Notifications.Error, "Error saving results to local store");
             }
         } else {
             // eslint-disable-next-line
             console.log("No Web Storage support..");
-            bus.$emit(events.Notifications.Error, "No Web Storage support");
+            bus.emit(events.Notifications.Error, "No Web Storage support");
         }
     }
 
@@ -124,12 +124,12 @@ export default class LStore {
                 return results;
             }
             catch {
-                bus.$emit(events.Notifications.Error, "Error retrieving results from local store");
+                bus.emit(events.Notifications.Error, "Error retrieving results from local store");
             }
         } else {
             // eslint-disable-next-line
             console.log("No Web Storage support..");
-            bus.$emit(events.Notifications.Error, "No Web Storage support");
+            bus.emit(events.Notifications.Error, "No Web Storage support");
         }
 
         return results;

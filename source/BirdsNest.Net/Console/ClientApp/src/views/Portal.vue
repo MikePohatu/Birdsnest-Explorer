@@ -29,17 +29,23 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 			<ServerInfoPortalBlock class="cell large-4 medium-6 portalBoxWrapper" />
 		</div>
 
-		<p class="text-center">{{ $t('portal.usage_info_1') }}
+		<p class="text-center">
+			{{ $t('portal.usage_info_1') }}
 			<router-link v-if="!isIE" :to="routeDefs.docs.path">{{ $t('word_documentation') }}</router-link>
-			<a v-else href="https://github.com/MikePohatu/Birdsnest-Explorer" target="_blank">{{ $t('phrase_source_repository') }}</a>. {{ $t('portal.usage_info_2') }}
+			<a
+				v-else
+				href="https://github.com/MikePohatu/Birdsnest-Explorer"
+				target="_blank"
+			>{{ $t('phrase_source_repository') }}</a>
+			. {{ $t('portal.usage_info_2') }}
 			<a
 				href="https://support.20road.com"
 				target="_blank"
-			>{{ $t('20road')}} {{ $t('portal.usage_info_3') }}</a>
+			>{{ $t('20road') }} {{ $t('portal.usage_info_3') }}</a>
 		</p>
 
 		<p class="text-center">
-			{{ $t('portal.license_attribution')}}
+			{{ $t('portal.license_attribution') }}
 			<router-link to="about">{{ $t('word_About') }}</router-link>
 			{{ $t('word_page') }}
 		</p>
@@ -83,31 +89,31 @@ span {
 	margin-bottom: 20px;
 	width: 250px;
 }
-/deep/ .portalBoxHeading {
+:deep(.portalBoxHeading) {
 	margin-bottom: 0.8rem;
 }
 
-/deep/ td {
+:deep(td) {
 	width: min-content;
 	font-size: 0.8em;
 	padding: 0.625em 0.625em;
 }
 
-/deep/ .left {
+:deep(.left) {
 	text-align: left;
 }
 
-/deep/ .right {
+:deep(.right) {
 	text-align: right;
 }
 
-/deep/ .portalBoxWrapper .description {
+:deep(.portalBoxWrapper .description) {
 	margin-top: 0.8rem;
 	margin-bottom: 1.5rem;
 	font-size: 0.8em;
 }
 
-/deep/ .portalBox {
+:deep(.portalBox) {
 	border-radius: 7px;
 	-moz-border-radius: 7px;
 	border-width: 2px;
@@ -119,64 +125,61 @@ span {
 	color: black;
 }
 
-/deep/ .portalBox table {
+:deep(.portalBox table) {
 	border-collapse: separate;
 	margin-bottom: 0;
 	margin-left: auto;
 	margin-right: auto;
 }
 
-/deep/ .portalBox table tr:last-child td:first-child {
+:deep(.portalBox table tr:last-child td:first-child) {
 	-moz-border-radius: 0 0 0 4px;
 	border-radius: 0 0 0 4px;
 }
 
-/deep/ .portalBox table tr:last-child td:last-child {
+:deep(.portalBox table tr:last-child td:last-child) {
 	-moz-border-radius: 0 0 4px 0;
 	border-radius: 0 0 4px 0;
 }
 
-/deep/ .portalBox table tr:first-child td:first-child {
+:deep(.portalBox table tr:first-child td:first-child) {
 	-moz-border-radius: 4px 0 0 0;
 	border-radius: 4px 0 0 0;
 }
 
-/deep/ .portalBox table tr:first-child td:last-child {
+:deep(.portalBox table tr:first-child td:last-child) {
 	-moz-border-radius: 0 4px 0 0;
 	border-radius: 0 4px 0 0;
 }
 </style>
 
 
-<script lang="ts">
-import { Component, Vue } from "vue-property-decorator";
+<script setup lang="ts">
+import { computed, defineComponent, watch } from "vue";
+import { useStore } from "@/store";
 import VisualizerPortalBlock from "@/components/portal/VisualizerPortalBlock.vue";
 import ReportsPortalBlock from "@/components/portal/ReportsPortalBlock.vue";
 import ServerInfoPortalBlock from "@/components/portal/ServerInfoPortalBlock.vue";
 import { routeDefs } from "@/router/index";
 import webcrap from "@/assets/ts/webcrap/webcrap";
 
-@Component({
-	components: { VisualizerPortalBlock, ReportsPortalBlock, ServerInfoPortalBlock },
-})
-export default class Portal extends Vue {
-	routeDefs = routeDefs;
-	isIE = webcrap.misc.isIE();
-	
-	get userName() {
-		if (this.$store.state.user.name !== "") {
-			return " " + this.$store.state.user.name;
-		} else {
-			return "";
-		}
-	}
 
-	get bannerHtml(): string {
-		return this.$store.state.customization.portal.banner;
-	}
+const isIE = webcrap.misc.isIE();
+const store = useStore();
 
-	get footerHtml(): string {
-		return this.$store.state.customization.portal.footer;
+const userName = computed(() => {
+	if (store.state.user.name !== "") {
+		return " " + store.state.user.name;
+	} else {
+		return "";
 	}
-}
+});
+
+const bannerHtml = computed((): string => {
+	return store.state.customization.portal.banner;
+});
+
+const footerHtml = computed((): string => {
+	return store.state.customization.portal.footer;
+});
 </script>

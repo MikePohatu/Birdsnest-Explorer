@@ -14,14 +14,19 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
-import { Dictionary } from "@/assets/ts/webcrap/misccrap";
+import 'vue-router'
 
-//BirdsNestNode definition
-export interface ApiNode {
+declare module 'vue-router' {
     
-    dbId: string;
-    name: string;
-    labels: string[];
-    scope: number;
-    properties: Dictionary<string | number | boolean>;
-}
+    interface breadcrumb { 
+      name: string, 
+      link?: string 
+    }
+
+    interface RouteMeta {
+      // is optional
+      breadcrumbs?: breadcrumb[]
+      pagecrumbs?: breadcrumb[]
+      allowAnonymous?: boolean
+    }
+  }

@@ -14,18 +14,13 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
-import { Dictionary } from 'vue-router/types/router';
-import { DataType } from "./DataType";
-import { Report } from "./Report";
+import { Store } from 'vuex';
+import { RootState } from './store';
 
-export interface Plugin {
-    name: string;
-    displayName: string;
-    extends: string;
-    extendedBy: string[];
-    nodeDataTypes: Dictionary<DataType>;
-    edgeDataTypes: Dictionary<DataType>;
-    reports: Dictionary<Report>;
-    link: string;
+declare module '@vue/runtime-core' {
+
+  // provide typings for `store`
+  interface ComponentCustomProperties {
+    $store: Store<RootState>
+  }
 }
-

@@ -15,6 +15,10 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 declare module "*.vue" {
-  import Vue from "vue";
-  export default Vue;
+  import { defineComponent } from "vue";
+  const component: ReturnType<typeof defineComponent>;
+  export default component;
+
+  //import Vue from "vue";
+  //export default Vue;
 }

@@ -14,12 +14,13 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
-import { Dictionary } from 'vue-router/types/router';
+
+import { Dictionary } from "@/assets/ts/webcrap/misccrap";
 import { DataType } from "./DataType";
-import { Plugin } from "./Plugin";
+import { ConsolePlugin } from "./ConsolePlugin";
 
 export default interface PluginManager {
-    plugins: Dictionary<Plugin>;
+    plugins: Dictionary<ConsolePlugin>;
     extensionCount: number;
     nodeDisplayNames: Dictionary<string>;
     edgeDisplayNames: Dictionary<string>;
