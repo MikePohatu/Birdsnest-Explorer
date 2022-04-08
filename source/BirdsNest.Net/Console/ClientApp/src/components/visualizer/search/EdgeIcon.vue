@@ -67,7 +67,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 
 <script setup lang="ts">
 import { SearchEdge } from "@/assets/ts/visualizer/Search";
-import { SearchStorePaths } from '../../../store/modules/SearchStore';
+import { SearchStorePaths } from '@/store/modules/SearchStore';
 import webcrap from '@/assets/ts/webcrap/webcrap';
 import { computed } from "@vue/reactivity";
 import { useStore } from "@/store";

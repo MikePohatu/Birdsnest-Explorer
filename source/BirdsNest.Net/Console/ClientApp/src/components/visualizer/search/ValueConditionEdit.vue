@@ -225,7 +225,7 @@ import { SearchItemType } from "@/assets/ts/visualizer/Search";
 import webcrap from "@/assets/ts/webcrap/webcrap";
 import { SearchStorePaths } from "@/store/modules/SearchStore";
 import { api, Request } from "@/assets/ts/webcrap/apicrap";
-import { SearchEdge } from "../../../assets/ts/visualizer/Search";
+import { SearchEdge } from "@/assets/ts/visualizer/Search";
 import { computed, onMounted, ref } from "vue";
 import { useStore } from "@/store";
 import { useI18n } from "vue-i18n";

@@ -15,7 +15,7 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 import { InjectionKey } from "vue";
-import { api, Request } from "../assets/ts/webcrap/apicrap";
+import { api, Request } from "@/assets/ts/webcrap/apicrap";
 import { VisualizerStore } from "./modules/VisualizerStore";
 import PluginManager from '@/assets/ts/dataMap/PluginManager';
 import ServerInfo from '@/assets/ts/dataMap/ServerInfo';

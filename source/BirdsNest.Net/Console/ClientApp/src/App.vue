@@ -31,7 +31,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 <script setup lang="ts">
 	import TopBar from "@/components/TopBar.vue";
 	import Curtain from "@/components/Curtain.vue";
-	import { rootPaths, useStore } from "./store";
+	import { rootPaths, useStore } from "@/store";
 	import NotificationIcon from "@/components/NotificationIcon.vue";
 	import { useCookies } from "vue3-cookies";
 	import { ref, onMounted, onUpdated } from "vue";

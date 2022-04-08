@@ -15,10 +15,10 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 import DatumStore from "./DatumStore";
-import { ApiNode } from '../dataMap/ApiNode';
+import { ApiNode } from '@/assets/ts/dataMap/ApiNode';
 import Spiral from "./Spiral";
-import { ResultSet } from '../dataMap/ResultSet';
-import { ApiEdge } from '../dataMap/ApiEdge';
+import { ResultSet } from '@/assets/ts/dataMap/ResultSet';
+import { ApiEdge } from '@/assets/ts/dataMap/ApiEdge';
 import { Dictionary } from "@/assets/ts/webcrap/misccrap";
 import { SimNode } from './SimNode';
 import { SimLink } from './SimLink';

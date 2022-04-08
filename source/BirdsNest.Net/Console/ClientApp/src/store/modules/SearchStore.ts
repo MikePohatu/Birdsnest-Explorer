@@ -15,10 +15,10 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 import { Module } from "vuex";
-import { api, Request } from "../../assets/ts/webcrap/apicrap";
-import { Search, SearchItem, SearchEdge, SearchNode, Condition, moveCondition, ConditionType, AndOrCondition, ValueCondition, UpdateCondition, DeleteCondition, importNode } from "../../assets/ts/visualizer/Search";
+import { api, Request } from "@/assets/ts/webcrap/apicrap";
+import { Search, SearchItem, SearchEdge, SearchNode, Condition, moveCondition, ConditionType, AndOrCondition, ValueCondition, UpdateCondition, DeleteCondition, importNode } from "@/assets/ts/visualizer/Search";
 import webcrap from "@/assets/ts/webcrap/webcrap";
-import { RootState } from '../index';
+import { RootState } from '@/store';
 import { ResultSet } from '@/assets/ts/dataMap/ResultSet';
 import i18n from '@/i18n';
 

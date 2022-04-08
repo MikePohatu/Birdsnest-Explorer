@@ -74,9 +74,9 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 </style>
 
 <script setup lang="ts">
-import { SearchNode } from "../../../assets/ts/visualizer/Search";
+import { SearchNode } from "@/assets/ts/visualizer/Search";
 import { VisualizerStorePaths } from "@/store/modules/VisualizerStore";
-import { SearchStorePaths } from "../../../store/modules/SearchStore";
+import { SearchStorePaths } from "@/store/modules/SearchStore";
 
 import { bus, events } from "@/bus";
 import { computed, onMounted, ref } from "vue";

@@ -204,7 +204,7 @@ import { SimNode } from "@/assets/ts/visualizer/SimNode";
 import { SimLink } from "@/assets/ts/visualizer/SimLink";
 import Slope from "@/assets/ts/visualizer/Slope";
 import { api, Request } from "@/assets/ts/webcrap/apicrap";
-import LStore from "../../../assets/ts/LocalStorageManager";
+import LStore from "@/assets/ts/LocalStorageManager";
 import { computed, nextTick, onBeforeUnmount, onMounted } from "vue";
 import { useStore } from "@/store";
 import { useRouter } from "vue-router";

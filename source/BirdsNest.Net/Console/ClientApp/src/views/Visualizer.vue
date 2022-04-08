@@ -60,12 +60,12 @@ import NewConditionSelect from "@/components/visualizer/search/NewConditionSelec
 import Graph from "@/components/visualizer/graph/Graph.vue";
 
 import { auth } from "@/assets/ts/webcrap/authcrap";
-import { SearchNode, SearchEdge, ValueCondition, AndOrCondition, Search, copySearch } from "../assets/ts/visualizer/Search";
+import { SearchNode, SearchEdge, ValueCondition, AndOrCondition, Search, copySearch } from "@/assets/ts/visualizer/Search";
 import { RouteLocation, useRoute } from "vue-router";
 import webcrap from "@/assets/ts/webcrap/webcrap";
 import { SearchStorePaths } from "@/store/modules/SearchStore";
 import { ApiNode } from "@/assets/ts/dataMap/ApiNode";
-import { VisualizerStorePaths } from "../store/modules/VisualizerStore";
+import { VisualizerStorePaths } from "@/store/modules/VisualizerStore";
 import LStore from "@/assets/ts/LocalStorageManager";
 import { computed, onMounted, watch } from "vue";
 

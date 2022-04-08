@@ -170,7 +170,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 <script setup lang="ts">
 import { routeDefs } from "@/router/index";
 import LoadingLogo from "@/components/LoadingLogo.vue";
-import { ResultSet } from "../assets/ts/dataMap/ResultSet";
+import { ResultSet } from "@/assets/ts/dataMap/ResultSet";
 import { api, Request } from "@/assets/ts/webcrap/apicrap";
 import webcrap from "@/assets/ts/webcrap/webcrap";
 import { ApiNode } from "@/assets/ts/dataMap/ApiNode";

@@ -28,7 +28,7 @@ import { SearchNode } from "@/assets/ts/visualizer/Search";
 import { SearchStorePaths } from "@/store/modules/SearchStore";
 import { computed, reactive } from "vue";
 import { useStore } from "@/store";
-import webcrap from '../../../assets/ts/webcrap/webcrap';
+import webcrap from '@/assets/ts/webcrap/webcrap';
 
 const props = defineProps({ node: { type: Object, required: true } });
 const node = reactive(props.node as SearchNode);

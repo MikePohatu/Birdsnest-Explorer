@@ -87,8 +87,8 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 
 <script setup lang="ts">
 	import { bus, events } from "@/bus";
-	import { api, Request } from "../assets/ts/webcrap/apicrap";
-	import { auth } from "../assets/ts/webcrap/authcrap";
+	import { api, Request } from "@/assets/ts/webcrap/apicrap";
+	import { auth } from "@/assets/ts/webcrap/authcrap";
 	import { Dictionary } from "lodash";
 	import { rootPaths } from "@/store/index";
 	import PluginManager from "@/assets/ts/dataMap/PluginManager";

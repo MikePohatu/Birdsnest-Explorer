@@ -16,8 +16,8 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 import { bus, events } from "@/bus";
 import { createRouter, createWebHistory, RouteRecordRaw, breadcrumb } from "vue-router";
-import { store, rootPaths } from "../store";
-import { auth } from "../assets/ts/webcrap/authcrap";
+import { store, rootPaths } from "@/store";
+import { auth } from "@/assets/ts/webcrap/authcrap";
 import webcrap from "@/assets/ts/webcrap/webcrap";
 
 export const routeDefs = {
@@ -73,7 +73,7 @@ const routes: Array<RouteRecordRaw> = [
       ]
     },
     component: () =>
-      import(/* webpackChunkName: "portal" */ "../views/Portal.vue")
+      import(/* webpackChunkName: "portal" */ "@/views/Portal.vue")
   },
   {
     path: '/',
@@ -92,7 +92,7 @@ const routes: Array<RouteRecordRaw> = [
     // this generates a separate chunk (about.[hash].js) for this route
     // which is lazy-loaded when the route is visited.
     component: () =>
-      import(/* webpackChunkName: "about" */ "../views/About.vue")
+      import(/* webpackChunkName: "about" */ "@/views/About.vue")
   },
   {
     path: routeDefs.reports.path,
@@ -103,7 +103,7 @@ const routes: Array<RouteRecordRaw> = [
       ]
     },
     component: () =>
-      import(/* webpackChunkName: "reports" */ "../views/Reports.vue")
+      import(/* webpackChunkName: "reports" */ "@/views/Reports.vue")
   },
   {
     path: routeDefs.report.path,
@@ -115,7 +115,7 @@ const routes: Array<RouteRecordRaw> = [
       ]
     },
     component: () =>
-      import(/* webpackChunkName: "reports" */ "../views/ReportView.vue")
+      import(/* webpackChunkName: "reports" */ "@/views/ReportView.vue")
   },
   {
     path: routeDefs.admin.path,
@@ -126,7 +126,7 @@ const routes: Array<RouteRecordRaw> = [
       ]
     },
     component: () =>
-      import(/* webpackChunkName: "admin" */ "../views/Admin.vue")
+      import(/* webpackChunkName: "admin" */ "@/views/Admin.vue")
   },
   {
     path: routeDefs.login.path,
@@ -138,7 +138,7 @@ const routes: Array<RouteRecordRaw> = [
       ]
     },
     component: () =>
-      import(/* webpackChunkName: "login" */ "../views/Login.vue")
+      import(/* webpackChunkName: "login" */ "@/views/Login.vue")
   },
   {
     path: routeDefs.visualizer.path,
@@ -149,7 +149,7 @@ const routes: Array<RouteRecordRaw> = [
       ]
     },
     component: () =>
-      import(/* webpackChunkName: "visualizer" */ "../views/Visualizer.vue")
+      import(/* webpackChunkName: "visualizer" */ "@/views/Visualizer.vue")
   },
   {
     path: routeDefs.info.path,
@@ -160,7 +160,7 @@ const routes: Array<RouteRecordRaw> = [
       ]
     },
     component: () =>
-      import(/* webpackChunkName: "portal" */ "../views/ServerInfoView.vue")
+      import(/* webpackChunkName: "portal" */ "@/views/ServerInfoView.vue")
   },
   {
     path: routeDefs.indexEditor.path,
@@ -172,7 +172,7 @@ const routes: Array<RouteRecordRaw> = [
       ]
     },
     component: () =>
-      import(/* webpackChunkName: "admin" */ "../views/IndexEditorView.vue")
+      import(/* webpackChunkName: "admin" */ "@/views/IndexEditorView.vue")
   },
   {
     path: routeDefs.docs.path,
@@ -184,7 +184,7 @@ const routes: Array<RouteRecordRaw> = [
       ]
     },
     component: () =>
-      import(/* webpackChunkName: "docs" */ "../views/Docs.vue")
+      import(/* webpackChunkName: "docs" */ "@/views/Docs.vue")
   }
 ];
 

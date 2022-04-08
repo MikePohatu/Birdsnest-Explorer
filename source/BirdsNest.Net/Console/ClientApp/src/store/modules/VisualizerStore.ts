@@ -16,7 +16,7 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 import { Module } from "vuex";
 import { SearchStore } from "./SearchStore";
-import { RootState } from "../index";
+import { RootState } from "@/store";
 import Mappings from '@/assets/ts/visualizer/Mappings';
 import { api, Request } from "@/assets/ts/webcrap/apicrap";
 import { ResultSet } from '@/assets/ts/dataMap/ResultSet';
