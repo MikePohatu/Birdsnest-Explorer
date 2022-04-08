@@ -209,19 +209,6 @@ import { computed, nextTick, onBeforeUnmount, onMounted } from "vue";
 import { useStore } from "@/store";
 import { useRouter } from "vue-router";
 
-//import {VisualizerStorePaths} from "@/store/modules/VisualizerStore";
-
-// @Component({
-// 	components: {
-// 		GraphNode,
-// 		GraphNodeBg,
-// 		GraphEdge,
-// 		GraphEdgeBg,
-// 		ViewControls,
-// 		NodeDetailCard,
-// 		EdgeDetailCard,
-// 	},
-// })
 	const store = useStore();
 	const router = useRouter();
 
@@ -1120,38 +1107,6 @@ import { useRouter } from "vue-router";
 				updateNodeSizes();
 			});
 		}
-	}
-
-	function getEdgesForNodes(nodelist, callback) {
-		const postdata = JSON.stringify(nodelist);
-		const url = "/api/graph/edges";
-		const newrequest: Request = {
-			url: url,
-			data: postdata,
-			postJson: true,
-			successCallback: callback,
-			errorCallback: () => {
-				// eslint-disable-next-line
-				console.error("Error getting Edges");
-			},
-		};
-		api.post(newrequest);
-	}
-
-	function getDirectLoopsForNodes(nodelist, callback) {
-		const postdata = JSON.stringify(nodelist);
-		const url = "/api/graph/directloop";
-		const newrequest: Request = {
-			url: url,
-			successCallback: callback,
-			data: postdata,
-			postJson: true,
-			errorCallback: () => {
-				// eslint-disable-next-line
-				console.error("Error getting direct loops");
-			},
-		};
-		api.post(newrequest);
 	}
 
 	function getDirectEdgesForNodeList(nodelist, callback) {

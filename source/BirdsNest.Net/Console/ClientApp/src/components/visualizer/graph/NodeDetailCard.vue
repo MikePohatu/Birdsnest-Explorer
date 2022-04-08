@@ -232,7 +232,7 @@ import { VisualizerStorePaths } from "@/store/modules/VisualizerStore";
 import { ApiNodeSimple } from "@/assets/ts/dataMap/ApiNodeSimple";
 import { rootPaths } from "@/store";
 import { Dictionary } from "@/assets/ts/webcrap/misccrap";
-import { computed, nextTick, onMounted, reactive, ref } from "vue";
+import { computed, nextTick, onMounted, ref } from "vue";
 import { useStore } from "@/store";
 import { vFoundation } from "@/mixins/foundation";
 

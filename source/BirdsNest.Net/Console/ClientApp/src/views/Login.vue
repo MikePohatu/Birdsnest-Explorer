@@ -25,10 +25,10 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 
 <script setup lang="ts">
 import { useStore } from "@/store";
-import { computed, defineComponent, watch } from "vue";
+import { computed } from "vue";
 import LoginCredentials from "@/components/LoginCredentials.vue";
 import { routeDefs } from "@/router/index";
-import { RouteLocationRaw, RouteRecordRaw, useRoute, useRouter } from "vue-router";
+import { RouteLocationRaw, useRoute, useRouter } from "vue-router";
 
 const store = useStore();
 const route = useRoute();

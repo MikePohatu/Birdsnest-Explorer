@@ -112,7 +112,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 <script setup lang="ts">
 import { SimNode } from "@/assets/ts/visualizer/SimNode";
 import { SimLink } from '@/assets/ts/visualizer/SimLink';
-import { computed, onMounted, ref } from "vue";
+import { computed } from "vue";
 import { vFoundation } from "@/mixins/foundation";
 
 const props = defineProps({ edge: { type: Object, required: true }});

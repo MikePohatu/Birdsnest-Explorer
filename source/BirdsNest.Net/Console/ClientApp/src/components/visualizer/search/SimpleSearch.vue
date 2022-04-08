@@ -87,13 +87,12 @@ import SearchResults from "./SearchResults.vue";
 import webcrap from "@/assets/ts/webcrap/webcrap";
 import { Request, api } from "@/assets/ts/webcrap/apicrap";
 import { SearchStorePaths } from "@/store/modules/SearchStore";
-import { computed, ref } from "vue";
+import { ref } from "vue";
 import { useStore } from "@/store";
 
 const debounceTimeout = 250;
 const store = useStore();
 
-let searchNotification = ref("");
 let autocompleteList = ref<string[]>([]);
 let term = ref("");
 let autoCompleteCancelled = false;

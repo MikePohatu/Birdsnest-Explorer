@@ -180,7 +180,7 @@ import { Dictionary } from "@/assets/ts/webcrap/misccrap";
 import LStore from "@/assets/ts/LocalStorageManager";
 import { bus, events } from "@/bus";
 import { useStore } from "@/store";
-import { computed, onMounted, Ref, ref } from "vue";
+import { computed, onMounted, ref } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import { vFoundation } from "@/mixins/foundation";
 
@@ -237,10 +237,6 @@ const nodesPage = computed((): ApiNode[] => {
 	}
 });
 
-const apiReady = computed((): boolean => {
-	return store.state.apiState === api.states.READY;
-});
-
 const resultCount = computed((): number => {
 	//console.log({source:"resultCount", results: results.value});
 	if (results.value === null) {
@@ -264,14 +260,6 @@ const hasNextPage = computed((): boolean => {
 
 const hasPrevPage = computed((): boolean => {
 	return pageNum.value > 1;
-});
-
-const nextBtnVisibility = computed((): string => {
-	return hasNextPage ? "visible" : "hidden";
-});
-
-const prevBtnVisibility = computed((): string => {
-	return hasPrevPage ? "visible" : "hidden";
 });
 
 function updateActiveProperties(): void {

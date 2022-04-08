@@ -47,7 +47,7 @@ import { SimLink } from "@/assets/ts/visualizer/SimLink";
 import { SimNode } from "@/assets/ts/visualizer/SimNode";
 import { bus, events } from "@/bus";
 import webcrap from "@/assets/ts/webcrap/webcrap";
-import { computed, onMounted, reactive, ref } from "vue";
+import { computed, onMounted, ref } from "vue";
 import { useStore } from "@/store";
 
 const props = defineProps({

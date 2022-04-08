@@ -63,14 +63,12 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 
 <script setup lang="ts">
 import { SearchStorePaths } from "@/store/modules/SearchStore";
-import { computed, ref } from "vue";
+import { computed } from "vue";
 import { useRoute } from "vue-router";
 import { useStore } from "@/store";
 
 const store = useStore();
 const route = useRoute();
-
-let searchNotification = ref("");
 
 const cypherquery = computed(() => {
 	return store.state.visualizer.search.shareCypher;

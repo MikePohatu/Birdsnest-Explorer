@@ -79,7 +79,7 @@ import { VisualizerStorePaths } from "@/store/modules/VisualizerStore";
 import { SearchStorePaths } from "@/store/modules/SearchStore";
 
 import { bus, events } from "@/bus";
-import { computed, onMounted, ref } from "vue";
+import { computed } from "vue";
 import { useStore } from "@/store";
 import { useI18n } from "vue-i18n";
 import { vFoundation } from "@/mixins/foundation";

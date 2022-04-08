@@ -164,18 +164,8 @@ const { t } = useI18n();
 const root = ref(null);
 const store = useStore();
 
-let indexes: Dictionary<Index[]> = null;
-
-const apiState = computed((): number => {
-	return store.state.apiState;
-});
-
 const pluginManager = computed((): PluginManager => {
 	return store.state.pluginManager;
-});
-
-const serverInfoState = computed((): number => {
-	return store.state.serverInfoState;
 });
 
 const serverInfo = computed((): ServerInfo => {

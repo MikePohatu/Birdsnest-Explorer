@@ -152,22 +152,6 @@ const icon = computed<string>(() => {
 	return state.value < notificationStates.WARN ? "&#xf129;" : "&#xf12a;";
 });
 
-const iconSize = computed<number>(() => {
-	if (processing) {
-		return 20;
-	} else {
-		return 22;
-	}
-});
-
-const iconXY = computed<number>(() => {
-	if (processing) {
-		return 12;
-	} else {
-		return 10;
-	}
-});
-
 const isHidden = computed<boolean>(() => {
 	return state.value === notificationStates.HIDDEN;
 });

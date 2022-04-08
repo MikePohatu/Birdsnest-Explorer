@@ -80,10 +80,6 @@ const serverInfo= computed((): ServerInfo => {
 	return store.state.serverInfo;
 });
 
-const apiState= computed((): number => {
-	return store.state.apiState;
-});
-
 const pluginManager= computed((): PluginManager => {
 	return store.state.pluginManager;
 });

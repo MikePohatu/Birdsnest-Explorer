@@ -64,7 +64,6 @@ import { SearchNode, SearchEdge, ValueCondition, AndOrCondition, Search, copySea
 import { RouteLocation, useRoute } from "vue-router";
 import webcrap from "@/assets/ts/webcrap/webcrap";
 import { SearchStorePaths } from "@/store/modules/SearchStore";
-import { ApiNode } from "@/assets/ts/dataMap/ApiNode";
 import { VisualizerStorePaths } from "@/store/modules/VisualizerStore";
 import LStore from "@/assets/ts/LocalStorageManager";
 import { computed, onMounted, watch } from "vue";

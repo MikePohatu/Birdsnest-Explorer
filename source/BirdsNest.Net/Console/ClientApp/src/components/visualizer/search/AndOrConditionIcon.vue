@@ -95,12 +95,6 @@ const store = useStore();
 const props = defineProps({condition: { type: Object, required: true }});
 const condition = ref(props.condition as AndOrCondition);
 
-//console.log({source: "AndOrConditionIcon", propsCondition: props.condition, condition: condition.value});
-
-const name = computed((): string => {
-	return condition.value.id;
-});
-
 const conditions = computed((): Condition[] => {
 	return condition.value.conditions;
 });

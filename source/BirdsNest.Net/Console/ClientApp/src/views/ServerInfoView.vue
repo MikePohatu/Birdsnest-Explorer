@@ -249,7 +249,7 @@ td {
 <script setup lang="ts">
 import { routeDefs } from "@/router";
 import { useStore } from "@/store";
-import { computed, defineComponent, onMounted, onBeforeUnmount, watch } from "vue";
+import { computed, onMounted, onBeforeUnmount } from "vue";
 import { api } from "@/assets/ts/webcrap/apicrap";
 import LoadingLogo from "@/components/LoadingLogo.vue";
 import PluginManager from "@/assets/ts/dataMap/PluginManager";

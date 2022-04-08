@@ -155,7 +155,7 @@ span {
 
 
 <script setup lang="ts">
-import { computed, defineComponent, watch } from "vue";
+import { computed } from "vue";
 import { useStore } from "@/store";
 import VisualizerPortalBlock from "@/components/portal/VisualizerPortalBlock.vue";
 import ReportsPortalBlock from "@/components/portal/ReportsPortalBlock.vue";

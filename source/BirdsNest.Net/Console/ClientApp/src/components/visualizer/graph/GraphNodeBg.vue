@@ -56,10 +56,6 @@ import { computed, onMounted, ref } from "vue";
 		return node.pinned;
 	});
 
-	const size = computed(():  number => {
-		return node.currentSize;
-	});
-
 	const radius = computed((): number => {
 		return node.currentSize / 2;
 	});

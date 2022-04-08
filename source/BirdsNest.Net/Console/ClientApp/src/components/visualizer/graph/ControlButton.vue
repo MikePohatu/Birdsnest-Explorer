@@ -17,14 +17,13 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 -->
 <template>
     <div class="control-button">
-        <span class="cell has-tip clickable" v-bind:class="{ 'highlighted-button': ishighlighted, 'button-active': isactive }" :title="title">
-            <i :class="icon"></i>
+        <span class="cell has-tip clickable" v-bind:class="{ 'highlighted-button': props.ishighlighted, 'button-active': props.isactive }" :title="props.title">
+            <i :class="props.icon"></i>
         </span>
     </div>
 </template>
 
 <script setup lang="ts">
-
     const props = defineProps({
         title: String,
         icon: String,
