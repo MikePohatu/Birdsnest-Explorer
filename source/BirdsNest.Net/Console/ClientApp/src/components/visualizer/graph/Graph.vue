@@ -1103,7 +1103,7 @@ import { useRouter } from "vue-router";
 					edgeids.push(edge.dbId);
 				});
 
-				graphData.removeIds(ids, edgeids);
+				graphData.removeIds(ids, edgeids).commitAll();
 
 				updateNodeSizes();
 			});

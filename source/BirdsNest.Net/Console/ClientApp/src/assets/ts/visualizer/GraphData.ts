@@ -14,6 +14,11 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+// Main data store for the graph. Remember to commit changes from calling methods.
+// Commit should not be directly called from GraphData in case multiple changes 
+// are queued
+
 import DatumStore from "./DatumStore";
 import { ApiNode } from '@/assets/ts/dataMap/ApiNode';
 import Spiral from "./Spiral";
@@ -253,7 +258,7 @@ class GraphData {
         return this.selectedItems.IDs;
     }
 
-    removeIds(nodeIds: string[], edgeIds: string[]): void {
+    removeIds(nodeIds: string[], edgeIds: string[]): GraphData {
         nodeIds.forEach(id => {
             this.removeNodeId(id);
         });
@@ -263,6 +268,7 @@ class GraphData {
         });
         this.cleanupLabelStates();
         this.updatePerfMode();
+        return this;
     }
 
     private removeNodeId(id: string) {
@@ -280,8 +286,6 @@ class GraphData {
             this.removeEdge(edge);
         }
     }
-
-    //interface DataParams { nodes: SimNode[], edges: SimLink<SimNode>[], }
 
     removeData(nodes: SimNode[], edges: SimLink<SimNode>[] ): void {
         nodes.forEach(node => {
@@ -332,7 +336,6 @@ class GraphData {
         this.graphNodes.Remove(node);
         this.detailsItems.Remove(node);
         this.selectedItems.Remove(node);
-        this.commitNodes();
         return this;
     }
 
@@ -341,7 +344,6 @@ class GraphData {
         this.treeEdges.Remove(edge);
         this.connectEdges.Remove(edge);
         this.graphEdges.Remove(edge);
-        this.commitEdges();
         return this;
     }
 
