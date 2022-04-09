@@ -28,16 +28,16 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 					<div class="cell small-1" :title="$t('visualizer.details.show_hide_node')">
 						<a v-on:click="onEyeClicked()">
 							<span v-show="node.enabled">
-								<i class="cell far fa-eye small-2"></i>
+								<i class="cell fas fa-eye small-2"></i>
 							</span>
 							<span v-show="!node.enabled">
-								<i class="cell far fa-eye-slash small-2"></i>
+								<i class="cell fas fa-eye-slash small-2"></i>
 							</span>
 						</a>
 					</div>
 					<div class="cell small-1" :title="$t('visualizer.details.add_related', relatedNodeCount)">
 						<a v-on:click="onExpandClicked()">
-							<i class="cell fas fa-expand-arrows-alt small-2"></i>
+							<i class="cell fas fa-maximize small-2"></i>
 						</a>
 					</div>
 					<div class="cell small-1" :title="$t('word_Refresh')">
@@ -406,6 +406,7 @@ function initDetails(): void {
 //Menu/list expansion code
 function getNodeSublistByLabel(list: VForLabelledNodeList, label: string): ApiNodeSimple[] {
 	if (Object.prototype.hasOwnProperty.call(list.labelledNodes, label) == false) {
+		// eslint-disable-next-line
 		console.error(label + " not found in list " + list.name);
 		return [];
 	}
@@ -426,6 +427,7 @@ function isExpanded(list: VForLabelledNodeList, label: string): boolean {
 	const expLabel = getExpandName(list, label);
 
 	if (Object.prototype.hasOwnProperty.call(labelExpands.value, expLabel) == false) {
+		// eslint-disable-next-line
 		console.error(expLabel + " not found in labelExpands list ");
 		return false;
 	} else if (list.labelledNodes[label].length < 10) {

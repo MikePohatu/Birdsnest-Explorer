@@ -83,6 +83,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 			if (custom.value !== null) {
 				document.head.removeChild(custom.value);
 			} else {
+				// eslint-disable-next-line
 				console.error("custom.css definition missing");
 			}
 			custom.value = style;

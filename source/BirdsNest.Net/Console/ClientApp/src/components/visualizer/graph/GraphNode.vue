@@ -70,7 +70,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 <script setup lang="ts">
 import { Dictionary } from "lodash";
 import { SimNode } from "@/assets/ts/visualizer/SimNode";
-import { d3 } from "@/assets/ts/visualizer/d3";
+import * as d3 from 'd3';
 import { bus, events } from "@/bus";
 import webcrap from "@/assets/ts/webcrap/webcrap";
 import { computed, onMounted, ref, reactive } from "vue";

@@ -36,7 +36,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 </template>
 
 <script setup lang="ts">
-import { d3 } from "@/assets/ts/visualizer/d3";
+import * as d3 from "d3";
 import { SimNode } from "@/assets/ts/visualizer/SimNode";
 import { computed, onMounted, ref } from "vue";
 

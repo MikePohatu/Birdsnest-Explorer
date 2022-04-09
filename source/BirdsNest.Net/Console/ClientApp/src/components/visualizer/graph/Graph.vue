@@ -187,7 +187,8 @@ import { routeDefs } from "@/router/index";
 import { graphData } from "@/assets/ts/visualizer/GraphData";
 
 import { VisualizerStorePaths } from "@/store/modules/VisualizerStore";
-import { d3 } from "@/assets/ts/visualizer/d3";
+
+import * as d3 from 'd3';
 
 import ViewControls from "./ViewControls.vue";
 import NodeDetailCard from "./NodeDetailCard.vue";
@@ -448,11 +449,11 @@ import { useRouter } from "vue-router";
 		nodesLayer = d3.select<SVGGraphicsElement, null>("#nodesLayer");
 
 		store.dispatch(VisualizerStorePaths.actions.INIT);
-		zoomer = d3
-			.zoom()
+		zoomer = d3.zoom()
 			.scaleExtent([0.05, 5])
-			.on("zoom", () => {
-				zoomLayer.attr("transform", d3.event.transform);
+			.on("zoom", (e) => {
+				// eslint-disable-next-line
+				zoomLayer.attr("transform", (e as  any).transform);
 			});
 		resetDrawingEvents();
 		centerView();
@@ -552,11 +553,10 @@ import { useRouter } from "vue-router";
 			successCallback: (data: ResultSet) => {
 				graphData.addResultSet(data);
 				nodesLayer.selectAll(".nodes").call(
-					d3
-						.drag()
-						.on("start", onNodeDragStart)
-						.on("drag", onNodeDragged)
-						.on("end", onNodeDragFinished)
+					d3.drag()
+					.on("start", onNodeDragStart)
+					.on("drag", onNodeDragged)
+					.on("end", onNodeDragFinished)
 				);
 				api.post(loopsrequest);
 			},
@@ -579,11 +579,11 @@ import { useRouter } from "vue-router";
 	}
 
 	//#region node dragged functions
-	function onNodeDragged(d) {
-		if (d3.event.dx === 0 && 0 === d3.event.dy) {
+	function onNodeDragged(e, d) {
+		if (e.dx === 0 && 0 === e.dy) {
 			return;
 		}
-		d3.event.sourceEvent.stopPropagation();
+		e.sourceEvent.stopPropagation();
 
 		d.dragged = true;
 		let nodes;
@@ -591,8 +591,8 @@ import { useRouter } from "vue-router";
 		//if the node is selected the move it and all other selected nodes
 		if (d.selected) {
 			nodes = nodesLayer.selectAll(".selected").each((seld: SimNode) => {
-				seld.x += d3.event.dx;
-				seld.y += d3.event.dy;
+				seld.x += e.dx;
+				seld.y += e.dy;
 				seld.startx = seld.x;
 				seld.starty = seld.y;
 				seld.currentX = seld.x;
@@ -601,8 +601,8 @@ import { useRouter } from "vue-router";
 			});
 		} else {
 			nodes = nodesLayer.select("#node_" + d.dbId);
-			d.x += d3.event.dx;
-			d.y += d3.event.dy;
+			d.x += e.dx;
+			d.y += e.dy;
 			d.startx = d.x;
 			d.starty = d.y;
 			d.currentX = d.x;
@@ -617,9 +617,9 @@ import { useRouter } from "vue-router";
 		simController.StopSimulations();
 	}
 
-	function onNodeDragFinished(d) {
+	function onNodeDragFinished(e, d) {
 		//console.log("onNodeDragFinished");
-		d3.event.sourceEvent.stopPropagation();
+		e.sourceEvent.stopPropagation();
 		if (store.state.visualizer.playMode === true && d.dragged === true) {
 			simController.RestartSimulation();
 		}
@@ -658,13 +658,12 @@ import { useRouter } from "vue-router";
 			.attr("height", Math.abs(newCoords[1] - oriCoords[1]));
 	}
 
-	function onDrawAreaBoxClick() {
-		d3.event.stopPropagation();
+	function onDrawAreaBoxClick(e) {
+		e.stopPropagation();
 	}
 
-	function onSelectorMouseDown(d, i, n) {
-		//console.log("onSelectMouseDown");
-		d3.event.stopPropagation();
+	function onSelectorMouseDown(e) {
+		e.stopPropagation();
 		if (areaBox !== undefined) {
 			areaBox.remove();
 		}
@@ -674,19 +673,21 @@ import { useRouter } from "vue-router";
 			.attr("id", "areaBox")
 			.attr("class", "cropBox");
 
-		const oriMouseX = d3.mouse(n[i])[0];
-		const oriMouseY = d3.mouse(n[i])[1];
-
-		const mousemove = (d, i, n) => {
-			drawAreaBox(areaBox, [oriMouseX, oriMouseY], d3.mouse(n[i]));
+		const drawingSvgY = (drawingSvg.node() as Element).getBoundingClientRect().top;
+		const drawingSvgX = (drawingSvg.node() as Element).getBoundingClientRect().left;
+		const oriMouseX = e.pageX; 
+		const oriMouseY = e.pageY;
+		
+		const mousemove = (ev) => {
+			drawAreaBox(areaBox, [oriMouseX - drawingSvgX, oriMouseY - drawingSvgY], [ev.pageX - drawingSvgX, ev.pageY - drawingSvgY]);
 		};
-		const mouseup = (d, i, n) => {
+		const mouseup = (ev) => {
 			//console.log("onSelectMouseDown mouseup");
-			const newMouseX = d3.mouse(n[i])[0];
-			const newMouseY = d3.mouse(n[i])[1];
+			const newMouseX = ev.pageX - drawingSvgX;
+			const newMouseY = ev.pageY - drawingSvgY;
 
 			if (newMouseX !== oriMouseX && newMouseY !== oriMouseY) {
-				selectMouseUpFunction();
+				selectMouseUpFunction(e);
 			}
 
 			if (areaBox !== undefined) {
@@ -711,7 +712,7 @@ import { useRouter } from "vue-router";
 
 	//These are the functions to run after the selector has finished selecting. selectMouseUpFunction is called
 	//from the mouseup function. Set this function, then call startSelector
-	let selectMouseUpFunction: () => void;
+	let selectMouseUpFunction: (e) => void;
 
 	function toggleNodeSelectMode() {
 		if (store.state.visualizer.selectModeActive) {
@@ -721,7 +722,7 @@ import { useRouter } from "vue-router";
 			store.commit(VisualizerStorePaths.mutations.Update.SELECT_ACTIVE, true);
 			store.commit(VisualizerStorePaths.mutations.Update.CROP_ACTIVE, false);
 
-			selectMouseUpFunction = () => {
+			selectMouseUpFunction = (e) => {
 				const areaBoxEl = areaBox.node().getBoundingClientRect();
 				d3.selectAll(".nodes.enabled").each((d: SimNode) => {
 					const elem = drawingPane
@@ -739,7 +740,7 @@ import { useRouter } from "vue-router";
 						updateNodeSelection(d, true, false);
 					} 
 					else {
-						if (d3.event.ctrlKey === false) {
+						if (e.ctrlKey === false) {
 							updateNodeSelection(d, false, false);
 						}
 					}
@@ -785,8 +786,8 @@ import { useRouter } from "vue-router";
 	}
 	//#endregion
 
-	function onPageClicked() {
-		if (d3.event.defaultPrevented) {
+	function onPageClicked(e) {
+		if (e.defaultPrevented) {
 			return;
 		} // dragged
 		graphData.clearSelectedItems();

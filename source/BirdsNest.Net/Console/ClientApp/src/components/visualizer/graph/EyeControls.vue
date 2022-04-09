@@ -36,10 +36,10 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 						<span class="eye-icon">
 							<a v-on:click="onNodeLabelEyeClicked(name as string)">
 								<span v-show="value">
-									<i class="far fa-eye"></i>
+									<i class="fas fa-eye"></i>
 								</span>
 								<span v-show="!value">
-									<i class="far fa-eye-slash"></i>
+									<i class="fas fa-eye-slash"></i>
 								</span>
 							</a>
 						</span>
@@ -65,10 +65,10 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 						<span class="eye-icon">
 							<a v-on:click="onEdgeLabelEyeClicked(name as string)">
 								<span v-show="value">
-									<i class="far fa-eye"></i>
+									<i class="fas fa-eye"></i>
 								</span>
 								<span v-show="!value">
-									<i class="far fa-eye-slash"></i>
+									<i class="fas fa-eye-slash"></i>
 								</span>
 							</a>
 						</span>

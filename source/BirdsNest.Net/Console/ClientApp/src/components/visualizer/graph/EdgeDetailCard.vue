@@ -26,8 +26,8 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 				</div>
 				<div class="cell small-1" :title="$t('visualizer.details.show_hide_relationship')">
 					<a v-on:click="onEyeClicked()">
-						<span v-show="edge.enabled"><i class="cell far fa-eye small-2"></i></span>
-						<span v-show="!edge.enabled"><i class="cell far fa-eye-slash small-2"></i></span>
+						<span v-show="edge.enabled"><i class="cell fas fa-eye small-2"></i></span>
+						<span v-show="!edge.enabled"><i class="cell fas fa-eye-slash small-2"></i></span>
 					</a>
 				</div>
 			</div>

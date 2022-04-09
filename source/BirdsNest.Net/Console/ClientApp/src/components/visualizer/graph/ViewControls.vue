@@ -49,7 +49,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 					v-on:click.native="bus.emit(controlEvents.Invert)"
 				/>
 				<ControlButton
-					icon="far fa-eye"
+					icon="fas fa-eye"
 					:title="$t('visualizer.menu.hide_show_items')"
 					data-toggle="eyeLabelListWrapper"
 				/>
