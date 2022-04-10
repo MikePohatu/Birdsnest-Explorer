@@ -120,6 +120,7 @@ namespace ADScanner
 
             //process users
             NeoWriter.WriteIDataCollector(new UsersCollector(context), driver, true, true);
+            NeoWriter.WriteIDataCollector(new ManagerCollector(), driver, true, true);
 
             //load the computers
             NeoWriter.WriteIDataCollector(new ComputersCollector(context), driver, true, true);

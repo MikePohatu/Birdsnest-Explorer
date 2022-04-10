@@ -64,6 +64,7 @@ namespace common
 
         //ADScanner edges
         public static string MemberOf { get { return "AD_MEMBER_OF"; } }
+        public static string Manages { get { return "AD_MANAGES"; } }
 
         //Azure nodes
         public static string AadUser { get { return "AAD_User"; } }

@@ -47,6 +47,7 @@ namespace ADScanner.ActiveDirectory
                     " SET n.samaccountname = u.samaccountname" +
                     " SET n.primarygroupid = u.primarygroupid" +
                     " SET n.displayname = u.displayname" +
+                    " SET n.manager = u.manager" +
                     " SET n.enabled = u.enabled" +
                     " SET n.layout = 'mesh'" +
                     " SET n.userprincipalname = u.userprincipalname" +
@@ -92,6 +93,7 @@ namespace ADScanner.ActiveDirectory
                         searcher.PropertiesToLoad.Add("description");
                         searcher.PropertiesToLoad.Add("userPrincipalName");
                         searcher.PropertiesToLoad.Add("info");
+                        searcher.PropertiesToLoad.Add("manager");
 
                         searcher.PageSize = 1000;
                         SearchResultCollection results = searcher.FindAll();
@@ -118,16 +120,15 @@ namespace ADScanner.ActiveDirectory
                                 displayname = ADSearchResultConverter.GetSinglestringValue(result, "displayname"),
                                 userprincipalname = ADSearchResultConverter.GetSinglestringValue(result, "userPrincipalName"),
                                 enabled,
-                                primarygroupid = ADSearchResultConverter.GetSinglestringValue(result, "primaryGroupID")
-                        });
+                                primarygroupid = ADSearchResultConverter.GetSinglestringValue(result, "primaryGroupID"),
+                                manager = ADSearchResultConverter.GetSinglestringValue(result, "manager")
+                            });
                         }
                     }
                     else
                     {
                         Program.ExitError("Error retrieving users from AD", ErrorCodes.UsersCollectorSearcherNull);
                     }
-
-                    
                 }
                 catch (Exception e)
                 {

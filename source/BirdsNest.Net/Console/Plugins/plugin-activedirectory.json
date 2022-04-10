@@ -58,6 +58,14 @@
       },
       "enabled": true,
       "subTypes": [ "foreignmember" ]
+    },
+    "AD_MANAGES": {
+      "displayName": "AD - AD_MANAGES",
+      "properties": {
+        "domainid": {},
+        "lastscan": {}
+      },
+      "enabled": false
     }
   },
   "nodeDataTypes": {
