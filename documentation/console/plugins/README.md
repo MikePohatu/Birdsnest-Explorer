@@ -1,22 +1,22 @@
 # Birdsnest Explorer Console Plugins
 
-* [Birdsnest Explorer Console Plugins](#birdsnest-explorer-console-plugins)
-  * [Overview](#overview)
-  * [Files](#files)
-  * [High Level Schema](#high-level-schema)
-  * [Data Types](#data-types)
-    * [Sub-Types](#sub-types)
-    * [Icons](#icons)
-    * [Properties](#properties)
-    * [Data Type Schema Definition](#data-type-schema-definition)
-    * [Example Data Type](#example-data-type)
-    * [Styling](#styling)
-  * [Reports](#reports)
-    * [Query](#query)
-      * [Returned data](#returned-data)
-    * [Property Filters](#property-filters)
-    * [Report Schema](#report-schema)
-    * [Example Report](#example-report)
+* [Overview](#overview)
+* [Files](#files)
+* [High Level Schema](#high-level-schema)
+* [Data Types](#data-types)
+  * [Sub-Types](#sub-types)
+  * [Icons](#icons)
+  * [Enabled default state](#enabled-default-state)
+  * [Properties](#properties)
+  * [Data Type Schema Definition](#data-type-schema-definition)
+  * [Example Data Type](#example-data-type)
+  * [Styling](#styling)
+* [Reports](#reports)
+  * [Query](#query)
+    * [Returned data](#returned-data)
+  * [Property Filters](#property-filters)
+  * [Report Schema](#report-schema)
+  * [Example Report](#example-report)
 
 ## Overview
 
@@ -110,6 +110,13 @@ The icons used on nodes within the Visualizer are provided by FontAwesome. Each 
 
 FontAwesome icons are available from https://fontawesome.com/icons?d=gallery&m=free.
 
+### Enabled default state
+If you wish a node or an edge for to display disabled (greyed out) by default in Visualizer, set the following attribute:
+
+```json
+enabled:false
+```
+
 ### Properties
 
 Each property for the data type must be defined in the **properties** object. Each property has two options that may be defined:
@@ -134,7 +141,8 @@ Fields denoted with a $ are items to be configured.
         },
         "default": "$default_property_name_for_search",
         "subTypes": ["$sub-type-property1", "$sub-type-property2"],
-        "icon": "$font_awesome_icon_unicode"
+        "icon": "$font_awesome_icon_unicode",
+        "enabled": true
     }
 }
 ```
@@ -170,6 +178,7 @@ Fields denoted with a $ are items to be configured.
                 }
             },
             "default": "samaccountname",
+            "enabled": true,
             "subTypes": ["grouptype"],
             "icon": "f500"
         }

@@ -26,6 +26,7 @@ namespace Console.Plugins
 {
     public class DataType
     {
+        public Boolean Enabled { get; set; } = true;
         private List<string> _propertynames;
         public List<string> PropertyNames 
         { 

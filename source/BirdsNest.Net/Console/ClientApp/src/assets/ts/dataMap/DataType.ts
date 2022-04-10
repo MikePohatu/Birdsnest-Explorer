@@ -25,4 +25,5 @@ export interface DataType {
         displayName: string;
         description: string;
         icon: string;
+        enabled: boolean;
 }

@@ -52,7 +52,6 @@ class GraphData {
     private addNode(node: ApiNode): SimNode {
         if (this.graphNodes.KeyExists(node.dbId) === false) {
             //console.log("no existy");
-
             const radius = this.defaultNodeSize / 2;
             const cx = radius;
             const cy = radius;
@@ -66,6 +65,7 @@ class GraphData {
                 properties: node.properties,
                 scope: node.scope,
                 labels: node.labels,
+                enabled: false,
                 x: 0,
                 currentX: 0,
                 currentY: 0,
@@ -85,7 +85,6 @@ class GraphData {
                 selected: false,
                 relatedDetails: null,
                 scale: 1,
-                enabled: true,
             }
 
             if (node.properties.layout === "tree") {
@@ -95,13 +94,26 @@ class GraphData {
             }
 
             //update label states
-            simnode.labels.forEach((label) => {
+            const pluginmanager = store.state.pluginManager;
+
+            simnode.labels.every((label) => {
                 if (this.graphNodeLabelStates[label] === undefined) {
-                    //this.graphNodeLabelStates[label] = true;
-                    this.graphNodeLabelStates[label] = true;  //previously used set....
-                } else if (this.graphEdgeLabelStates[label] === false) {
-                    simnode.enabled = false;
+                    const dt = pluginmanager.nodeDataTypes[label];
+                    if (dt) {
+                        this.graphNodeLabelStates[label] = dt.enabled;  
+                    } else {
+                        this.graphNodeLabelStates[label] = true; //if nothing is defined for the type, assume enabled=true
+                    }                    
+                    simnode.enabled = this.graphNodeLabelStates[label];
+                } else if (this.graphNodeLabelStates[label] === true) {
+                    simnode.enabled = true;
                 }
+
+                if (simnode.enabled === true) {
+                    //return false to exit the loop. if any label is enabled=true simnode is enabled
+                    return false;
+                } 
+                return true;
             });
 
             this.graphNodes.Add(simnode);
@@ -136,10 +148,10 @@ class GraphData {
         if (this.graphEdges.KeyExists(edge.dbId) === false) {
             //d3 is going to replace the source and target properties with references to the nodes,
             //and vue reactivity is already set, so clone to a new SimLink
-
             const simlink: SimLink<SimNode> = {
                 itemType: 'edge',
                 dbId: edge.dbId,
+                enabled: false,
                 source: this.graphNodes.GetDatum(edge.source),
                 target: this.graphNodes.GetDatum(edge.target),
                 shift: false,
@@ -148,18 +160,22 @@ class GraphData {
                 k: 0,
                 tark: 0,
                 srck: 0,
-                enabled: true,
                 selected: false,
                 isLoop: false,
             }
 
-
             if (this.graphEdgeLabelStates[edge.label] === undefined) {
                 //this.graphEdgeLabelStates[edge.label] = true;
-                this.graphEdgeLabelStates[edge.label] = true; //previously used vue.set
-            } else {
-                simlink.enabled = this.graphEdgeLabelStates[edge.label];
+                const dt = store.state.pluginManager.edgeDataTypes[edge.label];
+                if (dt)
+                {
+                    this.graphEdgeLabelStates[edge.label] = dt.enabled;
+                } else {
+                    this.graphEdgeLabelStates[edge.label] = true; //if nothing is defined for the type, assume enabled=true
+                }
             }
+            simlink.enabled = this.graphEdgeLabelStates[edge.label];
+
             this.graphEdges.Add(simlink);
             const src = simlink.source;
             const tar = simlink.target;
