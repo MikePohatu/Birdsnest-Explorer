@@ -16,7 +16,7 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 import { Module } from "vuex";
 import { api, Request } from "@/assets/ts/webcrap/apicrap";
-import { Search, SearchItem, SearchEdge, SearchNode, Condition, moveCondition, ConditionType, AndOrCondition, ValueCondition, UpdateCondition, DeleteCondition, importNode } from "@/assets/ts/visualizer/Search";
+import { Search, SearchItem, SearchEdge, SearchNode, Condition, moveCondition, ConditionType, AndOrCondition, ValueCondition, UpdateCondition, DeleteCondition, importNode, importEdge } from "@/assets/ts/visualizer/Search";
 import webcrap from "@/assets/ts/webcrap/webcrap";
 import { RootState } from '@/store';
 import { ResultSet } from '@/assets/ts/dataMap/ResultSet';
@@ -195,8 +195,9 @@ export const SearchStore: Module<SearchState, RootState> = {
             if (state.editEdge === null) {
                 webcrap.array.pushItem<SearchEdge>(state.search.edges, value);
             } else {
-                value.id = state.editEdge.id;
-                webcrap.array.replaceItem<SearchEdge>(state.search.edges, state.editEdge, value);
+                //value.id = state.editEdge.id;
+                //webcrap.array.replaceItem<SearchEdge>(state.search.edges, state.editEdge, value);
+                importEdge(value, state.editEdge);
                 state.editEdge = null;
             }
         },

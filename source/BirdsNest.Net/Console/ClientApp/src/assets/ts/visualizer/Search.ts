@@ -80,6 +80,15 @@ export function importNode(sourceNode: SearchNode, destNode: SearchNode): void {
     destNode.labels = Array.from(sourceNode.labels);
 }
 
+export function importEdge(source: SearchEdge, dest: SearchEdge): void {
+    dest.name = source.name;
+    dest.label = source.label;
+    dest.max = source.max;
+    dest.min = source.min;
+    dest.label = source.label;
+    dest.direction = source.direction;
+}
+
 export class SearchEdge implements SearchItem {
     type = SearchItemType.SearchEdge;
     name = "";
