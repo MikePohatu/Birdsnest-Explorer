@@ -50,7 +50,6 @@ namespace ADScanner.ActiveDirectory
                     " SET n.operatingsystemversion = c.operatingsystemversion" +
                     " SET n.enabled = c.enabled" +
                     " SET n.type = '" + Types.Computer + "'" +
-                    " SET n.layout = 'mesh'" +
                     " SET n.lastscan = $ScanID" +
                     " RETURN n.name";
             }

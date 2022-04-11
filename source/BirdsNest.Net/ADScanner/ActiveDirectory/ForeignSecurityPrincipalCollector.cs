@@ -41,7 +41,6 @@ namespace ADScanner.ActiveDirectory
                 " SET n.name = prop.name" +
                 " SET n.lastscan=$ScanID" +
                 " SET n.scope = 1" +
-                " SET n.layout = 'mesh'" +
                 " SET n.dn = prop.dn" +
                 " SET n.type = '" + Types.ForeignSecurityPrincipal + "'" +
                 " RETURN n.name";

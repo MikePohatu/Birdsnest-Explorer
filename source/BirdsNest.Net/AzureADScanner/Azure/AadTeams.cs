@@ -42,7 +42,6 @@ namespace AzureADScanner.Azure
                 "SET n.isarchived = prop.IsArchived " +
                 "SET n.lastscan=$ScanID " +
                 "SET n.scannerid=$ScannerID " +
-                "SET n.layout='mesh' " +
                 "RETURN n.name";
             }
         }

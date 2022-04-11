@@ -22,5 +22,5 @@ export interface ApiEdge {
     target: string;
     shift: boolean;
     label: string;
-    properties: Dictionary<object>;
+    properties: Dictionary<number | string | boolean>;
 }

@@ -21,16 +21,21 @@ using System.Text;
 using Neo4j.Driver;
 using common;
 using Microsoft.UpdateServices.Administration;
+using System.Threading.Tasks;
 
 namespace WUScanner.Neo4j
 {
     public static class Writer
     {
-        public static int MergeUpdates(IEnumerable<object> updates, IDriver driver, string scanid)
+        public static async Task<int> MergeUpdates(IEnumerable<object> updates, IDriver driver, string scanid)
         {
-            Dictionary<string, object> scanprops = new Dictionary<string, object>();
-            scanprops.Add("scanid", scanid);
-            scanprops.Add("updates", updates);
+            NeoQueryData querydata = new NeoQueryData();
+            querydata.Properties = new List<object>();
+            querydata.Properties.Add(new
+            {
+                scanid = scanid,
+                updates = updates
+            });
 
             string query = "UNWIND $updates as update " +
                 "MERGE (n:" + Types.WUUpdate + " { id: update.ID }) " +
@@ -45,22 +50,22 @@ namespace WUScanner.Neo4j
                 "SET n.KB = update.KB " +
                 "SET n.Classification = update.Classification " +
                 "SET n.Products = update.Products " +
-                "SET n.layout = 'tree' " +
                 "SET n.lastscan = $scanid " +
                 "RETURN n ";
+            TransactionResult<List<string>> result = new TransactionResult<List<string>>(await NeoWriter.RunQueryAsync(query, querydata, driver));
 
-            using (ISession session = driver.Session())
-            {
-                IStatementResult result = session.WriteTransaction(tx => tx.Run(query, scanprops));
-                return result.Summary.Counters.NodesCreated;
-            }
+            return result.CreatedNodeCount;
         }
 
-        public static int MergeSupersedence(IEnumerable<object> mappings, IDriver driver, string scanid)
+        public static async Task<int> MergeSupersedence(IEnumerable<object> mappings, IDriver driver, string scanid)
         {
-            Dictionary<string, object> scanprops = new Dictionary<string, object>();
-            scanprops.Add("scanid", scanid);
-            scanprops.Add("mappings", mappings);
+            NeoQueryData querydata = new NeoQueryData();
+            querydata.Properties = new List<object>();
+            querydata.Properties.Add(new
+            {
+                scanid = scanid,
+                mappings = mappings
+            });
 
             //KeyValuePair<string, string> test;
 
@@ -70,13 +75,12 @@ namespace WUScanner.Neo4j
                 "WITH new, old, mapping " +
                 "MERGE p=(new)-[r:" + Types.Supersedes + "]->(old) " +
                 "SET r.lastscan = $scanid " +
+                "SET r.layout='mesh' " +
                 "RETURN p ";
 
-            using (ISession session = driver.Session())
-            {
-                IStatementResult result = session.WriteTransaction(tx => tx.Run(query, scanprops));
-                return result.Summary.Counters.RelationshipsCreated;
-            }
+            TransactionResult<List<string>> result = new TransactionResult<List<string>>(await NeoWriter.RunQueryAsync(query, querydata, driver));
+
+            return result.CreatedEdgeCount;
         }
     }
 }

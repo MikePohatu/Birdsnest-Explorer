@@ -38,6 +38,7 @@ namespace ADScanner.ActiveDirectory
                     "MERGE (n)-[r:" + Types.MemberOf + "]->(g) " +
                     "SET r.domainid = $ScannerID " +
                     "SET r.lastscan = $ScanID " +
+                    "SET r.layout='mesh' " +
                     "RETURN n.id,g.name";
             }
         }

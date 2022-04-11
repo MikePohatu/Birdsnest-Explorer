@@ -38,6 +38,7 @@ namespace CMScanner.CmConverter
                 "SET r.scannerid=$ScannerID " +
                 "SET r.deploymentid=dep.DeploymentID " +
                 "SET r.deploymentintent=dep.DeploymentIntent " +
+                "SET r.layout='mesh' " +
                 "RETURN r";
             }
         }

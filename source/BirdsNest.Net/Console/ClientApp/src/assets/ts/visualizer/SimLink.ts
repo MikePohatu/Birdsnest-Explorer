@@ -28,7 +28,7 @@ export interface SimLink<T> extends SimulationLinkDatum<T> {
     tark: number;
     srck: number;
     label: string;
-    properties: Dictionary<object>;
+    properties: Dictionary<number | string | boolean>;
     enabled: boolean;
     selected: boolean;
     isLoop: boolean;

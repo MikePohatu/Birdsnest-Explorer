@@ -38,7 +38,6 @@ namespace CMScanner.CmConverter
                 "MERGE (n:" + Types.CMTaskSequence + " {id:prop.ID}) " +
                 "SET n:" + Types.CMConfigurationItem + " " +
                 "SET n.name = prop.Name " +
-                "SET n.layout='mesh' " +
                 "SET n.lastscan=$ScanID " +
                 "SET n.scannerid=$ScannerID " +
                 "RETURN n.name";

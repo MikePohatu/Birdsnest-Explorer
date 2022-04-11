@@ -42,6 +42,7 @@ namespace CMScanner.CmConverter
                 "MERGE (source)-[r:" + Types.CMLimitingCollectionFor + "]->(dep) " +
                 "SET r.lastscan=$ScanID " +
                 "SET r.scannerid=$ScannerID " +
+                "SET r.layout='mesh' " +
 
                 //includes
                 "WITH prop " +
@@ -51,6 +52,7 @@ namespace CMScanner.CmConverter
                 "MERGE (dep)-[r:" + Types.CmIncludes + "]->(source) " +
                 "SET r.lastscan=$ScanID " +
                 "SET r.scannerid=$ScannerID " +
+                "SET r.layout='mesh' " +
 
                 //excludes
                 "WITH prop " +
@@ -60,6 +62,7 @@ namespace CMScanner.CmConverter
                 "MERGE (dep)-[r:" + Types.CmExcludes + "]->(source) " +
                 "SET r.lastscan=$ScanID " +
                 "SET r.scannerid=$ScannerID " +
+                "SET r.layout='mesh' " +
 
 
                 //unknowns
@@ -70,6 +73,7 @@ namespace CMScanner.CmConverter
                 "MERGE (dep)-[r:" + Types.CMUnknownCollectionRelationship + "]->(source) " +
                 "SET r.lastscan=$ScanID " +
                 "SET r.scannerid=$ScannerID " +
+                "SET r.layout='mesh' " +
                 "RETURN r";
             }
         }

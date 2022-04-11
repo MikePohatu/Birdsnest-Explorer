@@ -52,7 +52,6 @@ namespace AzureADScanner.Azure
                 "SET n.onpremisessid = prop.OnPremSid " +
                 "SET n.lastscan=$ScanID " +
                 "SET n.scannerid=$ScannerID " +
-                "SET n.layout='mesh' " +
                 "WITH n " +
                 "MATCH (adgroup:" + Types.Group + " {id: n.onpremisessid}) " +
                 "MERGE (n)-[:" + Types.AadSync + "]->(adgroup) " +

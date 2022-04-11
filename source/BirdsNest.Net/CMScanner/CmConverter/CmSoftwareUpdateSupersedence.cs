@@ -40,6 +40,7 @@ namespace CMScanner.CmConverter
                 "MERGE p=(to)-[r:" + Types.CMSuperSededBy + "]->(from) " +
                 "SET r.lastscan=$ScanID " +
                 "SET r.scannerid=$ScannerID " +
+                "SET r.layout='mesh' " +
                 "RETURN r";
             }
         }

@@ -41,13 +41,13 @@ namespace CMScanner.CmConverter
                 "SET n.packageid = prop.PackageID " +
                 "SET n.dependantid = prop.DependantID " +
                 "SET n.commandline = prop.CommandLine " +
-                "SET n.layout='mesh' " +
                 "SET n.lastscan=$ScanID " +
                 "SET n.scannerid=$ScannerID " +
                 "MERGE (parent:" + Types.CMPackage + " {id:prop.PackageID}) " +
                 "MERGE (parent)-[r:" + Types.CMHasProgram + "]->(n) " +
                 "SET r.lastscan=$ScanID " +
                 "SET r.scannerid=$ScannerID " +
+                "SET r.layout='mesh' " +
                 "RETURN n.name";
             }
         }

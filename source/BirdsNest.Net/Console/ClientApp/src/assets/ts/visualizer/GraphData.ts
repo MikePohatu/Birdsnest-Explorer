@@ -38,8 +38,6 @@ class GraphData {
     meshEdges = new DatumStore<SimLink<SimNode>>();
     treeNodes = new DatumStore<SimNode>();
     treeEdges = new DatumStore<SimLink<SimNode>>();
-    connectNodes = new DatumStore<SimNode>();
-    connectEdges = new DatumStore<SimLink<SimNode>>();
     graphNodes = new DatumStore<SimNode>();
     graphEdges = new DatumStore<SimLink<SimNode>>();
 
@@ -85,12 +83,6 @@ class GraphData {
                 selected: false,
                 relatedDetails: null,
                 scale: 1,
-            }
-
-            if (node.properties.layout === "tree") {
-                this.treeNodes.Add(simnode);
-            } else {
-                this.meshNodes.Add(simnode);
             }
 
             //update label states
@@ -182,14 +174,20 @@ class GraphData {
             //console.log(d);
             //console.log(src);
 
-            if (src.properties.layout === "tree" && tar.properties.layout === "tree") { this.treeEdges.Add(simlink); }
-            else if (src.properties.layout === "mesh" && tar.properties.layout === "mesh") { this.meshEdges.Add(simlink); }
-            else {
-                if (this.connectNodes.DatumExists(src) === false) { this.connectNodes.Add(src); }
-                if (this.connectNodes.DatumExists(tar) === false) { this.connectNodes.Add(tar); }
-                this.connectEdges.Add(simlink);
+            if (simlink.properties.layout as string === "tree") {
+                this.treeEdges.Add(simlink); 
+                this.treeNodes.Add(src);
+                this.treeNodes.Add(tar);
+                this.meshNodes.Remove(src);
+                this.meshNodes.Remove(tar);
             }
-
+            else { 
+                this.meshEdges.Add(simlink); 
+                this.treeNodes.Remove(src);
+                this.treeNodes.Remove(tar);
+                this.meshNodes.Add(src);
+                this.meshNodes.Add(tar);
+            }
             // newitemcount++;
         }
     }
@@ -222,14 +220,12 @@ class GraphData {
         this.graphNodes.Commit();
         this.treeNodes.Commit();
         this.meshNodes.Commit();
-        this.connectNodes.Commit();
     }
 
     commitEdges(): void {
         this.graphEdges.Commit();
         this.treeEdges.Commit();
         this.meshEdges.Commit();
-        this.connectEdges.Commit();
     }
 
     addSelection(item: SimNode | SimLink<SimNode>): DatumStore<SimNode | SimLink<SimNode>> {
@@ -348,7 +344,6 @@ class GraphData {
     private removeNode(node: SimNode): GraphData {
         this.meshNodes.Remove(node);
         this.treeNodes.Remove(node);
-        this.connectNodes.Remove(node);
         this.graphNodes.Remove(node);
         this.detailsItems.Remove(node);
         this.selectedItems.Remove(node);
@@ -358,7 +353,6 @@ class GraphData {
     private removeEdge(edge: SimLink<SimNode>): GraphData {
         this.meshEdges.Remove(edge);
         this.treeEdges.Remove(edge);
-        this.connectEdges.Remove(edge);
         this.graphEdges.Remove(edge);
         return this;
     }
@@ -368,8 +362,6 @@ class GraphData {
         this.meshEdges = new DatumStore<SimLink<SimNode>>();
         this.treeNodes = new DatumStore<SimNode>();
         this.treeEdges = new DatumStore<SimLink<SimNode>>();
-        this.connectNodes = new DatumStore<SimNode>();
-        this.connectEdges = new DatumStore<SimLink<SimNode>>();
         this.graphNodes = new DatumStore<SimNode>();
         this.graphEdges = new DatumStore<SimLink<SimNode>>();
 

@@ -459,7 +459,7 @@ import { useRouter } from "vue-router";
 		centerView();
 		window.addEventListener("resize", onResize);
 		initWatchers();
-		simController.onFinishSimulation = onLayoutFinished;
+		simController.onFinishCallback = onLayoutFinished;
 	});
 
 	function initWatchers(): void {

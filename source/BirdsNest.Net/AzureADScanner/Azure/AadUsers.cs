@@ -45,7 +45,6 @@ namespace AzureADScanner.Azure
                 "SET n.userprincipalname = prop.UPN " +
                 "SET n.lastscan=$ScanID " +
                 "SET n.scannerid=$ScannerID " +
-                "SET n.layout='mesh' " +
                 "RETURN n.name";
             }
         }

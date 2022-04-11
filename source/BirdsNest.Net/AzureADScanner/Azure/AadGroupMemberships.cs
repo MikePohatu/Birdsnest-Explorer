@@ -43,7 +43,8 @@ namespace AzureADScanner.Azure
                     "MATCH(m:" + Types.AadObject + " { id: prop.memberid}) " +
                     "MERGE p = (m)-[r:" +Types.AadMemberOf+"]->(g) " +
                     "SET r.lastscan = $ScanID " +
-                    "SET r.scannerid = $ScannerID " +
+                    "SET r.scannerid = $ScannerID " + 
+                    "SET r.layout='mesh' " +
                     "RETURN p";
             }
         }

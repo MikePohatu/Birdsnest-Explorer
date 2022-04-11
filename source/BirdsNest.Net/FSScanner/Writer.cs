@@ -79,7 +79,6 @@ namespace FSScanner
                 " folder.lastscan=$ScanID," +
                 " folder.fsid=prop.fsid," +
                 " folder.blocked=prop.blocked," +
-                " folder.layout='tree'" +
                 " RETURN folder";
 
             NeoQueryData querydata = new NeoQueryData();
@@ -123,6 +122,7 @@ namespace FSScanner
 
             builder.AppendLine(" SET r.lastscan = $ScanID");
             builder.AppendLine(" SET r.fsid = prop.fsid");
+            builder.AppendLine(" SET r.layout='mesh'");
             builder.AppendLine(" WITH folder");
             builder.AppendLine($" MATCH (:{Types.Folder})-[r]->(folder)");
             builder.AppendLine($" WHERE (type(r)='{Types.AppliesInhertitanceTo}' OR type(r)='{Types.BlockedInheritance}') AND r.lastscan <> $ScanID");
@@ -160,6 +160,7 @@ namespace FSScanner
             " SET r.accesstype=domainperm.AccessType" +
             " SET r.lastscan=$ScanID" +
             " SET r.fsid=prop.fsid" +
+            " SET r.layout='mesh' " +
 
             " WITH folderDom, prop" +
             " UNWIND prop.builtinperms as builtinperm" +
@@ -170,6 +171,7 @@ namespace FSScanner
             " SET r.accesstype=builtinperm.AccessType" +
             " SET r.lastscan=$ScanID" +
             " SET r.fsid=prop.fsid" +
+            " SET r.layout='mesh' " +
 
             " WITH folderDom, folderBuiltin, prop" +
             " MATCH ()-[rdom:" + Types.AppliesPermissionTo + "]->(folderDom)" +
@@ -205,10 +207,10 @@ namespace FSScanner
                 " MERGE (n:" + Types.Datastore + " {name:prop.Name})" +
                 " SET n.comment=prop.Comment" +
                 " SET n.host=prop.Host" +
-                " SET n.layout='tree'" +
                 " MERGE(host:" + Types.Device + " {name:prop.Host})" +
                 " MERGE (n)-[r:" + Types.ConnectedTo + "]->(host)" +
                 " SET r.lastscan=$ScanID" +
+                " SET r.layout='tree' " +
                 " RETURN n";
 
             NeoQueryData querydata = new NeoQueryData();
@@ -227,6 +229,7 @@ namespace FSScanner
                 " MERGE (root:" + Types.Folder + " {path:prop.rootpath})" +
                 " MERGE (datastore)-[r:" + Types.Hosts + "]->(root)" +
                 " SET r.lastscan=$ScanID" +
+                " SET r.layout='tree' " +
                 " RETURN *";
 
             NeoQueryData querydata = new NeoQueryData();

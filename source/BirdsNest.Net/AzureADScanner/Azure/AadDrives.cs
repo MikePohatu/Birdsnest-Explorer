@@ -47,10 +47,10 @@ namespace AzureADScanner.Azure
                     "SET drive.name = prop.Name " +
                     "SET drive.lastscan = $ScanID " +
                     "SET drive.scannerid = $ScannerID " +
-                    "SET drive.layout='mesh' " +
                     "MERGE p = (item)-[r:" + Types.AadHasDrive + "]->(drive) " +
                     "SET r.lastscan = $ScanID " +
                     "SET r.scannerid = $ScannerID " +
+                    "SET r.layout='mesh' " +
                     "RETURN p";
             }
         }

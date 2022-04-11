@@ -61,6 +61,7 @@ namespace ADScanner.ActiveDirectory
                     "SET r.primarygroup = true " +
                     "SET r.lastscan = $ScanID " +
                     "SET r.domainid = $ScannerID " +
+                    "SET r.layout='mesh' " +
                     "RETURN n.name,g.name ";
             }
         }

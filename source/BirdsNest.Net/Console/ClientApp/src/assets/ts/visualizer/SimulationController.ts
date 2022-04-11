@@ -26,46 +26,55 @@ import { useStore } from "@/store";
 
 export default class SimulationController {
     
-    onFinishSimulation: () => void;
+    onFinishCallback: () => void;
     private store = useStore();
-    private graphsimulation;
-    private connectsimulation;
     private meshsimulation;
     private treesimulation;
+    private graphsimulation;
+    private tempfix: SimNode[] = [];
 
     constructor() {
         this.store.commit(VisualizerStorePaths.mutations.Update.SIM_RUNNING, false);
 
-
         this.graphsimulation = d3.forceSimulation();
         this.graphsimulation.stop();
-        this.graphsimulation
+        this.graphsimulation   
             .force('collide', d3.forceCollide()
-                .strength(0.9)
+                .strength(0.6)
                 .radius(function (d: SimNode) { return d.size + 20; }))
-            .on('end', () => { this.onSimulationFinished(); })
-            .on('tick', () => { this.onGraphTick(); });
-
-        this.connectsimulation = d3.forceSimulation();
-        this.connectsimulation.stop();
-        this.connectsimulation
-            .force("link", d3.forceLink()
-                .id(function (d: SimLink<SimNode>) { return d.dbId; }));
-
-        this.meshsimulation = d3.forceSimulation();
-        this.meshsimulation.stop();
-        this.meshsimulation
-            .force("link", d3.forceLink()
-                .id(function (d: SimLink<SimNode>) { return d.dbId; }))
-            .force("manybody", d3.forceManyBody()
-                .strength(-50));
+            .on('tick', () => { 
+                this.onGraphTick(); 
+            })
+            .on('end', () => {
+                this.onSimulationFinished();
+            });
 
         this.treesimulation = d3.forceSimulation();
         this.treesimulation.stop();
         this.treesimulation
+            .force('collide', d3.forceCollide()
+                .strength(0.4)
+                .radius(function (d: SimNode) { return d.size + 20; }))
             .force("link", d3.forceLink()
                 .id(function (d: SimLink<SimNode>) { return d.dbId; })
-                .strength(1));
+                .strength(0.5))
+            .on('end', () => {
+                this.onTreeSimulationFinished();
+            })
+            .on('tick', () => { 
+                this.onTreeTick(); 
+            });
+
+        this.meshsimulation = d3.forceSimulation();
+        this.meshsimulation.stop();
+        this.meshsimulation           
+            .force('collide', d3.forceCollide()
+                .strength(0.4)
+                .radius(function (d: SimNode) { return d.size + 20; }))
+            .force("link", d3.forceLink()
+                .id(function (d: SimLink<SimNode>) { return d.dbId; }))
+            .force("manybody", d3.forceManyBody()
+                .strength(50));
     }
 
     onGraphTick() {
@@ -73,10 +82,12 @@ export default class SimulationController {
         const k = this.graphsimulation.alpha();
         //console.log(k);
         this.store.commit(VisualizerStorePaths.mutations.Update.SIM_PROGRESS, 100 - k * 100);
+    }
 
-
+    onTreeTick() {
         //check the tree nodes and shunt up or down to get into a tree layout. Exit the function if 
-        //node is fixed i.e. has a fy (fixed y) property (https://github.com/d3/d3-force)
+        //node is fixed i.e. has a fy (fixed y) property (https://github.com/d3/d3-force)   
+        const k = this.treesimulation.alpha();
         this.treesimulation.force("link").links().forEach((d: SimLink<SimNode>) => {
             const src = d.source as SimNode;
             const tar = d.target as SimNode;
@@ -92,20 +103,44 @@ export default class SimulationController {
                     tar.tark = k;
                 }
                 if ((src.srck !== k) && (Object.prototype.hasOwnProperty.call(src, "fy")===false)) {
-                    src.y -= k * 6;
+                    src.y -= k;
                     src.srck = k;
                 }
             }
         });
     }
 
+    onTreeSimulationFinished() {
+        this.treesimulation.force("link").links().forEach((d: SimLink<SimNode>) => {
+            const src = d.source as SimNode;
+            const tar = d.target as SimNode;
+
+            if (Object.prototype.hasOwnProperty.call(tar, "fy") === false) {
+                this.tempfix.push(tar);
+                tar.fy = tar.y;
+                tar.fx = tar.x;
+            }
+            if (Object.prototype.hasOwnProperty.call(src, "fy") === false) {
+                this.tempfix.push(src);
+                src.fy = src.y;
+                src.fx = src.x;
+            }
+        });
+        
+        this.meshsimulation.alpha(1).restart();
+    }
 
     onSimulationFinished() {
         //console.log("SimulationController.onSimulationFinished");
+        this.tempfix.forEach((node)=> {
+            delete node.fy;
+            delete node.fx;
+        });
+        this.tempfix = [];
         this.store.commit(VisualizerStorePaths.mutations.Update.SIM_RUNNING, false);
         this.store.commit(VisualizerStorePaths.mutations.Update.SIM_PROGRESS, 100);
 
-        this.onFinishSimulation(); //callback
+        this.onFinishCallback(); //callback
     }
 
     RefreshData() {
@@ -114,16 +149,13 @@ export default class SimulationController {
         this.SetNodes(
             graphData.graphNodes.Array,
             graphData.meshNodes.Array,
-            graphData.treeNodes.Array,
-            graphData.connectNodes.Array
+            graphData.treeNodes.Array
         );
         this.SetEdges(
             graphData.meshEdges.Array,
-            graphData.treeEdges.Array,
-            graphData.connectEdges.Array
+            graphData.treeEdges.Array
         );
     }
-
 
     RestartSimulation() {
         if (this.store.state.visualizer.simRunning === true) {
@@ -132,70 +164,55 @@ export default class SimulationController {
 
         this.store.commit(VisualizerStorePaths.mutations.Update.SIM_RUNNING, true);
 
-        this.graphsimulation.nodes().forEach((d: SimNode) => {
+        graphData.graphNodes.Array.forEach((d: SimNode) => {
             d.startx = d.x;
             d.starty = d.y;
         });
         
         //console.log("restarting simulation now");
-        this.graphsimulation.alpha(1).restart();
-        this.meshsimulation.alpha(1).restart();
         this.treesimulation.alpha(1).restart();
-        this.connectsimulation.alpha(1).restart();
+        this.graphsimulation.alpha(1).restart();
     }
 
     StopSimulations() {
         //console.trace("StopSimulations");
         if (this.store.state.visualizer.simRunning === true) {
             this.meshsimulation.stop();
+            this.treesimulation.stop();  
             this.graphsimulation.stop();
-            this.treesimulation.stop();
-            this.connectsimulation.stop();
 
             //reset the datum values to before they started. this should match because the
             //layout hasn't updated yet
-            this.graphsimulation.nodes().forEach((d: SimNode) => {
+            graphData.graphNodes.Array.forEach((d: SimNode) => {
                 //console.log("set x to startx: ");
                 d.x = d.startx;
                 d.y = d.starty;
             });
         }
-        
+        this.tempfix = [];
         this.store.commit(VisualizerStorePaths.mutations.Update.SIM_RUNNING, false);
     }
 
-    private SetNodes(graphs, meshes, trees, connects) {
+    private SetNodes(allnodes, meshes, trees) {
         //console.log("SimulationController.SetNodes");
         //console.log(graphs);
         
         this.meshsimulation.nodes(meshes);
         this.treesimulation.nodes(trees);
-        this.connectsimulation.nodes(connects);
-        this.graphsimulation.nodes(graphs);
+        this.graphsimulation.nodes(allnodes);
 
         let velocityDecay = 0.5;
         let alphaDecay = 0.1;
 
 
-        if (this.graphsimulation.nodes().length > 3000) {
+        if (graphData.graphNodes.Array.length > 3000) {
             velocityDecay = 0.2;
             alphaDecay = 0.5;
         }
-        else if (this.graphsimulation.nodes().length > 1000) {
+        else if (graphData.graphNodes.Array.length > 1000) {
             velocityDecay = 0.35;
             alphaDecay = 0.3;
         }
-
-        //console.log("velocityDecay: " + velocityDecay);
-        //console.log("alphaDecay: " + alphaDecay);
-
-        this.graphsimulation
-            .velocityDecay(velocityDecay)
-            .alphaDecay(alphaDecay);
-
-        this.connectsimulation
-            .velocityDecay(velocityDecay)
-            .alphaDecay(alphaDecay);
 
         this.meshsimulation
             .velocityDecay(velocityDecay)
@@ -206,15 +223,14 @@ export default class SimulationController {
             .alphaDecay(alphaDecay);
     }
 
-    private SetEdges(meshes, trees, connects) {
+    private SetEdges(meshes, trees) {
         //console.log("SimulationController.SetEdges");
         this.meshsimulation.force("link").links(meshes);
         this.treesimulation.force("link").links(trees);
-        this.connectsimulation.force("link").links(connects);
     }
 
     clear() {
-        this.SetNodes([],[],[],[]);
-        this.SetEdges([],[],[]);
+        this.SetNodes([],[],[]);
+        this.SetEdges([],[]);
     }
 }

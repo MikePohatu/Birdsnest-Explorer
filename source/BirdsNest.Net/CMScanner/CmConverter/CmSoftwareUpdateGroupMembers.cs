@@ -45,6 +45,7 @@ namespace CMScanner.CmConverter
                 "MERGE (u)-[r: " + Types.CMMemberOf + "]->(n) " +
                 "SET r.lastscan=$ScanID " +
                 "SET r.scannerid=$ScannerID " +
+                "SET r.layout='mesh' " +
                 "RETURN r";
             }
         }

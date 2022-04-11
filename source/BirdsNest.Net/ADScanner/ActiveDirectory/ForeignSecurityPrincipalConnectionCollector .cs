@@ -38,6 +38,7 @@ namespace ADScanner.ActiveDirectory
                 " SET r.foreignreference = n.id" + 
                 " SET r.lastscan = $ScanID" +
                 " SET r.refrence = id(ref)" +
+                " SET r.layout='mesh' " +
                 "  RETURN n,o";
             }
         }

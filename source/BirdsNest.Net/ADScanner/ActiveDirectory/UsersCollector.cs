@@ -49,7 +49,6 @@ namespace ADScanner.ActiveDirectory
                     " SET n.displayname = u.displayname" +
                     " SET n.manager = u.manager" +
                     " SET n.enabled = u.enabled" +
-                    " SET n.layout = 'mesh'" +
                     " SET n.userprincipalname = u.userprincipalname" +
                     " SET n.type = '" + Types.User + "'" +
                     " SET n.scope = 1" +

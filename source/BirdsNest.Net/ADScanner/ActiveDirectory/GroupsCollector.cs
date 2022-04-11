@@ -58,7 +58,6 @@ namespace ADScanner.ActiveDirectory
                 " SET n.grouptype = g.grouptype" +
                 " SET n.membercount = g.membercount" +
                 " SET n.type ='" + Types.Group +"'" +
-                " SET n.layout = 'mesh'" +
                 " SET n.lastscan = $ScanID" +
                 " RETURN n.name";
             }

@@ -40,7 +40,6 @@ namespace CMScanner.CmConverter
                 "SET n.name = prop.Name " +
                 "SET n.lastscan=$ScanID " +
                 "SET n.scannerid=$ScannerID " +
-                "SET n.layout='mesh' " +
                 "RETURN n.name";
             }
         }

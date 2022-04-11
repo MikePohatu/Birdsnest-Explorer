@@ -35,6 +35,7 @@ namespace ADScanner.ActiveDirectory
                     "MERGE (m)-[r:" + Types.Manages + "]->(n) " +
                     "SET r.domainid = $ScannerID " +
                     "SET r.lastscan = $ScanID " +
+                    "SET r.layout='tree' " +
                     "RETURN n.id,n.name";
             }
         }
