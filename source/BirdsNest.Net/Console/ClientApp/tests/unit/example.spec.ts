@@ -14,8 +14,8 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
-import { shallowMount } from "@vue/test-utils";
-import HelloWorld from "@/components/HelloWorld.vue";
+//import { shallowMount } from "@vue/test-utils";
+//import HelloWorld from "@/components/HelloWorld.vue";
 
 // describe("HelloWorld.vue", () => {
 //   it("renders props.msg when passed", () => {

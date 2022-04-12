@@ -390,4 +390,5 @@ venv.bak/
 /source/BirdsNest.Net/Console/ClientApp/dist/
 /source/BirdsNest.Net/Console/wwwroot/dynamic/plugins.css
 source/BirdsNest.Net/Console/wwwroot/static/documentation/
+source/BirdsNest.Net/Console/ClientApp/public/static/documentation/
 source/BirdsNest.Net/AzureADScanner/AssemblyInfo.cs

@@ -21,7 +21,38 @@ import path from 'path';
 
 
 // https://vitejs.dev/config/
-export default defineConfig({
+export default defineConfig(({ command, mode }) => ({
+  base: command === 'build' ? '/etc.clientlibs/<project>/clientlibs/' : '/',
+  build: {
+    brotliSize: false,
+    manifest: false,
+    minify: mode === 'development' ? false : 'terser',
+    outDir: 'dist',
+    sourcemap: command === 'serve' ? 'inline' : false,
+    rollupOptions: {
+      output: {
+        assetFileNames: 'resources/[ext]/[name][extname]',
+        chunkFileNames: 'resources/chunks/[name].[hash].js',
+        entryFileNames: 'resources/js/[name].js',
+      },
+    },
+  },
+  css: {
+    postcss: {
+      plugins: [
+        {
+          postcssPlugin: 'internal:charset-removal',
+          AtRule: {
+            charset: (atRule) => {
+              if (atRule.name === 'charset') {
+                atRule.remove();
+              }
+            }
+          }
+        }
+      ]
+    }
+  },
   plugins: [
     vue(),
     legacy({
@@ -49,12 +80,7 @@ export default defineConfig({
         changeOrigin: true,
         target: 'https://localhost:44341',
         secure: false
-      },
-      '/static': {
-        changeOrigin: true,
-        target: 'https://localhost:44341',
-        secure: false
       }
     }
   }
-})
+}));

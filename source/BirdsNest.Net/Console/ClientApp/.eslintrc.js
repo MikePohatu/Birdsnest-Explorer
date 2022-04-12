@@ -32,8 +32,8 @@ module.exports = {
     ecmaVersion: 2020
   },
   rules: {
-    "no-console": process.env.NODE_ENV === "production" ? "warn" : "off",
-    "no-debugger": process.env.NODE_ENV === "production" ? "warn" : "off",
+    "no-console": import.meta.env.PROD === true ? "warn" : "off",
+    "no-debugger": import.meta.env.PROD === true ? "warn" : "off",
     "consistent-this": [2, "me", "vm"],
     'vue/script-setup-uses-vars': 'error',
   },
