@@ -137,7 +137,7 @@ export function useStore () {
 }
 
 export const store = createStore({
-  strict: process.env.NODE_ENV !== 'production',
+  strict: import.meta.env.PROD !== true,
   modules: {
     visualizer: VisualizerStore
   },
