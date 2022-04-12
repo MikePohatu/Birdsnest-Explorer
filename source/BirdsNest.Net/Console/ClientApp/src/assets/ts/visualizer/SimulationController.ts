@@ -41,10 +41,7 @@ export default class SimulationController {
         this.graphsimulation   
             .force('collide', d3.forceCollide()
                 .strength(0.6)
-                .radius(function (d: SimNode) { return d.size + 20; }))
-            .on('tick', () => { 
-                this.onGraphTick(); 
-            })
+                .radius(function (d: SimNode) { return d.size + 30; }))
             .on('end', () => {
                 this.onSimulationFinished();
             });
@@ -62,6 +59,7 @@ export default class SimulationController {
                 this.onTreeSimulationFinished();
             })
             .on('tick', () => { 
+                this.onGraphTick(); 
                 this.onTreeTick(); 
             });
 
@@ -74,12 +72,18 @@ export default class SimulationController {
             .force("link", d3.forceLink()
                 .id(function (d: SimLink<SimNode>) { return d.dbId; }))
             .force("manybody", d3.forceManyBody()
-                .strength(50));
+                .strength(50))
+            .on('tick', () => { 
+                this.onGraphTick(); 
+            })
+            .on('end', () => {
+                this.onSimulationFinished();
+            });
     }
 
     onGraphTick() {
         //console.log("SimulationController.onGraphTick");       
-        const k = this.graphsimulation.alpha();
+        const k = (this.meshsimulation.alpha() + this.treesimulation.alpha() + this.graphsimulation.alpha()) / 3;
         //console.log(k);
         this.store.commit(VisualizerStorePaths.mutations.Update.SIM_PROGRESS, 100 - k * 100);
     }
@@ -127,11 +131,12 @@ export default class SimulationController {
             }
         });
         
-        this.meshsimulation.alpha(1).restart();
+        this.meshsimulation.restart();
     }
 
     onSimulationFinished() {
         //console.log("SimulationController.onSimulationFinished");
+        if (this.isRunning(this.meshsimulation) || this.isRunning(this.graphsimulation)) { return; } //wait for both to finish
         this.tempfix.forEach((node)=> {
             delete node.fy;
             delete node.fx;
@@ -141,6 +146,11 @@ export default class SimulationController {
         this.store.commit(VisualizerStorePaths.mutations.Update.SIM_PROGRESS, 100);
 
         this.onFinishCallback(); //callback
+    }
+
+    private isRunning(sim): boolean {
+        if (sim.alpha() < sim.alphaMin()) { return false; }
+        else { return true;}
     }
 
     RefreshData(): SimulationController {
@@ -172,6 +182,7 @@ export default class SimulationController {
         
         //console.log("restarting simulation now");
         //mesh simulation restarts when tree is finished
+        this.meshsimulation.alpha(1);
         this.treesimulation.alpha(1).restart();
         this.graphsimulation.alpha(1).restart();
     }
@@ -215,6 +226,10 @@ export default class SimulationController {
             velocityDecay = 0.35;
             alphaDecay = 0.3;
         }
+
+        this.graphsimulation
+            .velocityDecay(velocityDecay * 0.8)
+            .alphaDecay(alphaDecay / 2);
 
         this.meshsimulation
             .velocityDecay(velocityDecay)
