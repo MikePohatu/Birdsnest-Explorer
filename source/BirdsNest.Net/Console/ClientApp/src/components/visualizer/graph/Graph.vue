@@ -537,8 +537,7 @@ import { useRouter } from "vue-router";
 					if (exist !==null) { exist.shift = true; }
 				});
 				graphData.addResultSet(data).commitEdges();
-				simController.RefreshData();
-				simController.RestartSimulation();
+				simController.RefreshData().RestartSimulation();
 			},
 			errorCallback: () => {
 				// eslint-disable-next-line
@@ -551,7 +550,7 @@ import { useRouter } from "vue-router";
 			data: postData,
 			postJson: true,
 			successCallback: (data: ResultSet) => {
-				graphData.addResultSet(data);
+				graphData.addResultSet(data).commitEdges();
 				nodesLayer.selectAll(".nodes").call(
 					d3.drag()
 					.on("start", onNodeDragStart)

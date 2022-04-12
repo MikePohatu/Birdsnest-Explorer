@@ -143,7 +143,7 @@ export default class SimulationController {
         this.onFinishCallback(); //callback
     }
 
-    RefreshData() {
+    RefreshData(): SimulationController {
         this.StopSimulations();
 
         this.SetNodes(
@@ -155,6 +155,7 @@ export default class SimulationController {
             graphData.meshEdges.Array,
             graphData.treeEdges.Array
         );
+        return this;
     }
 
     RestartSimulation() {
@@ -170,6 +171,7 @@ export default class SimulationController {
         });
         
         //console.log("restarting simulation now");
+        //mesh simulation restarts when tree is finished
         this.treesimulation.alpha(1).restart();
         this.graphsimulation.alpha(1).restart();
     }
