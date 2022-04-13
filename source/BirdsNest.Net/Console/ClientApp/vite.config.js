@@ -14,15 +14,15 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
 import legacy from '@vitejs/plugin-legacy'
 import path from 'path';
-
+import { VitePWA } from 'vite-plugin-pwa';
 
 // https://vitejs.dev/config/
 export default defineConfig(({ command, mode }) => ({
-  base: command === 'build' ? '/etc.clientlibs/<project>/clientlibs/' : '/',
   build: {
     brotliSize: false,
     manifest: false,
@@ -58,6 +58,33 @@ export default defineConfig(({ command, mode }) => ({
     legacy({
       targets: ['ie >= 11'],
       additionalLegacyPolyfills: ['regenerator-runtime/runtime']
+    }),
+    VitePWA({
+      includeAssets: ['favicon.svg', 'favicon.ico', 'robots.txt', 'apple-touch-icon.png'],  
+      manifest: {
+        name: 'Birdsnest Explorer',
+        short_name: 'Birdsnest',
+        description: 'An environment mapping tool',
+        theme_color: '#ffffff',
+        icons: [
+          {
+            src: '/img/icons/favicon-192x192.png',
+            sizes: '192x192',
+            type: 'image/png',
+          },
+          {
+            src: '/img/icons/favicon-512x512.png',
+            sizes: '512x512',
+            type: 'image/png',
+          },
+          {
+            src: '/img/icons/favicon-512x512.png',
+            sizes: '512x512',
+            type: 'image/png',
+            purpose: 'any maskable',
+          }
+        ]
+      }
     })
   ],
   resolve: {

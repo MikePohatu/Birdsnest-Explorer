@@ -22,7 +22,6 @@ import "foundation-sites";
 import "motion-ui/dist/motion-ui.css";
 import "foundation-sites/dist/css/foundation.css";
 
-import "./registerServiceWorker";
 import i18n from "./i18n";
 import FlagIcon from "vue-flag-icon";
 import VueCookies from "vue3-cookies";
