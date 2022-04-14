@@ -97,7 +97,7 @@ export default class SimulationController {
             const tar = d.target as SimNode;
 
             //console.log(src + ':' + tar);
-            if (tar.y < src.y + src.size / 2) {
+            if (tar.y < src.y + src.size) {
                 if (Object.prototype.hasOwnProperty.call(tar, "fy")) { return; }
                 tar.y = src.y + src.size;
             }
