@@ -21,17 +21,19 @@ import { SimNode } from "./SimNode";
 import { graphData } from './GraphData';
 import { VisualizerStorePaths } from "@/store/modules/VisualizerStore";
 import { useStore } from "@/store";
+import Spiral from './Spiral';
 
 
 
 export default class SimulationController {
     
     onFinishCallback: () => void;
+    private spiral = new Spiral(40);
     private store = useStore();
     private meshsimulation;
     private treesimulation;
     private graphsimulation;
-    private tempfix: SimNode[] = [];
+    private tempfix: SimNode[] = []; //nodes temporarily fixed in place
 
     constructor() {
         this.store.commit(VisualizerStorePaths.mutations.Update.SIM_RUNNING, false);
@@ -40,7 +42,7 @@ export default class SimulationController {
         this.graphsimulation.stop();
         this.graphsimulation   
             .force('collide', d3.forceCollide()
-                .strength(0.6)
+                .strength(0.8)
                 .radius(function (d: SimNode) { return d.size + 30; }))
             .on('end', () => {
                 this.onSimulationFinished();
@@ -96,9 +98,22 @@ export default class SimulationController {
             const src = d.source as SimNode;
             const tar = d.target as SimNode;
 
+            //set src.fy it to fix it in place so it doesn't 'float up'
+            //release tar so it can 'float down'. in the end only the root should remain
+            //fixed
+            src.fy = src.y;
+            if (tar.pinned === false && Object.prototype.hasOwnProperty.call(tar, "fy"))
+            {
+                delete tar.fy;
+            }
+            
             //console.log(src + ':' + tar);
             if (tar.y < src.y + src.size) {
                 if (Object.prototype.hasOwnProperty.call(tar, "fy")) { return; }
+                this.spiral.Step();
+                //spiral the x when moving to level with src so it doesn't all end up in a line
+                //to one side of src
+                tar.x = src.x + this.spiral.x; 
                 tar.y = src.y + src.size;
             }
             else {
@@ -106,26 +121,23 @@ export default class SimulationController {
                     tar.y += k * 8;
                     tar.tark = k;
                 }
-                if ((src.srck !== k) && (Object.prototype.hasOwnProperty.call(src, "fy")===false)) {
-                    src.y -= k;
-                    src.srck = k;
-                }
             }
         });
     }
 
     onTreeSimulationFinished() {
         this.treesimulation.force("link").links().forEach((d: SimLink<SimNode>) => {
+            const src = d.source as SimNode;
+            const tar = d.target as SimNode;
+            this.spiral.Reset();
+
             if (d.enabled) {
-                const src = d.source as SimNode;
-                const tar = d.target as SimNode;
-    
-                if (Object.prototype.hasOwnProperty.call(tar, "fy") === false) {
+                if (tar.pinned === false) {
                     this.tempfix.push(tar);
                     tar.fy = tar.y;
                     tar.fx = tar.x;
                 }
-                if (Object.prototype.hasOwnProperty.call(src, "fy") === false) {
+                if (src.pinned === false) {
                     this.tempfix.push(src);
                     src.fy = src.y;
                     src.fx = src.x;
@@ -170,7 +182,7 @@ export default class SimulationController {
         return this;
     }
 
-    RestartSimulation() {
+    RestartSimulation(treeonly?: boolean) {
         if (this.store.state.visualizer.simRunning === true) {
             this.StopSimulations();
         }
