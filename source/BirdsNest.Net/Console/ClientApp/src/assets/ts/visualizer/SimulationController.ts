@@ -116,18 +116,20 @@ export default class SimulationController {
 
     onTreeSimulationFinished() {
         this.treesimulation.force("link").links().forEach((d: SimLink<SimNode>) => {
-            const src = d.source as SimNode;
-            const tar = d.target as SimNode;
-
-            if (Object.prototype.hasOwnProperty.call(tar, "fy") === false) {
-                this.tempfix.push(tar);
-                tar.fy = tar.y;
-                tar.fx = tar.x;
-            }
-            if (Object.prototype.hasOwnProperty.call(src, "fy") === false) {
-                this.tempfix.push(src);
-                src.fy = src.y;
-                src.fx = src.x;
+            if (d.enabled) {
+                const src = d.source as SimNode;
+                const tar = d.target as SimNode;
+    
+                if (Object.prototype.hasOwnProperty.call(tar, "fy") === false) {
+                    this.tempfix.push(tar);
+                    tar.fy = tar.y;
+                    tar.fx = tar.x;
+                }
+                if (Object.prototype.hasOwnProperty.call(src, "fy") === false) {
+                    this.tempfix.push(src);
+                    src.fy = src.y;
+                    src.fx = src.x;
+                }
             }
         });
         
