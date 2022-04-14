@@ -40,12 +40,26 @@ namespace ADScanner.ActiveDirectory
         {
             get
             {
-                return "MATCH (fsp:"+ Types.ForeignSecurityPrincipal + " {domainid: $ScannerID})" +
-                    " MATCH(o: "+Types.ADObject+ " {id: fsp.id}) -[r:" + Types.MemberOf + "]->(g:" + Types.Group + " { domainid: $ScannerID})" +
-                    " WHERE NOT(fsp)-[:" + Types.MemberOf + "]->(g)"+
-                    " WITH o, g"+
+                return "MATCH (fsp:" + Types.ForeignSecurityPrincipal + " {domainid: $ScannerID})" +
+                    " MATCH(o: " + Types.ADObject + " {id: fsp.id}) -[r:" + Types.MemberOf + "]->(g:" + Types.Group + " { domainid: $ScannerID})" +
+                    " WHERE NOT(fsp)-[:" + Types.MemberOf + "]->(g)" +
+                    " WITH o, g" +
                     " MATCH(o)-[rf:" + Types.MemberOf + "]-(g)" +
                     " DELETE rf";
+            }
+        }
+
+        /// <summary>
+        /// Cleanup AD manager relationships that have been removed from AD. Assumes use with NeoWriter and 
+        /// NeoQueryData as the parameters object
+        /// </summary>
+        public static string DeletedManagers
+        {
+            get
+            {
+                return "MATCH (n:" + Types.ADObject + ") -[r:" + Types.Manages + " {domainid:$ScannerID}]->(g:" + Types.ADObject + ") " +
+                "WHERE NOT EXISTS(r.lastscan) OR r.lastscan <> $ScanID " +
+                "DELETE r ";
             }
         }
 

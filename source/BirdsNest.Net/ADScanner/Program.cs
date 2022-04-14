@@ -153,6 +153,9 @@ namespace ADScanner
             Console.Write("Deleted foreign group memberships");
             NeoWriter.RunQuery(StandAloneQueries.DeletedForeignGroupMemberShips, nopropsdata, driver, true, true);
 
+            Console.Write("Deleted manager relationships");
+            NeoWriter.RunQuery(StandAloneQueries.DeletedManagers, nopropsdata, driver, true, true);
+
             //mark deleted objects
             Console.Write("Mark deleted users");
             NeoWriter.RunQuery(StandAloneQueries.GetMarkDeletedObjectsQuery(Types.User), nopropsdata, driver, true, true);
