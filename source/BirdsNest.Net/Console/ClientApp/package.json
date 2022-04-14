@@ -32,16 +32,6 @@
     "@types/jest": "^27.4.1",
     "@types/jquery": "^3.5.14",
     "@types/jqueryui": "^1.12.16",
-    "@types/webpack": "^4.41.30",
-    "@vue/cli-plugin-babel": "^4.5.13",
-    "@vue/cli-plugin-e2e-cypress": "^4.5.13",
-    "@vue/cli-plugin-eslint": "^4.5.13",
-    "@vue/cli-plugin-pwa": "^4.5.13",
-    "@vue/cli-plugin-router": "^4.5.13",
-    "@vue/cli-plugin-typescript": "^4.5.13",
-    "@vue/cli-plugin-unit-jest": "^4.5.13",
-    "@vue/cli-plugin-vuex": "^4.5.13",
-    "@vue/cli-service": "^4.5.13",
     "@typescript-eslint/eslint-plugin": "^5.14.0",
     "@typescript-eslint/parser": "^5.14.0",
     "@vitejs/plugin-legacy": "^1.8.0",
@@ -52,7 +42,7 @@
     "@vue/test-utils": "2.0.0-rc.19",
     "cypress": "^9.5.3",
     "d3": "^7.4.3",
-    "esbuild":"^0.14.36",
+    "esbuild": "^0.14.36",
     "eslint": "^8.13.0",
     "eslint-plugin-prettier": "^4.0.0",
     "eslint-plugin-vue": "^8.6.0",
@@ -68,11 +58,11 @@
     "typescript": "^4.6.3",
     "uuid": "^8.3.2",
     "vite": "^2.9.1",
+    "vite-plugin-pwa": "^0.11.13",
     "vite-tsconfig-paths": "^3.4.1",
     "vue-cli-plugin-i18n": "^2.3.1",
     "vue-tsc": "^0.33.9",
     "what-input": "^5.2.10"
   },
-  "resolutions": {
-  }
+  "resolutions": {}
 }

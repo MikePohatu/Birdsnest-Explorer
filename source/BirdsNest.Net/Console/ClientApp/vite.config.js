@@ -55,12 +55,7 @@ export default defineConfig(({ command, mode }) => ({
   },
   plugins: [
     vue(),
-    legacy({
-      targets: ['ie >= 11'],
-      additionalLegacyPolyfills: ['regenerator-runtime/runtime']
-    }),
     VitePWA({
-      includeAssets: ['favicon.svg', 'favicon.ico', 'robots.txt', 'apple-touch-icon.png'],  
       manifest: {
         name: 'Birdsnest Explorer',
         short_name: 'Birdsnest',
@@ -85,6 +80,9 @@ export default defineConfig(({ command, mode }) => ({
           }
         ]
       }
+    }),
+    legacy({
+      targets: ['defaults', 'not IE 11']
     })
   ],
   resolve: {
