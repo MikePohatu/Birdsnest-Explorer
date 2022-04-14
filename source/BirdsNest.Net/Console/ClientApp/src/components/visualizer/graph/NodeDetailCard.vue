@@ -232,12 +232,12 @@ import { VisualizerStorePaths } from "@/store/modules/VisualizerStore";
 import { ApiNodeSimple } from "@/assets/ts/dataMap/ApiNodeSimple";
 import { rootPaths } from "@/store";
 import { Dictionary } from "@/assets/ts/webcrap/misccrap";
-import { computed, nextTick, onMounted, ref } from "vue";
+import { computed, nextTick, onMounted, ref, reactive } from "vue";
 import { useStore } from "@/store";
 import { vFoundation } from "@/mixins/foundation";
 
 const props = defineProps({ node: { type: Object, required: true } });
-const node = props.node as SimNode;
+const node = reactive<SimNode>(props.node as SimNode);
 const store = useStore();
 
 let relatedNodeCount = ref(0);
