@@ -36,11 +36,6 @@ import { useStore } from "@/store";
 
 const route = useRoute();
 const store = useStore();
-// @Component({
-// 	components: { LoginCredentials },
-// })
-
-//setup watchers
 
 store.watch(
 	() => {

@@ -21,7 +21,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 			<img src="/img/icons/logo.svg" height="512px" width="512px" />
 		</div>
 		<div v-html="bannerHtml" />
-		<p>{{ $t('word_Hi') }}{{ userName }}. {{ $t('portal.welcome') }}</p>
+		<p>{{ $t('word_Hi') }}{{ gn	 }}. {{ $t('portal.welcome') }}</p>
 
 		<div class="grid-x grid-margin-x" id="portalBoxes">
 			<VisualizerPortalBlock class="cell large-4 medium-6 portalBoxWrapper" />
@@ -167,9 +167,9 @@ import webcrap from "@/assets/ts/webcrap/webcrap";
 const isIE = webcrap.misc.isIE();
 const store = useStore();
 
-const userName = computed(() => {
-	if (store.state.user.name !== "") {
-		return " " + store.state.user.name;
+const gn = computed(() => {
+	if (store.state.user.gn !== "") {
+		return " " + store.state.user.gn;
 	} else {
 		return "";
 	}

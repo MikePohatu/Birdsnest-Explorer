@@ -37,8 +37,13 @@ export const rootPaths = {
       PORTAL_BANNER: "portalBanner",
       PORTAL_FOOTER: "portalFooter"
     },
+    LOGIN: {
+      USERNAME: "loginUsername",
+      PROVIDER: "loginProvider"
+    },
     IS_AUTHORIZED: "isAuthorized",
     IS_ADMIN: "isAdmin",
+    USERGN: "usergn",
     USERNAME: "username",
     SESSION_STATUS: "sessionStatus",
     PLUGIN_MANAGER: "pluginManager",
@@ -47,7 +52,8 @@ export const rootPaths = {
     DEAUTH: "deAuth",
     SERVER_INFO: "serverInfo",
     LOCALE: "locale",
-    PROVIDERS: "providers"
+    PROVIDERS: "providers",
+    PROVIDER: "provider"
   },
   actions: {
     INIT: "init",
@@ -78,14 +84,20 @@ export interface RootState {
       footer: string;
     };
   };
+  login: {
+    username: string;
+    provider: string;
+  };
   user: {
     isAuthorized: boolean;
     isAdmin: boolean;
-    name: string;
+    gn: string;
+    userName: string;
   };
   session: {
     status: string;
     providers: string[];
+    provider: string;
   };
   locale: string;
   languages: Dictionary<LanguageSelector>;
@@ -110,14 +122,20 @@ const state: RootState = {
       footer: ""
     }
   },
+  login: {
+    username: "",
+    provider: ""
+  },
   user: {
     isAuthorized: false,
     isAdmin: false,
-    name: ""
+    gn: "",
+    userName: ""
   },
   session: {
     status: "",
     providers: [],
+    provider: ""
   },
   locale: "en",
   languages: {
@@ -169,8 +187,17 @@ export const store = createStore({
     isAdmin(state, isadmin: boolean) {
       state.user.isAdmin = isadmin;
     },
+    loginUsername(state, name: string){
+      state.login.username = name;
+    },
+    loginProvider(state, prov: string){
+      state.login.provider = prov;
+    },
+    usergn(state, name: string) {
+      state.user.gn = name;
+    },
     username(state, name: string) {
-      state.user.name = name;
+      state.user.userName = name;
     },
     sessionStatus(state, statusmessage: string) {
       state.session.status = statusmessage;
@@ -197,6 +224,9 @@ export const store = createStore({
     },
     providers(state, value) {
       state.session.providers = value;
+    },
+    provider(state, value: string) {
+      state.session.provider = value;
     }
   },
   actions: {

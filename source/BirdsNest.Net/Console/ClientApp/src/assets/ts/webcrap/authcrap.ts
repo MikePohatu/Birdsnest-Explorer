@@ -37,6 +37,8 @@ class AuthCrap {
             Provider: provider
         }
 
+        store.commit(rootPaths.mutations.PROVIDER, provider);
+        store.commit(rootPaths.mutations.USERNAME, username);
         bus.emit(events.Notifications.Processing, "Logging in");
 
         const request: Request = {
@@ -46,7 +48,7 @@ class AuthCrap {
                 if (data.isProcessed === true) {
                     store.commit(rootPaths.mutations.IS_AUTHORIZED, data.isAuthorized);
                     store.commit(rootPaths.mutations.IS_ADMIN, data.isAdmin);
-                    store.commit(rootPaths.mutations.USERNAME, data.name);
+                    store.commit(rootPaths.mutations.USERGN, data.name);
                     store.commit(rootPaths.mutations.AUTH_MESSAGE, "");
 
                     if (data.isAuthorized) {
@@ -109,7 +111,7 @@ class AuthCrap {
                 if (data.isProcessed === true) {
                     store.commit(rootPaths.mutations.IS_AUTHORIZED, data.isAuthorized);
                     store.commit(rootPaths.mutations.IS_ADMIN, data.isAdmin);
-                    store.commit(rootPaths.mutations.USERNAME, data.name);
+                    store.commit(rootPaths.mutations.USERGN, data.name);
                     store.commit(rootPaths.mutations.AUTH_MESSAGE, "");
 
                     if (data.isAuthorized) {
@@ -143,7 +145,7 @@ class AuthCrap {
                 if (data.isProcessed === true) {
                     store.commit(rootPaths.mutations.IS_AUTHORIZED, data.isAuthorized);
                     store.commit(rootPaths.mutations.IS_ADMIN, data.isAdmin);
-                    store.commit(rootPaths.mutations.USERNAME, data.name);
+                    store.commit(rootPaths.mutations.USERGN, data.name);
                     store.commit(rootPaths.mutations.AUTH_MESSAGE, "");
 
                     if (data.isAuthorized) {

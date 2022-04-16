@@ -38,6 +38,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 						<input
 							required
 							id="password"
+							ref="passwordEl"
 							v-model="password"
 							tabindex="2"
 							type="password"
@@ -85,18 +86,36 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 
 
 <script setup lang="ts">
-import { computed, onActivated, onMounted, ref } from "vue";
+import { computed, onMounted, ref } from "vue";
 import { useStore } from "@/store";
 import { auth } from "@/assets/ts/webcrap/authcrap";
 import { rootPaths } from "@/store";
+import webcrap from "@/assets/ts/webcrap/webcrap";
 
 const store = useStore();
 
-let username = ref("");
 let password = ref("");
-let provider = ref("");
 const usernameEl = ref(null);
+const passwordEl = ref(null);
 
+const username = computed<string>({
+	get() {
+		return store.state.login.username
+	},
+	set(newValue) {
+		store.commit(rootPaths.mutations.LOGIN.USERNAME, newValue);
+	}
+});
+
+const provider = computed<string>({
+	get() {
+		return store.state.login.provider
+	},
+	// setter
+	set(newValue) {
+		store.commit(rootPaths.mutations.LOGIN.PROVIDER, newValue);
+	}
+});
 
 const message = computed((): string => {
 	return store.state.auth.message;
@@ -106,19 +125,24 @@ const providers = computed((): string[] => {
 	return store.state.session.providers;
 });
 
-
-
 onMounted((): void => {
-	if (providers.value && providers.value.length > 0) {
-		provider.value = providers.value[0];
-	}
-	
+	refresh();
 	store.commit(rootPaths.mutations.SESSION_STATUS, "");
 });
 
-onActivated(():void => {
-	(usernameEl as HTMLElement).focus();
-});
+function refresh():void {
+	username.value = store.state.user.userName;
+	provider.value = store.state.session.provider;
+	if ((webcrap.misc.isNullOrWhitespace(provider.value)===true) && providers.value && providers.value.length > 0) {
+		provider.value = providers.value[0];
+	}
+	
+	if ((webcrap.misc.isNullOrWhitespace(username.value)===true)) {
+		(usernameEl.value as HTMLElement).focus();
+	} else {
+		(passwordEl.value as HTMLElement).focus();
+	}
+}
 
 function login(): void {
 	auth.login(username.value, password.value, provider.value, () => {
