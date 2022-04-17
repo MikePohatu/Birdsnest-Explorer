@@ -104,11 +104,6 @@ const isSelected = computed((): boolean => {
 });
 
 const isRoot = computed((): boolean => {
-	// console.log({
-	// 	condition: toRaw(condition), 
-	// 	storeCondition: toRaw(store.state.visualizer.search.search.condition),
-	// 	result: toRaw(condition) === toRaw(store.state.visualizer.search.search.condition)
-	// 	});
 	return toRaw(condition.value) === toRaw(store.state.visualizer.search.search.condition);
 });
 

@@ -287,7 +287,6 @@ export const SearchStore: Module<SearchState, RootState> = {
             state.newCondition = null;
         },
         saveEditingCondition(state, condition: ValueCondition) {
-            //console.log({source:"saveEditingCondition", condition: condition, state: state});
             UpdateCondition(state.search.condition, state.editValCondition, condition);
             state.newCondition = null;
             state.editValCondition = null;
@@ -370,14 +369,12 @@ export const SearchStore: Module<SearchState, RootState> = {
 
             const postdata = JSON.stringify(context.state.search);
             //const postdata = context.state.search;
-            //console.log(postdata);
 
             const request: Request = {
                 url: "/api/search/advancedsearch",
                 data: postdata,
                 postJson: true,
                 successCallback: (data?: ResultSet) => {
-                    //console.log(data);
                     if (data.nodes.length === 0) {
                         context.commit('setStatusMessage', t('phrase_Found_no_results'));
                     } else {

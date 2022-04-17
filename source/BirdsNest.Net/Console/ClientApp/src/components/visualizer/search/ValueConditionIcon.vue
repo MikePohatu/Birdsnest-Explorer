@@ -21,7 +21,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 		v-on:click.stop="onClicked"
 		v-on:dblclick.stop="onDblClicked"
 	>
-		<div>{{condition.name}}.{{condition.property}}</div>
+		<div>{{ condition.name }}.{{ condition.property }}</div>
 		<div>{{ searchDeets }}</div>
 	</div>
 </template>
@@ -43,20 +43,19 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 	const condition = ref<ValueCondition>(props.condition);
 
 	const isSelected = computed((): boolean => {
-		return store.state.visualizer.search.selectedCondition === condition;
+		return store.state.visualizer.search.selectedCondition === condition.value;
 	});
 
 	const searchDeets = computed((): string => {
-		//console.log({source: "searchDeets", condition: condition});
 		return (condition.value.not ? "Not " : "") + condition.value.operator + " " + condition.value.value + (condition.value.type === ConditionType.String && condition.value.caseSensitive ? "*" : "");
 	});
 
 	function onClicked(): void {
-		store.commit(SearchStorePaths.mutations.Update.SELECTED_CONDITION, condition);
+		store.commit(SearchStorePaths.mutations.Update.SELECTED_CONDITION, condition.value);
 	}
 
 	function onDblClicked(): void {
-		store.commit(SearchStorePaths.mutations.Update.SELECTED_CONDITION, condition);
+		store.commit(SearchStorePaths.mutations.Update.SELECTED_CONDITION, condition.value);
 		store.commit(SearchStorePaths.mutations.Update.EDIT_CONDITION);
 	}
 </script>
