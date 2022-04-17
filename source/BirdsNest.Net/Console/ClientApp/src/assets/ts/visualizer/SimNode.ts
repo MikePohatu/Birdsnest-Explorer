@@ -45,4 +45,5 @@ export interface SimNode extends SimulationNodeDatum {
     relatedDetails: RelatedDetails;
     scale: number;
     isTreeRoot: boolean;
+    isConnected: boolean;
 }

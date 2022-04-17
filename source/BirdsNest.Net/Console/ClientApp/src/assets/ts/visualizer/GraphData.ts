@@ -70,8 +70,6 @@ class GraphData {
                 startx: 0,
                 starty: 0,
                 k: 0,
-                srck: 0,
-                tark: 0,
                 dragged: false,
                 size: this.defaultNodeSize,
                 radius: radius,
@@ -82,6 +80,7 @@ class GraphData {
                 relatedDetails: null,
                 scale: 1,
                 isTreeRoot: false,
+                isConnected: false,
             }
 
             //update label states
@@ -150,7 +149,6 @@ class GraphData {
                 label: edge.label,
                 properties: edge.properties,
                 k: 0,
-                srck: 0,
                 selected: false,
                 isLoop: false,
             }
@@ -212,6 +210,7 @@ class GraphData {
         //reset mesh nodes first
         this.graphNodes.Array.forEach((node)=> {
             node.isTreeRoot = false;
+            node.isConnected = false;
         });
 
         //now find the roots of the tree. If a node is a source, first check it has not already
@@ -224,6 +223,10 @@ class GraphData {
             }
             edge.target.isTreeRoot = false;
             tarTracking[edge.target.dbId] = true;
+        });
+        this.graphEdges.Array.forEach((edge)=> { 
+            edge.source.isConnected = true;
+            edge.target.isConnected = true;
         });
     }
 

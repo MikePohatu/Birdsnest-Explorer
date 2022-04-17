@@ -22,7 +22,7 @@ import { graphData } from './GraphData';
 import { VisualizerStorePaths } from "@/store/modules/VisualizerStore";
 import { useStore } from "@/store";
 import TreeForce from './TreeForce';
-import { ForceLink, Simulation } from 'd3';
+import { ForceLink, ForceRadial, Simulation } from 'd3';
 
 
 export default class SimulationController {
@@ -30,6 +30,8 @@ export default class SimulationController {
     onFinishCallback: () => void;
     private store = useStore();
     private graphsimulation: Simulation<SimNode, SimLink<SimNode>>;
+    private connectedCount = 0;
+    private unconnectedCount = 0;
 
     constructor() {
         this.store.commit(VisualizerStorePaths.mutations.Update.SIM_RUNNING, false);
@@ -40,15 +42,27 @@ export default class SimulationController {
                 .radius(function (d: SimNode) { return d.size + 20; }))
             .force("link", d3.forceLink()
                 .id(function (d: SimLink<SimNode>) { return d.dbId; }))
-            .force("manybody", d3.forceManyBody()
-                .strength(30))
             .force("tree", TreeForce())
-            .force("root", d3.forceY()
+            .force("forceY", d3.forceY()
                 .strength(function (d: SimNode) {
-                    return d.isTreeRoot ? 1 : 0;
+                    return d.isTreeRoot ? 1 : 0.01;
                 })
                 .y(function(d: SimNode) {
-                    return d.starty;
+                    return d.isTreeRoot ? d.starty : 0;
+                })
+            )
+            .force("forceX", d3.forceX()
+                .strength(function (d: SimNode) {
+                    return d.isTreeRoot ? 0 : 0.01;
+                })
+                .x(0)
+            )
+            .force("radial", d3.forceRadial(0,0)
+                .strength(function(d: SimNode) {
+                    return d.isConnected ? 0 : 1;
+                })
+                .radius(() => {
+                    return 600;
                 })
             )
             .force("tick", ()=>{ this.onGraphTick(); })
@@ -109,13 +123,16 @@ export default class SimulationController {
         }
 
         this.store.commit(VisualizerStorePaths.mutations.Update.SIM_RUNNING, true);
-
+        this.connectedCount = 0;
+        this.unconnectedCount = 0;
         graphData.graphNodes.Array.forEach((d: SimNode) => {
             d.startx = d.x;
             d.starty = d.y;
+            if (d.isConnected) { this.connectedCount++; }
+            else { this.unconnectedCount++; }
         });
         
-        //mesh simulation restarts when tree is finished
+        (this.graphsimulation.force("radial") as ForceRadial<SimNode>).radius(600 + (Math.max(this.connectedCount,this.unconnectedCount)));
         this.graphsimulation.alpha(1).restart();
     }
 
