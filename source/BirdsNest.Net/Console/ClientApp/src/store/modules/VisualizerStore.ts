@@ -61,8 +61,6 @@ const state: VisualizerState = {
 
 export const VisualizerStorePaths = {
   mutations: {
-
-
     Add: {
       PENDING_RESULTS: "visualizer/addPendingResults",
       PENDING_NODE: "visualizer/addPendingNode",

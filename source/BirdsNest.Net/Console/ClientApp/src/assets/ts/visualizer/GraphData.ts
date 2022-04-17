@@ -34,8 +34,6 @@ import { reactive } from "vue";
 
 class GraphData {
     defaultNodeSize = 40;
-    meshNodes = new DatumStore<SimNode>();
-    meshEdges = new DatumStore<SimLink<SimNode>>();
     treeNodes = new DatumStore<SimNode>();
     treeEdges = new DatumStore<SimLink<SimNode>>();
     graphNodes = new DatumStore<SimNode>();
@@ -83,6 +81,7 @@ class GraphData {
                 selected: false,
                 relatedDetails: null,
                 scale: 1,
+                isTreeRoot: false,
             }
 
             //update label states
@@ -121,15 +120,16 @@ class GraphData {
         nodes.forEach(node => {
             const simnode = this.addNode(node);
             if (simnode !== null) {
+                //console.log({source:"addNodes-simnode-notnull", simnode:simnode});
                 simnode.x = spiral.x;
                 simnode.y = spiral.y;
                 simnode.currentX = spiral.x;
                 simnode.currentY = spiral.y;
+                simnode.startx = spiral.x;
+                simnode.starty = spiral.y;
                 spiral.Step();
             }
         });
-        
-        this.updatePerfMode();
 
         return this;
     }
@@ -150,7 +150,6 @@ class GraphData {
                 label: edge.label,
                 properties: edge.properties,
                 k: 0,
-                tark: 0,
                 srck: 0,
                 selected: false,
                 isLoop: false,
@@ -159,8 +158,7 @@ class GraphData {
             if (this.graphEdgeLabelStates[edge.label] === undefined) {
                 //this.graphEdgeLabelStates[edge.label] = true;
                 const dt = store.state.pluginManager.edgeDataTypes[edge.label];
-                if (dt)
-                {
+                if (dt) {
                     this.graphEdgeLabelStates[edge.label] = dt.enabled;
                 } else {
                     this.graphEdgeLabelStates[edge.label] = true; //if nothing is defined for the type, assume enabled=true
@@ -169,24 +167,13 @@ class GraphData {
             simlink.enabled = this.graphEdgeLabelStates[edge.label];
 
             this.graphEdges.Add(simlink);
-            const src = simlink.source;
-            const tar = simlink.target;
-            //console.log(d);
-            //console.log(src);
 
             if (simlink.properties.layout as string === "tree") {
+                const src = simlink.source;
+                const tar = simlink.target;
                 this.treeEdges.Add(simlink); 
                 this.treeNodes.Add(src);
                 this.treeNodes.Add(tar);
-                this.meshNodes.Remove(src);
-                this.meshNodes.Remove(tar);
-            }
-            else { 
-                this.meshEdges.Add(simlink); 
-                this.treeNodes.Remove(src);
-                this.treeNodes.Remove(tar);
-                this.meshNodes.Add(src);
-                this.meshNodes.Add(tar);
             }
             // newitemcount++;
         }
@@ -209,23 +196,35 @@ class GraphData {
         return this;
     }
 
-    commitAll(): void {
-        this.commitNodes();
-        this.commitEdges();
+    commit(): void {
+        this.graphNodes.Commit();
+        this.treeNodes.Commit();
+        this.graphEdges.Commit();
+        this.treeEdges.Commit();
+        this.updateEdges();
         this.selectedItems.Commit();
         this.detailsItems.Commit();
     }
 
-    commitNodes(): void {
-        this.graphNodes.Commit();
-        this.treeNodes.Commit();
-        this.meshNodes.Commit();
-    }
+    private updateEdges(): void {
 
-    commitEdges(): void {
-        this.graphEdges.Commit();
-        this.treeEdges.Commit();
-        this.meshEdges.Commit();
+        //find the tree roots
+        //reset mesh nodes first
+        this.graphNodes.Array.forEach((node)=> {
+            node.isTreeRoot = false;
+        });
+
+        //now find the roots of the tree. If a node is a source, first check it has not already
+        //been found as a target, then set accordingly
+        const tarTracking = {};
+        this.treeEdges.Array.forEach((edge)=> {
+            if (Object.prototype.hasOwnProperty.call(tarTracking, edge.source.dbId) === false) 
+            { 
+                edge.source.isTreeRoot = true;
+            }
+            edge.target.isTreeRoot = false;
+            tarTracking[edge.target.dbId] = true;
+        });
     }
 
     addSelection(item: SimNode | SimLink<SimNode>): DatumStore<SimNode | SimLink<SimNode>> {
@@ -283,23 +282,23 @@ class GraphData {
         return this;
     }
 
-    private removeNodeId(id: string) {
+    private removeNodeId(id: string): GraphData {
         const node = this.graphNodes.GetDatum(id);
         if (node !== null) {
             this.removeNode(node);
         }
+        return this;
     }
 
-    
-
-    private removeEdgeId(id: string) {
+    private removeEdgeId(id: string): GraphData {
         const edge = this.graphEdges.GetDatum(id);
         if (edge !== null) {
             this.removeEdge(edge);
         }
+        return this;
     }
 
-    removeData(nodes: SimNode[], edges: SimLink<SimNode>[] ): void {
+    removeData(nodes: SimNode[], edges: SimLink<SimNode>[] ): GraphData {
         nodes.forEach(node => {
             this.removeNode(node);
         });
@@ -309,6 +308,7 @@ class GraphData {
 
         this.cleanupLabelStates();
         this.updatePerfMode();
+        return this;
     }
 
     private cleanupLabelStates(): void {
@@ -342,7 +342,6 @@ class GraphData {
         // console.log(this);
     }
     private removeNode(node: SimNode): GraphData {
-        this.meshNodes.Remove(node);
         this.treeNodes.Remove(node);
         this.graphNodes.Remove(node);
         this.detailsItems.Remove(node);
@@ -351,15 +350,12 @@ class GraphData {
     }
 
     private removeEdge(edge: SimLink<SimNode>): GraphData {
-        this.meshEdges.Remove(edge);
         this.treeEdges.Remove(edge);
         this.graphEdges.Remove(edge);
         return this;
     }
 
     reset() {
-        this.meshNodes = new DatumStore<SimNode>();
-        this.meshEdges = new DatumStore<SimLink<SimNode>>();
         this.treeNodes = new DatumStore<SimNode>();
         this.treeEdges = new DatumStore<SimLink<SimNode>>();
         this.graphNodes = new DatumStore<SimNode>();

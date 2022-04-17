@@ -25,8 +25,6 @@ export interface SimLink<T> extends SimulationLinkDatum<T> {
     target: T;
     shift: boolean;
     k: number;
-    tark: number;
-    srck: number;
     label: string;
     properties: Dictionary<number | string | boolean>;
     enabled: boolean;

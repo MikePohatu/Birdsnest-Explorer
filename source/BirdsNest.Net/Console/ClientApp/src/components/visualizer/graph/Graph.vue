@@ -473,7 +473,7 @@ import { useRouter } from "vue-router";
 				if (store.state.visualizer.pendingNodes.length > 0) {
 					bus.emit(events.Notifications.Processing, "Loading nodes");
 					setTimeout(() => {
-						graphData.addNodes(store.state.visualizer.pendingNodes).commitAll();
+						graphData.addNodes(store.state.visualizer.pendingNodes).commit();
 						store.commit(VisualizerStorePaths.mutations.Delete.PENDING_NODES);
 						updateNodeSizes();
 						refreshNodeConnections();
@@ -497,7 +497,7 @@ import { useRouter } from "vue-router";
 						store.state.visualizer.pendingResults.forEach((result: ResultSet) => {
 							graphData.addResultSet(result);
 						});
-						graphData.commitAll();
+						graphData.commit();
 						store.commit(VisualizerStorePaths.mutations.Delete.PENDING_RESULTS);
 						updateNodeSizes();
 						refreshNodeConnections();
@@ -536,7 +536,6 @@ import { useRouter } from "vue-router";
 					const exist = graphData.graphEdges.GetDatum(edge.dbId)
 					if (exist !==null) { exist.shift = true; }
 				});
-				graphData.addResultSet(data).commitEdges();
 				simController.RefreshData().RestartSimulation();
 			},
 			errorCallback: () => {
@@ -550,7 +549,7 @@ import { useRouter } from "vue-router";
 			data: postData,
 			postJson: true,
 			successCallback: (data: ResultSet) => {
-				graphData.addResultSet(data).commitEdges();
+				graphData.addResultSet(data).commit();
 				nodesLayer.selectAll(".nodes").call(
 					d3.drag()
 					.on("start", onNodeDragStart)
@@ -572,9 +571,10 @@ import { useRouter } from "vue-router";
 		graphData.clearSelectedItems();
 		graphData.graphNodes.Array.forEach(node => {
 			if (node.name.toLowerCase().includes(lowerVal)) {
-				graphData.addSelection(node).Commit();
+				graphData.addSelection(node);
 			}
 		});
+		graphData.commit();
 	}
 
 	//#region node dragged functions
@@ -833,7 +833,6 @@ import { useRouter } from "vue-router";
 	//#region d3 stuff
 	function updateNodeSizes() {
 		graphData.updateScale();
-		simController.RefreshData();
 		if (store.state.visualizer.perfMode === true) {
 			graphNodes.value.forEach(node => {
 				node.currentSize = node.size;
@@ -1073,14 +1072,15 @@ import { useRouter } from "vue-router";
 		//console.log({source: "updateNodeSelection", d: d});
 		d.selected = isselected;
 		if (isselected) {
-			graphData.addSelection(d).Commit();
+			graphData.addSelection(d);
 			if (showdetails) {
-				graphData.detailsItems.Add(d).Commit();
+				graphData.detailsItems.Add(d);
 			}
 		} else {
-			graphData.removeSelection(d).Commit();
-			graphData.detailsItems.Remove(d).Commit();
+			graphData.removeSelection(d);
+			graphData.detailsItems.Remove(d);
 		}
+		graphData.commit();
 	}
 
 	function removeNode(node: SimNode) {
@@ -1102,7 +1102,7 @@ import { useRouter } from "vue-router";
 					edgeids.push(edge.dbId);
 				});
 
-				graphData.removeIds(ids, edgeids).commitAll();
+				graphData.removeIds(ids, edgeids).commit();
 
 				updateNodeSizes();
 			});

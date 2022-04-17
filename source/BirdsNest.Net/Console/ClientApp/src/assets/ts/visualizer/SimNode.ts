@@ -35,8 +35,6 @@ export interface SimNode extends SimulationNodeDatum {
     cy: number;
     cx: number;
     k: number;
-    tark: number;
-    srck: number;
     pinned: boolean;
     dragged: boolean;
     startx: number;
@@ -46,4 +44,5 @@ export interface SimNode extends SimulationNodeDatum {
     enabled: boolean;
     relatedDetails: RelatedDetails;
     scale: number;
+    isTreeRoot: boolean;
 }
