@@ -28,7 +28,7 @@ using Microsoft.Extensions.Logging;
 using Console.Plugins;
 using System.Reflection;
 using Console.neo4jProxy.Indexes;
-
+using Console.Helpers;
 
 namespace Console.Controllers
 {
@@ -48,6 +48,19 @@ namespace Console.Controllers
             this._logger = logger;
         }
 
+        [HttpGet("installInfo")]
+        [LocalOnly]
+        [AllowAnonymous]
+        public InstallInfo GetInstallInfo()
+        {
+            if (HttpHelpers.IsLocal(HttpContext.Request)) {
+                return InstallInfo.Instance;
+            }
+            else
+            {
+                return null;
+            }
+        }
 
         //nodes bits
         //****************

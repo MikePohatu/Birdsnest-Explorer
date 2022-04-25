@@ -123,29 +123,29 @@ namespace Console.neo4jProxy
                 }
             });
 
+            object results = new { name = ServerVersionInfo.Instance.Name, version = ServerVersionInfo.Instance.Version, edition = ServerVersionInfo.Instance.Edition, nodeLabelCounts, edgeLabelCounts, totals };
+            return results;
+        }
+
+        public async Task UpdateVersion()
+        {
             //get the server details
             string serverdeetsquery = "call dbms.components() yield name, versions, edition unwind versions as version return name, version, edition";
-            string name = string.Empty;
-            string version = string.Empty;
-            string edition = string.Empty;
 
             await this._neoservice.ProcessDelegatePerRecordFromQueryAsync(serverdeetsquery, null, (IRecord record) => {
                 if (record == null) { return; };
 
                 try
                 {
-                    name = (string)record["name"];
-                    version = (string)record["version"];
-                    edition = (string)record["edition"];
+                    ServerVersionInfo.Instance.Name = (string)record["name"];
+                    ServerVersionInfo.Instance.Version = (string)record["version"];
+                    ServerVersionInfo.Instance.Edition = (string)record["edition"];
                 }
                 catch (Exception e)
                 {
                     _logger.Error("Error in GatherDbStats-edgeCount: " + e.Message);
                 }
             });
-
-            object results = new { name, version, edition, nodeLabelCounts, edgeLabelCounts, totals };
-            return results;
         }
     }
 }

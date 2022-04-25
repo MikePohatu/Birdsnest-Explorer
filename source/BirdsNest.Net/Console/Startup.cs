@@ -17,6 +17,7 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #endregion
 using Console.Auth;
+using Console.Helpers;
 using Console.neo4jProxy;
 using Console.Plugins;
 using Microsoft.AspNetCore.Authentication.Cookies;
@@ -32,15 +33,19 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using System;
+using System.Diagnostics;
 using VueCliMiddleware;
 
 namespace Console
 {
     public class Startup
     {
-        public Startup(IConfiguration configuration)
+        public Startup(IConfiguration configuration, IWebHostEnvironment env)
         {
             Configuration = configuration;
+            InstallInfo.Instance.DbSvcAccount = Configuration.GetValue<string>("neo4jSettings:dbUsername");
+            InstallInfo.Instance.RootPath = env.ContentRootPath.Replace("\\Console", "").Replace("\\console", "");
+            InstallInfo.Instance.DbPath = RegistryHelpers.GetServiceInstallPath("neo4j").Split(new string[] {"\\bin"}, 2, StringSplitOptions.None)[0];
         }
 
         public IConfiguration Configuration { get; }
@@ -77,7 +82,7 @@ namespace Console
 
             services.AddControllersWithViews();
 
-            // In production, the React files will be served from this directory
+            // In production, the Vue files will be served from this directory
             services.AddSpaStaticFiles(configuration =>
             {
                 configuration.RootPath = "ClientApp/dist";
@@ -132,6 +137,15 @@ namespace Console
             app.UseSpaStaticFiles();
 
             app.UseRouting();
+
+            if (env.IsDevelopment())
+            {
+                app.Use(next => context =>
+                {
+                    Debug.WriteLine($"Route: {context.GetEndpoint()?.DisplayName}");
+                    return next(context);
+                });
+            }
 
             app.UseAuthentication();
             app.UseAuthorization();
