@@ -23,10 +23,10 @@ using System.Threading.Tasks;
 
 namespace Console.neo4jProxy
 {
-    public class ServerVersionInfo
+    public class DbInfo
     {
-        public static ServerVersionInfo Instance { get; } = new ServerVersionInfo();
-        private ServerVersionInfo() { }
+        public static DbInfo Instance { get; } = new DbInfo();
+        private DbInfo() { }
 
         public string Version { get; set; } = string.Empty;
         public string Name { get; set; } = string.Empty;

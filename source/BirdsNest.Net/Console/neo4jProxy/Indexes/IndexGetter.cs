@@ -20,7 +20,6 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Neo4j.Driver;
-using Console.neo4jProxy;
 
 namespace Console.neo4jProxy.Indexes
 {

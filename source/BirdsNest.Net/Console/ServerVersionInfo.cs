@@ -30,7 +30,7 @@ namespace Console
         public static ServerVersionInfo Instance { get; } = new ServerVersionInfo();
         private ServerVersionInfo() { }
 
-        public neo4jProxy.ServerVersionInfo DbInfo { get; set; }
+        public DbInfo DbInfo { get { return DbInfo.Instance; } }
         public string AppVersion { get; set; } = Assembly.GetEntryAssembly().GetName().Version.ToString();
     }
 }

@@ -27,7 +27,6 @@ using System.Text.RegularExpressions;
 using Microsoft.Extensions.Logging;
 using Console.Plugins;
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Primitives;
 using Console.neo4jProxy.Indexes;
 
 namespace Console.neo4jProxy
@@ -53,6 +52,7 @@ namespace Console.neo4jProxy
             }
 
             this._logger.LogInformation("Connected to neo4j in {elapsed} ms", stopwatch.ElapsedMilliseconds);
+            this.UpdateVersions();
         }
 
 
@@ -467,6 +467,27 @@ namespace Console.neo4jProxy
                 await session.CloseAsync();
             }
             return count;
+        }
+
+        private void UpdateVersions()
+        {
+            //get the server details
+            string serverdeetsquery = "call dbms.components() yield name, versions, edition unwind versions as version return name, version, edition";
+
+            this.ProcessDelegatePerRecordFromQueryAsync(serverdeetsquery, null, (IRecord record) => {
+                if (record == null) { return; };
+
+                try
+                {
+                    DbInfo.Instance.Name = (string)record["name"];
+                    DbInfo.Instance.Version = (string)record["version"];
+                    DbInfo.Instance.Edition = (string)record["edition"];
+                }
+                catch (Exception e)
+                {
+                    _logger.LogError("Error in Neo4jService UpdateVersions: " + e.Message);
+                }
+            }).ConfigureAwait(false);
         }
 
         public void Dispose()

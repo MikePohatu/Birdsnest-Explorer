@@ -26,5 +26,6 @@ namespace Console
         public string RootPath { get; set; }
         public string DbPath { get; set; }
         public string DbSvcAccount { get; set; }
+        public ServerVersionInfo Versions { get { return ServerVersionInfo.Instance; } }
     }
 }

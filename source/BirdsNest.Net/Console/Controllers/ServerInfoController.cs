@@ -48,7 +48,7 @@ namespace Console.Controllers
             this._logger = logger;
         }
 
-        [HttpGet("installInfo")]
+        [HttpGet("install")]
         [LocalOnly]
         [AllowAnonymous]
         public InstallInfo GetInstallInfo()

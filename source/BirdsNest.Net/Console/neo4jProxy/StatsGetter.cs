@@ -35,7 +35,6 @@ namespace Console.neo4jProxy
 
         public async Task<object> GatherDbStats()
         {
-            
             SortedDictionary<string, long> nodeLabelCounts = new SortedDictionary<string, long>();
             SortedDictionary<string, long> edgeLabelCounts = new SortedDictionary<string, long>();
             SortedDictionary<string, long> totals = new SortedDictionary<string, long>();
@@ -123,29 +122,8 @@ namespace Console.neo4jProxy
                 }
             });
 
-            object results = new { name = ServerVersionInfo.Instance.Name, version = ServerVersionInfo.Instance.Version, edition = ServerVersionInfo.Instance.Edition, nodeLabelCounts, edgeLabelCounts, totals };
+            object results = new { name = DbInfo.Instance.Name, version = DbInfo.Instance.Version, edition = DbInfo.Instance.Edition, nodeLabelCounts, edgeLabelCounts, totals };
             return results;
-        }
-
-        public async Task UpdateVersion()
-        {
-            //get the server details
-            string serverdeetsquery = "call dbms.components() yield name, versions, edition unwind versions as version return name, version, edition";
-
-            await this._neoservice.ProcessDelegatePerRecordFromQueryAsync(serverdeetsquery, null, (IRecord record) => {
-                if (record == null) { return; };
-
-                try
-                {
-                    ServerVersionInfo.Instance.Name = (string)record["name"];
-                    ServerVersionInfo.Instance.Version = (string)record["version"];
-                    ServerVersionInfo.Instance.Edition = (string)record["edition"];
-                }
-                catch (Exception e)
-                {
-                    _logger.Error("Error in GatherDbStats-edgeCount: " + e.Message);
-                }
-            });
         }
     }
 }

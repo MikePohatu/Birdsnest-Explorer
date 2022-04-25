@@ -46,6 +46,7 @@ namespace Console
             InstallInfo.Instance.DbSvcAccount = Configuration.GetValue<string>("neo4jSettings:dbUsername");
             InstallInfo.Instance.RootPath = env.ContentRootPath.Replace("\\Console", "").Replace("\\console", "");
             InstallInfo.Instance.DbPath = RegistryHelpers.GetServiceInstallPath("neo4j").Split(new string[] {"\\bin"}, 2, StringSplitOptions.None)[0];
+        
         }
 
         public IConfiguration Configuration { get; }
