@@ -19,15 +19,11 @@
 using common;
 using Microsoft.ConfigurationManagement.ManagementProvider;
 using Neo4j.Driver;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace CMScanner.CmConverter
 {
-    public class CmApplications: IDataCollector
+    public class CmApplications : IDataCollector
     {
         public string ProgressMessage { get { return "Creating application nodes"; } }
         public string Query
@@ -69,7 +65,7 @@ namespace CMScanner.CmConverter
                             IsLatest = ResultObjectHandler.GetBool(resource, "IsLatest"),
                             ID = ResultObjectHandler.GetString(resource, "CI_ID"),
                             Name = ResultObjectHandler.GetString(resource, "LocalizedDisplayName")
-                    });
+                        });
                     }
                 }
             }

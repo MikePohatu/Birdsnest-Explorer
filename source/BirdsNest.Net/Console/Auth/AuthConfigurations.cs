@@ -16,9 +16,9 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #endregion
+using Console.Auth.LDAP;
 using Console.Auth.Windows.Directory;
 using Console.Auth.Windows.Local;
-using Console.Auth.LDAP;
 using Microsoft.Extensions.Configuration;
 using System.Collections.Generic;
 
@@ -31,7 +31,7 @@ namespace Console.Auth
 
         public AuthConfigurations(IConfiguration configuration)
         {
-            
+
             var sections = configuration.GetSection("Authorization").GetChildren();
             foreach (IConfigurationSection section in sections)
             {

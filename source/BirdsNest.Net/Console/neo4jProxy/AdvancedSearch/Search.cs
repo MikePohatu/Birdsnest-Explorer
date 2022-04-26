@@ -17,13 +17,10 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #endregion
 using Console.neo4jProxy.AdvancedSearch.Conditions;
-using Console.Plugins;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace Console.neo4jProxy.AdvancedSearch
 {
@@ -105,7 +102,7 @@ namespace Console.neo4jProxy.AdvancedSearch
             }
             catch (Exception e)
             {
-                throw new InvalidOperationException( "There was an error building the query string: " + e.Message);
+                throw new InvalidOperationException("There was an error building the query string: " + e.Message);
             }
             return builder;
         }
@@ -144,7 +141,8 @@ namespace Console.neo4jProxy.AdvancedSearch
                     }
                 }
                 string cond = this.Condition?.ToTokenizedSearchString();
-                if (string.IsNullOrWhiteSpace(cond) == false) { 
+                if (string.IsNullOrWhiteSpace(cond) == false)
+                {
                     cond = " WHERE " + cond;
                     if (this.IncludeDisabled == false)
                     {
@@ -178,7 +176,7 @@ namespace Console.neo4jProxy.AdvancedSearch
                     node.Tokenize(this.Tokens);
                 }
             }
-            
+
             if (this.Edges != null)
             {
                 foreach (var edge in this.Edges)
@@ -190,5 +188,5 @@ namespace Console.neo4jProxy.AdvancedSearch
             this.Condition?.Tokenize(this.Tokens);
         }
 
-    } 
+    }
 }

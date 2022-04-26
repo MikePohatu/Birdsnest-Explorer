@@ -16,11 +16,10 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #endregion
-using System;
+using common;
+using Newtonsoft.Json;
 using System.Collections.Generic;
 using System.Security.AccessControl;
-using Newtonsoft.Json;
-using common;
 using System.Security.Principal;
 
 namespace FSScanner
@@ -41,7 +40,7 @@ namespace FSScanner
         {
             get { return this._permparent; }
             set { this._permparent = value?.ToLower(); }
-        } 
+        }
 
         private string _path;
         [JsonProperty("path")]
@@ -62,7 +61,7 @@ namespace FSScanner
         public Folder(string name, string path, string permparent, AuthorizationRuleCollection rules, bool isinheritancedisabled)
         {
             if (string.IsNullOrEmpty(name)) { this.Name = path; }
-            else  { this.Name = name; }
+            else { this.Name = name; }
 
             //this.ScanId = scanid;
             this.InheritanceDisabled = isinheritancedisabled;
@@ -86,12 +85,12 @@ namespace FSScanner
                     if (identifier != null && identifier.AccountDomainSid == null)
                     {
                         this.BuiltinPermissions.Add(perm);
-                    } 
+                    }
                     else
                     {
                         this.DomainPermissions.Add(perm);
                     }
-                    
+
                     //Console.WriteLine("{0} | Account: {1} | Permission: {2}", path, rule.IdentityReference.Value, rule.FileSystemRights.ToString());
                 }
             }

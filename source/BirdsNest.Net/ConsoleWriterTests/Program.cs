@@ -16,8 +16,8 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #endregion
-using System;
 using common;
+using System;
 
 namespace ConsoleWriterTests
 {
@@ -39,8 +39,8 @@ namespace ConsoleWriterTests
                 string dots = new String('.', dotscount);
 
                 ConsoleWriter.WriteInfo(i.ToString() + ":" + Console.BufferHeight + ":" + dots);
-                ConsoleWriter.WriteProgress(i.ToString() + ":1",1);
-                ConsoleWriter.WriteProgress(i.ToString() + ":2",2);
+                ConsoleWriter.WriteProgress(i.ToString() + ":1", 1);
+                ConsoleWriter.WriteProgress(i.ToString() + ":2", 2);
                 if (i % 300 == 0) { dotsmult = dotsmult * -1; }
                 i++;
                 //Console.WriteLine(i);

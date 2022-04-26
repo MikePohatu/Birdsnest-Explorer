@@ -16,18 +16,17 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #endregion
-using System;
-using System.Text;
-using System.Diagnostics;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Neo4j.Driver;
-using System.Text.RegularExpressions;
-using Microsoft.Extensions.Logging;
+using Console.neo4jProxy.Indexes;
 using Console.Plugins;
 using Microsoft.Extensions.Configuration;
-using Console.neo4jProxy.Indexes;
+using Microsoft.Extensions.Logging;
+using Neo4j.Driver;
+using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Linq;
+using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 
 namespace Console.neo4jProxy
 {
@@ -200,13 +199,13 @@ namespace Console.neo4jProxy
         // Search functions
         //*************************
 
-		public async Task<ResultSet> SimpleSearch(string searchterm)
-		{
+        public async Task<ResultSet> SimpleSearch(string searchterm)
+        {
             string regexterm = "(?i).*" + Regex.Escape(searchterm) + ".*";
             string query = "MATCH (n) WHERE n.name =~ $regex RETURN n";
 
             return await this.GetResultSetFromQueryAsync(query, new { regex = regexterm });
-		}
+        }
 
         public async Task<ResultSet> AdvancedSearch(AdvancedSearch.Search search)
         {
@@ -239,20 +238,20 @@ namespace Console.neo4jProxy
             return returnedresults;
         }
 
-        public async Task<IEnumerable<string>> SearchNodePropertyValuesAsync (string type, string property, string searchterm)
+        public async Task<IEnumerable<string>> SearchNodePropertyValuesAsync(string type, string property, string searchterm)
         {
             if (string.IsNullOrEmpty(property) || string.IsNullOrEmpty(searchterm)) { return new List<string>(); }
-            
+
             //replace the slashes so it picks up fs paths
             string regexterm = "(?i).*" + Regex.Escape(searchterm) + ".*";
-			string typequery = string.Empty;
-			if (string.IsNullOrWhiteSpace(type) == false) { typequery = "$type IN labels(n) AND "; }
+            string typequery = string.Empty;
+            if (string.IsNullOrWhiteSpace(type) == false) { typequery = "$type IN labels(n) AND "; }
 
-           
+
             List<string> results = new List<string>();
 
             IAsyncSession session = this._driver.AsyncSession();
-            
+
             try
             {
                 string query = "MATCH (n) WHERE " + typequery + "n[$prop]  =~ $regex RETURN DISTINCT n[$prop] ORDER BY n[$prop] LIMIT 20";
@@ -275,22 +274,22 @@ namespace Console.neo4jProxy
             {
                 await session.CloseAsync();
             }
-            
+
 
             return results;
         }
-        
-		public async Task<IEnumerable<string>> SearchEdgePropertyValuesAsync(string type, string property, string searchterm)
-		{
-			if (string.IsNullOrWhiteSpace(type)) { throw new ArgumentException("Type is required"); }
-			if (string.IsNullOrWhiteSpace(property)) { throw new ArgumentException("Property is required"); }
-			if (this._pluginmanager.EdgeDataTypes.Keys.Contains(type) == false) { throw new ArgumentException("Type not valid: " + type); }
 
-			if (string.IsNullOrEmpty(type) || string.IsNullOrEmpty(property) || string.IsNullOrEmpty(searchterm)) { return new List<string>(); }
+        public async Task<IEnumerable<string>> SearchEdgePropertyValuesAsync(string type, string property, string searchterm)
+        {
+            if (string.IsNullOrWhiteSpace(type)) { throw new ArgumentException("Type is required"); }
+            if (string.IsNullOrWhiteSpace(property)) { throw new ArgumentException("Property is required"); }
+            if (this._pluginmanager.EdgeDataTypes.Keys.Contains(type) == false) { throw new ArgumentException("Type not valid: " + type); }
 
-			string regexterm = "(?i).*" + searchterm + ".*";
+            if (string.IsNullOrEmpty(type) || string.IsNullOrEmpty(property) || string.IsNullOrEmpty(searchterm)) { return new List<string>(); }
 
-            
+            string regexterm = "(?i).*" + searchterm + ".*";
+
+
             List<string> results = new List<string>();
 
             IAsyncSession session = this._driver.AsyncSession();
@@ -315,10 +314,10 @@ namespace Console.neo4jProxy
             finally
             {
                 await session.CloseAsync();
-            }            
+            }
 
             return results;
-		}
+        }
 
         private List<string> ParseStringListRecord(IRecord record)
         {
@@ -414,7 +413,7 @@ namespace Console.neo4jProxy
             {
                 await session.CloseAsync();
             }
-            
+
             return count;
         }
 
@@ -475,7 +474,8 @@ namespace Console.neo4jProxy
             //get the server details
             string serverdeetsquery = "call dbms.components() yield name, versions, edition unwind versions as version return name, version, edition";
 
-            this.ProcessDelegatePerRecordFromQueryAsync(serverdeetsquery, null, (IRecord record) => {
+            this.ProcessDelegatePerRecordFromQueryAsync(serverdeetsquery, null, (IRecord record) =>
+            {
                 if (record == null) { return; };
 
                 try

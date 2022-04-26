@@ -16,15 +16,14 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #endregion
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-using System.IO;
-using Newtonsoft.Json;
-using Microsoft.Extensions.Logging;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.SignalR;
 
 namespace Console.Plugins
 {
@@ -142,17 +141,19 @@ namespace Console.Plugins
 
             //process plugin extensions
             #region
-            try { 
+            try
+            {
                 foreach (Plugin plug in extensions.Values)
                 {
                     string extendsName = plug.Extends;
                     Plugin current = plug;
-                    
+
                     //traverse up the tree until we get to the root, which we then extend
                     while (string.IsNullOrWhiteSpace(extendsName) == false)
                     {
                         Plugin parent;
-                        if (extensions.TryGetValue(extendsName, out parent)) {
+                        if (extensions.TryGetValue(extendsName, out parent))
+                        {
                             current = parent;
                             extendsName = current.Extends;
                         }
@@ -182,7 +183,8 @@ namespace Console.Plugins
 
             //Process plugin properties
             #region
-            foreach (Plugin plug in plugins.Values) { 
+            foreach (Plugin plug in plugins.Values)
+            {
                 if (plug.NodeDataTypes != null)
                 {
                     foreach (string key in plug.NodeDataTypes.Keys)
@@ -209,7 +211,8 @@ namespace Console.Plugins
                             if (datatype.SubTypes.Count > 0)
                             {
                                 List<string> outsubs;
-                                if (subtypes.TryGetValue(key, out outsubs)) {
+                                if (subtypes.TryGetValue(key, out outsubs))
+                                {
                                     outsubs.AddRange(datatype.SubTypes);
                                 }
                                 else
@@ -272,7 +275,7 @@ namespace Console.Plugins
                 }
             }
             #endregion
-            
+
             this.Icons = icons;
             this.Plugins = plugins;
             this.Extensions = extensions;
@@ -304,7 +307,7 @@ namespace Console.Plugins
 
             foreach (string subtype in extendingtype.SubTypes)
             {
-                if (datatype.SubTypes.Contains(subtype)==false)
+                if (datatype.SubTypes.Contains(subtype) == false)
                 {
                     datatype.SubTypes.Add(subtype);
                 }

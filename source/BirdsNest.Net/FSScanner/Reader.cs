@@ -16,10 +16,10 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #endregion
-using System.Collections.Generic;
+using common;
 using Neo4j.Driver;
 using Newtonsoft.Json;
-using common;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace FSScanner

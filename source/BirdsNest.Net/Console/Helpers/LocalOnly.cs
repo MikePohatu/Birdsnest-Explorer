@@ -22,7 +22,7 @@ using System;
 
 namespace Console.Helpers
 {
-    public class LocalOnly: Attribute, IActionFilter
+    public class LocalOnly : Attribute, IActionFilter
     {
         public void OnActionExecuting(ActionExecutingContext context)
         {
@@ -32,6 +32,6 @@ namespace Console.Helpers
         public void OnActionExecuted(ActionExecutedContext context)
         {
         }
-        
+
     }
 }

@@ -16,17 +16,13 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #endregion
-using Microsoft.Extensions.Logging;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace Console.Plugins
 {
     public class Property
     {
-        public bool IndexEnforced{ get; set; } = false;
+        public bool IndexEnforced { get; set; } = false;
         public string Description { get; set; } = string.Empty;
 
         private string _type = "string";

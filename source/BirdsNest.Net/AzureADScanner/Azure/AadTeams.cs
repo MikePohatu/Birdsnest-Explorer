@@ -18,11 +18,7 @@
 #endregion
 using common;
 using Microsoft.Graph;
-using Neo4j.Driver;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace AzureADScanner.Azure
@@ -80,7 +76,7 @@ namespace AzureADScanner.Azure
                 }
 
                 if (page.NextPageRequest == null) { break; }
-                
+
                 await Connector.Instance.MakeGraphClientRequestAsync(async () =>
                 {
                     page = await page.NextPageRequest.GetAsync();

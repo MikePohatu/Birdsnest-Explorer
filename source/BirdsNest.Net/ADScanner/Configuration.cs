@@ -16,13 +16,13 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #endregion
-using System;
 using Newtonsoft.Json;
+using System;
 using System.IO;
 
 namespace ADScanner
 {
-    public class Configuration: IDisposable
+    public class Configuration : IDisposable
     {
         [JsonProperty("ID")]
         public string ID { get; set; } = string.Empty;

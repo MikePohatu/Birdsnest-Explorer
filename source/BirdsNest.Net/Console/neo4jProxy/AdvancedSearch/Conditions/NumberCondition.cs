@@ -16,14 +16,12 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #endregion
-using Newtonsoft.Json;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 
 namespace Console.neo4jProxy.AdvancedSearch.Conditions
 {
-    public class NumberCondition: ICondition
+    public class NumberCondition : ICondition
     {
         private string[] _validoperators = new string[] { "=", ">", "<", "<=", ">=" };
         private string _operator = "=";

@@ -16,16 +16,13 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #endregion
+using CMScanner.CmConverter;
 using common;
+using CSharpVitamins;
 using Neo4j.Driver;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using CSharpVitamins;
-using CMScanner.CmConverter;
 
 namespace CMScanner
 {
@@ -136,7 +133,7 @@ namespace CMScanner
             };
 
             NeoWriter.WriteHeaders();
-            
+
             foreach (IDataCollector collector in collectors)
             {
                 NeoWriter.WriteIDataCollector(collector, driver, true, true);

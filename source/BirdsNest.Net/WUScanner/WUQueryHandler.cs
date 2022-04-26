@@ -19,14 +19,11 @@
 using Microsoft.UpdateServices.Administration;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace WUScanner
 {
     public static class WUQueryHandler
-    { 
+    {
         public static void PopulateUpdateResults(IUpdateServer server, UpdateResults resultobject)
         {
             Console.WriteLine("Reading update information. This may take several minutes. Please wait...");
@@ -50,7 +47,7 @@ namespace WUScanner
                 }
                 Console.WriteLine();
             }
-            
+
             foreach (UpdateCollection col in collections)
             {
                 foreach (IUpdate update in col)

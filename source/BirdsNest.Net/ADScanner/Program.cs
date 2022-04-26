@@ -16,12 +16,12 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #endregion
-using System;
-using System.Diagnostics;
-using Neo4j.Driver;
 using ADScanner.ActiveDirectory;
 using common;
 using CSharpVitamins;
+using Neo4j.Driver;
+using System;
+using System.Diagnostics;
 using System.DirectoryServices.AccountManagement;
 
 namespace ADScanner
@@ -93,7 +93,7 @@ namespace ADScanner
             {
                 ExitError(e, "There was an error loading your configuration", 1);
             }
-            
+
 
 
             //load the neo4j config
@@ -109,9 +109,9 @@ namespace ADScanner
                 ExitError(e, "There was an error loading your neo4j configuration", 2);
             }
 
-            
+
             Console.WriteLine($"Starting scan\nScanner ID: {NeoWriter.ScannerID}\nScan ID: {NeoWriter.ScanID}\n");
-            
+
 
             NeoWriter.WriteHeaders();
 
@@ -165,7 +165,7 @@ namespace ADScanner
 
             Console.Write("Mark deleted groups");
             NeoWriter.RunQuery(StandAloneQueries.GetMarkDeletedObjectsQuery(Types.Group), nopropsdata, driver, true, true);
-            
+
             Console.WriteLine("*Finished cleaning up");
             Console.WriteLine();
 
@@ -203,10 +203,10 @@ namespace ADScanner
         {
             Console.WriteLine(message);
             Console.WriteLine(e.Message);
-            if (_batchmode == false) 
+            if (_batchmode == false)
             {
                 Console.WriteLine("Press enter to exit");
-                Console.ReadLine(); 
+                Console.ReadLine();
             }
             Environment.Exit(returncode);
         }

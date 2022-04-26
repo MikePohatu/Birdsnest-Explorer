@@ -16,18 +16,16 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #endregion
+using Microsoft.UpdateServices.Administration;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Microsoft.UpdateServices.Administration;
 
 namespace WUScanner
 {
     public static class Update
     {
-        public static object GetUpdateObject (IUpdate wsusupdate)
+        public static object GetUpdateObject(IUpdate wsusupdate)
         {
             string kb = string.Join(", ", wsusupdate.KnowledgebaseArticles.Cast<string>().ToList());
             Dictionary<string, object> properties = new Dictionary<string, object>();
@@ -70,7 +68,7 @@ namespace WUScanner
                 default:
                     throw new ArgumentException("Invalid UpdateType passed");
             }
-            
+
         }
     }
 }

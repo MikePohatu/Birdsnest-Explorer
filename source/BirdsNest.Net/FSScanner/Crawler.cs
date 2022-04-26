@@ -16,15 +16,14 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #endregion
+using Attributed;
+using common;
+using Neo4j.Driver;
 using System;
 using System.Collections.Generic;
-using System.Net;
 using System.Diagnostics;
-using Neo4j.Driver;
-using common;
-using Attributed;
+using System.Net;
 using System.Threading;
-using CSharpVitamins;
 using System.Threading.Tasks;
 
 namespace FSScanner
@@ -99,7 +98,7 @@ namespace FSScanner
             {
                 _timer.Start();
                 await Writer.SendDatastoreAsync(ds, this.Driver);
-                await Writer.AttachRootToDataStoreAsync(ds, rootpath.ToLower(), this.Driver);                    
+                await Writer.AttachRootToDataStoreAsync(ds, rootpath.ToLower(), this.Driver);
             }
             catch (Exception e)
             {
@@ -125,7 +124,7 @@ namespace FSScanner
                 while (true)
                 {
                     Thread.Sleep(5000);
-                    if (ThreadCounter.ActiveThreadCount == 0 ) { break; }
+                    if (ThreadCounter.ActiveThreadCount == 0) { break; }
                 }
 
                 await Writer.FlushFolderQueueAsync(this.Driver);

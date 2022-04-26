@@ -16,8 +16,8 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #endregion
-using System.DirectoryServices.AccountManagement;
 using System;
+using System.DirectoryServices.AccountManagement;
 
 namespace Console.Auth.Windows.Local
 {
@@ -51,7 +51,7 @@ namespace Console.Auth.Windows.Local
 
                         foreach (string u in config.Users)
                         {
-                            if (u.Equals(username,StringComparison.OrdinalIgnoreCase)) { this.IsUser = true; }
+                            if (u.Equals(username, StringComparison.OrdinalIgnoreCase)) { this.IsUser = true; }
                         }
 
                         foreach (string u in config.AdminUsers)

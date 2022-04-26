@@ -25,16 +25,12 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc.Authorization;
-using Microsoft.AspNetCore.SpaServices;
-using Microsoft.AspNetCore.SpaServices.ReactDevelopmentServer;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using System;
 using System.Diagnostics;
-using VueCliMiddleware;
 
 namespace Console
 {
@@ -45,8 +41,8 @@ namespace Console
             Configuration = configuration;
             InstallInfo.Instance.DbSvcAccount = Configuration.GetValue<string>("neo4jSettings:dbUsername");
             InstallInfo.Instance.RootPath = env.ContentRootPath.Replace("\\Console", "").Replace("\\console", "");
-            InstallInfo.Instance.DbPath = RegistryHelpers.GetServiceInstallPath("neo4j").Split(new string[] {"\\bin"}, 2, StringSplitOptions.None)[0];
-        
+            InstallInfo.Instance.DbPath = RegistryHelpers.GetServiceInstallPath("neo4j").Split(new string[] { "\\bin" }, 2, StringSplitOptions.None)[0];
+
         }
 
         public IConfiguration Configuration { get; }

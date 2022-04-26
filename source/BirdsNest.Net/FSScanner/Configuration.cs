@@ -16,15 +16,15 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #endregion
-using System;
-using System.IO;
-using System.Collections.Generic;
-using Newtonsoft.Json;
 using common;
+using Newtonsoft.Json;
+using System;
+using System.Collections.Generic;
+using System.IO;
 
 namespace FSScanner
 {
-    public class Configuration: IDisposable
+    public class Configuration : IDisposable
     {
         [JsonProperty("credentials")]
         public List<Credential> Credentials { get; set; } = new List<Credential>();
@@ -45,7 +45,7 @@ namespace FSScanner
         [JsonProperty("showprogress")]
         public bool ShowProgress { get; set; } = true;
 
-        public static Configuration LoadConfiguration (string filepath)
+        public static Configuration LoadConfiguration(string filepath)
         {
             Configuration conf;
             using (StreamReader file = File.OpenText(filepath))
@@ -81,7 +81,7 @@ namespace FSScanner
             }
 
             foreach (FileSystem fs in fslist)
-            { 
+            {
                 foreach (FileSystem checkingfs in fslist)
                 {
                     if (fs != checkingfs)

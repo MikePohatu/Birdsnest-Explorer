@@ -16,13 +16,11 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #endregion
-using System;
-using System.Collections.Generic;
 using System.Security;
 
 namespace Console.Auth.LDAP
 {
-    public class LdapConfiguration: IAuthConfiguration
+    public class LdapConfiguration : IAuthConfiguration
     {
         private SecureString bindpw; //bind pw might need to sit in memory for
 

@@ -17,12 +17,7 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #endregion
 using common;
-using Microsoft.Graph;
-using Neo4j.Driver;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace AzureADScanner.Azure
@@ -37,8 +32,8 @@ namespace AzureADScanner.Azure
                 return "MATCH (n:" + Types.User + ") " +
                     "WITH collect(DISTINCT n) as adusers " +
                     "UNWIND adusers as user " +
-                    "MATCH(aaduser: "+Types.AadUser+" { userprincipalname: user.userprincipalname}) " +
-                    "MERGE p = (user)-[r:"+Types.AadSync+"]->(aaduser) " +
+                    "MATCH(aaduser: " + Types.AadUser + " { userprincipalname: user.userprincipalname}) " +
+                    "MERGE p = (user)-[r:" + Types.AadSync + "]->(aaduser) " +
                     "SET r.lastscan = $ScanID " +
                     "SET r.scannerid = $ScannerID " +
                     "SET r.layout='mesh' " +

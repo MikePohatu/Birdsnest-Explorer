@@ -19,12 +19,11 @@
 using common;
 using Microsoft.ConfigurationManagement.ManagementProvider;
 using Neo4j.Driver;
-using System;
 using System.Collections.Generic;
 
 namespace CMScanner.CmConverter
 {
-    public class CmCollectionRelationships: IDataCollector
+    public class CmCollectionRelationships : IDataCollector
     {
         private enum RelationShipType { Limiting, Include, Exclude, Unknown }
 
@@ -107,7 +106,7 @@ namespace CMScanner.CmConverter
                         string sourceCollectionID = resource["SourceCollectionID"].StringValue;
                         object prop = new { sourceCollectionID, dependentCollectionID };
 
-                        switch (type) 
+                        switch (type)
                         {
                             case RelationShipType.Exclude:
                                 excludes.Add(prop);

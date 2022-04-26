@@ -16,19 +16,15 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #endregion
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using Console.Helpers;
 using Console.neo4jProxy;
+using Console.neo4jProxy.Indexes;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using Console.Plugins;
 using System.Reflection;
-using Console.neo4jProxy.Indexes;
-using Console.Helpers;
+using System.Threading.Tasks;
 
 namespace Console.Controllers
 {
@@ -53,7 +49,8 @@ namespace Console.Controllers
         [AllowAnonymous]
         public InstallInfo GetInstallInfo()
         {
-            if (HttpHelpers.IsLocal(HttpContext.Request)) {
+            if (HttpHelpers.IsLocal(HttpContext.Request))
+            {
                 return InstallInfo.Instance;
             }
             else

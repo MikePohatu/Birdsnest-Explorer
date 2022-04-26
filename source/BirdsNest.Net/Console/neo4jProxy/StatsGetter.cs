@@ -16,10 +16,10 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #endregion
+using Neo4j.Driver;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Neo4j.Driver;
 
 namespace Console.neo4jProxy
 {
@@ -41,7 +41,8 @@ namespace Console.neo4jProxy
 
             //get the node label stats
             string nodesquery = "MATCH (n) RETURN DISTINCT count(labels(n)) as labelCount, labels(n) as labels";
-            await this._neoservice.ProcessDelegatePerRecordFromQueryAsync(nodesquery, null, (IRecord record)=> {
+            await this._neoservice.ProcessDelegatePerRecordFromQueryAsync(nodesquery, null, (IRecord record) =>
+            {
                 if (record == null) { return; };
 
                 try
@@ -65,12 +66,13 @@ namespace Console.neo4jProxy
                 }
             });
 
-            
+
 
             //get the relationship label stats
             string edgesquery = "MATCH ()-[r]->() RETURN count(TYPE(r)) as labelCount, TYPE(r) as label";
 
-            await this._neoservice.ProcessDelegatePerRecordFromQueryAsync(edgesquery, null, (IRecord record) => {
+            await this._neoservice.ProcessDelegatePerRecordFromQueryAsync(edgesquery, null, (IRecord record) =>
+            {
                 if (record == null) { return; };
 
                 try
@@ -92,7 +94,8 @@ namespace Console.neo4jProxy
 
             //get the total node count
             string nodetotal = "MATCH (n) RETURN count(n) as nodeCount";
-            await this._neoservice.ProcessDelegatePerRecordFromQueryAsync(nodetotal, null, (IRecord record) => {
+            await this._neoservice.ProcessDelegatePerRecordFromQueryAsync(nodetotal, null, (IRecord record) =>
+            {
                 if (record == null) { return; };
 
                 try
@@ -108,7 +111,8 @@ namespace Console.neo4jProxy
 
             //get the total edge count
             string edgetotalquery = "MATCH ()-[r]-() RETURN count(r) as edgeCount";
-            await this._neoservice.ProcessDelegatePerRecordFromQueryAsync(edgetotalquery, null, (IRecord record) => {
+            await this._neoservice.ProcessDelegatePerRecordFromQueryAsync(edgetotalquery, null, (IRecord record) =>
+            {
                 if (record == null) { return; };
 
                 try

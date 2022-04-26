@@ -16,11 +16,8 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #endregion
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Newtonsoft.Json;
+using System;
 
 namespace Console.neo4jProxy.AdvancedSearch
 {
@@ -65,7 +62,7 @@ namespace Console.neo4jProxy.AdvancedSearch
             string left = string.Empty;
             string right = string.Empty;
             string pathlength;
-            string label = string.IsNullOrWhiteSpace(this.Label) ? string.Empty : ":" + this.Label;           
+            string label = string.IsNullOrWhiteSpace(this.Label) ? string.Empty : ":" + this.Label;
             string min = "";
             string max = "";
 
@@ -77,10 +74,10 @@ namespace Console.neo4jProxy.AdvancedSearch
             }
 
             if (this.Min == 1 && this.Max == 1)
-			{
-				pathlength = string.Empty;
-			}
-			else if (this.Min < 0 && this.Max < 0)
+            {
+                pathlength = string.Empty;
+            }
+            else if (this.Min < 0 && this.Max < 0)
             {
                 pathlength = "*";
             }

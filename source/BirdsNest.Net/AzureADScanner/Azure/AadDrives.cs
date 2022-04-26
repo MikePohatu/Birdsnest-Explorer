@@ -16,17 +16,12 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #endregion
+using AzureADScanner.Azure.Facades;
 using common;
 using Microsoft.Graph;
-using Neo4j.Driver;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Net.Http;
-using System.Text;
 using System.Threading.Tasks;
-using Newtonsoft.Json;
-using AzureADScanner.Azure.Facades;
 
 namespace AzureADScanner.Azure
 {
@@ -77,10 +72,10 @@ namespace AzureADScanner.Azure
                 querydata.Properties.AddRange(await ProcessRequestAsync(id, facade));
             }
             Console.Write(".");
-            foreach (string id in AadSites.Instance.SiteIDs) 
+            foreach (string id in AadSites.Instance.SiteIDs)
             {
                 var facade = FacadeSitesDrivesRequest.GetFacade(Connector.Instance.Client.Sites[id].Drives.Request().Top(999));
-                querydata.Properties.AddRange(await ProcessRequestAsync(id, facade)); 
+                querydata.Properties.AddRange(await ProcessRequestAsync(id, facade));
             }
             Console.Write(".");
             foreach (string id in AadUsers.Instance.UserIDs)
@@ -93,7 +88,8 @@ namespace AzureADScanner.Azure
             return querydata;
         }
 
-        private async Task<List<object>> ProcessRequestAsync(string id, IDrivesRequest request ) {
+        private async Task<List<object>> ProcessRequestAsync(string id, IDrivesRequest request)
+        {
             List<object> props = new List<object>();
             IDrivesCollectionPage page = null;
 

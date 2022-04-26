@@ -19,15 +19,12 @@
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace Console.neo4jProxy.AdvancedSearch.Conditions
 {
 
     //https://skrift.io/articles/archive/bulletproof-interface-deserialization-in-jsonnet/
-    public class ConditionConverter: JsonConverter
+    public class ConditionConverter : JsonConverter
     {
         public override bool CanWrite => false;
         public override bool CanRead => true;

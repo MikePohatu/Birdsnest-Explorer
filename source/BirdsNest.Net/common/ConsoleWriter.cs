@@ -99,14 +99,14 @@ namespace common
                 int origRow = Console.CursorTop;
                 int counter = 0;
 
-                for (int i = 0; i<tabstops.Length; i++)
+                for (int i = 0; i < tabstops.Length; i++)
                 {
                     counter = i;
                     if (i < strings.Length)
                     {
                         Console.SetCursorPosition(tabstops[i], origRow);
                         Console.Write(strings[i]);
-                        
+
                     }
                     else { break; }
                 }
@@ -147,11 +147,11 @@ namespace common
                     int linenum = _progresslinenumbers[index];
                     //clear the line before write
                     Console.SetCursorPosition(0, linenum);
-                    Console.Write(new string(' ', Console.BufferWidth-1));
+                    Console.Write(new string(' ', Console.BufferWidth - 1));
 
                     FitBufferWidthToString(message);
                     Console.SetCursorPosition(0, linenum);
-                    
+
                     Console.ForegroundColor = ConsoleColor.Green;
                     Console.Write("Progress: ");
                     Console.ResetColor();
@@ -168,7 +168,7 @@ namespace common
                 {
                     //clear the line
                     Console.SetCursorPosition(0, _progresslinenumbers[i]);
-                    Console.Write(new string(' ', Console.BufferWidth-1));
+                    Console.Write(new string(' ', Console.BufferWidth - 1));
                 }
                 Console.SetCursorPosition(0, _loggingline);
             }
@@ -204,11 +204,11 @@ namespace common
 
         private static void ShuntProgressMessages()
         {
-            
-            int lastlinenum = _progresslinenumbers[_progresslinenumbers.Length-1];
+
+            int lastlinenum = _progresslinenumbers[_progresslinenumbers.Length - 1];
             ClearProgress();
 
-            if (lastlinenum + 1 < Console.BufferHeight-1)
+            if (lastlinenum + 1 < Console.BufferHeight - 1)
             {
                 _loggingline++;
             }

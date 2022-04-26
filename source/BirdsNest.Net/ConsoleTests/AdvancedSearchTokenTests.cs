@@ -16,12 +16,9 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #endregion
-using NUnit.Framework;
-using System;
-using System.Collections.Generic;
-using Newtonsoft.Json;
-using Console.neo4jProxy.AdvancedSearch.Conditions;
 using Console.neo4jProxy.AdvancedSearch;
+using Newtonsoft.Json;
+using NUnit.Framework;
 
 namespace ConsoleTests
 {
@@ -61,7 +58,7 @@ namespace ConsoleTests
             }
         ]
     }
-}", 
+}",
             ExpectedResult = "(token1.tpropn1 = $val1 AND (token2.tpropn2 STARTS WITH $val2 OR token3.tpropr1 = $val3))")]
         [TestCase(@"{
     ""condition"": {

@@ -16,11 +16,8 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #endregion
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Neo4j.Driver;
+using System.Collections.Generic;
 
 namespace Console.neo4jProxy
 {
@@ -30,7 +27,7 @@ namespace Console.neo4jProxy
         public string Name { get; private set; } = string.Empty;
         public List<string> Labels { get; private set; } = new List<string>();
         public long Scope { get; private set; } = 1;
-        public IReadOnlyDictionary<string,object> Properties { get; private set; }
+        public IReadOnlyDictionary<string, object> Properties { get; private set; }
 
         public static BirdsNestNode GetNode(INode noderecord)
         {

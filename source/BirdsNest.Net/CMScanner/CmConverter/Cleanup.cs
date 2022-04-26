@@ -20,9 +20,6 @@ using common;
 using Neo4j.Driver;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace CMScanner.CmConverter
 {
@@ -60,7 +57,7 @@ namespace CMScanner.CmConverter
             }
 
             //any remaining edges
-            List<string> cmreltypes = new List<string> { 
+            List<string> cmreltypes = new List<string> {
                 Types.CMLimitingCollectionFor,
                 Types.CmExcludes,
                 Types.CmIncludes,

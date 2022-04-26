@@ -17,16 +17,12 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #endregion
 using Console.neo4jProxy;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
-using System.Threading.Tasks;
 
 namespace Console
 {
     public class ServerVersionInfo
-    {        
+    {
         public static ServerVersionInfo Instance { get; } = new ServerVersionInfo();
         private ServerVersionInfo() { }
 

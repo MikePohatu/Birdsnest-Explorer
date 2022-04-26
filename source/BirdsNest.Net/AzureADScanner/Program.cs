@@ -16,15 +16,13 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #endregion
+using AzureADScanner.Azure;
+using common;
+using CSharpVitamins;
+using Neo4j.Driver;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using common;
-using Microsoft.Graph;
-using Microsoft.Identity.Client;
-using Neo4j.Driver;
-using AzureADScanner.Azure;
-using CSharpVitamins;
 
 namespace AzureADScanner
 {
@@ -94,7 +92,7 @@ namespace AzureADScanner
                 Environment.Exit(1);
             }
 
-            
+
 
             try
             {
@@ -116,9 +114,9 @@ namespace AzureADScanner
             var aadgroupmembers = new AadGroupMemberships();
             aadgroupmembers.GroupIDs = AadGroups.Instance.GroupIDs;
 
-            List <IDataCollectorAsync> collectors = new List<IDataCollectorAsync>
+            List<IDataCollectorAsync> collectors = new List<IDataCollectorAsync>
             {
-                
+
                 AadUsers.Instance,
                 new AadUserToAdUserConnections(),
                 AadGroups.Instance,
@@ -174,6 +172,6 @@ namespace AzureADScanner
             Console.WriteLine("/batch makes scanner run in batch mode and does not wait before exit");
         }
 
-        
+
     }
 }

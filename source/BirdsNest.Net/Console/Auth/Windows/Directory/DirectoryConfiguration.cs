@@ -18,7 +18,7 @@
 #endregion
 namespace Console.Auth.Windows.Directory
 {
-    public class DirectoryConfiguration: IAuthConfiguration
+    public class DirectoryConfiguration : IAuthConfiguration
     {
         public string Domain { get; set; }
         public string Name { get; set; }

@@ -19,15 +19,11 @@
 using common;
 using Microsoft.ConfigurationManagement.ManagementProvider;
 using Neo4j.Driver;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace CMScanner.CmConverter
 {
-    public class CmCollectionMemberships: IDataCollector
+    public class CmCollectionMemberships : IDataCollector
     {
         public string ProgressMessage { get { return "Creating collection membership relationships"; } }
         public string Query
@@ -62,7 +58,7 @@ namespace CMScanner.CmConverter
                     // Enumerate through the collection of objects returned by the query.
                     foreach (IResultObject resource in results)
                     {
-                        string colids = ResultObjectHandler.GetString(resource, "CollectionID"); 
+                        string colids = ResultObjectHandler.GetString(resource, "CollectionID");
                         string resourceid = ResultObjectHandler.GetString(resource, "ResourceID");
 
                         //split the collection list and 

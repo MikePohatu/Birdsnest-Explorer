@@ -16,15 +16,10 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #endregion
-using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace Console.neo4jProxy.AdvancedSearch.Conditions
 {
-    public class RegExCondition: ICondition
+    public class RegExCondition : ICondition
     {
         public string Type { get { return "REGEX"; } }
         public string Name { get; set; }

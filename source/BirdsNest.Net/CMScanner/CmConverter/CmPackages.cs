@@ -19,15 +19,11 @@
 using common;
 using Microsoft.ConfigurationManagement.ManagementProvider;
 using Neo4j.Driver;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace CMScanner.CmConverter
 {
-    public class CmPackages: IDataCollector
+    public class CmPackages : IDataCollector
     {
         public string ProgressMessage { get { return "Creating package nodes"; } }
         public string Query
@@ -68,7 +64,7 @@ namespace CMScanner.CmConverter
                             ID = ResultObjectHandler.GetString(resource, "PackageID"),
                             Description = ResultObjectHandler.GetString(resource, "Description"),
                             PackageType = ((PackageType)ResultObjectHandler.GetInt(resource, "PackageType")).ToString()
-                    });
+                        });
                     }
                 }
             }

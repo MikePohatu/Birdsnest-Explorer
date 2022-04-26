@@ -16,21 +16,17 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #endregion
-using Newtonsoft.Json;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 
 namespace Console.neo4jProxy.AdvancedSearch.Conditions
 {
-    public class StringCondition: ICondition
+    public class StringCondition : ICondition
     {
         private string _operator = "=";
         private string _regexprefix = string.Empty;
         private string _regexsuffix = string.Empty;
-        
+
 
         public string Type { get { return "STRING"; } }
 
@@ -38,14 +34,16 @@ namespace Console.neo4jProxy.AdvancedSearch.Conditions
         public string Property { get; set; }
 
         private string _not = string.Empty;  //this will equal " NOT " in a negation situation
-        public bool Not { 
+        public bool Not
+        {
             get { return this._not == string.Empty ? false : true; }
-            set { 
-                if (value == true) 
+            set
+            {
+                if (value == true)
                 { this._not = "NOT "; }
-                else 
-                { this._not = string.Empty; } 
-            } 
+                else
+                { this._not = string.Empty; }
+            }
         }
 
         public string Value { get; set; }
@@ -78,7 +76,7 @@ namespace Console.neo4jProxy.AdvancedSearch.Conditions
         public void Tokenize(SearchTokens tokens)
         {
             this.TokenizedName = tokens.GetNameToken(this.Name);
-            if (this.CaseSensitive == true )
+            if (this.CaseSensitive == true)
             {
                 this.TokenizedValue = tokens.GetValueToken(this.Value);
             }
@@ -87,7 +85,7 @@ namespace Console.neo4jProxy.AdvancedSearch.Conditions
                 string regex = "(?i)" + this._regexprefix + Regex.Escape(this.Value) + this._regexsuffix;
                 this.TokenizedValue = tokens.GetValueToken(regex);
             }
-            
+
         }
 
         private void SetComparator(string s)

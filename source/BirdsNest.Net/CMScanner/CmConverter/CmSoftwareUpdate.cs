@@ -19,15 +19,11 @@
 using common;
 using Microsoft.ConfigurationManagement.ManagementProvider;
 using Neo4j.Driver;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace CMScanner.CmConverter
 {
-    public class CmSoftwareUpdate: IDataCollector
+    public class CmSoftwareUpdate : IDataCollector
     {
         public string ProgressMessage { get { return "Creating software update nodes"; } }
         public string Query

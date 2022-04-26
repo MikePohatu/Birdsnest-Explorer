@@ -17,11 +17,10 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #endregion
 using common;
-using System.Collections.Generic;
 
 namespace ADScanner.ActiveDirectory
 {
-    public class ManagerCollector: IDataCollector
+    public class ManagerCollector : IDataCollector
     {
         public string ProgressMessage { get { return "Creating manager relationships"; } }
 

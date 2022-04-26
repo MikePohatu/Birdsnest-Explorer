@@ -16,10 +16,10 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #endregion
-using System.DirectoryServices;
-using System.Text;
 using System.Collections.Generic;
+using System.DirectoryServices;
 using System.Security.Principal;
+using System.Text;
 
 namespace ADScanner.ActiveDirectory
 {
@@ -39,7 +39,7 @@ namespace ADScanner.ActiveDirectory
                 {
                     res = result.Properties[property][0].ToString();
                 }
-                    
+
             }
             if (res == null) { return string.Empty; }
             return res;
@@ -64,7 +64,7 @@ namespace ADScanner.ActiveDirectory
         }
 
         public static string GetSidAsString(SearchResult result)
-        { 
+        {
             string property = "objectSid";
             if (result?.Properties[property] != null && result.Properties[property].Count > 0)
             {

@@ -16,21 +16,17 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #endregion
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-
-using System.Security.Claims;
+using Console.Auth;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
-
-using Console.Auth;
-using Microsoft.Extensions.Logging;
 using Microsoft.AspNetCore.Authorization;
-using Console.Plugins;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
+using System;
+using System.Collections.Generic;
+using System.Security.Claims;
+using System.Threading.Tasks;
 
 namespace Console.Controllers
 {
@@ -83,7 +79,7 @@ namespace Console.Controllers
                     result.Name = claim.Value;
                 }
             }
-            
+
             if (result.IsAuthorized == false) { await Logout(); }
             result.IsProcessed = true;
             return result;
@@ -103,7 +99,7 @@ namespace Console.Controllers
             foreach (var cookie in HttpContext.Request.Cookies)
             {
                 if (cookie.Key == ".AspNetCore.Cookies" || cookie.Key.StartsWith(".AspNetCore.Antiforgery."))
-                { 
+                {
                     HttpContext.Response.Cookies.Delete(cookie.Key);
                 }
             }
@@ -198,7 +194,7 @@ namespace Console.Controllers
             {
                 result.Message = "There was an error logging in: " + e.Message;
                 this._logger.LogWarning("Login error: {username}. Error: {error}", details.Username, e.Message);
-                this._logger.LogTrace(e,"Login error stacktrace");
+                this._logger.LogTrace(e, "Login error stacktrace");
             }
             return result;
         }

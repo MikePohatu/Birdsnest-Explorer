@@ -24,7 +24,7 @@ using System.DirectoryServices.AccountManagement;
 
 namespace ADScanner.ActiveDirectory
 {
-    class ForeignSecurityPrincipalCollector: IDataCollector
+    class ForeignSecurityPrincipalCollector : IDataCollector
     {
         private PrincipalContext _context;
 
@@ -57,7 +57,7 @@ namespace ADScanner.ActiveDirectory
         {
             NeoQueryData querydata = new NeoQueryData();
             List<object> propertylist = new List<object>();
-            
+
 
             try
             {

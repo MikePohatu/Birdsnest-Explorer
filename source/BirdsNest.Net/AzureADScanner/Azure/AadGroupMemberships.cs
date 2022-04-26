@@ -18,18 +18,14 @@
 #endregion
 using common;
 using Microsoft.Graph;
-using Neo4j.Driver;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net.Http;
-using System.Text;
-using System.Threading.Tasks;
 using Newtonsoft.Json;
+using System.Collections.Generic;
+using System.Net.Http;
+using System.Threading.Tasks;
 
 namespace AzureADScanner.Azure
 {
-    public class AadGroupMemberships: IDataCollectorAsync
+    public class AadGroupMemberships : IDataCollectorAsync
     {
         public List<string> GroupIDs { get; set; }
 
@@ -39,11 +35,11 @@ namespace AzureADScanner.Azure
             get
             {
                 return "UNWIND $Properties AS prop " +
-                    "MATCH(g:" +Types.AadGroup+" { id: prop.groupid}) " +
+                    "MATCH(g:" + Types.AadGroup + " { id: prop.groupid}) " +
                     "MATCH(m:" + Types.AadObject + " { id: prop.memberid}) " +
-                    "MERGE p = (m)-[r:" +Types.AadMemberOf+"]->(g) " +
+                    "MERGE p = (m)-[r:" + Types.AadMemberOf + "]->(g) " +
                     "SET r.lastscan = $ScanID " +
-                    "SET r.scannerid = $ScannerID " + 
+                    "SET r.scannerid = $ScannerID " +
                     "SET r.layout='mesh' " +
                     "RETURN p";
             }
@@ -118,7 +114,7 @@ namespace AzureADScanner.Azure
 
                 querydata.Properties = propertylist;
             }
-            
+
             return querydata;
         }
     }

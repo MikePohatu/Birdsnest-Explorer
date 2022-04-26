@@ -16,10 +16,10 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #endregion
+using Neo4j.Driver;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Neo4j.Driver;
 
 namespace Console.neo4jProxy.Indexes
 {
@@ -34,9 +34,10 @@ namespace Console.neo4jProxy.Indexes
             string propertyName = string.Empty;
             string state = string.Empty;
             string type = string.Empty;
-            SortedDictionary <string, SortedDictionary<string, Index>> indexes = new SortedDictionary<string, SortedDictionary<string, Index>>();
+            SortedDictionary<string, SortedDictionary<string, Index>> indexes = new SortedDictionary<string, SortedDictionary<string, Index>>();
 
-            await service.ProcessDelegatePerRecordFromQueryAsync(query, null, (IRecord record) => {
+            await service.ProcessDelegatePerRecordFromQueryAsync(query, null, (IRecord record) =>
+            {
                 if (record == null) { return; };
 
                 try
@@ -57,7 +58,7 @@ namespace Console.neo4jProxy.Indexes
                         indexes.Add(labelName, indexdic);
                     }
 
-                    indexdic.Add(propertyName, new Index {Label = labelName, IndexName = indexName, PropertyName = propertyName, State = state, IsConstraint = isconstraint });
+                    indexdic.Add(propertyName, new Index { Label = labelName, IndexName = indexName, PropertyName = propertyName, State = state, IsConstraint = isconstraint });
                 }
                 catch (Exception e)
                 {

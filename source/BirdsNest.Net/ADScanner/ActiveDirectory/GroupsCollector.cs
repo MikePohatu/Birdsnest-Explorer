@@ -24,7 +24,7 @@ using System.DirectoryServices.AccountManagement;
 
 namespace ADScanner.ActiveDirectory
 {
-    public class GroupsCollector: IDataCollector
+    public class GroupsCollector : IDataCollector
     {
         const string SCOPE_GLOBAL = "global";
         const string SCOPE_UNIVERSAL = "universal";
@@ -57,7 +57,7 @@ namespace ADScanner.ActiveDirectory
                 " SET n.scope = 0" +
                 " SET n.grouptype = g.grouptype" +
                 " SET n.membercount = g.membercount" +
-                " SET n.type ='" + Types.Group +"'" +
+                " SET n.type ='" + Types.Group + "'" +
                 " SET n.lastscan = $ScanID" +
                 " RETURN n.name";
             }

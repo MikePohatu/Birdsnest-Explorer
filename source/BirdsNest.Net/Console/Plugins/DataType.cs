@@ -16,11 +16,9 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #endregion
-using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 
 namespace Console.Plugins
 {
@@ -28,19 +26,19 @@ namespace Console.Plugins
     {
         public Boolean Enabled { get; set; } = true;
         private List<string> _propertynames;
-        public List<string> PropertyNames 
-        { 
-            get 
-            { 
+        public List<string> PropertyNames
+        {
+            get
+            {
                 if (this._propertynames == null)
                 {
                     this._propertynames = this.Properties.Keys.ToList();
                 }
-                return this._propertynames; 
-            } 
+                return this._propertynames;
+            }
         }
 
-        public SortedDictionary<string,Property> Properties { get; set; } = new SortedDictionary<string, Property>();
+        public SortedDictionary<string, Property> Properties { get; set; } = new SortedDictionary<string, Property>();
 
         public string Default { get; set; } = string.Empty;
         public List<string> SubTypes { get; set; } = new List<string>();

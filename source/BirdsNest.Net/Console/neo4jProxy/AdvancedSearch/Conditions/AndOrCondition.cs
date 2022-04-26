@@ -17,14 +17,12 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #endregion
 using Newtonsoft.Json;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 
 namespace Console.neo4jProxy.AdvancedSearch.Conditions
 {
-    public class AndOrCondition: ICondition
+    public class AndOrCondition : ICondition
     {
         public string Type { get; set; }
 

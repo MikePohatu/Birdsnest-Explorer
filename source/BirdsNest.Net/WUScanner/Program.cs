@@ -16,17 +16,14 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #endregion
+using common;
+using CSharpVitamins;
+using Microsoft.UpdateServices.Administration;
+using Neo4j.Driver;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Microsoft.UpdateServices.Administration;
-using common;
-using Neo4j.Driver;
 using WUScanner.Neo4j;
-using CSharpVitamins;
 
 namespace WUScanner
 {
@@ -85,7 +82,7 @@ namespace WUScanner
             {
                 wuconfig = Configuration.LoadConfiguration(configfile);
 
-                if (string.IsNullOrWhiteSpace(wuconfig.ServerName) || wuconfig.Port <= 0 )
+                if (string.IsNullOrWhiteSpace(wuconfig.ServerName) || wuconfig.Port <= 0)
                 {
                     throw new ArgumentException("Configuration is invalid");
                 }
@@ -120,7 +117,7 @@ namespace WUScanner
             {
                 if (!string.IsNullOrWhiteSpace(wuconfig.UserName))
                 {
- 
+
                 }
                 else
                 {
@@ -157,13 +154,13 @@ namespace WUScanner
                     sublist = ListExtensions.ListPop(updateinfo.Updates, 1000);
                     Writer.MergeUpdates(sublist, driver, scanid);
                 }
-                if (updateinfo.Updates.Count > 0) 
+                if (updateinfo.Updates.Count > 0)
                 {
                     sublist = updateinfo.Updates;
-                    Writer.MergeUpdates(sublist, driver, scanid); 
+                    Writer.MergeUpdates(sublist, driver, scanid);
                 }
                 Console.WriteLine();
-                
+
 
                 Console.Write("Writing supersedence to database.");
                 while (updateinfo.SupersededUpdates.Count > 1000)
@@ -182,9 +179,10 @@ namespace WUScanner
                 Console.WriteLine(e.Message);
             }
 
-            if (batchmode == false) {
+            if (batchmode == false)
+            {
                 Console.WriteLine("Press Enter to continue");
-                Console.ReadLine(); 
+                Console.ReadLine();
             }
         }
 

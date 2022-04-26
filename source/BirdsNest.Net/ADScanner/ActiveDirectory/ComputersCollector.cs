@@ -37,7 +37,7 @@ namespace ADScanner.ActiveDirectory
                 return "UNWIND $Properties AS c" +
                     " MERGE (n:" + Types.ADObject + "{id:c.id, domainid: $ScannerID})" +
                     " SET n:" + Types.Device +
-                    " SET n:" + Types.Computer + 
+                    " SET n:" + Types.Computer +
                     " REMOVE n:" + Types.Deleted +
                     " SET n.info = c.info" +
                     " SET n.description = c.description" +
@@ -123,7 +123,7 @@ namespace ADScanner.ActiveDirectory
                         Program.ExitError("Error retrieving computers from AD", ErrorCodes.ComputersCollectorSearcherNull);
                     }
 
-                    
+
                 }
                 catch (Exception e)
                 {

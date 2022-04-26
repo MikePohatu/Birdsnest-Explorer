@@ -16,15 +16,12 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #endregion
-using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Threading.Tasks;
 using Microsoft.Graph;
+using System.Threading.Tasks;
 
 namespace AzureADScanner.Azure.Facades
 {
-    public class FacadeSitesDrivesRequest: IDrivesRequest
+    public class FacadeSitesDrivesRequest : IDrivesRequest
     {
         private ISiteDrivesCollectionRequest _base;
 

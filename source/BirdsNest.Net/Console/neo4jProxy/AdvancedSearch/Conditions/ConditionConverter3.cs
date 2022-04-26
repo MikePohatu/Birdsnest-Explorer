@@ -17,13 +17,12 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #endregion
 using System;
-using System.Reflection;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
 namespace Console.neo4jProxy.AdvancedSearch.Conditions
 {
-    public class ConditionConverter3: JsonConverter<ICondition>
+    public class ConditionConverter3 : JsonConverter<ICondition>
     {
         public override ICondition Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
         {
@@ -54,7 +53,7 @@ namespace Console.neo4jProxy.AdvancedSearch.Conditions
                     switch (val)
                     {
                         case "AND":
-                            
+
                             retcond = JsonSerializer.Deserialize<AndOrCondition>(ref reader, options);
                             break;
                         case "OR":
@@ -77,12 +76,12 @@ namespace Console.neo4jProxy.AdvancedSearch.Conditions
                     }
 
                     return retcond;
-                } 
+                }
                 else
                 {
                     reader.Skip();
                 }
-                
+
             }
 
             return null;

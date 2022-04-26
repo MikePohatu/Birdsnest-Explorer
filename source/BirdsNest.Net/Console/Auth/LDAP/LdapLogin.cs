@@ -16,12 +16,12 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #endregion
-using System;
 using Novell.Directory.Ldap;
+using System;
 
 namespace Console.Auth.LDAP
 {
-    public class LdapLogin: ILogin
+    public class LdapLogin : ILogin
     {
         public string CN { get; private set; } = string.Empty;
         public string ID { get; private set; } = string.Empty;
@@ -105,14 +105,14 @@ namespace Console.Auth.LDAP
                                         this.IsUser = true;
                                     }
                                 }
-                                
+
                             }
                         }
 
                         cn.Bind(this.CN, password);
 
                         this.IsAuthenticated = true;
-                        cn.Disconnect();  
+                        cn.Disconnect();
                     }
                     catch
                     {
@@ -123,7 +123,7 @@ namespace Console.Auth.LDAP
                 catch
                 {
                     this.IsAuthenticated = false;
-                }                
+                }
             }
         }
 

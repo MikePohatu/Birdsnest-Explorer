@@ -16,16 +16,12 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #endregion
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Newtonsoft.Json;
+using System;
 
 namespace common
 {
-    public class Credential: IDisposable
+    public class Credential : IDisposable
     {
         [JsonProperty("id")]
         public string ID { get; set; }

@@ -16,12 +16,12 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #endregion
-using System.Collections.Generic;
+using common;
 using Neo4j.Driver;
 using System;
-using System.Text;
-using common;
 using System.Collections.Concurrent;
+using System.Collections.Generic;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace FSScanner
@@ -139,7 +139,7 @@ namespace FSScanner
                 fsid = this.FsID
             });
 
-            TransactionResult<List<string>> result = new TransactionResult<List<string>>( await NeoWriter.RunQueryAsync(query, querydata, driver));
+            TransactionResult<List<string>> result = new TransactionResult<List<string>>(await NeoWriter.RunQueryAsync(query, querydata, driver));
 
             return result.CreatedEdgeCount;
         }
@@ -189,12 +189,12 @@ namespace FSScanner
             NeoQueryData querydata = new NeoQueryData();
             querydata.Properties = new List<object>();
             querydata.Properties.Add(new
-                {
+            {
                 fsid = this.FsID,
-                    domainpermissions = folder.DomainPermissions, 
-                    builtinperms = folder.BuiltinPermissions,
-                    path = folder.Path
-                });
+                domainpermissions = folder.DomainPermissions,
+                builtinperms = folder.BuiltinPermissions,
+                path = folder.Path
+            });
 
             TransactionResult<List<string>> result = new TransactionResult<List<string>>(await NeoWriter.RunQueryAsync(query, querydata, driver));
 
@@ -203,7 +203,7 @@ namespace FSScanner
 
         public async Task<int> SendDatastoreAsync(DataStore ds, IDriver driver)
         {
-            string query = "UNWIND $Properties AS prop" + 
+            string query = "UNWIND $Properties AS prop" +
                 " MERGE (n:" + Types.Datastore + " {name:prop.Name})" +
                 " SET n.comment=prop.Comment" +
                 " SET n.host=prop.Host" +
@@ -224,7 +224,7 @@ namespace FSScanner
 
         public async Task<int> AttachRootToDataStoreAsync(DataStore ds, string rootpath, IDriver driver)
         {
-            string query = "UNWIND $Properties AS prop" + 
+            string query = "UNWIND $Properties AS prop" +
                 " MERGE (datastore:" + Types.Datastore + " {name:prop.dsname})" +
                 " MERGE (root:" + Types.Folder + " {path:prop.rootpath})" +
                 " MERGE (datastore)-[r:" + Types.Hosts + "]->(root)" +
@@ -246,7 +246,7 @@ namespace FSScanner
 
         public async Task<int> CleanupChangedFoldersAsync(string rootpath, IDriver driver)
         {
-            string query = "UNWIND $Properties AS prop" + 
+            string query = "UNWIND $Properties AS prop" +
                 " MATCH (f:" + Types.Folder + ")" +
                 " WHERE f.fsid = prop.fsid AND f.lastscan<>$ScanID" +
                 " DETACH DELETE f";
@@ -265,8 +265,8 @@ namespace FSScanner
 
         public async Task<int> CleanupConnectionsAsync(string rootpath, IDriver driver)
         {
-            string query = "UNWIND $Properties AS prop" + 
-                " MATCH (:" + Types.Folder + " {fsid: prop.fsid})-[r]-()"+
+            string query = "UNWIND $Properties AS prop" +
+                " MATCH (:" + Types.Folder + " {fsid: prop.fsid})-[r]-()" +
                 " WHERE r.fsid = prop.fsid AND r.lastscan <> $ScanID" +
                 " DELETE r ";
 

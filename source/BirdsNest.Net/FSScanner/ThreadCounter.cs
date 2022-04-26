@@ -16,7 +16,6 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #endregion
-using System.Threading;
 
 namespace FSScanner
 {
@@ -40,9 +39,9 @@ namespace FSScanner
         {
             lock (_locker)
             {
-                for (int i=0; i<_threads.Length;i++)
+                for (int i = 0; i < _threads.Length; i++)
                 {
-                    if (_threads[i]==false)
+                    if (_threads[i] == false)
                     {
                         _threads[i] = true;
                         ActiveThreadCount++;

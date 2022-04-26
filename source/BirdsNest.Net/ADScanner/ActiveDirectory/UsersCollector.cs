@@ -24,7 +24,7 @@ using System.DirectoryServices.AccountManagement;
 
 namespace ADScanner.ActiveDirectory
 {
-    public class UsersCollector: IDataCollector
+    public class UsersCollector : IDataCollector
     {
         private PrincipalContext _context;
 

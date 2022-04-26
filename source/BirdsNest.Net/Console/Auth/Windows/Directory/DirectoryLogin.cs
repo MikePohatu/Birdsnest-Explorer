@@ -20,7 +20,7 @@ using System.DirectoryServices.AccountManagement;
 
 namespace Console.Auth.Windows.Directory
 {
-    public class DirectoryLogin: ILogin
+    public class DirectoryLogin : ILogin
     {
         public string ID { get; private set; } = string.Empty;
         public string GivenName { get; private set; } = string.Empty;
@@ -44,7 +44,7 @@ namespace Console.Auth.Windows.Directory
                     using (UserPrincipal user = AccountAuthorizer.GetUserPrincipal(context, username))
                     {
                         this.GivenName = user.GivenName != null ? user.GivenName : string.Empty;
-                        this.Surname = user.Surname != null? user.Surname : string.Empty;
+                        this.Surname = user.Surname != null ? user.Surname : string.Empty;
                         this.ID = user.Sid.Value;
                         this.Name = user.UserPrincipalName;
 
@@ -65,6 +65,6 @@ namespace Console.Auth.Windows.Directory
                 }
             }
         }
-        
+
     }
 }

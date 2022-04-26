@@ -21,9 +21,9 @@
 //string which should be unique if using in vue v-for.
 //Name can be used for :key, LabelledNodes uses Node label for the key, and
 //a List of nodes for that label 
+using Console.neo4jProxy;
 using System.Collections.Generic;
 using System.Linq;
-using Console.neo4jProxy;
 
 namespace Console.Vue
 {
@@ -40,7 +40,8 @@ namespace Console.Vue
                 {
                     this.Sort();
                     return this._labelledNodes;
-                } else
+                }
+                else
                 {
                     return this._labelledNodes;
                 }

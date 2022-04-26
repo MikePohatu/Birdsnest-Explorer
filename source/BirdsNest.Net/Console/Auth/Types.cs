@@ -16,17 +16,13 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #endregion
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace Console.Auth
 {
     public static class Types
     {
         public const string BirdsNestAdminsPolicy = "IsBirdsNestAdmin";
-        public const string BirdsNestUsersPolicy ="IsBirdsNestUser";
+        public const string BirdsNestUsersPolicy = "IsBirdsNestUser";
 
         public const string BirdsNestAdminsClaim = "BirdsNestAdmins";
         public const string BirdsNestUsersClaim = "BirdsNestUsers";

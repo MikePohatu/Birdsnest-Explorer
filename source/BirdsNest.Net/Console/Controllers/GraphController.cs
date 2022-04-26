@@ -16,16 +16,15 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #endregion
+using Console.neo4jProxy;
+using Console.Plugins;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Console.neo4jProxy;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
-using Console.Plugins;
 
 namespace Console.Controllers
 {
@@ -67,7 +66,7 @@ namespace Console.Controllers
 
         // GET api/graph/node/related?id=1&id=2
         [HttpGet("node/related")]
-        public async Task<List<RelatedDetail>> GetRelatedAsync([FromQuery(Name = "id")]List<long> ids)
+        public async Task<List<RelatedDetail>> GetRelatedAsync([FromQuery(Name = "id")] List<long> ids)
         {
             List<RelatedDetail> details = new List<RelatedDetail>();
             try
@@ -80,50 +79,50 @@ namespace Console.Controllers
                     RelatedDetail detail = new RelatedDetail(nodeResultSet.Nodes.First(), rs);
                     details.Add(detail);
                 }
-                
+
             }
             catch (Exception e)
             {
                 this._logger.LogError("Error getting related details for node id {0}: {1}", String.Join(" ,", ids), e.Message);
             }
-            
+
             return details;
         }
 
         // GET api/graph/nodes?id=1&id=2
         [HttpGet("nodes")]
-        public async Task<ResultSet> GetNodes([FromQuery(Name = "id")]List<long> ids)
+        public async Task<ResultSet> GetNodes([FromQuery(Name = "id")] List<long> ids)
         {
             return await this._service.GetNodesAsync(ids);
         }
 
         // GET: api/graph/node/values
         [HttpGet("node/values")]
-        public async Task<IEnumerable<string>> GetNodeValues([FromQuery]string type, [FromQuery]string property, [FromQuery]string searchterm)
+        public async Task<IEnumerable<string>> GetNodeValues([FromQuery] string type, [FromQuery] string property, [FromQuery] string searchterm)
         {
             return await this._service.SearchNodePropertyValuesAsync(type, property, searchterm);
         }
 
-		// GET: api/graph/node/values
-		[HttpGet("node/namevalues")]
-		public async Task<IEnumerable<string>> GetNodeNameValues([FromQuery]string searchterm)
-		{
-			return await this._service.SearchNodePropertyValuesAsync(null, "name", searchterm);
-		}
+        // GET: api/graph/node/values
+        [HttpGet("node/namevalues")]
+        public async Task<IEnumerable<string>> GetNodeNameValues([FromQuery] string searchterm)
+        {
+            return await this._service.SearchNodePropertyValuesAsync(null, "name", searchterm);
+        }
 
 
-		//edges stuff
-		//****************
-		// POST: api/graph/edges
-		[HttpGet("edges")]
-        public async Task<ResultSet> GetEdgesForNode([FromQuery]List<long> nodeid)
+        //edges stuff
+        //****************
+        // POST: api/graph/edges
+        [HttpGet("edges")]
+        public async Task<ResultSet> GetEdgesForNode([FromQuery] List<long> nodeid)
         {
             return await this._service.GetRelationshipsAsync(nodeid);
         }
 
         [ValidateAntiForgeryToken]
         [HttpPost("edges")]
-        public async Task<ResultSet> GetEdgesForNodes([FromBody]List<long> value)
+        public async Task<ResultSet> GetEdgesForNodes([FromBody] List<long> value)
         {
             return await this._service.GetRelationshipsAsync(value);
         }
@@ -131,7 +130,7 @@ namespace Console.Controllers
         // POST api/graph/directloops
         [ValidateAntiForgeryToken]
         [HttpPost("directloops")]
-        public async Task<object> GetDirectLoopsForNodes([FromBody]List<long> value)
+        public async Task<object> GetDirectLoopsForNodes([FromBody] List<long> value)
         {
             var d = await this._service.GetDirectLoopsAsync(value);
             return d;
@@ -139,7 +138,7 @@ namespace Console.Controllers
 
         // POST api/graph/edges/direct
         [HttpPost("edges/direct")]
-        public async Task<ResultSet> GetDirectEdgesForNodes([FromBody]List<long> nodeids)
+        public async Task<ResultSet> GetDirectEdgesForNodes([FromBody] List<long> nodeids)
         {
             var d = await this._service.GetDirectRelationshipsAsync(nodeids);
             return d;
@@ -147,7 +146,7 @@ namespace Console.Controllers
 
         // GET: api/graph/edge/values
         [HttpGet("edge/values")]
-        public async Task<IEnumerable<string>> GetEdgeValues([FromQuery]string type, [FromQuery]string property, [FromQuery]string searchterm)
+        public async Task<IEnumerable<string>> GetEdgeValues([FromQuery] string type, [FromQuery] string property, [FromQuery] string searchterm)
         {
             return await this._service.SearchEdgePropertyValuesAsync(type, property, searchterm);
         }

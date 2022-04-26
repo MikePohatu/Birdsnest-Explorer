@@ -19,22 +19,18 @@
 using common;
 using Microsoft.ConfigurationManagement.ManagementProvider;
 using Neo4j.Driver;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace CMScanner.CmConverter
 {
-    public class CmApplicationsInTaskSequences: IDataCollector
+    public class CmApplicationsInTaskSequences : IDataCollector
     {
         public string ProgressMessage { get { return "Creating application/task sequence references"; } }
         public string Query
         {
             get
             {
-                return "UNWIND $Properties AS prop " + 
+                return "UNWIND $Properties AS prop " +
                 "MATCH (app:" + Types.CMApplication + " {id:prop.appid}) " +
                 "MATCH (ts:" + Types.CMTaskSequence + " {id:prop.tsid }) " +
                 "MERGE p=(ts)-[r:" + Types.CMReferences + "]->(app) " +

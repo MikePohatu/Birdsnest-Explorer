@@ -16,14 +16,14 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #endregion
-using System;
-using System.IO;
 using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
+using System;
+using System.IO;
 
 namespace Console.neo4jProxy
 {
-    public class NeoConfiguration: IDisposable
+    public class NeoConfiguration : IDisposable
     {
         [JsonProperty("dbURI")]
         public string DB_URI { get; set; }
@@ -58,15 +58,15 @@ namespace Console.neo4jProxy
         {
             NeoConfiguration conf = null;
             JsonSerializer serializer = new JsonSerializer();
-            if (string.IsNullOrEmpty(json) == false) 
+            if (string.IsNullOrEmpty(json) == false)
             {
                 using (StringReader reader = new StringReader(json))
                 {
                     conf = (NeoConfiguration)serializer.Deserialize(reader, typeof(NeoConfiguration));
                 }
             }
-            
-                
+
+
             return conf;
         }
 

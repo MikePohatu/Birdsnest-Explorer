@@ -17,12 +17,7 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #endregion
 using NUnit.Framework;
-using System;
-using System.Collections.Generic;
-using System.Text;
-using Console.neo4jProxy;
 //using Console.ActiveDirectory;
-using Newtonsoft.Json;
 
 namespace ConsoleTests
 {

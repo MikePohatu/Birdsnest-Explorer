@@ -16,9 +16,8 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #endregion
-using System.Collections.Generic;
 using Console.Vue;
-using System.Linq;
+using System.Collections.Generic;
 
 namespace Console.neo4jProxy
 {
@@ -71,7 +70,7 @@ namespace Console.neo4jProxy
                 }
                 nodelist = this.OutNodesByLabel;
                 this.OutNodesByEdgeLabel.AddNode(workingnode, edge.Label);
-                
+
             }
             else
             {
@@ -86,7 +85,7 @@ namespace Console.neo4jProxy
             foreach (string label in workingnode.Labels)
             {
                 nodelist.AddNode(workingnode, label);
-            } 
+            }
         }
     }
 }

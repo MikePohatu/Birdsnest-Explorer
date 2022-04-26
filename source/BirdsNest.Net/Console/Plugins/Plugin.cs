@@ -32,6 +32,6 @@ namespace Console.Plugins
         public Dictionary<string, DataType> NodeDataTypes { get; private set; } = new Dictionary<string, DataType>();
 
         public SortedDictionary<string, DataType> EdgeDataTypes { get; private set; } = new SortedDictionary<string, DataType>();
-        public SortedDictionary<string,Report> Reports { get; private set; } = new SortedDictionary<string, Report>();
+        public SortedDictionary<string, Report> Reports { get; private set; } = new SortedDictionary<string, Report>();
     }
 }

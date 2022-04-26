@@ -16,11 +16,9 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #endregion
-using System.Collections.Generic;
-using System.Text;
-using Neo4j.Driver;
 using common;
-using Microsoft.UpdateServices.Administration;
+using Neo4j.Driver;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace WUScanner.Neo4j

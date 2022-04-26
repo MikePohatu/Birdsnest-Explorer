@@ -16,9 +16,6 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #endregion
-using System;
-using System.Configuration;
-using System.DirectoryServices;
 using System.DirectoryServices.AccountManagement;
 
 namespace ADScanner.ActiveDirectory
@@ -40,7 +37,7 @@ namespace ADScanner.ActiveDirectory
                 {
                     context = new PrincipalContext(ContextType.Domain, config.Domain, config.ContainerDN, options, config.Username, config.Password);
                 }
-                
+
             }
             else
             {

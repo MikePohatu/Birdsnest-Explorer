@@ -19,15 +19,11 @@
 using common;
 using Microsoft.ConfigurationManagement.ManagementProvider;
 using Neo4j.Driver;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace CMScanner.CmConverter
 {
-    public class CmPackagePrograms: IDataCollector
+    public class CmPackagePrograms : IDataCollector
     {
         public string ProgressMessage { get { return "Creating package programs"; } }
         public string Query
@@ -93,7 +89,7 @@ namespace CMScanner.CmConverter
 
         public string GetSummaryString(IResultSummary summary)
         {
-            return summary.Counters.NodesCreated + " nodes created, " + summary.Counters.RelationshipsCreated + " relationships created";        
+            return summary.Counters.NodesCreated + " nodes created, " + summary.Counters.RelationshipsCreated + " relationships created";
         }
 
         public static CmPackagePrograms GetInstance() { return new CmPackagePrograms(); }

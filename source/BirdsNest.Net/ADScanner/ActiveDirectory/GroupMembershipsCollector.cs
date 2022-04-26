@@ -21,7 +21,7 @@ using System.Collections.Generic;
 
 namespace ADScanner.ActiveDirectory
 {
-    public class GroupMembershipsCollector: IDataCollector
+    public class GroupMembershipsCollector : IDataCollector
     {
         private List<object> _mappings;
 

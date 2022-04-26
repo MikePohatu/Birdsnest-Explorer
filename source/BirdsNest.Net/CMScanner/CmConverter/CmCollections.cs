@@ -16,19 +16,14 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #endregion
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Microsoft.ConfigurationManagement.ManagementProvider;
-using Microsoft.ConfigurationManagement.ManagementProvider.WqlQueryEngine;
 using common;
+using Microsoft.ConfigurationManagement.ManagementProvider;
 using Neo4j.Driver;
+using System.Collections.Generic;
 
 namespace CMScanner.CmConverter
 {
-    public class CmCollections: IDataCollector
+    public class CmCollections : IDataCollector
     {
         public string ProgressMessage { get { return "Creating collection nodes"; } }
         public string Query
@@ -71,7 +66,7 @@ namespace CMScanner.CmConverter
                             Name = ResultObjectHandler.GetString(resource, "Name"),
                             LimitingCollectionID = ResultObjectHandler.GetString(resource, "LimitToCollectionID"),
                             Comment = ResultObjectHandler.GetString(resource, "Comment"),
-                            IncludeExcludeCollectionCount = ResultObjectHandler.GetInt(resource, "IncludeExcludeCollectionsCount"),                           
+                            IncludeExcludeCollectionCount = ResultObjectHandler.GetInt(resource, "IncludeExcludeCollectionsCount"),
                             CollectionType = ((CollectionType)typeint).ToString()
                         });
                     }

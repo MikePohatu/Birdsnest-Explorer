@@ -16,11 +16,11 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #endregion
+using common;
 using System;
 using System.IO;
 using System.Security.AccessControl;
 using System.Security.Principal;
-using common;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -73,7 +73,8 @@ namespace FSScanner
             catch (Exception e)
             {
                 ConsoleWriter.WriteError("Error connecting to " + this.Path + ": " + e.Message);
-                Folder f = new Folder() {
+                Folder f = new Folder()
+                {
                     Blocked = true,
                     Path = this.Path,
                     Name = this.Path,

@@ -35,7 +35,7 @@ namespace ADScanner.ActiveDirectory
                 " MATCH (o)-[:REPRESENTED_BY]->(n)-[ref:" + Types.MemberOf + "]->(g)" +
                 " MERGE (o)-[r:" + Types.MemberOf + "]->(g)" +
                 " SET r.foreignmember = true" +
-                " SET r.foreignreference = n.id" + 
+                " SET r.foreignreference = n.id" +
                 " SET r.lastscan = $ScanID" +
                 " SET r.refrence = id(ref)" +
                 " SET r.layout='mesh' " +

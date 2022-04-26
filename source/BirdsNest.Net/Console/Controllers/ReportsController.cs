@@ -16,15 +16,12 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #endregion
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Console.neo4jProxy;
 using Console.Plugins;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace Console.Controllers
 {
@@ -44,7 +41,7 @@ namespace Console.Controllers
 
         // GET reports/report?pluginname=***&reportname=****
         [HttpGet("report")]
-        public async Task<ResultSet> Report([FromQuery]string pluginname, [FromQuery]string reportname)
+        public async Task<ResultSet> Report([FromQuery] string pluginname, [FromQuery] string reportname)
         {
             Plugin plugin;
             this._pluginmanager.Plugins.TryGetValue(pluginname, out plugin);
@@ -61,14 +58,14 @@ namespace Console.Controllers
 
         public class NodeList
         {
-            public List<long> ids { get; set;  }
+            public List<long> ids { get; set; }
             public List<string> propertyfilters { get; set; }
         }
 
         // GET reports/nodesquery?id=1&id=2
         [ValidateAntiForgeryToken]
         [HttpPost("nodes")]
-        public async Task<ResultSet> NodesQuery([FromBody]NodeList nodelist)
+        public async Task<ResultSet> NodesQuery([FromBody] NodeList nodelist)
         {
             ResultSet results = await this._service.GetNodesAsync(nodelist.ids);
             foreach (string filter in nodelist.propertyfilters)

@@ -16,11 +16,9 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #endregion
+using System;
 using System.Net;
 using System.Security;
-
-
-using System;
 namespace Console.Auth
 {
     public static class SecureStringConverter

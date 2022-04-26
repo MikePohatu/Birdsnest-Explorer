@@ -87,7 +87,7 @@ namespace ADScanner.ActiveDirectory
                 return "MATCH (n:" + Types.Group + " {domainid:$ScannerID}) " +
                     "SET n.member_count = 0 " +
                     "WITH n " +
-                    "MATCH (o:" + Types.ADObject+ ")-[r:" + Types.MemberOf + "]->(n) " +
+                    "MATCH (o:" + Types.ADObject + ")-[r:" + Types.MemberOf + "]->(n) " +
                     "WHERE o.domainid = $ScannerID " +
                     "WITH n,count(r) AS i " +
                     "SET n.member_count = i " +
@@ -110,7 +110,7 @@ namespace ADScanner.ActiveDirectory
 
         public static string GetMarkDeletedObjectsQuery(string label)
         {
-            return 
+            return
             " MATCH(n:" + label + ") " +
             " WHERE n.domainid = $ScannerID AND n.lastscan <> $ScanID " +
             " SET n:" + Types.Deleted + " " +

@@ -16,9 +16,6 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #endregion
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace common
 {
@@ -104,7 +101,7 @@ namespace common
 
         public static string CMReferences { get { return "CM_REFERENCES"; } }
         public static string CMHasDeployment { get { return "CM_HAS_DEPLOYMENT"; } }
-        public static string CMSuperSededBy{ get { return "CM_SUPERSEDED_BY"; } }
+        public static string CMSuperSededBy { get { return "CM_SUPERSEDED_BY"; } }
         //WUScanner
         public static string WUUpdate { get { return "WU_Update"; } }
         public static string Supersedes { get { return "SUPERSEDES"; } }

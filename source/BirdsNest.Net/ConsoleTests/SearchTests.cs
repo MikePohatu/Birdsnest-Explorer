@@ -16,13 +16,9 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #endregion
-using NUnit.Framework;
-using System;
-using System.Collections.Generic;
-using System.Text;
-using Console.neo4jProxy;
-using Newtonsoft.Json;
 using Console.neo4jProxy.AdvancedSearch;
+using Newtonsoft.Json;
+using NUnit.Framework;
 
 namespace ConsoleTests
 {
@@ -49,7 +45,7 @@ namespace ConsoleTests
                     }
                 ]
             }
-        ", 
+        ",
             ExpectedResult = "MATCH p=(n1:AD_User)-[:AD_MEMBER_OF*]->(n2:AD_Group) UNWIND nodes(p) as bnest_nodes RETURN DISTINCT bnest_nodes ORDER BY LOWER(bnest_nodes.name)")]
         [TestCase(@"
             {

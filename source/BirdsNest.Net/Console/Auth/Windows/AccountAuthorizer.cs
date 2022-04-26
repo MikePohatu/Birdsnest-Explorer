@@ -28,13 +28,13 @@ namespace Console.Auth.Windows
             if (ssl == true)
             {
                 ContextOptions options = ContextOptions.Negotiate | ContextOptions.SecureSocketLayer;
-                context = new PrincipalContext(ContextType.Domain,domainname,containerdn, options);
+                context = new PrincipalContext(ContextType.Domain, domainname, containerdn, options);
             }
             else
             {
                 context = new PrincipalContext(ContextType.Domain, domainname, containerdn);
             }
-            
+
             return context;
         }
 
@@ -48,7 +48,7 @@ namespace Console.Auth.Windows
             return context.ValidateCredentials(username, password);
         }
 
-        public static UserPrincipal GetUserPrincipal (PrincipalContext context, string username)
+        public static UserPrincipal GetUserPrincipal(PrincipalContext context, string username)
         {
             return UserPrincipal.FindByIdentity(context, username);
         }

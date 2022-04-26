@@ -18,16 +18,12 @@
 #endregion
 using common;
 using Microsoft.Graph;
-using Neo4j.Driver;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace AzureADScanner.Azure
 {
-    public class AadGroups: IDataCollectorAsync
+    public class AadGroups : IDataCollectorAsync
     {
         public string ProgressMessage { get { return "Creating group nodes: "; } }
         public List<string> GroupIDs { get; private set; } = new List<string>();
@@ -110,13 +106,13 @@ namespace AzureADScanner.Azure
 
                         this.GroupIDs.Add(group.Id);
 
-                        
+
                     }
 
                     page = await page.NextPageRequest?.GetAsync();
                 }
 
-                
+
             }
             catch { }
 

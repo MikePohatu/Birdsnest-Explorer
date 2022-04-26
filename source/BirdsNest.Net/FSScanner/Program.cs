@@ -16,14 +16,13 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #endregion
+using common;
+using CSharpVitamins;
+using Neo4j.Driver;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using Neo4j.Driver;
-using System.Linq;
-using common;
 using System.Net;
-using CSharpVitamins;
 
 namespace FSScanner
 {
@@ -85,12 +84,12 @@ namespace FSScanner
                 using (Configuration config = Configuration.LoadConfiguration(configfile))
                 {
                     try { config.Validate(); }
-                    catch ( ArgumentException e )
+                    catch (ArgumentException e)
                     {
                         ConsoleWriter.WriteError(e.Message);
                         if (batchmode == false) { Console.ReadLine(); }
                         Environment.Exit(ErrorCodes.ConfigValidationError);
-                    } 
+                    }
                     foreach (Credential cred in config.Credentials)
                     {
                         NetworkCredential netcred = new NetworkCredential(cred.Username, cred.Password, cred.Domain);
@@ -106,9 +105,9 @@ namespace FSScanner
             {
                 ConsoleWriter.WriteError("There was an error loading your configuration: " + e.Message);
                 if (batchmode == false) { Console.ReadLine(); }
-                Environment.Exit(ErrorCodes.ConfigLoadError); 
+                Environment.Exit(ErrorCodes.ConfigLoadError);
             }
-            
+
             try
             {
                 using (NeoConfiguration config = NeoConfiguration.LoadConfigurationFile(neoconfigfile))
@@ -129,7 +128,7 @@ namespace FSScanner
             NeoWriter.ScanID = scanid;
             foreach (DataStore ds in datastores)
             {
-                
+
                 foreach (FileSystem fs in ds.FileSystems)
                 {
                     NeoWriter.ScannerID = fs.ID;

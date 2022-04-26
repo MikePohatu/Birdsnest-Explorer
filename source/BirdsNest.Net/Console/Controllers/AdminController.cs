@@ -16,18 +16,15 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #endregion
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
-using System.Security.Claims;
-using Console.Plugins;
 using Console.neo4jProxy;
 using Console.neo4jProxy.Indexes;
+using Console.Plugins;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
+using System.Collections.Generic;
+using System.Security.Claims;
+using System.Threading.Tasks;
 
 namespace Console.Controllers
 {
@@ -66,14 +63,14 @@ namespace Console.Controllers
             this._logger.LogError($"Invalid index drop request: {index.IndexName}");
             return -1;
 
-            
+
         }
 
         [ValidateAntiForgeryToken]
         [HttpPost("indexes/create")]
-        public async Task<int> CreateIndex([FromBody]NewIndex newIndex)
+        public async Task<int> CreateIndex([FromBody] NewIndex newIndex)
         {
-            this._logger.LogWarning($"Index creation for {newIndex.Label}:{newIndex.Property} initiated by {User.FindFirst(ClaimTypes.Name)?.Value}" );
+            this._logger.LogWarning($"Index creation for {newIndex.Label}:{newIndex.Property} initiated by {User.FindFirst(ClaimTypes.Name)?.Value}");
             if (this._pluginmanager.NodeDataTypes.ContainsKey(newIndex.Label))
             {
                 DataType dt = this._pluginmanager.NodeDataTypes[newIndex.Label];
@@ -92,11 +89,11 @@ namespace Console.Controllers
         public async Task<object> ReloadPlugins()
         {
             this._logger.LogInformation("Reload plugins initiated by {0}", User.FindFirst(ClaimTypes.Name)?.Value);
-            Dictionary<string,object> data = new Dictionary<string, object>();
+            Dictionary<string, object> data = new Dictionary<string, object>();
             bool ret = await this._pluginmanager.ReloadAsync();
             if (ret)
             {
-                data.Add("status",200);
+                data.Add("status", 200);
                 data.Add("message", "Plugins updated OK");
             }
             else

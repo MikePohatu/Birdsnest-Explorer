@@ -19,8 +19,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace common
 {
@@ -36,7 +34,7 @@ namespace common
         }
 
         //https://stackoverflow.com/a/222640
-        public static List<T> Clone<T>(List<T> listToClone) where T: ICloneable
+        public static List<T> Clone<T>(List<T> listToClone) where T : ICloneable
         {
             return listToClone.Select(item => (T)item.Clone()).ToList();
         }
