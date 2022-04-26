@@ -38,6 +38,7 @@ namespace Console.Plugins
         [JsonIgnore]
         public SortedDictionary<string, Plugin> Extensions { get; private set; } = new SortedDictionary<string, Plugin>();
         public int ExtensionCount { get { return this.Extensions.Count; } }
+        public List<string> DisabledEdges { get; private set; } = new List<string>();
         public SortedDictionary<string, string> NodeDisplayNames { get; private set; } = new SortedDictionary<string, string>();
         public SortedDictionary<string, string> EdgeDisplayNames { get; private set; } = new SortedDictionary<string, string>();
         public Dictionary<string, List<string>> SubTypeProperties { get; private set; } = new Dictionary<string, List<string>>();
@@ -73,6 +74,7 @@ namespace Console.Plugins
             var edgeprops = new SortedDictionary<string, List<string>>();
             var nodeDisplayNames = new SortedDictionary<string, string>();
             var edgeDisplayNames = new SortedDictionary<string, string>();
+            var disabledEdges = new List<string>();
 
 
             string pluginsdirpath = this._env.ContentRootPath + "/Plugins";
@@ -231,9 +233,10 @@ namespace Console.Plugins
                 {
                     foreach (string key in plug.EdgeDataTypes.Keys)
                     {
-                        var propdeets = plug.EdgeDataTypes[key];
+                        DataType propdeets = plug.EdgeDataTypes[key];
                         if (propdeets != null)
                         {
+                            if (propdeets.Enabled == false) { disabledEdges.Add(key); }
                             if (!edgedatatypes.TryAdd(key, propdeets))
                             {
                                 this._logger.LogError("Error loading property types for label: " + key);
@@ -280,6 +283,7 @@ namespace Console.Plugins
             this.NodeProperties = nodeprops;
             this.EdgeDataTypes = edgedatatypes;
             this.EdgeProperties = edgeprops;
+            this.DisabledEdges = disabledEdges;
             return true;
         }
 

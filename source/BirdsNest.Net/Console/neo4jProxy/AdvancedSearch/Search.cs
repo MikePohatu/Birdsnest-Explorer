@@ -17,6 +17,7 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #endregion
 using Console.neo4jProxy.AdvancedSearch.Conditions;
+using Console.Plugins;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -28,6 +29,9 @@ namespace Console.neo4jProxy.AdvancedSearch
 {
     public class Search
     {
+        private static string _disabledEdgesPropName = "birdsnestDisabledEdges";
+        private static string _disabledEdgesCypher = $"none(rel in relationships(p) WHERE type(rel) IN ${_disabledEdgesPropName})";
+
         [JsonProperty("nodes")]
         public List<SearchNode> Nodes { get; set; }
 
@@ -38,7 +42,15 @@ namespace Console.neo4jProxy.AdvancedSearch
         [JsonConverter(typeof(ConditionConverter))]
         public ICondition Condition { get; set; }
 
+        [JsonProperty("includeDisabled")]
+        public bool IncludeDisabled { get; set; } = false;
+
         public SearchTokens Tokens { get; private set; } = new SearchTokens();
+
+        public void InjectDisabledEdges(List<string> edges)
+        {
+            this.Tokens.Properties.TryAdd(_disabledEdgesPropName, edges);
+        }
 
         public string ToSharableSearchString()
         {
@@ -74,7 +86,21 @@ namespace Console.neo4jProxy.AdvancedSearch
                     }
                 }
                 string cond = this.Condition?.ToSearchString();
-                if (string.IsNullOrWhiteSpace(cond) == false) { cond = " WHERE " + cond; }
+                if (string.IsNullOrWhiteSpace(cond) == false)
+                {
+                    cond = " WHERE " + cond;
+                    if (this.IncludeDisabled == false)
+                    {
+                        cond = cond + $" AND {_disabledEdgesCypher} ";
+                    }
+                }
+                else
+                {
+                    if (this.IncludeDisabled == false)
+                    {
+                        cond = $" WHERE {_disabledEdgesCypher} ";
+                    }
+                }
                 builder.Append(cond);
             }
             catch (Exception e)
@@ -118,7 +144,20 @@ namespace Console.neo4jProxy.AdvancedSearch
                     }
                 }
                 string cond = this.Condition?.ToTokenizedSearchString();
-                if (string.IsNullOrWhiteSpace(cond) == false) { cond = " WHERE " + cond; }
+                if (string.IsNullOrWhiteSpace(cond) == false) { 
+                    cond = " WHERE " + cond;
+                    if (this.IncludeDisabled == false)
+                    {
+                        cond = cond + $" AND {_disabledEdgesCypher} ";
+                    }
+                }
+                else
+                {
+                    if (this.IncludeDisabled == false)
+                    {
+                        cond = $" WHERE {_disabledEdgesCypher} ";
+                    }
+                }
                 builder.Append(cond);
                 builder.Append(" UNWIND nodes(p) as bnest_nodes RETURN DISTINCT bnest_nodes ORDER BY toLower(bnest_nodes.name)");
             }

@@ -211,6 +211,7 @@ namespace Console.neo4jProxy
         public async Task<ResultSet> AdvancedSearch(AdvancedSearch.Search search)
         {
             string query = search.ToTokenizedSearchString();
+            if (search.IncludeDisabled == false) { search.InjectDisabledEdges(this._pluginmanager.DisabledEdges); }
             ResultSet returnedresults = new ResultSet();
 
             //validate the types/labels 

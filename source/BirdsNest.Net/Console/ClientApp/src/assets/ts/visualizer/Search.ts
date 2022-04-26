@@ -153,6 +153,7 @@ export class Search {
     condition: AndOrCondition = new AndOrCondition(ConditionType.And);  //root should always be an AndOr 'wrapper' condition
     nodes: SearchNode[] = [];
     edges: SearchEdge[] = [];
+    includeDisabled: false;
     addedNodes = 0;
 }
 
@@ -160,7 +161,8 @@ export function copySearch(search: Search): Search {
     const newsearch = new Search();
     const oldsearch = search as Search;
     newsearch.addedNodes = oldsearch.addedNodes;
-    newsearch.condition = copyAndOrCondition(oldsearch.condition as AndOrCondition)
+    newsearch.condition = copyAndOrCondition(oldsearch.condition as AndOrCondition);
+    newsearch.includeDisabled = oldsearch.includeDisabled;
     oldsearch.nodes.forEach((n) => {
         newsearch.nodes.push(copyNode(n));
     });

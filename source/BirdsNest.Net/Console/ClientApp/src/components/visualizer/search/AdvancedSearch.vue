@@ -33,12 +33,8 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 						<button type="button" v-on:click.stop="onItemDeleteClicked" :disabled="isDeleteDisabled">
 							<i class="itembutton clickable far fa-trash-alt"></i>
 						</button>
-						<button
-							type="button"
-							v-on:click.stop="onItemEditClicked"
-							:disabled="editDisabled"
-							:class="!editDisabled ? 'pulseenable' : ''"
-						>
+						<button type="button" v-on:click.stop="onItemEditClicked" :disabled="editDisabled"
+							:class="!editDisabled ? 'pulseenable' : ''">
 							<i class="itembutton clickable fas fa-edit"></i>
 						</button>
 						<button type="button" v-on:click.stop="onSearchNodeAddClicked">
@@ -52,7 +48,8 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 					<div v-if="search.nodes.length > 0">
 						<transition-group name="path" tag="div">
 							<div v-for="item in fullPath" :key="item.id">
-								<NodeIcon v-if="item.type === 'SearchNode'" :node="(item as SearchNode)" :key="item.id" />
+								<NodeIcon v-if="item.type === 'SearchNode'" :node="(item as SearchNode)"
+									:key="item.id" />
 								<EdgeIcon v-else :edge="(item as SearchEdge)" />
 							</div>
 						</transition-group>
@@ -78,12 +75,8 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 						<button type="button" v-on:click.stop="onCondDeleteClicked" :disabled="condEditDisabled">
 							<i class="itembutton clickable far fa-trash-alt"></i>
 						</button>
-						<button
-							type="button"
-							v-on:click.stop="onCondEditClicked"
-							:disabled="condEditDisabled"
-							:class="!condEditDisabled ? 'pulseenable' : ''"
-						>
+						<button type="button" v-on:click.stop="onCondEditClicked" :disabled="condEditDisabled"
+							:class="!condEditDisabled ? 'pulseenable' : ''">
 							<i class="itembutton clickable fas fa-edit"></i>
 						</button>
 						<button type="button" v-on:click.stop="onCondAddClicked" :disabled="!searchHasNodes">
@@ -92,6 +85,20 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 					</div>
 				</legend>
 				<AndOrConditionIcon :condition="rootCondition" :key="rootCondition.id" />
+			</fieldset>
+		</div>
+
+		<div :title="$t('phrase_Include_Disabled_Tip')">
+			<fieldset class="fieldset">
+				<legend>
+					<span>{{ $t('word_Options') }}</span>
+
+				</legend>
+				<div id="optionsInnerWrapper" >
+					<label for="includeDisabled">Include disabled links
+						<input type="checkbox" id="includeDisabled" name="includeDisabled"
+							v-model="search.includeDisabled"></label>
+				</div>
 			</fieldset>
 		</div>
 
@@ -122,6 +129,15 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 	min-width: 310px;
 }
 
+#optionsInnerWrapper {
+	margin: 0 5px;
+	padding-left: 5px;
+}
+
+#includeDisabled {
+	margin: 5px 10px;
+}
+
 #itemEditButtons {
 	display: inline;
 }
@@ -129,8 +145,8 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 .fieldset {
 	display: block;
 	width: 100%;
-	margin-top: 0;
-	margin-bottom: 5px;
+	margin-top: 5px;
+	margin-bottom: 10px;
 	margin-left: 0;
 	margin-right: 0;
 	padding: 2px 4px;
@@ -151,6 +167,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 	margin-right: 0;
 	width: 25%;
 }
+
 .itembutton {
 	margin-top: 0;
 	margin-bottom: 0;
@@ -182,22 +199,27 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 	0% {
 		-webkit-box-shadow: 0 0 0 0 rgba(44, 140, 204, 0.4);
 	}
+
 	70% {
 		-webkit-box-shadow: 0 0 0 10px rgba(44, 140, 204, 0);
 	}
+
 	100% {
 		-webkit-box-shadow: 0 0 0 0 rgba(44, 140, 204, 0);
 	}
 }
+
 @keyframes pulse {
 	0% {
 		-moz-box-shadow: 0 0 0 0 rgba(44, 140, 204, 0.4);
 		box-shadow: 0 0 0 0 rgba(44, 140, 204, 0.4);
 	}
+
 	70% {
 		-moz-box-shadow: 0 0 0 10px rgba(44, 140, 204, 0);
 		box-shadow: 0 0 0 10px rgba(44, 140, 204, 0);
 	}
+
 	100% {
 		-moz-box-shadow: 0 0 0 0 rgba(44, 140, 204, 0);
 		box-shadow: 0 0 0 0 rgba(44, 140, 204, 0);
