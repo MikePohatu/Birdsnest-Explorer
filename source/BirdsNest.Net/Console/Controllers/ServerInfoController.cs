@@ -67,7 +67,7 @@ namespace Console.Controllers
         {
             var dbStats = await this._getter.GatherDbStats();
             var assemblyInfo = Assembly.GetEntryAssembly().GetName().Version.ToString();
-            var indexes = await IndexGetter.GatherDbIndexes(this._neoservice);
+            var indexes = await IndexGetter.GatherDbIndexes4Async(this._neoservice);
             return new { serverVersion = assemblyInfo, dbStats, indexes };
         }
     }
