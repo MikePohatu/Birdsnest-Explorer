@@ -15,7 +15,7 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-import { createI18n, LocaleMessages, VueMessageType } from 'vue-i18n/index';
+import { createI18n, LocaleMessages, VueMessageType } from 'vue-i18n';
 
 function loadLocaleMessages (): LocaleMessages<VueMessageType> {
   const locales = import.meta.globEager('./locales/*.json');
