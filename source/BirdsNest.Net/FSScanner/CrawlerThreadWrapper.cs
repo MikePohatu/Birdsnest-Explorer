@@ -51,6 +51,7 @@ namespace FSScanner
             this._parent = parent;
             this.Depth = depth;
             this._scanfilesRecuresively = scanfilesRecurively;
+            this._scanfiles = scanfilesRecurively;
         }
 
         public async Task CrawlAsync(object state)
