@@ -35,6 +35,9 @@ namespace FSScanner
         [JsonProperty("id")]
         public string ID { get; set; }
 
+        [JsonProperty("writefolders")]
+        public bool WriteFolders { get; set; } = false;
+
         [JsonProperty("scanfiles")]
         public Dictionary<string, bool> ScanFiles { get; set; } = new Dictionary<string, bool>();
 

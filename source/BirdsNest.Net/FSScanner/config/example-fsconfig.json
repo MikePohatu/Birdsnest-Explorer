@@ -15,7 +15,11 @@
 				{
 					"id": "123",
 					"path": "\\\\server\\share1",
-					"comment": "san1-share1"
+					"comment": "san1-share1",
+					"scanfiles": {
+						"\\\\server\\share1\\folder1\\Folder2": true
+					},
+					"writefolders": true
 				},
 				{
 					"id": "456",

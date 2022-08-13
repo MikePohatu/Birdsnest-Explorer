@@ -162,12 +162,6 @@ namespace FSScanner
                 await this.ConnectFileToParentAsync(file, driver);
             }
 
-            //send the perms
-            if (file.PermissionCount > 0)
-            {
-                await this.SendFilePermissionsAsync(file, driver);
-            }
-
             return result.CreatedNodeCount;
         }
 

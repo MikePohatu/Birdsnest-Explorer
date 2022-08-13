@@ -85,6 +85,16 @@ namespace FSScanner
                 {
                     newpermparent = this.Path;
                     await this._parent.Writer.UpdateFolderAsync(f, this._parent.Driver);
+
+                    //send the perms
+                    if (f.PermissionCount > 0)
+                    {
+                        await this._parent.Writer.SendFilePermissionsAsync(f, this._parent.Driver);
+                    }
+                }
+                else if (this._parent.FileSystem.WriteFolders)
+                {
+                    await this._parent.Writer.UpdateFolderAsync(f, this._parent.Driver);
                 }
 
                 connected = true;
@@ -191,7 +201,7 @@ namespace FSScanner
 
 
             FileSecurity sec = file.GetAccessControl();
-            AuthorizationRuleCollection directrules = sec.GetAccessRules(true, true, typeof(SecurityIdentifier));
+            AuthorizationRuleCollection directrules = sec.GetAccessRules(true, false, typeof(SecurityIdentifier));
 
             File f = new File(file.Name, file.FullName, permroot, directrules, sec.AreAccessRulesProtected);
             f.Depth = this.Depth;
