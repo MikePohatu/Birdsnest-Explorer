@@ -78,7 +78,7 @@ namespace FSScanner
                 " folder.depth=prop.depth," +
                 " folder.lastscan=$ScanID," +
                 " folder.fsid=prop.fsid," +
-                " folder.blocked=prop.blocked," +
+                " folder.blocked=prop.blocked" +
                 " RETURN folder";
 
             NeoQueryData querydata = new NeoQueryData();
@@ -93,7 +93,8 @@ namespace FSScanner
                 depth = folder.Depth,
                 fsid = this.FsID
             });
-            TransactionResult<List<string>> result = new TransactionResult<List<string>>(await NeoWriter.RunQueryAsync(query, querydata, driver));
+            var summaryList = await NeoWriter.RunQueryAsync(query, querydata, driver);
+            TransactionResult<List<string>> result = new TransactionResult<List<string>>(summaryList);
 
             if (string.IsNullOrEmpty(folder.PermParent) == false)
             {
