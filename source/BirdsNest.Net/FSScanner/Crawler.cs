@@ -32,7 +32,7 @@ namespace FSScanner
     {
         private Dictionary<string, Folder> _existingfolders;
         private Stopwatch _timer = new Stopwatch();
-        public string FsID { get; private set; }
+        public FileSystem FileSystem { get; private set; }
 
         public int FolderCount { get; set; } = 0;
         public IDriver Driver { get; private set; }
@@ -40,9 +40,9 @@ namespace FSScanner
 
         public Crawler(IDriver driver, FileSystem fs)
         {
-            this.FsID = fs.ID;
+            this.FileSystem = fs;
             this.Driver = driver;
-            this.Writer = new Writer(this.FsID);
+            this.Writer = new Writer(this.FileSystem.ID);
         }
 
         /// <summary>

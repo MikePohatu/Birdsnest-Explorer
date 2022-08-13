@@ -17,6 +17,7 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #endregion
 using Newtonsoft.Json;
+using System.Collections.Generic;
 
 namespace FSScanner
 {
@@ -33,5 +34,22 @@ namespace FSScanner
 
         [JsonProperty("id")]
         public string ID { get; set; }
+
+        [JsonProperty("scanfiles")]
+        public Dictionary<string, bool> ScanFiles { get; set; } = new Dictionary<string, bool>();
+
+        /// <summary>
+        /// Make the ScanFiles keys all lowercase so the crawler doesn't have to do it on each
+        /// lookup. Because this is a json import this can't be relied on at load=
+        /// </summary>
+        public void Sanitise()
+        {
+            Dictionary<string, bool> newdict = new Dictionary<string, bool>();
+            foreach (string key in ScanFiles.Keys)
+            {
+                newdict.Add(key.ToLower(), ScanFiles[key]);
+            }
+            this.ScanFiles = newdict;
+        }
     }
 }

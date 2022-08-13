@@ -29,8 +29,10 @@ namespace FSScanner
     public class Writer
     {
         private ConcurrentBag<Folder> _queuedfolders = new ConcurrentBag<Folder>();
+        private ConcurrentBag<File> _queuedfiles = new ConcurrentBag<File>();
 
         public int FolderCount { get; set; } = 0;
+        public int FileCount { get; set; } = 0;
         public int PermissionCount { get; set; } = 0;
         public string FsID { get; private set; }
 
@@ -45,12 +47,27 @@ namespace FSScanner
             try
             {
                 this.FolderCount++;
-                await this.SendFolderAsync(newfolder, driver);
+                await this.SendFileAsync(newfolder, driver);
             }
             catch (Exception e)
             {
                 ConsoleWriter.WriteError("Failed to send folder: " + newfolder.Path + ": " + e.Message);
                 this._queuedfolders.Add(newfolder);
+            }
+        }
+
+        public async Task UpdateFileAsync(File newfile, IDriver driver)
+        {
+            //try to send the folder first, queue it if not
+            try
+            {
+                this.FileCount++;
+                await this.SendFileAsync(newfile, driver);
+            }
+            catch (Exception e)
+            {
+                ConsoleWriter.WriteError("Failed to send file: " + newfile.Path + ": " + e.Message);
+                this._queuedfiles.Add(newfile);
             }
         }
 
@@ -60,7 +77,7 @@ namespace FSScanner
             {
                 try
                 {
-                    int nodecount = await SendFolderAsync(f, driver);
+                    int nodecount = await SendFileAsync(f, driver);
                     this.FolderCount++;
                 }
                 catch (Exception e)
@@ -68,75 +85,119 @@ namespace FSScanner
             }
         }
 
-        public async Task<int> SendFolderAsync(Folder folder, IDriver driver)
+        //public async Task<int> SendFolderAsync(Folder folder, IDriver driver)
+        //{
+        //    string query = "UNWIND $Properties AS prop" +
+        //        " MERGE (folder:" + Types.Folder + " {path:prop.path})" +
+        //        " SET folder.name=prop.name," +
+        //        " folder.lastpermission=prop.lastfolder," +
+        //        " folder.inheritancedisabled=prop.inheritancedisabled," +
+        //        " folder.depth=prop.depth," +
+        //        " folder.lastscan=$ScanID," +
+        //        " folder.fsid=prop.fsid," +
+        //        " folder.blocked=prop.blocked" +
+        //        " RETURN folder";
+
+        //    NeoQueryData querydata = new NeoQueryData();
+        //    querydata.Properties = new List<object>();
+        //    querydata.Properties.Add(new
+        //    {
+        //        path = folder.Path,
+        //        lastfolder = folder.PermParent,
+        //        inheritancedisabled = folder.InheritanceDisabled,
+        //        blocked = folder.Blocked,
+        //        name = folder.Name,
+        //        depth = folder.Depth,
+        //        fsid = this.FsID
+        //    });
+        //    var summaryList = await NeoWriter.RunQueryAsync(query, querydata, driver);
+        //    TransactionResult<List<string>> result = new TransactionResult<List<string>>(summaryList);
+
+        //    if (string.IsNullOrEmpty(folder.PermParent) == false)
+        //    {
+        //        await this.ConnectFileToParentAsync(folder, driver);
+        //    }
+
+        //    //send the perms
+        //    if (folder.PermissionCount > 0)
+        //    {
+        //        await this.SendFilePermissionsAsync(folder, driver);
+        //    }
+
+        //    return result.CreatedNodeCount;
+        //}
+
+        public async Task<int> SendFileAsync(File file, IDriver driver)
         {
             string query = "UNWIND $Properties AS prop" +
-                " MERGE (folder:" + Types.Folder + " {path:prop.path})" +
-                " SET folder.name=prop.name," +
-                " folder.lastpermission=prop.lastfolder," +
-                " folder.inheritancedisabled=prop.inheritancedisabled," +
-                " folder.depth=prop.depth," +
-                " folder.lastscan=$ScanID," +
-                " folder.fsid=prop.fsid," +
-                " folder.blocked=prop.blocked" +
-                " RETURN folder";
+                " MERGE (f:" + file.Type + " {path:prop.path})" +
+                " SET f.name=prop.name," +
+                " f.fullname=prop.fullname," +
+                " f.lastpermission=prop.lastfolder," +
+                " f.inheritancedisabled=prop.inheritancedisabled," +
+                " f.depth=prop.depth," +
+                " f.lastscan=$ScanID," +
+                " f.fsid=prop.fsid," +
+                " f.blocked=prop.blocked" +
+                " RETURN f";
 
             NeoQueryData querydata = new NeoQueryData();
             querydata.Properties = new List<object>();
             querydata.Properties.Add(new
             {
-                path = folder.Path,
-                lastfolder = folder.PermParent,
-                inheritancedisabled = folder.InheritanceDisabled,
-                blocked = folder.Blocked,
-                name = folder.Name,
-                depth = folder.Depth,
+                path = file.Path,
+                lastfolder = file.PermParent,
+                inheritancedisabled = file.InheritanceDisabled,
+                blocked = file.Blocked,
+                name = file.Name,
+                depth = file.Depth,
+                fullname = file.FullName,
                 fsid = this.FsID
             });
             var summaryList = await NeoWriter.RunQueryAsync(query, querydata, driver);
             TransactionResult<List<string>> result = new TransactionResult<List<string>>(summaryList);
 
-            if (string.IsNullOrEmpty(folder.PermParent) == false)
+            if (string.IsNullOrEmpty(file.PermParent) == false)
             {
-                await this.ConnectFolderToParentAsync(folder, driver);
+                await this.ConnectFileToParentAsync(file, driver);
             }
 
             //send the perms
-            if (folder.PermissionCount > 0)
+            if (file.PermissionCount > 0)
             {
-                await this.SendFolderPermissionsAsync(folder, driver);
+                await this.SendFilePermissionsAsync(file, driver);
             }
 
             return result.CreatedNodeCount;
         }
 
-        public async Task<int> ConnectFolderToParentAsync(Folder folder, IDriver driver)
+        public async Task<int> ConnectFileToParentAsync(File f, IDriver driver)
         {
             StringBuilder builder = new StringBuilder();
             builder.AppendLine("UNWIND $Properties AS prop");
-            builder.AppendLine(" MERGE (folder:" + Types.Folder + " {path:prop.path})");
-            builder.AppendLine(" WITH folder, prop");
+            builder.AppendLine(" MERGE (f:" + f.Type + " {path:prop.path})");
+            builder.AppendLine(" WITH f, prop");
             builder.AppendLine(" MERGE (lastfolder:" + Types.Folder + " {path:prop.lastfolder})");
 
-            if (folder.InheritanceDisabled) { builder.AppendLine(" MERGE (lastfolder) -[r:" + Types.BlockedInheritance + "]->(folder)"); }
-            else { builder.AppendLine(" MERGE (lastfolder) -[r:" + Types.AppliesInhertitanceTo + "]->(folder)"); }
+            if (f.InheritanceDisabled) { builder.AppendLine(" MERGE (lastfolder) -[r:" + Types.BlockedInheritance + "]->(f)"); }
+            else { builder.AppendLine(" MERGE (lastfolder) -[r:" + Types.AppliesInhertitanceTo + "]->(f)"); }
 
             builder.AppendLine(" SET r.lastscan = $ScanID");
             builder.AppendLine(" SET r.fsid = prop.fsid");
             builder.AppendLine(" SET r.layout='mesh'");
-            builder.AppendLine(" WITH folder");
-            builder.AppendLine($" MATCH (:{Types.Folder})-[r]->(folder)");
+            builder.AppendLine(" WITH f");
+            builder.AppendLine($" MATCH (:{f.Type})-[r]->(f)");
             builder.AppendLine($" WHERE (type(r)='{Types.AppliesInhertitanceTo}' OR type(r)='{Types.BlockedInheritance}') AND r.lastscan <> $ScanID");
             builder.AppendLine(" DELETE r");
-            builder.AppendLine(" RETURN folder.path");
+            builder.AppendLine(" RETURN f.path");
 
             string query = builder.ToString();
             NeoQueryData querydata = new NeoQueryData();
             querydata.Properties = new List<object>();
             querydata.Properties.Add(new
             {
-                path = folder.Path,
-                lastfolder = folder.PermParent,
+                path = f.Path,
+                lastfolder = f.PermParent,
                 fsid = this.FsID
             });
 
@@ -145,27 +206,27 @@ namespace FSScanner
             return result.CreatedEdgeCount;
         }
 
-        public async Task<int> SendFolderPermissionsAsync(Folder folder, IDriver driver)
+        public async Task<int> SendFilePermissionsAsync(File f, IDriver driver)
         {
             string query =
 
             "UNWIND $Properties AS prop" +
-            " MERGE (folderDom:" + Types.Folder + " {path:prop.path})" +
-            " WITH folderDom, prop" +
+            " MERGE (fDom:" + f.Type + " {path:prop.path})" +
+            " WITH fDom, prop" +
             " UNWIND prop.domainpermissions as domainperm" +
-            " WITH folderDom,domainperm, prop" +
+            " WITH fDom,domainperm, prop" +
             " MERGE (ndom:" + Types.ADObject + " {id:domainperm.ID})" +
             " ON CREATE SET ndom:" + Types.Orphaned + ",ndom.lastscan = $ScanID" +
-            " MERGE (ndom)-[r:" + Types.AppliesPermissionTo + "]->(folderDom)" +
+            " MERGE (ndom)-[r:" + Types.AppliesPermissionTo + "]->(fDom)" +
             " SET r.right=domainperm.Right" +
             " SET r.accesstype=domainperm.AccessType" +
             " SET r.lastscan=$ScanID" +
             " SET r.fsid=prop.fsid" +
             " SET r.layout='mesh' " +
 
-            " WITH folderDom, prop" +
+            " WITH fDom, prop" +
             " UNWIND prop.builtinperms as builtinperm" +
-            " MERGE (folderBuiltin:" + Types.Folder + " {path:prop.path})" +
+            " MERGE (folderBuiltin:" + f.Type + " {path:prop.path})" +
             " MERGE (nbuiltin:" + Types.BuiltinObject + " {id:builtinperm.ID})" +
             " MERGE (nbuiltin)-[r:" + Types.AppliesPermissionTo + "]->(folderBuiltin)" +
             " SET r.right=builtinperm.Right" +
@@ -174,12 +235,12 @@ namespace FSScanner
             " SET r.fsid=prop.fsid" +
             " SET r.layout='mesh' " +
 
-            " WITH folderDom, folderBuiltin, prop" +
-            " MATCH ()-[rdom:" + Types.AppliesPermissionTo + "]->(folderDom)" +
+            " WITH fDom, folderBuiltin, prop" +
+            " MATCH ()-[rdom:" + Types.AppliesPermissionTo + "]->(fDom)" +
             " WHERE rdom.lastscan <> $ScanID" +
             " DELETE rdom" +
 
-            " WITH folderDom, folderBuiltin, prop" +
+            " WITH fDom, folderBuiltin, prop" +
             " MATCH ()-[rbuiltin:" + Types.AppliesPermissionTo + "]->(folderBuiltin)" +
             " WHERE rbuiltin.lastscan <> $ScanID" +
             " DELETE rbuiltin" +
@@ -192,9 +253,9 @@ namespace FSScanner
             querydata.Properties.Add(new
             {
                 fsid = this.FsID,
-                domainpermissions = folder.DomainPermissions,
-                builtinperms = folder.BuiltinPermissions,
-                path = folder.Path
+                domainpermissions = f.DomainPermissions,
+                builtinperms = f.BuiltinPermissions,
+                path = f.Path
             });
 
             TransactionResult<List<string>> result = new TransactionResult<List<string>>(await NeoWriter.RunQueryAsync(query, querydata, driver));

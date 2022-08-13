@@ -41,6 +41,7 @@ namespace common
         public static string ReadsDataFrom { get { return "READS_DATA_FROM"; } }
 
         //FSScanner nodes
+        public static string File { get { return "FS_File"; } }
         public static string Folder { get { return "FS_Folder"; } }
         public static string BlockedFolder { get { return "FS_BlockedFolder"; } }
         public static string DfsRoot { get { return "FS_DfsRoot"; } }

@@ -29,6 +29,8 @@ namespace FSScanner
     public class CrawlerThreadWrapper
     {
         private Crawler _parent;
+        private bool _scanfiles = false;
+        private bool _scanfilesRecuresively = false;
 
         public bool IsRoot { get; set; } = false;
         public int ThreadNumber { get; set; } = 1;
@@ -42,6 +44,13 @@ namespace FSScanner
         {
             this._parent = parent;
             this.Depth = depth;
+        }
+
+        public CrawlerThreadWrapper(Crawler parent, int depth, bool scanfilesRecurively)
+        {
+            this._parent = parent;
+            this.Depth = depth;
+            this._scanfilesRecuresively = scanfilesRecurively;
         }
 
         public async Task CrawlAsync(object state)
@@ -59,6 +68,16 @@ namespace FSScanner
         {
             bool connected = false;
             string newpermparent = this.PermParent;
+            bool scanrecurse;
+
+            //check if there is a definition for the folder in the ScanFiles config item
+            if (this._parent.FileSystem.ScanFiles.TryGetValue(this.Path.ToLower(), out scanrecurse))
+            {
+                this._scanfiles = true;
+                this._scanfilesRecuresively = scanrecurse;
+            }
+
+
             try
             {
                 Folder f = this.QueryFolder(new DirectoryInfo(this.Path), this.PermParent, this.IsRoot);
@@ -69,6 +88,20 @@ namespace FSScanner
                 }
 
                 connected = true;
+
+                //do the files 
+                if (this._scanfiles)
+                {
+                    foreach (string filepath in Directory.EnumerateFiles(this.Path))
+                    {
+                        File file = this.QueryFile(new FileInfo(filepath), this.PermParent);
+                        if (file.PermissionCount > 0)
+                        {
+                            newpermparent = this.Path;
+                            await this._parent.Writer.UpdateFileAsync(file, this._parent.Driver);
+                        }
+                    }
+                }
             }
             catch (Exception e)
             {
@@ -91,7 +124,7 @@ namespace FSScanner
                 {
                     foreach (string subdirpath in Directory.EnumerateDirectories(this.Path))
                     {
-                        CrawlerThreadWrapper subwrapper = new CrawlerThreadWrapper(this._parent, this.Depth + 1);
+                        CrawlerThreadWrapper subwrapper = new CrawlerThreadWrapper(this._parent, this.Depth + 1, this._scanfilesRecuresively);
                         subwrapper.Path = subdirpath;
                         subwrapper.PermParent = newpermparent;
                         subwrapper.IsRoot = false;
@@ -109,7 +142,7 @@ namespace FSScanner
                             subwrapper.ThreadNumber = this.ThreadNumber;
                             await subwrapper.CrawlAsync();
                         }
-                    }
+                    }                    
                 }
                 catch (Exception e)
                 {
@@ -137,10 +170,30 @@ namespace FSScanner
             ConsoleWriter.WriteProgress(this.ThreadNumber + " | " + directory.FullName, this.ThreadNumber);
 
 
-            DirectorySecurity dirsec = directory.GetAccessControl();
-            AuthorizationRuleCollection directrules = dirsec.GetAccessRules(true, isroot, typeof(SecurityIdentifier));
+            DirectorySecurity sec = directory.GetAccessControl();
+            AuthorizationRuleCollection directrules = sec.GetAccessRules(true, isroot, typeof(SecurityIdentifier));
 
-            Folder f = new Folder(directory.Name, directory.FullName, permroot, directrules, dirsec.AreAccessRulesProtected);
+            Folder f = new Folder(directory.Name, directory.FullName, permroot, directrules, sec.AreAccessRulesProtected);
+            f.Depth = this.Depth;
+            return f;
+        }
+
+        /// <summary>
+        /// Query a file in the file system and return a File object with the details
+        /// </summary>
+        /// <param name="directory"></param>
+        /// <param name="permroot"></param>
+        /// <returns></returns>
+        private File QueryFile(FileInfo file, string permroot)
+        {
+            this._parent.FolderCount++;
+            ConsoleWriter.WriteProgress(this.ThreadNumber + " | " + file.FullName, this.ThreadNumber);
+
+
+            FileSecurity sec = file.GetAccessControl();
+            AuthorizationRuleCollection directrules = sec.GetAccessRules(true, true, typeof(SecurityIdentifier));
+
+            File f = new File(file.Name, file.FullName, permroot, directrules, sec.AreAccessRulesProtected);
             f.Depth = this.Depth;
             return f;
         }

@@ -119,6 +119,7 @@
     <Compile Include="Configuration.cs" />
     <Compile Include="Crawler.cs" />
     <Compile Include="ErrorCodes.cs" />
+    <Compile Include="File.cs" />
     <Compile Include="ThreadCounter.cs" />
     <Compile Include="CrawlerThreadWrapper.cs" />
     <Compile Include="DataStore.cs" />

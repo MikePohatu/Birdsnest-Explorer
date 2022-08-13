@@ -48,7 +48,7 @@ namespace FSScanner
         public static Configuration LoadConfiguration(string filepath)
         {
             Configuration conf;
-            using (StreamReader file = File.OpenText(filepath))
+            using (StreamReader file = System.IO.File.OpenText(filepath))
             {
                 JsonSerializer serializer = new JsonSerializer();
                 conf = (Configuration)serializer.Deserialize(file, typeof(Configuration));

@@ -132,6 +132,8 @@ namespace FSScanner
                 foreach (FileSystem fs in ds.FileSystems)
                 {
                     NeoWriter.ScannerID = fs.ID;
+                    fs.Sanitise();
+
                     if (string.IsNullOrEmpty(fs.Path))
                     {
                         ConsoleWriter.WriteWarning("Filesystem missing \"path\" property");
