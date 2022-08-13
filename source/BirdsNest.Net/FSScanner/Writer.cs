@@ -300,42 +300,54 @@ namespace FSScanner
             return result.CreatedEdgeCount;
         }
 
-        public async Task<int> CleanupChangedFoldersAsync(string rootpath, IDriver driver)
+        public async Task<int> CleanupChangedAsync(string rootpath, IDriver driver)
         {
-            string query = "UNWIND $Properties AS prop" +
-                " MATCH (f:" + Types.Folder + ")" +
+            int deletedcount = 0;
+            string[] types = { Types.File, Types.Folder };
+            foreach (string type in types)
+            {
+                string query = "UNWIND $Properties AS prop" +
+                " MATCH (f:" + type + ")" +
                 " WHERE f.fsid = prop.fsid AND f.lastscan<>$ScanID" +
                 " DETACH DELETE f";
 
-            NeoQueryData querydata = new NeoQueryData();
-            querydata.Properties = new List<object>();
-            querydata.Properties.Add(new
-            {
-                rootpath,
-                fsid = this.FsID
-            });
+                NeoQueryData querydata = new NeoQueryData();
+                querydata.Properties = new List<object>();
+                querydata.Properties.Add(new
+                {
+                    rootpath,
+                    fsid = this.FsID
+                });
 
-            TransactionResult<List<string>> result = new TransactionResult<List<string>>(await NeoWriter.RunQueryAsync(query, querydata, driver));
-            return result.DeletedNodeCount;
+                TransactionResult<List<string>> result = new TransactionResult<List<string>>(await NeoWriter.RunQueryAsync(query, querydata, driver));
+                deletedcount = deletedcount + result.DeletedNodeCount;
+            }
+            return deletedcount;
         }
 
         public async Task<int> CleanupConnectionsAsync(string rootpath, IDriver driver)
         {
-            string query = "UNWIND $Properties AS prop" +
-                " MATCH (:" + Types.Folder + " {fsid: prop.fsid})-[r]-()" +
+            int deletedcount = 0;
+            string[] types = { Types.File, Types.Folder };
+            foreach (string type in types)
+            {
+                string query = "UNWIND $Properties AS prop" +
+                " MATCH (:" + type + " {fsid: prop.fsid})-[r]-()" +
                 " WHERE r.fsid = prop.fsid AND r.lastscan <> $ScanID" +
                 " DELETE r ";
 
-            NeoQueryData querydata = new NeoQueryData();
-            querydata.Properties = new List<object>();
-            querydata.Properties.Add(new
-            {
-                rootpath = rootpath,
-                fsid = this.FsID
-            });
+                NeoQueryData querydata = new NeoQueryData();
+                querydata.Properties = new List<object>();
+                querydata.Properties.Add(new
+                {
+                    rootpath = rootpath,
+                    fsid = this.FsID
+                });
 
-            TransactionResult<List<string>> result = new TransactionResult<List<string>>(await NeoWriter.RunQueryAsync(query, querydata, driver));
-            return result.DeletedNodeCount;
+                TransactionResult<List<string>> result = new TransactionResult<List<string>>(await NeoWriter.RunQueryAsync(query, querydata, driver));
+                deletedcount = deletedcount + result.DeletedNodeCount;
+            }
+            return deletedcount;
         }
     }
 }

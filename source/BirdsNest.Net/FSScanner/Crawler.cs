@@ -147,7 +147,7 @@ namespace FSScanner
             {
                 _timer.Restart();
                 ConsoleWriter.WriteInfo("Cleaning up ");
-                await Writer.CleanupChangedFoldersAsync(rootpath, this.Driver);
+                await Writer.CleanupChangedAsync(rootpath, this.Driver);
                 await Writer.CleanupConnectionsAsync(rootpath, this.Driver);
                 _timer.Stop();
                 ConsoleWriter.WriteInfo("Clean finished in " + _timer.Elapsed);
