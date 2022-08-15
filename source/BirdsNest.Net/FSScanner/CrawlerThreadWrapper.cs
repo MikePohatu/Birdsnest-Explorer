@@ -93,7 +93,7 @@ namespace FSScanner
                         await this._parent.Writer.SendFilePermissionsAsync(f, this._parent.Driver);
                     }
                 }
-                else if (this._parent.FileSystem.WriteFolders)
+                else if (this._parent.FileSystem.WriteAllFolders)
                 {
                     await this._parent.Writer.UpdateFolderAsync(f, this._parent.Driver);
                 }
@@ -108,8 +108,10 @@ namespace FSScanner
                         File file = this.QueryFile(new FileInfo(filepath), this.PermParent);
                         if (file.PermissionCount > 0)
                         {
-                            newpermparent = this.Path;
-                            await this._parent.Writer.UpdateFileAsync(file, this._parent.Driver);
+                            file.PermParent = newpermparent;
+                            file.Depth = this.Depth + 1;
+                            await this._parent.Writer.UpdateFileAsync(file, this._parent.Driver);//send the perms
+                            await this._parent.Writer.SendFilePermissionsAsync(file, this._parent.Driver);
                         }
                     }
                 }

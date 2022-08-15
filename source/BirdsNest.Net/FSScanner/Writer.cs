@@ -85,48 +85,6 @@ namespace FSScanner
             }
         }
 
-        //public async Task<int> SendFolderAsync(Folder folder, IDriver driver)
-        //{
-        //    string query = "UNWIND $Properties AS prop" +
-        //        " MERGE (folder:" + Types.Folder + " {path:prop.path})" +
-        //        " SET folder.name=prop.name," +
-        //        " folder.lastpermission=prop.lastfolder," +
-        //        " folder.inheritancedisabled=prop.inheritancedisabled," +
-        //        " folder.depth=prop.depth," +
-        //        " folder.lastscan=$ScanID," +
-        //        " folder.fsid=prop.fsid," +
-        //        " folder.blocked=prop.blocked" +
-        //        " RETURN folder";
-
-        //    NeoQueryData querydata = new NeoQueryData();
-        //    querydata.Properties = new List<object>();
-        //    querydata.Properties.Add(new
-        //    {
-        //        path = folder.Path,
-        //        lastfolder = folder.PermParent,
-        //        inheritancedisabled = folder.InheritanceDisabled,
-        //        blocked = folder.Blocked,
-        //        name = folder.Name,
-        //        depth = folder.Depth,
-        //        fsid = this.FsID
-        //    });
-        //    var summaryList = await NeoWriter.RunQueryAsync(query, querydata, driver);
-        //    TransactionResult<List<string>> result = new TransactionResult<List<string>>(summaryList);
-
-        //    if (string.IsNullOrEmpty(folder.PermParent) == false)
-        //    {
-        //        await this.ConnectFileToParentAsync(folder, driver);
-        //    }
-
-        //    //send the perms
-        //    if (folder.PermissionCount > 0)
-        //    {
-        //        await this.SendFilePermissionsAsync(folder, driver);
-        //    }
-
-        //    return result.CreatedNodeCount;
-        //}
-
         public async Task<int> SendFileAsync(File file, IDriver driver)
         {
             string query = "UNWIND $Properties AS prop" +
