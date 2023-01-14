@@ -87,7 +87,7 @@ namespace CMScanner.CmConverter
                             NumMissing = ResultObjectHandler.GetInt(resource, "NumMissing"),
                             PercentCompliant = ResultObjectHandler.GetInt(resource, "PercentCompliant"),
                             SeverityName = ResultObjectHandler.GetString(resource, "SeverityName"),
-                            Size = ResultObjectHandler.GetInt(resource, "Size")
+                            //Size = ResultObjectHandler.GetInt(resource, "Size")
                         });
                     }
                 }

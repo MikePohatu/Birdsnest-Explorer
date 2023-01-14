@@ -138,6 +138,10 @@ namespace common
                     });
                 }
             }
+            catch (Exception e)
+            {
+                
+            }
             finally
             {
                 await session.CloseAsync();

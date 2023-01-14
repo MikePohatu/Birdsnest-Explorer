@@ -33,8 +33,13 @@ namespace CMScanner.CmConverter
         {
             try
             {
-                string s = resource[property].StringValue;
-                return s;
+                if (resource.PropertyList.ContainsKey(property))
+                {
+                    var val = resource.PropertyList[property];
+                    string s = val;
+                    return s;
+                }
+                return null;
             }
             catch
             {
@@ -52,8 +57,13 @@ namespace CMScanner.CmConverter
         {
             try
             {
-                int i = resource[property].IntegerValue;
-                return i;
+                if (resource.PropertyList.ContainsKey(property))
+                {
+                    var val = resource[property];
+                    int i = val.IntegerValue;
+                    return i;
+                }
+                return -1;
             }
             catch
             {
@@ -71,8 +81,13 @@ namespace CMScanner.CmConverter
         {
             try
             {
-                bool b = resource[property].BooleanValue;
-                return b;
+                if (resource.PropertyList.ContainsKey(property))
+                {
+                    var val = resource[property];
+                    bool b = val.BooleanValue;
+                    return b;
+                }
+                return false;
             }
             catch
             {
@@ -90,8 +105,13 @@ namespace CMScanner.CmConverter
         {
             try
             {
-                DateTime d = resource[property].DateTimeValue;
-                return d;
+                if (resource.PropertyList.ContainsKey(property))
+                {
+                    var val = resource[property];
+                    DateTime d = resource[property].DateTimeValue;
+                    return d;
+                }
+                return DateTime.MinValue;
             }
             catch (Exception e)
             {

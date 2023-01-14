@@ -20,6 +20,7 @@ import vue from '@vitejs/plugin-vue'
 import legacy from '@vitejs/plugin-legacy'
 import path from 'path';
 import { VitePWA } from 'vite-plugin-pwa';
+import basicSsl from '@vitejs/plugin-basic-ssl';
 
 // https://vitejs.dev/config/
 export default defineConfig(({ command, mode }) => ({
@@ -54,6 +55,7 @@ export default defineConfig(({ command, mode }) => ({
     }
   },
   plugins: [
+    basicSsl(),
     vue(),
     VitePWA({
       manifest: {
@@ -95,6 +97,7 @@ export default defineConfig(({ command, mode }) => ({
     extensions: ['.js', '.ts', '.vue']
   },
   server: {
+    https:true,
     proxy: {
       '/api': {
         changeOrigin: true,
