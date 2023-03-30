@@ -94,6 +94,28 @@
       "default": "path",
       "icon": "f07c"
     },
+    "FS_File": {
+      "displayName": "File System - FS_File",
+      "description": "A file in a file system",
+      "properties": {
+        "fsid": {},
+        "lastpermission": {},
+        "lastscan": {},
+        "name": {},
+        "path": { "indexEnforced": true },
+        "blocked": {
+          "description": "Scanner was unable to interogate this file and further scanning was blocked",
+          "type": "boolean"
+        },
+        "inheritancedisabled": {
+          "description": "",
+          "type": "boolean"
+        },
+        "scannerid": { "indexEnforced": true }
+      },
+      "default": "path",
+      "icon": "f15b"
+    },
     "FS_BlockedFolder": {
       "displayName": "File System - FS_BlockedFolder",
       "description": "Folder that couldn't be scanned"

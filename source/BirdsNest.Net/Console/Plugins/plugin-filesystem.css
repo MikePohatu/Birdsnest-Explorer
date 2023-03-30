@@ -1,13 +1,25 @@
-.FS_Folder {
+.FS_File {
     color: #ad9370;
     stroke: #ad9370;
-    fill: cornsilk;
-    background-color: cornsilk;
+    fill: #feffe2;
+    background-color: #feffe2;
+}
+
+.FS_File.icon {
+    fill: #ad9370;
+    background-color: #ad9370;
+}
+
+.FS_Folder {
+    color: #8b5b1c;
+    stroke: #8b5b1c;
+    fill: #feffe2;
+    background-color: #feffe2;
 }
 
 .FS_Folder.icon {
-    fill: #ad9370;
-    background-color: #ad9370;
+    fill: #8b5b1c;
+    background-color: #8b5b1c;
 }
 
 .FS_Datastore {

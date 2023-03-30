@@ -136,7 +136,7 @@ namespace FSScanner
 
             builder.AppendLine(" SET r.lastscan = $ScanID");
             builder.AppendLine(" SET r.fsid = prop.fsid");
-            builder.AppendLine(" SET r.layout='mesh'");
+            builder.AppendLine(" SET r.layout='tree'");
             builder.AppendLine(" WITH f");
             builder.AppendLine($" MATCH (:{f.Type})-[r]->(f)");
             builder.AppendLine($" WHERE (type(r)='{Types.AppliesInhertitanceTo}' OR type(r)='{Types.BlockedInheritance}') AND r.lastscan <> $ScanID");
