@@ -67,9 +67,9 @@ namespace ADScanner.ActiveDirectory
             List<object> propertylist = new List<object>();
             querydata.Properties = propertylist;
 
-            using (PrincipalSearcher principalSearcher = new PrincipalSearcher(new UserPrincipal(this._context)))
+            try
             {
-                try
+                using (PrincipalSearcher principalSearcher = new PrincipalSearcher(new UserPrincipal(this._context)))
                 {
                     DirectorySearcher searcher = principalSearcher.GetUnderlyingSearcher() as DirectorySearcher;
                     if (searcher != null)
@@ -125,11 +125,11 @@ namespace ADScanner.ActiveDirectory
 
 
                 }
-                catch (Exception e)
-                {
-                    //timer.Stop();
-                    Program.ExitError(e, "Error retrieving computers from AD", ErrorCodes.ComputersCollectorSearcherException);
-                }
+            }
+            catch (Exception e)
+            {
+                //timer.Stop();
+                Program.ExitError(e, "Error retrieving computers from AD", ErrorCodes.ComputersCollectorSearcherException);
             }
             return querydata;
         }

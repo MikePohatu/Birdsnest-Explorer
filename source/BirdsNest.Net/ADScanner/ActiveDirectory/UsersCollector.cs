@@ -69,11 +69,11 @@ namespace ADScanner.ActiveDirectory
             NeoQueryData querydata = new NeoQueryData();
             List<object> propertylist = new List<object>();
             querydata.Properties = propertylist;
-
-            using (PrincipalSearcher principalSearcher = new PrincipalSearcher(new UserPrincipal(this._context)))
+            try
             {
-                try
+                using (PrincipalSearcher principalSearcher = new PrincipalSearcher(new UserPrincipal(this._context)))
                 {
+                
                     DirectorySearcher searcher = principalSearcher.GetUnderlyingSearcher() as DirectorySearcher;
                     if (searcher != null)
                     {
@@ -129,11 +129,11 @@ namespace ADScanner.ActiveDirectory
                         Program.ExitError("Error retrieving users from AD", ErrorCodes.UsersCollectorSearcherNull);
                     }
                 }
-                catch (Exception e)
-                {
-                    //timer.Stop();
-                    Program.ExitError(e, "Error retrieving users from AD", ErrorCodes.UsersCollectorException);
-                }
+            }
+            catch (Exception e)
+            {
+                //timer.Stop();
+                Program.ExitError(e, "Error retrieving users from AD", ErrorCodes.UsersCollectorException);
             }
             return querydata;
         }

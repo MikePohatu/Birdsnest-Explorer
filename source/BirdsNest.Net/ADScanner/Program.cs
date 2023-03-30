@@ -201,6 +201,7 @@ namespace ADScanner
 
         public static void ExitError(Exception e, string message, int returncode)
         {
+            Console.WriteLine();
             Console.WriteLine(message);
             Console.WriteLine(e.Message);
             if (_batchmode == false)
@@ -213,6 +214,7 @@ namespace ADScanner
 
         public static void ExitError(string message, int returncode)
         {
+            Console.WriteLine();
             Console.WriteLine(message);
             if (_batchmode == false) { Console.ReadLine(); }
             Environment.Exit(returncode);

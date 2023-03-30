@@ -78,67 +78,63 @@ namespace ADScanner.ActiveDirectory
             {
                 using (PrincipalSearcher principalSearcher = new PrincipalSearcher(new UserPrincipal(this._context)))
                 {
-                    try
+                    DirectorySearcher searcher = principalSearcher.GetUnderlyingSearcher() as DirectorySearcher;
+                    if (searcher != null)
                     {
-                        DirectorySearcher searcher = principalSearcher.GetUnderlyingSearcher() as DirectorySearcher;
-                        if (searcher != null)
+                        searcher.Filter = ("(&(objectCategory=group))");
+                        searcher.SearchScope = SearchScope.Subtree;
+                        searcher.PropertiesToLoad.Add("cn");
+                        searcher.PropertiesToLoad.Add("memberof");
+                        searcher.PropertiesToLoad.Add("name");
+                        searcher.PropertiesToLoad.Add("samaccountname");
+                        searcher.PropertiesToLoad.Add("grouptype");
+                        searcher.PropertiesToLoad.Add("member");
+                        searcher.PropertiesToLoad.Add("objectcategory");
+                        searcher.PropertiesToLoad.Add("objectSid");
+                        searcher.PropertiesToLoad.Add("distinguishedName");
+                        searcher.PropertiesToLoad.Add("description");
+                        searcher.PropertiesToLoad.Add("info");
+
+                        searcher.PageSize = 1000;
+                        SearchResultCollection results = searcher.FindAll();
+
+                        foreach (SearchResult result in results)
                         {
-                            searcher.Filter = ("(&(objectCategory=group))");
-                            searcher.SearchScope = SearchScope.Subtree;
-                            searcher.PropertiesToLoad.Add("cn");
-                            searcher.PropertiesToLoad.Add("memberof");
-                            searcher.PropertiesToLoad.Add("name");
-                            searcher.PropertiesToLoad.Add("samaccountname");
-                            searcher.PropertiesToLoad.Add("grouptype");
-                            searcher.PropertiesToLoad.Add("member");
-                            searcher.PropertiesToLoad.Add("objectcategory");
-                            searcher.PropertiesToLoad.Add("objectSid");
-                            searcher.PropertiesToLoad.Add("distinguishedName");
-                            searcher.PropertiesToLoad.Add("description");
-                            searcher.PropertiesToLoad.Add("info");
+                            string id = ADSearchResultConverter.GetSidAsString(result);
+                            string dn = ADSearchResultConverter.GetSinglestringValue(result, "distinguishedname");
+                            var members = ADSearchResultConverter.GetStringList(result, "member");
 
-                            searcher.PageSize = 1000;
-                            SearchResultCollection results = searcher.FindAll();
-
-                            foreach (SearchResult result in results)
+                            propertylist.Add(new
                             {
-                                string id = ADSearchResultConverter.GetSidAsString(result);
-                                string dn = ADSearchResultConverter.GetSinglestringValue(result, "distinguishedname");
-                                var members = ADSearchResultConverter.GetStringList(result, "member");
+                                name = ADSearchResultConverter.GetSinglestringValue(result, "Name"),
+                                dn,
+                                description = ADSearchResultConverter.GetSinglestringValue(result, "Description"),
+                                id,
+                                info = ADSearchResultConverter.GetSinglestringValue(result, "info"),
+                                grouptype = GetTypeAndScope(ADSearchResultConverter.GetSinglestringValue(result, "grouptype")),
+                                samaccountname = ADSearchResultConverter.GetSinglestringValue(result, "samaccountname"),
+                                members,
+                                rid = ADSearchResultConverter.GetRidFromSid(id),
+                                path = dn,
+                                membercount = members.Count
+                            });
 
-                                propertylist.Add(new
-                                {
-                                    name = ADSearchResultConverter.GetSinglestringValue(result, "Name"),
-                                    dn,
-                                    description = ADSearchResultConverter.GetSinglestringValue(result, "Description"),
-                                    id,
-                                    info = ADSearchResultConverter.GetSinglestringValue(result, "info"),
-                                    grouptype = GetTypeAndScope(ADSearchResultConverter.GetSinglestringValue(result, "grouptype")),
-                                    samaccountname = ADSearchResultConverter.GetSinglestringValue(result, "samaccountname"),
-                                    members,
-                                    rid = ADSearchResultConverter.GetRidFromSid(id),
-                                    path = dn,
-                                    membercount = members.Count
-                                });
-
-                                foreach (string memberdn in members)
-                                {
-                                    this.GroupMemberships.Add(new { id, memberdn });
-                                }
+                            foreach (string memberdn in members)
+                            {
+                                this.GroupMemberships.Add(new { id, memberdn });
                             }
                         }
-                        else
-                        {
-                            Program.ExitError("Error retrieving groups from AD", ErrorCodes.GroupsCollectorSearcherNull);
-                        }
                     }
-                    catch (Exception e)
+                    else
                     {
-                        Program.ExitError(e, "Error retrieving groups from AD", ErrorCodes.GroupsCollectorException);
+                        Program.ExitError("Error retrieving groups from AD", ErrorCodes.GroupsCollectorSearcherNull);
                     }
                 }
             }
-            catch { }
+            catch (Exception e)
+            {
+                Program.ExitError(e, "Error retrieving groups from AD", ErrorCodes.GroupsCollectorException);
+            }
 
             querydata.Properties = propertylist;
             return querydata;

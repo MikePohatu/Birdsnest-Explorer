@@ -63,46 +63,42 @@ namespace ADScanner.ActiveDirectory
             {
                 using (PrincipalSearcher principalSearcher = new PrincipalSearcher(new UserPrincipal(this._context)))
                 {
-                    try
+                    DirectorySearcher searcher = principalSearcher.GetUnderlyingSearcher() as DirectorySearcher;
+                    if (searcher != null)
                     {
-                        DirectorySearcher searcher = principalSearcher.GetUnderlyingSearcher() as DirectorySearcher;
-                        if (searcher != null)
+                        searcher.Filter = ("(&(objectCategory=foreignSecurityPrincipal))");
+                        searcher.SearchScope = SearchScope.Subtree;
+                        searcher.PropertiesToLoad.Add("cn");
+                        searcher.PropertiesToLoad.Add("name");
+                        searcher.PropertiesToLoad.Add("objectcategory");
+                        searcher.PropertiesToLoad.Add("objectSid");
+                        searcher.PropertiesToLoad.Add("distinguishedName");
+                        searcher.PropertiesToLoad.Add("description");
+
+                        searcher.PageSize = 1000;
+                        SearchResultCollection results = searcher.FindAll();
+
+                        foreach (SearchResult result in results)
                         {
-                            searcher.Filter = ("(&(objectCategory=foreignSecurityPrincipal))");
-                            searcher.SearchScope = SearchScope.Subtree;
-                            searcher.PropertiesToLoad.Add("cn");
-                            searcher.PropertiesToLoad.Add("name");
-                            searcher.PropertiesToLoad.Add("objectcategory");
-                            searcher.PropertiesToLoad.Add("objectSid");
-                            searcher.PropertiesToLoad.Add("distinguishedName");
-                            searcher.PropertiesToLoad.Add("description");
-
-                            searcher.PageSize = 1000;
-                            SearchResultCollection results = searcher.FindAll();
-
-                            foreach (SearchResult result in results)
+                            propertylist.Add(new
                             {
-                                propertylist.Add(new
-                                {
-                                    name = ADSearchResultConverter.GetSinglestringValue(result, "Name"),
-                                    dn = ADSearchResultConverter.GetSinglestringValue(result, "distinguishedname"),
-                                    description = ADSearchResultConverter.GetSinglestringValue(result, "Description"),
-                                    id = ADSearchResultConverter.GetSidAsString(result)
-                                });
-                            }
-                        }
-                        else
-                        {
-                            Program.ExitError("Error retrieving foreign security principals from AD", ErrorCodes.ForeignSecurityPrincipalCollectorSearcherNull);
+                                name = ADSearchResultConverter.GetSinglestringValue(result, "Name"),
+                                dn = ADSearchResultConverter.GetSinglestringValue(result, "distinguishedname"),
+                                description = ADSearchResultConverter.GetSinglestringValue(result, "Description"),
+                                id = ADSearchResultConverter.GetSidAsString(result)
+                            });
                         }
                     }
-                    catch (Exception e)
+                    else
                     {
-                        Program.ExitError(e, "Error retrieving foreign security principals from AD", ErrorCodes.ForeignSecurityPrincipalCollectorSearcherException);
+                        Program.ExitError("Error retrieving foreign security principals from AD", ErrorCodes.ForeignSecurityPrincipalCollectorSearcherNull);
                     }
                 }
             }
-            catch { }
+            catch (Exception e)
+            {
+                Program.ExitError(e, "Error retrieving foreign security principals from AD", ErrorCodes.ForeignSecurityPrincipalCollectorSearcherException);
+            }
 
             querydata.Properties = propertylist;
             return querydata;
