@@ -61,7 +61,7 @@ namespace Console.neo4jProxy
             IAsyncSession session = this._driver.AsyncSession();
             try
             {
-                await session.ReadTransactionAsync(async (tx) =>
+                await session.ExecuteReadAsync(async (tx) =>
                 {
                     IResultCursor reader = await tx.RunAsync(query, props);
                     while (await reader.FetchAsync())
@@ -88,7 +88,7 @@ namespace Console.neo4jProxy
             IAsyncSession session = this._driver.AsyncSession();
             try
             {
-                await session.ReadTransactionAsync(async (tx) =>
+                await session.ExecuteReadAsync(async (tx) =>
                 {
                     IResultCursor reader = await tx.RunAsync(query, props);
                     while (await reader.FetchAsync())
@@ -217,7 +217,7 @@ namespace Console.neo4jProxy
             IAsyncSession session = this._driver.AsyncSession();
             try
             {
-                await session.ReadTransactionAsync(async (tx) =>
+                await session.ExecuteReadAsync(async (tx) =>
                 {
                     IResultCursor reader = await tx.RunAsync(query, search.Tokens.Properties);
                     while (await reader.FetchAsync())
@@ -256,7 +256,7 @@ namespace Console.neo4jProxy
             {
                 string query = "MATCH (n) WHERE " + typequery + "n[$prop]  =~ $regex RETURN DISTINCT n[$prop] ORDER BY n[$prop] LIMIT 20";
 
-                await session.ReadTransactionAsync(async (tx) =>
+                await session.ExecuteReadAsync(async (tx) =>
                 {
                     IResultCursor reader = await tx.RunAsync(query, new { type, prop = property, regex = regexterm });
                     while (await reader.FetchAsync())
@@ -297,7 +297,7 @@ namespace Console.neo4jProxy
             {
                 string query = "MATCH ()-[r:" + type + "]->() WHERE r[{prop}] =~ $regex RETURN DISTINCT r[{prop}] ORDER BY r[{prop}] LIMIT 20";
 
-                await session.ReadTransactionAsync(async (tx) =>
+                await session.ExecuteReadAsync(async (tx) =>
                 {
                     IResultCursor reader = await tx.RunAsync(query, new { prop = property, regex = regexterm });
                     while (await reader.FetchAsync())
@@ -398,7 +398,7 @@ namespace Console.neo4jProxy
             IAsyncSession session = this._driver.AsyncSession();
             try
             {
-                await session.WriteTransactionAsync(async (tx) =>
+                await session.ExecuteWriteAsync(async (tx) =>
                 {
                     IResultCursor reader = await tx.RunAsync(query);
                     IResultSummary summary = await reader.ConsumeAsync();
@@ -424,7 +424,7 @@ namespace Console.neo4jProxy
             IAsyncSession session = this._driver.AsyncSession();
             try
             {
-                await session.WriteTransactionAsync(async (tx) =>
+                await session.ExecuteWriteAsync(async (tx) =>
                 {
                     IResultCursor reader = await tx.RunAsync(query);
                     await reader.ConsumeAsync();
@@ -450,7 +450,7 @@ namespace Console.neo4jProxy
             IAsyncSession session = this._driver.AsyncSession();
             try
             {
-                await session.WriteTransactionAsync(async (tx) =>
+                await session.ExecuteWriteAsync(async (tx) =>
                 {
                     IResultCursor reader = await tx.RunAsync(query);
                     await reader.ConsumeAsync();

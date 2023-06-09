@@ -53,7 +53,7 @@ namespace Console.Vue
         /// <summary>
         /// Dictionary<label, Dictionary<DbId, BirdsNestNodeSimple>>
         /// </summary>
-        private SortedDictionary<string, Dictionary<long, BirdsNestNodeSimple>> _labelledDictionary { get; set; } = new SortedDictionary<string, Dictionary<long, BirdsNestNodeSimple>>();
+        private SortedDictionary<string, Dictionary<string, BirdsNestNodeSimple>> _labelledDictionary { get; set; } = new SortedDictionary<string, Dictionary<string, BirdsNestNodeSimple>>();
 
         public VForLabelledNodeList(string name)
         {
@@ -62,7 +62,7 @@ namespace Console.Vue
 
         public void AddNode(BirdsNestNode node, string label)
         {
-            Dictionary<long, BirdsNestNodeSimple> labeldic;
+            Dictionary<string, BirdsNestNodeSimple> labeldic;
 
             if (this._labelledDictionary.TryGetValue(label, out labeldic))
             {
@@ -73,7 +73,7 @@ namespace Console.Vue
             }
             else
             {
-                labeldic = new Dictionary<long, BirdsNestNodeSimple>();
+                labeldic = new Dictionary<string, BirdsNestNodeSimple>();
                 this._labelledDictionary.Add(label, labeldic);
                 labeldic.Add(node.DbId, node.GetSimple());
             }
@@ -81,7 +81,7 @@ namespace Console.Vue
 
         public void Sort()
         {
-            Dictionary<long, BirdsNestNodeSimple> current;
+            Dictionary<string, BirdsNestNodeSimple> current;
             this._labelledNodes = new SortedDictionary<string, List<BirdsNestNodeSimple>>();
 
             foreach (string key in this._labelledDictionary.Keys)

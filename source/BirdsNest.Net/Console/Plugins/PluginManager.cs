@@ -133,7 +133,7 @@ namespace Console.Plugins
             }
             catch (Exception e)
             {
-                this._logger.LogError(e, "Error processing css files", null);
+                this._logger.LogError(e, "Error processing css files");
                 return false;
             }
             #endregion
@@ -176,7 +176,7 @@ namespace Console.Plugins
             }
             catch (Exception e)
             {
-                this._logger.LogError(e, "Error processing plugin extensions", null);
+                this._logger.LogError(e, "Error processing plugin extensions");
                 return false;
             }
             #endregion

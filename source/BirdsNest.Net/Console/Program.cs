@@ -19,8 +19,10 @@
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using NLog;
 using NLog.Web;
 using System;
+using System.Security.Policy;
 
 namespace Console
 {
@@ -28,7 +30,11 @@ namespace Console
     {
         public static void Main(string[] args)
         {
-            var logger = NLogBuilder.ConfigureNLog("nlog.config").GetCurrentClassLogger();
+            //var logger = NLogBuilder.ConfigureNLog("nlog.config").GetCurrentClassLogger();
+            var appdomain = System.AppDomain.CurrentDomain;
+            string path = System.IO.Path.Combine(System.AppDomain.CurrentDomain.BaseDirectory, System.AppDomain.CurrentDomain.RelativeSearchPath ?? "");
+            var logger = LogManager.Setup().LoadConfigurationFromAppSettings(path).GetCurrentClassLogger();
+
             try
             {
                 logger.Debug("init main");

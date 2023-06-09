@@ -18,6 +18,8 @@
 #endregion
 using System.DirectoryServices.AccountManagement;
 
+#pragma warning disable CS0618
+#pragma warning disable CA1416
 namespace Console.Auth.Windows
 {
     public static class AccountAuthorizer

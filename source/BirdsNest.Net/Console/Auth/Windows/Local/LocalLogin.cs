@@ -19,6 +19,7 @@
 using System;
 using System.DirectoryServices.AccountManagement;
 
+#pragma warning disable CA1416
 namespace Console.Auth.Windows.Local
 {
     public class LocalLogin : ILogin

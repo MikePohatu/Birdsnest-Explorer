@@ -67,7 +67,7 @@ namespace FSScanner
             IAsyncSession session = driver.AsyncSession();
             try
             {
-                await session.ReadTransactionAsync(async tx =>
+                await session.ExecuteReadAsync(async tx =>
                 {
                     string query = "MATCH (n:" + Types.Folder + ") WHERE n.path STARTS WITH $rootpath RETURN n";
                     IResultCursor dbresult = await tx.RunAsync(query, new { rootpath });

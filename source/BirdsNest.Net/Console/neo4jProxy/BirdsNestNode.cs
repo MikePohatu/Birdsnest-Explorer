@@ -23,7 +23,7 @@ namespace Console.neo4jProxy
 {
     public class BirdsNestNode
     {
-        public long DbId { get; private set; } = 0;
+        public string DbId { get; private set; }
         public string Name { get; private set; } = string.Empty;
         public List<string> Labels { get; private set; } = new List<string>();
         public long Scope { get; private set; } = 1;
@@ -33,7 +33,7 @@ namespace Console.neo4jProxy
         {
             BirdsNestNode newnode = new BirdsNestNode();
 
-            newnode.DbId = noderecord.Id;
+            newnode.DbId = noderecord.ElementId;
             newnode.Properties = noderecord.Properties;
 
             object o;

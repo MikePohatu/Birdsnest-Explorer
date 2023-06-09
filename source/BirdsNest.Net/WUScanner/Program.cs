@@ -152,12 +152,12 @@ namespace WUScanner
                 {
                     Console.Write(".");
                     sublist = ListExtensions.ListPop(updateinfo.Updates, 1000);
-                    Writer.MergeUpdates(sublist, driver, scanid);
+                    Writer.MergeUpdatesAsync(sublist, driver, scanid).ConfigureAwait(false);
                 }
                 if (updateinfo.Updates.Count > 0)
                 {
                     sublist = updateinfo.Updates;
-                    Writer.MergeUpdates(sublist, driver, scanid);
+                    Writer.MergeUpdatesAsync(sublist, driver, scanid).ConfigureAwait(false);
                 }
                 Console.WriteLine();
 
@@ -167,9 +167,13 @@ namespace WUScanner
                 {
                     Console.Write(".");
                     sublist = ListExtensions.ListPop(updateinfo.SupersededUpdates, 1000);
-                    Writer.MergeSupersedence(sublist, driver, scanid);
+                    Writer.MergeSupersedence(sublist, driver, scanid).ConfigureAwait(false);
                 }
-                if (updateinfo.SupersededUpdates.Count > 0) { Writer.MergeSupersedence(updateinfo.SupersededUpdates, driver, scanid); }
+                if (updateinfo.SupersededUpdates.Count > 0)
+                {
+                    Writer.MergeSupersedence(updateinfo.SupersededUpdates, driver, scanid).ConfigureAwait(false);
+                }
+
                 Console.WriteLine();
                 Console.WriteLine("Finished");
             }

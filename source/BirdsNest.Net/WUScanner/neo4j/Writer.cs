@@ -25,7 +25,7 @@ namespace WUScanner.Neo4j
 {
     public static class Writer
     {
-        public static async Task<int> MergeUpdates(IEnumerable<object> updates, IDriver driver, string scanid)
+        public static async Task<int> MergeUpdatesAsync(IEnumerable<object> updates, IDriver driver, string scanid)
         {
             NeoQueryData querydata = new NeoQueryData();
             querydata.Properties = new List<object>();

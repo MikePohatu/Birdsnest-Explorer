@@ -22,7 +22,7 @@ namespace Console.neo4jProxy
 {
     public class BirdsNestNodeSimple
     {
-        public long DbId { get; set; }
+        public string DbId { get; set; }
         public string Name { get; set; }
         public List<string> Labels { get; set; }
     }

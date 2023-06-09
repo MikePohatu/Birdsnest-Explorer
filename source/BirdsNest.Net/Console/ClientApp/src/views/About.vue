@@ -74,6 +74,8 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 					href="https://github.com/dsbenghe/Novell.Directory.Ldap.NETStandard"
 					target="_blank"
 				>dsbenghe</a>
+				<br />sdpeval -
+				<a href="https://github.com/trondr/sdpeval" target="_blank">trondr</a>
 				<br />uuid js -
 				<a href="https://github.com/uuidjs/uuid" target="_blank">uuidjs</a>
 				<br />Vue -

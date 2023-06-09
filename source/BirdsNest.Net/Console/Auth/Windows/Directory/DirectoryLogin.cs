@@ -18,6 +18,7 @@
 #endregion
 using System.DirectoryServices.AccountManagement;
 
+#pragma warning disable CA1416
 namespace Console.Auth.Windows.Directory
 {
     public class DirectoryLogin : ILogin

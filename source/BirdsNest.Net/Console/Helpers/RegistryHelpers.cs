@@ -20,6 +20,7 @@ using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
 
+#pragma warning disable CA1416
 namespace Console.Helpers
 {
     public static class RegistryHelpers

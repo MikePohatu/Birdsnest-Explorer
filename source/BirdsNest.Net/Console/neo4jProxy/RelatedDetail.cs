@@ -23,7 +23,7 @@ namespace Console.neo4jProxy
 {
     public class RelatedDetail
     {
-        private Dictionary<long, BirdsNestNode> _relatedNodes = new Dictionary<long, BirdsNestNode>();
+        private Dictionary<string, BirdsNestNode> _relatedNodes = new Dictionary<string, BirdsNestNode>();
 
         public BirdsNestNode Node { get; private set; }
 

@@ -114,7 +114,7 @@ namespace common
 
                         itemscount += subdata.Properties.Count;
 
-                        await session.WriteTransactionAsync(async (tx) =>
+                        await session.ExecuteWriteAsync(async (tx) =>
                         {
                             IResultCursor reader = await tx.RunAsync(query, subdata);
                             var summary = await reader.ConsumeAsync();
@@ -129,7 +129,7 @@ namespace common
                     subdata.ScanID = data.ScanID;
                     subdata.ScannerID = data.ScannerID;
 
-                    await session.WriteTransactionAsync(async (tx) =>
+                    await session.ExecuteWriteAsync(async (tx) =>
                     {
                         IResultCursor reader = await tx.RunAsync(query, subdata);
                         var summary = await reader.ConsumeAsync();
@@ -138,9 +138,11 @@ namespace common
                     });
                 }
             }
+            #pragma warning disable
             catch (Exception e)
+            #pragma warning restore
             {
-                
+
             }
             finally
             {

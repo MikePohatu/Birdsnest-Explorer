@@ -23,9 +23,9 @@ namespace Console.neo4jProxy
 {
     public class BirdsNestRelationship
     {
-        public long DbId { get; private set; } = 0;
-        public long Source { get; private set; } = 0;
-        public long Target { get; private set; } = 0;
+        public string DbId { get; private set; }
+        public string Source { get; private set; }
+        public string Target { get; private set; }
 
         /// <summary>
         /// Does the edge need to be shifted in the visualizer to avoid overlap
@@ -38,11 +38,11 @@ namespace Console.neo4jProxy
         {
             BirdsNestRelationship newrel = new BirdsNestRelationship();
 
-            newrel.DbId = relrecord.Id;
+            newrel.DbId = relrecord.ElementId;
             newrel.Properties = relrecord.Properties;
             newrel.Label = relrecord.Type;
-            newrel.Source = relrecord.StartNodeId;
-            newrel.Target = relrecord.EndNodeId;
+            newrel.Source = relrecord.StartNodeElementId;
+            newrel.Target = relrecord.EndNodeElementId;
             return newrel;
         }
     }
