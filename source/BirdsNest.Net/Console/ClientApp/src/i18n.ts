@@ -17,15 +17,15 @@
 
 import { createI18n, LocaleMessages, VueMessageType } from 'vue-i18n';
 
-function loadLocaleMessages (): LocaleMessages<VueMessageType> {
-  const locales = import.meta.globEager('./locales/*.json');
-  const messages: LocaleMessages<VueMessageType> = {};
+function loadLocaleMessages (): { [x: string]: LocaleMessages<VueMessageType>; } {
+  const locales = import.meta.glob<Record<string, string>>('./locales/*.json', { eager: true });
+  const messages: { [x: string]: LocaleMessages<VueMessageType>; } = {};
 
   for (const key in locales) {
     const matched = key.match(/([A-Za-z0-9-_]+)\./i);
     if (matched && matched.length > 1) {
       const locale = matched[1];
-      messages[locale] = locales[key].default;
+      messages[locale] = locales[key];
     }
   };
   
