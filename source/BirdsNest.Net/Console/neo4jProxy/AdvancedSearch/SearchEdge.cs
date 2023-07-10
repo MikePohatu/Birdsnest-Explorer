@@ -1,5 +1,5 @@
 ﻿#region license
-// Copyright (c) 2019-2020 "20Road"
+// Copyright (c) 2019-2023 "20Road"
 // 20Road Limited [https://www.20road.com]
 //
 // This file is part of Birdsnest Explorer.

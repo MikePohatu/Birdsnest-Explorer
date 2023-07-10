@@ -1,5 +1,5 @@
 ﻿extensions: .vue
-<!-- Copyright (c) 2019-2020 "20Road"
+<!-- Copyright (c) 2019-2023 "20Road"
 20Road Limited [https://www.20road.com]
 
 This file is part of Birdsnest Explorer.
@@ -18,7 +18,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 -->
 extensions: .cs
 #region license
-// Copyright (c) 2019-2020 "20Road"
+// Copyright (c) 2019-2023 "20Road"
 // 20Road Limited [https://www.20road.com]
 //
 // This file is part of Birdsnest Explorer.
@@ -36,7 +36,7 @@ extensions: .cs
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #endregion
 extensions: .js .ts
-// Copyright (c) 2019-2020 "20Road"
+// Copyright (c) 2019-2023 "20Road"
 // 20Road Limited [https://www.20road.com]
 //
 // This file is part of Birdsnest Explorer.
