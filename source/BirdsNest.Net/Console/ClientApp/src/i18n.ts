@@ -14,7 +14,9 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
-import { createI18n, LocaleMessages, VueMessageType } from 'vue-i18n';
+
+export const DEFAULT_LOCALE = 'en';
+import { LocaleMessages, VueMessageType, createI18n } from 'vue-i18n';
 
 function loadLocaleMessages (): { [x: string]: LocaleMessages<VueMessageType>; } {
   const locales = import.meta.glob<Record<string, string>>('./locales/*.json', { eager: true });
@@ -27,14 +29,13 @@ function loadLocaleMessages (): { [x: string]: LocaleMessages<VueMessageType>; }
       messages[locale] = locales[key];
     }
   };
-  
   return messages;
 }
 
 const i18n = createI18n({
-  locale: import.meta.env.VUE_APP_I18N_LOCALE || 'en',
+  locale: import.meta.env.VUE_APP_I18N_LOCALE || DEFAULT_LOCALE,
   allowComposition: true,
-  fallbackLocale: import.meta.env.VUE_APP_I18N_FALLBACK_LOCALE || 'en',
+  fallbackLocale: import.meta.env.VUE_APP_I18N_FALLBACK_LOCALE || DEFAULT_LOCALE,
   messages: loadLocaleMessages(),
   legacy: false, // you must set `false`, to use Composition API
   globalInjection: true

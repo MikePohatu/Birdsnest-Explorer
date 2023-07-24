@@ -23,7 +23,7 @@ import "motion-ui/dist/motion-ui.css";
 import "foundation-sites/dist/css/foundation.css";
 
 import i18n from "./i18n";
-import FlagIcon from "vue-flag-icon";
+import CountryFlag from "vue-country-flag-next"
 import VueCookies from "vue3-cookies";
 
 import { createApp } from 'vue';
@@ -33,11 +33,11 @@ import App from './App.vue';
 
 const app = createApp(App);
 
-app.use(FlagIcon)
+app.use(CountryFlag)
     .use(VueCookies)
     .use(router)
-    .use(store, key)
     .use(i18n)
+    .use(store, key)
     .mount('#app');
 
 //Vue.config.productionTip = false;

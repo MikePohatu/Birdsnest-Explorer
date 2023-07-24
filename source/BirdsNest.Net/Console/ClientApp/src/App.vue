@@ -37,15 +37,10 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 	import { ref, onMounted, onUpdated } from "vue";
 
 	const store = useStore();
-	const { cookies } = useCookies();
 	const custom = ref();
 	const customPath = "/static/customization/custom.css";
 
-	store.dispatch(rootPaths.actions.UPDATE_PROVIDERS);
-	const storedlocale = cookies.get("locale");
-	if (storedlocale !== null) {
-		store.commit(rootPaths.mutations.LOCALE, storedlocale);
-	}
+	store.dispatch(rootPaths.actions.UPDATE_PROVIDERS);	
 
 	//get the custom css element. This is already defined in index.html
 	Array.from(document.head.getElementsByTagName("LINK")).some((child: HTMLLinkElement) => {

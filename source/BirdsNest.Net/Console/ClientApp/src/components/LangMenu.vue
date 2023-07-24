@@ -20,12 +20,12 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 		<ul class="dropdown menu" data-dropdown-menu data-click-open="true" data-disable-hover="true">
 			<li>
 				<a href="#" id="topFlagIcon" >
-					{{ $t('word_Language')}} <flag :iso="currentLang.flag" v-bind:squared="false"/>
+					{{ $t('word_Language')}}&ensp;<country-flag :country="currentLang.flag" size="small"/>
 				</a>
 				<ul>
 					<li v-for="(lang, name) in languages" :key="name">
 						<a href="#" @click="changeLocale(name as string)">
-							<flag :iso="lang.flag" v-bind:squared="false" />
+							<country-flag :country="lang.flag" size="small" />
 							{{lang.title}}
 						</a>
 					</li>
@@ -64,7 +64,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 	const store = useStore();
 
 	const currentLang = computed((): LanguageSelector => {
-		return languages[i18n.locale.value];
+		return languages.value[i18n.locale.value];
 	})
 
 	const languages = computed((): Dictionary<LanguageSelector> => {

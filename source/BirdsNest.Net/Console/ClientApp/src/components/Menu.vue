@@ -38,13 +38,13 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 							<hr />
 							<router-link :to="routeDefs.about.path">{{ $t('word_About') }}</router-link>
 							<router-link v-if="!isIE" :to="routeDefs.docs.path">{{ $t('word_Docs') }}</router-link>
-							<!-- <LangMenu /> -->
+							<LangMenu />
 							<a v-on:click="logout">{{ $t('word_Logout') }}</a>
 						</div>
 						<div v-else class="menuwrapper">
 							<router-link :to="routeDefs.about.path">{{ $t('word_About') }}</router-link>
 							<router-link v-if="!isIE" :to="routeDefs.docs.path">{{ $t('word_Docs') }}</router-link>
-							<!-- <LangMenu /> -->
+							<LangMenu />
 							<router-link :to="routeDefs.login.path">{{ $t('word_Login') }}</router-link>
 						</div>
 					</li>
@@ -57,15 +57,12 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 <script setup lang="ts">
 import { auth } from "@/assets/ts/webcrap/authcrap";
 import { routeDefs } from "@/router/index";
-//import LangMenu from "@/components/LangMenu.vue";
+import LangMenu from "@/components/LangMenu.vue";
 import webcrap from "@/assets/ts/webcrap/webcrap";
 import { useStore } from "@/store";
 import { useRouter } from "vue-router";
 import { computed } from "vue";
 
-// @Component({
-// 	components: { LangMenu },
-// })
 const store = useStore();
 const router = useRouter();
 
