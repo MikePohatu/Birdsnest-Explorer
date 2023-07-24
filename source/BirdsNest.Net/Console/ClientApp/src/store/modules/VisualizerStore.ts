@@ -21,6 +21,7 @@ import Mappings from '@/assets/ts/visualizer/Mappings';
 import { api, Request } from "@/assets/ts/webcrap/apicrap";
 import { ResultSet } from '@/assets/ts/dataMap/ResultSet';
 import { ApiNode } from "@/assets/ts/dataMap/ApiNode";
+import { bus, events } from "@/bus";
 //import { Dictionary } from "@/assets/ts/webcrap/misccrap";
 
 export interface VisualizerState {
@@ -171,10 +172,17 @@ export const VisualizerStore: Module<VisualizerState, RootState> = {
       api.get(subtyperequest);
     },
     requestNodeId(context, id: number) {
+      bus.emit(events.Notifications.Processing, "Retrieving node information");
       const request: Request = {
         url: "api/graph/node/" + id,
         successCallback: (data?: ApiNode) => {
-          context.commit("addPendingNode", data);
+          if (data !== null) {
+            bus.emit(events.Notifications.Processing, "Adding node to view");
+            context.commit("addPendingNode", data);
+          } else 
+          {
+						bus.emit(events.Notifications.Clear);
+          }
         },
         errorCallback: (jqXHR?: JQueryXHR, status?: string, error?: string) => {
           // eslint-disable-next-line
@@ -184,10 +192,17 @@ export const VisualizerStore: Module<VisualizerState, RootState> = {
       api.get(request);
     },
     requestRelatedNodes(context, id: number) {
+      bus.emit(events.Notifications.Processing, "Retrieving related nodes");
       const request: Request = {
         url: "api/graph/node/" + id + "/related",
         successCallback: (data?: ApiNode[]) => {
-          context.commit("addPendingNodes", data);
+          if (data !== null && data.length > 0) {
+            bus.emit(events.Notifications.Processing, "Adding related nodes to view");
+            context.commit("addPendingNodes", data);
+          } else 
+          {
+						bus.emit(events.Notifications.Clear);
+          }
         },
         errorCallback: (jqXHR?: JQueryXHR, status?: string, error?: string) => {
           // eslint-disable-next-line

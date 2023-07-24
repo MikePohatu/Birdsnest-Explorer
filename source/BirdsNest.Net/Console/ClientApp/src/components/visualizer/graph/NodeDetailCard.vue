@@ -329,7 +329,6 @@ function labels(labelledNodeList: VForLabelledNodeList): string[] {
 }
 
 function addNode(node: ApiNodeSimple): void {
-	bus.emit(events.Notifications.Processing, "Adding node to view");
 	store.dispatch(VisualizerStorePaths.actions.Request.NODE_ID, node.dbId);
 }
 
@@ -338,7 +337,6 @@ function onEyeClicked(): void {
 }
 
 function onExpandClicked(): void {
-	bus.emit(events.Notifications.Processing, "Adding related nodes to view");
 	store.dispatch(VisualizerStorePaths.actions.Request.RELATED_NODES, node.dbId);
 }
 
