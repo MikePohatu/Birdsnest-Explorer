@@ -16,7 +16,7 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see http://www.gnu.org/licenses/.
 -->
 <template>
-	<div v-foundation id="reportView">
+	<div ref="templateRoot" id="reportView">
 		<div id="reportHeader" class="grid-x">
 			<div class="cell shrink headerItem" id="reportmenu">
 				<ul
@@ -182,7 +182,10 @@ import { bus, events } from "@/bus";
 import { useStore } from "@/store";
 import { computed, onMounted, ref } from "vue";
 import { useRoute, useRouter } from "vue-router";
-import { vFoundation } from "@/mixins/foundation";
+import { initFoundationMounted } from "@/mixins/foundation";
+	
+const templateRoot = ref(null);
+initFoundationMounted(templateRoot);
 
 const store = useStore();
 const route = useRoute();

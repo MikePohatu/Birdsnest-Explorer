@@ -16,7 +16,7 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see http://www.gnu.org/licenses/.
 -->
 <template>
-	<div>
+	<div ref="templateRoot">
 		<ul class="dropdown menu" data-dropdown-menu data-click-open="true" data-disable-hover="true">
 			<li>
 				<a href="#" id="topFlagIcon" >
@@ -57,8 +57,12 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 <script setup lang="ts">
 	import { LanguageSelector, rootPaths, useStore } from "@/store";
 	import { Dictionary } from "@/assets/ts/webcrap/misccrap";
-	import { computed, defineComponent } from "vue";
+	import { computed, ref } from "vue";
 	import { useI18n } from "vue-i18n";
+	import { initFoundationMounted } from "@/mixins/foundation";
+	
+	const templateRoot = ref(null);
+	initFoundationMounted(templateRoot);
 
 	const i18n = useI18n();
 	const store = useStore();

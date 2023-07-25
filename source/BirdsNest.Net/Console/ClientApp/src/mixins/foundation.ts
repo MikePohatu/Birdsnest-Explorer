@@ -15,21 +15,21 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 import $ from 'jquery';
+import { onMounted, onBeforeUnmount } from 'vue'
 
-export const vFoundation = { 
-    mounted: (el)=>{
-      $(el).foundation();
-    }
-};
+export function initFoundationMounted(elementRef) {
+  onMounted(() => { 
+    //console.log({function: "initFoundation-onMounted", el: elementRef.value});
+    $(elementRef.value).foundation() }
+  );
+}
 
-export const vFoundationWithDestory = { 
-  mounted: (el)=>{
-    $(el).foundation();
-  },
+export function initFoundationMountedUnmounted(elementRef) {
+  onMounted(() => {
+    $(elementRef.value).foundation() 
+  });
 
-  beforeUnmount: (el)=> {
-    $(el).foundation('_destroy');
-  }  
-};
-
-
+  onBeforeUnmount(()=> {
+    $(elementRef.value).foundation('_destroy');
+  });
+}

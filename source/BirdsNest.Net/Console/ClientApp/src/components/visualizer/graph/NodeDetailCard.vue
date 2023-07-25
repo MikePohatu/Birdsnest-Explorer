@@ -16,7 +16,7 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see http://www.gnu.org/licenses/.
 -->
 <template>
-	<div v-foundation>
+	<div ref="templateRoot">
 		<div :id="'related' + node.DbId" class="detailcard pane">
 			<div class="detaillist">
 				<div class="grid-x align-middle">
@@ -234,7 +234,10 @@ import { rootPaths } from "@/store";
 import { Dictionary } from "@/assets/ts/webcrap/misccrap";
 import { computed, nextTick, onMounted, ref, reactive } from "vue";
 import { useStore } from "@/store";
-import { vFoundation } from "@/mixins/foundation";
+import { initFoundationMounted } from "@/mixins/foundation";
+	
+const templateRoot = ref(null);
+initFoundationMounted(templateRoot);
 
 const props = defineProps({ node: { type: Object, required: true } });
 const node = reactive<SimNode>(props.node as SimNode);

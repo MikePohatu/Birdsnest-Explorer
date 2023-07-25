@@ -16,7 +16,7 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see http://www.gnu.org/licenses/.
 -->
 <template>
-	<div v-foundation id="results" v-bind:class="{ hidden: !showResults }">
+	<div ref="templateRoot" id="results" v-bind:class="{ hidden: !showResults }">
 		<div v-bind:class="{ hidden: zeroResults }">
 			<div>
 				{{ $t('word_Found') }}
@@ -79,10 +79,14 @@ import { VisualizerStorePaths } from "@/store/modules/VisualizerStore";
 import { SearchStorePaths } from "@/store/modules/SearchStore";
 
 import { bus, events } from "@/bus";
-import { computed } from "vue";
+import { computed, ref } from "vue";
 import { useStore } from "@/store";
 import { useI18n } from "vue-i18n";
-import { vFoundation } from "@/mixins/foundation";
+import { initFoundationMounted } from "@/mixins/foundation";
+	
+const templateRoot = ref(null);
+initFoundationMounted(templateRoot);
+
 const props = defineProps({ id: { type: String, required: true } });
 const store = useStore();
 const { t } = useI18n();
