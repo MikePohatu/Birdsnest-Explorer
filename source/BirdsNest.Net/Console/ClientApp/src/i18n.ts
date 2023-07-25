@@ -14,7 +14,6 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
-
 export const DEFAULT_LOCALE = 'en';
 import { LocaleMessages, VueMessageType, createI18n } from 'vue-i18n';
 
