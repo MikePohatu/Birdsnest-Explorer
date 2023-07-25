@@ -1,5 +1,5 @@
 {
-  "20road": "20Road",
+  "twentyroad": "20Road",
   "Birdsnest_Explorer": "Birdsnest Explorer",
   "about": {
     "is_created_and_maintained_by": "is created and maintained by",
@@ -168,7 +168,7 @@
   "word_Logout": "Logout",
   "word_Max": "Max",
   "word_Min": "Min",
-  "word_More...": "More...",
+  "word_More": "More",
   "word_Name": "Name",
   "word_New": "New",
   "word_Node": "Node",

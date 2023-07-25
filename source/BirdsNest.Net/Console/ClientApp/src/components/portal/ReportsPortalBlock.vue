@@ -41,7 +41,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 							</tr>
 							<tr>
 								<td class="left small" colspan="2">
-									<router-link to="reports">{{ $t('word_More...') }}</router-link>
+									<router-link to="reports">{{ $t('word_More') }}...</router-link>
 								</td>
 							</tr>
 						</tbody>

@@ -22,7 +22,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 			<h4>{{ $t('word_About') }}</h4>
 			<p>
 				{{ $t('Birdsnest_Explorer') }} {{ $t('about.is_created_and_maintained_by') }}
-				<a href="https://20road.com" target="_blank">{{ $t('20road') }}</a>.
+				<a href="https://20road.com" target="_blank">{{ $t('twentyroad') }}</a>.
 			</p>
 
 			<h5>{{ $t('word_Documentation') }}</h5>

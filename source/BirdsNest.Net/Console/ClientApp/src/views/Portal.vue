@@ -41,7 +41,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 			<a
 				href="https://support.20road.com"
 				target="_blank"
-			>{{ $t('20road') }} {{ $t('portal.usage_info_3') }}</a>
+			>{{ $t('twentyroad') }} {{ $t('portal.usage_info_3') }}</a>
 		</p>
 
 		<p class="text-center">

@@ -108,7 +108,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 											<a v-on:click="addNode(labelledNode)" class="plus">(+)</a>
 										</li>
 										<li v-if="isExpanded(labelledNodeList, label) === false" class="menu nested">
-											<a href="#" v-on:click="expandLabel(labelledNodeList, label)">{{ $t("word_More...") }}</a>
+											<a href="#" v-on:click="expandLabel(labelledNodeList, label)">{{ $t("word_More") }}...</a>
 										</li>
 									</ul>
 								</li>
@@ -137,7 +137,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 											<a v-on:click="addNode(labelledNode)" class="plus">(+)</a>
 										</li>
 										<li v-if="isExpanded(labelledNodeList, label) === false" class="menu nested">
-											<a href="#" v-on:click="expandLabel(labelledNodeList, label)">{{ $t("word_More...") }}</a>
+											<a href="#" v-on:click="expandLabel(labelledNodeList, label)">{{ $t("word_More") }}...</a>
 										</li>
 									</ul>
 								</li>

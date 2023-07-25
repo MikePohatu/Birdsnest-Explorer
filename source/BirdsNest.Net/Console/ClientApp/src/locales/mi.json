@@ -1,5 +1,5 @@
 {
-  "20road": "20Road",
+  "twentyroad": "20Road",
   "Birdsnest_Explorer": "Birdsnest Kaitirotiro",
   "about": {
     "is_created_and_maintained_by": "hangaia ana e tiakina ana e",
@@ -168,7 +168,7 @@
   "word_Logout": "Putaara",
   "word_Max": "Mōrahi",
   "word_Min": "Iti rawa",
-  "word_More...": "Tahi atu..",
+  "word_More": "Tahi atu",
   "word_Name": "Ingoa",
   "word_New": "Hou",
   "word_Node": "Node",
