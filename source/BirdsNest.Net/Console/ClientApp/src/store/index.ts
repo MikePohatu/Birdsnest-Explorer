@@ -245,6 +245,10 @@ export const store = createStore({
   },
   actions: {
     init(context) {
+      const storedlocale = cookies.get("locale");
+      if (storedlocale !== null) {
+        store.commit(rootPaths.mutations.LOCALE, storedlocale);
+      }
       context.dispatch(rootPaths.actions.UPDATE_CUSTOMIZATION);
     },
 
