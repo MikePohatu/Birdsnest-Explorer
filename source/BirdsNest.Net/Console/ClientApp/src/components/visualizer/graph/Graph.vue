@@ -805,28 +805,18 @@ import { useRouter } from "vue-router";
 		const animate = !store.state.visualizer.perfMode;
 		updateAllNodeLocations(animate);
 
-		if (isScreenEmpty() === true) {
-			centerView();
-		}
+			
 	}
 
 	function isScreenEmpty() {
-		//console.log("isScreenEmpty");
 		const box = drawingPane.node().getBoundingClientRect();
 		const svgbox = drawingSvg.node().getBBox();
-		//console.log(box);
-		//console.log(svgbox);
 
-		if (
-			svgbox.x > box.x + box.width ||
-			svgbox.y > box.y + box.height ||
-			svgbox.x + svgbox.width < box.x ||
-			svgbox.y + svgbox.height < box.y
-		) {
-			//console.log("true");
-			return true;
-		}
-		//console.log("false");
+		if (svgbox.x > box.x + box.width)  { return true; }
+		if (svgbox.y > box.y + box.height) { return true; }
+		if (svgbox.x + svgbox.width < box.x)  { return true; }
+		if (svgbox.y + svgbox.height < box.y) { return true; }
+
 		return false;
 	}
 
@@ -1066,6 +1056,11 @@ import { useRouter } from "vue-router";
 		});
 
 		alledges.attr("visibility", "visible");
+
+		//finally check if the screen is empty and recenter if needed
+		if (isScreenEmpty() === true) {
+			centerView();
+		}
 	}
 
 	function updateNodeSelection(d:SimNode, isselected: boolean, showdetails: boolean) {
