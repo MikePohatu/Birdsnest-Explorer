@@ -120,19 +120,12 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 
 
 <script setup lang="ts">
+import { notificationStates } from "@/assets/ts/Notifications";
 import { bus, events } from "@/bus";
 import { computed, onBeforeUnmount, onMounted, ref } from "vue";
 import { useI18n } from "vue-i18n";
 
-const notificationStates = {
-	HIDDEN: -1,
-	TRACE: 0,
-	DEBUG: 1,
-	INFO: 2,
-	WARN: 3,
-	ERROR: 4,
-	FATAL: 5,
-};
+
 
 let message = ref("");
 let state = ref(notificationStates.HIDDEN);
@@ -230,3 +223,4 @@ function onNotificationClicked() {
 }
 
 </script>
+@/assets/ts/Notifications

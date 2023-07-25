@@ -25,6 +25,7 @@ import { Dictionary } from "@/assets/ts/webcrap/misccrap";
 import { createStore, useStore as baseUseStore, Store } from 'vuex';
 import i18n from "@/i18n";
 import { useCookies } from "vue3-cookies";
+import { NotificationMessage } from "@/assets/ts/Notifications";
 
 const { cookies } = useCookies();
 
@@ -41,6 +42,8 @@ export const rootPaths = {
       USERNAME: "loginUsername",
       PROVIDER: "loginProvider"
     },
+    ADD_MESSAGE: "addMessage",
+    CLEAR_PROCESSING_MESSAGEs: "clearProcessingMessages",
     IS_AUTHORIZED: "isAuthorized",
     IS_ADMIN: "isAdmin",
     USERGN: "usergn",
@@ -99,6 +102,7 @@ export interface RootState {
     providers: string[];
     provider: string;
   };
+  notificationMessages: NotificationMessage[];
   locale: string;
   languages: Dictionary<LanguageSelector>;
   pluginManager: PluginManager;
@@ -137,6 +141,7 @@ const state: RootState = {
     providers: [],
     provider: ""
   },
+  notificationMessages: [],
   locale: "en",
   languages: {
     "en": { flag: "us", title: "English (US)" },
@@ -163,6 +168,15 @@ export const store = createStore({
   mutations: {
     authMessage(state, message: string) {
       state.auth.message = message;
+    },
+    addMessage(state, message: NotificationMessage) {
+      if (state.notificationMessages.length > 100) {
+        state.notificationMessages.pop();
+      }
+      state.notificationMessages.push(message);
+    },
+    clearProcessingMessages(state) {
+      state.notificationMessages = state.notificationMessages.filter(message => message.level !== "PROCESSING");
     },
     locale(state, locale: string) {
       i18n.global.locale.value = locale;

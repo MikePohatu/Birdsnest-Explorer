@@ -30,6 +30,7 @@ import { createApp } from 'vue';
 import { store, key, rootPaths } from "./store";
 import router from "./router";
 import App from './App.vue';
+import { RegisterForNotificationMessages } from "./assets/ts/Notifications";
 
 const app = createApp(App);
 
@@ -43,5 +44,6 @@ app.use(CountryFlag)
 //Vue.config.productionTip = false;
 
 $.ajaxSetup({ xhrFields: { withCredentials: true }, cache: false });
-$(document).foundation();
+RegisterForNotificationMessages();
 store.dispatch(rootPaths.actions.INIT);
+$(document).foundation();

@@ -24,6 +24,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 			<router-view />
 		</div>
 		<NotificationIcon />
+		<NotificationPane />
 	</div>
 </template>
 
@@ -33,7 +34,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 	import Curtain from "@/components/Curtain.vue";
 	import { rootPaths, useStore } from "@/store";
 	import NotificationIcon from "@/components/NotificationIcon.vue";
-	import { useCookies } from "vue3-cookies";
+	import NotificationPane from "@/components/NotificationPane.vue";
 	import { ref, onMounted, onUpdated } from "vue";
 
 	const store = useStore();
