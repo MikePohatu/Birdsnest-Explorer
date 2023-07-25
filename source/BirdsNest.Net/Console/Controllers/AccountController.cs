@@ -76,7 +76,11 @@ namespace Console.Controllers
                 }
                 else if (claim.Type == ClaimTypes.GivenName)
                 {
-                    result.Name = claim.Value;
+                    result.GivenName = claim.Value;
+                }
+                else if (claim.Type == ClaimTypes.Upn)
+                {
+                    result.UserName = claim.Value;
                 }
             }
 
@@ -142,7 +146,8 @@ namespace Console.Controllers
 
                 if (login.IsAuthenticated)
                 {
-                    result.Name = login.GivenName;
+                    result.GivenName = login.GivenName;
+                    result.UserName = details.Username;
                     result.IsAuthenticated = true;
                     if (login.IsAuthorised == false)
                     {

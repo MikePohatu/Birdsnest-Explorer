@@ -23,7 +23,8 @@ namespace Console.Auth
         public bool IsAuthenticated { get; set; } = false;
         public bool IsAuthorized { get; set; } = false;
         public bool IsAdmin { get; set; } = false;
-        public string Name { get; set; } = string.Empty;
+        public string GivenName { get; set; } = string.Empty;
+        public string UserName { get; set; } = string.Empty;
         public string Message { get; set; }
         public bool IsProcessed { get; set; } = false;
     }

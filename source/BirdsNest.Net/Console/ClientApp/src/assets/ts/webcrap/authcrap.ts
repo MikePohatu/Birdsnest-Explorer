@@ -23,7 +23,8 @@ class AuthResults {
     isAuthorized = false;
     isAdmin = false;
     isProcessed = false;
-    name = "";
+    givenName = "";
+    userName = "";
     message = "";
 }
 
@@ -48,13 +49,24 @@ class AuthCrap {
                 if (data.isProcessed === true) {
                     store.commit(rootPaths.mutations.IS_AUTHORIZED, data.isAuthorized);
                     store.commit(rootPaths.mutations.IS_ADMIN, data.isAdmin);
-                    store.commit(rootPaths.mutations.USERGN, data.name);
+                    store.commit(rootPaths.mutations.USERGN, data.givenName);
                     store.commit(rootPaths.mutations.AUTH_MESSAGE, "");
 
                     if (data.isAuthorized) {
                         store.dispatch(rootPaths.actions.UPDATE_AUTHENTICATED_DATA);
                         typeof successcallback === 'function' && successcallback();
                     }
+                    else {
+                        bus.emit(events.Notifications.Warn, "Loging not authorized");
+                    }
+                    
+                    if (data.isAdmin) {
+                        bus.emit(events.Notifications.Info, `Logged in as admin: ${data.userName}`);
+                    }
+                    else {
+                        bus.emit(events.Notifications.Info, `Logged in user: ${data.userName}`);
+                    }
+                    
                     bus.emit(events.Notifications.Clear);
                 }
                 else {
@@ -93,6 +105,8 @@ class AuthCrap {
             url: "/api/account/logout",
             successCallback: () => {
                 store.commit(rootPaths.mutations.DEAUTH);
+                bus.emit(events.Notifications.Info, "Logged out user");
+                bus.emit(events.Notifications.Clear);
                 typeof callback === 'function' && callback();
             },
             errorCallback: (data: JQueryXHR, status: string, error: string) => {
@@ -111,7 +125,7 @@ class AuthCrap {
                 if (data.isProcessed === true) {
                     store.commit(rootPaths.mutations.IS_AUTHORIZED, data.isAuthorized);
                     store.commit(rootPaths.mutations.IS_ADMIN, data.isAdmin);
-                    store.commit(rootPaths.mutations.USERGN, data.name);
+                    store.commit(rootPaths.mutations.USERGN, data.givenName);
                     store.commit(rootPaths.mutations.AUTH_MESSAGE, "");
 
                     if (data.isAuthorized) {
@@ -145,7 +159,7 @@ class AuthCrap {
                 if (data.isProcessed === true) {
                     store.commit(rootPaths.mutations.IS_AUTHORIZED, data.isAuthorized);
                     store.commit(rootPaths.mutations.IS_ADMIN, data.isAdmin);
-                    store.commit(rootPaths.mutations.USERGN, data.name);
+                    store.commit(rootPaths.mutations.USERGN, data.givenName);
                     store.commit(rootPaths.mutations.AUTH_MESSAGE, "");
 
                     if (data.isAuthorized) {
