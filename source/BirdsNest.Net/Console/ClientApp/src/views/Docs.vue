@@ -42,11 +42,11 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 <script setup lang="ts">
 import { onBeforeRouteLeave, useRoute, useRouter } from "vue-router";
 import { api, Request } from "@/assets/ts/webcrap/apicrap";
-import { bus, events } from "@/bus";
 import ScrollToTop from "@/components/ScrollToTop.vue";
 import { onBeforeMount, onUpdated, watch, ref } from "vue";
 import { useI18n } from 'vue-i18n';
 import MarkdownIt from 'markdown-it';
+import { Notify } from "@/assets/ts/Notifications";
 
 const { t } = useI18n();
 const md = new MarkdownIt();
@@ -78,7 +78,7 @@ const unwatch = watch(
 );
 
 function updateMarkdown(): void {
-	bus.emit(events.Notifications.Processing);
+	Notify.Processing(null);
 	markdown.value = defaultmd.value;
 	const docurl = route.path.replace("/docs/", "/");
 
@@ -87,12 +87,12 @@ function updateMarkdown(): void {
 		postJson: false,
 		successCallback: (data?: string) => {
 			markdown.value = md.render(data);
-			bus.emit(events.Notifications.Clear);
+			Notify.Clear();
 		},
 		errorCallback: (jqXHR?, status?: string, error?: string) => {
 			// eslint-disable-next-line
 			console.error(error);
-			bus.emit(events.Notifications.Error, t("word_Error") + ": " + error);
+			Notify.Error(t("word_Error") + ": " + error);
 		},
 	};
 

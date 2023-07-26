@@ -44,6 +44,14 @@ class GraphData {
     private selectedItems = new DatumStore<SimNode | SimLink<SimNode>>();
     detailsItems = new DatumStore<SimNode | SimLink<SimNode>>();
 
+    get NodeCount(): number {
+        return this.graphNodes.Count;
+    }
+
+    get EdgeCount(): number {
+        return this.graphEdges.Count;
+    }
+
     //return whether new node was added
     private addNode(node: ApiNode): SimNode {
         if (this.graphNodes.KeyExists(node.dbId) === false) {

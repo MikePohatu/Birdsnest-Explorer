@@ -178,11 +178,11 @@ import { Report } from "@/assets/ts/dataMap/Report";
 import { ConsolePlugin } from "@/assets/ts/dataMap/ConsolePlugin";
 import { Dictionary } from "@/assets/ts/webcrap/misccrap";
 import LStore from "@/assets/ts/LocalStorageManager";
-import { bus, events } from "@/bus";
 import { useStore } from "@/store";
 import { computed, onMounted, ref } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import { initFoundationMounted } from "@/mixins/foundation";
+import { Notify } from "@/assets/ts/Notifications";
 	
 const templateRoot = ref(null);
 initFoundationMounted(templateRoot);
@@ -312,7 +312,7 @@ function updateIdsData(ids: string[]) {
 		},
 		errorCallback: () => {
 			resultsLoaded.value = true;
-			bus.emit(events.Notifications.Error, "Error downloading report data");
+			Notify.Error("Error downloading report data");
 		},
 	};
 	api.post(request);

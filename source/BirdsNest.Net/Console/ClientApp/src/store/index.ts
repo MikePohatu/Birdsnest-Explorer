@@ -25,7 +25,7 @@ import { Dictionary } from "@/assets/ts/webcrap/misccrap";
 import { createStore, useStore as baseUseStore, Store } from 'vuex';
 import i18n from "@/i18n";
 import { useCookies } from "vue3-cookies";
-import { NotificationMessage } from "@/assets/ts/Notifications";
+import { NotificationMessage, Notify } from "@/assets/ts/Notifications";
 
 const { cookies } = useCookies();
 
@@ -228,7 +228,7 @@ export const store = createStore({
     apiState(state, newstate: number) {
       state.apiState = newstate;
       if (newstate === api.states.READY) {
-        bus.emit(events.Notifications.Clear);
+        Notify.Clear();
       }
     },
     deAuth(state) {
@@ -324,11 +324,11 @@ export const store = createStore({
         successCallback: (data: PluginManager) => {
           context.commit(rootPaths.mutations.PLUGIN_MANAGER, data);
           context.commit(rootPaths.mutations.API_STATE, api.states.READY);
-          bus.emit(events.Notifications.Clear);
+          Notify.Clear();
         },
         errorCallback: (jqXHR?: JQueryXHR, status?: string, error?: string) => {
           context.commit(rootPaths.mutations.API_STATE, api.states.ERROR);
-          bus.emit(events.Notifications.Error, "Error updating plugins: " + error);
+          Notify.Error("Error updating plugins: " + error);
         }
       }
       api.get(request);
@@ -343,11 +343,11 @@ export const store = createStore({
         successCallback: (data: PluginManager) => {
           context.commit(rootPaths.mutations.SERVER_INFO, data);
           context.commit(rootPaths.mutations.SERVER_INFO_STATE, api.states.READY);
-          bus.emit(events.Notifications.Clear);
+          Notify.Clear();
         },
         errorCallback: (jqXHR?: JQueryXHR, status?: string, error?: string) => {
           context.commit(rootPaths.mutations.SERVER_INFO_STATE, api.states.ERROR);
-          bus.emit(events.Notifications.Error, "Error updating server info: " + error);
+          Notify.Error("Error updating server info: " + error);
         }
       }
       api.get(request);

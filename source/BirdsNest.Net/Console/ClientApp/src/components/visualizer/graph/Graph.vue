@@ -209,6 +209,7 @@ import LStore from "@/assets/ts/LocalStorageManager";
 import { computed, nextTick, onBeforeUnmount, onMounted } from "vue";
 import { useStore } from "@/store";
 import { useRouter } from "vue-router";
+import { Notify } from "@/assets/ts/Notifications";
 
 	const store = useStore();
 	const router = useRouter();
@@ -242,10 +243,10 @@ import { useRouter } from "vue-router";
 
 	onCreated();
 	function onCreated() {
-		//#region control events
-
 		//eventbus and event registrations. All registrations MUST be deregistered in the
 		//beforeDestroy method. 
+
+		//#region control events
 		bus.on(events.Visualizer.Controls.RefreshLayout, () => {
 			simController.RestartSimulation();
 		});
@@ -470,14 +471,16 @@ import { useRouter } from "vue-router";
 				return store.state.visualizer.pendingNodes;
 			},
 			webcrap.misc.debounce(() => {
-				if (store.state.visualizer.pendingNodes.length > 0) {
-					bus.emit(events.Notifications.Processing, "Loading nodes");
+				const pendingcount = store.state.visualizer.pendingNodes.length;
+				if (pendingcount > 0) {
+					Notify.Processing(`Loading ${pendingcount} nodes`);
+
 					setTimeout(() => {
 						graphData.addNodes(store.state.visualizer.pendingNodes).commit();
 						store.commit(VisualizerStorePaths.mutations.Delete.PENDING_NODES);
 						updateNodeSizes();
 						refreshNodeConnections();
-						bus.emit(events.Notifications.Clear);
+						Notify.Info(`Processed ${pendingcount} nodes`).Clear();
 					}, 1000);
 				}
 			}, 1000),{
@@ -491,8 +494,9 @@ import { useRouter } from "vue-router";
 				return store.state.visualizer.pendingResults;
 			},
 			webcrap.misc.debounce(() => {
+				const pendingcount = store.state.visualizer.pendingResults.length;
 				if (store.state.visualizer.pendingResults.length > 0) {
-					bus.emit(events.Notifications.Processing, "Loading results");
+					Notify.Processing(`Loaded ${pendingcount} results`);
 					setTimeout(() => {
 						store.state.visualizer.pendingResults.forEach((result: ResultSet) => {
 							graphData.addResultSet(result);
@@ -501,7 +505,7 @@ import { useRouter } from "vue-router";
 						store.commit(VisualizerStorePaths.mutations.Delete.PENDING_RESULTS);
 						updateNodeSizes();
 						refreshNodeConnections();
-						bus.emit(events.Notifications.Clear);
+						Notify.Info(`Processed ${pendingcount} results.`).Clear();
 					}, 1000);
 				}
 			}, 500),{
@@ -533,7 +537,7 @@ import { useRouter } from "vue-router";
 			postJson: true,
 			successCallback: (data: ResultSet) => {
 				data.edges.forEach(edge => {
-					const exist = graphData.graphEdges.GetDatum(edge.dbId)
+					const exist = graphData.graphEdges.GetDatum(edge.dbId);
 					if (exist !==null) { exist.shift = true; }
 				});
 				simController.RefreshData().RestartSimulation();
@@ -1100,6 +1104,7 @@ import { useRouter } from "vue-router";
 				graphData.removeIds(ids, edgeids).commit();
 
 				updateNodeSizes();
+				simController.RefreshData();
 			});
 		}
 	}

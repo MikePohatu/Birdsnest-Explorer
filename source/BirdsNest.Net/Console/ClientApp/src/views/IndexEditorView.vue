@@ -143,7 +143,6 @@ p {
 </style>
 
 <script setup lang="ts">
-import { bus, events } from "@/bus";
 import LoadingLogo from "@/components/LoadingLogo.vue";
 import { Index } from "@/assets/ts/dataMap/indexes/Index";
 import { api, Request } from "@/assets/ts/webcrap/apicrap";
@@ -159,6 +158,7 @@ import "foundation-sites";
 import { computed, onMounted, ref } from "vue";
 import { useStore } from "@/store";
 import { useI18n } from 'vue-i18n';
+import { Notify } from "@/assets/ts/Notifications";
 
 const { t } = useI18n();
 const root = ref(null);
@@ -248,16 +248,17 @@ function onDeleteIndexClicked(label: string, property: string): void {
 			data: postdata,
 			postJson: true,
 			successCallback: () => {
+				Notify.Info(`Deleted index on ${label}:${property} `).Clear();
 				store.dispatch(rootPaths.actions.UPDATE_SERVER_INFO);
 			},
 			errorCallback: (jqXHR?, status?: string, error?: string) => {
 				// eslint-disable-next-line
 				console.error(error);
-				bus.emit(events.Notifications.Error, t('index_editor.error_delete', { label: label, property: property }).toString() + "\n" + error);
+				Notify.Error(t('index_editor.error_delete', { label: label, property: property }).toString() + "\n" + error);
 			},
 		};
 
-		bus.emit(events.Notifications.Processing, t('word_Processing'));
+		Notify.Processing(t('word_Processing'));
 		api.post(request);
 	}
 }
@@ -272,16 +273,17 @@ function onCreateIndexClicked(label, property) {
 			data: postdata,
 			postJson: true,
 			successCallback: () => {
+				Notify.Info(`Added index on ${label}:${property} `).Clear();
 				store.dispatch(rootPaths.actions.UPDATE_SERVER_INFO);
 			},
 			errorCallback: (jqXHR?, status?: string, error?: string) => {
 				// eslint-disable-next-line
 				console.error(error);
-				bus.emit(events.Notifications.Error, t('index_editor.error_create', { label: label, property: property }) + "\n" + error);
+				Notify.Error(t('index_editor.error_create', { label: label, property: property }) + "\n" + error);
 			},
 		};
 
-		bus.emit(events.Notifications.Processing, t('word_Processing'));
+		Notify.Processing(t('word_Processing'));
 		api.post(request);
 	}
 }

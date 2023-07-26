@@ -77,12 +77,11 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 import { SearchNode } from "@/assets/ts/visualizer/Search";
 import { VisualizerStorePaths } from "@/store/modules/VisualizerStore";
 import { SearchStorePaths } from "@/store/modules/SearchStore";
-
-import { bus, events } from "@/bus";
 import { computed, ref } from "vue";
 import { useStore } from "@/store";
 import { useI18n } from "vue-i18n";
 import { initFoundationMounted } from "@/mixins/foundation";
+import { Notify } from "@/assets/ts/Notifications";
 	
 const templateRoot = ref(null);
 initFoundationMounted(templateRoot);
@@ -132,7 +131,7 @@ function onAddToViewClicked(): void {
 	}
 
 	if (proceed && store.state.visualizer.search.results.nodes.length > 0) {
-		bus.emit(events.Notifications.Processing, t('visualizer.search.adding_results'));
+		Notify.Processing(t('visualizer.search.adding_results'));
 		store.commit(VisualizerStorePaths.mutations.Add.PENDING_RESULTS, store.state.visualizer.search.results);
 		store.commit(SearchStorePaths.mutations.Delete.RESULTS);
 	}

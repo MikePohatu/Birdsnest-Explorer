@@ -22,6 +22,7 @@ import { VisualizerStorePaths } from "@/store/modules/VisualizerStore";
 import { useStore } from "@/store";
 import TreeForce from './TreeForce';
 import { ForceLink, ForceRadial, Simulation } from 'd3';
+import { Notify } from '../Notifications';
 
 
 export default class SimulationController {
@@ -113,6 +114,8 @@ export default class SimulationController {
             graphData.graphEdges.Array,
             graphData.treeEdges.Array
         );
+        
+        Notify.Info(`Graph refreshed: ${graphData.NodeCount} nodes | ${graphData.EdgeCount} relationships`).Clear();
         return this;
     }
 

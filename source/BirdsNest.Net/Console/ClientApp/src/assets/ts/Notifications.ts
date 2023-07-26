@@ -79,3 +79,39 @@ export function RegisterForNotificationMessages() {
 	});
 }
 
+//Notify helper class
+//Make sure to clear your notifications i.e. clear the icon popup. All messages other that processing will remain in notifications pane
+class NotificationHelper {
+    Clear():NotificationHelper {
+        bus.emit(events.Notifications.Clear);
+        return this;
+    }
+
+    Info(message: string): NotificationHelper {
+        bus.emit(events.Notifications.Info, message);
+        return this;
+    }
+
+    Warn(message: string): NotificationHelper {
+        bus.emit(events.Notifications.Warn, message);
+        return this;
+    }
+
+    Error(message: string): NotificationHelper {
+        bus.emit(events.Notifications.Error, message);
+        return this;
+    }
+
+    Fatal(message: string): NotificationHelper {
+        bus.emit(events.Notifications.Fatal, message);
+        return this;
+    }
+
+    Processing(message: string): NotificationHelper {
+        bus.emit(events.Notifications.Processing, message);
+        return this;
+    }
+}
+
+export const Notify = new NotificationHelper();
+

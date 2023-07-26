@@ -24,6 +24,10 @@ export default class DatumStore<T> {
     IDs: string[] = [];
 
 
+    get Count(): number {
+        return Object.keys(this.datumObject).length;
+    }
+
     //Commit function must be called when changes have been finished to update the arrays
     Add(d: T): DatumStore<T> {
         //console.log("datumStore.Add: " + d.dbId);

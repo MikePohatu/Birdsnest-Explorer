@@ -31,7 +31,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 						<td v-if="plugin.link">
 							<a :href="plugin.link" target="_blank">{{ plugin.displayName }}</a>
 						</td>
-						<td v-else>{{ plugin.displayName}}</td>
+						<td v-else>{{ plugin.displayName }}</td>
 						<td v-if="pluginManager.extensionCount > 0" v-html="plugin.extendedBy.join('<br/>')" />
 					</tr>
 				</tbody>
@@ -52,11 +52,8 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 					<tr>
 						<td>{{ $t('phrase_Index_Editor') }}</td>
 						<td>
-							<router-link
-								:to="routeDefs.indexEditor.path"
-								class="button"
-								tag="button"
-							>{{ $t('word_Go') }}</router-link>
+							<router-link :to="routeDefs.indexEditor.path" class="button" tag="button">{{ $t('word_Go')
+							}}</router-link>
 						</td>
 						<td />
 					</tr>
@@ -86,39 +83,39 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 
 
 <script setup lang="ts">
-	import { bus, events } from "@/bus";
-	import { api, Request } from "@/assets/ts/webcrap/apicrap";
-	import { auth } from "@/assets/ts/webcrap/authcrap";
-	import { Dictionary } from "lodash";
-	import { rootPaths } from "@/store/index";
-	import PluginManager from "@/assets/ts/dataMap/PluginManager";
-	import { routeDefs } from "@/router/index";
-	import {computed, ref} from 'vue';
-	import { useStore } from "@/store";
+import { api, Request } from "@/assets/ts/webcrap/apicrap";
+import { auth } from "@/assets/ts/webcrap/authcrap";
+import { Dictionary } from "lodash";
+import { rootPaths } from "@/store/index";
+import PluginManager from "@/assets/ts/dataMap/PluginManager";
+import { routeDefs } from "@/router/index";
+import { computed, ref } from 'vue';
+import { useStore } from "@/store";
+import { Notify } from "@/assets/ts/Notifications";
 
-	const store = useStore();
-	let reloadMessage = ref("");
+const store = useStore();
+let reloadMessage = ref("");
 
-	auth.getValidationToken();
-	
-	const pluginManager = computed((): PluginManager => {
-		return store.state.pluginManager;
-	});
+auth.getValidationToken();
 
-	function onReloadPlugins() {
-		const request: Request = {
-			url: "/api/admin/reloadplugins",
-			postJson: true,
-			successCallback: (data: Dictionary<string>) => {
-				reloadMessage.value = data.message;
-				store.dispatch(rootPaths.actions.UPDATE_PLUGINS);
-			},
-			errorCallback: (jqXHR, status: string, error: string) => {
-				reloadMessage.value = error;
-			},
-		};
-		bus.emit(events.Notifications.Processing, "Processing");
-		api.post(request);
-		return false;
-	}
+const pluginManager = computed((): PluginManager => {
+	return store.state.pluginManager;
+});
+
+function onReloadPlugins() {
+	const request: Request = {
+		url: "/api/admin/reloadplugins",
+		postJson: true,
+		successCallback: (data: Dictionary<string>) => {
+			reloadMessage.value = data.message;
+			store.dispatch(rootPaths.actions.UPDATE_PLUGINS);
+		},
+		errorCallback: (jqXHR, status: string, error: string) => {
+			reloadMessage.value = error;
+		},
+	};
+	Notify.Processing("Processing");
+	api.post(request);
+	return false;
+}
 </script>

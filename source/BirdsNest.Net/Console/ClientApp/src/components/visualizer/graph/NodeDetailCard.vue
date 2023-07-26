@@ -235,6 +235,7 @@ import { Dictionary } from "@/assets/ts/webcrap/misccrap";
 import { computed, nextTick, onMounted, ref, reactive } from "vue";
 import { useStore } from "@/store";
 import { initFoundationMounted } from "@/mixins/foundation";
+import { Notify } from "@/assets/ts/Notifications";
 	
 const templateRoot = ref(null);
 initFoundationMounted(templateRoot);
@@ -373,7 +374,7 @@ function onRefreshClicked(): void {
 		},
 		errorCallback: (jqXHR, status?: string, error?: string) => {
 			store.commit(rootPaths.mutations.SERVER_INFO_STATE, api.states.ERROR);
-			bus.emit(events.Notifications.Error, "Error refreshing node info: " + error);
+			Notify.Error("Error refreshing node info: " + error);
 		},
 	};
 
@@ -397,7 +398,7 @@ function initDetails(): void {
 		errorCallback: (jqXHR?, status?: string, error?: string) => {
 			// eslint-disable-next-line
 			store.commit(rootPaths.mutations.SERVER_INFO_STATE, api.states.ERROR);
-			bus.emit(events.Notifications.Error, "Error updating node related details: " + error);
+			Notify.Error("Error updating node related details: " + error);
 		},
 	};
 	api.get(request);

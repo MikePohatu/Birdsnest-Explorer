@@ -16,7 +16,7 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 import { store, rootPaths } from "@/store";
 import { api, Request } from "./apicrap";
-import { bus, events } from "@/bus";
+import { Notify } from "../Notifications";
 
 class AuthResults {
     isAuthenticated = false;
@@ -40,7 +40,7 @@ class AuthCrap {
 
         store.commit(rootPaths.mutations.PROVIDER, provider);
         store.commit(rootPaths.mutations.USERNAME, username);
-        bus.emit(events.Notifications.Processing, "Logging in");
+        Notify.Processing("Logging in");
 
         const request: Request = {
             url: "/api/account/login",
@@ -57,29 +57,27 @@ class AuthCrap {
                         typeof successcallback === 'function' && successcallback();
                     }
                     else {
-                        bus.emit(events.Notifications.Warn, "Loging not authorized");
+                        Notify.Warn("Login not authorized");
                     }
                     
                     if (data.isAdmin) {
-                        bus.emit(events.Notifications.Info, `Logged in as admin: ${data.userName}`);
+                        Notify.Info(`Logged in as admin: ${data.userName}`).Clear();
                     }
                     else {
-                        bus.emit(events.Notifications.Info, `Logged in user: ${data.userName}`);
+                        Notify.Info(`Logged in user: ${data.userName}`).Clear();
                     }
-                    
-                    bus.emit(events.Notifications.Clear);
                 }
                 else {
                     store.commit(rootPaths.mutations.DEAUTH);
                     store.commit(rootPaths.mutations.AUTH_MESSAGE, data.message);
-                    bus.emit(events.Notifications.Error, data.message);
+                    Notify.Error(data.message);
                 }
 
             },
             errorCallback: (data: JQueryXHR, status: string, error: string) => {
                 store.commit(rootPaths.mutations.DEAUTH);
                 store.commit(rootPaths.mutations.AUTH_MESSAGE, error);
-                bus.emit(events.Notifications.Error, "Failed to login: " + error);
+                Notify.Error("Failed to login: " + error);
             }
         };
         api.post(request);
@@ -94,7 +92,7 @@ class AuthCrap {
             errorCallback: (jqXHR, status, error) => {
                 store.commit(rootPaths.mutations.IS_AUTHORIZED, false);
                 store.commit(rootPaths.mutations.SESSION_STATUS, "Error");
-                bus.emit(events.Notifications.Error, "Error downloading validation token: " + error);
+                Notify.Error("Error downloading validation token: " + error);
             }
         };
         api.get(request);
@@ -105,14 +103,13 @@ class AuthCrap {
             url: "/api/account/logout",
             successCallback: () => {
                 store.commit(rootPaths.mutations.DEAUTH);
-                bus.emit(events.Notifications.Info, "Logged out user");
-                bus.emit(events.Notifications.Clear);
+                Notify.Info( "Logged out user").Clear();
                 typeof callback === 'function' && callback();
             },
             errorCallback: (data: JQueryXHR, status: string, error: string) => {
                 store.commit(rootPaths.mutations.AUTH_MESSAGE, "Error logging out: " + error);
                 store.commit(rootPaths.mutations.SESSION_STATUS, "Error logging out");
-                bus.emit(events.Notifications.Error, "Error logging out: " + error);
+                Notify.Error("Error logging out: " + error);
             }
         };
         api.get(request);
@@ -137,14 +134,14 @@ class AuthCrap {
                 else {
                     store.commit(rootPaths.mutations.DEAUTH);
                     store.commit(rootPaths.mutations.AUTH_MESSAGE, data.message);
-                    bus.emit(events.Notifications.Error, data.message);
+                    Notify.Error(data.message);
                 }
             },
             errorCallback: (jqXHR?: JQueryXHR, status?: string, error?: string) => {
                 store.commit(rootPaths.mutations.DEAUTH);
                 store.commit(rootPaths.mutations.SESSION_STATUS, status);
                 store.commit(rootPaths.mutations.AUTH_MESSAGE, error);
-                bus.emit(events.Notifications.Error, "Pinging server: " + error);
+                Notify.Error("Pinging server: " + error);
                 typeof callback === 'function' && callback();
             }
         };
@@ -169,13 +166,13 @@ class AuthCrap {
                 }
                 else {
                     store.commit(rootPaths.mutations.AUTH_MESSAGE, data.message);
-                    bus.emit(events.Notifications.Error, data.message);
+                    Notify.Error(data.message);
                 }
             },
             errorCallback: (jqXHR?: JQueryXHR, status?: string, error?: string) => {
                 store.commit(rootPaths.mutations.SESSION_STATUS, status);
                 store.commit(rootPaths.mutations.AUTH_MESSAGE, error);
-                bus.emit(events.Notifications.Error, "Pinging server: " + error);
+                Notify.Error("Pinging server: " + error);
                 typeof callback === 'function' && callback();
             }
         };
