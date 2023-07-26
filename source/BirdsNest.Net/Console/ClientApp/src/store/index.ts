@@ -296,6 +296,7 @@ export const store = createStore({
         successCallback: (data: string[]) => {
           context.commit(rootPaths.mutations.PROVIDERS, data);
           context.commit(rootPaths.mutations.API_STATE, api.states.READY);
+          Notify.Info("Providers updated").Clear();
         },
         errorCallback: (jqXHR, status, error: string) => {
           // eslint-disable-next-line
@@ -312,7 +313,7 @@ export const store = createStore({
         successCallback: (data: PluginManager) => {
           context.commit(rootPaths.mutations.PLUGIN_MANAGER, data);
           context.commit(rootPaths.mutations.API_STATE, api.states.READY);
-          Notify.Clear();
+          Notify.Info("Plugins updated").Clear();
         },
         errorCallback: (jqXHR?: JQueryXHR, status?: string, error?: string) => {
           context.commit(rootPaths.mutations.API_STATE, api.states.ERROR);
