@@ -16,29 +16,33 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see http://www.gnu.org/licenses/.
 -->
 <template>
-	<div id="eventspane" :class="['grid-x', { hidepane: isHidden }]" :title="$t('word_Notifications')">
-        <div id="eventspaneHider" class="clickable cell" v-on:click.native="onHiderClicked()">
+	<div id="eventspane" ref="eventspane" :class="[{ hidepane: isHidden }]" :title="$t('word_Notifications')">
+        <div id="eventspaneHider" class="clickable" v-on:click.native="onHiderClicked()">
             <span class="hiderButton">
                 <i :class="['fa', {'fa-angle-up': isHidden, 'fa-angle-down': !isHidden }]"></i>
             </span>
         </div>
-        <div class="cell">
-            <div class="header">{{ $t("word_Notifications") }}</div>
-            <ul class="messagelist" >
-                <li v-if="messages.length > 0" v-for="item in messages" :key="item.eventNumber" :class="[item.level]">
-                    <div v-if="item.level !== NotificationMessageTypes.PROCESSING">{{ `${item.level}: ${item.message}` }}</div> 
-                    <div v-else>{{ `** ${item.message}` }}</div>
-                </li>
-                <li v-else><i>{{ $t("phrase_Nothing_to_show") }}</i></li>
-            </ul>
+        
+        <div id="output">
             
+            <div id="header">{{ $t("word_Notifications") }} 
+            </div>
+            <div id="messagelist" ref="messagelist" :style="{height: messageHeight}">
+                <ul>
+                    <li v-if="messages.length > 0" v-for="item in messages" :key="item.eventNumber" :class="[item.level]">
+                        <div v-if="item.level !== NotificationMessageTypes.PROCESSING">{{ `${item.level}${item.eventNumber}: ${item.message}` }}</div> 
+                        <div v-else>{{ `** ${item.message}` }}</div>
+                    </li>
+                    <li v-else><i>{{ $t("phrase_Nothing_to_show") }}</i></li>
+                </ul>
+            </div>
         </div>
 	</div>
 </template>
 
 <style scoped>
 #eventspane {
-	position: fixed;
+	position: absolute;
 	bottom: 0;
     right: 0;
 	padding: 0;
@@ -51,6 +55,10 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
     vertical-align: text-top;
     overflow: visible;
     border-top-left-radius: 3px;
+    max-height: calc(100% - 60px);
+    max-height: -o-calc(100% - 60px); /* opera */
+    max-height: -webkit-calc(100% - 60px); /* google, safari */
+    max-height: -moz-calc(100% - 60px); /* firefox */
 }
 
 #eventspane.hidepane {
@@ -64,7 +72,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
     padding: 0;
     position: absolute;
     top: -20px;
-    right: 0;
+    right: 1px;
 	margin-left: auto; 
     margin-right: 0;
     height: 20px;
@@ -83,6 +91,23 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
     padding-left: 7px;
 }
 
+#output {
+    position: relative;
+}
+
+#header {
+    padding: 2px 5px 0 5px;
+    font-weight: bold;
+}
+
+#messagelist{
+    overflow: auto;
+    scrollbar-width: thin;
+    font-size: smaller;
+}
+
+
+
 ul {
     padding: 0 5px 0 5px;
     list-style-type: none;
@@ -93,12 +118,6 @@ li {
     margin: 0 0 0 3px;
     line-height: 1.2;
     text-align: left;
-    font-size: smaller;
-}
-
-.header {
-    padding: 2px 5px 0 5px;
-    font-weight: bold;
 }
 
 .INFO {
@@ -115,17 +134,34 @@ li {
 </style>
 
 <script setup lang="ts">
-import { NotificationMessage, NotificationMessageTypes } from '@/assets/ts/Notifications';
+import { NotificationMessage, NotificationMessageTypes, Notify } from '@/assets/ts/Notifications';
 import { store } from '@/store';
+import { max } from 'd3';
 import { computed, ref } from 'vue';
 
     const isHidden = ref(true);
+    const messagelist = ref(null);
+    const eventspane = ref(null);
 
     const messages = computed<NotificationMessage[]>(() => {
         return store.state.notificationMessages;
     });
 
+    const messageHeight = computed((): string => {
+        //'no messsages' case also covers component not being mounted,
+        //i.e. messagelist.value == null
+        if (messages.value.length === 0) { return '3em'; } 
+        const lineheight = 1.2;
+        const fontsize = parseFloat(getComputedStyle(messagelist.value).fontSize);
 
+        //find the new height, and the height available in the parent element. 50px 
+        //buffer is to allow for topbar, hiderbutton, and some padding
+        const newheight = (messages.value.length+1)*lineheight*fontsize+10;
+        const maxheight = eventspane.value.parentElement.offsetHeight - 50;
+
+        if (newheight >= maxheight) {return `${(maxheight).toString()}px`;}
+        return `${(newheight).toString()}px`;
+    });
 
     function onHiderClicked() {
         this.isHidden = !this.isHidden;
