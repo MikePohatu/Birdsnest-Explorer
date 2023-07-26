@@ -19,14 +19,8 @@ import mitt from 'mitt';
 export const bus = mitt();
 
 export const events = {
-    Notifications: {
-        Clear: "events.Notifications.Clear",
-        Info: "events.Notifications.Info",
-        Warn: "events.Notifications.Warn",
-        Error: "events.Notifications.Error",
-        Fatal: "events.Notifications.Fatal",
-        Processing: "events.Notifications.Processing",
-    },
+    Notify: "events.Notify",
+    ClearNotifications: "events.ClearNotifications",
     Visualizer: {
         Controls: {
             RefreshLayout: "events.visualizer.controls.graphRefreshLayout",

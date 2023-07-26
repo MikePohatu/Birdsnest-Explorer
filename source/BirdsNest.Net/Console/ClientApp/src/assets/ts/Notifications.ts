@@ -13,10 +13,11 @@
 // GNU General Public License for more details.
 //
 // You should have received a copy of the GNU General Public License
-// along with this program.  If not, see <http://www.gnu.org/licenses/>.
-import { bus, events } from "@/bus";
-import { store, rootPaths } from "@/store/index";
 
+import { bus, events } from "@/bus";
+import { reactive } from "vue";
+
+// along with this program.  If not, see <http://www.gnu.org/licenses/>.
 let eventCount = 0;
 export const notificationStates = {
 	HIDDEN: -1,
@@ -28,7 +29,7 @@ export const notificationStates = {
 	FATAL: 5,
 };
 
-export const NotificationMessageTypes = {
+export const NotificationMessageLevels = {
 	INFO: "INFO",
 	WARN: "WARN",
 	ERROR: "ERROR",
@@ -42,7 +43,7 @@ export class NotificationMessage {
     eventNumber: number;
 
     constructor(level: string, message: string) {
-        if (Object.prototype.hasOwnProperty.call(NotificationMessageTypes, level)) {
+        if (Object.prototype.hasOwnProperty.call(NotificationMessageLevels, level)) {
             this.message = message;
             this.level = level;
             this.eventNumber = eventCount++;
@@ -53,64 +54,70 @@ export class NotificationMessage {
     }
 }
 
-export function RegisterForNotificationMessages() {
-    bus.on(events.Notifications.Info, (newmessage?: string) => {
-        store.commit(rootPaths.mutations.ADD_MESSAGE, new NotificationMessage("INFO", newmessage));
-	});
-
-    bus.on(events.Notifications.Warn, (newmessage?: string) => {
-        store.commit(rootPaths.mutations.ADD_MESSAGE, new NotificationMessage("WARN", newmessage));
-	});
-
-    bus.on(events.Notifications.Error, (newmessage?: string) => {
-        store.commit(rootPaths.mutations.ADD_MESSAGE, new NotificationMessage("ERROR", newmessage));
-	});
-
-    bus.on(events.Notifications.Fatal, (newmessage?: string) => {
-        store.commit(rootPaths.mutations.ADD_MESSAGE, new NotificationMessage("FATAL", newmessage));
-	});
-
-    bus.on(events.Notifications.Processing, (newmessage?: string) => {
-        store.commit(rootPaths.mutations.ADD_MESSAGE, new NotificationMessage("PROCESSING", newmessage));
-	});
-
-    bus.on(events.Notifications.Clear, (newmessage?: string) => {
-        store.commit(rootPaths.mutations.CLEAR_PROCESSING_MESSAGEs);
-	});
-}
+//reactive array for Vue
+export const Messages: NotificationMessage[] = reactive([]);
 
 //Notify helper class
 //Make sure to clear your notifications i.e. clear the icon popup. All messages other that processing will remain in notifications pane
 class NotificationHelper {
+    MaxMessages = 500;
+
     Clear():NotificationHelper {
-        bus.emit(events.Notifications.Clear);
+        this.ClearProcessingMessages();
+        bus.emit(events.ClearNotifications);
         return this;
     }
 
     Info(message: string): NotificationHelper {
-        bus.emit(events.Notifications.Info, message);
+        this.AddMessage(new NotificationMessage(NotificationMessageLevels.INFO, message));
         return this;
     }
 
     Warn(message: string): NotificationHelper {
-        bus.emit(events.Notifications.Warn, message);
+        this.AddMessage(new NotificationMessage(NotificationMessageLevels.WARN, message));
         return this;
     }
 
     Error(message: string): NotificationHelper {
-        bus.emit(events.Notifications.Error, message);
+        this.AddMessage(new NotificationMessage(NotificationMessageLevels.ERROR, message));
         return this;
     }
 
     Fatal(message: string): NotificationHelper {
-        bus.emit(events.Notifications.Fatal, message);
+        this.AddMessage(new NotificationMessage(NotificationMessageLevels.FATAL, message));
         return this;
     }
 
     Processing(message: string): NotificationHelper {
-        bus.emit(events.Notifications.Processing, message);
+        this.AddMessage(new NotificationMessage(NotificationMessageLevels.PROCESSING, message));
         return this;
     }
+
+    
+    private AddMessage(message: NotificationMessage) {
+        Messages.push(message);
+        bus.emit(events.Notify, message);
+        this.Trim();
+    }
+
+      
+    private ClearProcessingMessages() {
+        for (let i=0; i< Messages.length; i++) {
+            if (Messages[i].level === NotificationMessageLevels.PROCESSING) {
+                Messages.splice(i,1);
+            }
+        }
+    }
+
+    //debounce, don't use webcrap becauase webcrap uses notify. circular dependency
+    private timer;
+    private Trim = ()=> {
+        clearTimeout(this.timer);
+        this.timer = setTimeout(()=>{
+            if (Messages.length > this.MaxMessages) {
+                Messages.splice(0,Messages.length - this.MaxMessages);
+            } 
+        }), 500 }
 }
 
 export const Notify = new NotificationHelper();

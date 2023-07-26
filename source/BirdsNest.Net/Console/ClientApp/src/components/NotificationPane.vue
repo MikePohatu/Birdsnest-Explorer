@@ -26,14 +26,17 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
         <div id="output">
             
             <div id="header">{{ $t("word_Notifications") }} 
+                <!-- <span v-if="isDevMode" class="clickable" v-on:click.native="onTestEventsClicked()"> - TEST MESSAGES</span> -->
             </div>
             <div id="messagelist" ref="messagelist" :style="{height: messageHeight}">
-                <ul>
-                    <li v-if="messages.length > 0" v-for="item in messages" :key="item.eventNumber" :class="[item.level]">
-                        <div v-if="item.level !== NotificationMessageTypes.PROCESSING">{{ `${item.level}${item.eventNumber}: ${item.message}` }}</div> 
-                        <div v-else>{{ `** ${item.message}` }}</div>
+                <ul v-if="messages.length > 0" >
+                    <li v-for="item in messages" :key="item.eventNumber" :class="[item.level]">
+                        <div v-if="item.level === NotificationMessageLevels.PROCESSING">{{ `** ${item.message}` }}</div> 
+                        <div v-else>{{ `${item.level}: ${item.message}` }}</div>
                     </li>
-                    <li v-else><i>{{ $t("phrase_Nothing_to_show") }}</i></li>
+                </ul>
+                <ul v-else>
+                    <li><i>{{ $t("phrase_Nothing_to_show") }}</i></li>
                 </ul>
             </div>
         </div>
@@ -134,36 +137,62 @@ li {
 </style>
 
 <script setup lang="ts">
-import { NotificationMessage, NotificationMessageTypes, Notify } from '@/assets/ts/Notifications';
-import { store } from '@/store';
-import { max } from 'd3';
-import { computed, ref } from 'vue';
+import { NotificationMessage, NotificationMessageLevels, Notify, Messages } from '@/assets/ts/Notifications';
+import { computed, onUpdated, ref } from 'vue';
 
     const isHidden = ref(true);
     const messagelist = ref(null);
     const eventspane = ref(null);
+    const isDevMode = import.meta.env.DEV;
 
     const messages = computed<NotificationMessage[]>(() => {
-        return store.state.notificationMessages;
+        return Messages;
     });
+    const messageHeight = ref("3em");
+    
+    function UpdateHeight(): void {
+        if (isHidden.value) { return; }
 
-    const messageHeight = computed((): string => {
         //'no messsages' case also covers component not being mounted,
         //i.e. messagelist.value == null
-        if (messages.value.length === 0) { return '3em'; } 
-        const lineheight = 1.2;
-        const fontsize = parseFloat(getComputedStyle(messagelist.value).fontSize);
+        if (messages.value.length === 0) { 
+            messageHeight.value = '3em'; 
+        } 
+        else {
+            const lineheight = 1.2;
+            const fontsize = parseFloat(getComputedStyle(messagelist.value).fontSize);
 
-        //find the new height, and the height available in the parent element. 50px 
-        //buffer is to allow for topbar, hiderbutton, and some padding
-        const newheight = (messages.value.length+1)*lineheight*fontsize+10;
-        const maxheight = eventspane.value.parentElement.offsetHeight - 50;
+            //find the new height, and the height available in the parent element. 50px 
+            //buffer is to allow for topbar, hiderbutton, and some padding
+            const newheight = (messages.value.length+1)*lineheight*fontsize+10;
+            const maxheight = eventspane.value.parentElement.offsetHeight - 50;
 
-        if (newheight >= maxheight) {return `${(maxheight).toString()}px`;}
-        return `${(newheight).toString()}px`;
-    });
+            if (newheight >= maxheight) {
+                messageHeight.value = `${(maxheight).toString()}px`;
+            }
+            else {
+                messageHeight.value = `${(newheight).toString()}px`; 
+            }
+
+            setTimeout(() => {
+                messagelist.value.scrollTo(0, messagelist.value.scrollHeight);
+            }, 50);            
+        }
+    }
 
     function onHiderClicked() {
-        this.isHidden = !this.isHidden;
+        isHidden.value = !isHidden.value;
+        if (!isHidden.value) { UpdateHeight(); }
     }
+
+    function onTestEventsClicked() {
+        for (let i = 0; i < 25; i++) {
+            Notify.Info(`Test ${i}`);
+        } 
+        Notify.Clear();
+    }
+
+    onUpdated(()=> {
+        UpdateHeight();
+    })
 </script>

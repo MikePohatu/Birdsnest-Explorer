@@ -120,7 +120,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 
 
 <script setup lang="ts">
-import { notificationStates } from "@/assets/ts/Notifications";
+import { NotificationMessage, NotificationMessageLevels, notificationStates } from "@/assets/ts/Notifications";
 import { bus, events } from "@/bus";
 import { computed, onBeforeUnmount, onMounted, ref } from "vue";
 import { useI18n } from "vue-i18n";
@@ -154,7 +154,7 @@ const stateClass = computed<string>(() => {
 });
 
 onMounted((): void => {
-	bus.on(events.Notifications.Clear, () => {
+	bus.on(events.ClearNotifications, () => {
 		if (state.value < notificationStates.WARN) {
 			state.value = notificationStates.HIDDEN;
 			message.value = "";
@@ -163,55 +163,34 @@ onMounted((): void => {
 		processing.value = false;
 	});
 
-	bus.on(events.Notifications.Processing, (newmessage?: string) => {
-		state.value = notificationStates.INFO;
-		if (newmessage) {
-			message.value = newmessage;
+	bus.on(events.Notify, (newmessage?: NotificationMessage) => {
+		let isprocessing = false;
+		switch (newmessage.level) {
+			case NotificationMessageLevels.INFO:
+				state.value = notificationStates.INFO;
+				break;
+			case NotificationMessageLevels.WARN:
+				state.value = notificationStates.WARN;
+				break;
+			case NotificationMessageLevels.ERROR:
+				state.value = notificationStates.ERROR;
+				break;
+			case NotificationMessageLevels.FATAL:
+				state.value = notificationStates.FATAL;
+				break;	
+			case NotificationMessageLevels.PROCESSING:
+				state.value = notificationStates.INFO;
+				isprocessing = true;
+				break;	
 		}
-
-		processing.value = true;
-	});
-
-	bus.on(events.Notifications.Info, (newmessage?: string) => {
-		state.value = notificationStates.INFO;
-		if (newmessage) {
-			message.value = newmessage;
-		}
-		processing.value = false;
-	});
-
-	bus.on(events.Notifications.Warn, (newmessage?: string) => {
-		state.value = notificationStates.WARN;
-		if (newmessage) {
-			message.value = newmessage;
-		}
-		processing.value = false;
-	});
-
-	bus.on(events.Notifications.Error, (newmessage?: string) => {
-		state.value = notificationStates.ERROR;
-		if (newmessage) {
-			message.value = newmessage;
-		}
-		processing.value = false;
-	});
-
-	bus.on(events.Notifications.Fatal, (newmessage?: string) => {
-		state.value = notificationStates.FATAL;
-		if (newmessage) {
-			message.value = newmessage;
-		}
-		processing.value = false;
+		message.value = newmessage.message;
+		processing.value = isprocessing;
 	});
 });
 
 onBeforeUnmount(() => {
-	bus.off(events.Notifications.Clear);
-	bus.off(events.Notifications.Processing);
-	bus.off(events.Notifications.Info);
-	bus.off(events.Notifications.Warn);
-	bus.off(events.Notifications.Error);
-	bus.off(events.Notifications.Fatal);
+	bus.off(events.ClearNotifications);
+	bus.off(events.Notify);
 });
 
 function onNotificationClicked() {
