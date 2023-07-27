@@ -49,7 +49,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 
 <style scoped>
 #eventspane {
-	position: absolute;
+	position: fixed;
 	bottom: 0;
     right: 0;
 	padding: 0;

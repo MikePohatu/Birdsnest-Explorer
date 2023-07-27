@@ -24,6 +24,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 </template>
 
 <style scoped>
+
 @media print, screen and (min-width: 40em) {
 	:deep(h1, .h1) {
 		font-size: 2rem;
@@ -44,13 +45,10 @@ import { onBeforeRouteLeave, useRoute, useRouter } from "vue-router";
 import { api, Request } from "@/assets/ts/webcrap/apicrap";
 import ScrollToTop from "@/components/ScrollToTop.vue";
 import { onBeforeMount, onUpdated, watch, ref } from "vue";
-import { useI18n } from 'vue-i18n';
 import MarkdownIt from 'markdown-it';
 import { Notify } from "@/assets/ts/Notifications";
 
-const { t } = useI18n();
 const md = new MarkdownIt();
-
 const router = useRouter();
 const route = useRoute();
 
@@ -78,7 +76,7 @@ const unwatch = watch(
 );
 
 function updateMarkdown(): void {
-	Notify.Processing(null);
+	Notify.Processing("");
 	markdown.value = defaultmd.value;
 	const docurl = route.path.replace("/docs/", "/");
 
@@ -92,7 +90,7 @@ function updateMarkdown(): void {
 		errorCallback: (jqXHR?, status?: string, error?: string) => {
 			// eslint-disable-next-line
 			console.error(error);
-			Notify.Error(t("word_Error") + ": " + error);
+			Notify.Error(error);
 		},
 	};
 
@@ -139,7 +137,9 @@ function moveToAnchor(): void {
 			const pathsplit = route.hash.split("#");
 			if (pathsplit.length > 1) {
 				const id = document.getElementById(pathsplit[1]);
-				if (id !== null) { id.scrollIntoView({ behavior: "smooth" }); } //check in case there is an invalid link
+				if (id !== null) { 
+					id.scrollIntoView({ behavior: "smooth", block: 'nearest', inline: 'start' }); 
+				} //check in case there is an invalid link
 			}
 		}, 500);
 	}

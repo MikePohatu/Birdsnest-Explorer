@@ -22,9 +22,10 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 		<TopBar class="cell shrink" />
 		<div id="contentPane" class="cell auto">
 			<router-view />
-			<NotificationIcon />
-			<NotificationPane />
 		</div>
+		
+		<NotificationIcon />
+		<NotificationPane />
 	</div>
 </template>
 
@@ -101,6 +102,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 body {
 	position: relative;
 	overflow: hidden;
+	scroll-padding-top: 4rem;
 }
 
 #contentPane {
