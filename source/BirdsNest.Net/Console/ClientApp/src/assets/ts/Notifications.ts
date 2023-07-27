@@ -93,6 +93,11 @@ class NotificationHelper {
         return this;
     }
 
+    Flush():NotificationHelper {
+        Messages.splice(0, Infinity);
+        return this;
+    }
+
     
     private AddMessage(message: NotificationMessage) {
         Messages.push(message);

@@ -25,8 +25,12 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
         
         <div id="output">
             
-            <div id="header">{{ $t("word_Notifications") }} 
+            <div id="header">
+                <span>{{ $t("word_Notifications") }}</span>
                 <!-- <span v-if="isDevMode" class="clickable" v-on:click.native="onTestEventsClicked()"> - TEST MESSAGES</span> -->
+                <span id="clear" class="clickable" v-on:click.native="onClearClicked()" :title="$t('phrase_Clear_Notifications')">
+                    <i class="fa-regular fa-trash-can"></i>
+                </span>
             </div>
             <div id="messagelist" ref="messagelist" :style="{height: messageHeight}">
                 <ul v-if="messages.length > 0" >
@@ -101,6 +105,22 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 #header {
     padding: 2px 5px 0 5px;
     font-weight: bold;
+    vertical-align: top;
+}
+
+#header span {
+    vertical-align: top;
+}
+
+#clear {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    font-weight:lighter;
+    font-size: 1.1em;
+    padding: 0 5px 0 5px;
+    margin: 0;
+    color: orange;
 }
 
 #messagelist{
@@ -138,6 +158,7 @@ li {
 
 <script setup lang="ts">
 import { NotificationMessage, NotificationMessageLevels, Notify, Messages } from '@/assets/ts/Notifications';
+import { i18nGetPhrase } from '@/i18n';
 import { computed, onUpdated, ref } from 'vue';
 
     const isHidden = ref(true);
@@ -164,7 +185,7 @@ import { computed, onUpdated, ref } from 'vue';
 
             //find the new height, and the height available in the parent element. 50px 
             //buffer is to allow for topbar, hiderbutton, and some padding
-            const newheight = (messages.value.length+1)*lineheight*fontsize+10;
+            const newheight = (messages.value.length+1)*lineheight*fontsize+5;
             const maxheight = eventspane.value.parentElement.offsetHeight - 50;
 
             if (newheight >= maxheight) {
@@ -185,11 +206,10 @@ import { computed, onUpdated, ref } from 'vue';
         if (!isHidden.value) { UpdateHeight(); }
     }
 
-    function onTestEventsClicked() {
-        for (let i = 0; i < 25; i++) {
-            Notify.Info(`Test ${i}`);
-        } 
-        Notify.Clear();
+    function onClearClicked() {
+        if (confirm(`${i18nGetPhrase("Clear_notifications")}?`)) {
+            Notify.Flush();
+		}
     }
 
     onUpdated(()=> {
