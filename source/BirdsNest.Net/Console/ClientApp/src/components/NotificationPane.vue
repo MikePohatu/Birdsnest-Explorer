@@ -28,7 +28,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
             <div id="header">
                 <span>{{ $t("word_Notifications") }}</span>
                 <!-- <span v-if="isDevMode" class="clickable" v-on:click.native="onTestEventsClicked()"> - TEST MESSAGES</span> -->
-                <span id="clear" class="clickable" v-on:click.native="onClearClicked()" :title="$t('phrase_Clear_Notifications')">
+                <span id="clear" class="clickable" v-on:click.native="onClearClicked()" :title="$t('phrase_Clear_notifications')">
                     <i class="fa-regular fa-trash-can"></i>
                 </span>
             </div>
