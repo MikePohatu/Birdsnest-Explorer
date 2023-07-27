@@ -14,7 +14,7 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
-import { createRouter, createWebHistory, RouteRecordRaw } from "vue-router";
+import { createRouter, createWebHistory, isNavigationFailure, NavigationFailureType, RouteRecordRaw } from "vue-router";
 import { store, rootPaths } from "@/store";
 import { auth } from "@/assets/ts/webcrap/authcrap";
 import webcrap from "@/assets/ts/webcrap/webcrap";
@@ -243,7 +243,7 @@ router.afterEach((to, from, failure) => {
   else if (to) { document.title = "Birdsnest Explorer - " + to.name.toString(); }
   else { console.error({error: "Router: to undefined", to: to}); }
   
-  if (failure) {
+  if (failure && isNavigationFailure(failure, NavigationFailureType.duplicated)===false) {
     router.push(`/error/400`);
   }
 });
