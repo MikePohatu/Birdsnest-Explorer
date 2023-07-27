@@ -235,8 +235,7 @@ router.beforeEach((to, from, next) => {
     auth.ping(() => {
       if (!store.state.user.isAuthorized) {
         //Still not authorised, redirect to login view
-        // eslint-disable-next-line
-        console.log("Not authorized. Redirecting to login page. Path: " + to.path);
+        Notify.Info(`Not authorized to ${to.path}. Redirecting to login page.`).Clear();
         next(
           {
             name: routeDefs.login.name,

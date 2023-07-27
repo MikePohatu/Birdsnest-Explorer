@@ -324,8 +324,7 @@ export const store = createStore({
     },
 
     updateServerInfo(context) {
-      // eslint-disable-next-line
-      console.log("Refreshing server info");
+      Notify.Processing("Refreshing server info");
       context.commit(rootPaths.mutations.SERVER_INFO_STATE, api.states.LOADING);
       const request: Request = {
         url: "/api/serverinfo",
