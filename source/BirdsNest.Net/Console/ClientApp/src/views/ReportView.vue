@@ -62,7 +62,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 
 			<div class="cell auto" />
 			<div class="x-center show-for-medium headerItem" id="reportName">
-				<h5>{{ reportName }}</h5>
+				<h5>{{ reportDisplayName }}</h5>
 			</div>
 
 			<div id="pages" class="cell shrink headerItem">
@@ -191,19 +191,19 @@ const store = useStore();
 const route = useRoute();
 const router = useRouter();
 
-let results = ref<ResultSet>(null);
-let statusMessage = ref("");
-let maxRecords = ref(100);
-let pageNum = ref(1);
-let pageCount = ref(0);
-let query = ref("");
-let showQuery = ref(false);
+const results = ref<ResultSet>(null);
+const statusMessage = ref("");
+const maxRecords = ref(100);
+const pageNum = ref(1);
+const pageCount = ref(0);
+const query = ref("");
+const showQuery = ref(false);
+const reportDisplayName = ref("");
+const resultsLoaded = ref(false);
+const columnStates =  ref<Dictionary<boolean>>({}); //column name as supplied by report property name, and whether enabled
+const activePropertyNames = ref<string[]>([]);
 let plugin: ConsolePlugin;
 let report: Report;
-let reportName = ref("");
-let resultsLoaded = ref(false);
-let columnStates =  ref<Dictionary<boolean>>({}); //column name as supplied by report property name, and whether enabled
-let activePropertyNames = ref<string[]>([]);
 
 
 
@@ -278,13 +278,13 @@ function updateActiveProperties(): void {
 }
 
 function updateData() {
-	const pluginName = route.query.pluginName as string;
-	const reportName = route.query.reportName as string;
+	const pluginname = route.query.pluginName as string;
+	const reportname = route.query.reportName as string;
 
 	//check if we're looking for a defined report, or importing from the
 	//browser local storage
-	if (pluginName) {
-		updatePluginReportData(reportName, pluginName);
+	if (pluginname) {
+		updatePluginReportData(reportname, pluginname);
 	} else {
 		const nodes: ApiNode[] = LStore.popPendingNodeList();
 		if (nodes !== null) {
@@ -318,12 +318,14 @@ function updateIdsData(ids: string[]) {
 	api.post(request);
 }
 
-function updatePluginReportData(reportName: string, pluginName: string) {
+function updatePluginReportData(reportname: string, pluginName: string) {
 	plugin = store.state.pluginManager.plugins[pluginName] as ConsolePlugin;
-	report = plugin.reports[reportName] as Report;
+	report = plugin.reports[reportname] as Report;
+	reportDisplayName.value = report.displayName;
+
 	query.value = report.query;
 
-	const url = "/api/reports/report/?pluginname=" + pluginName + "&reportname=" + reportName;
+	const url = "/api/reports/report/?pluginname=" + pluginName + "&reportname=" + reportname;
 
 	const request: Request = {
 		url: url,

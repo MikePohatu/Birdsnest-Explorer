@@ -48,9 +48,13 @@ namespace Console.Controllers
             Report rep;
             plugin.Reports.TryGetValue(reportname, out rep);
 
-            ResultSet results = await _service.GetResultSetFromQueryAsync(rep.Query, null);
-            foreach (string filter in rep.PropertyFilters)
-            { results.AddPropertyFilter(filter); }
+            ResultSet results = null;
+            results = await _service.GetResultSetFromQueryAsync(rep.Query, null);
+            if (results != null)
+            {
+                foreach (string filter in rep.PropertyFilters)
+                { results.AddPropertyFilter(filter); }
+            }            
 
             return results;
         }
