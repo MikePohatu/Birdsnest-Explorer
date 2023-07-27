@@ -78,10 +78,14 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 				<a href="https://github.com/trondr/sdpeval" target="_blank">trondr</a>
 				<br />uuid js -
 				<a href="https://github.com/uuidjs/uuid" target="_blank">uuidjs</a>
+				<br />Vite - 
+				<a href="https://vitejs.dev/" target="_blank">vitejs.dev</a>
 				<br />Vue -
 				<a href="https://vuejs.org/" target="_blank">vuejs.org</a>
 				<br />vue3-cookies - 
 				<a href="https://github.com/KanHarI/vue3-cookies" target="_blank">KanHarI</a>
+				<br />vue-country-flag-next - 
+				<a href="https://github.com/ubaldop/vue-country-flag" target="_blank">ubaldop</a>
 			</p>
 		</div>
 		<div class="cell auto"></div>
