@@ -41,3 +41,18 @@ const i18n = createI18n({
 });
 
 export default i18n;
+
+//helpers
+const { t } = i18n.global;
+
+export function i18nGetWord(word: string){
+  return t(`word_${word}`);
+}
+
+export function i18nGetPhrase(phrase: string){
+  return t(`phrase_${phrase}`);
+}
+
+export function get(word: string){
+  return t(word);
+}
