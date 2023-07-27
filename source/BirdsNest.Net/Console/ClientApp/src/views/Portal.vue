@@ -31,7 +31,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 
 		<p class="text-center">
 			{{ $t('portal.usage_info_1') }}
-			<router-link v-if="!isIE" :to="routeDefs.docs.path">{{ $t('word_documentation') }}</router-link>
+			<router-link v-if="!isIE" :to="routeDefs.docs.rootPath">{{ $t('word_documentation') }}</router-link>
 			<a
 				v-else
 				href="https://github.com/MikePohatu/Birdsnest-Explorer"

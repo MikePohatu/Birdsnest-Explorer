@@ -47,6 +47,7 @@ export const routeDefs = {
   docs: {
     name: "Docs",
     path: "/docs:docPath(.*)",
+    rootPath: "/docs",
     meta: {
       allowAnonymous: true,
       breadcrumbs: [
@@ -175,7 +176,7 @@ router.beforeEach((to, from, next) => {
     if (to.name === routeDefs.docs.name && webcrap.misc.isIE() === false) {
       const path = to.path.split("#")[0];
 
-      if (path === routeDefs.docs.path) {
+      if (path === routeDefs.docs.rootPath) {
         next({
           path: "/docs/static/documentation/README.md"
         });
