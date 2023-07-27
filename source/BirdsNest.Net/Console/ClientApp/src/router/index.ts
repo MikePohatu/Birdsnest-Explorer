@@ -23,167 +23,146 @@ import { Notify } from "@/assets/ts/Notifications";
 export const routeDefs = {
   portal: {
     name: "Portal",
-    path: "/portal"
-  },
-  about: {
-    name: "About",
-    path: "/about"
-  },
-  docs: {
-    name: "Docs",
-    path: "/docs",
-    routePath: "/:docs*"
-  },
-  report: {
-    name: "Report Viewer",
-    path: "/report"
-  },
-  reports: {
-    name: "Reports",
-    path: "/reports"
-  },
-  visualizer: {
-    name: "Visualizer",
-    path: "/visualizer"
-  },
-  admin: {
-    name: "Admin",
-    path: "/admin"
-  },
-  login: {
-    name: "Login",
-    path: "/login"
-  },
-  info: {
-    name: "Server Information",
-    path: "/info"
-  },
-  indexEditor: {
-    name: "Index Editor",
-    path: "/indexeditor"
-  }
-}
-
-const routes: Array<RouteRecordRaw> = [
-  {
-    path: routeDefs.portal.path,
-    name: routeDefs.portal.name,
+    path: "/portal",
     meta: {
       breadcrumbs: [
-        { name: routeDefs.portal.name }
+        { name: "Portal" }
       ]
     },
     component: () =>
       import("@/views/Portal.vue")
   },
-  {
-    path: '/',
-    redirect: routeDefs.portal.path
-  },
-  {
-    path: routeDefs.about.path,
-    name: routeDefs.about.name,
+  about: {
+    name: "About",
+    path: "/about",
     meta: {
       allowAnonymous: true,
       breadcrumbs: [
-        { name: routeDefs.about.name }
+        { name: "About" }
       ]
     },
     component: () =>
       import("@/views/About.vue")
   },
-  {
-    path: routeDefs.reports.path,
-    name: routeDefs.reports.name,
+  docs: {
+    name: "Docs",
+    path: "/docs:docPath(.*)",
     meta: {
+      allowAnonymous: true,
       breadcrumbs: [
-        { name: routeDefs.reports.name }
+        { name: "Docs", link: "/docs" }
       ]
     },
     component: () =>
-      import("@/views/Reports.vue")
+      import("@/views/Docs.vue")
   },
-  {
-    path: routeDefs.report.path,
-    name: routeDefs.report.name,
+  report: {
+    name: "Report Viewer",
+    path: "/report",
     meta: {
       breadcrumbs: [
-        { name: routeDefs.reports.name, link: routeDefs.reports.path },
-        { name: routeDefs.report.name }
+        { name: "Reports", link: "/reports" },
+        { name: "Report Viewer" }
       ]
     },
     component: () =>
       import("@/views/ReportView.vue")
   },
-  {
-    path: routeDefs.admin.path,
-    name: routeDefs.admin.name,
+  reports: {
+    name: "Reports",
+    path: "/reports",
     meta: {
       breadcrumbs: [
-        { name: routeDefs.admin.name }
+        { name: "Reports" }
       ]
     },
     component: () =>
-      import("@/views/Admin.vue")
+      import("@/views/Reports.vue")
   },
-  {
-    path: routeDefs.login.path,
-    name: routeDefs.login.name,
-    meta: {
-      allowAnonymous: true,
-      breadcrumbs: [
-        { name: routeDefs.login.name }
-      ]
-    },
-    component: () =>
-      import("@/views/Login.vue")
-  },
-  {
-    path: routeDefs.visualizer.path,
-    name: routeDefs.visualizer.name,
+  visualizer: {
+    name: "Visualizer",
+    path: "/visualizer",
     meta: {
       breadcrumbs: [
-        { name: routeDefs.visualizer.name }
+        { name: "Visualizer" }
       ]
     },
     component: () =>
       import("@/views/Visualizer.vue")
   },
-  {
-    path: routeDefs.info.path,
-    name: routeDefs.info.name,
+  admin: {
+    name: "Admin",
+    path: "/admin",
     meta: {
       breadcrumbs: [
-        { name: routeDefs.info.name }
+        { name: "Admin" }
+      ]
+    },
+    component: () =>
+      import("@/views/Admin.vue")
+  },
+  login: {
+    name: "Login",
+    path: "/login",
+    meta: {
+      allowAnonymous: true,
+      breadcrumbs: [
+        { name: "Login" }
+      ]
+    },
+    component: () =>
+      import("@/views/Login.vue")
+  },
+  info: {
+    name: "Server Information",
+    path: "/info",
+    meta: {
+      breadcrumbs: [
+        { name: "Server Information" }
       ]
     },
     component: () =>
       import("@/views/ServerInfoView.vue")
   },
-  {
-    path: routeDefs.indexEditor.path,
-    name: routeDefs.indexEditor.name,
+  indexEditor: {
+    name: "Index Editor",
+    path: "/indexeditor",
     meta: {
       breadcrumbs: [
-        { name: routeDefs.admin.name, link: routeDefs.admin.path },
-        { name: routeDefs.indexEditor.name }
+        { name: "Admin", link: "/admin" },
+        { name: "Index Editor" }
       ]
     },
     component: () =>
       import("@/views/IndexEditorView.vue")
   },
-  {
-    path: routeDefs.docs.routePath,
-    name: routeDefs.docs.name,
+  error: {
+    name: "Error",
+    path: "/error/:code",
     meta: {
-      allowAnonymous: true,
-      breadcrumbs: [
-        { name: routeDefs.docs.name, link: routeDefs.docs.routePath }
-      ]
+      allowAnonymous: true
     },
     component: () =>
-      import("@/views/Docs.vue")
+      import("@/views/Error.vue")
   }
+}
+
+const routes: Array<RouteRecordRaw> = [
+  {
+    path: '/',
+    redirect: routeDefs.portal.path
+  },
+  routeDefs.portal,
+  routeDefs.about,
+  routeDefs.report,
+  routeDefs.reports,
+  routeDefs.admin,
+  routeDefs.login,
+  routeDefs.visualizer,
+  routeDefs.info,
+  routeDefs.indexEditor,
+  routeDefs.docs,
+  routeDefs.error
 ];
 
 const router = createRouter({
@@ -192,7 +171,7 @@ const router = createRouter({
 });
 
 router.beforeEach((to, from, next) => {
-  if (to.meta.allowAnonymous === true) {    
+  if (to.meta.allowAnonymous === true) {
     if (to.name === routeDefs.docs.name && webcrap.misc.isIE() === false) {
       const path = to.path.split("#")[0];
 
@@ -259,10 +238,14 @@ router.beforeEach((to, from, next) => {
   }
 });
 
-router.afterEach((to) => {
-  if (to) { document.title = "Birdsnest Explorer - " + to.name.toString(); }
+router.afterEach((to, from, failure) => {
+  if (to.matched.length === 0) { router.push(`/error/404`); }
+  else if (to) { document.title = "Birdsnest Explorer - " + to.name.toString(); }
   else { console.error({error: "Router: to undefined", to: to}); }
   
+  if (failure) {
+    router.push(`/error/400`);
+  }
 });
 
 export default router;
