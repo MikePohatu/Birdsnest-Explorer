@@ -138,7 +138,7 @@ function moveToAnchor(): void {
 			if (pathsplit.length > 1) {
 				const id = document.getElementById(pathsplit[1]);
 				if (id !== null) { 
-					id.scrollIntoView({ behavior: "smooth", block: 'nearest', inline: 'start' }); 
+					id.scrollIntoView({ behavior: "smooth" }); 
 				} //check in case there is an invalid link
 			}
 		}, 500);
