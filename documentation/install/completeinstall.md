@@ -1,28 +1,27 @@
 # Birdsnest Explorer Installation
 
-* [Birdsnest Explorer Installation](#birdsnest-explorer-installation)
-  * [Architecture](#architecture)
-  * [System Requirements](#system-requirements)
-  * [Dependencies](#dependencies)
-  * [Database](#database)
-    * [Account Setup](#account-setup)
-    * [Database Password Change](#database-password-change)
-    * [Logout Current User](#logout-current-user)
-    * [DB Configuration and Importing Default Data](#db-configuration-and-importing-default-data)
-  * [Firewall](#firewall)
-    * [Inbound](#inbound)
-    * [Outbound](#outbound)
-  * [Anti-Virus Exclusions](#anti-virus-exclusions)
-  * [Console](#console)
-    * [Authorization](#authorization)
-      * [Active Directory vs LDAP](#active-directory-vs-ldap)
-      * [Active Directory](#active-directory)
-      * [LDAP](#ldap)
-      * [LocalServer](#localserver)
-      * [Neo4j Database Connection](#neo4j-database-connection)
-      * [Full Configuration File](#full-configuration-file)
-  * [Scanners](#scanners)
-  * [Troubleshooting](#troubleshooting)
+* [Architecture](#architecture)
+* [System Requirements](#system-requirements)
+* [Dependencies](#dependencies)
+* [Database](#database)
+  * [Account Setup](#account-setup)
+  * [Database Password Change](#database-password-change)
+  * [Logout Current User](#logout-current-user)
+  * [DB Configuration and Importing Default Data](#db-configuration-and-importing-default-data)
+* [Firewall](#firewall)
+  * [Inbound](#inbound)
+  * [Outbound](#outbound)
+* [Anti-Virus Exclusions](#anti-virus-exclusions)
+* [Console](#console)
+  * [Authorization](#authorization)
+    * [Active Directory vs LDAP](#active-directory-vs-ldap)
+    * [Active Directory](#active-directory)
+    * [LDAP](#ldap)
+    * [LocalServer](#localserver)
+    * [Neo4j Database Connection](#neo4j-database-connection)
+    * [Full Configuration File](#full-configuration-file)
+* [Scanners](#scanners)
+* [Troubleshooting](#troubleshooting)
 
 ## Architecture
 
@@ -42,16 +41,16 @@ The following diagram outlines the components and their interaction with each ot
 The following dependencies are required to run Birdsnest Explorer. The managed installer provides automated install of these components in addition to Birdsnest Explorer itself.
 
 * Web Server Role (IIS) installed
-* Java 1.8
-* .Net Core Server Hosting Runtime 3.1.6
+* Java 11
+* .Net Core Server Hosting Runtime 7.0.5+
 
 Additionally, a modern browser is required for use with the Neo4j web console. Neo4j provides an article [here](https://neo4j.com/developer/kb/explanation-of-error-security-error-18-when-using-internet-explorer-and-neo4j-browser/) that outlines changes to make IE11 work, but this has shown to be problematic in our testing. Microsoft Edge or Chrome are recommended.
 
 ## Database
 
-Birdsnest Explorer uses a [Neo4j](https://neo4j.com/) graph database at its core. Neo4j 3.5 is installed and configured as part of the managed install, and default data imported i.e. Windows builtin groups/users definitions.
+Birdsnest Explorer uses a [Neo4j](https://neo4j.com/) graph database at its core. Neo4j 4.4 is installed and configured as part of the managed install, and default data imported i.e. Windows builtin groups/users definitions.
 
-Full documentation for Neo4j is available from the [Neo4j documentation site](https://neo4j.com/docs/operations-manual/3.5/).
+Full documentation for Neo4j is available from the [Neo4j documentation site](https://neo4j.com/docs/cypher-manual/4.4/).
 
 During installation, the password for the default Neo4j database account must be set, and the details for the Birdsnest Explorer service account must be set. The Birdsnest Explorer service account will be used later during setup of the [Console](#console) and [Scanners](#scanners).
 
@@ -93,7 +92,7 @@ To logout the current user, run the following command:
 :server disconnect
 ```
 
-_Official Neo4j documentation for user management is available [here](https://neo4j.com/docs/operations-manual/3.5/reference/user-management-community-edition/)._
+_Official Neo4j documentation for user management is available [here](https://neo4j.com/docs/cypher-manual/4.4/administration/access-control/manage-users/)._
 
 ### DB Configuration and Importing Default Data
 

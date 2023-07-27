@@ -220,7 +220,7 @@ The value of the query field defines the database query that builds the report.
 neo4j uses a query language called **Cypher**. Detailed usage of the Cypher language is beyond the scope of this document, however some places to start are outlined below.
 
 
-Firstly, the cypher [documentation](https://neo4j.com/docs/cypher-manual/3.5/) is an excellent resource.
+Firstly, the cypher [documentation](https://neo4j.com/docs/cypher-manual/4.4/introduction/) is an excellent resource.
 
 Secondly, the visualizer advanced search function provides the Cypher query when you click the **Share** button. If you have a search you want to run regularly you can take the query from the search as your starting point. The report view also provides a **Show Query** option in the menu.
 
