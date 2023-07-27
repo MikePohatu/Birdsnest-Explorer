@@ -37,13 +37,13 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 							<router-link :to="routeDefs.visualizer.path">{{ $t('word_Visualizer') }}</router-link>
 							<hr />
 							<router-link :to="routeDefs.about.path">{{ $t('word_About') }}</router-link>
-							<router-link v-if="!isIE" :to="routeDefs.docs.path">{{ $t('word_Docs') }}</router-link>
+							<router-link v-if="!isIE" :to="routeDefs.docs.rootPath">{{ $t('word_Docs') }}</router-link>
 							<LangMenu />
 							<a v-on:click="logout">{{ $t('word_Logout') }}</a>
 						</div>
 						<div v-else class="menuwrapper">
 							<router-link :to="routeDefs.about.path">{{ $t('word_About') }}</router-link>
-							<router-link v-if="!isIE" :to="routeDefs.docs.path">{{ $t('word_Docs') }}</router-link>
+							<router-link v-if="!isIE" :to="routeDefs.docs.rootPath">{{ $t('word_Docs') }}</router-link>
 							<LangMenu />
 							<router-link :to="routeDefs.login.path">{{ $t('word_Login') }}</router-link>
 						</div>
