@@ -153,7 +153,7 @@ export class Search {
     condition: AndOrCondition = new AndOrCondition(ConditionType.And);  //root should always be an AndOr 'wrapper' condition
     nodes: SearchNode[] = [];
     edges: SearchEdge[] = [];
-    includeDisabled: false;
+    includeDisabled: boolean;
     addedNodes = 0;
 }
 

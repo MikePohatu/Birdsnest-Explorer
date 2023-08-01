@@ -88,16 +88,16 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 			</fieldset>
 		</div>
 
-		<div :title="$t('phrase_Include_Disabled_Tip')">
+		<div :title="$t('visualizer.search.include_disabled_tip')">
 			<fieldset class="fieldset">
 				<legend>
 					<span>{{ $t('word_Options') }}</span>
 
 				</legend>
 				<div id="optionsInnerWrapper" >
-					<label for="includeDisabled">Include disabled links
+					<label for="includeDisabled">{{ $t("visualizer.search.include_disabled_links")}}
 						<input type="checkbox" id="includeDisabled" name="includeDisabled"
-							v-model="search.includeDisabled"></label>
+							v-model="includeDisabled"></label>
 				</div>
 			</fieldset>
 		</div>
@@ -269,6 +269,15 @@ import { useI18n } from "vue-i18n";
 
 const store = useStore();
 const { t } = useI18n();
+
+const includeDisabled = computed({
+  get() {
+    return search.value.includeDisabled;
+  },
+  set(value: boolean) {
+	store.commit(SearchStorePaths.mutations.Update.INCLUDE_DISABLED, value);
+  }
+})
 
 const editDisabled = computed<boolean>(() => {
 	return store.state.visualizer.search.selectedItem === null;

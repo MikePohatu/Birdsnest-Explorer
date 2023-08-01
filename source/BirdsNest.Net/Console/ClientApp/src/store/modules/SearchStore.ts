@@ -47,6 +47,7 @@ export const SearchStorePaths = {
             EDIT_ITEM: "visualizer/search/setEditItem",
 
             EDIT_CONDITION: "visualizer/search/setEditCondition",
+            INCLUDE_DISABLED: "visualizer/search/includeDisabled",
             SELECTED_CONDITION: "visualizer/search/selectedCondition",
             SELECTED_CONDITION_DOWN: "visualizer/search/conditionDown",
             SELECTED_CONDITION_UP: "visualizer/search/conditionUp",
@@ -311,6 +312,9 @@ export const SearchStore: Module<SearchState, RootState> = {
             } else {
                 DeleteCondition(state.search.condition, state.selectedCondition);
             }
+        },
+        includeDisabled(state, newState: boolean):void {
+            state.search.includeDisabled = newState;
         },
         //#endregion
 
