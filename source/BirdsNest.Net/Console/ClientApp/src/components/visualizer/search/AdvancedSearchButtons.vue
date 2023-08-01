@@ -53,7 +53,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 					:title="$t('phrase_Share_search')"
 					v-on:click="onShareClicked"
 				>
-					<i class="fas fa-share-alt"></i>
+					<i class="fas fa-share"></i>
 				</button>
 				<button
 					v-on:click="onSearchClicked"

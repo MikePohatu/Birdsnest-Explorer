@@ -270,7 +270,7 @@ import { useI18n } from "vue-i18n";
 const store = useStore();
 const { t } = useI18n();
 
-const includeDisabled = computed({
+const includeDisabled = computed<boolean>({
   get() {
     return search.value.includeDisabled;
   },
