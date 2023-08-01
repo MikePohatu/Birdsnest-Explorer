@@ -241,8 +241,8 @@ import { Notify } from "@/assets/ts/Notifications";
 		return graphData.detailsItems.Array;
 	});
 
-	onCreated();
-	function onCreated() {
+	//onCreated();
+	function registerEvents() {
 		//eventbus and event registrations. All registrations MUST be deregistered in the
 		//beforeDestroy method. 
 
@@ -442,6 +442,7 @@ import { Notify } from "@/assets/ts/Notifications";
 	});
 
 	onMounted(() => {
+		registerEvents();
 		drawingPane = d3.select<HTMLElement, null>("#drawingpane");
 		drawingSvg = d3.select<SVGGraphicsElement, null>("#drawingSvg");
 		zoomLayer = d3.select<SVGGraphicsElement, null>("#zoomlayer");
