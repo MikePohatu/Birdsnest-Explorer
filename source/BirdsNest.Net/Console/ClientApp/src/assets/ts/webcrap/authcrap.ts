@@ -53,18 +53,17 @@ class AuthCrap {
                     store.commit(rootPaths.mutations.AUTH_MESSAGE, "");
 
                     if (data.isAuthorized) {
+                        if (data.isAdmin) {
+                            Notify.Info(`Logged in as admin: ${data.userName}`).Clear();
+                        }
+                        else {
+                            Notify.Info(`Logged in user: ${data.userName}`).Clear();
+                        }
                         store.dispatch(rootPaths.actions.UPDATE_AUTHENTICATED_DATA);
                         typeof successcallback === 'function' && successcallback();
                     }
                     else {
                         Notify.Warn("Login not authorized");
-                    }
-                    
-                    if (data.isAdmin) {
-                        Notify.Info(`Logged in as admin: ${data.userName}`).Clear();
-                    }
-                    else {
-                        Notify.Info(`Logged in user: ${data.userName}`).Clear();
                     }
                 }
                 else {
