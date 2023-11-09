@@ -46,14 +46,14 @@
     <Reference Include="Microsoft.ConfigurationManagement.ManagementProvider">
       <HintPath>libraries\Microsoft.ConfigurationManagement.ManagementProvider.dll</HintPath>
     </Reference>
-    <Reference Include="Neo4j.Driver, Version=5.10.14.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Neo4j.Driver.5.10.0\lib\netstandard2.0\Neo4j.Driver.dll</HintPath>
+    <Reference Include="Neo4j.Driver, Version=5.14.22.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Neo4j.Driver.5.14.0\lib\netstandard2.0\Neo4j.Driver.dll</HintPath>
     </Reference>
     <Reference Include="Newtonsoft.Json, Version=13.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\packages\Newtonsoft.Json.13.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="NLog, Version=5.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c, processorArchitecture=MSIL">
-      <HintPath>..\packages\NLog.5.2.2\lib\net46\NLog.dll</HintPath>
+      <HintPath>..\packages\NLog.5.2.5\lib\net46\NLog.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Configuration" />
