@@ -76,8 +76,8 @@ namespace Console.Plugins
             var disabledEdges = new List<string>();
 
 
-            string pluginsdirpath = this._env.ContentRootPath + "/Plugins";
-            string csspath = this._env.ContentRootPath + "/wwwroot/dynamic/plugins.css";
+            string pluginsdirpath = AppDomain.CurrentDomain.BaseDirectory + "Plugins";
+            string csspath = AppDomain.CurrentDomain.BaseDirectory + "wwwroot/dynamic/plugins.css";
 
             //Process the plugin files
             #region

@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
     <TargetFramework>net7.0</TargetFramework>
@@ -42,7 +42,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Content Remove="appsettings.Development.json" />
     <Content Remove="neo4jProxy\AdvancedSearch\examples\example_search.json" />
     <Content Remove="neo4jProxy\example_searches\basicConditionSearch.json" />
     <Content Remove="neo4jProxy\example_searches\basicSearch.json" />
@@ -102,8 +101,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Include="appsettings.Development.json">
-    </None>
     <None Include="neo4jProxy\AdvancedSearch\examples\example_search.json">
     </None>
     <None Include="neo4jProxy\example_searches\basicConditionSearch.json">

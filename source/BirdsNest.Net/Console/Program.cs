@@ -32,7 +32,7 @@ namespace Console
         {
             //var logger = NLogBuilder.ConfigureNLog("nlog.config").GetCurrentClassLogger();
             var appdomain = System.AppDomain.CurrentDomain;
-            string path = System.IO.Path.Combine(System.AppDomain.CurrentDomain.BaseDirectory, System.AppDomain.CurrentDomain.RelativeSearchPath ?? "");
+            string path = System.IO.Path.Combine(appdomain.BaseDirectory, appdomain.RelativeSearchPath ?? "");
             var logger = LogManager.Setup().LoadConfigurationFromAppSettings(path).GetCurrentClassLogger();
 
             try
