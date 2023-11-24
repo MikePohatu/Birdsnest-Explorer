@@ -171,6 +171,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 						class="alert button small searchbutton-wide"
 						:aria-label="$t('word_Delete')"
 						type="button"
+						:disabled="!deleteable"
 						v-on:click="onDeleteClicked"
 					>{{ $t('word_Delete') }}</button>
 					<button
@@ -243,6 +244,7 @@ const autocompleteList = ref<string[]>([]);
 const alertMessage = ref("");
 const showAlert = ref(false);
 const saveable = ref(true);
+const deleteable = ref(true);
 
 onMounted(()=> {
 	onSelectedItemChanged();
@@ -326,6 +328,14 @@ const isLabelSet = computed((): boolean => {
 function onSelectedItemChanged(): void {
 	let item: SearchItem = null;
 	let isNode = true;
+
+	if (webcrap.misc.isNullOrWhitespace(condition.value.name)) {
+		saveable.value = false;
+		deleteable.value = false;
+		showAlert.value = false;
+		return;
+	}
+
 	item = GetNode(condition.value.name, store.state.visualizer.search.search);
 
 	if (item === null) {
@@ -337,12 +347,14 @@ function onSelectedItemChanged(): void {
 		if (webcrap.misc.isNullOrWhitespace(item.label)) {
 			alertMessage.value = t('visualizer.search.error_no_selected_type_set').toString();
 			saveable.value = false;
+			deleteable.value = false;
 			showAlert.value = true;
 		} else if (isNode === false) {
 			const edge = item as SearchEdge;
 			if ((edge.min === 1 && edge.max === 1) === false) {
 				alertMessage.value = t('visualizer.search.multi_hop_cond_not_supported').toString();
 				saveable.value = false;
+				deleteable.value = false;
 				showAlert.value = true;
 			}
 		}
@@ -350,12 +362,14 @@ function onSelectedItemChanged(): void {
 			alertMessage.value = "";
 			showAlert.value = false;
 			saveable.value = true;
+			deleteable.value = true;
 		}
 	}
 	else {
 		alertMessage.value = t('visualizer.search.error_getting_named_item').toString();
 		showAlert.value = true;
 		saveable.value = false;
+		deleteable.value = false;
 	}
 
 	selectedItem.value = item;

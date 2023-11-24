@@ -30,7 +30,7 @@ class MiscCrap {
     }
 
     isNullOrEmpty(input: string) {
-        return input === null || input === "";
+        return typeof input === 'undefined' || input === null || input === "";
     }
 
     capitalize(s: string) {
