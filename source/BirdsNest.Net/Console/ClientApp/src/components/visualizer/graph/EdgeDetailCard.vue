@@ -16,7 +16,7 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see http://www.gnu.org/licenses/.
 -->
 <template>
-	<div ref="templateRoot" :id="'details-'+edge.DbId" class="detailcard pane">
+	<div ref="templateRoot" :id="'details-'+edge.dbId" class="detailcard pane">
 		<div class="detaillist">
 			<div class="grid-x align-middle">
 				<div class="cell small-3">

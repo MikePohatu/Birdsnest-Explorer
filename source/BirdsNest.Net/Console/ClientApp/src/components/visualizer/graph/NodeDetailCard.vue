@@ -17,7 +17,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 -->
 <template>
 	<div ref="templateRoot">
-		<div :id="'related' + node.DbId" class="detailcard pane">
+		<div :id="'related' + node.dbId" class="detailcard pane">
 			<div class="detaillist">
 				<div class="grid-x align-middle">
 					<div class="cell shrink detailsHeader">
