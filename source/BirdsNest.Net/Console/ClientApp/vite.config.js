@@ -21,7 +21,6 @@ import path from 'path';
 import { VitePWA } from 'vite-plugin-pwa';
 import basicSsl from '@vitejs/plugin-basic-ssl';
 import VueI18nPlugin from '@intlify/unplugin-vue-i18n/vite';
-import pluginRewriteAll from 'vite-plugin-rewrite-all';
 
 // https://vitejs.dev/config/
 export default defineConfig(({ command, mode }) => ({
@@ -56,7 +55,6 @@ export default defineConfig(({ command, mode }) => ({
     }
   },
   plugins: [
-    pluginRewriteAll(),
     basicSsl(),
     vue(),
     VueI18nPlugin({
