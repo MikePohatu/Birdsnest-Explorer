@@ -62,9 +62,9 @@ import { NewConditionType, Condition, AndOrCondition, ValueCondition, ConditionT
 import { SearchStorePaths } from "@/store/modules/SearchStore";
 import { Dictionary } from "@/assets/ts/webcrap/misccrap";
 import { useStore } from "@/store";
-import { computed } from "vue";
+import { computed, ref } from "vue";
 
-let type = NewConditionType.Value;
+let type = ref(NewConditionType.Value);
 const store = useStore();
 
 const newTypes = computed((): Dictionary<string> => {
@@ -78,10 +78,10 @@ function onCancelClicked(): void {
 function onOkClicked(): void {
 	let newcond: Condition;
 
-	if (type === NewConditionType.Value) {
+	if (type.value === NewConditionType.Value) {
 		newcond = new ValueCondition(ConditionType.String);
 	} else {
-		newcond = new AndOrCondition(this.type);
+		newcond = new AndOrCondition(type.value);
 	}
 	store.commit(SearchStorePaths.mutations.Add.NEW_CONDITION, newcond);
 }
