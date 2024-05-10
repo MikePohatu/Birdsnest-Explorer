@@ -10,9 +10,9 @@
     <PackageId>Birdsnest-Console</PackageId>
     <Authors>20Road Limited</Authors>
     <Product>Birdsnest Explorer</Product>
-    <Copyright>Copyright ©20Road Limited 2023</Copyright>
+    <Copyright>Copyright ©20Road Limited 2024</Copyright>
     <AspNetCoreHostingModel>OutOfProcess</AspNetCoreHostingModel>
-    <Version>1.1.31124.0</Version>
+    <Version>1.2024.1005</Version>
     <UserSecretsId>225d9517-2acc-487a-a7e0-e21703d8677b</UserSecretsId>
     <PackageProjectUrl>https://www.20road.com/birdsnest-explorer/</PackageProjectUrl>
   </PropertyGroup>
@@ -50,6 +50,7 @@
 
   <ItemGroup>
     <None Remove="logs\stub.txt" />
+    <None Remove="Plugins\plugin-activedirectory-extended-example.css" />
     <None Remove="Plugins\plugin-activedirectory.css" />
     <None Remove="Plugins\plugin-azuread.css" />
     <None Remove="Plugins\plugin-builtin.css" />
@@ -64,6 +65,9 @@
   <ItemGroup>
     <Content Include="logs\stub.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Plugins\plugin-activedirectory-extended-example.css">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Plugins\plugin-activedirectory.css">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
