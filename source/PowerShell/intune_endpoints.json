@@ -1,0 +1,78 @@
+{
+    "default": {
+
+    },
+    "Configs":{
+        "label": "AZ_Intune_Configuration",
+        "listPath": "https://graph.microsoft.com/beta/deviceManagement/deviceConfigurations",
+        "assignmentsPath": "https://graph.microsoft.com/beta/deviceManagement/deviceConfigurations/{{id}}/groupAssignments",
+        "nameField": "displayName"
+    },
+    "AdminTemplateConfigs":{
+        "label": "AZ_Intune_Configuration",
+        "listPath": "https://graph.microsoft.com/beta/deviceManagement/groupPolicyConfigurations",
+        "assignmentsPath": "https://graph.microsoft.com/beta/deviceManagement/groupPolicyConfigurations/{{id}}/assignments",
+        "nameField": "displayName"
+    },
+    "ManagedAppPolicies":{
+        "label": "AZ_Intune_App",
+        "listPath": "https://graph.microsoft.com/beta/deviceAppmanagement/managedAppPolicies",
+        "assignmentsPath": null,
+        "nameField": "displayName"
+    },
+    "Compliance":{
+        "label": "AZ_Intune_Compliance",
+        "listPath": "https://graph.microsoft.com/beta/deviceManagement/deviceCompliancePolicies",
+        "assignmentsPath": "https://graph.microsoft.com/beta/deviceManagement/deviceCompliancePolicies/{{id}}/assignments",
+        "nameField": "displayName"
+    },
+    "Baselines": {
+        "label": "AZ_Intune_Baseline",
+        "listPath": "https://graph.microsoft.com/beta/deviceManagement/intents",
+        "assignmentsPath": "https://graph.microsoft.com/beta/deviceManagement/intents/{{id}}/assignments",
+        "nameField": "displayName"
+    },
+    "Apps": {
+        "label": "AZ_Intune_App",
+        "listPath": "https://graph.microsoft.com/beta/deviceAppManagement/mobileApps?$select=displayName,isAssigned,id,assignments,publisher",
+        "assignmentsPath": "https://graph.microsoft.com/beta/deviceAppManagement/mobileApps/{{id}}/assignments",
+        "nameField": "displayName",
+        "properties": {
+            "rename": {
+                "@odata.type":"type"
+            },
+            "translate": {
+
+            }
+        }
+    },
+    "SettingsCatalog":{
+        "label": "AZ_Intune_Configuration",
+        "listPath": "https://graph.microsoft.com/beta/deviceManagement/configurationPolicies",
+        "assignmentsPath": "https://graph.microsoft.com/beta/deviceManagement/configurationPolicies/{{id}}/assignments",
+        "nameField": "name",
+        "properties": {
+            "rename": {
+                "@odata.type":"type"
+            },
+            "translate": {
+                "templateReference.templateFamily":"templateFamily",
+                "templateReference.templateDisplayName":"templateDisplayName",
+                "templateReference.templateDisplayVersion":"templateDisplayVersion",
+                "templateReference.templateId":"templateId"
+            }
+        },
+        "assignmentInclude": {
+            "typeField":"target.@odata.type",
+            "typeValue":"#microsoft.graph.groupAssignmentTarget",
+            "source":"sourceId",
+            "target":"target.groupId"
+        },
+        "assignmentExclude": {
+            "typeField":"target.@odata.type",
+            "typeValue":"#microsoft.graph.groupAssignmentTarget",
+            "source":"sourceId",
+            "target":"target.groupId"
+        }
+    }
+}
