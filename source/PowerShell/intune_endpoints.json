@@ -63,12 +63,15 @@
         },
         "assignment": {
             "path": "https://graph.microsoft.com/beta/deviceManagement/configurationPolicies/{{id}}/assignments",
-            "excludeField":"target.@odata.type",
-            "excludeValue":"#microsoft.graph.exclusionGroupAssignmentTarget",
+            "targetTypeField":"target.@odata.type",
+            "excludeTarget":"#microsoft.graph.exclusionGroupAssignmentTarget",
+            "groupTarget":"#microsoft.graph.groupAssignmentTarget",
+            "groupIdField":"target.groupId",
+            "allUsersTarget":"#microsoft.graph.allLicensedUsersAssignmentTarget",
+            "allDevicesTarget":"#microsoft.graph.allDevicesAssignmentTarget",
             "excludeLabel": "AZ_ASSIGNMENT_EXCLUDE",
             "includeLabel": "AZ_ASSIGNMENT_INCLUDE",
-            "source":"sourceId",
-            "target":"target.groupId"
+            "intentField":"intent"
         }
     }
 }

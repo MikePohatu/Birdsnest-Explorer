@@ -5,6 +5,9 @@ Param (
 Import-Module "$($PSScriptRoot)\AzureFunctions.psm1" -Force
 Import-Module "$($PSScriptRoot)\WriteToNeo.psm1"
 
+$allUsersId = 'acacacac-9df4-4c7d-9d50-4ef0226f57a9'
+$allDevicesId = 'adadadad-808e-44e2-905a-0b7873a8a531'
+
 $schemaFilePath = "$PSScriptRoot/intune_endpoints.json" 
 $schema = Get-Content $schemaFilePath | ConvertFrom-Json -Depth 5 -AsHashtable
 $activity = "Processing Intune endpoints"
@@ -32,19 +35,35 @@ foreach ($key in $schema.Keys) {
             $assignments = @(Get-GraphRequest -All -URI $assignmentsPath)
 
             foreach ($assignment in $assignments) {
+                $targetType = Get-TranslatedPropertyValue -InputObject $assignment -propertyPath $endpoint.assignment.targetTypeField
+                if (-not $targetType) {
+                    Write-Error "Couldn't translate assignment target type, assignment id: $($assignment.id)"
+                    contine
+                }
+                
                 #figure out if the $assignment is an exclude or not
                 $exclude = $false
-                $exclValue = Get-TranslatedPropertyValue -InputObject $assignment -propertyPath $endpoint.assignment.excludeField
-                if ($exclValue -eq $endpoint.assignment.excludeValue) {
+
+                if ($targetType -eq $endpoint.assignment.excludeTarget) {
                     $exclude = $true
+                    $targetId = Get-TranslatedPropertyValue -InputObject $assignment -propertyPath $endpoint.assignment.groupIdField
+                }
+                elseif ($targetType -eq $endpoint.assignment.allUsersTarget) {
+                    $targetId = $allUsersId
+                }
+                elseif ($targetType -eq $endpoint.assignment.allDevicesTarget) {
+                    $targetId = $allDevicesId
+                }
+                elseif ($targetType -eq $endpoint.assignment.groupTarget) {
+                    $targetId = Get-TranslatedPropertyValue -InputObject $assignment -propertyPath $endpoint.assignment.groupIdField
+                }
+                else {
+                    Write-Warning "Unknown assignment target: $targetType"
                 }
 
-                $targetId = Get-TranslatedPropertyValue -InputObject $assignment -propertyPath $endpoint.assignment.target
-                $sourceId = Get-TranslatedPropertyValue -InputObject $assignment -propertyPath $endpoint.assignment.source
-                
                 $assignmentObj = @{
                     targetId = $targetId
-                    sourceId = $sourceId
+                    sourceId = $node.id
                     id = $assignment.id
                     isExclude = $exclude
                 }
