@@ -67,6 +67,7 @@ for ($i = 0; $i -lt $items.Length; $i++) {
                     GroupID = $groupid
                     AppID = $item.id
                     AssignmentID = $assignment.id
+                    Intent = $assignment.intent
                 }
                 #Write-Verbose ($assignment | ConvertTo-Json)
             }
@@ -76,6 +77,7 @@ for ($i = 0; $i -lt $items.Length; $i++) {
                     GroupID = $groupid
                     AppID = $item.id
                     AssignmentID = $assignment.id
+                    Intent = $assignment.intent
                 }
                 #Write-Verbose ($assignment | ConvertTo-Json)
             }
@@ -100,7 +102,7 @@ $op = @{
             SET n.name = prop.displayName 
             SET n.publisher = prop.publisher 
             SET n.isassigned = prop.isAssigned 
-            SET n.type = prop.type 
+            SET n.type = prop.type
             SET n.lastscan=$ScanID 
             SET n.scannerid=$ScannerID 
             RETURN count(n)
@@ -124,6 +126,7 @@ $op = @{
             SET r.scannerid=$ScannerID 
             SET r.layout='mesh' 
             SET r.id=prop.AssignmentID
+            SET r.intent = prop.Intent  
             RETURN p
 '@
 }
@@ -145,6 +148,7 @@ $op = @{
             SET r.scannerid=$ScannerID 
             SET r.layout='mesh' 
             SET r.id=prop.AssignmentID
+            SET r.intent = prop.Intent 
             RETURN count(p)
 '@ 
 }

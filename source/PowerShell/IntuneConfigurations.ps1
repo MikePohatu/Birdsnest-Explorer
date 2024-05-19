@@ -52,10 +52,11 @@ $graphPaths = @{
     }    
 }
 
-
 $includes = @()
 $excludes = @()
 $allConfigs = @()
+$allCompliance = @()
+$allBaselines = @()
 
 #foreach ($key in $graphPaths.Keys) 
 $activity = "Processing paths"
@@ -74,11 +75,24 @@ foreach ($key in $graphPaths.Keys) {
     for ($j = 0; $j -lt $items.Count; $j++) {
         $item = $items[$j]
         $itemName=$item[$graphPaths[$key].nameField]
-        $allConfigs += @{
+        $itemType = $key.ToLower()
+        $obj = @{
             name = $itemName
             description = $item.description
             id = $item.id
-            type = $key.ToLower()
+            type = $itemType
+        }
+
+        if ($itemType -eq 'compliance') {
+            $allCompliance += $obj
+        }
+        elseif ($itemType -eq 'settingscatalog' -and $item.templateReference.templateFamily -eq 'baseline' )  
+            {
+                $obj.type = 'baseline'
+                $allBaselines += $obj
+        }
+        else {
+            $allConfigs += $obj
         }
         Write-Progress -Activity $key -PercentComplete (($j/$items.Count)*100) -CurrentOperation $itemName
 
@@ -92,6 +106,7 @@ foreach ($key in $graphPaths.Keys) {
                 #Get the group ID, from the id: xxxxx_groupid
                 $groupid = $assignment["id"].Split('_')[1]
 
+                
                 #deviceCompliancePolicies and deviceConfigurations have different schemas
                 if ($assignment.target) {
                     if ($assignment.target["@odata.type"] -eq "#microsoft.graph.exclusionGroupAssignmentTarget") {
@@ -147,13 +162,56 @@ $op = @{
         }
         query = @'
             UNWIND $props AS prop 
-            MERGE (n:AZ_Intune_Configuration {id:prop.id}) 
+            MERGE (n:AZ_Object {id:prop.id}) 
+            SET n:AZ_Intune_Configuration  
             SET n.name = prop.name 
             SET n.description = prop.description 
             SET n.type = prop.type 
             SET n.lastscan=$ScanID 
             SET n.scannerid=$ScannerID 
             RETURN count(n)
+'@
+}
+Write-NeoOperations @op
+
+$op = @{
+    message = "Writing $($allConfigs.Length) compliance"
+    params = @{
+        props = $allCompliance
+        ScanID = $scanID
+        ScannerID = $scriptFileName
+    }
+    query = @'
+        UNWIND $props AS prop 
+        MERGE (n:AZ_Object {id:prop.id}) 
+        SET n:AZ_Intune_Compliance   
+        SET n.name = prop.name 
+        SET n.description = prop.description 
+        SET n.type = prop.type 
+        SET n.lastscan=$ScanID 
+        SET n.scannerid=$ScannerID 
+        RETURN count(n)
+'@
+}
+Write-NeoOperations @op
+
+$op = @{
+    message = "Writing $($allBaselines.Length) baselines"
+    params = @{
+        props = $allBaselines
+        ScanID = $scanID
+        ScannerID = $scriptFileName
+    }
+    query = @'
+        UNWIND $props AS prop 
+        MERGE (n:AZ_Object {id:prop.id}) 
+        SET n:AZ_Intune_Baseline 
+        SET n.name = prop.name 
+        SET n.description = prop.description 
+        SET n.type = prop.type 
+        SET n.lastscan=$ScanID 
+        SET n.scannerid=$ScannerID 
+        RETURN count(n)
 '@
 }
 Write-NeoOperations @op
@@ -167,7 +225,7 @@ $op = @{
         }
         query = @'
             UNWIND $props AS prop 
-            MATCH (n:AZ_Intune_Configuration {id:prop.ConfID}) 
+            MATCH (n:AZ_Object {id:prop.ConfID}) 
             MATCH (g:AZ_Group {id:prop.GroupID}) 
             MERGE p=(g)-[r:AZ_ASSIGNMENT_INCLUDE]->(n) 
             SET r.lastscan=$ScanID 
@@ -188,7 +246,7 @@ $op = @{
         }
         query = @'
             UNWIND $props AS prop 
-            MATCH (n:AZ_Intune_Configuration {id:prop.ConfID}) 
+            MATCH (n:AZ_Object {id:prop.ConfID}) 
             MATCH (g:AZ_Group {id:prop.GroupID}) 
             MERGE p=(g)-[r:AZ_ASSIGNMENT_EXCLUDE]->(n) 
             SET r.lastscan=$ScanID 
@@ -207,7 +265,7 @@ $op = @{
             ScannerID = $scriptFileName
         }
         query = @'
-            MATCH (n:AZ_Intune_Configuration { scannerid:$ScannerID}) 
+            MATCH (n:AZ_Object { scannerid:$ScannerID}) 
             WHERE n.lastscan <> $ScanID 
             DETACH DELETE n 
             RETURN count(n)
@@ -237,7 +295,7 @@ $op = @{
             ScannerID = $scriptFileName
         }
         query = @'
-            MATCH ()-[r:ASSIGNMENT_INCLUDE {scannerid:$ScannerID}]->() 
+            MATCH ()-[r:AZ_ASSIGNMENT_INCLUDE {scannerid:$ScannerID}]->() 
             WHERE r.lastscan <> $ScanID 
             DELETE r 
             RETURN count(r)
