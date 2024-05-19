@@ -8,12 +8,48 @@ Import-Module "$($PSScriptRoot)\WriteToNeo.psm1"
 $scriptFileName = $MyInvocation.MyCommand.Name
 
 
+function Add-PropertyToNode {
+    param (
+        [Parameter(Mandatory=$true)][string]$Name,
+        [Parameter(Mandatory=$true)][AllowNull()]$Value,
+        [Parameter(Mandatory=$true)][hashtable]$InputObject,
+        [string]$DateTimeFormat = 'yyyy:MM:dd_HHmmss'
+    )
+
+    if ($null -eq $Value) {
+        $InputObject.Add($Name, $null)
+    }
+    else {
+        $valueType = $Value.GetType().Name
+
+        switch -WildCard ( $valueType )
+        {
+            "DateTime" { 
+                $InputObject.Add($Name, $Value.ToString($DateTimeFormat))
+                break
+            }
+            "*Object*" {
+                break
+            }
+            "HashTable" {
+                break
+            }
+            default {
+                $InputObject.Add($Name, $Value)
+                break
+            }
+        }
+
+        #Write-Host "$valueType - $Name : $Value"
+    }
+}
+
 function Get-TranslatedPropertyValue {
     param (
         [Parameter(Mandatory=$true)][string]$propertyPath,
         [Parameter(Mandatory=$true)][hashtable]$InputObject
     )
-    
+
     if ([string]::IsNullOrWhiteSpace($propertyPath)) { Write-Error "Property path can't be emmpty" }
     $splitPath = $propertyPath.Split('.')
     if ($splitPath.Count -eq 1) {
@@ -61,35 +97,38 @@ foreach ($key in $schema.Keys) {
     foreach ($item in $items) {
         #start the node ** id is always required
         $newNode = @{}
-        
-        foreach ($propname in $item.Keys) {
+
+        #first check if we have defined a list of props using 'select'
+        $selectedPropnames = $item.Keys | Sort-Object
+        if ($endpoint.properties.select) {
+            Write-Debug 'using selected props'
+            $selectedPropnames = $endpoint.properties.select
+        }
+
+        foreach ($propname in $selectedPropnames) {
             #check prop names and make sure they are in the list of things
             if (($propname -in $propNames) -eq $false ) {
                 $propNames += $propname
             }
             
             if ($endpoint.properties.rename -and $propname -in $endpoint.properties.rename.Keys) {
-                $propval = $item[$propname]
-                $translatedPropName = $endpoint.properties.rename[$propname]
-                $newNode.Add($translatedPropName,$propval)
+                Add-PropertyToNode -InputObject $newNode -Name $endpoint.properties.rename[$propname] -Value $item[$propname]
             }
             elseif ($propname.Contains('.')) {
                 Write-Debug "Property contains period character: $propname, skipping"
             }
             else {
-                $propval = $item[$propname]
-                if ($propval -and $propval.GetType().IsValueType) {
-                    $newNode.Add($propname,$propval)
-                }
+                Add-PropertyToNode -InputObject $newNode -Name $propname -Value $item[$propname]
             }
         }
+        
 
         #now see if there are prop translations to do i.e. nested properties to unwind
         if ($endpoint.properties.translate) {
             foreach ($propPath in $endpoint.properties.translate.Keys) {
                 $translatedValue = Get-TranslatedPropertyValue -propertyPath $propPath -InputObject $item
-
-                $newNode.Add($endpoint.properties.translate[$propPath],$translatedValue)
+                $translatedName = $endpoint.properties.translate[$propPath]
+                Add-PropertyToNode -InputObject $newNode -Name $translatedName -Value $translatedValue
             }
         }
 
