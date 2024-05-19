@@ -3,7 +3,8 @@ Param (
 )
 
 Import-Module "$($PSScriptRoot)\AzureFunctions.psm1" -Force
-Import-Module "$($PSScriptRoot)\WriteToNeo.psm1"
+Import-Module "$($PSScriptRoot)\WriteToNeo.psm1" -force
+$scriptFileName = $MyInvocation.MyCommand.Name
 
 $allUsersId = 'acacacac-9df4-4c7d-9d50-4ef0226f57a9'
 $allDevicesId = 'adadadad-808e-44e2-905a-0b7873a8a531'
@@ -40,7 +41,7 @@ foreach ($key in $schema.Keys) {
                     Write-Error "Couldn't translate assignment target type, assignment id: $($assignment.id)"
                     contine
                 }
-                
+
                 #figure out if the $assignment is an exclude or not
                 $exclude = $false
 
@@ -66,11 +67,60 @@ foreach ($key in $schema.Keys) {
                     sourceId = $node.id
                     id = $assignment.id
                     isExclude = $exclude
+                    intent = $assignment.intent
                 }
                 if ($exclude) { $excludes += $assignmentObj }
                 else { $includes += $assignmentObj }
             }
         }
+
+        #write to db
+        $op = @{
+            message = "Writing $($includes.Length) includes"
+            params = @{
+                props = $includes
+                ScanID = $ScanID
+                ScannerID = $scriptFileName
+            }
+            query = @"
+UNWIND `$props AS prop 
+MATCH (n:AZ_Object {id:prop.sourceId}) 
+MATCH (g:AZ_Group {id:prop.targetId}) 
+MERGE p=(g)-[r:$($endpoint.assignment.includeLabel)]->(n) 
+SET r.lastscan=`$ScanID 
+SET r.scannerid=`$ScannerID 
+SET r.layout='mesh' 
+SET r.id=prop.id 
+SET r.intent = prop.intent 
+RETURN p
+"@
+        }
+
+        $op = @{
+            message = "Writing $($excludes.Length) excludes"
+            params = @{
+                props = $excludes
+                ScanID = $ScanID
+                ScannerID = $scriptFileName
+            }
+            query = @"
+UNWIND `$props AS prop 
+MATCH (n:AZ_Object {id:prop.sourceId}) 
+MATCH (g:AZ_Group {id:prop.targetId}) 
+MERGE p=(g)-[r:$($endpoint.assignment.excludeLabel)]->(n) 
+SET r.lastscan=`$ScanID 
+SET r.scannerid=`$ScannerID 
+SET r.layout='mesh' 
+SET r.id=prop.id 
+SET r.intent = prop.intent 
+RETURN p
+"@
+        }
+        Write-NeoOperations @op
+
+        Invoke-CleanupNodes -Label $endpoint.label -Message "Cleaning up $($endpoint.label) nodes" -ScanId $ScanID -ScannerID $scriptFileName       
+        Invoke-CleanupRelationships -Label $endpoint.assignment.includeLabel -Message "Cleaning up $($endpoint.assignment.includeLabel) relationships" -ScanId $ScanID -ScannerID $scriptFileName
+        Invoke-CleanupRelationships -Label $endpoint.assignment.excludeLabel -Message "Cleaning up $($endpoint.assignment.excludeLabel) relationships" -ScanId $ScanID -ScannerID $scriptFileName
         Write-Progress -Activity $assignmentsActivity -Completed
     }
 }

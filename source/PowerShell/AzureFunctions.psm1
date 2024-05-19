@@ -75,41 +75,6 @@ Function Get-GraphRequest {
     Write-Output $allPages
 }
 
-class NeoConnection {
-    static [string]$neoURL
-    static [string]$neoconf
-}
-
-Function Set-NeoConnection {
-    Param (
-        [Parameter(Mandatory=$true)][string]$neoURL,
-        [Parameter(Mandatory=$true)][string]$neoconf
-    )
-
-    [NeoConnection]::neoconf = $neoconf
-    [NeoConnection]::neoUrl = $neoURL
-}
-
-Function Write-NeoOperations {
-    Param (
-        [Parameter(Mandatory=$true)][string]$message,
-        [Parameter(Mandatory=$true)][hashtable]$params,
-        [Parameter(Mandatory=$true)][string]$query
-    )
-
-    Write-Host $message
-    
-    Write-Verbose "neoconf: $([NeoConnection]::neoconf)"
-    Write-Verbose "neoUrl: $([NeoConnection]::neoUrl)"
-    $response = WriteToNeo -NeoConfigPath "$([NeoConnection]::neoconf)" -serverURL "$([NeoConnection]::neoUrl)" -Query $query -Parameters $params
-    $content = $response.Content | ConvertFrom-Json
-    if ($content.errors) {
-        Write-Warning "Query reported an error:"
-        $content.errors.message
-    }
-}
-
-
 function Add-PropertyToNode {
     param (
         [Parameter(Mandatory=$true)][string]$Name,
@@ -161,7 +126,7 @@ function Get-TranslatedPropertyValue {
 
     if ([string]::IsNullOrWhiteSpace($propertyPath)) { Write-Error "Property path can't be emmpty" }
     if ($InputObject.ContainsKey($propertyPath)) { return $InputObject[$propertyPath] }
-    
+
     $splitPath = $propertyPath.Split('.')
     if ($splitPath.Count -eq 1) {
         return $InputObject[$propertyPath] 
@@ -264,7 +229,7 @@ RETURN count(n)
 
 
     $op = @{
-        message = "Writing node list: "
+        message = "Writing node list: $($EndpointDefinition.label)"
         params = @{
             props = $nodes
             ScanID = $ScanID
@@ -272,7 +237,7 @@ RETURN count(n)
         }
         query = $query
     }
-    #Write-NeoOperations @op
+    Write-NeoOperations @op
 
     return $nodes
 }

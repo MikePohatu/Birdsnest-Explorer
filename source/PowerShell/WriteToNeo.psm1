@@ -1,9 +1,11 @@
+
  Function WriteToNeo {
     Param (
         [Parameter(Mandatory=$true)][string]$NeoConfigPath,
         [Parameter(Mandatory=$true)][string]$serverURL,
         [Parameter(Mandatory=$true)][string]$Query,
-        $Parameters
+        $Parameters,
+        $Write = $false 
     )
 
     try {
@@ -27,8 +29,14 @@
         Write-Verbose $body
         
         # Call Neo4J HTTP EndPoint, Pass in creds & POST JSON Payload
-        $response = Invoke-WebRequest -AllowUnencryptedAuthentication -DisableKeepAlive -Uri $serverURL -Method POST -Body $bodyjson -credential $neo4jCreds -ContentType "application/json"
-
+        if ($Write) {
+            $response = Invoke-WebRequest -AllowUnencryptedAuthentication -DisableKeepAlive -Uri $serverURL -Method POST -Body $bodyjson -credential $neo4jCreds -ContentType "application/json"
+        }
+        else {
+            $response = @{
+                data = "Write disabled"
+            }
+        }
     } 
     finally {
       
@@ -44,3 +52,89 @@ function Get-ShortGuid {
     $ShortGuid=$EncodedText.Replace('/','_').Replace('+','-').Substring(0, 22)
     $ShortGuid
 } 
+
+class NeoConnection {
+    static [string]$neoURL
+    static [string]$neoconf
+}
+
+Function Set-NeoConnection {
+    Param (
+        [Parameter(Mandatory=$true)][string]$neoURL,
+        [Parameter(Mandatory=$true)][string]$neoconf
+    )
+
+    [NeoConnection]::neoconf = $neoconf
+    [NeoConnection]::neoUrl = $neoURL
+}
+
+Function Write-NeoOperations {
+    Param (
+        [Parameter(Mandatory=$true)][string]$message,
+        [Parameter(Mandatory=$true)][hashtable]$params,
+        [Parameter(Mandatory=$true)][string]$query
+    )
+
+    Write-Host $message
+    
+    Write-Verbose "neoconf: $([NeoConnection]::neoconf)"
+    Write-Verbose "neoUrl: $([NeoConnection]::neoUrl)"
+
+    $response = WriteToNeo -NeoConfigPath "$([NeoConnection]::neoconf)" -serverURL "$([NeoConnection]::neoUrl)" -Query $query -Parameters $params
+    $content = $response.Content | ConvertFrom-Json
+    if ($content.errors) {
+        Write-Warning "Query reported an error:"
+        $content.errors.message
+    }
+}
+
+function Invoke-CleanupNodes {
+    param (
+        [Parameter(Mandatory=$true)][string]$Label,
+        [Parameter(Mandatory=$true)][string]$Message,
+        [Parameter(Mandatory=$true)][string]$ScanId,
+        [Parameter(Mandatory=$true)][string]$ScannerId
+    )
+
+    $op = @{
+        message = $Message
+        params = @{
+            ScanID = $ScanID
+            ScannerID = $ScannerId
+        }
+        query = @"
+MATCH (n:$Label { scannerid:$ScannerID}) 
+WHERE n.lastscan <> $ScanID 
+DETACH DELETE n 
+RETURN count(n)
+"@
+    }
+
+    Write-NeoOperations @op
+}
+
+function Invoke-CleanupRelationships {
+    param (
+        [Parameter(Mandatory=$true)][string]$Label,
+        [Parameter(Mandatory=$true)][string]$Message,
+        [Parameter(Mandatory=$true)][string]$ScanId,
+        [Parameter(Mandatory=$true)][string]$ScannerId
+
+    )
+
+    $op = @{
+        message = $Message
+        params = @{
+            ScanID = $ScanID
+            ScannerID = $ScannerId
+        }
+        query = @"
+MATCH ()-[r:$Label {scannerid:$ScannerID}]->() 
+WHERE r.lastscan <> $ScanID 
+DELETE r 
+RETURN count(r)
+"@
+    }
+
+    Write-NeoOperations @op
+}
