@@ -49,7 +49,6 @@
     "SettingsCatalog":{
         "label": "AZ_Intune_Configuration",
         "listPath": "https://graph.microsoft.com/beta/deviceManagement/configurationPolicies",
-        "assignmentsPath": "https://graph.microsoft.com/beta/deviceManagement/configurationPolicies/{{id}}/assignments",
         "nameField": "name",
         "properties": {
             "rename": {
@@ -62,15 +61,12 @@
                 "templateReference.templateId":"templateId"
             }
         },
-        "assignmentInclude": {
-            "typeField":"target.@odata.type",
-            "typeValue":"#microsoft.graph.groupAssignmentTarget",
-            "source":"sourceId",
-            "target":"target.groupId"
-        },
-        "assignmentExclude": {
-            "typeField":"target.@odata.type",
-            "typeValue":"#microsoft.graph.groupAssignmentTarget",
+        "assignment": {
+            "path": "https://graph.microsoft.com/beta/deviceManagement/configurationPolicies/{{id}}/assignments",
+            "excludeField":"target.@odata.type",
+            "excludeValue":"#microsoft.graph.exclusionGroupAssignmentTarget",
+            "excludeLabel": "AZ_ASSIGNMENT_EXCLUDE",
+            "includeLabel": "AZ_ASSIGNMENT_INCLUDE",
             "source":"sourceId",
             "target":"target.groupId"
         }
