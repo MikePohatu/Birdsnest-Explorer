@@ -22,7 +22,10 @@ Connect-MgGraph -Scopes "DeviceManagementConfiguration.Read.All",
     "AuditLog.Read.All" -ErrorAction Stop
 
 
-& "$PSScriptRoot\Aad.ps1" -ScanID $scanID
+& "$PSScriptRoot\Azure\Users.ps1" -ScanID $scanID
+& "$PSScriptRoot\Azure\Licenses.ps1" -ScanID $scanID
+& "$PSScriptRoot\Azure\Groups.ps1" -ScanID $scanID
+& "$PSScriptRoot\Azure\Devices.ps1" -ScanID $scanID
 & "$PSScriptRoot\ConditionalAccess.ps1" -ScanID $scanID
 & "$PSScriptRoot\Intune.ps1" -ScanID $scanID
 
