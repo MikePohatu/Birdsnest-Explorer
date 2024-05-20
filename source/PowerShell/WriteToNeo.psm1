@@ -5,7 +5,7 @@ Function WriteToNeo {
         [Parameter(Mandatory=$true)][string]$serverURL,
         [Parameter(Mandatory=$true)][string]$Query,
         $Parameters,
-        $Write = $false 
+        $Write = $true 
     )
 
     try {
@@ -31,7 +31,7 @@ Function WriteToNeo {
         # Call Neo4J HTTP EndPoint, Pass in creds & POST JSON Payload
         if ($Write) {
             # Call Neo4J HTTP EndPoint, Pass in creds & POST JSON Payload
-            $response = Invoke-WebRequest -DisableKeepAlive -Uri $serverURL -Method POST -Body $bodyjson -credential $neo4jCreds -ContentType "application/json"
+            $response = Invoke-WebRequest -DisableKeepAlive -AllowUnencryptedAuthentication -Uri $serverURL -Method POST -Body $bodyjson -credential $neo4jCreds -ContentType "application/json"
         }
         else {
             $response = @{

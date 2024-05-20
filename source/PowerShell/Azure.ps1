@@ -18,6 +18,7 @@ Connect-MgGraph -Scopes "DeviceManagementConfiguration.Read.All",
     "Device.Read.All", 
     "GroupMember.Read.All",
     "Organization.Read.All",
+    "DeviceManagementManagedDevices.Read.All",
     "AuditLog.Read.All" -ErrorAction Stop
 
 
