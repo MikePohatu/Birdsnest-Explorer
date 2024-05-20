@@ -1,0 +1,184 @@
+.AZ_Object {
+    color: blue;
+    stroke: blue;
+    fill: gainsboro;
+}
+.AZ_Object.icon {
+    fill: blue;
+}
+
+
+
+.AZ_CA_Policy {
+    color: rgb(87, 140, 158);
+    stroke: rgb(87, 140, 158);
+    fill: snow;
+}
+.AZ_CA_Policy.icon {
+    fill: rgb(87, 140, 158);
+}
+
+
+.AZ_Group {
+    color: blue;
+    stroke: blue;
+    fill: #e6ffeb;
+}
+.AZ_Group.icon {
+    fill: blue;
+}
+
+.AZ_Pseudo_Group {
+    color: darkblue;
+    stroke: darkblue;
+    fill: #e6ffeb;
+}
+.AZ_Pseudo_Group.icon {
+    fill: darkblue;
+}
+
+.AZ_User {
+    color: blue;
+    stroke: blue;
+    fill: #fff6f8;
+}
+.AZ_User.icon {
+    fill: blue;
+}
+
+.AZ_Device {
+    color: blue;
+    stroke: blue;
+    fill: lightcyan;
+}
+.AZ_Device.icon {
+    fill: blue;
+}
+
+.AZ_Drive {
+    color: blue;
+    stroke: blue;
+    fill: lightcyan;
+}
+.AZ_Drive.icon {
+    fill: blue;
+}
+
+.AZ_Site {
+    color: blue;
+    stroke: blue;
+    fill: lightcyan;
+}
+.AZ_Site.icon {
+    fill: blue;
+}
+
+.AZ_MEMBER_OF {
+    stroke: blueviolet;
+}
+
+.AZ_Intune_Device {
+    color: darkgreen;
+    stroke: darkgreen;
+    fill: lightgray;
+}
+.AZ_Intune_Device.icon {
+    fill: darkgreen;
+}
+
+.AZ_Intune_App {
+    color: darkgreen;
+    stroke: darkgreen;
+    background-color: lightgray;
+    fill: lightgray;
+}
+
+.AZ_Intune_App.icon {
+    fill: darkgreen;
+}
+
+.AZ_Intune_Configuration {
+    color: rgb(42, 162, 170);
+    stroke: rgb(42, 162, 170);
+    background-color: lightgray;
+    fill: lightgray;
+}
+
+.AZ_Intune_Configuration.icon {
+    fill: rgb(42, 162, 170);
+}
+
+.AZ_Intune_Baseline {
+    color: rgb(42, 162, 170);
+    stroke: rgb(42, 162, 170);
+    background-color: lightgray;
+    fill: lightgray;
+}
+
+.AZ_Intune_Baseline.icon {
+    fill: rgb(42, 162, 170);
+}
+
+.AZ_Intune_Compliance {
+    color: forestgreen;
+    stroke: forestgreen;
+    background-color: lightgray;
+    fill: lightgray;
+}
+
+.AZ_Intune_Compliance.icon {
+    fill: forestgreen;
+}
+
+.AZ_ASSIGNMENT_INCLUDE {
+    stroke: darkgreen;
+    color: darkgreen;
+    background-color: #f2f9f3;
+}
+
+.AZ_ASSIGNMENT_INCLUDE-required {
+    stroke: darkgreen;
+    color: darkgreen;
+    background-color: #f2f9f3;
+}
+
+.AZ_ASSIGNMENT_INCLUDE-available {
+    stroke: rgb(126, 206, 126);
+    color: rgb(126, 206, 126);
+    background-color: #f2f9f3;
+}
+
+.AZ_ASSIGNMENT_INCLUDE-availableWithoutEnrollment {
+    stroke: rgb(126, 206, 126);
+    color: rgb(126, 206, 126);
+    background-color: #f2f9f3;
+}
+
+.AZ_ASSIGNMENT_EXCLUDE {
+    stroke: darkorange;
+    color: darkorange;
+    background-color: #f2f9f3;
+}
+
+.AZ_ASSIGNMENT_EXCLUDE-required {
+    stroke: darkorange;
+    color: darkorange;
+    background-color: #f2f9f3;
+}
+
+.AZ_ASSIGNMENT_EXCLUDE-available {
+    stroke: rgb(255, 208, 0);
+    color: rgb(255, 208, 0);
+    background-color: #f2f9f3;
+}
+
+
+
+.AZ_Deleted {
+    color: darkgray;
+    stroke: darkgray;
+    fill: #fff6f8;
+}
+.AZ_Deleted.icon {
+    fill: darkgray;
+}

@@ -1,0 +1,473 @@
+{
+  "name": "azure",
+  "displayName": "Azure",
+  "edgeDataTypes": {
+    "AZ_SYNC": {
+      "displayName": "Azure - AZ_SYNC",
+      "properties": {
+        "scannerid": {},
+        "lastscan": {}
+      }
+    },
+    "AZ_MEMBER_OF": {
+      "displayName": "Azure - AZ_MEMBER_OF",
+      "properties": {
+        "scannerid": {},
+        "lastscan": {}
+      }
+    },
+    "AZ_SUBSCRIBED_TO": {
+      "displayName": "Azure - AZ_SUBSCRIBED_TO",
+      "properties": {
+        "scannerid": {},
+        "lastscan": {},
+        "id": {}
+      }
+    },
+    "AZ_ASSIGNMENT_INCLUDE": {
+      "displayName": "Azure - AZ_ASSIGNMENT_INCLUDE",
+      "properties": {
+        "scannerid": {},
+        "lastscan": {},
+        "id": {},
+        "intent":{}
+      },
+      "subTypes": [ "intent" ]
+    },
+    "AZ_ASSIGNMENT_EXCLUDE": {
+      "displayName": "Azure - AZ_ASSIGNMENT_EXCLUDE",
+      "properties": {
+        "scannerid": {},
+        "lastscan": {},
+        "id": {},
+        "intent":{}
+      },
+      "subTypes": [ "intent" ]
+    },
+    "AZ_ASSIGNED_LICENSE": {
+      "displayName": "Azure - AZ_ASSIGNED_LICENSE",
+      "properties": {
+        "scannerid": {},
+        "lastscan": {},
+        "id": {}
+      }
+    },
+    "AZ_INCLUDES": {
+      "displayName": "Azure - AZ_INCLUDES",
+      "properties": {
+        "scannerid": {},
+        "lastscan": {}
+      }
+    },
+    "AZ_OWNS_DEVICE": {
+      "displayName": "Azure - AZ_OWNS_DEVICE",
+      "properties": {
+        "scannerid": {},
+        "lastscan": {}
+      }
+    },
+    "AZ_PSEUDO_MEMBEROF": {
+      "displayName": "Azure - AZ_PSEUDO_MEMBEROF",
+      "properties": {
+        "scannerid": {},
+        "lastscan": {}
+      },
+      "enabled":false
+    },
+    "AZ_INTUNE_MANAGED": {
+      "displayName": "Azure - AZ_INTUNE_MANAGED",
+      "properties": {
+        "scannerid": {},
+        "lastscan": {}
+      }
+    }
+  },
+  "nodeDataTypes": {
+    "AZ_Account": {
+      "displayName": "Azure Account",
+      "description": "Azure licensed account",
+      "properties": {
+        "id": {
+          "indexEnforced": true
+        },
+        "lastscan": {},
+        "scannerid":{}
+      },
+      "Default": "name",
+      "icon": "f56c"
+    },
+    "AZ_License_SKU": {
+      "displayName": "Azure License SKU",
+      "description": "Azure licensing SKU",
+      "properties": {
+        "id": {
+          "indexEnforced": true
+        },
+        "lastscan": {},
+        "scannerid":{},
+        "name": {},
+        "skuPartNumber":{},
+        "subscriptionId":{}
+      },
+      "Default": "name",
+      "icon": "f56c"
+    },
+    "AZ_ServicePlan": {
+      "displayName": "Azure Service Plan",
+      "description": "Azure licensing service plan",
+      "properties": {
+        "id": {
+          "indexEnforced": true
+        },
+        "lastscan": {},
+        "scannerid":{},
+        "name": {}
+      },
+      "Default": "name",
+      "icon": "f0ae"
+    },
+    "AZ_Device": {
+      "displayName": "Azure Device",
+      "description": "Azure device",
+      "properties": {
+        "id": {
+          "indexEnforced": true
+        },
+        "lastscan": {},
+        "scannerid":{},
+        "name": {},
+        "enabled": {
+          "type": "boolean"
+        },
+        "approxLastSignIn":{},
+        "createdDateTime":{},
+        "deviceId":{},
+        "operatingSystem":{},
+        "operatingSystemVersion":{},
+        "trustType":{}
+      },
+      "Default": "name",
+      "icon": "f3fa"
+    },
+    "AZ_User": {
+      "displayName": "Azure User",
+      "description": "Azure Active Directory user",
+      "properties": {
+        "id": {
+          "indexEnforced": true
+        },
+        "lastscan": {},
+        "scannerid":{},
+        "givenname":{},
+        "name": {},
+        "enabled": {
+          "type": "boolean"
+        },
+        "jobtitle":{},
+        "onpremisessamaccountname": {},
+        "onpremisessecurityidentifier":{},
+        "surname":{},
+        "userprincipalname": {},
+        "created":{},
+        "lastSignIn":{},
+        "userType":{}
+      },
+      "Default": "userprincipalname",
+      "icon": "f007"
+    },
+    "AZ_Group": {
+      "displayName": "Azure Group",
+      "description": "Azure Active Directory group",
+      "properties": {
+        "id": {
+          "indexEnforced": true
+        },
+        "lastscan": {},
+        "scannerid":{},
+        "description": {},
+        "dynamic": {
+          "type": "boolean"
+        },
+        "name": {},
+        "mailenabled": {
+          "type": "boolean"
+        },
+        "member_count":{},
+        "onpremisessamaccountname": {},
+        "onpremisessid": {},
+        "scope":{},
+        "type": {}
+      },
+      "subTypes": [ "type" ],
+      "Default": "name",
+      "icon": "f500"
+    },
+    "AZ_Pseudo_Group": {
+      "displayName": "Azure Pseudo Group",
+      "description": "Azure Intune 'pseudo' group i.e. All Users & All Devices",
+      "properties": {
+        "id": {
+          "indexEnforced": true
+        },
+        "lastscan": {},
+        "scannerid":{},
+        "description": {},
+        "name": {},
+        "member_count":{},
+        "scope":{}
+      },
+      "Default": "name",
+      "icon": "f500"
+    },
+    "AZ_Site": {
+      "displayName": "Azure Site",
+      "description": "Azure Sharepoint Site",
+      "properties": {
+        "id": {
+          "indexEnforced": true
+        },
+        "lastscan": {},
+        "scannerid": {},
+        "name": {},
+        "displayname": {},
+        "weburl": {},
+        "sitename": {}
+      },
+      "Default": "name",
+      "icon": "f558"
+    },
+    "AZ_Drive": {
+      "displayName": "Azure Drive",
+      "description": "Azure Drive",
+      "properties": {
+        "id": {
+          "indexEnforced": true
+        },
+        "lastscan": {},
+        "scannerid": {},
+        "name": {},
+        "description": {},
+        "drivetype": {}
+      },
+      "Default": "name",
+      "icon": "f0a0"
+    },
+    "AZ_Intune_Device": {
+      "displayName": "Azure Device",
+      "description": "Azure device",
+      "properties": {
+        "id": {
+          "indexEnforced": true
+        },
+        "lastscan": {},
+        "scannerid":{},
+        "name": {},
+        "enabled": {
+          "type": "boolean"
+        },
+        "approxLastSignIn":{},
+        "deviceType":{},
+        "deviceName":{},
+        "managedDeviceName":{},
+        "ownerType":{},
+        "enrolledDateTime":{},
+        "lastSyncDateTime":{},
+        "azureADDeviceId":{},
+        "operatingSystem":{},
+        "osVersion":{},
+        "model":{},
+        "complianceState":{},
+        "manufacturer":{},
+        "serialNumber":{},
+        "userPrincipalName":{}
+      },
+      "Default": "name",
+      "icon": "f3fa"
+    },
+    "AZ_Intune_App": {
+      "displayName": "Azure Intune App",
+      "description": "Intune managed application",
+      "properties": {
+        "type": {},
+        "name": {},
+        "id":  {
+          "indexEnforced": true
+        },
+        "lastscan": {},
+        "scannerid": {},
+        "publisher": {},
+        "isassigned": {
+          "type": "boolean"
+        }
+      },
+      "default": "name",
+      "icon": "f019"
+    },
+    "AZ_Intune_Configuration": {
+      "displayName": "Azure Intune Configuration",
+      "description": "Intune configuration item",
+      "properties": {
+        "description": {},
+        "name": {},
+        "id":  {
+          "indexEnforced": true
+        },
+        "lastscan": {},
+        "scannerid": {},
+        "type": {}
+      },
+      "default": "name",
+      "icon": "f085"
+    },
+    "AZ_Intune_Compliance": {
+      "displayName": "Azure Intune Compliance Policy",
+      "description": "Intune Compliance policy",
+      "properties": {
+        "description": {},
+        "name": {},
+        "id":  {
+          "indexEnforced": true
+        },
+        "lastscan": {},
+        "scannerid": {},
+        "type": {}
+      },
+      "default": "name",
+      "icon": "f0ae"
+    },
+    "AZ_Intune_Baseline": {
+      "displayName": "Azure Intune Security Baseline",
+      "description": "Intune Security Baseline",
+      "properties": {
+        "description": {},
+        "name": {},
+        "id":  {
+          "indexEnforced": true
+        },
+        "lastscan": {},
+        "scannerid": {},
+        "type": {},
+        "isassigned": {
+          "type": "boolean"
+        },
+        "lastmodified":{}
+      },
+      "default": "name",
+      "icon": "f13d"
+    },
+    "AZ_CA_Policy": {
+      "displayName": "Azure Conditional Access Policy",
+      "description": "Conditional Access policy",
+      "properties": {
+        "id": {
+          "indexEnforced": true
+        },
+        "lastscan": {},
+        "scannerid": {},
+        "name": {},        
+        "roletemplateid": {},
+        "state":{}
+      },
+      "default": "name",
+      "icon": "f00c"
+    },
+    "AZ_ServicePrincipal": {
+      "displayName": "Azure Service Principal",
+      "description": "Service principal e.g. application principal",
+      "properties": {
+        "id": {
+          "indexEnforced": true
+        },
+        "lastscan": {},
+        "scannerid": {},
+        "name": {},
+        "appId": {},
+        "description":{},
+        "servicePrincipalType":{},
+        "signInAudience":{}
+      },
+      "default": "name",
+      "icon": "f2bb"
+    },
+    "AZ_Role": {
+      "displayName": "Azure Role",
+      "description": "Role based access role",
+      "properties": {
+        "id": {
+          "indexEnforced": true
+        },
+        "lastscan": {},
+        "scannerid": {},
+        "name": {},        
+        "roleTemplateId": {},
+        "description":{}
+      },
+      "default": "name",
+      "icon": "f13e"
+    },
+    "AZ_Registered_Application": {
+      "displayName": "Azure Registered Application",
+      "description": "Registered Application",
+      "properties": {
+        "id": {
+          "indexEnforced": true
+        },
+        "lastscan": {},
+        "scannerid": {},
+        "name": {},
+        "appId": {},
+        "description":{},
+        "signInAudience":{}
+      },
+      "default": "name",
+      "icon": "f13e"
+    },
+    "AZ_Named_Location": {
+      "displayName": "Azure Named Location",
+      "description": "Named location for use in Conditional Access policies etc",
+      "properties": {
+        "id": {
+          "indexEnforced": true
+        },
+        "lastscan": {},
+        "scannerid": {},
+        "name": {},        
+        "isTrusted": {
+          "type": "boolean"
+        },
+        "ipRanges": {},
+        "countriesAndRegions": {},
+        "includeUnknown": {},
+        "countryLookupMethod": {}
+      },
+      "default": "name",
+      "icon": "f13e"
+    },
+    "AZ_Object": {
+      "displayName": "Azure Object",
+      "description": "Azure Object",
+      "properties": {
+        "id": {
+          "indexEnforced": true
+        },
+        "lastscan": {},
+        "scannerid": {},
+        "name": {}
+      },
+      "Default": "name",
+      "icon": "f128"
+    },
+    "AZ_Deleted": {
+      "displayName": "Azure Deleted",
+      "description": "AAD objects that have been deleted.",
+      "properties": {
+        "id": {
+          "indexEnforced": true
+        },
+        "lastscan": {},
+        "scannerid": {}
+      },
+      "icon": "f2ed"
+    }
+  }
+}
