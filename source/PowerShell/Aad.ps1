@@ -119,14 +119,7 @@ example object:
     lastUpdatedDateTime = $lic.lastUpdatedDateTime
 }
 #>
-$op = @{
-    message = "Writing $($groupLicenseAssignments.Values.Count) group license assignments"
-    params = @{
-        props = $groupLicenseAssignments.Values
-        ScanID = $scanID
-        ScannerID = $scriptFileName
-    }
-    query = @'
+$licQuery = @'
 UNWIND $props AS prop 
 MERGE (n:AZ_Object {id:prop.target}) 
 MERGE (sku:AZ_Object {id:prop.skuId}) 
@@ -136,6 +129,14 @@ SET r.lastscan=$ScanID
 SET r.scannerid=$ScannerID 
 RETURN count(r)
 '@
+$op = @{
+    message = "Writing $($groupLicenseAssignments.Values.Count) group license assignments"
+    params = @{
+        props = $groupLicenseAssignments.Values
+        ScanID = $scanID
+        ScannerID = $scriptFileName
+    }
+    query = $licQuery
 }
 Write-NeoOperations @op
 
@@ -146,16 +147,7 @@ $op = @{
         ScanID = $scanID
         ScannerID = $scriptFileName
     }
-    query = @'
-UNWIND $props AS prop 
-MATCH (n:AZ_Object {id:prop.target}) 
-MATCH (sku:AZ_Object {id:prop.sku}) 
-MERGE (n)-[r:AZ_ASSIGNED_LICENSE]->(sku) 
-SET r.lastUpdatedDateTime = prop.lastUpdatedDateTime  
-SET r.lastscan=$ScanID 
-SET r.scannerid=$ScannerID 
-RETURN count(r)
-'@
+    query = $licQuery
 }
 Write-NeoOperations @op
 #endregion
@@ -196,29 +188,6 @@ $op = @{
 Write-NeoOperations @op
 #endregion
 
-
-$licenseAssignmentsQuery = @'
-UNWIND $props AS prop 
-MATCH (o:AZ_Object {id:prop.objectId}) 
-MATCH (sku:AZ_Object {id:prop.skuId}) 
-MERGE (o)-[r:AZ_ASSIGNED_LICENSE]->(sku) 
-SET r.id = prop.id 
-SET r.state = prop.state 
-SET r.lastUpdatedDateTime = prop.lastUpdatedDateTime 
-SET r.lastscan=$ScanID 
-SET r.scannerid=$ScannerID 
-RETURN count(r)
-'@
-$op = @{
-    message = "Writing $($licenseAssignments.Values.Count) license assignments"
-    params = @{
-        props = $licenseAssignments.Values
-        ScanID = $scanID
-        ScannerID = $scriptFileName
-    }
-    query = $licenseAssignmentsQuery
-}
-Write-NeoOperations @op
 
 
 #region
