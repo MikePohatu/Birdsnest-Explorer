@@ -3,6 +3,7 @@ Function Get-GraphRequest {
         [Parameter(ParameterSetName="Token")][string]$AccessToken,
         [ValidateSet("GET", "POST", "DELETE")][string]$Method = "GET",
         [Parameter(Mandatory=$true)][string]$URI,
+        [switch]$ConsistencyEventual,
         [switch]$All,
         [int]$Top
     )
@@ -41,26 +42,21 @@ Function Get-GraphRequest {
     Write-Verbose "Making graph $Method request to URI: $topURI"
 
     #create the header
-    if ($AccessToken) {
-        $graphGetParams = @{
-            Headers     = @{
-                "Content-Type"  = "application/json"
-                Authorization = "Bearer $($AccessToken)"
-            }
-            Method      = $Method
-            URI = $topURI
-            #ErrorAction = "SilentlyContinue"
-        }
+    $headers = @{
+        "Content-Type"  = "application/json"
+    }
+    if ($ConsistencyEventual) {
+        $headers["ConsistencyLevel"] = "eventual"
     } 
-    else {
-        $graphGetParams = @{
-            Headers     = @{
-                "Content-Type"  = "application/json"
-            }
-            Method      = $Method
-            URI = $topURI
-            #ErrorAction = "SilentlyContinue"
-        }
+    if ($AccessToken) {
+        $headers["Authorization"] = "Bearer $($AccessToken)"
+    }
+
+    $graphGetParams = @{
+        Headers     = $headers
+        Method      = $Method
+        URI = $topURI
+        #ErrorAction = "SilentlyContinue"
     }
 
     $allPages = @()
@@ -163,8 +159,8 @@ function Invoke-ProcessSchemaList {
         return 
     }
 
-    #sanitise the data
-    $propNames = @()
+    #sanitise the data. 'name' field is required so is pre-added. Don't add 'id' as that is set during the neo4j MERGE
+    $propNames = @('name')
     $nodes = @()
 
     foreach ($item in $items) {
@@ -203,6 +199,14 @@ function Invoke-ProcessSchemaList {
                 $translatedName = $EndpointDefinition.properties.translate[$propPath]
                 Add-PropertyToNode -InputObject $newNode -Name $translatedName -Value $translatedValue
             }
+        }
+
+        #set the required 'name' field
+        if ($newNode.ContainsKey('name')) {
+            $newNode['name'] = $item[$EndpointDefinition.nameField]
+        }
+        else {
+            Add-PropertyToNode -InputObject $newNode -Name 'name' -Value $item[$EndpointDefinition.nameField]
         }
 
         $nodes += $newNode

@@ -9,7 +9,8 @@ write-host "Getting AZ users"
 $path = "https://graph.microsoft.com/beta/users?`$select=id,displayName,givenName,surname,jobTitle,onPremisesSamAccountName,onPremisesSecurityIdentifier,mail,userPrincipalName,userType,accountEnabled,signInActivity,licenseAssignmentStates,createdDateTime"
 $aadUsers = Get-GraphRequest -URI $path -All
 
-$licenseAssignments = @{}
+$groupLicenseAssignments = @{}
+$userLicenseAssignments = @()
 
 $aadUsers | ForEach-Object {
     $user = $_
@@ -28,23 +29,27 @@ $aadUsers | ForEach-Object {
     }
 
     foreach ($lic in $user.licenseAssignmentStates) {
-        
+        #ignore inactive licenses
+        if (-not $lic.state -eq 'Active') { contine }
+
         if ($lic.assignedByGroup) {
-            $objectId = $lic.assignedByGroup
+            $licenseKey = "$($lic.skuId)_$($lic.assignedByGroup)"
+
+            $licDeets = @{
+                skuId=$lic.skuId
+                target=$lic.assignedByGroup
+                lastUpdatedDateTime = $lic.lastUpdatedDateTime
+            }
+            if (-not $groupLicenseAssignments.ContainsKey($licenseKey)) {
+                $groupLicenseAssignments.Add($licenseKey, $licDeets)
+            }
         }
         else {
-            $objectId = $user.id
-        }
-        
-        $key = "$($lic.skuId)_$($objectId)"
-
-        if (-not $licenseAssignments.ContainsKey($key)) {
-            $licenseAssignments.Add($key, @{
-                objectId = $objectId
-                skuId = $lic.skuId
-                state = $lic.state
+            $userLicenseAssignments += @{
+                skuId=$lic.skuId
+                target=$user.id
                 lastUpdatedDateTime = $lic.lastUpdatedDateTime
-            })
+            }
         }
     }
 }
@@ -104,51 +109,55 @@ $op = @{
 Write-NeoOperations @op
 #endregion
 
-
-#region 
-write-host "Getting AZ licenses"
-
+#region
 <#
-$licenseAssignments = @()
-for ($i=0; $i -lt $aadUsers.Count; $i++) {
-    $user = $aadUsers[$i]
-    $path = "https://graph.microsoft.com/beta/users/$($user.id)/licenseDetails"
-    $userLicenses = Get-GraphRequest -URI $path
-    Write-Progress -Activity "Getting license details" -PercentComplete (($i/$aadUsers.Count)*100) -CurrentOperation "$($user.displayName)"
-
-    foreach ($lic in $userLicenses) {
-        $licenseAssignments += @{
-            userId = $user.id
-            skuId = $lic.skuId
-            id = $lic.id 
-            skuPartNumber = $lic.skuPartNumber
-        }
-    }
+Licenses
+example object:
+@{
+    skuId=$lic.skuId
+    target=$lic.assignedByGroup
+    lastUpdatedDateTime = $lic.lastUpdatedDateTime
 }
-Write-Progress -Activity "Getting license details" -Completed
-
-$licensesQuery = @'
+#>
+$op = @{
+    message = "Writing $($groupLicenseAssignments.Values.Count) group license assignments"
+    params = @{
+        props = $groupLicenseAssignments.Values
+        ScanID = $scanID
+        ScannerID = $scriptFileName
+    }
+    query = @'
 UNWIND $props AS prop 
-MATCH (user:AZ_Object {id:prop.userId}) 
-MATCH (sku:AZ_Object {id:prop.skuId}) 
-MERGE (user)-[r:AZ_ASSIGNED_LICENSE]->(sku) 
-SET r.id = prop.id 
+MERGE (n:AZ_Object {id:prop.target}) 
+MERGE (sku:AZ_Object {id:prop.skuId}) 
+MERGE (n)-[r:AZ_ASSIGNED_LICENSE]->(sku) 
+SET r.lastUpdatedDateTime = prop.lastUpdatedDateTime 
 SET r.lastscan=$ScanID 
 SET r.scannerid=$ScannerID 
 RETURN count(r)
 '@
+}
+Write-NeoOperations @op
+
 $op = @{
-    message = "Writing $($licenseAssignments.Length) license assignments"
+    message = "Writing $($userLicenseAssignments.Length) user license assignments"
     params = @{
-        props = $licenseAssignments
+        props = $userLicenseAssignments
         ScanID = $scanID
         ScannerID = $scriptFileName
     }
-    query = $licensesQuery
+    query = @'
+UNWIND $props AS prop 
+MATCH (n:AZ_Object {id:prop.target}) 
+MATCH (sku:AZ_Object {id:prop.sku}) 
+MERGE (n)-[r:AZ_ASSIGNED_LICENSE]->(sku) 
+SET r.lastUpdatedDateTime = prop.lastUpdatedDateTime  
+SET r.lastscan=$ScanID 
+SET r.scannerid=$ScannerID 
+RETURN count(r)
+'@
 }
 Write-NeoOperations @op
-#>
-
 #endregion
 
 
@@ -411,7 +420,7 @@ Write-Progress -Activity $activity -Completed
 
 $membershipsQuery = @'
 UNWIND $props AS prop 
-MATCH(g:AZ_Group { id: prop.GroupId}) 
+MATCH(g:AZ_Object { id: prop.GroupId}) 
 MATCH(m:AZ_Object{ id: prop.MemberId}) 
 MERGE p = (m)-[r:AZ_MEMBER_OF]->(g) 
 SET r.lastscan = $ScanID 
@@ -483,49 +492,5 @@ $op = @{
 Write-NeoOperations @op
 
 
-$op = @{
-    message = "Writing group membership counts"
-    params = @{
-        ScanID = $scanID
-        ScannerID = $scriptFileName
-    }
-    query = @'
-        MATCH (o)-[:AZ_MEMBER_OF *]->(g:AZ_Group) 
-        WHERE o:AZ_User OR o:AZ_Device 
-        WITH collect(DISTINCT o) as nodes, g 
-        SET g.scope = size(nodes) 
-        RETURN g
-'@
-}
-Write-NeoOperations @op
-
-$op = @{
-    message = "Cleaning up AZ license assignments" 
-    params = @{
-        ScanID = $scanID
-        ScannerID = $scriptFileName
-    }
-    query = @'
-        MATCH ()-[r:AZ_ASSIGNED_LICENSE {scannerid:$ScannerID}]->() 
-        WHERE r.lastscan <> $ScanID 
-        DELETE r 
-        RETURN count(r)
-'@
-}
-Write-NeoOperations @op
-
-$op = @{
-    message = "Writing license assignment counts"
-    params = @{
-        ScanID = $scanID
-        ScannerID = $scriptFileName
-    }
-    query = @'
-        MATCH (o:AZ_User)-[*]->(s:AZ_SKU) 
-        WITH collect(DISTINCT o) as nodes, s 
-        SET s.scope = size(nodes) 
-        RETURN s
-'@
-}
-Write-NeoOperations @op
+Invoke-CleanupRelationships -Label "AZ_ASSIGNED_LICENSE" -Message "Cleaning up AZ license assignments" -ScanId $ScanID -ScannerID $scriptFileName
 

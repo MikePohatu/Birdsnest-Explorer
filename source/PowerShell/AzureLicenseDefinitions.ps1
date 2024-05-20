@@ -43,7 +43,7 @@ Write-Progress -Activity "Importing license details" -Completed
 $productsQuery = @'
 UNWIND $props AS prop 
 MERGE (n:AZ_Object {id:prop.Guid}) 
-SET n:AZ_SKU 
+SET n:AZ_License_SKU 
 SET n.name = prop.DisplayName 
 SET n.subscriptionId = n.Id 
 SET n.lastscan=$ScanID 
@@ -86,8 +86,8 @@ Write-NeoOperations @op
 $servicePlanAssignmentsQuery = @'
 UNWIND $props AS prop 
 MATCH (plan:AZ_ServicePlan {id:prop.ServicePlanId}) 
-MATCH (sku:AZ_SKU {id:prop.ProductId}) 
-MERGE (plan)-[r:AZ_INCLUDED_IN]->(sku) 
+MATCH (sku:AZ_License_SKU {id:prop.ProductId}) 
+MERGE (sku)-[r:AZ_INCLUDES]->(plan) 
 SET r.lastscan=$ScanID 
 SET r.scannerid=$ScannerID 
 RETURN count(r)
@@ -104,17 +104,6 @@ $op = @{
 Write-NeoOperations @op
 #endregion
 
-$op = @{
-    message ="Cleaning up"
-    params = @{
-            ScanID = $scanID
-            ScannerID = $scriptFileName
-        }
-    query = @'
-        MATCH(n:AZ_Object { scannerid:$ScannerID}) 
-        WHERE n.lastscan <> $ScanID 
-        DETACH DELETE n 
-        RETURN count(n)
-'@
-}
-Write-NeoOperations @op
+
+Invoke-CleanupNodes -Label 'AZ_Object' -Message "Cleaning up" -ScanId $ScanID -ScannerID $scriptFileName
+Invoke-CleanupRelationships -Label "AZ_INCLUDES" -Message "Cleaning up service plan assignments" -ScanId $ScanID -ScannerID $scriptFileName

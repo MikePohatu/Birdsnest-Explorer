@@ -1,5 +1,5 @@
 
- Function WriteToNeo {
+Function WriteToNeo {
     Param (
         [Parameter(Mandatory=$true)][string]$NeoConfigPath,
         [Parameter(Mandatory=$true)][string]$serverURL,
@@ -30,12 +30,18 @@
         
         # Call Neo4J HTTP EndPoint, Pass in creds & POST JSON Payload
         if ($Write) {
-            $response = Invoke-WebRequest -AllowUnencryptedAuthentication -DisableKeepAlive -Uri $serverURL -Method POST -Body $bodyjson -credential $neo4jCreds -ContentType "application/json"
+            # Call Neo4J HTTP EndPoint, Pass in creds & POST JSON Payload
+            $response = Invoke-WebRequest -DisableKeepAlive -Uri $serverURL -Method POST -Body $bodyjson -credential $neo4jCreds -ContentType "application/json"
         }
         else {
             $response = @{
-                data = "Write disabled"
-            }
+                Content = @'
+{
+    "data": "Write disabled"
+}
+'@
+        }
+
         }
     } 
     finally {
@@ -103,8 +109,8 @@ function Invoke-CleanupNodes {
             ScannerID = $ScannerId
         }
         query = @"
-MATCH (n:$Label { scannerid:$ScannerID}) 
-WHERE n.lastscan <> $ScanID 
+MATCH (n:$Label { scannerid:'$ScannerID'}) 
+WHERE n.lastscan <> '$ScanID' 
 DETACH DELETE n 
 RETURN count(n)
 "@
@@ -129,8 +135,8 @@ function Invoke-CleanupRelationships {
             ScannerID = $ScannerId
         }
         query = @"
-MATCH ()-[r:$Label {scannerid:$ScannerID}]->() 
-WHERE r.lastscan <> $ScanID 
+MATCH ()-[r:$Label {scannerid:'$ScannerID'}]->() 
+WHERE r.lastscan <> '$ScanID' 
 DELETE r 
 RETURN count(r)
 "@
