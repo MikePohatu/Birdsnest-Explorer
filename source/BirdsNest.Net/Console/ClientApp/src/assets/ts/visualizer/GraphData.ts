@@ -94,24 +94,22 @@ class GraphData {
             //update label states
             const pluginmanager = store.state.pluginManager;
 
-            simnode.labels.every((label) => {
+            simnode.labels.forEach((label) => {
+                //label isn't in the label states yet, add it using the setting from the plugin
+                //manager, or default to enabled
                 if (this.graphNodeLabelStates[label] === undefined) {
                     const dt = pluginmanager.nodeDataTypes[label];
                     if (dt) {
                         this.graphNodeLabelStates[label] = dt.enabled;  
-                    } else {
+                    } 
+                    else {
                         this.graphNodeLabelStates[label] = true; //if nothing is defined for the type, assume enabled=true
                     }                    
                     simnode.enabled = this.graphNodeLabelStates[label];
-                } else if (this.graphNodeLabelStates[label] === true) {
+                } 
+                else if (this.graphNodeLabelStates[label] === true) {
                     simnode.enabled = true;
                 }
-
-                if (simnode.enabled === true) {
-                    //return false to exit the loop. if any label is enabled=true simnode is enabled
-                    return false;
-                } 
-                return true;
             });
 
             this.graphNodes.Add(simnode);
@@ -162,7 +160,6 @@ class GraphData {
             }
 
             if (this.graphEdgeLabelStates[edge.label] === undefined) {
-                //this.graphEdgeLabelStates[edge.label] = true;
                 const dt = store.state.pluginManager.edgeDataTypes[edge.label];
                 if (dt) {
                     this.graphEdgeLabelStates[edge.label] = dt.enabled;
