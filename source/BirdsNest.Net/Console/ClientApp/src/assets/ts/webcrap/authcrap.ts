@@ -38,7 +38,7 @@ class AuthCrap {
             Provider: provider
         }
 
-        store.commit(rootPaths.mutations.PROVIDER, provider);
+        store.commit(rootPaths.mutations.LOGIN.PROVIDER, provider);
         store.commit(rootPaths.mutations.USERNAME, username);
         Notify.Processing("Logging in");
 

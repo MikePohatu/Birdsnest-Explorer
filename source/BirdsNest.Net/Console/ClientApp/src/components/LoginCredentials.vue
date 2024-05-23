@@ -122,7 +122,7 @@ const message = computed((): string => {
 });
 
 const providers = computed((): string[] => {
-	return store.state.session.providers;
+	return store.state.login.providers;
 });
 
 onMounted((): void => {
@@ -132,7 +132,7 @@ onMounted((): void => {
 
 function refresh():void {
 	username.value = store.state.user.userName;
-	provider.value = store.state.session.provider;
+	provider.value = store.state.login.provider;
 	if ((webcrap.misc.isNullOrWhitespace(provider.value)===true) && providers.value && providers.value.length > 0) {
 		provider.value = providers.value[0];
 	}

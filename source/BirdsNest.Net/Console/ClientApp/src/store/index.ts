@@ -39,7 +39,8 @@ export const rootPaths = {
     },
     LOGIN: {
       USERNAME: "loginUsername",
-      PROVIDER: "loginProvider"
+      PROVIDERS: "providers",
+      PROVIDER: "provider"
     },
     ADD_MESSAGE: "addMessage",
     CLEAR_PROCESSING_MESSAGEs: "clearProcessingMessages",
@@ -53,9 +54,7 @@ export const rootPaths = {
     SERVER_INFO_STATE: "serverInfoState",
     DEAUTH: "deAuth",
     SERVER_INFO: "serverInfo",
-    LOCALE: "locale",
-    PROVIDERS: "providers",
-    PROVIDER: "provider"
+    LOCALE: "locale"
   },
   actions: {
     INIT: "init",
@@ -88,6 +87,7 @@ export interface RootState {
   };
   login: {
     username: string;
+    providers: string[];
     provider: string;
   };
   user: {
@@ -98,8 +98,6 @@ export interface RootState {
   };
   session: {
     status: string;
-    providers: string[];
-    provider: string;
   };
   locale: string;
   languages: Dictionary<LanguageSelector>;
@@ -126,6 +124,7 @@ const state: RootState = {
   },
   login: {
     username: "",
+    providers: [],
     provider: ""
   },
   user: {
@@ -135,9 +134,7 @@ const state: RootState = {
     userName: ""
   },
   session: {
-    status: "",
-    providers: [],
-    provider: ""
+    status: ""
   },
   locale: "en",
   languages: {
@@ -192,9 +189,6 @@ export const store = createStore({
     loginUsername(state, name: string){
       state.login.username = name;
     },
-    loginProvider(state, prov: string){
-      state.login.provider = prov;
-    },
     usergn(state, name: string) {
       state.user.gn = name;
     },
@@ -225,10 +219,10 @@ export const store = createStore({
       state.session.status = "Not authorized";
     },
     providers(state, value) {
-      state.session.providers = value;
+      state.login.providers = value;
     },
     provider(state, value: string) {
-      state.session.provider = value;
+      state.login.provider = value;
     }
   },
   actions: {
@@ -294,7 +288,7 @@ export const store = createStore({
       const request: Request = {
         url: "/api/account/providers",
         successCallback: (data: string[]) => {
-          context.commit(rootPaths.mutations.PROVIDERS, data);
+          context.commit(rootPaths.mutations.LOGIN.PROVIDERS, data);
           context.commit(rootPaths.mutations.API_STATE, api.states.READY);
           Notify.Info("Providers updated").Clear();
         },
