@@ -20,7 +20,6 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 		id="graphNotification"
 		:class="{ disabled: isHidden }"
 		:title="tooltipmessage"
-		v-on:click="onNotificationClicked()"
 	>
 		<div style="position: relative">
 			<svg viewBox="-32 -32 64 64" width="64" height="64" :class="{ spinner: processing }">
@@ -30,8 +29,12 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 				</g>
 			</svg>
 			<div id="notificationIcon">
-				<span v-html="icon" font-size class="icon noselect"></span>
+				<span v-html="icon" class="icon noselect"></span>
 			</div>
+		</div>
+				
+		<div id="notificationIconClose" v-on:click="onNotificationClicked()">
+			<span class="fa-solid fa-circle-xmark clickable"></span>
 		</div>
 	</div>
 </template>
@@ -39,6 +42,16 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 
 
 <style scoped>
+#notificationIconClose { 
+	visibility: hidden;
+	color:slategrey;
+	font-weight: bold;
+	position: absolute; 
+	top: 3px; 
+	right: 3px;
+}
+#graphNotification:hover > #notificationIconClose { visibility: visible; }
+
 .disabled {
 	display: none;
 }
