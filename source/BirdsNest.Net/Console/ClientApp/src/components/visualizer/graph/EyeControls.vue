@@ -113,11 +113,27 @@ import { computed } from "vue";
 
 
 	const graphNodeLabelStates = computed<Dictionary<boolean>>((): Dictionary<boolean> => {
-		return graphData.graphNodeLabelStates;
+		//https://stackoverflow.com/a/31102605
+		const ordered = Object.keys(graphData.graphNodeLabelStates).sort().reduce(
+			(obj, key) => { 
+				obj[key] = graphData.graphNodeLabelStates[key]; 
+				return obj;
+			}, 
+			{}
+		);
+		return ordered;
 	});
 
 	const graphEdgeLabelStates = computed<Dictionary<boolean>>((): Dictionary<boolean> => {
-		return graphData.graphEdgeLabelStates;
+		//https://stackoverflow.com/a/31102605
+		const ordered = Object.keys(graphData.graphEdgeLabelStates).sort().reduce(
+			(obj, key) => { 
+				obj[key] = graphData.graphEdgeLabelStates[key]; 
+				return obj;
+			}, 
+			{}
+		);
+		return ordered;
 	});
 
 	function onNodeShowAllClicked(): void {
