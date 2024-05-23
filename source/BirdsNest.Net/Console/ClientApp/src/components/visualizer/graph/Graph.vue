@@ -553,14 +553,16 @@ import { Notify } from "@/assets/ts/Notifications";
 			url: "/api/graph/edges",
 			data: postData,
 			postJson: true,
-			successCallback: (data: ResultSet) => {
-				graphData.addResultSet(data).commit();
+			successCallback: (edges: ResultSet) => {
+				graphData.addResultSet(edges).commit();
 				nodesLayer.selectAll(".nodes").call(
 					d3.drag()
 					.on("start", onNodeDragStart)
 					.on("drag", onNodeDragged)
 					.on("end", onNodeDragFinished)
 				);
+				const staleEdgeIds = graphData.getStaleEdgeIds(edges);
+				graphData.removeIds([], staleEdgeIds).commit();
 				api.post(loopsrequest);
 			},
 			errorCallback: () => {
@@ -1096,33 +1098,9 @@ import { Notify } from "@/assets/ts/Notifications";
 		}
 
 		if (confirm(message)) {
-			getDirectEdgesForNodeList(ids, (data: ResultSet) => {
-				const edgeids: string[] = [];
-				data.edges.forEach(edge => {
-					edgeids.push(edge.dbId);
-				});
-
-				graphData.removeIds(ids, edgeids).commit();
-
-				updateNodeSizes();
-				simController.RefreshData();
-			});
+			graphData.removeIds(ids, []).commit();
+			refreshNodeConnections();
 		}
-	}
-
-	function getDirectEdgesForNodeList(nodelist, callback) {
-		const url = "/api/graph/edges/direct";
-		const newrequest: Request = {
-			url: url,
-			successCallback: callback,
-			data: JSON.stringify(nodelist),
-			postJson: true,
-			errorCallback: () => {
-				// eslint-disable-next-line
-				console.error("Error getting direct loops");
-			},
-		};
-		api.post(newrequest);
 	}
 	//#endregion
 </script>

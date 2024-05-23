@@ -202,6 +202,28 @@ class GraphData {
         return this;
     }
 
+    //if db changes, we may end up with edges are 'stale' i.e. on the graph but don't exist in the
+	//db so they don't delete when a node is deleted, or just need removing
+    getStaleEdgeIds(referenceResult: ResultSet): string[] {
+        const refEdgesDic: Dictionary<boolean> = {};
+        const staleEdges: string[] = [];
+
+        //put all the items in a dictionary for faster lookup. otherwise we'll be doing an
+        //iteration for each lookup
+        referenceResult.edges.forEach((edge: ApiEdge) => {
+            refEdgesDic[edge.dbId] = true;
+        });
+
+        this.graphEdges.Array.forEach((edge: SimLink<SimNode>) => {
+            if (refEdgesDic[edge.dbId]===undefined) {
+                //console.log("stale edge id: " + edge.dbId);
+                staleEdges.push(edge.dbId);
+            }
+        });
+
+        return staleEdges;
+    }
+
     commit(): void {
         this.graphNodes.Commit();
         this.treeNodes.Commit();
