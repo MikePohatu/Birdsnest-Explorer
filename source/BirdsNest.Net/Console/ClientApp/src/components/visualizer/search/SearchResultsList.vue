@@ -75,7 +75,6 @@ import { computed, ref } from "vue";
 import { useStore } from "@/store";
 import { useI18n } from "vue-i18n";
 import { initFoundationMounted } from "@/mixins/foundation";
-import $ from "jquery";
 import { Dictionary } from "@/assets/ts/webcrap/misccrap";
 
 const templateRoot = ref(null);
@@ -90,24 +89,24 @@ const labelledNodes = computed<Dictionary<SearchNode[]>>(() => {
 	const labelledResults: Dictionary<SearchNode[]> = {};
 
 	if (results !== null) {
-		// console.log({
-		// 	results: results.nodes
-		// });
-		labelledResults[t('visualizer.search.ALL')] = results.nodes;
+		labelledResults[t('visualizer.search.ALL')] = [];
 
 		if (results.nodes) {
 			results.nodes.forEach(node => {
+                binaryInsertion(labelledResults[t('visualizer.search.ALL')],node);
+                
 				node.labels.forEach(label => {
 					if (labelledResults[label] === undefined) {
 						labelledResults[label] = [];
 					}
-					labelledResults[label].push(node);
+                    binaryInsertion(labelledResults[label],node);
+
+					//labelledResults[label].push(node);
 				});
 			});
 		}
 	}
 	else {
-		
 		labelledResults[t('visualizer.search.ALL')] = [];
 	}
 	return labelledResults;
@@ -121,4 +120,37 @@ function onAddClicked(node: SearchNode): void {
 function onAddLabelClicked(nodelist: SearchNode[]): void {
 	store.commit(VisualizerStorePaths.mutations.Add.PENDING_NODES, nodelist);
 };
+
+//https://stackoverflow.com/a/60702475
+function binaryInsertion(arr: SearchNode[], element: SearchNode) {
+    if (arr.length === 0) { 
+        arr.push(element); 
+    }
+    else {
+        binaryHelper(arr, element, 0, arr.length - 1);
+    }
+}
+    
+function binaryHelper(arr: SearchNode[], element: SearchNode, lBound, uBound) {
+    if (uBound - lBound <= 1) {
+        // binary search ends, we need to insert the element around here       
+        if (element.name.localeCompare(arr[lBound].name) === -1) {
+            arr.splice(lBound, 0, element);
+        }
+        else if (element.name.localeCompare(arr[uBound].name) === 1) {
+            arr.splice(uBound+1, 0, element);
+        }
+        else {
+            arr.splice(uBound, 0, element);
+        }
+    } 
+    else {       
+        // we look for the middle point
+        const midPoint = Math.floor((uBound - lBound) / 2) + lBound;
+        // depending on the value in the middle, we repeat the operation only on one slice of the array, halving it each time
+        element.name.localeCompare(arr[midPoint].name) === -1
+            ? binaryHelper(arr, element, lBound, midPoint)
+            : binaryHelper(arr, element, midPoint, uBound);
+    }
+}
 </script>
