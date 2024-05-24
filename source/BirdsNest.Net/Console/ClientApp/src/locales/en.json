@@ -48,6 +48,8 @@
       "close_search": "Close graph search"
     },
     "search": {
+      "ALL": "ALL",
+      "Add_all": "Add all",
       "count_warning": "You are adding a large number of nodes to the graph. Animation will be disabled to improve performance.\n\nAre you sure you want to proceed?",
       "adding_results": "Adding results to view",
       "case_sensitive_descript": "*Case sensitive search is faster",

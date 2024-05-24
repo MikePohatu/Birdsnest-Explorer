@@ -48,6 +48,8 @@
       "close_search": "Katia te rapu kauwhata"
     },
     "search": {
+      "ALL": "KATOA",
+      "Add_all": "Tāpiri katoa",
       "count_warning": "Kei te taapirihia e koe he maha o nga kōpuku ki te kauwhata. Ka monokia te hākoritanga hei whakapai ake i te mahinga.\n\nKei te tino hiahia koe ki te anga whakamua?",
       "adding_results": "Te taapiri i nga hua hei tiro",
       "case_sensitive_descript": "*He tere te rapu tairongo take",
