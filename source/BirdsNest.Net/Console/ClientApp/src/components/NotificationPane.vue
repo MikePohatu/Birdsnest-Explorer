@@ -66,6 +66,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
     max-height: -o-calc(100% - 60px); /* opera */
     max-height: -webkit-calc(100% - 60px); /* google, safari */
     max-height: -moz-calc(100% - 60px); /* firefox */
+	z-index: 5001 !important;
 }
 
 #eventspane.hidepane {

@@ -127,12 +127,9 @@ const providers = computed((): string[] => {
 
 onMounted((): void => {
 	refresh();
-	store.commit(rootPaths.mutations.SESSION_STATUS, "");
 });
 
 function refresh():void {
-	username.value = store.state.user.userName;
-	provider.value = store.state.login.provider;
 	if ((webcrap.misc.isNullOrWhitespace(provider.value)===true) && providers.value && providers.value.length > 0) {
 		provider.value = providers.value[0];
 	}
@@ -142,6 +139,7 @@ function refresh():void {
 	} else {
 		(passwordEl.value as HTMLElement).focus();
 	}
+	store.commit(rootPaths.mutations.SESSION_STATUS, "");
 }
 
 function login(): void {
