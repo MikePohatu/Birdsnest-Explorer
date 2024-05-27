@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.28803.352
+# Visual Studio Version 17
+VisualStudioVersion = 17.9.34723.18
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CMScanner", "CMScanner\CMScanner.csproj", "{4D563EC3-E7D4-4FEF-AF3C-327B9584AF6B}"
 EndProject
@@ -18,8 +18,6 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConsoleWriterTests", "ConsoleWriterTests\ConsoleWriterTests.csproj", "{F88880A9-D046-456B-B178-DC8DD5C02D84}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WUScanner", "WUScanner\WUScanner.csproj", "{208E6136-5645-47DF-B9E7-7BE37A077A45}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AzureADScanner", "AzureADScanner\AzureADScanner.csproj", "{8AD642D0-5532-4D0E-B81C-C6CF7FD0A437}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Console", "Console\Console.csproj", "{4496863E-F777-4061-84E8-04D73EA23E28}"
 EndProject
@@ -60,9 +58,6 @@ Global
 		{208E6136-5645-47DF-B9E7-7BE37A077A45}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{208E6136-5645-47DF-B9E7-7BE37A077A45}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{208E6136-5645-47DF-B9E7-7BE37A077A45}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{8AD642D0-5532-4D0E-B81C-C6CF7FD0A437}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{8AD642D0-5532-4D0E-B81C-C6CF7FD0A437}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{8AD642D0-5532-4D0E-B81C-C6CF7FD0A437}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4496863E-F777-4061-84E8-04D73EA23E28}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{4496863E-F777-4061-84E8-04D73EA23E28}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4496863E-F777-4061-84E8-04D73EA23E28}.Release|Any CPU.ActiveCfg = Release|Any CPU
