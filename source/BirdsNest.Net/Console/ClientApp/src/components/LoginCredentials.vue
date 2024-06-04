@@ -26,6 +26,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 						<input
 							required
 							ref="usernameEl"
+							id = "username"
 							v-model="username"
 							tabindex="1"
 							type="text"
