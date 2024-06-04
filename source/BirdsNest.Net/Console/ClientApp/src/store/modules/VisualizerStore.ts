@@ -89,7 +89,8 @@ export const VisualizerStorePaths = {
   actions: {
     INIT: "visualizer/init",
     Request: {
-      NODE_ID: "visualizer/requestNodeId",
+      NODE_BY_ID: "visualizer/requestNodeById",
+      NODES_BY_ID: "visualizer/requestNodesById",
       RELATED_NODES: "visualizer/requestRelatedNodes"
     }
   }
@@ -171,7 +172,7 @@ export const VisualizerStore: Module<VisualizerState, RootState> = {
       };
       api.get(subtyperequest);
     },
-    requestNodeId(context, id: number) {
+    requestNodeById(context, id: number) {
       Notify.Processing("Retrieving node information");
       const request: Request = {
         url: "api/graph/node/" + id,
@@ -187,9 +188,34 @@ export const VisualizerStore: Module<VisualizerState, RootState> = {
         errorCallback: (jqXHR?: JQueryXHR, status?: string, error?: string) => {
           // eslint-disable-next-line
           console.error(error);
+          Notify.Error("Error retrieving node " + id);
         }
       };
       api.get(request);
+    },
+    requestNodesById(context, ids: number[]) {
+      Notify.Processing("Retrieving nodes information");
+      const request: Request = {
+        url: "api/graph/nodes",
+        data: JSON.stringify(ids),
+        postJson: true,
+        successCallback: (data?: ResultSet) => {
+          if (data !== null) {
+            Notify.Processing("Adding nodes to view");
+            context.commit("addPendingResults", data);
+          } 
+          else 
+          {
+						Notify.Clear();
+          }
+        },
+        errorCallback: (jqXHR?: JQueryXHR, status?: string, error?: string) => {
+          // eslint-disable-next-line
+          console.error(error);
+          Notify.Error("Error retrieving nodes");
+        }
+      };
+      api.post(request);
     },
     requestRelatedNodes(context, id: number) {
       Notify.Processing("Retrieving related nodes");
@@ -199,7 +225,8 @@ export const VisualizerStore: Module<VisualizerState, RootState> = {
           if (data !== null && data.length > 0) {
             Notify.Processing("Adding related nodes to view");
             context.commit("addPendingNodes", data);
-          } else 
+          } 
+          else 
           {
 						Notify.Clear();
           }
@@ -207,6 +234,7 @@ export const VisualizerStore: Module<VisualizerState, RootState> = {
         errorCallback: (jqXHR?: JQueryXHR, status?: string, error?: string) => {
           // eslint-disable-next-line
           console.error(error);
+          Notify.Error("Error retrieving related nodes");
         }
       };
       api.get(request);

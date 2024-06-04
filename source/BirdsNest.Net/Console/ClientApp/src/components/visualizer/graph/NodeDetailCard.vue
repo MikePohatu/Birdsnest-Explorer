@@ -98,6 +98,10 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 									<a href="#">{{ label }} ({{ labelledNodeList.labelledNodes[label].length }})</a>
 
 									<ul class="menu vertical nested">
+										<!-- link for add all -->
+										<li class="menu nested addall">
+											<a v-on:click="addNodeList(labelledNodeList, label)" class="plus">{{ $t('phrase_Add_all') }}</a>
+										</li>
 										<li
 											v-for="labelledNode in getNodeSublistByLabel(labelledNodeList, label)"
 											:key="labelledNode.dbId"
@@ -127,6 +131,10 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 									<a href="#">{{ label }} ({{ labelledNodeList.labelledNodes[label].length }})</a>
 
 									<ul class="menu vertical nested">
+										<!-- link for add all -->
+										<li class="menu nested addall">
+											<a v-on:click="addNodeList(labelledNodeList, label)" class="plus">{{ $t('phrase_Add_all') }}</a>
+										</li>
 										<li
 											v-for="labelledNode in getNodeSublistByLabel(labelledNodeList, label)"
 											:key="labelledNode.dbId"
@@ -216,6 +224,14 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 .property {
 	margin-left: 5px;
 	margin-right: 5px;
+}
+
+.addall.nested {
+	margin-left: 0;
+}
+
+.addall.nested a {
+	padding-left: 3px;
 }
 </style>
 
@@ -333,7 +349,13 @@ function labels(labelledNodeList: VForLabelledNodeList): string[] {
 }
 
 function addNode(node: ApiNodeSimple): void {
-	store.dispatch(VisualizerStorePaths.actions.Request.NODE_ID, node.dbId);
+	store.dispatch(VisualizerStorePaths.actions.Request.NODE_BY_ID, node.dbId);
+}
+
+function addNodeList(nodeList: VForLabelledNodeList, label: string): void {
+	const nodes = nodeList.labelledNodes[label];
+	const idlist = nodes.map(n => n.dbId);
+	store.dispatch(VisualizerStorePaths.actions.Request.NODES_BY_ID, idlist);
 }
 
 function onEyeClicked(): void {

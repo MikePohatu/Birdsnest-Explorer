@@ -48,8 +48,6 @@
       "close_search": "Close graph search"
     },
     "search": {
-      "ALL": "ALL",
-      "Add_all": "Add all",
       "count_warning": "You are adding a large number of nodes to the graph. Animation will be disabled to improve performance.\n\nAre you sure you want to proceed?",
       "adding_results": "Adding results to view",
       "case_sensitive_descript": "*Case sensitive search is faster",
@@ -78,6 +76,7 @@
     "click_to_close": "Click icon to close notification"
   },
   "phrase_Active_Plugins": "Active Plugins",
+  "phrase_Add_all": "Add all",
   "phrase_Add_to_view": "Add to view",
   "phrase_Advanced_mode": "Advanced mode",
   "phrase_And_Or": "And/Or",
@@ -138,6 +137,7 @@
   "word_About": "About",
   "word_Actions": "Actions",
   "word_Admin": "Admin",
+  "word_ALL": "ALL",
   "word_AND": "AND",
   "word_Attribution": "Attribution",
   "word_Branch": "Branch",

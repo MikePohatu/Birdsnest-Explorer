@@ -96,6 +96,13 @@ namespace Console.Controllers
             return await this._service.GetNodesAsync(ids);
         }
 
+        // POST api/graph/nodes
+        [HttpPost("nodes")]
+        public async Task<ResultSet> GetNodesPost([FromBody] List<long> ids)
+        {
+            return await this._service.GetNodesAsync(ids);
+        }
+
         // GET: api/graph/node/values
         [HttpGet("node/values")]
         public async Task<IEnumerable<string>> GetNodeValues([FromQuery] string type, [FromQuery] string property, [FromQuery] string searchterm)

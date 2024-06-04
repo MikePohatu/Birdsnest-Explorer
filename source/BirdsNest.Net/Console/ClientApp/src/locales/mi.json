@@ -48,8 +48,6 @@
       "close_search": "Katia te rapu kauwhata"
     },
     "search": {
-      "ALL": "KATOA",
-      "Add_all": "Tāpiri katoa",
       "count_warning": "Kei te taapirihia e koe he maha o nga kōpuku ki te kauwhata. Ka monokia te hākoritanga hei whakapai ake i te mahinga.\n\nKei te tino hiahia koe ki te anga whakamua?",
       "adding_results": "Te taapiri i nga hua hei tiro",
       "case_sensitive_descript": "*He tere te rapu tairongo take",
@@ -78,6 +76,7 @@
     "click_to_close": "Paatohia te ata hei kati te whakamohio"
   },
   "phrase_Active_Plugins": "Mono Hohe",
+  "phrase_Add_all": "Tāpiri katoa",
   "phrase_Add_to_view": "Taapirihia ki te tiro",
   "phrase_Advanced_mode": "Aratau Arā Atu Anō",
   "phrase_And_Or": "Ana/Ranei",
@@ -139,6 +138,7 @@
   "word_Actions": "Nga Mahi",
   "word_Admin": "Kaiwhakahaere",
   "word_AND": "ANA",
+  "word_ALL": "KATOA",
   "word_Attribution": "Huanga",
   "word_Branch": "Peka",
   "word_Clear": "Whakawātea",
