@@ -25,6 +25,7 @@ import { createStore, useStore as baseUseStore, Store } from 'vuex';
 import i18n from "@/i18n";
 import { useCookies } from "vue3-cookies";
 import { NotificationMessage, Notify } from "@/assets/ts/Notifications";
+import webcrap from "@/assets/ts/webcrap/webcrap";
 
 const { cookies } = useCookies();
 
@@ -290,6 +291,11 @@ export const store = createStore({
         successCallback: (data: string[]) => {
           context.commit(rootPaths.mutations.LOGIN.PROVIDERS, data);
           context.commit(rootPaths.mutations.API_STATE, api.states.READY);
+
+          //update default provider if needed
+          if (webcrap.misc.isNullOrWhitespace(context.state.login.provider) === true && data && data.length > 0) {
+            context.commit(rootPaths.mutations.LOGIN.PROVIDER, data[0]);
+          }
           Notify.Info("Providers updated").Clear();
         },
         errorCallback: (jqXHR, status, error: string) => {

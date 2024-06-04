@@ -131,10 +131,6 @@ onMounted((): void => {
 });
 
 function refresh():void {
-	if ((webcrap.misc.isNullOrWhitespace(provider.value)===true) && providers.value && providers.value.length > 0) {
-		provider.value = providers.value[0];
-	}
-	
 	if ((webcrap.misc.isNullOrWhitespace(username.value)===true)) {
 		(usernameEl.value as HTMLElement).focus();
 	} else {
