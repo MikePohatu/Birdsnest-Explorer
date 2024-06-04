@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk.Web">
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
@@ -12,7 +12,7 @@
     <Product>Birdsnest Explorer</Product>
     <Copyright>Copyright ©20Road Limited 2024</Copyright>
     <AspNetCoreHostingModel>OutOfProcess</AspNetCoreHostingModel>
-    <Version>1.2024.0510.0</Version>
+    <Version>1.2024.0604.0</Version>
     <UserSecretsId>225d9517-2acc-487a-a7e0-e21703d8677b</UserSecretsId>
     <PackageProjectUrl>https://www.20road.com/birdsnest-explorer/</PackageProjectUrl>
   </PropertyGroup>
