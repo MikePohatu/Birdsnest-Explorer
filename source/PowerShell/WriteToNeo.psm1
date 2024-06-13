@@ -1,19 +1,34 @@
+class NeoConnection {
+    static [string]$NeoURL
+    static [string]$NeoConfigPath
+    static $NeoConfig
+    static $Neo4jCreds
+}
+
+Function Set-NeoConnection {
+    Param (
+        [Parameter(Mandatory=$true)][string]$NeoURL,
+        [Parameter(Mandatory=$true)][string]$NeoConfigPath
+    )
+
+    [NeoConnection]::NeoConfigPath = $NeoConfigPath
+    [NeoConnection]::NeoURL = $NeoURL
+    [NeoConnection]::NeoConfig = Get-Content -Raw -Path $NeoConfigPath | ConvertFrom-Json
+        
+    Write-Host ([NeoConnection]::NeoConfig)
+    $secPasswd = ConvertTo-SecureString $([NeoConnection]::NeoConfig.dbPassword) -AsPlainText -Force
+    [NeoConnection]::Neo4jCreds = New-Object System.Management.Automation.PSCredential ($([NeoConnection]::NeoConfig.dbUsername), $secPasswd) 
+}
+
 
 Function WriteToNeo {
     Param (
-        [Parameter(Mandatory=$true)][string]$NeoConfigPath,
-        [Parameter(Mandatory=$true)][string]$serverURL,
         [Parameter(Mandatory=$true)][string]$Query,
         $Parameters,
         $Write = $true 
     )
 
     try {
-        $neoconfig = Get-Content -Raw -Path $NeoConfigPath | ConvertFrom-Json
-        
-
-        $secPasswd = ConvertTo-SecureString $neoconfig.dbPassword -AsPlainText -Force
-        $neo4jCreds = New-Object System.Management.Automation.PSCredential ($neoconfig.dbUsername, $secPasswd) 
 
         # Cypher query using parameters to pass in properties
         $statement = new-object 'system.collections.generic.dictionary[[string],[object]]'
@@ -30,8 +45,19 @@ Function WriteToNeo {
         
         # Call Neo4J HTTP EndPoint, Pass in creds & POST JSON Payload
         if ($Write) {
+            if (-not ([NeoConnection]::NeoConfig)) {
+                throw "Neo4j connection config not found, run Set-NeoConnection first"
+            }
+            $params = @{
+                DisableKeepAlive =$true
+                AllowUnencryptedAuthentication = $true
+                Uri = ([NeoConnection]::NeoURL)
+                Method = 'POST' 
+                Body = $bodyjson 
+                ContentType = "application/json"
+            }
             # Call Neo4J HTTP EndPoint, Pass in creds & POST JSON Payload
-            $response = Invoke-WebRequest -DisableKeepAlive -AllowUnencryptedAuthentication -Uri $serverURL -Method POST -Body $bodyjson -credential $neo4jCreds -ContentType "application/json"
+            $response = Invoke-WebRequest @params -credential ([NeoConnection]::Neo4jCreds)
         }
         else {
             $response = @{
@@ -59,20 +85,7 @@ function Get-ShortGuid {
     $ShortGuid
 } 
 
-class NeoConnection {
-    static [string]$neoURL
-    static [string]$neoconf
-}
 
-Function Set-NeoConnection {
-    Param (
-        [Parameter(Mandatory=$true)][string]$neoURL,
-        [Parameter(Mandatory=$true)][string]$neoconf
-    )
-
-    [NeoConnection]::neoconf = $neoconf
-    [NeoConnection]::neoUrl = $neoURL
-}
 
 Function Write-NeoOperations {
     Param (
@@ -82,11 +95,8 @@ Function Write-NeoOperations {
     )
 
     Write-Host $message
-    
-    Write-Verbose "neoconf: $([NeoConnection]::neoconf)"
-    Write-Verbose "neoUrl: $([NeoConnection]::neoUrl)"
 
-    $response = WriteToNeo -NeoConfigPath "$([NeoConnection]::neoconf)" -serverURL "$([NeoConnection]::neoUrl)" -Query $query -Parameters $params
+    $response = WriteToNeo -Query $query -Parameters $params
     $content = $response.Content | ConvertFrom-Json
     if ($content.errors) {
         Write-Warning "Query reported an error:"

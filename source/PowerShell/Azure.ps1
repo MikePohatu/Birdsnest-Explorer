@@ -2,7 +2,7 @@
 
 Import-Module "$($PSScriptRoot)\AzureFunctions.psm1" -Force
 Import-Module "$($PSScriptRoot)\WriteToNeo.psm1" -Force
-Set-NeoConnection -neoURL "http://localhost:7474/db/data/transaction/commit" -neoconf "C:\birdsnest\Scanners\config\neoconfig.json"
+Set-NeoConnection -NeoURL "http://localhost:7474/db/data/transaction/commit" -NeoConfigPath "C:\birdsnest\Scanners\current\config\neoconfig.json"
 
 $scanID = Get-ShortGuid 
 
