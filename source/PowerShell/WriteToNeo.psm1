@@ -50,24 +50,22 @@ Function WriteToNeo {
             }
             $params = @{
                 DisableKeepAlive =$true
-                AllowUnencryptedAuthentication = $true
                 Uri = ([NeoConnection]::NeoURL)
                 Method = 'POST' 
                 Body = $bodyjson 
                 ContentType = "application/json"
+            }
+
+            if ($PSVersionTable.PSEdition -eq "Core") {
+                $params['AllowUnencryptedAuthentication'] = $true
             }
             # Call Neo4J HTTP EndPoint, Pass in creds & POST JSON Payload
             $response = Invoke-WebRequest @params -credential ([NeoConnection]::Neo4jCreds)
         }
         else {
             $response = @{
-                Content = @'
-{
-    "data": "Write disabled"
-}
-'@
-        }
-
+                Content = '{"data": "Write disabled"}'
+            }
         }
     } 
     finally {
