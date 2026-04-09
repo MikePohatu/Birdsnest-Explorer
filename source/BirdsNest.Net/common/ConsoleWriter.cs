@@ -24,11 +24,23 @@ namespace common
     {
         private static readonly object locker = new object();
         private static int _loggingline = 1;
+
+        /// <summary>
+        /// The progress messsages for each thread
+        /// </summary>
         private static string[] _progressmessages = new string[1];
+
+        /// <summary>
+        /// Record of the line number for the progress messages of each thread
+        /// </summary>
         private static int[] _progresslinenumbers = new int[1] { 2 };
 
         public static bool ShowProgress { get; set; } = true;
 
+        /// <summary>
+        /// Set the number of lines required for the progress messages
+        /// </summary>
+        /// <param name="count"></param>
         public static void SetProgressLineCount(int count)
         {
             _progressmessages = new string[count];
@@ -104,12 +116,13 @@ namespace common
                     counter = i;
                     if (i < strings.Length)
                     {
-                        Console.SetCursorPosition(tabstops[i], origRow);
-                        Console.Write(strings[i]);
-
+                        Console.SetCursorPosition(tabstops[i], origRow);    //move to the cursor position for the tab stop
+                        Console.Write(strings[i]);                         //write the string
                     }
                     else { break; }
                 }
+
+                //write any remaining strings
                 counter++;
                 for (int i = counter++; i < strings.Length; i++)
                 {
@@ -137,26 +150,27 @@ namespace common
 
         public static void WriteProgress(string message, int progresslinenumber)
         {
-            if (ShowProgress == true)
+            if (ShowProgress == false) { return; }
+
+            lock (locker)
             {
-                lock (locker)
-                {
-                    if (progresslinenumber < 1) { throw new IndexOutOfRangeException("Progress line less than 1"); }
-                    int index = progresslinenumber - 1;
-                    _progressmessages[index] = message;
-                    int linenum = _progresslinenumbers[index];
-                    //clear the line before write
-                    Console.SetCursorPosition(0, linenum);
-                    Console.Write(new string(' ', Console.BufferWidth - 1));
+                if (progresslinenumber < 1) { throw new IndexOutOfRangeException("Progress line less than 1"); }
+                int index = progresslinenumber - 1;
+                _progressmessages[index] = message;
+                int linenum = _progresslinenumbers[index];
+                //clear the line before write
+                Console.SetCursorPosition(0, linenum);
+                Console.Write(new string(' ', Console.BufferWidth - 1));
 
-                    FitBufferWidthToString(message);
-                    Console.SetCursorPosition(0, linenum);
+                FitBufferWidthToString(message);
 
-                    Console.ForegroundColor = ConsoleColor.Green;
-                    Console.Write("Progress: ");
-                    Console.ResetColor();
-                    Console.WriteLine(message);
-                }
+                //set cursor to 
+                Console.SetCursorPosition(0, linenum);
+                Console.ForegroundColor = ConsoleColor.Green;
+
+                Console.Write("Progress: ");
+                Console.ResetColor();
+                Console.Write(message);
             }
         }
 
@@ -172,8 +186,8 @@ namespace common
                 }
                 Console.SetCursorPosition(0, _loggingline);
             }
-
         }
+
         public static void InitLine(int linenumber)
         {
             lock (locker)
@@ -204,7 +218,6 @@ namespace common
 
         private static void ShuntProgressMessages()
         {
-
             int lastlinenum = _progresslinenumbers[_progresslinenumbers.Length - 1];
             ClearProgress();
 
@@ -229,9 +242,9 @@ namespace common
 
         private static void FitBufferWidthToString(string message)
         {
-            if (message == null) { return; }
-            //add 10 to the message for the prepended category, /n etc
-            if (Console.BufferWidth < message.Length + 10) { Console.BufferWidth = message.Length + 50; }
+            if (string.IsNullOrEmpty(message)) { return; }
+            //add 12 to the message for the prepended category, /n etc
+            if (Console.BufferWidth < message.Length + 12) { Console.BufferWidth = message.Length + 12; }
         }
     }
 }
