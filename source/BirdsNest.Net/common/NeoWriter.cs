@@ -33,7 +33,7 @@ namespace common
         public static void WriteHeaders()
         {
             string[] headervals = { "Description", string.Empty, "(n)+", "[r]+", "(n)-", "[r]-", "Properties set" };
-            ConsoleWriter.WriteLine(Tabs, headervals);
+            ConsoleWriter.WriteTabbedLine(Tabs, headervals);
         }
 
 
@@ -150,9 +150,6 @@ namespace common
             }
 
 
-
-            Console.WriteLine();
-
             if (showstats)
             {
                 int nodescreated = 0;
@@ -181,7 +178,7 @@ namespace common
                 };
 
 
-                ConsoleWriter.WriteLine(Tabs, sumvals);
+                ConsoleWriter.WriteTabbedLine(Tabs, sumvals);
             }
 
             return summaries;

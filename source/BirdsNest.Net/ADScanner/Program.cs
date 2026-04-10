@@ -41,6 +41,9 @@ namespace ADScanner
             IDriver driver = null;
             PrincipalContext context = null;
 
+            ConsoleWriter.ShowProgress = false;
+            ConsoleWriter.Init();
+
             totaltimer.Start();
             try
             {
@@ -66,8 +69,8 @@ namespace ADScanner
             }
             catch
             {
-                Console.WriteLine("There is a problem with arguments: " + string.Join(" ", args));
-                Console.WriteLine("");
+                ConsoleWriter.WriteLine("There is a problem with arguments: " + string.Join(" ", args));
+                ConsoleWriter.WriteLine("");
                 ShowUsage();
                 ExitError(1);
             }
@@ -80,9 +83,9 @@ namespace ADScanner
                 {
                     if (string.IsNullOrEmpty(config.ID))
                     {
-                        Console.WriteLine("Your configuration does not have a scanner ID. A random ID will be generated for you below:");
-                        Console.WriteLine(ShortGuid.NewGuid().ToString());
-                        Console.WriteLine();
+                        ConsoleWriter.WriteLine("Your configuration does not have a scanner ID. A random ID will be generated for you below:");
+                        ConsoleWriter.WriteLine(ShortGuid.NewGuid().ToString());
+                        ConsoleWriter.WriteLine();
                         ExitError(2);
                     }
                     NeoWriter.ScannerID = config.ID;
@@ -110,7 +113,7 @@ namespace ADScanner
             }
 
 
-            Console.WriteLine($"Starting scan\nScanner ID: {NeoWriter.ScannerID}\nScan ID: {NeoWriter.ScanID}\n");
+            ConsoleWriter.WriteLine($"Starting scan\nScanner ID: {NeoWriter.ScannerID}\nScan ID: {NeoWriter.ScanID}\n");
 
 
             NeoWriter.WriteHeaders();
@@ -139,40 +142,40 @@ namespace ADScanner
             nopropsdata.ScannerID = NeoWriter.ScannerID;
 
             //create primary group mappings
-            Console.Write("Setting primary groups");
+            ConsoleWriter.Write("Setting primary groups");
             NeoWriter.RunQueryAsync(StandAloneQueries.SetPrimaryGroupRelationships, nopropsdata, driver, true, true).GetAwaiter().GetResult();
 
-            Console.WriteLine();
-            Console.WriteLine("*Cleaning up");
+            ConsoleWriter.WriteLine();
+            ConsoleWriter.WriteLine("*Cleaning up");
 
             //*cleanup deleted items
             //remove group memberships that have been deleted
-            Console.Write("Deleted group memberships");
+            ConsoleWriter.Write("Deleted group memberships");
             NeoWriter.RunQuery(StandAloneQueries.DeletedGroupMemberships, nopropsdata, driver, true, true);
 
-            Console.Write("Deleted foreign group memberships");
+            ConsoleWriter.Write("Deleted foreign group memberships");
             NeoWriter.RunQuery(StandAloneQueries.DeletedForeignGroupMemberShips, nopropsdata, driver, true, true);
 
-            Console.Write("Deleted manager relationships");
+            ConsoleWriter.Write("Deleted manager relationships");
             NeoWriter.RunQuery(StandAloneQueries.DeletedManagers, nopropsdata, driver, true, true);
 
             //mark deleted objects
-            Console.Write("Mark deleted users");
+            ConsoleWriter.Write("Mark deleted users");
             NeoWriter.RunQuery(StandAloneQueries.GetMarkDeletedObjectsQuery(Types.User), nopropsdata, driver, true, true);
 
-            Console.Write("Mark deleted computers");
+            ConsoleWriter.Write("Mark deleted computers");
             NeoWriter.RunQuery(StandAloneQueries.GetMarkDeletedObjectsQuery(Types.Computer), nopropsdata, driver, true, true);
 
-            Console.Write("Mark deleted groups");
+            ConsoleWriter.Write("Mark deleted groups");
             NeoWriter.RunQuery(StandAloneQueries.GetMarkDeletedObjectsQuery(Types.Group), nopropsdata, driver, true, true);
 
-            Console.WriteLine("*Finished cleaning up");
-            Console.WriteLine();
+            ConsoleWriter.WriteLine("*Finished cleaning up");
+            ConsoleWriter.WriteLine();
 
-            Console.Write("Setting group scopes");
+            ConsoleWriter.Write("Setting group scopes");
             NeoWriter.RunQuery(StandAloneQueries.SetGroupScope, nopropsdata, driver, true, true);
 
-            Console.Write("Updating member counts");
+            ConsoleWriter.Write("Updating member counts");
             NeoWriter.RunQuery(StandAloneQueries.UpdateMemberCounts, nopropsdata, driver, true, true);
 
             //cleanup
@@ -181,32 +184,32 @@ namespace ADScanner
 
             totaltimer.Stop();
             double totaltime = totaltimer.ElapsedMilliseconds / 1000;
-            Console.WriteLine();
-            Console.WriteLine("Finished in " + totaltime + "secs");
+            ConsoleWriter.WriteLine();
+            ConsoleWriter.WriteLine("Finished in " + totaltime + "secs");
             if (_batchmode == true)
             {
-                Console.Write("Exiting.");
+                ConsoleWriter.Write("Exiting.");
                 for (int i = 0; i < 3; i++)
                 {
                     System.Threading.Thread.Sleep(500);
-                    Console.Write(".");
+                    ConsoleWriter.Write(".");
                 }
             }
             else
             {
-                Console.WriteLine("Press enter to exit");
+                ConsoleWriter.WriteLine("Press enter to exit");
                 Console.ReadLine();
             }
         }
 
         public static void ExitError(Exception e, string message, int returncode)
         {
-            Console.WriteLine();
-            Console.WriteLine(message);
-            Console.WriteLine(e.Message);
+            ConsoleWriter.WriteLine();
+            ConsoleWriter.WriteLine(message);
+            ConsoleWriter.WriteLine(e.Message);
             if (_batchmode == false)
             {
-                Console.WriteLine("Press enter to exit");
+                ConsoleWriter.WriteLine("Press enter to exit");
                 Console.ReadLine();
             }
             Environment.Exit(returncode);
@@ -214,8 +217,8 @@ namespace ADScanner
 
         public static void ExitError(string message, int returncode)
         {
-            Console.WriteLine();
-            Console.WriteLine(message);
+            ConsoleWriter.WriteLine();
+            ConsoleWriter.WriteLine(message);
             if (_batchmode == false) { Console.ReadLine(); }
             Environment.Exit(returncode);
         }
@@ -228,9 +231,9 @@ namespace ADScanner
 
         private static void ShowUsage()
         {
-            Console.WriteLine();
-            Console.WriteLine("Usage: ADScanner.exe /config:<configfile> /batch");
-            Console.WriteLine("/batch makes scanner run in batch mode and does not wait before exit");
+            ConsoleWriter.WriteLine();
+            ConsoleWriter.WriteLine("Usage: ADScanner.exe /config:<configfile> /batch");
+            ConsoleWriter.WriteLine("/batch makes scanner run in batch mode and does not wait before exit");
         }
     }
 }

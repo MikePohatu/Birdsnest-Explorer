@@ -31,7 +31,8 @@ namespace ConsoleWriterTests
             int i = 1;
             int dotsmult = 1;
             int dotscount = 0;
-            ConsoleWriter.SetProgressLineCount(2);
+            ConsoleWriter.SetProgressLineCount(4);
+            ConsoleWriter.Init();
 
             while (i < 12000)
             {
@@ -41,6 +42,8 @@ namespace ConsoleWriterTests
                 ConsoleWriter.WriteInfo(i.ToString() + ":" + Console.BufferHeight + ":" + dots);
                 ConsoleWriter.WriteProgress(i.ToString() + ":1", 1);
                 ConsoleWriter.WriteProgress(i.ToString() + ":2", 2);
+                ConsoleWriter.WriteProgress(i.ToString() + ":3", 3);
+                ConsoleWriter.WriteProgress(i.ToString() + ":4", 4);
                 if (i % 300 == 0) { dotsmult = dotsmult * -1; }
                 i++;
                 //Console.WriteLine(i);

@@ -18,6 +18,7 @@
 #endregion
 using common;
 using System;
+using System.Diagnostics;
 using System.IO;
 using System.Security.AccessControl;
 using System.Security.Principal;
@@ -42,16 +43,20 @@ namespace FSScanner
 
         public CrawlerThreadWrapper(Crawler parent, int depth)
         {
-            this._parent = parent;
-            this.Depth = depth;
+            this.Init(parent, depth);
         }
 
         public CrawlerThreadWrapper(Crawler parent, int depth, bool scanfilesRecurively)
         {
-            this._parent = parent;
-            this.Depth = depth;
+            this.Init(parent, depth);
             this._scanfilesRecuresively = scanfilesRecurively;
             this._scanfiles = scanfilesRecurively;
+        }
+
+        private void Init(Crawler parent, int depth)
+        {
+            this._parent = parent;
+            this.Depth = depth;
         }
 
         public async Task CrawlAsync(object state)
@@ -166,7 +171,7 @@ namespace FSScanner
             if (this.IsNewThread == true)
             {
                 ThreadCounter.Release(this.ThreadNumber);
-                ConsoleWriter.WriteProgress(this.ThreadNumber + " | " + "Released thread", this.ThreadNumber);
+                ConsoleWriter.WriteProgress("Released thread", this.ThreadNumber);
             }
         }
 
@@ -180,7 +185,7 @@ namespace FSScanner
         private Folder QueryFolder(DirectoryInfo directory, string permroot, bool isroot)
         {
             this._parent.FolderCount++;
-            ConsoleWriter.WriteProgress(this.ThreadNumber + " | " + directory.FullName, this.ThreadNumber);
+            ConsoleWriter.WriteProgress(directory.FullName, this.ThreadNumber);
 
 
             DirectorySecurity sec = directory.GetAccessControl();
@@ -200,7 +205,7 @@ namespace FSScanner
         private File QueryFile(FileInfo file, string permroot)
         {
             this._parent.FolderCount++;
-            ConsoleWriter.WriteProgress(this.ThreadNumber + " | " + file.FullName, this.ThreadNumber);
+            ConsoleWriter.WriteProgress(file.FullName, this.ThreadNumber);
 
 
             FileSecurity sec = file.GetAccessControl();

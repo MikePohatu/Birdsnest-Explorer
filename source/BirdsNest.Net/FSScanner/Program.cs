@@ -47,7 +47,8 @@ namespace FSScanner
 
             IDriver driver = null;
 
-            ConsoleWriter.InitLine(1);
+            ConsoleWriter.Init();
+
             totaltimer.Start();
             try
             {

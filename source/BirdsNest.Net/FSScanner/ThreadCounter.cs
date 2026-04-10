@@ -31,7 +31,7 @@ namespace FSScanner
         }
 
         /// <summary>
-        /// Request a new thread number. Returns -1 if one not available
+        /// Request a new thread number, starting at 1. Returns -1 if one not available
         /// </summary>
         /// <returns></returns>
         public static int RequestThread()
@@ -52,6 +52,10 @@ namespace FSScanner
             }
         }
 
+        /// <summary>
+        /// Release the thread number
+        /// </summary>
+        /// <param name="threadnumber"></param>
         public static void Release(int threadnumber)
         {
             lock (_locker)
