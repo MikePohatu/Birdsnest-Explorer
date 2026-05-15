@@ -26,6 +26,7 @@ export default defineConfig(({ command, mode }) => ({
     brotliSize: false,
     manifest: false,
     minify: mode === 'development' ? false : 'terser',
+    cssMinify: 'esbuild',
     outDir: 'dist',
     sourcemap: command === 'serve' ? 'inline' : false,
     rollupOptions: {
