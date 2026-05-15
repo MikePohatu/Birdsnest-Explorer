@@ -16,11 +16,13 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #endregion
+using System.Threading.Tasks;
+
 namespace Console.Auth
 {
     public interface IAuthConfiguration
     {
         string Name { get; }
-        ILogin GetLogin(string username, string password);
+        Task<ILogin> GetLoginAsync(string username, string password);
     }
 }

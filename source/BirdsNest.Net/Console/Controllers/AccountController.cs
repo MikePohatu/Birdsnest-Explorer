@@ -142,7 +142,7 @@ namespace Console.Controllers
                 {
                     throw new ArgumentException("Provider not found");
                 }
-                ILogin login = conf.GetLogin(details.Username, details.Password);
+                ILogin login = await conf.GetLoginAsync(details.Username, details.Password);
 
                 if (login.IsAuthenticated)
                 {

@@ -16,6 +16,9 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #endregion
+using System.IO;
+using System.Threading.Tasks;
+
 namespace Console.Auth.Windows.Directory
 {
     public class DirectoryConfiguration : IAuthConfiguration
@@ -28,8 +31,9 @@ namespace Console.Auth.Windows.Directory
         public bool SSL { get; set; } = false;
         public int TimeoutSeconds { get; set; } = 900;
 
-        public ILogin GetLogin(string username, string password)
+        public async Task<ILogin> GetLoginAsync(string username, string password)
         {
+            await Task.CompletedTask;
             return new DirectoryLogin(this, username, password);
         }
     }

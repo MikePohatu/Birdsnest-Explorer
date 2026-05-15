@@ -17,6 +17,7 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #endregion
 using System.Security;
+using System.Threading.Tasks;
 
 namespace Console.Auth.LDAP
 {
@@ -40,9 +41,11 @@ namespace Console.Auth.LDAP
             set { this.bindpw = SecureStringConverter.ToSecureString(value); }
         }
 
-        public ILogin GetLogin(string username, string password)
+        public async Task<ILogin> GetLoginAsync(string username, string password)
         {
-            return new LdapLogin(this, username, password);
+            var ldap = new LdapLogin();
+            await ldap.ConnectAsync(this, username, password);
+            return ldap;
         }
     }
 }

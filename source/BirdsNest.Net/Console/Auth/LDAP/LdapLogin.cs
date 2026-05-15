@@ -18,6 +18,7 @@
 #endregion
 using Novell.Directory.Ldap;
 using System;
+using System.Threading.Tasks;
 
 namespace Console.Auth.LDAP
 {
@@ -34,8 +35,8 @@ namespace Console.Auth.LDAP
         public bool IsAuthenticated { get; private set; } = false;
         public int TimeoutSeconds { get; private set; } = 900;
 
-        public LdapLogin(LdapConfiguration config, string username, string password)
-        {
+
+        public async Task ConnectAsync(LdapConfiguration config, string username, string password) { 
             this.TimeoutSeconds = config.TimeoutSeconds;
 
             using (var cn = new LdapConnection())
@@ -45,10 +46,10 @@ namespace Console.Auth.LDAP
                 {
                     string server = string.IsNullOrWhiteSpace(config.Server) ? config.Domain : config.Server;
 
-                    cn.Connect(server, config.Port);
+                    await cn.ConnectAsync(server, config.Port);
                     // bind with an username and password
                     // this how you can verify the password of an user
-                    cn.Bind(config.BindUser, config.BindPassword);
+                    await cn.BindAsync(config.BindUser, config.BindPassword);
 
                     string searchBase = config.SearchBase;
                     string searchFilter = string.Empty;
@@ -66,16 +67,16 @@ namespace Console.Auth.LDAP
 
                     try
                     {
-                        ILdapSearchResults results = cn.Search(config.SearchBase, LdapConnection.ScopeSub,
+                        ILdapSearchResults results = await cn.SearchAsync(config.SearchBase, LdapConnection.ScopeSub,
                             searchFilter, attrs, false);
                         string[] groups = null;
 
-                        while (results.HasMore())
+                        while (await results.HasMoreAsync())
                         {
                             LdapEntry nextEntry = null;
                             try
                             {
-                                nextEntry = results.Next();
+                                nextEntry = await results.NextAsync();
                             }
                             catch
                             {
@@ -109,7 +110,7 @@ namespace Console.Auth.LDAP
                             }
                         }
 
-                        cn.Bind(this.CN, password);
+                        await cn.BindAsync(this.CN, password);
 
                         this.IsAuthenticated = true;
                         cn.Disconnect();

@@ -17,6 +17,7 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #endregion
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace Console.Auth.Windows.Local
 {
@@ -27,8 +28,9 @@ namespace Console.Auth.Windows.Local
         public List<string> Users { get; set; } = new List<string>();
         public int TimeoutSeconds { get; set; } = 900;
 
-        public ILogin GetLogin(string username, string password)
+        public async Task<ILogin> GetLoginAsync(string username, string password)
         {
+            await Task.CompletedTask;
             return new LocalLogin(this, username, password);
         }
     }
