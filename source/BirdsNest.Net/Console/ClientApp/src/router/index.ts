@@ -171,23 +171,23 @@ const router = createRouter({
   routes
 });
 
-router.beforeEach((to, from, next) => {
+router.beforeEach((to, from) => {
   if (to.meta.allowAnonymous === true) {
     if (to.name === routeDefs.docs.name && webcrap.misc.isIE() === false) {
       const path = to.path.split("#")[0];
 
       if (path === routeDefs.docs.rootPath) {
-        next({
+        return {
           path: "/docs/static/documentation/README.md"
-        });
+        };
       } else if (path.endsWith("/")) {
-        next({
+        return {
           path: path + "README.md"
-        });
+        };
       } else if (path.endsWith(".md") === false) {
-        next({
+        return {
           path: path + "/README.md"
-        });
+        };
       } else {
         to.meta.pagecrumbs = [];
 
@@ -204,11 +204,11 @@ router.beforeEach((to, from, next) => {
           });
         }
         auth.softPing(); // do softPing after redirects 
-        next();
+        return;
       }
     } else {
       auth.softPing(); // do an auth ping to make sure all is OK e.g. menus stay current
-      next();
+      return;
     }
   } else {
     //Ping the server to check if cookie still valid
@@ -216,11 +216,10 @@ router.beforeEach((to, from, next) => {
       if (!store.state.user.isAuthorized) {
         //Still not authorised, redirect to login view
         Notify.Info(`Not authorized to ${to.path}. Redirecting to login page.`).Clear();
-        next(
-          {
+        return {
             name: routeDefs.login.name,
             query: { redirect: to.fullPath }
-          });
+          };
       }
       else {
         if (store.state.pluginManager === null || store.state.serverInfo === null) {
@@ -230,9 +229,9 @@ router.beforeEach((to, from, next) => {
           // eslint-disable-next-line
           console.error("Access forbidden. Redirecting to portal.");
           Notify.Error("Access to admin page forbidden");
-          next(from);
+          return from;
         } else {
-          next();
+          return;
         }
       }
     })

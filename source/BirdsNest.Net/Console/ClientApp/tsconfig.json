@@ -2,23 +2,22 @@
   "compilerOptions": {
     "skipLibCheck": true,
     "target": "es6",
-    "module": "esnext",
+    "module": "Node16",
     "strict": false,
     "jsx": "preserve",
     "importHelpers": true,
-    "moduleResolution": "node",
+    "moduleResolution": "node16",
     "experimentalDecorators": true,
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
     "sourceMap": true,
-    "baseUrl": ".",
     "types": [
       "vite/client",
       "jest"
     ],
     "paths": {
       "@/*": [
-        "src/*"
+        "./src/*"
       ]
     },
     "lib": [
