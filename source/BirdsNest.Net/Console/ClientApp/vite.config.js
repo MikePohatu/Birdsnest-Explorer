@@ -16,9 +16,8 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
-import legacy from '@vitejs/plugin-legacy'
 import path from 'path';
-import { VitePWA } from 'vite-plugin-pwa';
+//import { VitePWA } from 'vite-plugin-pwa';
 import basicSsl from '@vitejs/plugin-basic-ssl';
 
 // https://vitejs.dev/config/
@@ -56,35 +55,32 @@ export default defineConfig(({ command, mode }) => ({
   plugins: [
     basicSsl(),
     vue(),
-    VitePWA({
-      manifest: {
-        name: 'Birdsnest Explorer',
-        short_name: 'Birdsnest',
-        description: 'An environment mapping tool',
-        theme_color: '#ffffff',
-        icons: [
-          {
-            src: '/img/icons/favicon-192x192.png',
-            sizes: '192x192',
-            type: 'image/png',
-          },
-          {
-            src: '/img/icons/favicon-512x512.png',
-            sizes: '512x512',
-            type: 'image/png',
-          },
-          {
-            src: '/img/icons/favicon-512x512.png',
-            sizes: '512x512',
-            type: 'image/png',
-            purpose: 'any maskable',
-          }
-        ]
-      }
-    }),
-    legacy({
-      targets: ['defaults', 'not IE 11']
-    })
+    // VitePWA({
+    //   manifest: {
+    //     name: 'Birdsnest Explorer',
+    //     short_name: 'Birdsnest',
+    //     description: 'An environment mapping tool',
+    //     theme_color: '#ffffff',
+    //     icons: [
+    //       {
+    //         src: '/img/icons/favicon-192x192.png',
+    //         sizes: '192x192',
+    //         type: 'image/png',
+    //       },
+    //       {
+    //         src: '/img/icons/favicon-512x512.png',
+    //         sizes: '512x512',
+    //         type: 'image/png',
+    //       },
+    //       {
+    //         src: '/img/icons/favicon-512x512.png',
+    //         sizes: '512x512',
+    //         type: 'image/png',
+    //         purpose: 'any maskable',
+    //       }
+    //     ]
+    //   }
+    // })
   ],
   resolve: {
     alias: [
