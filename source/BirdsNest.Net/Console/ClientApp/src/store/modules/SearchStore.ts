@@ -15,12 +15,12 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 import { Module } from "vuex";
-import { api, Request } from "@/assets/ts/webcrap/apicrap";
-import { Search, SearchItem, SearchEdge, SearchNode, Condition, moveCondition, ConditionType, AndOrCondition, ValueCondition, UpdateCondition, DeleteCondition, importNode, importEdge } from "@/assets/ts/visualizer/Search";
-import webcrap from "@/assets/ts/webcrap/webcrap";
-import { RootState } from '@/store';
-import { ResultSet } from '@/assets/ts/dataMap/ResultSet';
-import i18n, { i18nGetPhrase, i18nGetWord } from '@/i18n';
+import { api, Request } from "@/assets/ts/webcrap/apicrap.js";
+import { Search, SearchItem, SearchEdge, SearchNode, Condition, moveCondition, ConditionType, AndOrCondition, ValueCondition, UpdateCondition, DeleteCondition, importNode, importEdge } from "@/assets/ts/visualizer/Search.js";
+import webcrap from "@/assets/ts/webcrap/webcrap.js";
+import { RootState } from '@/store/index.js';
+import { ResultSet } from '@/assets/ts/dataMap/ResultSet.js';
+import i18n, { i18nGetPhrase, i18nGetWord } from '@/i18n.js';
 
 const { t } = i18n.global;
 

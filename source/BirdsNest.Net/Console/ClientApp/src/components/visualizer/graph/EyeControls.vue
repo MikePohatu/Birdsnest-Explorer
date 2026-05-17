@@ -106,9 +106,9 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 </style>
 
 <script setup lang="ts">
-import { bus, events } from "@/bus";
-import { graphData } from "@/assets/ts/visualizer/GraphData";
-import { Dictionary } from "@/assets/ts/webcrap/misccrap";
+import { bus, events } from "@/bus.js";
+import { graphData } from "@/assets/ts/visualizer/GraphData.js";
+import { Dictionary } from "@/assets/ts/webcrap/misccrap.js";
 import { computed } from "vue";
 
 

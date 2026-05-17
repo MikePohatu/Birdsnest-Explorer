@@ -82,10 +82,10 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 
 <script setup lang="ts">
 import { Dictionary } from "lodash";
-import { DataType } from "@/assets/ts/dataMap/DataType";
-import { SearchNode, copyNode, ValueCondition, ConditionType } from "@/assets/ts/visualizer/Search";
-import { SearchStorePaths } from "@/store/modules/SearchStore";
-import { useStore } from "@/store";
+import { DataType } from "@/assets/ts/dataMap/DataType.js";
+import { SearchNode, copyNode, ValueCondition, ConditionType } from "@/assets/ts/visualizer/Search.js";
+import { SearchStorePaths } from "@/store/modules/SearchStore.js";
+import { useStore } from "@/store/index.js";
 import { computed, reactive } from "vue";
 
 	const props = defineProps({ source: {type: Object, required: true}});

@@ -55,10 +55,10 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 </style>
 
 <script setup lang="ts">
-	import { LanguageSelector, rootPaths, useStore } from "@/store";
-	import { Dictionary } from "@/assets/ts/webcrap/misccrap";
+	import { LanguageSelector, rootPaths, useStore } from "@/store/index.js";
+	import { Dictionary } from "@/assets/ts/webcrap/misccrap.js";
 	import { computed, ref } from "vue";
-	import { useI18n } from "vue-i18n";
+	import { initFoundationMounted } from "@/mixins/foundation.js";
 	import { initFoundationMounted } from "@/mixins/foundation";
 	
 	const templateRoot = ref(null);

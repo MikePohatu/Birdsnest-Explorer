@@ -69,12 +69,12 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 </style>
 <script setup lang="ts">
 import { Dictionary } from "lodash";
-import { SimNode } from "@/assets/ts/visualizer/SimNode";
+import { SimNode } from "@/assets/ts/visualizer/SimNode.js";
 import * as d3 from 'd3';
-import { bus, events } from "@/bus";
-import webcrap from "@/assets/ts/webcrap/webcrap";
+import { bus, events } from "@/bus.js";
+import webcrap from "@/assets/ts/webcrap/webcrap.js";
 import { computed, onMounted, ref, reactive } from "vue";
-import { useStore } from "@/store";
+import { useStore } from "@/store/index.js";
 
 	const props = defineProps({ node: { type: Object, required: true }});
 	const node = reactive(props.node as SimNode);

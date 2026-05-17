@@ -88,10 +88,10 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 
 <script setup lang="ts">
 import { computed, onMounted, ref } from "vue";
-import { useStore } from "@/store";
-import { auth } from "@/assets/ts/webcrap/authcrap";
-import { rootPaths } from "@/store";
-import webcrap from "@/assets/ts/webcrap/webcrap";
+import { useStore } from "@/store/index.js";
+import { auth } from "@/assets/ts/webcrap/authcrap.js";
+import { rootPaths } from "@/store/index.js";
+import webcrap from "@/assets/ts/webcrap/webcrap.js";
 
 const store = useStore();
 

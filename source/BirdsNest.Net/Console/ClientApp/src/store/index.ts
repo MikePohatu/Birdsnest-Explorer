@@ -15,17 +15,17 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 import { InjectionKey } from "vue";
-import { api, Request } from "@/assets/ts/webcrap/apicrap";
-import { VisualizerStore } from "./modules/VisualizerStore";
-import PluginManager from '@/assets/ts/dataMap/PluginManager';
-import ServerInfo from '@/assets/ts/dataMap/ServerInfo';
+import { api, Request } from "@/assets/ts/webcrap/apicrap.js";
+import { VisualizerStore } from "./modules/VisualizerStore.js";
+import PluginManager from '@/assets/ts/dataMap/PluginManager.js';
+import ServerInfo from '@/assets/ts/dataMap/ServerInfo.js';
 
-import { Dictionary } from "@/assets/ts/webcrap/misccrap";
+import { Dictionary } from "@/assets/ts/webcrap/misccrap.js";
 import { createStore, useStore as baseUseStore, Store } from 'vuex';
-import i18n from "@/i18n";
+import i18n from "@/i18n.js";
 import { useCookies } from "vue3-cookies";
-import { NotificationMessage, Notify } from "@/assets/ts/Notifications";
-import webcrap from "@/assets/ts/webcrap/webcrap";
+import { NotificationMessage, Notify } from "@/assets/ts/Notifications.js";
+import webcrap from "@/assets/ts/webcrap/webcrap.js";
 
 const { cookies } = useCookies();
 

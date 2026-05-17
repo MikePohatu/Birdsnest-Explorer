@@ -15,14 +15,14 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 import * as d3 from 'd3';
-import { SimLink } from "./SimLink";
-import { SimNode } from "./SimNode";
-import { graphData } from './GraphData';
-import { VisualizerStorePaths } from "@/store/modules/VisualizerStore";
-import { useStore } from "@/store";
-import TreeForce from './TreeForce';
+import { SimLink } from "./SimLink.js";
+import { SimNode } from "./SimNode.js";
+import { graphData } from './GraphData.js';
+import { VisualizerStorePaths } from "@/store/modules/VisualizerStore.js";
+import { useStore } from "@/store/index.js";
+import TreeForce from './TreeForce.js';
 import { ForceLink, ForceRadial, Simulation } from 'd3';
-import { Notify } from '../Notifications';
+import { Notify } from '../Notifications.js';
 
 
 export default class SimulationController {

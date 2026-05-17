@@ -32,11 +32,11 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 </style>
 
 <script setup lang="ts">
-import { useStore } from "@/store";
+import { useStore } from "@/store/index.js";
 import PluginReportList from "@/components/reports/PluginReportList.vue";
 import { computed } from "vue";
-import { ConsolePlugin } from "@/assets/ts/dataMap/ConsolePlugin";
-import { Dictionary } from "@/assets/ts/webcrap/misccrap";
+import { ConsolePlugin } from "@/assets/ts/dataMap/ConsolePlugin.js";
+import { Dictionary } from "@/assets/ts/webcrap/misccrap.js";
 
 const store = useStore();
 

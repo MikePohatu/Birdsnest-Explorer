@@ -43,12 +43,12 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 
 <script setup lang="ts">
 import * as d3 from "d3";
-import { SimLink } from "@/assets/ts/visualizer/SimLink";
-import { SimNode } from "@/assets/ts/visualizer/SimNode";
-import { bus, events } from "@/bus";
-import webcrap from "@/assets/ts/webcrap/webcrap";
+import { SimLink } from "@/assets/ts/visualizer/SimLink.js";
+import { SimNode } from "@/assets/ts/visualizer/SimNode.js";
+import { bus, events } from "@/bus.js";
+import webcrap from "@/assets/ts/webcrap/webcrap.js";
 import { computed, onMounted, ref } from "vue";
-import { useStore } from "@/store";
+import { useStore } from "@/store/index.js";
 
 const props = defineProps({
 	edge: { type: Object, required: true }

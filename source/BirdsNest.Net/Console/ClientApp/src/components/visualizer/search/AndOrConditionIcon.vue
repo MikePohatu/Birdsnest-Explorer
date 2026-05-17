@@ -85,11 +85,11 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 
 
 <script setup lang="ts">
-import { Condition, ConditionType, AndOrCondition, ValueCondition } from "@/assets/ts/visualizer/Search";
+import { Condition, ConditionType, AndOrCondition, ValueCondition } from "@/assets/ts/visualizer/Search.js";
 import ValueConditionIcon from "./ValueConditionIcon.vue";
-import { SearchStorePaths } from "@/store/modules/SearchStore";
+import { SearchStorePaths } from "@/store/modules/SearchStore.js";
 import { computed, ref, toRaw } from "@vue/reactivity";
-import { useStore } from "@/store";
+import { useStore } from "@/store/index.js";
 
 const store = useStore();
 const props = defineProps({condition: { type: Object, required: true }});

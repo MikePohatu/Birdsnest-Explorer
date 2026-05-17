@@ -247,14 +247,14 @@ td {
 
 
 <script setup lang="ts">
-import { routeDefs } from "@/router";
-import { useStore } from "@/store";
+import { routeDefs } from "@/router/index.js";
+import { useStore } from "@/store/index.js";
 import { computed, onMounted, onBeforeUnmount } from "vue";
-import { api } from "@/assets/ts/webcrap/apicrap";
+import { api } from "@/assets/ts/webcrap/apicrap.js";
 import LoadingLogo from "@/components/LoadingLogo.vue";
-import PluginManager from "@/assets/ts/dataMap/PluginManager";
-import ServerInfo from "@/assets/ts/dataMap/ServerInfo";
-import { rootPaths } from "@/store/index";
+import PluginManager from "@/assets/ts/dataMap/PluginManager.js";
+import ServerInfo from "@/assets/ts/dataMap/ServerInfo.js";
+import { rootPaths } from "@/store/index.js";
 
 
 const store = useStore();

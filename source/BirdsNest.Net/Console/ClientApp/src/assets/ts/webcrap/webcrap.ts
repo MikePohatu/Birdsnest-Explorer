@@ -14,10 +14,10 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
-import { api } from "./apicrap";
-import { auth } from "./authcrap";
-import { array } from "./arraycrap";
-import misccrap from "./misccrap";
+import { api } from "./apicrap.js";
+import { auth } from "./authcrap.js";
+import { array } from "./arraycrap.js";
+import misccrap from "./misccrap.js";
 
 class WebCrap {
     api = api;

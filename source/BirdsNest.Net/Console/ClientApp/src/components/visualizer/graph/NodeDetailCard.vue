@@ -237,21 +237,21 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 
 
 <script setup lang="ts">
-import { bus, events } from "@/bus";
-import { RelatedDetails } from "@/assets/ts/dataMap/visualizer/RelatedDetails";
-import { VForLabelledNodeList } from "@/assets/ts/dataMap/visualizer/VForLabelledNodeList";
-import { Request, api } from "@/assets/ts/webcrap/apicrap";
+import { bus, events } from "@/bus.js";
+import { RelatedDetails } from "@/assets/ts/dataMap/visualizer/RelatedDetails.js";
+import { VForLabelledNodeList } from "@/assets/ts/dataMap/visualizer/VForLabelledNodeList.js";
+import { Request, api } from "@/assets/ts/webcrap/apicrap.js";
 import $ from "jquery";
 import "foundation-sites";
-import { SimNode } from "@/assets/ts/visualizer/SimNode";
-import { VisualizerStorePaths } from "@/store/modules/VisualizerStore";
-import { ApiNodeSimple } from "@/assets/ts/dataMap/ApiNodeSimple";
-import { rootPaths } from "@/store";
-import { Dictionary } from "@/assets/ts/webcrap/misccrap";
+import { SimNode } from "@/assets/ts/visualizer/SimNode.js";
+import { VisualizerStorePaths } from "@/store/modules/VisualizerStore.js";
+import { ApiNodeSimple } from "@/assets/ts/dataMap/ApiNodeSimple.js";
+import { rootPaths } from "@/store/index.js";
+import { Dictionary } from "@/assets/ts/webcrap/misccrap.js";
 import { computed, nextTick, onMounted, ref, reactive } from "vue";
-import { useStore } from "@/store";
-import { initFoundationMounted } from "@/mixins/foundation";
-import { Notify } from "@/assets/ts/Notifications";
+import { useStore } from "@/store/index.js";
+import { initFoundationMounted } from "@/mixins/foundation.js";
+import { Notify } from "@/assets/ts/Notifications.js";
 	
 const templateRoot = ref(null);
 initFoundationMounted(templateRoot);

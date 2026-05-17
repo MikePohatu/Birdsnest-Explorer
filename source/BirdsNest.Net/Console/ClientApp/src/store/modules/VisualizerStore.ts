@@ -15,13 +15,13 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 import { Module } from "vuex";
-import { SearchStore } from "./SearchStore";
-import { RootState } from "@/store";
-import Mappings from '@/assets/ts/visualizer/Mappings';
-import { api, Request } from "@/assets/ts/webcrap/apicrap";
-import { ResultSet } from '@/assets/ts/dataMap/ResultSet';
-import { ApiNode } from "@/assets/ts/dataMap/ApiNode";
-import { Notify } from "@/assets/ts/Notifications";
+import { SearchStore } from "./SearchStore.js";
+import { RootState } from "@/store/index.js";
+import Mappings from '@/assets/ts/visualizer/Mappings.js';
+import { api, Request } from "@/assets/ts/webcrap/apicrap.js";
+import { ResultSet } from '@/assets/ts/dataMap/ResultSet.js';
+import { ApiNode } from "@/assets/ts/dataMap/ApiNode.js";
+import { Notify } from "@/assets/ts/Notifications.js";
 //import { Dictionary } from "@/assets/ts/webcrap/misccrap";
 
 export interface VisualizerState {

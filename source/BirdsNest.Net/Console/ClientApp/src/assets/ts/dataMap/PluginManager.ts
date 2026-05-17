@@ -14,9 +14,9 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
-import { Dictionary } from "@/assets/ts/webcrap/misccrap";
-import { DataType } from "./DataType";
-import { ConsolePlugin } from "./ConsolePlugin";
+import { Dictionary } from "@/assets/ts/webcrap/misccrap.js";
+import { DataType } from "./DataType.js";
+import { ConsolePlugin } from "./ConsolePlugin.js";
 
 export default interface PluginManager {
     plugins: Dictionary<ConsolePlugin>;

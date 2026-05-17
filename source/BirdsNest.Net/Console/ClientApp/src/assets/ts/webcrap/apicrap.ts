@@ -14,10 +14,10 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
-import { store, rootPaths } from "@/store";
-import { auth } from "./authcrap";
+import { store, rootPaths } from "@/store/index.js";
+import { auth } from "./authcrap.js";
 import $ from 'jquery';
-import { Notify } from "../Notifications";
+import { Notify } from "../Notifications.js";
 
 class ApiCrap {
   post(details: Request) {

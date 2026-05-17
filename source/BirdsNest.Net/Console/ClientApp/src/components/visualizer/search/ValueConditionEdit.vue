@@ -220,15 +220,15 @@ import {
 	GetEdge,
 	ConditionOperators,
 	copyCondition,
-} from "@/assets/ts/visualizer/Search";
-import { DataType } from "@/assets/ts/dataMap/DataType";
-import { SearchItemType } from "@/assets/ts/visualizer/Search";
-import webcrap from "@/assets/ts/webcrap/webcrap";
-import { SearchStorePaths } from "@/store/modules/SearchStore";
-import { api, Request } from "@/assets/ts/webcrap/apicrap";
-import { SearchEdge } from "@/assets/ts/visualizer/Search";
+} from "@/assets/ts/visualizer/Search.js";
+import { DataType } from "@/assets/ts/dataMap/DataType.js";
+import { SearchItemType } from "@/assets/ts/visualizer/Search.js";
+import webcrap from "@/assets/ts/webcrap/webcrap.js";
+import { SearchStorePaths } from "@/store/modules/SearchStore.js";
+import { api, Request } from "@/assets/ts/webcrap/apicrap.js";
+import { SearchEdge } from "@/assets/ts/visualizer/Search.js";
 import { computed, onMounted, ref } from "vue";
-import { useStore } from "@/store";
+import { useStore } from "@/store/index.js";
 import { useI18n } from "vue-i18n";
 
 const { t } = useI18n();

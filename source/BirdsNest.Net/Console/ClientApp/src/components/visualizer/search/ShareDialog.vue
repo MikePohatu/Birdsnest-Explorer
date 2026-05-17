@@ -62,10 +62,10 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 </style>
 
 <script setup lang="ts">
-import { SearchStorePaths } from "@/store/modules/SearchStore";
+import { SearchStorePaths } from "@/store/modules/SearchStore.js";
 import { computed } from "vue";
 import { useRoute } from "vue-router";
-import { useStore } from "@/store";
+import { useStore } from "@/store/index.js";
 
 const store = useStore();
 const route = useRoute();

@@ -259,12 +259,12 @@ import EdgeIcon from "./EdgeIcon.vue";
 import SearchResults from "./SearchResults.vue";
 import AndOrConditionIcon from "./AndOrConditionIcon.vue";
 import ShareDialog from "./ShareDialog.vue";
-import { Search, SearchItem, ConditionType, AndOrCondition } from "@/assets/ts/visualizer/Search";
+import { Search, SearchItem, ConditionType, AndOrCondition } from "@/assets/ts/visualizer/Search.js";
 import AdvancedSearchButtons from "./AdvancedSearchButtons.vue";
-import { SearchStorePaths } from "@/store/modules/SearchStore";
-import { useStore } from "@/store";
+import { SearchStorePaths } from "@/store/modules/SearchStore.js";
+import { useStore } from "@/store/index.js";
 import { computed } from "vue";
-import { SearchNode, SearchEdge } from "@/assets/ts/visualizer/Search";
+import { SearchNode, SearchEdge } from "@/assets/ts/visualizer/Search.js";
 import { useI18n } from "vue-i18n";
 
 const store = useStore();

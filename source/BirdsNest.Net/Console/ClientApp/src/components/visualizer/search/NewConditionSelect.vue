@@ -58,10 +58,10 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 </template>
 
 <script setup lang="ts">
-import { NewConditionType, Condition, AndOrCondition, ValueCondition, ConditionType } from "@/assets/ts/visualizer/Search";
-import { SearchStorePaths } from "@/store/modules/SearchStore";
-import { Dictionary } from "@/assets/ts/webcrap/misccrap";
-import { useStore } from "@/store";
+import { NewConditionType, Condition, AndOrCondition, ValueCondition, ConditionType } from "@/assets/ts/visualizer/Search.js";
+import { SearchStorePaths } from "@/store/modules/SearchStore.js";
+import { Dictionary } from "@/assets/ts/webcrap/misccrap.js";
+import { useStore } from "@/store/index.js";
 import { computed, ref } from "vue";
 
 let type = ref(NewConditionType.Value);

@@ -81,7 +81,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 </style>
 
 <script setup lang="ts">
-import webcrap from "@/assets/ts/webcrap/webcrap";
+import webcrap from "@/assets/ts/webcrap/webcrap.js";
 import { onMounted, onUnmounted, ref } from "vue";
 
 let debouncedScroll;

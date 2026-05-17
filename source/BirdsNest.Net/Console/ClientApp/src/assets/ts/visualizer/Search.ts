@@ -14,8 +14,8 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
-import webcrap from "@/assets/ts/webcrap/webcrap"
-import { Dictionary } from "@/assets/ts/webcrap/misccrap";
+import webcrap from "@/assets/ts/webcrap/webcrap.js"
+import { Dictionary } from "@/assets/ts/webcrap/misccrap.js";
 
 export const ConditionOperators: Dictionary<string[]> = {
     "number": ["=", ">", "<", "<=", ">="],

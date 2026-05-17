@@ -213,12 +213,12 @@ input::-webkit-inner-spin-button {
 </style>
 
 <script setup lang="ts">
-import { SearchEdge, copyEdge, ValueCondition, ConditionType } from "@/assets/ts/visualizer/Search";
-import { DataType } from "@/assets/ts/dataMap/DataType";
+import { SearchEdge, copyEdge, ValueCondition, ConditionType } from "@/assets/ts/visualizer/Search.js";
+import { DataType } from "@/assets/ts/dataMap/DataType.js";
 import { Dictionary } from "lodash";
-import { SearchStorePaths } from "@/store/modules/SearchStore";
+import { SearchStorePaths } from "@/store/modules/SearchStore.js";
 import { computed, reactive, ref } from "@vue/reactivity";
-import { useStore } from "@/store";
+import { useStore } from "@/store/index.js";
 
 
 	const props = defineProps({ source: { type: Object, required: true }});

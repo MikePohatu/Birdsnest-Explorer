@@ -37,7 +37,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 
 <script setup lang="ts">
 import * as d3 from "d3";
-import { SimNode } from "@/assets/ts/visualizer/SimNode";
+import { SimNode } from "@/assets/ts/visualizer/SimNode.js";
 import { computed, onMounted, ref } from "vue";
 
 	const props = defineProps({ node: { type: Object, required: true }});

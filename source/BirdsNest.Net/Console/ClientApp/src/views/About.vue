@@ -109,7 +109,7 @@ p {
 </style>
 
 <script setup lang="ts">
-import webcrap from "@/assets/ts/webcrap/webcrap";
+import webcrap from "@/assets/ts/webcrap/webcrap.js";
 
 const isIE = webcrap.misc.isIE();
 </script>

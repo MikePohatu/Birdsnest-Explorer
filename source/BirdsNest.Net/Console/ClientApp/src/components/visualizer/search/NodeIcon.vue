@@ -24,11 +24,11 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 </template>
 
 <script setup lang="ts">
-import { SearchNode } from "@/assets/ts/visualizer/Search";
-import { SearchStorePaths } from "@/store/modules/SearchStore";
+import { SearchNode } from "@/assets/ts/visualizer/Search.js";
+import { SearchStorePaths } from "@/store/modules/SearchStore.js";
 import { computed, reactive } from "vue";
-import { useStore } from "@/store";
-import webcrap from '@/assets/ts/webcrap/webcrap';
+import { useStore } from "@/store/index.js";
+import webcrap from '@/assets/ts/webcrap/webcrap.js';
 
 const props = defineProps({ node: { type: Object, required: true } });
 const node = reactive(props.node as SearchNode);

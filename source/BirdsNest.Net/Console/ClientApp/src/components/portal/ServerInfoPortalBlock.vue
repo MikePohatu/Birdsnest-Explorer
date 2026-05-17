@@ -60,11 +60,11 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 </template>
 
 <script setup lang="ts">
-import { api } from "@/assets/ts/webcrap/apicrap";
-import ServerInfo from "@/assets/ts/dataMap/ServerInfo";
-import PluginManager from "@/assets/ts/dataMap/PluginManager";
+import { api } from "@/assets/ts/webcrap/apicrap.js";
+import ServerInfo from "@/assets/ts/dataMap/ServerInfo.js";
+import PluginManager from "@/assets/ts/dataMap/PluginManager.js";
 import { computed } from "vue";
-import { useStore } from "@/store";
+import { useStore } from "@/store/index.js";
 
 const store = useStore();
 

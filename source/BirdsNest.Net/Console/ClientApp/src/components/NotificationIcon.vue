@@ -133,8 +133,8 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 
 
 <script setup lang="ts">
-import { NotificationMessage, NotificationMessageLevels, notificationStates } from "@/assets/ts/Notifications";
-import { bus, events } from "@/bus";
+import { NotificationMessage, NotificationMessageLevels, notificationStates } from "@/assets/ts/Notifications.js";
+import { bus, events } from "@/bus.js";
 import { computed, onBeforeUnmount, onMounted, ref } from "vue";
 import { useI18n } from "vue-i18n";
 

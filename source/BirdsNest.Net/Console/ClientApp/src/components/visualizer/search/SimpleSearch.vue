@@ -84,11 +84,11 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 
 <script setup lang="ts">
 import SearchResults from "./SearchResults.vue";
-import webcrap from "@/assets/ts/webcrap/webcrap";
-import { Request, api } from "@/assets/ts/webcrap/apicrap";
-import { SearchStorePaths } from "@/store/modules/SearchStore";
+import webcrap from "@/assets/ts/webcrap/webcrap.js";
+import { Request, api } from "@/assets/ts/webcrap/apicrap.js";
+import { SearchStorePaths } from "@/store/modules/SearchStore.js";
 import { ref } from "vue";
-import { useStore } from "@/store";
+import { useStore } from "@/store/index.js";
 
 const debounceTimeout = 250;
 const store = useStore();

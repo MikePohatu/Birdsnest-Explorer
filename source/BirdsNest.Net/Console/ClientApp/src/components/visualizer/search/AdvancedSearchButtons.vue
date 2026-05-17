@@ -83,10 +83,10 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 </style>
 
 <script setup lang="ts">
-import { SearchStorePaths } from "@/store/modules/SearchStore";
-import { useStore } from "@/store";
+import { SearchStorePaths } from "@/store/modules/SearchStore.js";
+import { useStore } from "@/store/index.js";
 import { ref } from "vue";
-import { initFoundationMounted } from "@/mixins/foundation";
+import { initFoundationMounted } from "@/mixins/foundation.js";
 	
 const templateRoot = ref(null);
 initFoundationMounted(templateRoot);

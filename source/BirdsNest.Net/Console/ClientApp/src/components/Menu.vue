@@ -55,11 +55,11 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 </template>
 
 <script setup lang="ts">
-import { auth } from "@/assets/ts/webcrap/authcrap";
-import { routeDefs } from "@/router/index";
+import { auth } from "@/assets/ts/webcrap/authcrap.js";
+import { routeDefs } from "@/router/index.js";
 import LangMenu from "@/components/LangMenu.vue";
-import webcrap from "@/assets/ts/webcrap/webcrap";
-import { useStore } from "@/store";
+import webcrap from "@/assets/ts/webcrap/webcrap.js";
+import { useStore } from "@/store/index.js";
 import { useRouter } from "vue-router";
 import { computed } from "vue";
 

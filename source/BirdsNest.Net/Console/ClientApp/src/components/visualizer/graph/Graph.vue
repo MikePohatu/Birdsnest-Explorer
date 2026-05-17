@@ -182,11 +182,11 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 
 
 <script setup lang="ts">
-import { bus, events } from "@/bus";
-import { routeDefs } from "@/router/index";
-import { graphData } from "@/assets/ts/visualizer/GraphData";
+import { bus, events } from "@/bus.js";
+import { routeDefs } from "@/router/index.js";
+import { graphData } from "@/assets/ts/visualizer/GraphData.js";
 
-import { VisualizerStorePaths } from "@/store/modules/VisualizerStore";
+import { VisualizerStorePaths } from "@/store/modules/VisualizerStore.js";
 
 import * as d3 from 'd3';
 
@@ -198,18 +198,18 @@ import GraphNodeBg from "./GraphNodeBg.vue";
 import GraphEdge from "./GraphEdge.vue";
 import GraphEdgeBg from "./GraphEdgeBg.vue";
 
-import webcrap from "@/assets/ts/webcrap/webcrap";
-import { ResultSet } from "@/assets/ts/dataMap/ResultSet";
-import SimulationController from "@/assets/ts/visualizer/SimulationController";
-import { SimNode } from "@/assets/ts/visualizer/SimNode";
-import { SimLink } from "@/assets/ts/visualizer/SimLink";
-import Slope from "@/assets/ts/visualizer/Slope";
-import { api, Request } from "@/assets/ts/webcrap/apicrap";
-import LStore from "@/assets/ts/LocalStorageManager";
+import webcrap from "@/assets/ts/webcrap/webcrap.js";
+import { ResultSet } from "@/assets/ts/dataMap/ResultSet.js";
+import SimulationController from "@/assets/ts/visualizer/SimulationController.js";
+import { SimNode } from "@/assets/ts/visualizer/SimNode.js";
+import { SimLink } from "@/assets/ts/visualizer/SimLink.js";
+import Slope from "@/assets/ts/visualizer/Slope.js";
+import { api, Request } from "@/assets/ts/webcrap/apicrap.js";
+import LStore from "@/assets/ts/LocalStorageManager.js";
 import { computed, nextTick, onBeforeUnmount, onMounted } from "vue";
-import { useStore } from "@/store";
+import { useStore } from "@/store/index.js";
 import { useRouter } from "vue-router";
-import { Notify } from "@/assets/ts/Notifications";
+import { Notify } from "@/assets/ts/Notifications.js";
 
 	const store = useStore();
 	const router = useRouter();

@@ -25,7 +25,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 </template>
 
 <script setup lang="ts">import { useRouter } from 'vue-router';
-  import { Report } from "@/assets/ts/dataMap/Report";
+  import { Report } from "@/assets/ts/dataMap/Report.js";
 
   const router = useRouter();  
   const props = defineProps({

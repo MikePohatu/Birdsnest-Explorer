@@ -50,7 +50,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 </style>
 
 <script setup lang="ts">
-import { useStore } from "@/store";
+import { useStore } from "@/store/index.js";
 import Searches from "@/components/visualizer/search/Searches.vue";
 import NodeEdit from "@/components/visualizer/search/NodeEdit.vue";
 import EdgeEdit from "@/components/visualizer/search/EdgeEdit.vue";
@@ -59,13 +59,13 @@ import AndOrConditionEdit from "@/components/visualizer/search/AndOrConditionEdi
 import NewConditionSelect from "@/components/visualizer/search/NewConditionSelect.vue";
 import Graph from "@/components/visualizer/graph/Graph.vue";
 
-import { auth } from "@/assets/ts/webcrap/authcrap";
-import { SearchNode, SearchEdge, ValueCondition, AndOrCondition, Search, copySearch } from "@/assets/ts/visualizer/Search";
+import { auth } from "@/assets/ts/webcrap/authcrap.js";
+import { SearchNode, SearchEdge, ValueCondition, AndOrCondition, Search, copySearch } from "@/assets/ts/visualizer/Search.js";
 import { RouteLocation, useRoute } from "vue-router";
-import webcrap from "@/assets/ts/webcrap/webcrap";
-import { SearchStorePaths } from "@/store/modules/SearchStore";
-import { VisualizerStorePaths } from "@/store/modules/VisualizerStore";
-import LStore from "@/assets/ts/LocalStorageManager";
+import webcrap from "@/assets/ts/webcrap/webcrap.js";
+import { SearchStorePaths } from "@/store/modules/SearchStore.js";
+import { VisualizerStorePaths } from "@/store/modules/VisualizerStore.js";
+import LStore from "@/assets/ts/LocalStorageManager.js";
 import { computed, onMounted, watch } from "vue";
 
 const route = useRoute();

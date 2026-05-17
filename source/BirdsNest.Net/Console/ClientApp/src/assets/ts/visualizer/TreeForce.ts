@@ -14,8 +14,8 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
-import { SimLink } from "./SimLink";
-import { SimNode } from "./SimNode";
+import { SimLink } from "./SimLink.js";
+import { SimNode } from "./SimNode.js";
 
 export default function (links?: SimLink<SimNode>[]) {
     if (links == null) { links = []; }

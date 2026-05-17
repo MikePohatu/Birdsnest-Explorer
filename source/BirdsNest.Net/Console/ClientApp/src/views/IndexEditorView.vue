@@ -144,21 +144,21 @@ p {
 
 <script setup lang="ts">
 import LoadingLogo from "@/components/LoadingLogo.vue";
-import { Index } from "@/assets/ts/dataMap/indexes/Index";
-import { api, Request } from "@/assets/ts/webcrap/apicrap";
-import { Dictionary } from "@/assets/ts/webcrap/misccrap";
-import PluginManager from "@/assets/ts/dataMap/PluginManager";
-import { ConsolePlugin } from "@/assets/ts/dataMap/ConsolePlugin";
-import ServerInfo from "@/assets/ts/dataMap/ServerInfo";
-import { DataType } from "@/assets/ts/dataMap/DataType";
-import { Property } from "@/assets/ts/dataMap/Property";
-import { rootPaths } from "@/store/index";
+import { Index } from "@/assets/ts/dataMap/indexes/Index.js";
+import { api, Request } from "@/assets/ts/webcrap/apicrap.js";
+import { Dictionary } from "@/assets/ts/webcrap/misccrap.js";
+import PluginManager from "@/assets/ts/dataMap/PluginManager.js";
+import { ConsolePlugin } from "@/assets/ts/dataMap/ConsolePlugin.js";
+import ServerInfo from "@/assets/ts/dataMap/ServerInfo.js";
+import { DataType } from "@/assets/ts/dataMap/DataType.js";
+import { Property } from "@/assets/ts/dataMap/Property.js";
+import { rootPaths } from "@/store/index.js";
 import $ from "jquery";
 import "foundation-sites";
 import { computed, onMounted, ref } from "vue";
-import { useStore } from "@/store";
+import { useStore } from "@/store/index.js";
 import { useI18n } from 'vue-i18n';
-import { Notify } from "@/assets/ts/Notifications";
+import { Notify } from "@/assets/ts/Notifications.js";
 
 const { t } = useI18n();
 const root = ref(null);

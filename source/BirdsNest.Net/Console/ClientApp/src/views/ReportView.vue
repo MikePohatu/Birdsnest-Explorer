@@ -168,21 +168,21 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 </style>
 
 <script setup lang="ts">
-import { routeDefs } from "@/router/index";
+import { routeDefs } from "@/router/index.js";
 import LoadingLogo from "@/components/LoadingLogo.vue";
-import { ResultSet } from "@/assets/ts/dataMap/ResultSet";
-import { api, Request } from "@/assets/ts/webcrap/apicrap";
-import webcrap from "@/assets/ts/webcrap/webcrap";
-import { ApiNode } from "@/assets/ts/dataMap/ApiNode";
-import { Report } from "@/assets/ts/dataMap/Report";
-import { ConsolePlugin } from "@/assets/ts/dataMap/ConsolePlugin";
-import { Dictionary } from "@/assets/ts/webcrap/misccrap";
-import LStore from "@/assets/ts/LocalStorageManager";
-import { useStore } from "@/store";
+import { ResultSet } from "@/assets/ts/dataMap/ResultSet.js";
+import { api, Request } from "@/assets/ts/webcrap/apicrap.js";
+import webcrap from "@/assets/ts/webcrap/webcrap.js";
+import { ApiNode } from "@/assets/ts/dataMap/ApiNode.js";
+import { Report } from "@/assets/ts/dataMap/Report.js";
+import { ConsolePlugin } from "@/assets/ts/dataMap/ConsolePlugin.js";
+import { Dictionary } from "@/assets/ts/webcrap/misccrap.js";
+import LStore from "@/assets/ts/LocalStorageManager.js";
+import { useStore } from "@/store/index.js";
 import { computed, onMounted, ref } from "vue";
 import { useRoute, useRouter } from "vue-router";
-import { initFoundationMounted } from "@/mixins/foundation";
-import { Notify } from "@/assets/ts/Notifications";
+import { initFoundationMounted } from "@/mixins/foundation.js";
+import { Notify } from "@/assets/ts/Notifications.js";
 	
 const templateRoot = ref(null);
 initFoundationMounted(templateRoot);

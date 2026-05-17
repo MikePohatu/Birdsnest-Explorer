@@ -14,9 +14,9 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
-import { store, rootPaths } from "@/store";
-import { api, Request } from "./apicrap";
-import { Notify } from "../Notifications";
+import { store, rootPaths } from "@/store/index.js";
+import { api, Request } from "./apicrap.js";
+import { Notify } from "../Notifications.js";
 
 class AuthResults {
     isAuthenticated = false;

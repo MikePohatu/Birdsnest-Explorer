@@ -72,7 +72,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 import Menu from "@/components/Menu.vue";
 import { computed } from "vue";
 import { useRoute, breadcrumb } from "vue-router";
-import { routeDefs } from "@/router/index";
+import { routeDefs } from "@/router/index.js";
 
 const route = useRoute();
 

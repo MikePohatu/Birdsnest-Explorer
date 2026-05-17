@@ -158,8 +158,8 @@ li {
 </style>
 
 <script setup lang="ts">
-import { NotificationMessage, NotificationMessageLevels, Notify, Messages } from '@/assets/ts/Notifications';
-import { i18nGetPhrase } from '@/i18n';
+import { NotificationMessage, NotificationMessageLevels, Notify, Messages } from '@/assets/ts/Notifications.js';
+import { i18nGetPhrase } from '@/i18n.js';
 import { computed, onUpdated, ref } from 'vue';
 
     const isHidden = ref(true);

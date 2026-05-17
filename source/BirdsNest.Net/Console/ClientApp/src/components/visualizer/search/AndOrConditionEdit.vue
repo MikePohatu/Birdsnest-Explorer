@@ -62,10 +62,10 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 
 
 <script setup lang="ts">
-import { AndOrCondition } from "@/assets/ts/visualizer/Search";
-import { SearchStorePaths } from "@/store/modules/SearchStore";
+import { AndOrCondition } from "@/assets/ts/visualizer/Search.js";
+import { SearchStorePaths } from "@/store/modules/SearchStore.js";
 import { ref } from "vue";
-import { useStore } from "@/store";
+import { useStore } from "@/store/index.js";
 import { useI18n } from "vue-i18n";
 
 const { t } = useI18n();

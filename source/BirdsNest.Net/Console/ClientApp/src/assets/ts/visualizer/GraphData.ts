@@ -19,17 +19,17 @@
 // Commit should not be directly called from GraphData in case multiple changes 
 // are queued
 
-import DatumStore from "./DatumStore";
-import { ApiNode } from '@/assets/ts/dataMap/ApiNode';
-import Spiral from "./Spiral";
-import { ResultSet } from '@/assets/ts/dataMap/ResultSet';
-import { ApiEdge } from '@/assets/ts/dataMap/ApiEdge';
-import { Dictionary } from "@/assets/ts/webcrap/misccrap";
-import { SimNode } from './SimNode';
-import { SimLink } from './SimLink';
-import Slope from "./Slope";
-import { VisualizerStorePaths } from '@/store/modules/VisualizerStore';
-import { store } from "@/store";
+import DatumStore from "./DatumStore.js";
+import { ApiNode } from '@/assets/ts/dataMap/ApiNode.js';
+import Spiral from "./Spiral.js";
+import { ResultSet } from '@/assets/ts/dataMap/ResultSet.js';
+import { ApiEdge } from '@/assets/ts/dataMap/ApiEdge.js';
+import { Dictionary } from "@/assets/ts/webcrap/misccrap.js";
+import { SimNode } from './SimNode.js';
+import { SimLink } from './SimLink.js';
+import Slope from "./Slope.js";
+import { VisualizerStorePaths } from '@/store/modules/VisualizerStore.js';
+import { store } from "@/store/index.js";
 import { reactive } from "vue";
 
 class GraphData {

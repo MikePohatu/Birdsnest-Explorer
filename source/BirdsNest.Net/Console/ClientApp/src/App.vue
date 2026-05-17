@@ -33,7 +33,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 <script setup lang="ts">
 	import TopBar from "@/components/TopBar.vue";
 	import Curtain from "@/components/Curtain.vue";
-	import { rootPaths, useStore } from "@/store";
+	import { rootPaths, useStore } from "@/store/index.js";
 	import NotificationIcon from "@/components/NotificationIcon.vue";
 	import NotificationPane from "@/components/NotificationPane.vue";
 	import { ref, onMounted, onUpdated } from "vue";

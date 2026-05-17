@@ -110,10 +110,10 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 
 
 <script setup lang="ts">
-import { SimNode } from "@/assets/ts/visualizer/SimNode";
-import { SimLink } from '@/assets/ts/visualizer/SimLink';
+import { SimNode } from "@/assets/ts/visualizer/SimNode.js";
+import { SimLink } from '@/assets/ts/visualizer/SimLink.js';
 import { computed, ref } from "vue";
-import { initFoundationMounted } from "@/mixins/foundation";
+import { initFoundationMounted } from "@/mixins/foundation.js";
 	
 const templateRoot = ref(null);
 initFoundationMounted(templateRoot);

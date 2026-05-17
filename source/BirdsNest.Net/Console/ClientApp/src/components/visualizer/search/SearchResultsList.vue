@@ -69,13 +69,13 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 </style>
 
 <script setup lang="ts">
-import { SearchNode } from "@/assets/ts/visualizer/Search";
-import { VisualizerStorePaths } from "@/store/modules/VisualizerStore";
+import { SearchNode } from "@/assets/ts/visualizer/Search.js";
+import { VisualizerStorePaths } from "@/store/modules/VisualizerStore.js";
 import { computed, ref } from "vue";
-import { useStore } from "@/store";
+import { useStore } from "@/store/index.js";
 import { useI18n } from "vue-i18n";
-import { initFoundationMounted } from "@/mixins/foundation";
-import { Dictionary } from "@/assets/ts/webcrap/misccrap";
+import { initFoundationMounted } from "@/mixins/foundation.js";
+import { Dictionary } from "@/assets/ts/webcrap/misccrap.js";
 
 const templateRoot = ref(null);
 initFoundationMounted(templateRoot);

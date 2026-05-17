@@ -14,8 +14,8 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
-import { ApiNode } from "./ApiNode";
-import { ApiEdge } from "./ApiEdge";
+import { ApiNode } from "./ApiNode.js";
+import { ApiEdge } from "./ApiEdge.js";
 
 export interface ResultSet {
     nodes: ApiNode[];

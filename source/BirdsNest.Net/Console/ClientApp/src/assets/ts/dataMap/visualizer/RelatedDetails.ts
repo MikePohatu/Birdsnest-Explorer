@@ -14,8 +14,8 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
-import { ApiNode } from "@/assets/ts/dataMap/ApiNode";
-import { VForLabelledNodeList } from "./VForLabelledNodeList";
+import { ApiNode } from "@/assets/ts/dataMap/ApiNode.js";
+import { VForLabelledNodeList } from "./VForLabelledNodeList.js";
 
 export interface RelatedDetails {
     node: ApiNode;

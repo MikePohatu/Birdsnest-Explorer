@@ -14,7 +14,7 @@
 //
 // You should have received a copy of the GNU General Public License
 
-import { bus, events } from "@/bus";
+import { bus, events } from "@/bus.js";
 import { reactive } from "vue";
 
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.

@@ -58,13 +58,13 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 </style>
 
 <script setup lang="ts">
-import { VisualizerStorePaths } from "@/store/modules/VisualizerStore";
-import { SearchStorePaths } from "@/store/modules/SearchStore";
+import { VisualizerStorePaths } from "@/store/modules/VisualizerStore.js";
+import { SearchStorePaths } from "@/store/modules/SearchStore.js";
 import { computed, ref } from "vue";
-import { useStore } from "@/store";
+import { useStore } from "@/store/index.js";
 import { useI18n } from "vue-i18n";
-import { initFoundationMounted } from "@/mixins/foundation";
-import { Notify } from "@/assets/ts/Notifications";
+import { initFoundationMounted } from "@/mixins/foundation.js";
+import { Notify } from "@/assets/ts/Notifications.js";
 import SearchResultsList from "./SearchResultsList.vue";  
 	
 const templateRoot = ref(null);

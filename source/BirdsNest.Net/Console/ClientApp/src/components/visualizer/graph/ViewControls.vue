@@ -222,14 +222,14 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 </style>
 
 <script setup lang="ts">
-import webcrap from "@/assets/ts/webcrap/webcrap";
-import { bus, events } from "@/bus";
+import webcrap from "@/assets/ts/webcrap/webcrap.js";
+import { bus, events } from "@/bus.js";
 import ControlButton from "./ControlButton.vue";
 import EyeControls from "./EyeControls.vue";
-import { VisualizerStorePaths } from "@/store/modules/VisualizerStore";
+import { VisualizerStorePaths } from "@/store/modules/VisualizerStore.js";
 import { computed, ref } from "vue";
-import { useStore } from "@/store";
-import { initFoundationMounted } from "@/mixins/foundation";
+import { useStore } from "@/store/index.js";
+import { initFoundationMounted } from "@/mixins/foundation.js";
 	
 const templateRoot = ref(null);
 initFoundationMounted(templateRoot);

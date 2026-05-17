@@ -68,10 +68,10 @@ td.small {
 </style>
 
 <script setup lang="ts">
-import { api } from "@/assets/ts/webcrap/apicrap";
-import PluginManager from "@/assets/ts/dataMap/PluginManager";
+import { api } from "@/assets/ts/webcrap/apicrap.js";
+import PluginManager from "@/assets/ts/dataMap/PluginManager.js";
 import { computed } from "vue";
-import { useStore } from "@/store";
+import { useStore } from "@/store/index.js";
 	const store = useStore();
 
 	const pluginManager = computed((): PluginManager => {

@@ -27,9 +27,9 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 </template>
 
 <script setup lang="ts">
-	import { ValueCondition, ConditionType } from "@/assets/ts/visualizer/Search";
-	import { SearchStorePaths } from "@/store/modules/SearchStore";
-	import { useStore } from "@/store";
+	import { ValueCondition, ConditionType } from "@/assets/ts/visualizer/Search.js";
+	import { SearchStorePaths } from "@/store/modules/SearchStore.js";
+	import { useStore } from "@/store/index.js";
 	import { computed, ref } from "vue";
 	
 	const store = useStore();

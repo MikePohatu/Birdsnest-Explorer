@@ -14,9 +14,9 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
-import { ResultSet } from "./dataMap/ResultSet";
-import { ApiNode } from "./dataMap/ApiNode";
-import { Notify } from "./Notifications";
+import { ResultSet } from "./dataMap/ResultSet.js";
+import { ApiNode } from "./dataMap/ApiNode.js";
+import { Notify } from "./Notifications.js";
 
 const types = {
     PendingResults: "birdsnest.pendingResults",

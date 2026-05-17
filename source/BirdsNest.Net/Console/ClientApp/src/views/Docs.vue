@@ -42,11 +42,11 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 
 <script setup lang="ts">
 import { onBeforeRouteLeave, useRoute, useRouter } from "vue-router";
-import { api, Request } from "@/assets/ts/webcrap/apicrap";
+import { api, Request } from "@/assets/ts/webcrap/apicrap.js";
 import ScrollToTop from "@/components/ScrollToTop.vue";
 import { onBeforeMount, onUpdated, watch, ref } from "vue";
 import MarkdownIt from 'markdown-it';
-import { Notify } from "@/assets/ts/Notifications";
+import { Notify } from "@/assets/ts/Notifications.js";
 
 const md = new MarkdownIt();
 const router = useRouter();

@@ -14,8 +14,8 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
-import { Dictionary } from "@/assets/ts/webcrap/misccrap";
-import { ApiNodeSimple } from "@/assets/ts/dataMap/ApiNodeSimple";
+import { Dictionary } from "@/assets/ts/webcrap/misccrap.js";
+import { ApiNodeSimple } from "@/assets/ts/dataMap/ApiNodeSimple.js";
 
 export interface VForLabelledNodeList {
     name: string;

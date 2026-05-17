@@ -150,12 +150,12 @@ span {
 
 <script setup lang="ts">
 import { computed } from "vue";
-import { useStore } from "@/store";
+import { useStore } from "@/store/index.js";
 import VisualizerPortalBlock from "@/components/portal/VisualizerPortalBlock.vue";
 import ReportsPortalBlock from "@/components/portal/ReportsPortalBlock.vue";
 import ServerInfoPortalBlock from "@/components/portal/ServerInfoPortalBlock.vue";
-import { routeDefs } from "@/router/index";
-import webcrap from "@/assets/ts/webcrap/webcrap";
+import { routeDefs } from "@/router/index.js";
+import webcrap from "@/assets/ts/webcrap/webcrap.js";
 
 
 const isIE = webcrap.misc.isIE();

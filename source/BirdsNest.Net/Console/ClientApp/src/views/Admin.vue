@@ -83,15 +83,15 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 
 
 <script setup lang="ts">
-import { api, Request } from "@/assets/ts/webcrap/apicrap";
-import { auth } from "@/assets/ts/webcrap/authcrap";
+import { api, Request } from "@/assets/ts/webcrap/apicrap.js";
+import { auth } from "@/assets/ts/webcrap/authcrap.js";
 import { Dictionary } from "lodash";
-import { rootPaths } from "@/store/index";
-import PluginManager from "@/assets/ts/dataMap/PluginManager";
-import { routeDefs } from "@/router/index";
+import { rootPaths } from "@/store/index.js";
+import PluginManager from "@/assets/ts/dataMap/PluginManager.js";
+import { routeDefs } from "@/router/index.js";
 import { computed, ref } from 'vue';
-import { useStore } from "@/store";
-import { Notify } from "@/assets/ts/Notifications";
+import { useStore } from "@/store/index.js";
+import { Notify } from "@/assets/ts/Notifications.js";
 
 const store = useStore();
 let reloadMessage = ref("");

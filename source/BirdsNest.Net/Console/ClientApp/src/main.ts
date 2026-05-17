@@ -22,13 +22,13 @@ import "foundation-sites";
 import "motion-ui/dist/motion-ui.css";
 import "foundation-sites/dist/css/foundation.css";
 
-import i18n from "./i18n";
+import i18n from "./i18n.js";
 import CountryFlag from "vue-country-flag-next"
 import VueCookies from "vue3-cookies";
 
 import { createApp } from 'vue';
-import { store, key, rootPaths } from "./store";
-import router from "./router";
+import { store, key, rootPaths } from "./store/index.js";
+import router from "./router/index.js";
 import App from './App.vue';
 
 const app = createApp(App);

@@ -44,10 +44,10 @@ table {
 </style>
 <script setup lang="ts">
 import PluginReportListRow from "@/components/reports/PluginReportListRow.vue";
-import { ConsolePlugin } from "@/assets/ts/dataMap/ConsolePlugin";
+import { ConsolePlugin } from "@/assets/ts/dataMap/ConsolePlugin.js";
 import { computed } from "vue";
-import { Dictionary } from "@/assets/ts/webcrap/misccrap";
-import { Report } from "@/assets/ts/dataMap/Report";
+import { Dictionary } from "@/assets/ts/webcrap/misccrap.js";
+import { Report } from "@/assets/ts/dataMap/Report.js";
 
 const props = defineProps({ plugin: { type: Object, required: true } })
 const plugin = props.plugin as ConsolePlugin;

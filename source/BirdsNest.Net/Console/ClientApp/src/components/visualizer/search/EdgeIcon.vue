@@ -66,11 +66,11 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 </style>
 
 <script setup lang="ts">
-import { SearchEdge } from "@/assets/ts/visualizer/Search";
-import { SearchStorePaths } from '@/store/modules/SearchStore';
-import webcrap from '@/assets/ts/webcrap/webcrap';
+import { SearchEdge } from "@/assets/ts/visualizer/Search.js";
+import { SearchStorePaths } from '@/store/modules/SearchStore.js';
+import webcrap from '@/assets/ts/webcrap/webcrap.js';
 import { computed } from "@vue/reactivity";
-import { useStore } from "@/store";
+import { useStore } from "@/store/index.js";
 	const props = defineProps({
 		edge: {type: Object, required: true }
 	});
