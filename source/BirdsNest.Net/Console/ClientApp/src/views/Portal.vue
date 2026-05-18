@@ -21,7 +21,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 			<img src="/img/icons/logo.svg" height="512px" width="512px" />
 		</div>
 		<div v-html="bannerHtml" />
-		<p>{{ $t('word_Hi') }}{{ gn }}. {{ $t('portal.welcome') }}</p>
+		<p>{{ t('word_Hi') }}{{ gn }}. {{ t('portal.welcome') }}</p>
 
 		<div class="grid-x grid-margin-x" id="portalBoxes">
 			<VisualizerPortalBlock class="cell large-4 medium-6 portalBoxWrapper" />
@@ -30,17 +30,17 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 		</div>
 
 		<p class="text-center">
-			{{ $t('portal.usage_info_1') }}
-			<router-link v-if="!isIE" :to="routeDefs.docs.rootPath">{{ $t('word_documentation') }}</router-link>
+			{{ t('portal.usage_info_1') }}
+			<router-link v-if="!isIE" :to="routeDefs.docs.rootPath">{{ t('word_documentation') }}</router-link>
 			<a v-else href="https://github.com/MikePohatu/Birdsnest-Explorer" target="_blank">{{
-				$t('phrase_source_repository') }}</a>. {{ $t('portal.usage_info_2') }}
-			<a href="https://support.20road.com" target="_blank">{{ $t('twentyroad') }} {{ $t('portal.usage_info_3') }}</a>
+				t('phrase_source_repository') }}</a>. {{ t('portal.usage_info_2') }}
+			<a href="https://support.20road.com" target="_blank">{{ t('twentyroad') }} {{ t('portal.usage_info_3') }}</a>
 		</p>
 
 		<p class="text-center">
-			{{ $t('portal.license_attribution') }}
-			<router-link to="about">{{ $t('word_About') }}</router-link>
-			{{ $t('word_page') }}
+			{{ t('portal.license_attribution') }}
+			<router-link to="about">{{ t('word_About') }}</router-link>
+			{{ t('word_page') }}
 		</p>
 		<div v-html="footerHtml"></div>
 	</div>
@@ -156,6 +156,11 @@ import ReportsPortalBlock from "@/components/portal/ReportsPortalBlock.vue";
 import ServerInfoPortalBlock from "@/components/portal/ServerInfoPortalBlock.vue";
 import { routeDefs } from "@/router/index.js";
 import webcrap from "@/assets/ts/webcrap/webcrap.js";
+
+import { useI18n } from 'vue-i18n';
+const { t } = useI18n({
+  useScope: 'global'
+});
 
 
 const isIE = webcrap.misc.isIE();

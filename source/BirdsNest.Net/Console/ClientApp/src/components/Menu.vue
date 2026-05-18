@@ -30,22 +30,22 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 				<ul class="main-menu">
 					<li>
 						<div v-if="isAuthorized" class="menuwrapper">
-							<router-link :to="routeDefs.portal.path">{{ $t('word_Home') }}</router-link>
-							<router-link v-if="isAdmin" :to="routeDefs.admin.path">{{ $t('word_Admin') }}</router-link>
-							<router-link :to="routeDefs.reports.path">{{ $t('word_Reports') }}</router-link>
-							<router-link :to="routeDefs.info.path">{{ $t('phrase_Server_Information') }}</router-link>
-							<router-link :to="routeDefs.visualizer.path">{{ $t('word_Visualizer') }}</router-link>
+							<router-link :to="routeDefs.portal.path">{{ t('word_Home') }}</router-link>
+							<router-link v-if="isAdmin" :to="routeDefs.admin.path">{{ t('word_Admin') }}</router-link>
+							<router-link :to="routeDefs.reports.path">{{ t('word_Reports') }}</router-link>
+							<router-link :to="routeDefs.info.path">{{ t('phrase_Server_Information') }}</router-link>
+							<router-link :to="routeDefs.visualizer.path">{{ t('word_Visualizer') }}</router-link>
 							<hr />
-							<router-link :to="routeDefs.about.path">{{ $t('word_About') }}</router-link>
-							<router-link v-if="!isIE" :to="routeDefs.docs.rootPath">{{ $t('word_Docs') }}</router-link>
+							<router-link :to="routeDefs.about.path">{{ t('word_About') }}</router-link>
+							<router-link v-if="!isIE" :to="routeDefs.docs.rootPath">{{ t('word_Docs') }}</router-link>
 							<LangMenu />
-							<a v-on:click="logout">{{ $t('word_Logout') }}</a>
+							<a v-on:click="logout">{{ t('word_Logout') }}</a>
 						</div>
 						<div v-else class="menuwrapper">
-							<router-link :to="routeDefs.about.path">{{ $t('word_About') }}</router-link>
-							<router-link v-if="!isIE" :to="routeDefs.docs.rootPath">{{ $t('word_Docs') }}</router-link>
+							<router-link :to="routeDefs.about.path">{{ t('word_About') }}</router-link>
+							<router-link v-if="!isIE" :to="routeDefs.docs.rootPath">{{ t('word_Docs') }}</router-link>
 							<LangMenu />
-							<router-link :to="routeDefs.login.path">{{ $t('word_Login') }}</router-link>
+							<router-link :to="routeDefs.login.path">{{ t('word_Login') }}</router-link>
 						</div>
 					</li>
 				</ul>
@@ -62,6 +62,11 @@ import webcrap from "@/assets/ts/webcrap/webcrap.js";
 import { useStore } from "@/store/index.js";
 import { useRouter } from "vue-router";
 import { computed } from "vue";
+
+import { useI18n } from 'vue-i18n';
+const { t } = useI18n({
+  useScope: 'global'
+});
 
 const store = useStore();
 const router = useRouter();

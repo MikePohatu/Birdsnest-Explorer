@@ -37,7 +37,7 @@ const i18n = createI18n({
   fallbackLocale: import.meta.env.VUE_APP_I18N_FALLBACK_LOCALE || DEFAULT_LOCALE,
   messages: loadLocaleMessages(),
   legacy: false, // you must set `false`, to use Composition API
-  globalInjection: true
+  globalInjection: false
 });
 
 export default i18n;

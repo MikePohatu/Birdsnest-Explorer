@@ -21,67 +21,67 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 			<div id="viewcontrolbtns" class="grid-x">
 				<ControlButton
 					icon="fas fa-sync-alt"
-					:title="$t('visualizer.menu.refresh')"
+					:title="t('visualizer.menu.refresh')"
 					v-on:click.native="bus.emit(controlEvents.RefreshLayout)"
 					:class="[{ spinner: simRunning }, { 'button-active': simRunning }]"
 				/>
 				<ControlButton
 					v-show="!playMode"
 					icon="fas fa-play"
-					:title="$t('visualizer.menu.play_pause')"
+					:title="t('visualizer.menu.play_pause')"
 					v-on:click.native="playMode = true"
 				/>
 				<ControlButton
 					v-show="playMode"
 					icon="fas fa-pause"
-					:title="$t('visualizer.menu.play_pause')"
+					:title="t('visualizer.menu.play_pause')"
 					v-on:click.native="playMode = false"
 				/>
 				<ControlButton
 					icon="fas fa-expand"
-					:title="$t('visualizer.menu.select')"
+					:title="t('visualizer.menu.select')"
 					v-on:click.native="bus.emit(controlEvents.Select)"
 					:class="{ 'button-active': selectActive }"
 				/>
 				<ControlButton
 					icon="fas fa-random"
-					:title="$t('visualizer.menu.invert')"
+					:title="t('visualizer.menu.invert')"
 					v-on:click.native="bus.emit(controlEvents.Invert)"
 				/>
 				<ControlButton
 					icon="fas fa-eye"
-					:title="$t('visualizer.menu.hide_show_items')"
+					:title="t('visualizer.menu.hide_show_items')"
 					data-toggle="eyeLabelListWrapper"
 				/>
 				<ControlButton
 					icon="fas fa-trash-alt"
-					:title="$t('visualizer.menu.remove_node')"
+					:title="t('visualizer.menu.remove_node')"
 					v-on:click.native="bus.emit(controlEvents.RemoveNodes)"
 				/>
 				<ControlButton
 					icon="fas fa-crop-alt"
-					:title="$t('visualizer.menu.crop')"
+					:title="t('visualizer.menu.crop')"
 					v-on:click.native="bus.emit(controlEvents.Crop)"
 					:class="{ 'button-active': cropActive }"
 				/>
 				<ControlButton
 					icon="fas fa-crosshairs"
-					:title="$t('visualizer.menu.center')"
+					:title="t('visualizer.menu.center')"
 					v-on:click.native="bus.emit(controlEvents.CenterView)"
 				/>
 				<ControlButton
 					icon="fas fa-file-export"
-					:title="$t('visualizer.menu.export')"
+					:title="t('visualizer.menu.export')"
 					data-toggle="exportMenuWrapper"
 				/>
 				<ControlButton
 					icon="fas fa-search"
-					:title="$t('visualizer.menu.search')"
+					:title="t('visualizer.menu.search')"
 					data-toggle="searchGraphBoxWrapper"
 				/>
 				<ControlButton
 					icon="fas fa-ban"
-					:title="$t('visualizer.menu.clear')"
+					:title="t('visualizer.menu.clear')"
 					:ishighlighted="true"
 					v-on:click.native="bus.emit(controlEvents.ClearView)"
 				/>
@@ -103,14 +103,14 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 					<a
 						href="#"
 						v-on:click="bus.emit(controlEvents.Export)"
-					>{{ $t('visualizer.menu.export_report') }}</a>
+					>{{ t('visualizer.menu.export_report') }}</a>
 				</li>
 				<li v-if="!isIE">
 					<a
 						href="#"
 						v-on:click="onSvgDownloadClicked()"
 						:title="exportSvgTooltip"
-					>{{ $t('visualizer.menu.export_svg') }}</a>
+					>{{ t('visualizer.menu.export_svg') }}</a>
 				</li>
 			</ul>
 		</div>
@@ -126,7 +126,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 					id="searchGraphTerm"
 					type="search"
 					class="input-group-field"
-					:placeholder="$t('word_Search')"
+					:placeholder="t('word_Search')"
 					v-model="searchVal"
 					@keyup.enter="onSearchClicked"
 					@keyup.delete.stop
@@ -135,9 +135,9 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 					<button
 						id="searchGraphBtn"
 						class="button"
-						:aria-label="$t('word_Search')"
+						:aria-label="t('word_Search')"
 						type="submit"
-						:title="$t('word_Search')"
+						:title="t('word_Search')"
 						v-on:click="onSearchClicked"
 					>
 						<i class="fas fa-search"></i>
@@ -148,7 +148,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 				<!-- close  -->
 				<button
 					class="close-button"
-					:aria-label="$t('visualizer.menu.close_search')"
+					:aria-label="t('visualizer.menu.close_search')"
 					type="button"
 					data-toggle="searchGraphBoxWrapper"
 				>
@@ -230,6 +230,11 @@ import { VisualizerStorePaths } from "@/store/modules/VisualizerStore.js";
 import { computed, ref } from "vue";
 import { useStore } from "@/store/index.js";
 import { initFoundationMounted } from "@/mixins/foundation.js";
+
+import { useI18n } from 'vue-i18n';
+const { t } = useI18n({
+  useScope: 'global'
+});
 	
 const templateRoot = ref(null);
 initFoundationMounted(templateRoot);

@@ -21,10 +21,10 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 			<div class="grid-x align-middle">
 				<div class="cell small-3">
 					<u>
-						<b>{{ $t('word_Details') }}</b>
+						<b>{{ t('word_Details') }}</b>
 					</u>
 				</div>
-				<div class="cell small-1" :title="$t('visualizer.details.show_hide_relationship')">
+				<div class="cell small-1" :title="t('visualizer.details.show_hide_relationship')">
 					<a v-on:click="onEyeClicked()">
 						<span v-show="edge.enabled"><i class="cell fas fa-eye small-2"></i></span>
 						<span v-show="!edge.enabled"><i class="cell fas fa-eye-slash small-2"></i></span>
@@ -34,7 +34,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 			<b>dbId:</b>
 			{{edge.dbId}}
 			<br />
-			<b>{{ $t('word_Type') }}:</b>
+			<b>{{ t('word_Type') }}:</b>
 			{{type}}
 			<br />
 		</div>
@@ -43,7 +43,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 			<ul class="accordion" data-accordion data-allow-all-closed="true" data-multi-expand="true">
 				<!-- Properties -->
 				<li class="accordion-item" data-accordion-item>
-					<a href="#" class="accordion-title">{{ $t('word_Properties') }} ({{propertyNames.length}}):</a>
+					<a href="#" class="accordion-title">{{ t('word_Properties') }} ({{propertyNames.length}}):</a>
 					<div class="accordion-content detaillist" data-tab-content>
 						<div v-for="name in propertyNames" :key="name">
 							<b>{{name}}:</b>
@@ -115,6 +115,11 @@ import { SimLink } from '@/assets/ts/visualizer/SimLink.js';
 import { computed, ref } from "vue";
 import { initFoundationMounted } from "@/mixins/foundation.js";
 	
+import { useI18n } from 'vue-i18n';
+const { t } = useI18n({
+  useScope: 'global'
+});
+
 const templateRoot = ref(null);
 initFoundationMounted(templateRoot);
 

@@ -19,9 +19,9 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 	<div class="dialogWrapper">
 		<div id="newCond" class="dialog">
 			<fieldset class="fieldset">
-				<legend>{{ $t('word_New') }}</legend>
+				<legend>{{ t('word_New') }}</legend>
 				<div class="input-group">
-					<span class="input-group-label small-4">{{ $t('word_Type') }}</span>
+					<span class="input-group-label small-4">{{ t('word_Type') }}</span>
 					<select v-model="type" class="small-8 input-group-field">
                         <option v-for="(value, name) in newTypes" :key="name" :value="value">{{ name }}</option>
 					</select>
@@ -31,7 +31,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 					v-on:click="onCancelClicked"
 					class="close-button"
 					data-close
-					:aria-label="$t('phrase_Close_dialog')"
+					:aria-label="t('phrase_Close_dialog')"
 					type="button"
 				>
 					<span aria-hidden="true">&times;</span>
@@ -40,16 +40,16 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 					<div>
 						<button
 							class="button searchbutton-wide small"
-							:aria-label="$t('word_Continue')"
+							:aria-label="t('word_Continue')"
 							type="button"
 							v-on:click="onOkClicked"
-						>{{ $t('word_OK') }}</button>
+						>{{ t('word_OK') }}</button>
 						<button
 							class="alert searchbutton-wide button small"
-							:aria-label="$t('word_Cancel')"
+							:aria-label="t('word_Cancel')"
 							type="button"
 							v-on:click="onCancelClicked"
-						>{{ $t('word_Cancel') }}</button>
+						>{{ t('word_Cancel') }}</button>
 					</div>
 				</div>
 			</fieldset>
@@ -63,6 +63,11 @@ import { SearchStorePaths } from "@/store/modules/SearchStore.js";
 import { Dictionary } from "@/assets/ts/webcrap/misccrap.js";
 import { useStore } from "@/store/index.js";
 import { computed, ref } from "vue";
+
+import { useI18n } from 'vue-i18n';
+const { t } = useI18n({
+  useScope: 'global'
+});
 
 let type = ref(NewConditionType.Value);
 const store = useStore();

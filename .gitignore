@@ -393,3 +393,6 @@ source/BirdsNest.Net/Console/wwwroot/static/documentation/
 source/BirdsNest.Net/Console/ClientApp/public/static/documentation/
 source/BirdsNest.Net/AzureADScanner/AssemblyInfo.cs
 .vscode/settings.json
+
+source/BirdsNest.Net/Console/ClientApp/src/*/*.vue.js.map
+source/BirdsNest.Net/Console/ClientApp/src/*/*.vue.js

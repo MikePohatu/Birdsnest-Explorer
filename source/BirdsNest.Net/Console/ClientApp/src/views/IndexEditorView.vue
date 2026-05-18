@@ -17,7 +17,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 -->
 <template>
 	<div ref="root" class="page" id="indexEditor">
-		<h6>{{ $t('phrase_Indexes_by_Plugin') }}</h6>
+		<h6>{{ t('phrase_Indexes_by_Plugin') }}</h6>
 		<LoadingLogo v-if="!statsDataReady" />
 		<div v-else>
 			<ul class="accordion" data-accordion data-allow-all-closed="true" data-multi-expand="true">
@@ -29,14 +29,14 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 				>
 					<a href="#" class="pluginHeader accordion-title">{{ plugin.displayName }}</a>
 					<div v-if="pluginHasProperties(plugin) === false" class="accordion-content" data-tab-content>
-						<p class="noPropsMessage">{{ $t('index_editor.plugin_no_datatypes') }}</p>
+						<p class="noPropsMessage">{{ t('index_editor.plugin_no_datatypes') }}</p>
 					</div>
 					<div v-else class="accordion-content" data-tab-content>
 						<table class="hover">
 							<thead>
 								<tr>
-									<th>{{ $t('word_Type') }}</th>
-									<th>{{ $t('word_Property') }}</th>
+									<th>{{ t('word_Type') }}</th>
+									<th>{{ t('word_Property') }}</th>
 									<!-- <th>Index Name</th> -->
 									<th></th>
 								</tr>
@@ -53,31 +53,31 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 											<span
 												v-if="propertyHasConstraint(label as string, propname as string)"
 												class="inactive"
-												:title="$t('index_editor.constraints_not_supported')"
-											>{{ $t('word_Constraint') }}</span>
+												:title="t('index_editor.constraints_not_supported')"
+											>{{ t('word_Constraint') }}</span>
 											<span
 												v-else-if="propertyIndexIsEnforced(label as string, propname as string)"
 												class="inactive delete"
-												:title="$t('index_editor.index_enforced')"
-											>{{ $t('word_Delete') }}</span>
+												:title="t('index_editor.index_enforced')"
+											>{{ t('word_Delete') }}</span>
 											<a
 												v-else
 												v-on:click="onDeleteIndexClicked(label as string, propname as string)"
 												class="delete"
-											>{{ $t('word_Delete') }}</a>
+											>{{ t('word_Delete') }}</a>
 										</div>
 										<div v-else>
 											<a
 												v-if="propertyIndexIsEnforced(label as string, propname as string)"
 												v-on:click="onCreateIndexClicked(label, propname)"
 												class="create warning"
-												:title="$t('index_editor.enforced_missing')"
-											>{{ $t('word_Create') }}</a>
+												:title="t('index_editor.enforced_missing')"
+											>{{ t('word_Create') }}</a>
 											<a
 												v-else
 												v-on:click="onCreateIndexClicked(label, propname)"
 												class="create"
-											>{{ $t('word_Create') }}</a>
+											>{{ t('word_Create') }}</a>
 										</div>
 									</td>
 								</tr>

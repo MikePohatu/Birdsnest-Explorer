@@ -20,8 +20,8 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
         <table id="outputtable" class="hover">
             <thead>
                 <tr>
-                    <th>{{ pluginName }} {{ $t('word_Reports') }}</th>
-                    <th>{{ $t('word_Description') }}</th>
+                    <th>{{ pluginName }} {{ t('word_Reports') }}</th>
+                    <th>{{ t('word_Description') }}</th>
                 </tr>
             </thead>
             <tbody>
@@ -48,6 +48,11 @@ import { ConsolePlugin } from "@/assets/ts/dataMap/ConsolePlugin.js";
 import { computed } from "vue";
 import { Dictionary } from "@/assets/ts/webcrap/misccrap.js";
 import { Report } from "@/assets/ts/dataMap/Report.js";
+
+import { useI18n } from 'vue-i18n';
+const { t } = useI18n({
+  useScope: 'global'
+});
 
 const props = defineProps({ plugin: { type: Object, required: true } })
 const plugin = props.plugin as ConsolePlugin;

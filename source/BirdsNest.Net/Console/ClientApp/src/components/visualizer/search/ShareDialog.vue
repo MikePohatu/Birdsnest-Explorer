@@ -20,7 +20,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 		<div id="shareDialog" class="dialog">
 			<div class="share-block">
 				<div>
-					<b>{{ $t('phrase_Copy_and_paste_this_url') }}:</b>
+					<b>{{ t('phrase_Copy_and_paste_this_url') }}:</b>
 				</div>
 				<div class="share-code">
 					<router-link :to="shareUrl">{{ sharedUrlDisplay }}</router-link>
@@ -30,7 +30,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 			<div class="share-block">
 				<div>
 					<div>
-						<b>{{ $t('phrase_Cypher_query') }}</b>
+						<b>{{ t('phrase_Cypher_query') }}</b>
 					</div>
 					<div class="share-code">{{ cypherquery }}</div>
 				</div>
@@ -41,10 +41,10 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 					v-on:click="onShareOkClicked"
 					class="button searchbutton-wide small"
 					data-close
-					:aria-label="$t('phrase_Close_dialog')"
+					:aria-label="t('phrase_Close_dialog')"
 					type="button"
 				>
-					<span aria-hidden="true">{{ $t('word_OK') }}</span>
+					<span aria-hidden="true">{{ t('word_OK') }}</span>
 				</button>
 			</div>
 		</div>
@@ -66,6 +66,11 @@ import { SearchStorePaths } from "@/store/modules/SearchStore.js";
 import { computed } from "vue";
 import { useRoute } from "vue-router";
 import { useStore } from "@/store/index.js";
+
+import { useI18n } from 'vue-i18n';
+const { t } = useI18n({
+  useScope: 'global'
+});
 
 const store = useStore();
 const route = useRoute();

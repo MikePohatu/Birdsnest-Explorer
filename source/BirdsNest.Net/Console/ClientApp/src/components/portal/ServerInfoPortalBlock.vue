@@ -18,7 +18,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 <template>
 	<div>
 		<div class="portalBoxHeading">
-			<router-link to="info">{{ $t('phrase_Server_Information') }}</router-link>
+			<router-link to="info">{{ t('phrase_Server_Information') }}</router-link>
 		</div>
 		<div>
 			<router-link to="info">
@@ -26,27 +26,27 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 					<table>
 						<tbody>
 							<tr>
-								<td class="left">{{ $t('phrase_Installed_Plugins') }}</td>
+								<td class="left">{{ t('phrase_Installed_Plugins') }}</td>
 								<td v-if="serverInfoReady" class="right">{{ Object.keys(pluginManager.plugins).length }}</td>
 								<td v-else class="loading"></td>
 							</tr>
 							<tr>
-								<td class="left">{{ $t('word_Nodes') }}</td>
+								<td class="left">{{ t('word_Nodes') }}</td>
 								<td v-if="serverInfoReady" class="right">{{ serverInfo.dbStats.totals["nodes"] }}</td>
 								<td v-else class="loading"></td>
 							</tr>
 							<tr>
-								<td class="left">{{ $t('word_Relationships') }}</td>
+								<td class="left">{{ t('word_Relationships') }}</td>
 								<td v-if="serverInfoReady" class="right">{{ serverInfo.dbStats.totals["edges"] }}</td>
 								<td v-else class="loading"></td>
 							</tr>
 							<tr>
-								<td class="left">{{ $t('phrase_Server_Version') }}</td>
+								<td class="left">{{ t('phrase_Server_Version') }}</td>
 								<td v-if="serverInfoReady" class="right">{{ serverInfo.serverVersion }}</td>
 								<td v-else class="loading"></td>
 							</tr>
 							<tr>
-								<td class="left">{{ $t('phrase_Database_Version') }}</td>
+								<td class="left">{{ t('phrase_Database_Version') }}</td>
 								<td v-if="serverInfoReady" class="right">{{ serverInfo.dbStats.version }}</td>
 								<td v-else class="loading"></td>
 							</tr>
@@ -55,7 +55,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 				</div>
 			</router-link>
 		</div>
-		<div class="description">{{ $t('portal.server_info.info') }}</div>
+		<div class="description">{{ t('portal.server_info.info') }}</div>
 	</div>
 </template>
 
@@ -65,6 +65,11 @@ import ServerInfo from "@/assets/ts/dataMap/ServerInfo.js";
 import PluginManager from "@/assets/ts/dataMap/PluginManager.js";
 import { computed } from "vue";
 import { useStore } from "@/store/index.js";
+
+import { useI18n } from 'vue-i18n';
+const { t } = useI18n({
+  useScope: 'global'
+});
 
 const store = useStore();
 

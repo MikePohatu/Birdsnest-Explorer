@@ -23,9 +23,9 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 				id="searchMaximise"
 				v-on:click="onExpandClicked"
 				class="button absolute-top-left"
-				:aria-label="$t('phrase_Show_search')"
+				:aria-label="t('phrase_Show_search')"
 				type="button"
-				:title="$t('word_Search')"
+				:title="t('word_Search')"
 			>
 				<i class="fas fa-search"></i>
 			</button>
@@ -101,6 +101,11 @@ import AdvancedSearch from "./AdvancedSearch.vue";
 import { SearchStorePaths } from "@/store/modules/SearchStore.js";
 import { computed } from "vue";
 import { useStore } from "@/store/index.js";
+
+import { useI18n } from 'vue-i18n';
+const { t } = useI18n({
+  useScope: 'global'
+});
 
 const store = useStore();
 

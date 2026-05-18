@@ -19,11 +19,11 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 	<div v-if="condition.value !== null" class="dialogWrapper">
 		<div id="conditionEdit" class="dialog">
 			<fieldset class="fieldset">
-				<legend>{{ $t('word_Condition') }}</legend>
+				<legend>{{ t('word_Condition') }}</legend>
 				<div id="editControls">
 					<!-- Reference -->
 					<div class="input-group">
-						<span class="input-group-label">{{ $t('phrase_Referenced_Item') }}</span>
+						<span class="input-group-label">{{ t('phrase_Referenced_Item') }}</span>
 						<select
 							class="input-group-field"
 							v-model="condition.name"
@@ -35,7 +35,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 
 					<!-- Property -->
 					<div class="input-group" v-if="condition.name !== null">
-						<span class="input-group-label">{{ $t('word_Property') }}</span>
+						<span class="input-group-label">{{ t('word_Property') }}</span>
 						<select
 							class="small-8 input-group-field"
 							v-model="condition.property"
@@ -51,8 +51,8 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 						<span class="input-group-label">=</span>
 						<div class="input-group-button">
 							<select class="input-group-field" v-model="condition.value">
-								<option value="TRUE">{{ $t('word_true') }}</option>
-								<option value="FALSE">{{ $t('word_false') }}</option>
+								<option value="TRUE">{{ t('word_true') }}</option>
+								<option value="FALSE">{{ t('word_false') }}</option>
 							</select>
 						</div>
 					</div>
@@ -99,9 +99,9 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 					<div
 						v-if="propertyType === 'string' || propertyType === 'number'"
 						class="grid-x grid-margin-x align-top"
-						:key="$t('visualizer.search.not_descript')"
+						:key="t('visualizer.search.not_descript')"
 					>
-						<div class="cell shrink">{{ $t('word_Not') }}:</div>
+						<div class="cell shrink">{{ t('word_Not') }}:</div>
 						<div class="cell auto">
 							<div class="switch tiny" style="display: inline;">
 								<input
@@ -112,7 +112,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 									name="searchNot"
 								/>
 								<label class="switch-paddle" for="searchNot">
-									<span class="show-for-sr">{{ $t('word_Not') }}</span>
+									<span class="show-for-sr">{{ t('word_Not') }}</span>
 								</label>
 							</div>
 						</div>
@@ -123,9 +123,9 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 						v-if="propertyType === 'string'"
 						id="searchCaseOptions"
 						class="grid-x grid-margin-x align-top"
-						:title="$t('visualizer.search.case_sensitive_descript')"
+						:title="t('visualizer.search.case_sensitive_descript')"
 					>
-						<div class="cell shrink">{{ $t('phrase_Case_Sensitive') }}:</div>
+						<div class="cell shrink">{{ t('phrase_Case_Sensitive') }}:</div>
 						<div class="cell auto">
 							<div class="switch tiny" style="display: inline;">
 								<input
@@ -136,7 +136,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 									name="searchCase"
 								/>
 								<label class="switch-paddle" for="searchCase">
-									<span class="show-for-sr">{{ $t('phrase_Case_Sensitive') }}</span>
+									<span class="show-for-sr">{{ t('phrase_Case_Sensitive') }}</span>
 								</label>
 							</div>
 						</div>
@@ -161,26 +161,26 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 					<button
 						id="searchConditionSaveBtn"
 						class="button small searchbutton-wide"
-						:aria-label="$t('word_Save')"
+						:aria-label="t('word_Save')"
 						type="button"
 						v-on:click="onSaveClicked"
 						:disabled="!saveable"
-					>{{ $t('word_Save') }}</button>
+					>{{ t('word_Save') }}</button>
 					<button
 						id="searchConditionDeleteBtn"
 						class="alert button small searchbutton-wide"
-						:aria-label="$t('word_Delete')"
+						:aria-label="t('word_Delete')"
 						type="button"
 						:disabled="!deleteable"
 						v-on:click="onDeleteClicked"
-					>{{ $t('word_Delete') }}</button>
+					>{{ t('word_Delete') }}</button>
 					<button
 						id="searchConditionCancelBtn"
 						class="button small searchbutton-wide"
-						:aria-label="$t('word_Cancel')"
+						:aria-label="t('word_Cancel')"
 						type="button"
 						v-on:click="onCloseClicked"
-					>{{ $t('word_Cancel') }}</button>
+					>{{ t('word_Cancel') }}</button>
 				</div>
 			</fieldset>
 		</div>

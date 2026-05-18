@@ -22,10 +22,10 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 				<div class="grid-x align-middle">
 					<div class="cell shrink detailsHeader">
 						<u>
-							<b>{{ $t("word_Details") }}</b>
+							<b>{{ t("word_Details") }}</b>
 						</u>
 					</div>
-					<div class="cell small-1" :title="$t('visualizer.details.show_hide_node')">
+					<div class="cell small-1" :title="t('visualizer.details.show_hide_node')">
 						<a v-on:click="onEyeClicked()">
 							<span v-show="node.enabled">
 								<i class="cell fas fa-eye small-2"></i>
@@ -35,32 +35,32 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 							</span>
 						</a>
 					</div>
-					<div class="cell small-1" :title="$t('visualizer.details.add_related', relatedNodeCount)">
+					<div class="cell small-1" :title="t('visualizer.details.add_related', relatedNodeCount)">
 						<a v-on:click="onExpandClicked()">
 							<i class="cell fas fa-maximize small-2"></i>
 						</a>
 					</div>
-					<div class="cell small-1" :title="$t('word_Refresh')">
+					<div class="cell small-1" :title="t('word_Refresh')">
 						<a v-on:click="onRefreshClicked()">
 							<div class="cell fas fa-redo-alt small-2"></div>
 						</a>
 					</div>
-					<div class="cell small-1" :title="$t('phrase_Remove_from_view')">
+					<div class="cell small-1" :title="t('phrase_Remove_from_view')">
 						<a v-on:click="onRemoveClicked()">
 							<div class="cell fas fa-trash-alt small-2"></div>
 						</a>
 					</div>
 				</div>
-				<b>{{ $t("word_Name") }}:</b>
+				<b>{{ t("word_Name") }}:</b>
 				{{ node.name }}
 				<br />
 				<b>dbId:</b>
 				{{ node.dbId }}
 				<br />
-				<b>{{ $t("word_Type", node.labels.length) }}:</b>
+				<b>{{ t("word_Type", node.labels.length) }}:</b>
 				{{ types }}
 				<br />
-				<b>{{ $t("word_Scope") }}:</b>
+				<b>{{ t("word_Scope") }}:</b>
 				{{ node.scope }}
 				<br />
 			</div>
@@ -68,7 +68,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 			<!-- Properties -->
 			<ul id="propsAccordion" class="vertical menu accordion-menu" data-accordion-menu>
 				<li>
-					<a href="#">{{ $t("word_Properties") }} ({{ propertyNames.length }}):</a>
+					<a href="#">{{ t("word_Properties") }} ({{ propertyNames.length }}):</a>
 					<ul class="menu vertical nested">
 						<li class="property" v-for="name in propertyNames" :key="name">
 							<b>{{ name }}:</b>
@@ -82,13 +82,13 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 			<!-- Related -->
 			<ul id="relatedAccordion" class="vertical menu accordion-menu" data-accordion-menu>
 				<li>
-					<a v-if="!detailsLoaded" href="#">{{ $t("word_Related") }} ({{ $t("word_Loading") }})</a>
-					<a v-else href="#">{{ $t("word_Related") }} ({{ relatedNodeCount }}):</a>
+					<a v-if="!detailsLoaded" href="#">{{ t("word_Related") }} ({{ t("word_Loading") }})</a>
+					<a v-else href="#">{{ t("word_Related") }} ({{ relatedNodeCount }}):</a>
 
 					<!-- inbound relationships -->
 					<ul class="menu vertical nested">
 						<li v-if="inCount > 0">
-							<a href="#">{{ $t("word_Inbound") }}</a>
+							<a href="#">{{ t("word_Inbound") }}</a>
 							<ul
 								v-for="labelledNodeList in inLabelledNodeLists"
 								:key="labelledNodeList.name"
@@ -100,7 +100,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 									<ul class="menu vertical nested">
 										<!-- link for add all -->
 										<li class="menu nested addall">
-											<a v-on:click="addNodeList(labelledNodeList, label)" class="plus">{{ $t('phrase_Add_all') }}</a>
+											<a v-on:click="addNodeList(labelledNodeList, label)" class="plus">{{ t('phrase_Add_all') }}</a>
 										</li>
 										<li
 											v-for="labelledNode in getNodeSublistByLabel(labelledNodeList, label)"
@@ -112,7 +112,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 											<a v-on:click="addNode(labelledNode)" class="plus">(+)</a>
 										</li>
 										<li v-if="isExpanded(labelledNodeList, label) === false" class="menu nested">
-											<a href="#" v-on:click="expandLabel(labelledNodeList, label)">{{ $t("word_More") }}...</a>
+											<a href="#" v-on:click="expandLabel(labelledNodeList, label)">{{ t("word_More") }}...</a>
 										</li>
 									</ul>
 								</li>
@@ -121,7 +121,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 
 						<!-- outbound relationships -->
 						<li v-if="outCount > 0">
-							<a href="#">{{ $t("word_Outbound") }}</a>
+							<a href="#">{{ t("word_Outbound") }}</a>
 							<ul
 								v-for="labelledNodeList in outLabelledNodeLists"
 								:key="labelledNodeList.name"
@@ -133,7 +133,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 									<ul class="menu vertical nested">
 										<!-- link for add all -->
 										<li class="menu nested addall">
-											<a v-on:click="addNodeList(labelledNodeList, label)" class="plus">{{ $t('phrase_Add_all') }}</a>
+											<a v-on:click="addNodeList(labelledNodeList, label)" class="plus">{{ t('phrase_Add_all') }}</a>
 										</li>
 										<li
 											v-for="labelledNode in getNodeSublistByLabel(labelledNodeList, label)"
@@ -145,7 +145,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 											<a v-on:click="addNode(labelledNode)" class="plus">(+)</a>
 										</li>
 										<li v-if="isExpanded(labelledNodeList, label) === false" class="menu nested">
-											<a href="#" v-on:click="expandLabel(labelledNodeList, label)">{{ $t("word_More") }}...</a>
+											<a href="#" v-on:click="expandLabel(labelledNodeList, label)">{{ t("word_More") }}...</a>
 										</li>
 									</ul>
 								</li>
@@ -253,6 +253,11 @@ import { useStore } from "@/store/index.js";
 import { initFoundationMounted } from "@/mixins/foundation.js";
 import { Notify } from "@/assets/ts/Notifications.js";
 	
+import { useI18n } from 'vue-i18n';
+const { t } = useI18n({
+  useScope: 'global'
+});
+
 const templateRoot = ref(null);
 initFoundationMounted(templateRoot);
 

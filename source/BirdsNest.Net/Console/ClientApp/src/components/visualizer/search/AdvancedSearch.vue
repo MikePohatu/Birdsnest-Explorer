@@ -20,7 +20,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 		<div>
 			<fieldset class="fieldset">
 				<legend>
-					<span>{{ $t('word_Search') }}</span>
+					<span>{{ t('word_Search') }}</span>
 					<div id="itemEditButtons">
 						<span class="fieldset-spacer" />
 						<!-- path buttons -->
@@ -62,7 +62,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 		<div>
 			<fieldset class="fieldset">
 				<legend>
-					<span>{{ $t('word_Conditions') }}</span>
+					<span>{{ t('word_Conditions') }}</span>
 					<div id="itemEditButtons">
 						<span class="fieldset-spacer" />
 						<!-- path buttons -->
@@ -88,14 +88,14 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 			</fieldset>
 		</div>
 
-		<div :title="$t('visualizer.search.include_disabled_tip')">
+		<div :title="t('visualizer.search.include_disabled_tip')">
 			<fieldset class="fieldset">
 				<legend>
-					<span>{{ $t('word_Options') }}</span>
+					<span>{{ t('word_Options') }}</span>
 
 				</legend>
 				<div id="optionsInnerWrapper" >
-					<label for="includeDisabled">{{ $t("visualizer.search.include_disabled_links")}}
+					<label for="includeDisabled">{{ t("visualizer.search.include_disabled_links")}}
 						<input type="checkbox" id="includeDisabled" name="includeDisabled"
 							v-model="includeDisabled"></label>
 				</div>
@@ -113,7 +113,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 				<div id="alertMessageLink"></div>
 				<div>
 					<button class="button" data-close aria-label="Close alert dialog" type="button">
-						<span aria-hidden="true">{{ $t('word_OK') }}</span>
+						<span aria-hidden="true">{{ t('word_OK') }}</span>
 					</button>
 				</div>
 			</div>

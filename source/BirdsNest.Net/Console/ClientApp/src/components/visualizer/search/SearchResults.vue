@@ -19,10 +19,10 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 	<div ref="templateRoot" id="results" v-bind:class="{ hidden: !showResults }">
 		<div v-bind:class="{ hidden: zeroResults } ">
 			<div>
-				{{ $t('word_Found') }}
+				{{ t('word_Found') }}
 				<a :data-toggle="dropdownId">{{ resultCount }}</a>
-				{{ $t('word_results') }}.
-				<a v-on:click="onAddToViewClicked">{{ $t('phrase_Add_to_view') }}</a>
+				{{ t('word_results') }}.
+				<a v-on:click="onAddToViewClicked">{{ t('phrase_Add_to_view') }}</a>
 			</div>
 
 			<div

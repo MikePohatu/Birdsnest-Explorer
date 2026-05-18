@@ -17,8 +17,8 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 -->
 <template>
     <div id="wrap" class="xy-center">
-        <div id="code">{{ $t('word_Error') }} {{ $route.params.code }}</div>
-        <div id="message" class="x-center">{{ $t('word_whoops') }}...</div>
+        <div id="code">{{ t('word_Error') }} {{ route.params.code }}</div>
+        <div id="message" class="x-center">{{ t('word_whoops') }}...</div>
     </div>
 </template>
 
@@ -38,3 +38,13 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
     font-size: large;
 }
 </style>
+
+<script setup lang="ts">
+import { useRoute } from 'vue-router';
+import { useI18n } from 'vue-i18n';
+
+const route = useRoute();
+const { t } = useI18n({
+  useScope: 'global'
+});
+</script>

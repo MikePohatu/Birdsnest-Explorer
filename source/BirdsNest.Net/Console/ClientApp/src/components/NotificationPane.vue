@@ -16,7 +16,7 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see http://www.gnu.org/licenses/.
 -->
 <template>
-	<div id="eventspane" ref="eventspane" :class="[{ hidepane: isHidden }]" :title="$t('word_Notifications')">
+	<div id="eventspane" ref="eventspane" :class="[{ hidepane: isHidden }]" :title="t('word_Notifications')">
         <div id="eventspaneHider" class="clickable" v-on:click.native="onHiderClicked()">
             <span class="hiderButton">
                 <i :class="['fa', {'fa-angle-up': isHidden, 'fa-angle-down': !isHidden }]"></i>
@@ -26,9 +26,9 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
         <div id="output">
             
             <div id="header">
-                <span>{{ $t("word_Notifications") }}</span>
+                <span>{{ t("word_Notifications") }}</span>
                 <!-- <span v-if="isDevMode" class="clickable" v-on:click.native="onTestEventsClicked()"> - TEST MESSAGES</span> -->
-                <span id="clear" class="clickable" v-on:click.native="onClearClicked()" :title="$t('phrase_Clear_notifications')">
+                <span id="clear" class="clickable" v-on:click.native="onClearClicked()" :title="t('phrase_Clear_notifications')">
                     <i class="fa-regular fa-trash-can"></i>
                 </span>
             </div>
@@ -40,7 +40,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                     </li>
                 </ul>
                 <ul v-else>
-                    <li><i>{{ $t("phrase_Nothing_to_show") }}</i></li>
+                    <li><i>{{ t("phrase_Nothing_to_show") }}</i></li>
                 </ul>
             </div>
         </div>
@@ -158,10 +158,14 @@ li {
 </style>
 
 <script setup lang="ts">
-import { NotificationMessage, NotificationMessageLevels, Notify, Messages } from '@/assets/ts/Notifications.js';
-import { i18nGetPhrase } from '@/i18n.js';
-import { computed, onUpdated, ref } from 'vue';
+    import { NotificationMessage, NotificationMessageLevels, Notify, Messages } from '@/assets/ts/Notifications.js';
+    import { i18nGetPhrase } from '@/i18n.js';
+    import { computed, onUpdated, ref } from 'vue';
 
+    import { useI18n } from 'vue-i18n';
+    const { t } = useI18n({
+    useScope: 'global'
+    });
     const isHidden = ref(true);
     const messagelist = ref(null);
     const eventspane = ref(null);

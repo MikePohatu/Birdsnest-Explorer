@@ -19,10 +19,10 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 	<div v-if="node !== null" class="dialogWrapper">
 		<div id="searchNodeEdit" class="dialog">
 			<fieldset class="fieldset cell">
-				<legend>{{ $t('word_Node') }}</legend>
+				<legend>{{ t('word_Node') }}</legend>
 				
 				<div class="input-group">
-					<span class="input-group-label">{{ $t('word_Identifier') }}</span>
+					<span class="input-group-label">{{ t('word_Identifier') }}</span>
 					<input
 						id="nodeIdentifier"
 						type="search"
@@ -34,7 +34,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 				</div>
 
 				<div class="input-group">
-					<span class="input-group-label">{{ $t('word_Type') }}</span>
+					<span class="input-group-label">{{ t('word_Type') }}</span>
 					<select id="nodeType" class="input-group-field" v-model="node.label">
 						<option value="">*</option>
 						<option
@@ -49,7 +49,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 			<button
 				class="close-button"
 				v-on:click="onCloseClicked"
-				:aria-label="$t('phrase_Close_query_dialog')"
+				:aria-label="t('phrase_Close_query_dialog')"
 				type="button"
 			>
 				<span aria-hidden="true">&times;</span>
@@ -58,22 +58,22 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 				<button
 					v-on:click="saveNode"
 					class="button searchbutton-wide small"
-					:aria-label="$t('phrase_Save_this_node')"
+					:aria-label="t('phrase_Save_this_node')"
 					type="button"
-				>{{ $t('word_Save') }}</button>
+				>{{ t('word_Save') }}</button>
 				<button
 					v-on:click="saveNodeAndCond"
 					class="button searchbutton-x-wide small"
-					:aria-label="$t('phrase_Save_this_node_and_add_condition')"
+					:aria-label="t('phrase_Save_this_node_and_add_condition')"
 					type="button"
-				>{{ $t('phrase_Save_Add_Condition')}}</button>
+				>{{ t('phrase_Save_Add_Condition')}}</button>
 				<button
 					v-on:click="deleteNode"
 					class="alert button searchbutton-wide small"
-					:aria-label="$t('phrase_Delete_this_node')"
+					:aria-label="t('phrase_Delete_this_node')"
 					type="button"
 				>
-					<span>{{ $t('word_Delete') }}</span>
+					<span>{{ t('word_Delete') }}</span>
 				</button>
 			</div>
 		</div>
@@ -87,6 +87,11 @@ import { SearchNode, copyNode, ValueCondition, ConditionType } from "@/assets/ts
 import { SearchStorePaths } from "@/store/modules/SearchStore.js";
 import { useStore } from "@/store/index.js";
 import { computed, reactive } from "vue";
+
+import { useI18n } from 'vue-i18n';
+const { t } = useI18n({
+  useScope: 'global'
+});
 
 	const props = defineProps({ source: {type: Object, required: true}});
 	const source = props.source as SearchNode;

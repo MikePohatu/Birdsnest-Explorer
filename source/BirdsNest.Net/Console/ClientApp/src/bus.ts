@@ -16,6 +16,7 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 import mitt from 'mitt';
 
+// @ts-ignore
 export const bus = mitt();
 
 export const events = {

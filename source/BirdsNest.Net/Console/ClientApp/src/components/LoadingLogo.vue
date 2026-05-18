@@ -25,7 +25,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
             <div class="cell auto" />
         </div>
         <div class="grid-x" style="width: 100px">
-            <p class="cell loading">{{ $t('word_Loading') }}</p>
+            <p class="cell loading">{{ t('word_Loading') }}</p>
         </div>
     </div>
 </template>
@@ -38,3 +38,11 @@ p {
   text-align: center;
 }
 </style>
+
+<script setup lang="ts">
+
+import { useI18n } from 'vue-i18n';
+const { t } = useI18n({
+  useScope: 'global'
+});
+</script>

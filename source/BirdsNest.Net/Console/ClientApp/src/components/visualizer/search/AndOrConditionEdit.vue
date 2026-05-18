@@ -19,12 +19,12 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 	<div class="dialogWrapper">
 		<div id="andOrEdit" class="dialog">
 			<fieldset class="fieldset">
-				<legend>{{ $t('phrase_And_Or') }}</legend>
+				<legend>{{ t('phrase_And_Or') }}</legend>
 				<div class="input-group">
-					<span class="input-group-label small-4">{{ $t('word_Type') }}</span>
+					<span class="input-group-label small-4">{{ t('word_Type') }}</span>
 					<select v-model="type" class="small-8 input-group-field">
-						<option value="AND">{{ $t('word_AND') }}</option>
-						<option value="OR">{{ $t('word_OR') }}</option>
+						<option value="AND">{{ t('word_AND') }}</option>
+						<option value="OR">{{ t('word_OR') }}</option>
 					</select>
 				</div>
 
@@ -32,7 +32,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 					v-on:click="onCloseClicked"
 					class="close-button"
 					data-close
-					:aria-label="$t('phrase_Close_condition_dialog')"
+					:aria-label="t('phrase_Close_condition_dialog')"
 					type="button"
 				>
 					<span aria-hidden="true">&times;</span>
@@ -42,17 +42,17 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 						<button
 							id="searchAndOrSaveBtn"
 							class="button searchbutton-wide small"
-							:aria-label="$t('phrase_Save_this_condition')"
+							:aria-label="t('phrase_Save_this_condition')"
 							type="button"
 							v-on:click="onSaveClicked"
-						>{{ $t('word_Save') }}</button>
+						>{{ t('word_Save') }}</button>
 						<button
 							id="searchAndOrDeleteBtn"
 							class="alert searchbutton-wide button small"
-							:aria-label="$t('phrase_Delete_this_condition')"
+							:aria-label="t('phrase_Delete_this_condition')"
 							type="button"
 							v-on:click="onDeleteClicked"
-						>{{ $t('word_Delete') }}</button>
+						>{{ t('word_Delete') }}</button>
 					</div>
 				</div>
 			</fieldset>

@@ -20,7 +20,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 		<div class="cell"></div>
 		<div class="cell loginbox" style="max-width: 350px; min-width: 280px;">
 			<fieldset class="fieldset">
-				<legend>{{ $t("word_Login") }}</legend>
+				<legend>{{ t("word_Login") }}</legend>
 				<form id="loginForm" class="cell" type="POST" @submit.prevent="login">
 					<div class="input-group">
 						<input
@@ -30,7 +30,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 							v-model="username"
 							tabindex="1"
 							type="text"
-							:placeholder="$t('word_Username')"
+							:placeholder="t('word_Username')"
 							class="small-8 input-group-field"
 						/>
 					</div>
@@ -43,7 +43,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 							v-model="password"
 							tabindex="2"
 							type="password"
-							:placeholder="$t('word_Password')"
+							:placeholder="t('word_Password')"
 							class="small-8 input-group-field"
 						/>
 					</div>
@@ -62,7 +62,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 
 					<div class="grid-x">
 						<div class="cell small-3 medium-3 large-3">
-							<input id="loginbtn" tabindex="3" type="submit" class="button" :value="$t('word_Login')" />
+							<input id="loginbtn" tabindex="3" type="submit" class="button" :value="t('word_Login')" />
 						</div>
 					</div>
 
@@ -92,6 +92,11 @@ import { useStore } from "@/store/index.js";
 import { auth } from "@/assets/ts/webcrap/authcrap.js";
 import { rootPaths } from "@/store/index.js";
 import webcrap from "@/assets/ts/webcrap/webcrap.js";
+
+import { useI18n } from 'vue-i18n';
+const { t } = useI18n({
+  useScope: 'global'
+});
 
 const store = useStore();
 

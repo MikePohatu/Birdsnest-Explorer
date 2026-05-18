@@ -28,10 +28,10 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 					<li>
 						<a
 							id="reportmenutext"
-						>{{ $t('phrase_Query_returned') }} {{ resultCount }} {{ $t('word_records') }}</a>
+						>{{ t('phrase_Query_returned') }} {{ resultCount }} {{ t('word_records') }}</a>
 						<ul class="menu">
 							<li id="columnsli">
-								<a href="#">{{ $t('word_Columns') }}</a>
+								<a href="#">{{ t('word_Columns') }}</a>
 								<ul class="vertical menu nested" id="columnstoggles">
 									<li v-for="name in propertyNames" :key="name">
 										<label class="toggleitem">
@@ -47,13 +47,13 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 								</ul>
 							</li>
 							<li id="downloadli">
-								<a href="#" v-on:click="onDownloadClicked">{{ $t('word_Download') }}</a>
+								<a href="#" v-on:click="onDownloadClicked">{{ t('word_Download') }}</a>
 							</li>
 							<li id="visualizerli">
-								<a href="#" v-on:click="onVisualizerClicked">{{ $t('phrase_Open_in_Visualizer') }}</a>
+								<a href="#" v-on:click="onVisualizerClicked">{{ t('phrase_Open_in_Visualizer') }}</a>
 							</li>
 							<li v-if="query !== ''">
-								<a href="#" v-on:click="onShowQueryClicked">{{ $t('phrase_Show_query') }}</a>
+								<a href="#" v-on:click="onShowQueryClicked">{{ t('phrase_Show_query') }}</a>
 							</li>
 						</ul>
 					</li>
@@ -71,7 +71,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 						<i class="fas fa-caret-left"></i>
 					</a>
 				</span>
-				<span style="margin:5px;" class="text-center">{{ pageNum }} {{ $t('word_of') }} {{ pageCount }}</span>
+				<span style="margin:5px;" class="text-center">{{ pageNum }} {{ t('word_of') }} {{ pageCount }}</span>
 				<span v-if="hasNextPage" id="nextPageBtn" style="margin:5px;">
 					<a href="#" v-on:click="onPageUpClicked">
 						<i class="fas fa-caret-right"></i>
@@ -183,6 +183,11 @@ import { computed, onMounted, ref } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import { initFoundationMounted } from "@/mixins/foundation.js";
 import { Notify } from "@/assets/ts/Notifications.js";
+
+import { useI18n } from 'vue-i18n';
+const { t } = useI18n({
+  useScope: 'global'
+});
 	
 const templateRoot = ref(null);
 initFoundationMounted(templateRoot);

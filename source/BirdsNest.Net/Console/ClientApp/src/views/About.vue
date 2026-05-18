@@ -19,35 +19,35 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 	<div class="grid-x grid-margin-x">
 		<div class="cell auto"></div>
 		<div class="content">
-			<h4>{{ $t('word_About') }}</h4>
+			<h4>{{ t('word_About') }}</h4>
 			<p>
-				{{ $t('Birdsnest_Explorer') }} {{ $t('about.is_created_and_maintained_by') }}
-				<a href="https://20road.com" target="_blank">{{ $t('twentyroad') }}</a>.
+				{{ t('Birdsnest_Explorer') }} {{ t('about.is_created_and_maintained_by') }}
+				<a href="https://20road.com" target="_blank">{{ t('twentyroad') }}</a>.
 			</p>
 
-			<h5>{{ $t('word_Documentation') }}</h5>
+			<h5>{{ t('word_Documentation') }}</h5>
 			<p class="justify">
-				<router-link v-if="!isIE" to="/docs">{{ $t('word_Documentation') }}</router-link><span v-else style="padding: 0px;">{{ $t('word_Documentation') }}</span> {{ $t('about.documentation_available_from') }} {{ $t('Birdsnest_Explorer') }}
+				<router-link v-if="!isIE" to="/docs">{{ t('word_Documentation') }}</router-link><span v-else style="padding: 0px;">{{ t('word_Documentation') }}</span> {{ t('about.documentation_available_from') }} {{ t('Birdsnest_Explorer') }}
 				<a
 					href="https://github.com/MikePohatu/Birdsnest-Explorer"
 					target="_blank"
-				>{{ $t('phrase_source_repository') }}</a>. {{ $t('about.version_documentation_branch') }}
-				<b>{{ $t('word_Branch') }}</b> {{ $t('about.dropdown_list') }}
+				>{{ t('phrase_source_repository') }}</a>. {{ t('about.version_documentation_branch') }}
+				<b>{{ t('word_Branch') }}</b> {{ t('about.dropdown_list') }}
 			</p>
 
-			<h5>{{ $t('word_License') }}</h5>
+			<h5>{{ t('word_License') }}</h5>
 			<p class="justify">
-				{{ $t('Birdsnest_Explorer') }} {{ $t('about.is_open_source_software')}} {{ $t('Birdsnest_Explorer') }}
+				{{ t('Birdsnest_Explorer') }} {{ t('about.is_open_source_software')}} {{ t('Birdsnest_Explorer') }}
 				<a
 					href="https://github.com/MikePohatu/Birdsnest-Explorer"
 					target="_blank"
-				>{{ $t('phrase_source_repository') }}</a>.
+				>{{ t('phrase_source_repository') }}</a>.
 			</p>
 
-			<h5>{{ $t('word_Attribution') }}</h5>
+			<h5>{{ t('word_Attribution') }}</h5>
 			<p
 				class="justify"
-			>{{ $t('Birdsnest_Explorer') }} {{ $t('about.is_built_upon') }}</p>
+			>{{ t('Birdsnest_Explorer') }} {{ t('about.is_built_upon') }}</p>
 			<p>
 				.Net Core -
 				<a href="https://github.com/dotnet/core" target="_blank">Microsoft</a>
@@ -110,6 +110,11 @@ p {
 
 <script setup lang="ts">
 import webcrap from "@/assets/ts/webcrap/webcrap.js";
+
+import { useI18n } from 'vue-i18n';
+const { t } = useI18n({
+  useScope: 'global'
+});
 
 const isIE = webcrap.misc.isIE();
 </script>

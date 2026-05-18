@@ -21,7 +21,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
             <a href="#">{{ property }} ({{ nodeList.length }})</a>
             <ul class="vertical menu nested">
                 <li class="menu nested add-all">
-                    <a v-on:click="onAddLabelClicked(nodeList)" class="">{{ $t('phrase_Add_all') }}</a>
+                    <a v-on:click="onAddLabelClicked(nodeList)" class="">{{ t('phrase_Add_all') }}</a>
                 </li>
                 <li v-for="node in nodeList" :key="node.dbId" :title="node.labels.join(', ')" class="menu nested">
                     <a v-on:click="onAddClicked(node)">(+)</a><div>{{ node.name }}</div>

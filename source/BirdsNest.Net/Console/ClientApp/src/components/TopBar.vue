@@ -19,7 +19,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 	<div>
 		<div class="title-bar hide-for-medium portrait-bar grid-x">
 			<div id="smallcrumbs" class="cell small-9">
-				<router-link :to="routeDefs.portal.path">{{ $t("Birdsnest_Explorer") }}</router-link>
+				<router-link :to="routeDefs.portal.path">{{ t("Birdsnest_Explorer") }}</router-link>
 				<div>
 					<nav aria-label="You are here:" role="navigation">
 						<ul class="breadcrumbs">
@@ -48,7 +48,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 				<nav aria-label="You are here:" role="navigation">
 					<ul class="breadcrumbs">
 						<li>
-							<router-link class="bn-header" :to="routeDefs.portal.path">{{ $t("Birdsnest_Explorer") }}</router-link>
+							<router-link class="bn-header" :to="routeDefs.portal.path">{{ t("Birdsnest_Explorer") }}</router-link>
 						</li>
 						<li v-for="crumb in breadcrumbs" :key="crumb.name" class="bn-header-crumb">
 							<router-link v-if="crumb.link" :to="crumb.link" class="crumb">{{ crumb.name }}</router-link>
@@ -73,6 +73,11 @@ import Menu from "@/components/Menu.vue";
 import { computed } from "vue";
 import { useRoute, breadcrumb } from "vue-router";
 import { routeDefs } from "@/router/index.js";
+
+import { useI18n } from 'vue-i18n';
+const { t } = useI18n({
+  useScope: 'global'
+});
 
 const route = useRoute();
 

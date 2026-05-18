@@ -18,7 +18,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 <template>
 	<div>
 		<div class="portalBoxHeading">
-			<router-link to="visualizer">{{ $t('word_Visualizer') }}</router-link>
+			<router-link to="visualizer">{{ t('word_Visualizer') }}</router-link>
 		</div>
 		<div>
 			<router-link to="visualizer">
@@ -29,11 +29,16 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 		</div>
 		<div
 			class="description"
-		>{{ $t('portal.visualizer.info') }}</div>
+		>{{ t('portal.visualizer.info') }}</div>
 	</div>
 </template>
 
 <script setup lang="ts">
 import VisualizerPortalScreeny from "@/components/portal/VisualizerPortalScreeny.vue";
+
+import { useI18n } from 'vue-i18n';
+const { t } = useI18n({
+  useScope: 'global'
+});
 
 </script>
