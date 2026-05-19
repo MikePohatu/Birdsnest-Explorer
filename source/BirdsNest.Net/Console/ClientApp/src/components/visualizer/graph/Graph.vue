@@ -183,7 +183,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 
 <script setup lang="ts">
 import { bus, events } from "@/bus.js";
-import { routeDefs } from "@/router/index.js";
+import { routeDefs } from "@/router.js";
 import { graphData } from "@/assets/ts/visualizer/GraphData.js";
 
 import { VisualizerStorePaths } from "@/store/modules/VisualizerStore.js";

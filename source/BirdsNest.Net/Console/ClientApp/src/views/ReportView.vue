@@ -168,7 +168,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 </style>
 
 <script setup lang="ts">
-import { routeDefs } from "@/router/index.js";
+import { routeDefs } from "@/router.js";
 import LoadingLogo from "@/components/LoadingLogo.vue";
 import { ResultSet } from "@/assets/ts/dataMap/ResultSet.js";
 import { api, Request } from "@/assets/ts/webcrap/apicrap.js";

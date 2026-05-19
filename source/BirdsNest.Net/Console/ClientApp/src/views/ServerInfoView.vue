@@ -247,7 +247,7 @@ td {
 
 
 <script setup lang="ts">
-import { routeDefs } from "@/router/index.js";
+import { routeDefs } from "@/router.js";
 import { useStore } from "@/store/index.js";
 import { computed, onMounted, onBeforeUnmount } from "vue";
 import { api } from "@/assets/ts/webcrap/apicrap.js";

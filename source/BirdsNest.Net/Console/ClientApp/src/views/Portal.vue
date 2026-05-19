@@ -154,7 +154,7 @@ import { useStore } from "@/store/index.js";
 import VisualizerPortalBlock from "@/components/portal/VisualizerPortalBlock.vue";
 import ReportsPortalBlock from "@/components/portal/ReportsPortalBlock.vue";
 import ServerInfoPortalBlock from "@/components/portal/ServerInfoPortalBlock.vue";
-import { routeDefs } from "@/router/index.js";
+import { routeDefs } from "@/router.js";
 import webcrap from "@/assets/ts/webcrap/webcrap.js";
 
 import { useI18n } from 'vue-i18n';

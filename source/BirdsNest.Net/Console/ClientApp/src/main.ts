@@ -27,7 +27,7 @@ import CountryFlag from "vue-country-flag-next";
 
 import { createApp } from 'vue';
 import { store, key, rootPaths } from "./store/index.js";
-import router from "./router/index.js";
+import router from "./router.js";
 import App from './App.vue';
 
 const app = createApp(App);

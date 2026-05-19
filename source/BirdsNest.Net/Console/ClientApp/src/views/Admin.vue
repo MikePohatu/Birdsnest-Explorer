@@ -88,7 +88,7 @@ import { auth } from "@/assets/ts/webcrap/authcrap.js";
 import { Dictionary } from "lodash";
 import { rootPaths } from "@/store/index.js";
 import PluginManager from "@/assets/ts/dataMap/PluginManager.js";
-import { routeDefs } from "@/router/index.js";
+import { routeDefs } from "@/router.js";
 import { computed, ref } from 'vue';
 import { useStore } from "@/store/index.js";
 import { Notify } from "@/assets/ts/Notifications.js";

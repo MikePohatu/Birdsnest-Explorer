@@ -29,4 +29,4 @@ declare module 'vue-router' {
       pagecrumbs?: breadcrumb[]
       allowAnonymous?: boolean
     }
-  }
+}

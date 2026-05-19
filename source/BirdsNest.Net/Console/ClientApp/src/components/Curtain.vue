@@ -29,7 +29,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 <script setup lang="ts">
 import LoginCredentials from "@/components/LoginCredentials.vue";
 import $ from "jquery";
-import { routeDefs } from "@/router/index.js";
+import { routeDefs } from "@/router.js";
 import { computed } from "vue";
 import { useRoute } from "vue-router";
 import { useStore } from "@/store/index.js";

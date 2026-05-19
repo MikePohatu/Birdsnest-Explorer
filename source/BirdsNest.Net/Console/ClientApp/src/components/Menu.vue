@@ -56,7 +56,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 
 <script setup lang="ts">
 import { auth } from "@/assets/ts/webcrap/authcrap.js";
-import { routeDefs } from "@/router/index.js";
+import { routeDefs } from "@/router.js";
 import LangMenu from "@/components/LangMenu.vue";
 import webcrap from "@/assets/ts/webcrap/webcrap.js";
 import { useStore } from "@/store/index.js";

@@ -15,10 +15,10 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 import { createRouter, createWebHistory, isNavigationFailure, NavigationFailureType, RouteRecordRaw } from "vue-router";
-import { store, rootPaths } from "@/store/index.js";
-import { auth } from "@/assets/ts/webcrap/authcrap.js";
-import webcrap from "@/assets/ts/webcrap/webcrap.js";
-import { Notify } from "@/assets/ts/Notifications.js";
+import { store, rootPaths } from "@/store";
+import { auth } from "@/assets/ts/webcrap/authcrap";
+import webcrap from "@/assets/ts/webcrap/webcrap";
+import { Notify } from "@/assets/ts/Notifications";
 
 export const routeDefs = {
   portal: {
@@ -171,23 +171,23 @@ const router = createRouter({
   routes
 });
 
-router.beforeEach((to, from) => {
+router.beforeEach((to, from, next) => {
   if (to.meta.allowAnonymous === true) {
     if (to.name === routeDefs.docs.name && webcrap.misc.isIE() === false) {
       const path = to.path.split("#")[0];
 
       if (path === routeDefs.docs.rootPath) {
-        return {
+        next({
           path: "/docs/static/documentation/README.md"
-        };
+        });
       } else if (path.endsWith("/")) {
-        return {
+        next({
           path: path + "README.md"
-        };
+        });
       } else if (path.endsWith(".md") === false) {
-        return {
+        next({
           path: path + "/README.md"
-        };
+        });
       } else {
         to.meta.pagecrumbs = [];
 
@@ -204,11 +204,11 @@ router.beforeEach((to, from) => {
           });
         }
         auth.softPing(); // do softPing after redirects 
-        return;
+        next();
       }
     } else {
       auth.softPing(); // do an auth ping to make sure all is OK e.g. menus stay current
-      return;
+      next();
     }
   } else {
     //Ping the server to check if cookie still valid
@@ -216,10 +216,11 @@ router.beforeEach((to, from) => {
       if (!store.state.user.isAuthorized) {
         //Still not authorised, redirect to login view
         Notify.Info(`Not authorized to ${to.path}. Redirecting to login page.`).Clear();
-        return {
+        next(
+          {
             name: routeDefs.login.name,
             query: { redirect: to.fullPath }
-          };
+          });
       }
       else {
         if (store.state.pluginManager === null || store.state.serverInfo === null) {
@@ -229,9 +230,9 @@ router.beforeEach((to, from) => {
           // eslint-disable-next-line
           console.error("Access forbidden. Redirecting to portal.");
           Notify.Error("Access to admin page forbidden");
-          return from;
+          next(from);
         } else {
-          return;
+          next();
         }
       }
     })
