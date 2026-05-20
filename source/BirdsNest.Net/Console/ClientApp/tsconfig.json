@@ -13,8 +13,7 @@
     "allowSyntheticDefaultImports": true,
     "sourceMap": true,
     "types": [
-      "vite/client",
-      "jest"
+      "vite/client"
     ],
     "paths": {
       "@/*": [
